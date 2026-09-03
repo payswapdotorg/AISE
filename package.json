@@ -19,6 +19,7 @@
     "dev:api": "npm run dev --workspace @aise/backend-api",
     "dev:geometry": "npm run dev --workspace @aise/backend-geometry",
     "dev:reconstruction": "npm run dev --workspace @aise/backend-reconstruction",
+    "dev:semantics": "npm run dev --workspace @aise/backend-semantics",
     "dev:worker": "npm run dev --workspace @aise/backend-worker",
     "dev:web": "npm run dev --workspace @aise/web",
     "lint": "eslint .",
