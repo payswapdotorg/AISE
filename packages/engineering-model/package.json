@@ -2,5 +2,19 @@
   "name": "@aise/engineering-model",
   "version": "0.0.0",
   "private": true,
-  "description": "RESERVED (AISE-011): canonical Reality Graph engineering-model package. Placeholder only in AISE-001."
+  "description": "AISE Reality Graph core — the canonical project/space/object/geometry/property/relationship engineering model (AISE-011)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@aise/shared-contracts": "*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
 }
