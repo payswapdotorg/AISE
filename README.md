@@ -56,6 +56,7 @@ cp .env.example .env   # optional: gitignored local configuration
 | `npm run dev:reconstruction` | Start the reconstruction pipeline service (AISE-008 foundation) |
 | `npm run dev:semantics` | Start the architectural object extraction service (AISE-010) |
 | `npm run dev:model` | Start the Reality Graph model service (AISE-011 ingestion + persistence) |
+| `npm run dev:evidence` | Start the evidence & provenance service (AISE-012 registration, linking, validity) |
 | `npm run dev:worker` | Start the background worker process |
 | `npm run dev:web` | Start the web app dev server (Next.js) |
 | `npm run lint` | ESLint over all workspaces |
