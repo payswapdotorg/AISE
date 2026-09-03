@@ -3,7 +3,7 @@
 **Owner:** SHARED
 **Primary:** ZAI
 **Secondary:** GEMINI
-**Status:** BLOCKED until AISE-001 and AISE-002 are merged
+**Status:** ACTIVATED
 **Architecture:** v1.0
 **Assurance:** HIGH_ASSURANCE
 
@@ -51,3 +51,6 @@ At minimum:
 
 ## Coordination
 Z.ai defines semantic contract changes in this Work Item. Gemini confirms Android viability and implements only the Android consumer side. Any bilateral implementation change must be represented by an explicit coordination record.
+
+## Completion gate
+Open a PR and do not self-merge. Architect reviews the actual diff and evidence. AISE-004 and AISE-005 remain blocked until AISE-003 is merged and finalized.
