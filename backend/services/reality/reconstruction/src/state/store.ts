@@ -24,6 +24,17 @@
  * - **Session index**: per-session ordered, duplicate-free artifact
  *   lists (commit order).
  *
+ * Persistence-boundary verification (PR #9 review): the store does
+ * NOT trust the caller. Every artifact presented to
+ * `commitArtifact` is fully verified BEFORE it is indexed or
+ * committed — point clouds with `verifyPointCloudArtifact`, scenes
+ * with `verifySceneArtifact` (resolving cited clouds against the
+ * store itself, so a scene can only be committed after the clouds
+ * it cites), and unknown kinds are rejected outright. Malformed or
+ * tampered derived artifacts never enter the store; idempotent
+ * re-commits and `ARTIFACT_ID_CONFLICT` semantics are unchanged
+ * (verification runs first, then the identity logic).
+ *
  * This store is explicitly NOT the canonical Reality Graph (AISE-011)
  * and not a second engineering-model authority: it holds derived
  * reconstruction products whose epistemic state is INFERRED.
@@ -31,7 +42,8 @@
 import type { Uuid } from "@aise/shared-contracts";
 import type { PreprocessedSession } from "../preprocessing/preprocess.js";
 import { ReconstructionError } from "../errors.js";
-import type { ReconstructionArtifact } from "../artifacts/scene.js";
+import { verifyPointCloudArtifact } from "../artifacts/point-cloud.js";
+import { verifySceneArtifact, type ReconstructionArtifact } from "../artifacts/scene.js";
 
 export interface CommitResult {
   readonly status: "committed" | "already_present";
@@ -62,9 +74,14 @@ export interface ReconstructionStateStore {
   listPreprocessedSessionVersions(sessionId: Uuid): readonly PreprocessedSession[];
 
   /**
-   * Commits an artifact: `already_present` for known content;
-   * `ARTIFACT_ID_CONFLICT` when the id is already bound to different
-   * content. Committed artifacts are never mutated or replaced.
+   * Commits an artifact. The boundary does not trust the caller:
+   * point clouds are verified with `verifyPointCloudArtifact` and
+   * scenes with `verifySceneArtifact` (cited clouds resolved against
+   * this store) before indexing — a malformed or tampered artifact
+   * is rejected and never stored. Then: `already_present` for known
+   * content; `ARTIFACT_ID_CONFLICT` when the id is already bound to
+   * different content. Committed artifacts are never mutated or
+   * replaced.
    */
   commitArtifact(artifact: ReconstructionArtifact): CommitResult;
   findArtifactById(artifactId: Uuid): ReconstructionArtifact | undefined;
@@ -95,6 +112,38 @@ export function createInMemoryReconstructionStateStore(
   /** sessionId → ordered, duplicate-free content hashes. */
   const sessionArtifactIndex = new Map<Uuid, string[]>();
 
+  /**
+   * The persistence-boundary gate (PR #9 review): verifies every
+   * artifact before it is indexed or committed. Point clouds run
+   * `verifyPointCloudArtifact`; scenes run `verifySceneArtifact`
+   * with the store itself as the reference resolver — a scene may
+   * only be committed after the clouds it cites are committed. An
+   * artifact of unknown kind never enters the store. Runs BEFORE the
+   * idempotency/conflict logic, so a tampered artifact claiming a
+   * known content hash is still rejected rather than silently
+   * treated as `already_present`.
+   */
+  const verifyAtBoundary = (artifact: ReconstructionArtifact): void => {
+    if (artifact.kind === "point_cloud") {
+      verifyPointCloudArtifact(artifact);
+      return;
+    }
+    if (artifact.kind === "scene") {
+      verifySceneArtifact(artifact, (artifactId) => artifactsById.get(artifactId));
+      return;
+    }
+    // `ReconstructionArtifact` is a closed union, so this branch is
+    // unreachable for well-typed values — but the boundary guards
+    // runtime values too (a tampered/partially-decoded object), so it
+    // fails closed instead of relying on the type system.
+    const unknown = artifact as { artifactId?: Uuid; kind?: unknown };
+    throw new ReconstructionError(
+      "VALIDATION_FAILED",
+      `cannot commit an artifact of unknown kind "${String(unknown.kind)}"`,
+      { details: { artifactId: unknown.artifactId, kind: unknown.kind } },
+    );
+  };
+
   return {
     kind: "memory",
 
@@ -118,6 +167,9 @@ export function createInMemoryReconstructionStateStore(
       [...(preprocessedVersions.get(sessionId) ?? [])],
 
     commitArtifact: (artifact) => {
+      // The boundary does not trust the caller: verify first, then
+      // apply the identity logic (idempotency, conflicts, indexing).
+      verifyAtBoundary(artifact);
       const existing = artifactsByHash.get(artifact.contentHash);
       if (existing !== undefined) {
         // Same content: one logical artifact, idempotent commit.

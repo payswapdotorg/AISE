@@ -16,6 +16,14 @@
  * - a scene with zero point clouds is rejected (EMPTY_SCENE): an
  *   empty scene would present "nothing reconstructed" as a
  *   successful reconstruction;
+ * - the pose set corresponds EXACTLY to the frame set (PR #9
+ *   review): one pose per scene frame, no pose for a frame the scene
+ *   does not carry, and every pose's assetId equals its frame's
+ *   assetId. Enforced at creation AND at verification
+ *   (`SCENE_POSE_FRAME_MISMATCH`) — the pipeline produces matched
+ *   sets, but the artifact gate itself must fail closed on any
+ *   missing, foreign, or mismatched coverage, independent of who
+ *   constructed the artifact;
  * - every frame and pose that entered reconstruction is part of the
  *   scene content, so the scene hash pins the full input context.
  */
@@ -109,9 +117,11 @@ export function sceneContent(artifact: SceneArtifact): Record<string, unknown> {
 
 /**
  * Creates a scene artifact. Validates the frame set, the pose set,
- * the non-empty point-cloud reference set, provenance and epistemic
- * state; records the four completed stages; computes the content
- * hash. Throws (fail closed) on any violation.
+ * the exact frame ↔ pose correspondence (one pose per frame, no
+ * foreign poses, matching asset ids), the non-empty point-cloud
+ * reference set, provenance and epistemic state; records the four
+ * completed stages; computes the content hash. Throws (fail closed)
+ * on any violation.
  */
 export function createSceneArtifact(input: CreateSceneArtifactInput): SceneArtifact {
   if (typeof input.sessionId !== "string" || input.sessionId.trim() === "") {
@@ -122,6 +132,7 @@ export function createSceneArtifact(input: CreateSceneArtifactInput): SceneArtif
   }
   validateSceneFrameRefs(input.frames);
   validatePoseEstimates(input.poses);
+  validateSceneFramePoseCorrespondence(input.frames, input.poses);
   if (!Array.isArray(input.pointClouds) || input.pointClouds.length === 0) {
     throw new ReconstructionError("EMPTY_SCENE", "a scene must reference at least one point-cloud artifact");
   }
@@ -192,6 +203,7 @@ export function verifySceneArtifact(
   }
   validateSceneFrameRefs(scene.frames);
   validatePoseEstimates(scene.poses);
+  validateSceneFramePoseCorrespondence(scene.frames, scene.poses);
   if (!Array.isArray(scene.pointClouds) || scene.pointClouds.length === 0) {
     throw new ReconstructionError("EMPTY_SCENE", "a verified scene must reference at least one point-cloud artifact");
   }
@@ -275,6 +287,66 @@ function validateScenePointCloudRefs(refs: readonly ScenePointCloudRef[]): void 
       throw new ReconstructionError("VALIDATION_FAILED", `scene point-cloud reference ${index} must carry a lowercase-hex sha-256 contentHash`);
     }
   });
+}
+
+/**
+ * The exact frame ↔ pose correspondence invariant (PR #9 review):
+ * the pose set must cover the scene's frame set exactly — every
+ * scene frame carries exactly one pose (uniqueness is already
+ * enforced by `validatePoseEstimates`, coverage here), no pose is
+ * carried for a frame outside the scene, and every pose's assetId
+ * equals its frame's assetId. A scene that violates this would
+ * present poses not anchored in the frames it claims, or frames
+ * without poses — it is not a coherent reconstruction record and
+ * fails closed with `SCENE_POSE_FRAME_MISMATCH`, at creation and at
+ * verification alike.
+ */
+function validateSceneFramePoseCorrespondence(
+  frames: readonly SceneFrameRef[],
+  poses: readonly PoseEstimate[],
+): void {
+  const frameByFrameId = new Map<Uuid, SceneFrameRef>();
+  for (const frame of frames) {
+    frameByFrameId.set(frame.frameId, frame);
+  }
+
+  const posedFrameIds = new Set<Uuid>();
+  for (const pose of poses) {
+    const frame = frameByFrameId.get(pose.frameId);
+    if (frame === undefined) {
+      throw new ReconstructionError(
+        "SCENE_POSE_FRAME_MISMATCH",
+        `scene carries a pose for frame ${pose.frameId} which is not one of its frames`,
+        { details: { frameId: pose.frameId, poseAssetId: pose.assetId } },
+      );
+    }
+    if (pose.assetId !== frame.assetId) {
+      throw new ReconstructionError(
+        "SCENE_POSE_FRAME_MISMATCH",
+        `pose for frame ${pose.frameId} carries a mismatched assetId`,
+        {
+          details: {
+            frameId: pose.frameId,
+            poseAssetId: pose.assetId,
+            frameAssetId: frame.assetId,
+          },
+        },
+      );
+    }
+    posedFrameIds.add(pose.frameId);
+  }
+
+  const missingFrameIds = frames
+    .filter((frame) => !posedFrameIds.has(frame.frameId))
+    .map((frame) => frame.frameId);
+  if (missingFrameIds.length > 0) {
+    throw new ReconstructionError(
+      "SCENE_POSE_FRAME_MISMATCH",
+      "every scene frame must carry exactly one pose — frames without poses: " +
+        missingFrameIds.join(", "),
+      { details: { missingFrameIds } },
+    );
+  }
 }
 
 /** Validates a standalone pose list (used at scene creation/verification). */

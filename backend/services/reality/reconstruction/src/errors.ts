@@ -64,6 +64,12 @@ export type ReconstructionErrorCode =
   | "ARTIFACT_NOT_FOUND"
   /** A scene reference does not resolve to the declared content. */
   | "SCENE_REFERENCE_INVALID"
+  /**
+   * A scene's pose set does not correspond exactly to its frame set:
+   * a frame without a pose, a pose for a frame the scene does not
+   * carry, or a pose whose assetId differs from its frame's assetId.
+   */
+  | "SCENE_POSE_FRAME_MISMATCH"
   /** Unexpected internal failure. */
   | "INTERNAL_ERROR";
 

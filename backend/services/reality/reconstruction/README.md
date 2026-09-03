@@ -95,6 +95,25 @@ graceful shutdown.
   (`EPISTEMIC_STATE_INVALID`). Clouds declare `SESSION_LOCAL` meters
   and `georeferenced: false` — an unevidenced georeferencing claim is
   rejected.
+- **Exact frame ↔ pose correspondence** (PR #9 review) — a
+  scene's pose set must cover its frame set EXACTLY: one pose per
+  scene frame, no pose for a frame the scene does not carry, and
+  every pose's `assetId` equal to its frame's `assetId`. Enforced at
+  creation AND at verification (`SCENE_POSE_FRAME_MISMATCH`), with
+  negative tests for missing, foreign, and mismatched coverage —
+  including a forged scene whose content hash was recomputed after
+  breaking correspondence, proving the gate does not depend on
+  content-addressing alone. The pipeline produces matched sets, but
+  the artifact gate itself fails closed.
+- **Persistence-boundary verification** (PR #9 review) — the state
+  store does not trust the caller: `commitArtifact` runs
+  `verifyPointCloudArtifact` on point clouds and `verifySceneArtifact`
+  on scenes (cited clouds resolved against the store itself, so a
+  scene can only be committed after the clouds it cites) BEFORE any
+  indexing — a tampered or malformed derived artifact never enters
+  the store, even when it claims the hash of already-committed
+  content. Unknown artifact kinds are rejected outright. Idempotent
+  re-commits and `ARTIFACT_ID_CONFLICT` semantics are unchanged.
 - **Content addressing & tamper detection** — artifact `contentHash`
   is the canonical JSON SHA-256 of all content (points, frames, poses,
   references, provenance, epistemic state); bookkeeping (artifactId,
@@ -107,7 +126,8 @@ graceful shutdown.
   scenes without clouds (`EMPTY_SCENE`) are rejected: "nothing
   reconstructed" is a failure state, not a successful artifact.
 - **Idempotency & versioning** — re-committing identical derived
-  content is `already_present` (content is identity); preprocessed
+  content is `already_present` (content is identity, verified at the
+  boundary first); preprocessed
   sessions are append-only versioned (a changed fingerprint appends a
   new version; prior versions stay discoverable — reprocessing never
   erases prior derived state); an artifact id reused for different
@@ -153,11 +173,13 @@ authority: it holds derived, INFERRED reconstruction products.
 
 ## Tests
 
-Reconstruction-specific suites (134 tests): preprocessing (integrity,
+Reconstruction-specific suites (150 tests): preprocessing (integrity,
 determinism, routing, fixtures-as-contract-consumer), pose (adapter +
 fail-closed gate), engine output gate, artifacts (provenance,
-content-addressing, tamper detection, cross-artifact integrity),
-state store (versioning, idempotency, conflicts), pipeline runner
+content-addressing, tamper detection, cross-artifact integrity,
+exact frame ↔ pose correspondence at creation and verification),
+state store (versioning, idempotency, conflicts, persistence-boundary
+verification), pipeline runner
 (lifecycle, failure isolation, fail-closed composition, end-to-end
 artifact creation and verification), runtime composition (production
 defaults fail closed).

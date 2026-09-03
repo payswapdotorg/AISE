@@ -10,7 +10,13 @@ import { createInMemoryReconstructionStateStore } from "./store.js";
 import type { PreprocessedSession } from "../preprocessing/preprocess.js";
 import { parametersFingerprintOf, type ArtifactProvenance } from "../artifacts/provenance.js";
 import { createPointCloudArtifact, type PointCloudArtifact } from "../artifacts/point-cloud.js";
-import { createSceneArtifact, type SceneArtifact } from "../artifacts/scene.js";
+import { canonicalContentHash } from "../canonical.js";
+import {
+  createSceneArtifact,
+  sceneContent,
+  type ReconstructionArtifact,
+  type SceneArtifact,
+} from "../artifacts/scene.js";
 import { ReconstructionError } from "../errors.js";
 
 const SESSION = "11111111-1111-4111-8111-111111111111";
@@ -176,6 +182,116 @@ describe("artifact commits (content-addressed)", () => {
     const store = createInMemoryReconstructionStateStore();
     expect(store.findArtifactById("nope")).toBeUndefined();
     expect(store.findArtifactByHash("nope")).toBeUndefined();
+  });
+});
+
+describe("persistence-boundary verification (the store does not trust the caller)", () => {
+  function expectCommitFailure(
+    store: ReturnType<typeof createInMemoryReconstructionStateStore>,
+    artifact: ReconstructionArtifact,
+    code: string,
+  ): ReconstructionError {
+    let caught: unknown;
+    try {
+      store.commitArtifact(artifact);
+    } catch (error) {
+      caught = error;
+    }
+    expect(caught).toBeInstanceOf(ReconstructionError);
+    const failure = caught as ReconstructionError;
+    expect(failure.code).toBe(code);
+    return failure;
+  }
+
+  it("rejects a tampered point cloud (mutated points, stale hash) and stores nothing", () => {
+    const store = createInMemoryReconstructionStateStore({ now: () => NOW });
+    const original = cloud("cloud-1", 0);
+    const tampered = {
+      ...original,
+      points: [{ x: 99, y: 0, z: 0 }, original.points[1]!],
+    } as PointCloudArtifact;
+    expectCommitFailure(store, tampered, "INTEGRITY_MISMATCH");
+    // Nothing entered the store — not by hash, not by id, not in the
+    // session index, not in the read model.
+    expect(store.listArtifactsForSession(SESSION)).toEqual([]);
+    expect(store.findArtifactById("cloud-1")).toBeUndefined();
+    expect(store.findArtifactByHash(original.contentHash)).toBeUndefined();
+    expect(store.sessionReconstruction(SESSION).artifactCount).toBe(0);
+  });
+
+  it("rejects a drifted pointCount even when the claimed hash matches committed content", () => {
+    const store = createInMemoryReconstructionStateStore({ now: () => NOW });
+    const original = cloud("cloud-1", 0);
+    expect(store.commitArtifact(original)).toEqual({ status: "committed" });
+    // pointCount is bookkeeping (excluded from the content hash): the
+    // drifted object claims the SAME hash, so without boundary
+    // verification it would be waved through as `already_present`.
+    const drifted = { ...original, pointCount: 7 } as PointCloudArtifact;
+    expectCommitFailure(store, drifted, "VALIDATION_FAILED");
+    // The committed original is untouched and still the only artifact.
+    const stored = store.findArtifactById("cloud-1") as PointCloudArtifact | undefined;
+    expect(stored?.pointCount).toBe(original.pointCount);
+    expect(store.listArtifactsForSession(SESSION)).toHaveLength(1);
+  });
+
+  it("rejects a tampered scene (poses removed) and stores nothing", () => {
+    const store = createInMemoryReconstructionStateStore({ now: () => NOW });
+    const cited = cloud("cloud-1", 0);
+    expect(store.commitArtifact(cited)).toEqual({ status: "committed" });
+    const validScene = scene("scene-1", cited);
+    const tampered = { ...validScene, poses: [] } as unknown as SceneArtifact;
+    expectCommitFailure(store, tampered, "SCENE_POSE_FRAME_MISMATCH");
+    // The scene never entered the store; the cited cloud is intact.
+    expect(store.findArtifactById("scene-1")).toBeUndefined();
+    expect(store.listArtifactsForSession(SESSION)).toHaveLength(1);
+    expect(store.sessionReconstruction(SESSION).sceneCount).toBe(0);
+  });
+
+  it("rejects a FORGED scene whose content hash was recomputed after tampering", () => {
+    const store = createInMemoryReconstructionStateStore({ now: () => NOW });
+    const cited = cloud("cloud-1", 0);
+    expect(store.commitArtifact(cited)).toEqual({ status: "committed" });
+    const validScene = scene("scene-1", cited);
+    // The strongest adversary: break the frame ↔ pose correspondence
+    // AND recompute the hash, so hash comparison alone would pass —
+    // the store's boundary verification is what fails closed.
+    const broken: SceneArtifact = { ...validScene, poses: [] };
+    const forged: SceneArtifact = {
+      ...broken,
+      contentHash: canonicalContentHash(sceneContent(broken)),
+    };
+    expectCommitFailure(store, forged, "SCENE_POSE_FRAME_MISMATCH");
+    expect(store.findArtifactById("scene-1")).toBeUndefined();
+    expect(store.listArtifactsForSession(SESSION)).toHaveLength(1);
+  });
+
+  it("rejects a scene citing a point cloud that has not been committed", () => {
+    const store = createInMemoryReconstructionStateStore({ now: () => NOW });
+    const uncommitted = cloud("cloud-9", 3);
+    const sceneArtifact = scene("scene-1", uncommitted);
+    expectCommitFailure(store, sceneArtifact, "ARTIFACT_NOT_FOUND");
+    expect(store.listArtifactsForSession(SESSION)).toEqual([]);
+  });
+
+  it("rejects an artifact of unknown kind", () => {
+    const store = createInMemoryReconstructionStateStore({ now: () => NOW });
+    const mystery = {
+      ...cloud("cloud-1", 0),
+      kind: "mystery",
+    } as unknown as ReconstructionArtifact;
+    const failure = expectCommitFailure(store, mystery, "VALIDATION_FAILED");
+    expect(failure.message).toContain("unknown kind");
+    expect(store.listArtifactsForSession(SESSION)).toEqual([]);
+  });
+
+  it("still verifies and accepts idempotent re-commits of committed content", () => {
+    const store = createInMemoryReconstructionStateStore({ now: () => NOW });
+    const original = cloud("cloud-1", 0);
+    expect(store.commitArtifact(original)).toEqual({ status: "committed" });
+    // The boundary gate runs first and passes; identity logic then
+    // deduplicates — idempotency is preserved behind verification.
+    expect(store.commitArtifact(cloud("cloud-1", 0))).toEqual({ status: "already_present" });
+    expect(store.listArtifactsForSession(SESSION)).toHaveLength(1);
   });
 });
 

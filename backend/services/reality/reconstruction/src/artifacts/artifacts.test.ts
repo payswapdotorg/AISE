@@ -25,11 +25,13 @@ import {
 } from "./point-cloud.js";
 import {
   createSceneArtifact,
+  sceneContent,
   verifySceneArtifact,
   type SceneArtifact,
   type SceneFrameRef,
   type ScenePointCloudRef,
 } from "./scene.js";
+import { canonicalContentHash } from "../canonical.js";
 import type { PoseEstimate } from "../pose/pose.js";
 import { ReconstructionError } from "../errors.js";
 
@@ -344,6 +346,11 @@ describe("scene artifact creation", () => {
     expectError(() => makeScene(cloud, { frames: [] }), "VALIDATION_FAILED");
   });
 
+  it("rejects a scene with zero poses (a frame is left without a pose)", () => {
+    const cloud = makeCloud();
+    expectError(() => makeScene(cloud, { poses: [] }), "SCENE_POSE_FRAME_MISMATCH");
+  });
+
   it("rejects an epistemic claim of OBSERVED", () => {
     const cloud = makeCloud();
     expectError(() => makeScene(cloud, { epistemicState: "OBSERVED" }), "EPISTEMIC_STATE_INVALID");
@@ -456,7 +463,10 @@ describe("scene verification (cross-artifact integrity)", () => {
     const scene = makeScene(cloud);
     const tamperedScene = {
       ...scene,
-      frames: [FRAME_REFS[0]!],
+      // Content mutation that leaves the frame ↔ pose correspondence
+      // intact (a stage record is dropped), so the tamper is caught by
+      // the content-hash recomputation.
+      stages: scene.stages.slice(0, 1),
     } as unknown as SceneArtifact;
     const resolver = (artifactId: string) => (artifactId === cloud.artifactId ? cloud : undefined);
     expectError(() => verifySceneArtifact(tamperedScene, resolver), "INTEGRITY_MISMATCH");
@@ -467,5 +477,102 @@ describe("scene verification (cross-artifact integrity)", () => {
     const scene = makeScene(cloud);
     const tamperedScene = { ...scene, epistemicState: "OBSERVED" as const } as SceneArtifact;
     expectError(() => verifySceneArtifact(tamperedScene, () => cloud), "EPISTEMIC_STATE_INVALID");
+  });
+});
+
+describe("scene frame ↔ pose correspondence (PR #9 review gate)", () => {
+  const FOREIGN_POSE: PoseEstimate = {
+    frameId: "c-asset",
+    assetId: "c-asset",
+    orientation: null,
+    orientationProvenance: "NOT_ESTABLISHED",
+    position: null,
+    positionProvenance: "NOT_ESTABLISHED",
+  };
+
+  const MISMATCHED_ASSET_POSE: PoseEstimate = {
+    ...POSES[1]!,
+    assetId: "not-the-frame-asset",
+  };
+
+  it("rejects a scene missing a pose for one of its frames (creation)", () => {
+    const cloud = makeCloud();
+    const error = expectError(
+      () => makeScene(cloud, { poses: [POSES[0]!] }),
+      "SCENE_POSE_FRAME_MISMATCH",
+    );
+    expect(error.details).toMatchObject({ missingFrameIds: ["b-asset"] });
+  });
+
+  it("rejects a scene carrying a pose for a foreign frame (creation)", () => {
+    const cloud = makeCloud();
+    const error = expectError(
+      () => makeScene(cloud, { poses: [...POSES, FOREIGN_POSE] }),
+      "SCENE_POSE_FRAME_MISMATCH",
+    );
+    expect(error.details).toMatchObject({ frameId: "c-asset" });
+  });
+
+  it("rejects a scene whose pose assetId mismatches the frame assetId (creation)", () => {
+    const cloud = makeCloud();
+    const error = expectError(
+      () => makeScene(cloud, { poses: [POSES[0]!, MISMATCHED_ASSET_POSE] }),
+      "SCENE_POSE_FRAME_MISMATCH",
+    );
+    expect(error.details).toMatchObject({
+      frameId: "b-asset",
+      poseAssetId: "not-the-frame-asset",
+      frameAssetId: "b-asset",
+    });
+  });
+
+  it("verification rejects a scene with a pose removed (missing coverage)", () => {
+    const cloud = makeCloud();
+    const scene = makeScene(cloud);
+    // Stale-hash tamper: correspondence fires independent of the hash.
+    const tampered = { ...scene, poses: [POSES[0]!] } as unknown as SceneArtifact;
+    const resolver = (artifactId: string) => (artifactId === cloud.artifactId ? cloud : undefined);
+    expectError(() => verifySceneArtifact(tampered, resolver), "SCENE_POSE_FRAME_MISMATCH");
+  });
+
+  it("verification rejects a scene with a foreign pose added", () => {
+    const cloud = makeCloud();
+    const scene = makeScene(cloud);
+    const tampered = { ...scene, poses: [...POSES, FOREIGN_POSE] } as unknown as SceneArtifact;
+    const resolver = (artifactId: string) => (artifactId === cloud.artifactId ? cloud : undefined);
+    expectError(() => verifySceneArtifact(tampered, resolver), "SCENE_POSE_FRAME_MISMATCH");
+  });
+
+  it("verification rejects a scene with a mismatched pose assetId", () => {
+    const cloud = makeCloud();
+    const scene = makeScene(cloud);
+    const tampered = {
+      ...scene,
+      poses: [POSES[0]!, MISMATCHED_ASSET_POSE],
+    } as unknown as SceneArtifact;
+    const resolver = (artifactId: string) => (artifactId === cloud.artifactId ? cloud : undefined);
+    expectError(() => verifySceneArtifact(tampered, resolver), "SCENE_POSE_FRAME_MISMATCH");
+  });
+
+  it("verification rejects a FORGED scene whose hash was recomputed after breaking correspondence", () => {
+    const cloud = makeCloud();
+    const scene = makeScene(cloud);
+    // The strongest adversary: tamper the poses AND recompute the
+    // content hash, so hash comparison alone would pass. The exact
+    // correspondence check is what fails closed.
+    const broken: SceneArtifact = { ...scene, poses: [POSES[0]!] };
+    const forged: SceneArtifact = {
+      ...broken,
+      contentHash: canonicalContentHash(sceneContent(broken)),
+    };
+    const resolver = (artifactId: string) => (artifactId === cloud.artifactId ? cloud : undefined);
+    expectError(() => verifySceneArtifact(forged, resolver), "SCENE_POSE_FRAME_MISMATCH");
+  });
+
+  it("accepts a scene whose poses exactly cover its frames with matching asset ids", () => {
+    const cloud = makeCloud();
+    const scene = makeScene(cloud);
+    const resolver = (artifactId: string) => (artifactId === cloud.artifactId ? cloud : undefined);
+    expect(() => verifySceneArtifact(scene, resolver)).not.toThrow();
   });
 });
