@@ -16,6 +16,16 @@ object CapturePackageManifestBuilder {
         val createdAtRfc3339 = ContractTimestampAdapter.epochMillisToRfc3339(session.createdAt)
 
         val packageAssetDtos = assets.map { asset ->
+            val relPath = asset.relativePath
+            if (relPath.isNullOrBlank()) {
+                throw IllegalStateException("Capture asset ${asset.id} is missing required relativePath")
+            }
+
+            val hash = asset.contentHash
+            if (hash.isNullOrBlank()) {
+                throw IllegalStateException("Capture asset ${asset.id} is missing required contentHash")
+            }
+
             val meta = asset.acquisitionMetadata
             val capturedAtRfc3339 = meta?.capturedAt
                 ?: ContractTimestampAdapter.epochMillisToRfc3339(asset.createdAt)
@@ -65,8 +75,8 @@ object CapturePackageManifestBuilder {
             PackageAssetDto(
                 assetId = asset.id,
                 assetType = contractAssetType,
-                relativePath = asset.relativePath ?: "assets/${asset.id}.bin",
-                contentHash = asset.contentHash ?: "0000000000000000000000000000000000000000000000000000000000000000",
+                relativePath = relPath,
+                contentHash = hash,
                 byteSize = asset.byteSize,
                 mimeType = mimeType,
                 acquisition = acquisitionDto

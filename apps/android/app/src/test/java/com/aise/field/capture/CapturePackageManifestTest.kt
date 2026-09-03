@@ -9,20 +9,20 @@ import org.junit.Test
 
 class CapturePackageManifestTest {
 
+    private val sampleSession = CaptureSession(
+        id = "2d7e8f4a-1c9b-46f3-a5e8-93d2c7b0e615",
+        projectId = "5f0c9d8e-3a47-4b21-9f6a-8c2d1e4b7a30",
+        intent = CaptureIntent.AS_BUILT,
+        assuranceProfile = AssuranceProfile.HIGH_ASSURANCE,
+        status = SessionStatus.IN_PROGRESS,
+        createdAt = 1725347100000L
+    )
+
     @Test
     fun buildManifest_createsValidAise003ContractDto() {
-        val session = CaptureSession(
-            id = "2d7e8f4a-1c9b-46f3-a5e8-93d2c7b0e615",
-            projectId = "5f0c9d8e-3a47-4b21-9f6a-8c2d1e4b7a30",
-            intent = CaptureIntent.AS_BUILT,
-            assuranceProfile = AssuranceProfile.HIGH_ASSURANCE,
-            status = SessionStatus.IN_PROGRESS,
-            createdAt = 1725347100000L
-        )
-
         val photoAsset = CaptureAsset(
             id = "1e2f3a4b-5c6d-4e7f-8a9b-0c1d2e3f4a5b",
-            sessionId = session.id,
+            sessionId = sampleSession.id,
             assetType = AssetType.PHOTO,
             filePath = "/data/photos/IMG_0001.jpg",
             relativePath = "photos/IMG_0001.jpg",
@@ -39,7 +39,7 @@ class CapturePackageManifestTest {
 
         val videoAsset = CaptureAsset(
             id = "6f7a8b9c-0d1e-4f2a-9b3c-4d5e6f7a8b9c",
-            sessionId = session.id,
+            sessionId = sampleSession.id,
             assetType = AssetType.VIDEO,
             filePath = "/data/videos/VID_0001.mp4",
             relativePath = "videos/VID_0001.mp4",
@@ -54,11 +54,11 @@ class CapturePackageManifestTest {
             createdAt = 1725347582000L
         )
 
-        val manifest = CapturePackageManifestBuilder.buildManifest(session, listOf(photoAsset, videoAsset))
+        val manifest = CapturePackageManifestBuilder.buildManifest(sampleSession, listOf(photoAsset, videoAsset))
 
         assertEquals("1.0", manifest.contractVersion)
-        assertEquals(session.id, manifest.sessionId)
-        assertEquals(session.projectId, manifest.projectId)
+        assertEquals(sampleSession.id, manifest.sessionId)
+        assertEquals(sampleSession.projectId, manifest.projectId)
         assertEquals("sha256", manifest.checksumAlgorithm)
         assertEquals(4825311L + 18442022L, manifest.totalByteSize)
         assertEquals(2, manifest.assets.size)
@@ -75,5 +75,37 @@ class CapturePackageManifestTest {
         assertEquals("videos/VID_0001.mp4", videoDto.relativePath)
         assertEquals(18442022L, videoDto.byteSize)
         assertEquals("video/mp4", videoDto.mimeType)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun buildManifest_withMissingRelativePath_failsClosedWithException() {
+        val invalidAsset = CaptureAsset(
+            id = "asset-no-path",
+            sessionId = sampleSession.id,
+            assetType = AssetType.PHOTO,
+            filePath = "/data/photos/IMG_0001.jpg",
+            relativePath = null, // Missing relativePath
+            contentHash = "3f4ececbf6ee049d9107995d0c333cadc98c1906335faa4ae635ec82820809ea",
+            byteSize = 1024L,
+            createdAt = System.currentTimeMillis()
+        )
+
+        CapturePackageManifestBuilder.buildManifest(sampleSession, listOf(invalidAsset))
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun buildManifest_withMissingContentHash_failsClosedWithException() {
+        val invalidAsset = CaptureAsset(
+            id = "asset-no-hash",
+            sessionId = sampleSession.id,
+            assetType = AssetType.PHOTO,
+            filePath = "/data/photos/IMG_0001.jpg",
+            relativePath = "photos/IMG_0001.jpg",
+            contentHash = "", // Blank contentHash
+            byteSize = 1024L,
+            createdAt = System.currentTimeMillis()
+        )
+
+        CapturePackageManifestBuilder.buildManifest(sampleSession, listOf(invalidAsset))
     }
 }

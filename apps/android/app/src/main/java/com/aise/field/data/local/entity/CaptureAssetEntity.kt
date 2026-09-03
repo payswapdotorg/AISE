@@ -4,6 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.aise.field.capture.metadata.AcquisitionMetadata
 import com.aise.field.capture.metadata.Geolocation
+import com.aise.field.capture.metadata.Orientation
+import com.aise.field.capture.metadata.Quaternion
 import com.aise.field.domain.model.AssetStatus
 import com.aise.field.domain.model.AssetType
 import com.aise.field.domain.model.CaptureAsset
@@ -25,6 +27,10 @@ data class CaptureAssetEntity(
     val geoLongitude: Double?,
     val geoAltitudeM: Double?,
     val geoAccuracyM: Double?,
+    val orientX: Double?,
+    val orientY: Double?,
+    val orientZ: Double?,
+    val orientW: Double?,
     val notes: String?,
     val createdAt: Long
 ) {
@@ -38,12 +44,24 @@ data class CaptureAssetEntity(
             )
         } else null
 
+        val orientation = if (orientX != null && orientY != null && orientZ != null && orientW != null) {
+            Orientation(
+                quaternion = Quaternion(
+                    x = orientX,
+                    y = orientY,
+                    z = orientZ,
+                    w = orientW
+                )
+            )
+        } else null
+
         val meta = if (capturedAt != null) {
             AcquisitionMetadata(
                 capturedAt = capturedAt,
                 deviceRef = deviceRef,
                 sensorRef = sensorRef,
                 geolocation = geo,
+                orientation = orientation,
                 notes = notes
             )
         } else null
@@ -66,6 +84,7 @@ data class CaptureAssetEntity(
         fun fromDomain(asset: CaptureAsset): CaptureAssetEntity {
             val meta = asset.acquisitionMetadata
             val geo = meta?.geolocation
+            val orient = meta?.orientation?.quaternion
             return CaptureAssetEntity(
                 id = asset.id,
                 sessionId = asset.sessionId,
@@ -82,6 +101,10 @@ data class CaptureAssetEntity(
                 geoLongitude = geo?.longitude,
                 geoAltitudeM = geo?.altitudeM,
                 geoAccuracyM = geo?.accuracyM,
+                orientX = orient?.x,
+                orientY = orient?.y,
+                orientZ = orient?.z,
+                orientW = orient?.w,
                 notes = meta?.notes,
                 createdAt = asset.createdAt
             )

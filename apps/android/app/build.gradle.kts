@@ -109,6 +109,7 @@ dependencies {
     testImplementation("androidx.test:core:1.5.0")
     testImplementation("androidx.test.ext:junit:1.1.5")
     testImplementation("androidx.compose.ui:ui-test-junit4")
+    testImplementation("androidx.room:room-testing:$roomVersion")
     
     // Connected Emulator / Device Instrumentation Testing
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
