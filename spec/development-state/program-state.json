@@ -1,0 +1,45 @@
+{
+  "$schema": "./program-state.schema.json",
+  "schemaVersion": 1,
+  "artifact": "aise-development-state/program-state",
+  "governingArchitecture": "v1.0",
+  "architectureState": "frozen",
+  "asOf": "2026-09-03T00:00:00Z",
+  "agents": {
+    "ZAI": {
+      "role": "web-desktop-cloud",
+      "surfaces": ["apps/web/**", "apps/desktop/**", "services/**", "packages/engineering-model/**", "packages/shared-contracts/** when assigned"],
+      "forbidden": ["apps/android/**"]
+    },
+    "GEMINI": {
+      "role": "android-field-app",
+      "surfaces": ["apps/android/**", "apps/android-test/**", "packages/mobile-contracts/**"],
+      "forbidden": ["services/**", "apps/web/**", "backend authority", "canonical engineering verification"]
+    }
+  },
+  "authority": {
+    "architecture": "spec/architecture.md + spec/architecture-lock.md",
+    "requirements": "spec/requirements.md",
+    "workItems": "spec/work-items.md",
+    "dependencies": "spec/dependency-graph.md",
+    "ownership": "spec/agent-ownership.md",
+    "protocol": "spec/development-protocol.md"
+  },
+  "workItems": [
+    {"id":"AISE-001","owner":"ZAI","status":"ready","dependencies":[],"assurance":"STANDARD","surfaces":["root","backend","packages","CI"]},
+    {"id":"AISE-002","owner":"GEMINI","status":"ready","dependencies":[],"assurance":"STANDARD","surfaces":["apps/android/**","Android CI"]},
+    {"id":"AISE-003","owner":"SHARED","primaryAgent":"ZAI","secondaryAgent":"GEMINI","status":"blocked","dependencies":["AISE-001","AISE-002"],"assurance":"HIGH_ASSURANCE","surfaces":["packages/shared-contracts/**"]},
+    {"id":"AISE-004","owner":"ZAI","status":"blocked","dependencies":["AISE-001","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["backend capture/API"]},
+    {"id":"AISE-005","owner":"GEMINI","status":"blocked","dependencies":["AISE-002","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/capture/**"]}
+  ],
+  "execution": {
+    "activeHandoffs": [],
+    "parallelEligible": ["AISE-001","AISE-002"],
+    "mergeGate": "architect",
+    "selfMergeForbidden": true
+  },
+  "dogfood": {
+    "enabledFromWorkItem": "AISE-025",
+    "physicalBenchmarkRequiredForCriticalChanges": true
+  }
+}
