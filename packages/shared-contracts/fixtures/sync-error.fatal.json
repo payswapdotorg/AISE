@@ -1,0 +1,11 @@
+{
+  "contractVersion": "1.0",
+  "code": "IDEMPOTENCY_CONFLICT",
+  "message": "Idempotency key was reused with different payload bytes.",
+  "retryable": false,
+  "details": {
+    "idempotencyKey": "8b2e4c6a-9d0f-4e1a-b3c5-7d9e1f3a5c7e",
+    "receivedHash": "3f4ececbf6ee049d9107995d0c333cadc98c1906335faa4ae635ec82820809ea",
+    "providedHash": "0000000000000000000000000000000000000000000000000000000000000000"
+  }
+}

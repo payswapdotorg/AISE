@@ -1,0 +1,7 @@
+{
+  "kind": "estimate",
+  "value": 2.4,
+  "unit": "m",
+  "confidence": 0.62,
+  "method": "ai_proposal"
+}

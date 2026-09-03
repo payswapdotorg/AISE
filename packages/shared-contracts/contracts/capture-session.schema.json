@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.aise.example/1.0/capture-session.schema.json",
+  "title": "AISE capture session (v1.0)",
+  "description": "A capture session groups field captures under a declared intent and assurance profile (requirements REQ-002, REQ-003). Session identity is generated offline on the capture device and remains stable across synchronization. Status values align with the field lifecycle: DRAFT, READY, IN_PROGRESS, COMPLETED. Local device-only states (for example cached/upload-queue states) are deliberately NOT part of this contract.",
+  "type": "object",
+  "required": [
+    "contractVersion",
+    "sessionId",
+    "projectId",
+    "intent",
+    "assuranceProfile",
+    "status",
+    "createdAt"
+  ],
+  "properties": {
+    "contractVersion": { "const": "1.0" },
+    "sessionId": { "$ref": "common.schema.json#/$defs/uuid" },
+    "projectId": { "$ref": "common.schema.json#/$defs/uuid" },
+    "intent": {
+      "type": "string",
+      "enum": ["AS_BUILT", "MAINTENANCE", "INSPECTION"],
+      "title": "Capture intent (requirements REQ-003)"
+    },
+    "assuranceProfile": {
+      "type": "string",
+      "enum": ["LIGHT", "STANDARD", "HIGH_ASSURANCE", "CRITICAL"],
+      "title": "Assurance profile declared before capture"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["DRAFT", "READY", "IN_PROGRESS", "COMPLETED"],
+      "title": "Session lifecycle status"
+    },
+    "createdAt": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "updatedAt": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "operatorRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "title": "Opaque operator/user reference (device-neutral)"
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 2000,
+      "title": "Free-form session notes"
+    }
+  },
+  "additionalProperties": false
+}

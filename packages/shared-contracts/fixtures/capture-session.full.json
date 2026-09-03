@@ -1,0 +1,12 @@
+{
+  "contractVersion": "1.0",
+  "sessionId": "2d7e8f4a-1c9b-46f3-a5e8-93d2c7b0e615",
+  "projectId": "5f0c9d8e-3a47-4b21-9f6a-8c2d1e4b7a30",
+  "intent": "AS_BUILT",
+  "assuranceProfile": "HIGH_ASSURANCE",
+  "status": "IN_PROGRESS",
+  "createdAt": "2026-09-03T07:05:00Z",
+  "updatedAt": "2026-09-03T07:45:00Z",
+  "operatorRef": "user-7f3k",
+  "notes": "Mezzanine south-east quadrant; steel connections need close-range photo passes."
+}

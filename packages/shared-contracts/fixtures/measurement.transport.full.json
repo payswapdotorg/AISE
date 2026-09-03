@@ -1,0 +1,11 @@
+{
+  "kind": "measurement",
+  "value": 2.417,
+  "unit": "m",
+  "uncertainty": {
+    "plusMinus": 0.008,
+    "unit": "m",
+    "type": "absolute_tolerance"
+  },
+  "method": "laser_distance_meter"
+}

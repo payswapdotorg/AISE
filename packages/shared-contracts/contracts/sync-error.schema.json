@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.aise.example/1.0/sync-error.schema.json",
+  "title": "AISE synchronization error envelope (v1.0)",
+  "description": "Error semantics for capture synchronization. The retryable flag is authoritative data: clients MUST base retry decisions on it, not on the code string, so new error codes cannot change client behaviour implicitly. message is advisory and MUST NOT be parsed. details is structured, code-specific payload (e.g. supportedVersions for CONTRACT_VERSION_UNSUPPORTED). Codes not in this enum may appear in future MINOR versions; unknown codes must be treated as opaque failures whose retryability is still taken from the retryable flag.",
+  "type": "object",
+  "required": ["contractVersion", "code", "message", "retryable"],
+  "properties": {
+    "contractVersion": { "const": "1.0" },
+    "code": {
+      "type": "string",
+      "enum": [
+        "AUTH_REQUIRED",
+        "FORBIDDEN",
+        "PROJECT_NOT_FOUND",
+        "SESSION_NOT_FOUND",
+        "ASSET_NOT_FOUND",
+        "VALIDATION_FAILED",
+        "CHECKSUM_MISMATCH",
+        "PAYLOAD_TOO_LARGE",
+        "IDEMPOTENCY_CONFLICT",
+        "RATE_LIMITED",
+        "SERVER_ERROR",
+        "SERVICE_UNAVAILABLE",
+        "CONTRACT_VERSION_UNSUPPORTED"
+      ],
+      "title": "Machine-readable synchronization error code"
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "title": "Advisory human-readable message (MUST NOT be parsed by clients)"
+    },
+    "retryable": {
+      "type": "boolean",
+      "title": "Authoritative retry decision (data, not derived from code)"
+    },
+    "retryAfterMs": {
+      "type": "integer",
+      "minimum": 0,
+      "title": "Suggested minimum wait before retry (SHOULD be present when retryable)"
+    },
+    "details": {
+      "type": "object",
+      "title": "Structured, code-specific details",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,10 @@
+{
+  "contractVersion": "1.0",
+  "code": "CONTRACT_VERSION_UNSUPPORTED",
+  "message": "Requested contract version is not supported by this gateway.",
+  "retryable": false,
+  "details": {
+    "requestedVersion": "2.0",
+    "supportedVersions": ["1.0"]
+  }
+}

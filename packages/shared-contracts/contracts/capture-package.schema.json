@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.aise.example/1.0/capture-package.schema.json",
+  "title": "AISE capture package manifest (v1.0)",
+  "description": "Self-describing manifest of the assets inside one capture package. The manifest travels with (or ahead of) the package bytes so the capture gateway and the Android client agree on exactly what the package contains before transfer. Asset types cover the architecture's multimodal field evidence (photos, video, depth, metadata, sketches, voice notes, documents). Device-specific sensing stays behind device adapters; acquisition metadata is device-neutral (architecture-lock 4).",
+  "type": "object",
+  "required": [
+    "contractVersion",
+    "packageId",
+    "sessionId",
+    "projectId",
+    "createdAt",
+    "checksumAlgorithm",
+    "assets"
+  ],
+  "properties": {
+    "contractVersion": { "const": "1.0" },
+    "packageId": { "$ref": "common.schema.json#/$defs/uuid" },
+    "sessionId": { "$ref": "common.schema.json#/$defs/uuid" },
+    "projectId": { "$ref": "common.schema.json#/$defs/uuid" },
+    "createdAt": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "checksumAlgorithm": {
+      "const": "sha256",
+      "title": "Package checksum algorithm (fixed for v1.0)"
+    },
+    "totalByteSize": {
+      "type": "integer",
+      "minimum": 1,
+      "title": "Sum of asset byteSize values (cross-checked by semantic validation)"
+    },
+    "assets": {
+      "type": "array",
+      "minItems": 1,
+      "title": "Assets contained in this package",
+      "items": { "$ref": "#/$defs/packageAsset" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "packageAsset": {
+      "type": "object",
+      "title": "One logical capture asset",
+      "required": [
+        "assetId",
+        "assetType",
+        "relativePath",
+        "contentHash",
+        "byteSize",
+        "acquisition"
+      ],
+      "properties": {
+        "assetId": { "$ref": "common.schema.json#/$defs/uuid" },
+        "assetType": {
+          "type": "string",
+          "enum": [
+            "PHOTO",
+            "VIDEO",
+            "DEPTH",
+            "METADATA",
+            "SKETCH",
+            "VOICE",
+            "DOCUMENT"
+          ],
+          "title": "Logical asset type (device- and vendor-neutral)"
+        },
+        "relativePath": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*\\.\\.)[A-Za-z0-9._\\-/]+$",
+          "maxLength": 256,
+          "title": "Package-relative path (no leading slash, no parent traversal)"
+        },
+        "contentHash": { "$ref": "common.schema.json#/$defs/contentHash" },
+        "byteSize": {
+          "type": "integer",
+          "minimum": 1,
+          "title": "Exact byte size of the asset payload"
+        },
+        "mimeType": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 127,
+          "title": "Optional IANA media type of the asset payload"
+        },
+        "acquisition": { "$ref": "#/$defs/acquisitionMetadata" }
+      },
+      "additionalProperties": false
+    },
+    "acquisitionMetadata": {
+      "type": "object",
+      "title": "Device-neutral acquisition metadata",
+      "description": "Records source-device and acquisition context sufficient for reproducibility where available (architecture-lock 4). All device-specific details are opaque references; no platform-specific fields exist here.",
+      "required": ["capturedAt"],
+      "properties": {
+        "capturedAt": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "deviceRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "title": "Opaque device reference (stable per physical device)"
+        },
+        "sensorRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "title": "Opaque sensor/camera reference on the device (e.g. rear_wide_camera, depth_0)"
+        },
+        "geolocation": { "$ref": "#/$defs/geolocation" },
+        "orientation": { "$ref": "#/$defs/orientation" },
+        "notes": {
+          "type": "string",
+          "maxLength": 2000,
+          "title": "Free-form acquisition notes"
+        }
+      },
+      "additionalProperties": false
+    },
+    "geolocation": {
+      "type": "object",
+      "title": "Geodetic position at capture time",
+      "required": ["latitude", "longitude"],
+      "properties": {
+        "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+        "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+        "altitudeM": {
+          "type": "number",
+          "title": "Altitude in metres (device datum is producer-defined)"
+        },
+        "accuracyM": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "title": "Horizontal accuracy radius in metres"
+        }
+      },
+      "additionalProperties": false
+    },
+    "orientation": {
+      "type": "object",
+      "title": "Device orientation at capture time",
+      "required": ["quaternion"],
+      "properties": {
+        "quaternion": {
+          "type": "object",
+          "title": "Rotation quaternion (x, y, z, w)",
+          "required": ["x", "y", "z", "w"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" },
+            "z": { "type": "number" },
+            "w": { "type": "number" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

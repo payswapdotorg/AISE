@@ -1,0 +1,58 @@
+{
+  "contractVersion": "1.0",
+  "packageId": "9a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+  "sessionId": "2d7e8f4a-1c9b-46f3-a5e8-93d2c7b0e615",
+  "projectId": "5f0c9d8e-3a47-4b21-9f6a-8c2d1e4b7a30",
+  "createdAt": "2026-09-03T07:40:00Z",
+  "checksumAlgorithm": "sha256",
+  "totalByteSize": 23267845,
+  "assets": [
+    {
+      "assetId": "1e2f3a4b-5c6d-4e7f-8a9b-0c1d2e3f4a5b",
+      "assetType": "PHOTO",
+      "relativePath": "photos/IMG_0001.jpg",
+      "contentHash": "3f4ececbf6ee049d9107995d0c333cadc98c1906335faa4ae635ec82820809ea",
+      "byteSize": 4825311,
+      "mimeType": "image/jpeg",
+      "acquisition": {
+        "capturedAt": "2026-09-03T07:12:31Z",
+        "deviceRef": "device-a1b2c3",
+        "sensorRef": "rear_wide_camera",
+        "geolocation": {
+          "latitude": 5.6037,
+          "longitude": -0.187,
+          "altitudeM": 76,
+          "accuracyM": 4.5
+        },
+        "orientation": {
+          "quaternion": { "x": 0.01, "y": -0.02, "z": 0.005, "w": 0.9996 }
+        },
+        "notes": "Close-range pass on south-east connection plate."
+      }
+    },
+    {
+      "assetId": "6f7a8b9c-0d1e-4f2a-9b3c-4d5e6f7a8b9c",
+      "assetType": "DEPTH",
+      "relativePath": "depth/scan_0001.bin",
+      "contentHash": "f7a28a39396c14dfbb1d56edca817fe7e1a234ba1c1fc4233a060db4a7f0c24d",
+      "byteSize": 18442022,
+      "mimeType": "application/octet-stream",
+      "acquisition": {
+        "capturedAt": "2026-09-03T07:13:02Z",
+        "deviceRef": "device-a1b2c3",
+        "sensorRef": "depth_0"
+      }
+    },
+    {
+      "assetId": "a7b8c9d0-e1f2-4a3b-8c4d-5e6f7a8b9c0d",
+      "assetType": "METADATA",
+      "relativePath": "metadata/session-metadata.json",
+      "contentHash": "7baf0ce393b4a63a483ed7e2328ba4324cd223d94340839d18ce40c96a6b0e7e",
+      "byteSize": 512,
+      "mimeType": "application/json",
+      "acquisition": {
+        "capturedAt": "2026-09-03T07:40:00Z"
+      }
+    }
+  ]
+}

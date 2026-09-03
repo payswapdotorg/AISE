@@ -6,7 +6,8 @@
   "type": "module",
   "dependencies": {
     "@aise/backend-config": "*",
-    "@aise/backend-logging": "*"
+    "@aise/backend-logging": "*",
+    "@aise/shared-contracts": "*"
   },
   "scripts": {
     "dev": "tsx src/main.ts",
