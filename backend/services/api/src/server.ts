@@ -2,6 +2,9 @@ import { createServer, type Server } from "node:http";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { AiseConfig } from "@aise/backend-config";
 import type { Logger } from "@aise/backend-logging";
+import { handleIngestionRequest } from "./ingestion/router.js";
+import { createInMemoryCaptureStore, type CaptureStore } from "./ingestion/store.js";
+import type { IngestionLimits } from "./ingestion/limits.js";
 
 export interface ApiAddress {
   readonly host: string;
@@ -23,6 +26,13 @@ export interface ApiServer {
 export interface ApiServerDeps {
   readonly config: AiseConfig;
   readonly logger: Logger;
+  /**
+   * Capture ingestion store (AISE-004). Defaults to a fresh
+   * process-local in-memory store per server instance.
+   */
+  readonly store?: CaptureStore;
+  /** Overrides the documented ingestion size limits (tests). */
+  readonly limits?: IngestionLimits;
 }
 
 function sendJson(res: ServerResponse, statusCode: number, body: unknown): void {
@@ -41,13 +51,16 @@ function errorMessage(error: unknown): string {
 /**
  * Creates the AISE API service HTTP server.
  *
- * Foundation routes only (health/readiness + JSON 404/405 semantics); every
- * request is logged as a structured `http.request` record. Handlers are
- * error-isolated: an unexpected failure returns `500 {"error":"internal"}`
- * without crashing the process.
+ * Foundation routes (health/readiness, structured 404/405) plus the
+ * AISE-004 capture ingestion surface under `/v1`. Every request is
+ * logged as a structured `http.request` record. Handlers are
+ * error-isolated: an unexpected failure returns a contract-shaped
+ * 500 sync-error envelope without crashing the process.
  */
 export function createApiServer(deps: ApiServerDeps): ApiServer {
   const { config, logger } = deps;
+  const store = deps.store ?? createInMemoryCaptureStore();
+  const limits = deps.limits;
   const startedAtMs = Date.now();
 
   const server: Server = createServer((req, res) => {
@@ -70,8 +83,12 @@ export function createApiServer(deps: ApiServerDeps): ApiServer {
             uptimeSec: roundToMilliSeconds((Date.now() - startedAtMs) / 1000),
           });
         } else {
-          sendJson(res, 200, { service: "api", status: "ready" });
+          sendJson(res, 200, { service: "api", status: "ready", captureStore: store.kind });
         }
+        return;
+      }
+      if (path === "/v1" || path.startsWith("/v1/")) {
+        await handleIngestionRequest(req, res, { store, logger, ...(limits !== undefined ? { limits } : {}) });
         return;
       }
       sendJson(res, 404, { error: "not_found", path });
