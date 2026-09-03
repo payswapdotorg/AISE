@@ -26,14 +26,14 @@
     "protocol": "spec/development-protocol.md"
   },
   "workItems": [
-    {"id":"AISE-001","owner":"ZAI","status":"FINALIZED","dependencies":[],"assurance":"STANDARD","surfaces":["root","backend","packages","CI"]},
-    {"id":"AISE-002","owner":"GEMINI","status":"IMPLEMENTING","dependencies":[],"assurance":"STANDARD","surfaces":["apps/android/**","Android CI"]},
-    {"id":"AISE-003","owner":"SHARED","primaryAgent":"ZAI","secondaryAgent":"GEMINI","status":"blocked","dependencies":["AISE-001","AISE-002"],"assurance":"HIGH_ASSURANCE","surfaces":["packages/shared-contracts/**"]},
+    {"id":"AISE-001","owner":"ZAI","status":"finalized","dependencies":[],"assurance":"STANDARD","surfaces":["root","backend","packages","CI"]},
+    {"id":"AISE-002","owner":"GEMINI","status":"finalized","dependencies":[],"assurance":"STANDARD","surfaces":["apps/android/**","Android CI"]},
+    {"id":"AISE-003","owner":"SHARED","primaryAgent":"ZAI","secondaryAgent":"GEMINI","status":"activated","dependencies":["AISE-001","AISE-002"],"assurance":"HIGH_ASSURANCE","surfaces":["packages/shared-contracts/**"]},
     {"id":"AISE-004","owner":"ZAI","status":"blocked","dependencies":["AISE-001","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["backend capture/API"]},
     {"id":"AISE-005","owner":"GEMINI","status":"blocked","dependencies":["AISE-002","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/capture/**"]}
   ],
   "execution": {
-    "activeHandoffs": ["AISE-002"],
+    "activeHandoffs": ["AISE-003"],
     "parallelEligible": [],
     "mergeGate": "architect",
     "selfMergeForbidden": true
