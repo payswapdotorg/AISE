@@ -1,8 +1,8 @@
 {
-  "name": "@aise/backend-geometry",
+  "name": "@aise/backend-semantics",
   "version": "0.0.0",
   "private": true,
-  "description": "AISE geometry measurement primitives — deterministic plane/cylinder fitting, distances, angles, uncertainty representation (AISE-009)",
+  "description": "AISE architectural object extraction — deterministic wall/floor/ceiling/door/window recognition and structured geometry (AISE-010)",
   "type": "module",
   "exports": {
     ".": {
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@aise/backend-config": "*",
+    "@aise/backend-geometry": "*",
     "@aise/backend-logging": "*",
     "@aise/shared-contracts": "*"
   },
