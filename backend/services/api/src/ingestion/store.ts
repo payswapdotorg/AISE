@@ -19,15 +19,15 @@
  * store operation; retries and new keys for an already-committed
  * asset leave the original record untouched.
  */
-import type {
-  AcquisitionMetadata,
-  CapturePackage,
-  CaptureSession,
-  PackageAsset,
-  Project,
-} from "@aise/shared-contracts";
+import type { AcquisitionMetadata, Project } from "@aise/shared-contracts";
+import type { ReaderCapturePackage, ReaderCaptureSession, ReaderPackageAsset } from "./validation.js";
 
-/** Immutable raw-evidence record for one committed logical upload. */
+/**
+ * Immutable raw-evidence record for one committed logical upload.
+ * `acquisition` is enum-free in v1.0, so the strict contract type is
+ * exact here; only session/package envelopes carry enum surfaces that
+ * can hold the cross-MINOR reader sentinel.
+ */
 export interface UploadRecord {
   readonly sessionId: string;
   readonly assetId: string;
@@ -74,7 +74,7 @@ export interface CommitUploadResult {
 }
 
 export interface DeclaredAsset {
-  readonly asset: PackageAsset;
+  readonly asset: ReaderPackageAsset;
   readonly packageId: string;
 }
 
@@ -88,13 +88,13 @@ export interface CaptureStore {
   getProject(projectId: string): Project | undefined;
   createProject(project: Project): CreateResult;
 
-  getSession(sessionId: string): CaptureSession | undefined;
-  createSession(session: CaptureSession): CreateResult;
+  getSession(sessionId: string): ReaderCaptureSession | undefined;
+  createSession(session: ReaderCaptureSession): CreateResult;
   /** Replaces the stored session envelope (identity fields validated by the caller). */
-  replaceSession(session: CaptureSession): void;
+  replaceSession(session: ReaderCaptureSession): void;
 
-  getPackage(packageId: string): CapturePackage | undefined;
-  registerPackage(pkg: CapturePackage): RegisterPackageResult;
+  getPackage(packageId: string): ReaderCapturePackage | undefined;
+  registerPackage(pkg: ReaderCapturePackage): RegisterPackageResult;
   /** Finds an asset declaration for a session across all registered packages. */
   findDeclaredAsset(sessionId: string, assetId: string): DeclaredAsset | undefined;
 
@@ -147,8 +147,8 @@ export function createInMemoryCaptureStore(
   options: InMemoryCaptureStoreOptions = {},
 ): CaptureStore {
   const projects = new Map<string, Project>();
-  const sessions = new Map<string, CaptureSession>();
-  const packages = new Map<string, CapturePackage>();
+  const sessions = new Map<string, ReaderCaptureSession>();
+  const packages = new Map<string, ReaderCapturePackage>();
   /** sessionId → ordered package ids registered for that session. */
   const sessionPackages = new Map<string, string[]>();
   /** sessionId → assetId → declaring packageId. */

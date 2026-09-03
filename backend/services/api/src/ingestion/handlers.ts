@@ -12,9 +12,17 @@
  * idempotency rules"):
  * - same logical upload key + same content hash  → `DUPLICATE` with
  *   `duplicateOf` identifying the original asset (never a second
- *   logical asset, never a mutation of the committed record);
+ *   logical asset, never a mutation of the committed record).
+ *   `DUPLICATE` is reserved for the idempotent retry of the SAME
+ *   logical upload key — it is never used for anything else;
  * - same key + different content hash → `IDEMPOTENCY_CONFLICT`,
  *   non-retryable (enforced structurally in errors.ts);
+ * - a NEW key for an already-committed logical asset is rejected
+ *   fail-closed (`409 VALIDATION_FAILED`, non-retryable) with the
+ *   committed upload's reconciliation details — the contract has no
+ *   success semantics for a new logical upload claiming an asset
+ *   identity that is already committed, and reusing `DUPLICATE`
+ *   would silently broaden it (architect review, PR #7);
  * - retry decisions come only from `retryable`/`retryAfterMs` data;
  * - a failed upload consumes nothing: only committed uploads are
  *   indexed by idempotency key, so a checksum failure leaves the key
@@ -27,15 +35,17 @@ import { createHash } from "node:crypto";
 import type { Logger } from "@aise/backend-logging";
 import {
   CONTRACT_VERSION,
+  UNKNOWN_ENUM,
   checkCapturePackageSemantics,
-  type CaptureSession,
-  type Project,
+  type CapturePackage,
+  type SessionStatus,
   type UploadRequest,
   type UploadResult,
 } from "@aise/shared-contracts";
 import { IngestionError } from "./errors.js";
 import { DEFAULT_INGESTION_LIMITS, type IngestionLimits } from "./limits.js";
 import type { CaptureStore, DeclaredAsset, UploadRecord } from "./store.js";
+import type { ReaderCaptureSession } from "./validation.js";
 import {
   readPackageEnvelope,
   readProjectEnvelope,
@@ -56,15 +66,27 @@ export interface IngestionResponse {
 }
 
 /** Session lifecycle order for transition validation. */
-const SESSION_STATUS_ORDER: Readonly<Record<CaptureSession["status"], number>> = {
+const SESSION_STATUS_ORDER: Readonly<Record<SessionStatus, number>> = {
   DRAFT: 0,
   READY: 1,
   IN_PROGRESS: 2,
   COMPLETED: 3,
 };
 
+/**
+ * The lifecycle position of a session status, or undefined when the
+ * status is the cross-MINOR reader sentinel (a newer-MINOR status
+ * unknown to this gateway). Transitions involving such a status
+ * cannot be evaluated and fail closed — the sentinel erases the
+ * distinction between different unknown values, so accepting any
+ * transition would risk authorizing a backwards one.
+ */
+function sessionStatusOrder(status: ReaderCaptureSession["status"]): number | undefined {
+  return status === UNKNOWN_ENUM ? undefined : SESSION_STATUS_ORDER[status];
+}
+
 /** Immutable session identity fields. */
-const SESSION_IMMUTABLE_FIELDS: readonly (keyof CaptureSession)[] = [
+const SESSION_IMMUTABLE_FIELDS: readonly (keyof ReaderCaptureSession)[] = [
   "projectId",
   "intent",
   "assuranceProfile",
@@ -96,7 +118,7 @@ function sortJson(value: unknown): unknown {
 
 /** POST /v1/projects — register a project identity. */
 export function createProject(deps: HandlerDeps, raw: unknown): IngestionResponse {
-  const project: Project = readProjectEnvelope(raw);
+  const project = readProjectEnvelope(raw);
   const result = deps.store.createProject(project);
   if (result.status === "exists_conflict") {
     throw new IngestionError(
@@ -197,7 +219,25 @@ export function updateSession(
     );
   }
 
-  if (SESSION_STATUS_ORDER[session.status] < SESSION_STATUS_ORDER[existing.status]) {
+  const existingOrder = sessionStatusOrder(existing.status);
+  const nextOrder = sessionStatusOrder(session.status);
+  if (existingOrder === undefined || nextOrder === undefined) {
+    // A status unknown to this reader cannot be transition-evaluated
+    // (the sentinel is ambiguous): fail closed, no state change.
+    throw new IngestionError(
+      "VALIDATION_FAILED",
+      "capture session status cannot be evaluated: the status value is unknown to this contract version",
+      {
+        details: {
+          from: existing.status,
+          to: session.status,
+          reason: "unknown_status_value",
+        },
+      },
+    );
+  }
+
+  if (nextOrder < existingOrder) {
     throw new IngestionError(
       "VALIDATION_FAILED",
       `capture session status cannot transition backwards from ${existing.status} to ${session.status}`,
@@ -217,7 +257,11 @@ export function updateSession(
 export function registerPackage(deps: HandlerDeps, raw: unknown): IngestionResponse {
   const pkg = readPackageEnvelope(raw);
 
-  const semanticIssues = checkCapturePackageSemantics(pkg);
+  // The semantic checker examines identity/path/byte/algorithm fields
+  // only (its source never branches on assetType), so the reader type
+  // — which widens exactly assetType with the cross-MINOR sentinel —
+  // is safe to narrow here for the checker's signature.
+  const semanticIssues = checkCapturePackageSemantics(pkg as unknown as CapturePackage);
   if (semanticIssues.length > 0) {
     throw new IngestionError(
       "VALIDATION_FAILED",
@@ -420,26 +464,41 @@ export function uploadAsset(
 
   const byAsset = store.findUploadByAsset(envelope.sessionId, envelope.assetId);
   if (byAsset !== undefined) {
-    // A new key for an already-committed asset: the gateway answer is
-    // a success DUPLICATE identifying the original logical asset.
-    // Rationale (documented decision): the outcome vocabulary has two
-    // success outcomes; this path must not create a second logical
-    // asset and must not mutate the immutable evidence record.
-    deps.logger.info("ingestion.upload_duplicate", {
+    // A NEW idempotency key claiming an already-committed logical
+    // asset. The finalized contract defines DUPLICATE strictly for
+    // the idempotent retry of the same logical upload key; answering
+    // DUPLICATE here would silently broaden that success semantics
+    // and make an unrelated logical upload look like a retry
+    // (architect review, PR #7). The contract has no success
+    // semantics for this case, so the gateway fails closed with an
+    // existing failure code (VALIDATION_FAILED, HTTP 409 — the same
+    // committed-state-conflict family as resource re-registration
+    // and cross-package asset re-declaration) and returns the
+    // committed upload's reconciliation details so the client can
+    // resolve the ambiguity: no second logical asset, no mutation,
+    // no state change, never retryable.
+    deps.logger.warn("ingestion.upload_rejected_committed_asset", {
       sessionId: envelope.sessionId,
       assetId: envelope.assetId,
       idempotencyKey: envelope.idempotencyKey,
       originalIdempotencyKey: byAsset.idempotencyKey,
     });
-    const body: UploadResult = {
-      contractVersion: CONTRACT_VERSION,
-      assetId: envelope.assetId,
-      outcome: "DUPLICATE",
-      receivedHash: byAsset.receivedHash,
-      duplicateOf: byAsset.assetId,
-      note: `asset already received under idempotency key ${byAsset.idempotencyKey}`,
-    };
-    return { status: 200, body };
+    throw new IngestionError(
+      "VALIDATION_FAILED",
+      `asset ${envelope.assetId} is already committed under a different idempotency key; retry the original logical upload with its key instead`,
+      {
+        status: 409,
+        details: {
+          reason: "asset_already_committed",
+          sessionId: envelope.sessionId,
+          assetId: envelope.assetId,
+          originalIdempotencyKey: byAsset.idempotencyKey,
+          originalPackageId: byAsset.packageId,
+          originalReceivedAt: byAsset.receivedAt,
+          originalReceivedHash: byAsset.receivedHash,
+        },
+      },
+    );
   }
 
   const record: UploadRecord = {
@@ -457,18 +516,39 @@ export function uploadAsset(
   };
   const commit = store.commitUpload(record);
   if (commit.status === "already_present") {
-    // Defensive: the pre-checks above make this unreachable on the
-    // single-threaded loop; treat any occurrence as a duplicate.
+    // Defensive: the pre-checks above (key conflict, committed-asset
+    // rejection) make this unreachable on the single-threaded loop.
+    // Should it ever trigger, fail closed with the same conflict
+    // semantics instead of fabricating a success outcome.
     const existing = store.findUploadByAsset(envelope.sessionId, envelope.assetId);
-    const body: UploadResult = {
-      contractVersion: CONTRACT_VERSION,
+    if (existing === undefined) {
+      throw new IngestionError(
+        "SERVER_ERROR",
+        "commit reported an already-present upload that cannot be found",
+      );
+    }
+    deps.logger.warn("ingestion.upload_rejected_committed_asset", {
+      sessionId: envelope.sessionId,
       assetId: envelope.assetId,
-      outcome: "DUPLICATE",
-      receivedHash: existing?.receivedHash ?? receivedHash,
-      duplicateOf: existing?.assetId ?? envelope.assetId,
-      note: "logical upload was already present",
-    };
-    return { status: 200, body };
+      idempotencyKey: envelope.idempotencyKey,
+      originalIdempotencyKey: existing.idempotencyKey,
+    });
+    throw new IngestionError(
+      "VALIDATION_FAILED",
+      `asset ${envelope.assetId} is already committed under a different idempotency key; retry the original logical upload with its key instead`,
+      {
+        status: 409,
+        details: {
+          reason: "asset_already_committed",
+          sessionId: envelope.sessionId,
+          assetId: envelope.assetId,
+          originalIdempotencyKey: existing.idempotencyKey,
+          originalPackageId: existing.packageId,
+          originalReceivedAt: existing.receivedAt,
+          originalReceivedHash: existing.receivedHash,
+        },
+      },
+    );
   }
 
   deps.logger.info("ingestion.upload_accepted", {

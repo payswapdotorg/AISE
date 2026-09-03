@@ -46,8 +46,13 @@ AISE-003 sync-error envelope:
 
 1. **Envelope version dispatch** — cross-MAJOR versions are rejected
    with `CONTRACT_VERSION_UNSUPPORTED` + `details.supportedVersions`;
-   newer same-MAJOR minors are read tolerantly (unknown fields
-   dropped, v1.0 subset strict-validated);
+   newer same-MAJOR minors are read tolerantly per the finalized
+   AISE-003 reader obligation: unrecognized fields are dropped
+   **recursively** (top level, `assets[]`, `acquisition`,
+   `geolocation`, `orientation`, `quaternion`), unrecognized enum
+   values are mapped to the `unknown` reader sentinel (never coerced
+   onto an existing member), and the v1.0 subset is then validated
+   against a reader view of the canonical schemas (see below);
 2. **Envelope schema validation** — writer-strict v1.0 contracts
    (malformed payloads → `400 VALIDATION_FAILED` with
    `details.validationErrors`);
@@ -74,8 +79,10 @@ AISE-003 sync-error envelope:
    - retry with the same key/hash/asset → `200 UploadResult {
      outcome: "DUPLICATE", duplicateOf, receivedHash }` — a success,
      never a second logical asset, never a mutation;
-   - a *new* key for an already-committed asset → `200 DUPLICATE`
-     identifying the original asset (documented decision below);
+   - a *new* key for an already-committed asset → `409
+     VALIDATION_FAILED`, non-retryable, with the committed upload's
+     reconciliation details in `details` (documented decision
+     below);
    - **a failed upload consumes nothing**: only committed uploads are
      indexed by idempotency key, so a checksum failure leaves the key
      free for a corrected retry.
@@ -88,7 +95,8 @@ Every ingestion failure is an AISE-003 v1.0 `SyncError` envelope
 `details`. Retry decisions are data-driven (`retryable` /
 `retryAfterMs`), never message parsing. HTTP statuses: `400`
 malformed, `404` unknown project/session/asset, `409` conflicts
-(idempotency and resource re-registration with different content),
+(idempotency, resource re-registration with different content, and
+new-key claims on already-committed assets),
 `413` payload too large, `422` checksum mismatch, `500` internal
 (retryable).
 
@@ -113,14 +121,52 @@ preserve.
   so `UploadResult.receivedHash` (server-computed hash of stored
   bytes) is honest. Architecture §4.2 assigns this normalization to
   the capture gateway.
-- **New idempotency key for an already-committed asset → `DUPLICATE`**
-  — the contract defines DUPLICATE for the same key + same hash; a
-  new key for the same asset is outside that literal rule. The
-  gateway answers with a success DUPLICATE identifying the original
-  asset rather than inventing a new error code or mutating the
-  immutable record: no second logical asset is created and the client
-  can reconcile. Strict alternative (reject as conflict) is a one-line
-  change if review prefers it.
+- **New idempotency key for an already-committed asset → rejected
+  fail-closed (`409 VALIDATION_FAILED`, non-retryable)** — the
+  finalized contract reserves `DUPLICATE` strictly for the idempotent
+  retry of the same logical upload key, and `IDEMPOTENCY_CONFLICT`
+  for same-key/different-hash reuse; a new key claiming an
+  already-committed asset identity has no success semantics in the
+  contract, so the gateway must not answer it with `DUPLICATE`
+  (that would silently broaden the contract and make an unrelated
+  logical upload look like a retry — architect decision on PR #7).
+  It fails closed with the same committed-state-conflict semantics
+  as resource re-registration, and returns the committed upload's
+  reconciliation details (`details.originalIdempotencyKey`, the
+  original package, receipt time and hash) so the client can resolve
+  the ambiguity. No second logical asset, no mutation, no state
+  change. A regression test pins that this path never validates as
+  an upload-result envelope.
+- **Tolerant reading of newer-MINOR payloads (reader obligation)** —
+  `src/ingestion/validation.ts` projects newer same-MAJOR payloads
+  onto the v1.0 subset recursively (unknown fields dropped at every
+  nesting level), maps unrecognized enum values onto the `unknown`
+  reader sentinel with the canonical `tolerateEnumValue` helper
+  (never onto an existing member), and validates the result against
+  a *reader view* of the canonical schemas (`src/ingestion/
+  reader-view.ts`): the exact schema documents shipped by
+  `@aise/shared-contracts` (loaded through its public
+  `loadAllSchemas` API — no contract copy lives in this service)
+  with every enum vocabulary additionally admitting the sentinel,
+  which is the machine equivalent of the package's `EnumOrUnknown<T>`
+  type. `const` constraints are deliberately NOT widened (the
+  obligation covers unknown fields and unknown enum values only; a
+  checksum algorithm this gateway cannot verify fails closed). The
+  `uuid`/`date-time` formats are re-registered with patterns
+  equivalent to the shared reference regexes, as the package README
+  instructs non-package consumers to do; equivalence is pinned by
+  tests that route every canonical fixture through the reader view.
+  Consequences, documented:
+  - read-model echoes (POST/GET responses) of newer-MINOR envelopes
+    carry the sentinel for enum values unknown to v1.0 — the
+    cross-MINOR reader representation — and are stamped with the
+    v1.0 subset version. Echoing raw newer-MINOR envelopes instead
+    would emit envelopes this gateway cannot validate and is
+    deferred;
+  - session lifecycle transitions involving a sentinel status
+    cannot be evaluated (the sentinel is ambiguous between different
+    unknown values) and fail closed with
+    `details.reason: unknown_status_value`.
 - **Forward-only session status transitions** and immutable session
   identity fields — "maintain" without ambiguity; backwards
   transitions and identity drift are rejected fail-closed.
@@ -154,7 +200,8 @@ preserve.
 ## Verification
 
 ```bash
-npm test           # 88 tests: foundation server, contract consumer,
+npm test           # 108 tests: foundation server, contract consumer,
+                   # envelope readers (tolerant reading units),
                    # multipart parser units, store/error invariants,
                    # and the full HTTP-level ingestion evidence suite
 npm run typecheck  # strict TypeScript, no emit

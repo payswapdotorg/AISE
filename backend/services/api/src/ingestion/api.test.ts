@@ -11,6 +11,12 @@
  * - repeated identical uploads return DUPLICATE (with duplicateOf);
  * - same idempotency key + different content hash →
  *   IDEMPOTENCY_CONFLICT, fail-closed, non-retryable;
+ * - a new key for an already-committed asset is rejected
+ *   fail-closed and never answered as DUPLICATE (the contract
+ *   reserves DUPLICATE for same-key retries);
+ * - newer-MINOR (same-MAJOR) envelopes are read tolerantly:
+ *   unknown fields dropped recursively, unknown enum values mapped
+ *   to the reader sentinel, never coerced onto existing members;
  * - raw evidence metadata is preserved and immutable;
  * - session/project relationships stay consistent;
  * - invalid/ambiguous ingestion creates no state.
@@ -845,18 +851,60 @@ describe("idempotent upload semantics", () => {
     expect(error.details?.["reason"]).toBe("logical_asset_mismatch");
   });
 
-  it("a new key for a committed asset answers DUPLICATE without creating a second asset", async () => {
+  it("a new key for a committed asset is rejected fail-closed, never answered as DUPLICATE", async () => {
+    // The finalized AISE-003 contract reserves DUPLICATE for the
+    // idempotent retry of the SAME logical upload key. A new key
+    // claiming an already-committed asset identity is a different
+    // logical upload, so it must not produce a success outcome: the
+    // gateway fails closed with a conflict carrying the committed
+    // upload's reconciliation details (architect review, PR #7).
     const freshKey = uploadEnvelope(pkg, bytes, { idempotencyKey: randomUUID() });
-    const result = await expectUploadResult(
-      await postUpload(api.baseUrl, freshKey, bytes),
-      200,
-      "DUPLICATE",
-    );
-    expect(result).toMatchObject({ duplicateOf: envelope.assetId });
+    const response = await postUpload(api.baseUrl, freshKey, bytes);
+    const body = (await response.json()) as unknown;
+    const error = body as SyncError;
 
-    const response = await fetch(`${api.baseUrl}/v1/sessions/${session.sessionId}`);
-    const body = (await response.json()) as { ingestion: { acceptedAssets: number } };
-    expect(body.ingestion.acceptedAssets).toBe(1);
+    // The rejection is a contract-shaped sync error (read the body
+    // once; it is also reused for the upload-result regression pin).
+    const syncValidation = validateSyncError(error);
+    expect(syncValidation.errors, JSON.stringify(body)).toEqual([]);
+    expect(response.status).toBe(409);
+    expect(error.code).toBe("VALIDATION_FAILED");
+    expect(error.retryable).toBe(false);
+    expect(error.details).toMatchObject({
+      reason: "asset_already_committed",
+      assetId: envelope.assetId,
+      sessionId: session.sessionId,
+      originalIdempotencyKey: envelope.idempotencyKey,
+    });
+
+    // Regression pin for the semantic blocker: this path must never
+    // emit an upload-result envelope (success/DUPLICATE semantics).
+    expect(validateUploadResult(body).ok).toBe(false);
+
+    // No second logical asset and no mutation of the committed record.
+    const summaryResponse = await fetch(`${api.baseUrl}/v1/sessions/${session.sessionId}`);
+    const summary = (await summaryResponse.json()) as { ingestion: { acceptedAssets: number } };
+    expect(summary.ingestion.acceptedAssets).toBe(1);
+    const evidence = (await (
+      await fetch(
+        `${api.baseUrl}/v1/sessions/${session.sessionId}/assets/${envelope.assetId}`,
+      )
+    ).json()) as { idempotencyKey: string };
+    expect(evidence.idempotencyKey).toBe(envelope.idempotencyKey);
+
+    // The rejected new key is not consumed: it stays free for a
+    // genuinely new logical upload (fresh session/package/asset),
+    // proving the failed attempt created no idempotency-key state.
+    const secondBytes = Buffer.from("key-stays-free-evidence");
+    const secondChain = await registerChain(api, secondBytes);
+    const secondAttempt = uploadEnvelope(secondChain.pkg, secondBytes, {
+      idempotencyKey: freshKey.idempotencyKey,
+    });
+    await expectUploadResult(
+      await postUpload(api.baseUrl, secondAttempt, secondBytes),
+      201,
+      "ACCEPTED",
+    );
   });
 
   it("a checksum failure consumes neither the key nor the asset slot", async () => {
@@ -967,12 +1015,12 @@ describe("raw evidence metadata preservation", () => {
   it("the evidence record is immutable across retries, new keys and conflicts", async () => {
     const before = await (await fetch(evidenceUrl())).json();
 
-    await postUpload(api.baseUrl, envelope, bytes); // duplicate retry
+    await postUpload(api.baseUrl, envelope, bytes); // duplicate retry (200 DUPLICATE)
     await postUpload(
       api.baseUrl,
       uploadEnvelope(pkg, bytes, { idempotencyKey: randomUUID() }),
       bytes,
-    ); // new key
+    ); // new key: rejected (409), never a second logical asset
     await postUpload(
       api.baseUrl,
       uploadEnvelope(pkg, bytes, {
@@ -980,7 +1028,7 @@ describe("raw evidence metadata preservation", () => {
         contentHash: sha256Hex(Buffer.from("conflicting evidence bytes")),
       }),
       Buffer.from("conflicting evidence bytes"),
-    ); // conflict attempt
+    ); // conflict attempt (409 IDEMPOTENCY_CONFLICT)
 
     const after = await (await fetch(evidenceUrl())).json();
     expect(after).toEqual(before);
@@ -1054,5 +1102,213 @@ describe("capture session maintenance", () => {
       404,
       "SESSION_NOT_FOUND",
     );
+  });
+});
+
+describe("tolerant reading of newer-MINOR payloads (same MAJOR)", () => {
+  let api: TestApi;
+  let stop: () => Promise<void>;
+
+  beforeAll(async () => {
+    const started = await startApi();
+    api = started;
+    stop = started.stop;
+    await postJson(api.baseUrl, "/v1/projects", PROJECT_FIXTURE);
+  });
+  afterAll(async () => {
+    await stop();
+  });
+
+  it("accepts a 1.1 session with unknown fields and unknown enum values; the read model carries the reader sentinel", async () => {
+    // A newer-MINOR payload carries enum values outside the v1.0
+    // vocabulary, so it is deliberately NOT typed as CaptureSession.
+    const newer = {
+      ...clone(SESSION_FIXTURE),
+      sessionId: randomUUID(),
+      contractVersion: "1.1",
+      intent: "SPOT_CHECK", // a future v1.1 intent unknown to v1.0
+      assuranceProfile: "AUDIT_PROFILE",
+      status: "PAUSED",
+      futureSessionField: "ignored-by-v1.0-reader",
+    };
+    const response = await postJson(api.baseUrl, "/v1/sessions", newer);
+    expect(response.status).toBe(201);
+    const echo = (await response.json()) as Record<string, unknown>;
+
+    // Unknown fields dropped; unknown enum values mapped to the
+    // documented reader sentinel `unknown` — never coerced onto an
+    // existing member; contractVersion read as the v1.0 subset.
+    expect(echo["futureSessionField"]).toBeUndefined();
+    expect(echo["intent"]).toBe("unknown");
+    expect(echo["assuranceProfile"]).toBe("unknown");
+    expect(echo["status"]).toBe("unknown");
+    expect(echo["contractVersion"]).toBe("1.0");
+    expect(echo["sessionId"]).toBe(newer.sessionId);
+
+    // The read model round-trips the same projection.
+    const read = await (await fetch(`${api.baseUrl}/v1/sessions/${newer.sessionId}`)).json();
+    expect((read as { session: Record<string, unknown> }).session).toEqual(echo);
+  });
+
+  it("preserves known enum members through the tolerant path", async () => {
+    const newer: CaptureSession = {
+      ...clone(SESSION_FIXTURE),
+      sessionId: randomUUID(),
+      contractVersion: "1.1",
+    };
+    const response = await postJson(api.baseUrl, "/v1/sessions", newer);
+    expect(response.status).toBe(201);
+    const echo = (await response.json()) as Record<string, unknown>;
+    // v1.0 members survive the projection unchanged (the enum
+    // vocabularies are derived from the canonical schemas, so a
+    // member can never be mistaken for an unknown value).
+    expect(echo["intent"]).toBe("AS_BUILT");
+    expect(echo["assuranceProfile"]).toBe("HIGH_ASSURANCE");
+    expect(echo["status"]).toBe("IN_PROGRESS");
+  });
+
+  it("accepts a 1.1 manifest with unknown nested fields at every level; the echo drops them all", async () => {
+    const bytes = Buffer.from("newer-minor-nested-evidence");
+    const sessionId = randomUUID();
+    const base = consistentPackage(bytes, sessionId);
+    const session: CaptureSession = { ...clone(SESSION_FIXTURE), sessionId };
+    expect((await postJson(api.baseUrl, "/v1/sessions", session)).status).toBe(201);
+
+    const newer = base as unknown as Record<string, unknown>;
+    newer["contractVersion"] = "1.1";
+    newer["futurePackageField"] = "ignored";
+    const asset = (base.assets[0] as unknown as Record<string, unknown>);
+    asset["futureAssetField"] = "ignored";
+    asset["assetType"] = "THERMAL"; // unknown to v1.0
+    const acquisition = asset["acquisition"] as Record<string, unknown>;
+    acquisition["futureAcquisitionField"] = "ignored";
+    (acquisition["geolocation"] as Record<string, unknown>)["futureGeolocationField"] = "ignored";
+    (acquisition["orientation"] as Record<string, unknown>)["futureOrientationField"] = "ignored";
+    (
+      (acquisition["orientation"] as Record<string, unknown>)["quaternion"] as Record<string, unknown>
+    )["futureQuaternionField"] = "ignored";
+
+    const response = await postJson(api.baseUrl, "/v1/packages", newer);
+    expect(response.status).toBe(201);
+    const echo = (await response.json()) as Record<string, unknown>;
+    const echoedAssets = echo["assets"] as Array<Record<string, unknown>>;
+
+    expect(echo["contractVersion"]).toBe("1.0");
+    const echoedAsset = echoedAssets[0]!;
+    const echoedAcquisition = echoedAsset["acquisition"] as Record<string, unknown>;
+
+    // Unknown fields are dropped at EVERY nesting level — top level,
+    // asset, acquisition, geolocation, orientation and quaternion.
+    expect(echo["futurePackageField"]).toBeUndefined();
+    expect(echoedAsset["futureAssetField"]).toBeUndefined();
+    expect(echoedAcquisition["futureAcquisitionField"]).toBeUndefined();
+    expect((echoedAcquisition["geolocation"] as Record<string, unknown>)["futureGeolocationField"]).toBeUndefined();
+    expect((echoedAcquisition["orientation"] as Record<string, unknown>)["futureOrientationField"]).toBeUndefined();
+    expect(
+      ((echoedAcquisition["orientation"] as Record<string, unknown>)["quaternion"] as Record<string, unknown>)[
+        "futureQuaternionField"
+      ],
+    ).toBeUndefined();
+
+    // Known nested evidence values are preserved verbatim…
+    const geolocation = echoedAcquisition["geolocation"] as Record<string, number>;
+    expect(geolocation["latitude"]).toBe(5.6037);
+    const quaternion = (echoedAcquisition["orientation"] as Record<string, unknown>)["quaternion"] as Record<
+      string,
+      number
+    >;
+    expect(quaternion["w"]).toBe(0.9996);
+    // …and the unknown assetType is the reader sentinel, never a member.
+    expect(echoedAsset["assetType"]).toBe("unknown");
+    expect(echoedAssets[1]!["assetType"]).toBe("DEPTH");
+  });
+
+  it("still rejects malformed known fields inside newer-MINOR payloads (tolerant is not lax)", async () => {
+    const newer: CaptureSession = {
+      ...clone(SESSION_FIXTURE),
+      sessionId: randomUUID(),
+      contractVersion: "1.1",
+      projectId: "not-a-uuid",
+    };
+    const error = await expectSyncError(
+      await postJson(api.baseUrl, "/v1/sessions", newer),
+      400,
+      "VALIDATION_FAILED",
+    );
+    expect(Array.isArray(error.details?.["validationErrors"])).toBe(true);
+  });
+
+  it("rejects non-string enum values in newer-MINOR payloads (only strings map to the sentinel)", async () => {
+    const newer = {
+      ...clone(SESSION_FIXTURE),
+      sessionId: randomUUID(),
+      contractVersion: "1.1",
+      intent: 42,
+    };
+    await expectSyncError(
+      await postJson(api.baseUrl, "/v1/sessions", newer),
+      400,
+      "VALIDATION_FAILED",
+    );
+  });
+
+  it("rejects a newer-MINOR manifest missing a required v1.0 field", async () => {
+    const bytes = Buffer.from("newer-minor-missing-field-evidence");
+    const sessionId = randomUUID();
+    const base = consistentPackage(bytes, sessionId);
+    const session: CaptureSession = { ...clone(SESSION_FIXTURE), sessionId };
+    expect((await postJson(api.baseUrl, "/v1/sessions", session)).status).toBe(201);
+
+    const newer = base as unknown as Record<string, unknown>;
+    newer["contractVersion"] = "1.1";
+    delete (newer["assets"] as Array<Record<string, unknown>>)[0]!["contentHash"];
+
+    await expectSyncError(
+      await postJson(api.baseUrl, "/v1/packages", newer),
+      400,
+      "VALIDATION_FAILED",
+    );
+  });
+
+  it("fails closed on session updates whose status the reader cannot evaluate (sentinel)", async () => {
+    // The 1.1 status "PAUSED" is unknown to v1.0, so this payload is
+    // deliberately NOT typed as CaptureSession.
+    const unknownStatus = {
+      ...clone(SESSION_FIXTURE),
+      sessionId: randomUUID(),
+      contractVersion: "1.1",
+      status: "PAUSED", // unknown to v1.0 → read as the sentinel
+    };
+    expect((await postJson(api.baseUrl, "/v1/sessions", unknownStatus)).status).toBe(201);
+
+    // Updating with the same newer-MINOR envelope: both statuses are
+    // the sentinel — the real transition is unverifiable → fail closed.
+    const sameAgain = await putJson(
+      api.baseUrl,
+      `/v1/sessions/${unknownStatus.sessionId}`,
+      unknownStatus,
+    );
+    const sameError = await expectSyncError(sameAgain, 400, "VALIDATION_FAILED");
+    expect(sameError.details).toMatchObject({ reason: "unknown_status_value" });
+
+    // Updating to a KNOWN v1.0 status is equally unevaluable: the
+    // stored status is the sentinel → fail closed, no state change.
+    const promoted = {
+      ...unknownStatus,
+      contractVersion: "1.0",
+      status: "IN_PROGRESS",
+    };
+    const promoteError = await expectSyncError(
+      await putJson(api.baseUrl, `/v1/sessions/${unknownStatus.sessionId}`, promoted),
+      400,
+      "VALIDATION_FAILED",
+    );
+    expect(promoteError.details).toMatchObject({ reason: "unknown_status_value" });
+
+    // The stored session was never mutated by the rejected updates.
+    const stored = (await (
+      await fetch(`${api.baseUrl}/v1/sessions/${unknownStatus.sessionId}`)
+    ).json()) as { session: Record<string, unknown> };
+    expect(stored.session["status"]).toBe("unknown");
   });
 });

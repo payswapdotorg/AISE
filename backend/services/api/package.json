@@ -7,7 +7,8 @@
   "dependencies": {
     "@aise/backend-config": "*",
     "@aise/backend-logging": "*",
-    "@aise/shared-contracts": "*"
+    "@aise/shared-contracts": "*",
+    "ajv": "^8.17.1"
   },
   "scripts": {
     "dev": "tsx src/main.ts",
