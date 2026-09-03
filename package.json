@@ -2,7 +2,7 @@
   "name": "aise",
   "version": "0.0.0",
   "private": true,
-  "description": "AI Site Engineer — cross-platform Reality-to-Engineering platform (workspace root)",
+  "description": "AI Site Engineer \u2014 cross-platform Reality-to-Engineering platform (workspace root)",
   "license": "UNLICENSED",
   "type": "module",
   "engines": {
@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "dev:api": "npm run dev --workspace @aise/backend-api",
+    "dev:geometry": "npm run dev --workspace @aise/backend-geometry",
     "dev:reconstruction": "npm run dev --workspace @aise/backend-reconstruction",
     "dev:worker": "npm run dev --workspace @aise/backend-worker",
     "dev:web": "npm run dev --workspace @aise/web",

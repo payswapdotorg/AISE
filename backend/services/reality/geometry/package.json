@@ -1,0 +1,17 @@
+{
+  "name": "@aise/backend-geometry",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AISE geometry measurement primitives — deterministic plane/cylinder fitting, distances, angles, uncertainty representation (AISE-009)",
+  "type": "module",
+  "dependencies": {
+    "@aise/backend-config": "*",
+    "@aise/backend-logging": "*",
+    "@aise/shared-contracts": "*"
+  },
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}
