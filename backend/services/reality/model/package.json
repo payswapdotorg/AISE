@@ -1,23 +1,20 @@
 {
-  "name": "@aise/backend-semantics",
+  "name": "@aise/backend-reality-model",
   "version": "0.0.0",
   "private": true,
-  "description": "AISE architectural object extraction — deterministic wall/floor/ceiling/door/window recognition and structured geometry (AISE-010)",
+  "description": "AISE Reality Graph backend — architectural-scene ingestion adapter and versioned, append-only reality-model persistence (AISE-011)",
   "type": "module",
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
-    },
-    "./fixtures/golden": {
-      "types": "./src/fixtures/golden.ts",
-      "default": "./src/fixtures/golden.ts"
     }
   },
   "dependencies": {
     "@aise/backend-config": "*",
-    "@aise/backend-geometry": "*",
     "@aise/backend-logging": "*",
+    "@aise/backend-semantics": "*",
+    "@aise/engineering-model": "*",
     "@aise/shared-contracts": "*"
   },
   "scripts": {

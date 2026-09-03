@@ -27,12 +27,13 @@ aise/
 │       ├── api/                  # HTTP API service process (@aise/backend-api)
 │       ├── reality/
 │       │   ├── geometry/        # Geometry measurement primitives (AISE-009, ZAI; @aise/backend-geometry)
+│       │   ├── model/           # Reality Graph ingestion + versioned persistence (AISE-011, ZAI; @aise/backend-reality-model)
 │       │   ├── reconstruction/   # Reconstruction pipeline foundation (AISE-008, ZAI; @aise/backend-reconstruction)
 │       │   └── semantics/       # Architectural object extraction (AISE-010, ZAI; @aise/backend-semantics)
 │       └── worker/               # Background worker process (@aise/backend-worker)
 ├── packages/
-│   ├── shared-contracts/         # RESERVED for AISE-003 (SHARED) — placeholder only
-│   └── engineering-model/        # RESERVED for AISE-011 (ZAI) — placeholder only
+│   ├── shared-contracts/         # Versioned cross-platform interchange contracts (AISE-003, SHARED; @aise/shared-contracts)
+│   └── engineering-model/        # Reality Graph core — canonical engineering model (AISE-011, ZAI; @aise/engineering-model)
 ├── scripts/                      # Repository tooling (foundation smoke test)
 └── .github/workflows/            # CI configuration
 ```
@@ -54,6 +55,7 @@ cp .env.example .env   # optional: gitignored local configuration
 | `npm run dev:geometry` | Start the geometry measurement service (AISE-009 primitives) |
 | `npm run dev:reconstruction` | Start the reconstruction pipeline service (AISE-008 foundation) |
 | `npm run dev:semantics` | Start the architectural object extraction service (AISE-010) |
+| `npm run dev:model` | Start the Reality Graph model service (AISE-011 ingestion + persistence) |
 | `npm run dev:worker` | Start the background worker process |
 | `npm run dev:web` | Start the web app dev server (Next.js) |
 | `npm run lint` | ESLint over all workspaces |
