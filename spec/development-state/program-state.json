@@ -4,7 +4,7 @@
   "artifact": "aise-development-state/program-state",
   "governingArchitecture": "v1.0",
   "architectureState": "frozen",
-  "asOf": "2026-09-03T17:20:00Z",
+  "asOf": "2026-09-03T18:54:00Z",
   "agents": {
     "ZAI": {
       "role": "web-desktop-cloud",
@@ -32,11 +32,12 @@
     {"id":"AISE-004","owner":"ZAI","status":"finalized","dependencies":["AISE-001","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["backend capture/API"]},
     {"id":"AISE-005","owner":"GEMINI","status":"activated","dependencies":["AISE-002","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/capture/**"]},
     {"id":"AISE-008","owner":"ZAI","status":"finalized","dependencies":["AISE-004"],"assurance":"HIGH_ASSURANCE","surfaces":["services/reality/reconstruction/**"]},
-    {"id":"AISE-009","owner":"ZAI","status":"activated","dependencies":["AISE-008"],"assurance":"CRITICAL","surfaces":["services/reality/geometry/**"]}
+    {"id":"AISE-009","owner":"ZAI","status":"finalized","dependencies":["AISE-008"],"assurance":"CRITICAL","surfaces":["services/reality/geometry/**"]},
+    {"id":"AISE-010","owner":"ZAI","status":"activated","dependencies":["AISE-008","AISE-009"],"assurance":"HIGH_ASSURANCE","surfaces":["services/reality/semantics/**"]}
   ],
   "execution": {
-    "activeHandoffs": ["AISE-005","AISE-009"],
-    "parallelEligible": ["AISE-005","AISE-009"],
+    "activeHandoffs": ["AISE-005","AISE-010"],
+    "parallelEligible": ["AISE-005","AISE-010"],
     "mergeGate": "architect",
     "selfMergeForbidden": true
   },
