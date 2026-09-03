@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.aise.example/1.0/upload-request.schema.json",
+  "title": "AISE capture upload request (v1.0)",
+  "description": "Upload request semantics for synchronizing one logical capture asset. The client generates one idempotency key per logical upload and reuses it across retries; the server treats a retry carrying the same key and the same content hash as the same logical upload (outcome DUPLICATE), never as a second asset (requirements AC-012). A retry carrying the same key with a different content hash is rejected as IDEMPOTENCY_CONFLICT (see sync-error.schema.json). v1.0 defines single-shot transfers; resumable multi-part transfer is reserved for AISE-006 via the optional part object.",
+  "type": "object",
+  "required": [
+    "contractVersion",
+    "sessionId",
+    "assetId",
+    "idempotencyKey",
+    "contentHash",
+    "byteSize"
+  ],
+  "properties": {
+    "contractVersion": { "const": "1.0" },
+    "sessionId": { "$ref": "common.schema.json#/$defs/uuid" },
+    "assetId": { "$ref": "common.schema.json#/$defs/uuid" },
+    "idempotencyKey": {
+      "$ref": "common.schema.json#/$defs/uuid",
+      "title": "Client-generated key, stable across retries of one logical upload"
+    },
+    "contentHash": {
+      "$ref": "common.schema.json#/$defs/contentHash",
+      "title": "SHA-256 of the exact payload bytes being transferred"
+    },
+    "byteSize": {
+      "type": "integer",
+      "minimum": 1,
+      "title": "Exact payload byte size"
+    },
+    "part": {
+      "type": "object",
+      "title": "Multi-part transfer descriptor (reserved for AISE-006; omit for single-shot)",
+      "required": ["index", "total"],
+      "properties": {
+        "index": { "type": "integer", "minimum": 1 },
+        "total": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.aise.example/1.0/project.schema.json",
+  "title": "AISE project identity (v1.0)",
+  "description": "Device-neutral project identity shared by the Android field app and web/cloud services. A project is the container for capture sessions and derived model versions. Canonical project data lives in the backend; this contract only describes interchange identity.",
+  "type": "object",
+  "required": ["contractVersion", "projectId", "name", "createdAt"],
+  "properties": {
+    "contractVersion": { "const": "1.0" },
+    "projectId": { "$ref": "common.schema.json#/$defs/uuid" },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "title": "Human-readable project name"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 2000,
+      "title": "Optional project description"
+    },
+    "createdAt": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "updatedAt": { "$ref": "common.schema.json#/$defs/timestamp" }
+  },
+  "additionalProperties": false
+}

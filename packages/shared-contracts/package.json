@@ -1,6 +1,20 @@
 {
   "name": "@aise/shared-contracts",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
-  "description": "RESERVED (AISE-003): versioned cross-platform API/capture/model interchange contracts. Placeholder only in AISE-001."
+  "description": "Versioned cross-platform interchange contracts shared by the Android field app and Z.ai web/cloud services (AISE-003)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "ajv": "^8.17.1"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
 }

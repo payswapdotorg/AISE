@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.aise.example/1.0/upload-result.schema.json",
+  "title": "AISE capture upload result (v1.0)",
+  "description": "Server acknowledgement for one logical upload. ACCEPTED means the bytes were newly stored. DUPLICATE means the same logical upload (same idempotency key and same content hash) was already received; the retry succeeds without creating a second logical asset (requirements AC-012) and duplicateOf identifies the original asset.",
+  "type": "object",
+  "required": ["contractVersion", "assetId", "outcome", "receivedHash"],
+  "properties": {
+    "contractVersion": { "const": "1.0" },
+    "assetId": { "$ref": "common.schema.json#/$defs/uuid" },
+    "outcome": {
+      "type": "string",
+      "enum": ["ACCEPTED", "DUPLICATE"],
+      "title": "Logical upload outcome (never an error for idempotent retries)"
+    },
+    "receivedHash": {
+      "$ref": "common.schema.json#/$defs/contentHash",
+      "title": "Server-computed hash of the stored bytes"
+    },
+    "duplicateOf": {
+      "$ref": "common.schema.json#/$defs/uuid",
+      "title": "Original logical asset id when outcome is DUPLICATE"
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 2000,
+      "title": "Optional advisory text"
+    }
+  },
+  "additionalProperties": false
+}

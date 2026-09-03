@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.aise.example/1.0/model-version.schema.json",
+  "title": "AISE model/version identifiers (v1.0)",
+  "description": "Interchange identifiers for derived engineering model versions. Versions are monotonic per model; reprocessing creates new derived versions and never erases prior ones (architecture-lock 2.10). The Reality Graph remains the only canonical authority for model content (architecture-lock 1); these identifiers only name versions and objects for cross-platform reference. Object identity is stable within a model version (requirements AC-042).",
+  "type": "object",
+  "required": ["contractVersion", "projectId", "modelId", "version"],
+  "properties": {
+    "contractVersion": { "const": "1.0" },
+    "projectId": { "$ref": "common.schema.json#/$defs/uuid" },
+    "modelId": { "$ref": "common.schema.json#/$defs/uuid" },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "title": "Monotonic model version number"
+    },
+    "parentVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "title": "Version this version was derived from (lineage)"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "modelObjectRef": {
+      "type": "object",
+      "title": "Reference to one object within a model version",
+      "description": "objectId is stable within its model version (requirements AC-042). Cross-version object stability is NOT promised by v1.0.",
+      "required": ["modelId", "version", "objectId"],
+      "properties": {
+        "modelId": { "$ref": "common.schema.json#/$defs/uuid" },
+        "version": { "type": "integer", "minimum": 1 },
+        "objectId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,128}$",
+          "title": "Stable object identifier scoped to one model version"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

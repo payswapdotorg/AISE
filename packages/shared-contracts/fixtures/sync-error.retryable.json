@@ -1,0 +1,8 @@
+{
+  "contractVersion": "1.0",
+  "code": "RATE_LIMITED",
+  "message": "Upload rate limit exceeded for this project.",
+  "retryable": true,
+  "retryAfterMs": 30000,
+  "details": { "window": "60s", "maxRequests": 60 }
+}
