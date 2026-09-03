@@ -10,8 +10,9 @@
  *
  * - capture package manifests validate structurally and semantically;
  * - upload request/result fixtures validate, and idempotency
- *   semantics are as documented (DUPLICATE is a success outcome;
- *   IDEMPOTENCY_CONFLICT is a halt);
+ *   semantics are as documented (DUPLICATE is a success outcome
+ *   that must identify the original asset; IDEMPOTENCY_CONFLICT is
+ *   a halt);
  * - sync errors carry authoritative retry data;
  * - envelope contract versions are supported.
  */
@@ -65,9 +66,26 @@ describe("capture gateway consumes upload fixtures", () => {
     expect(duplicate.ok).toBe(true);
 
     const duplicatePayload = loadFixtureJson("upload-result.duplicate.json") as UploadResult;
-    // AC-012: a retried logical upload never creates a second asset.
-    expect(duplicatePayload.outcome).toBe("DUPLICATE");
-    expect(duplicatePayload.duplicateOf).toBeDefined();
+    // AC-012: a retried logical upload never creates a second asset;
+    // the DUPLICATE acknowledgement identifies the original one.
+    expect(duplicatePayload).toMatchObject({
+      outcome: "DUPLICATE",
+      duplicateOf: expect.any(String),
+    });
+  });
+
+  it("a duplicate result without duplicateOf is rejected by the schema", () => {
+    // The capture gateway (AISE-004) will write these
+    // acknowledgements; the conditional rule — only a DUPLICATE
+    // result must identify the original asset — is an invariant it
+    // can rely on, so the gateway never emits an unattributable
+    // duplicate acknowledgement.
+    const payload = loadFixtureJson("upload-result.duplicate.json") as Record<string, unknown>;
+    const mutated = { ...payload };
+    delete mutated["duplicateOf"];
+    const outcome = validateUploadResult(mutated);
+    expect(outcome.ok).toBe(false);
+    expect(outcome.errors.some((error) => error.includes("duplicateOf"))).toBe(true);
   });
 });
 

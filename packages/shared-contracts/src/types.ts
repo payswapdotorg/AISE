@@ -155,14 +155,38 @@ export interface UploadRequest {
 
 export type UploadOutcome = "ACCEPTED" | "DUPLICATE";
 
-export interface UploadResult {
+/** Upload result for a newly stored upload (`outcome: ACCEPTED`). */
+export interface UploadResultAccepted {
   contractVersion: ContractVersion;
   assetId: Uuid;
-  outcome: UploadOutcome;
+  outcome: "ACCEPTED";
   receivedHash: ContentHash;
-  duplicateOf?: Uuid;
   note?: string;
 }
+
+/**
+ * Upload result for an already-received logical upload
+ * (`outcome: DUPLICATE`). `duplicateOf` is required: it identifies
+ * the original logical asset the retry reconciles with.
+ */
+export interface UploadResultDuplicate {
+  contractVersion: ContractVersion;
+  assetId: Uuid;
+  outcome: "DUPLICATE";
+  receivedHash: ContentHash;
+  duplicateOf: Uuid;
+  note?: string;
+}
+
+/**
+ * Server acknowledgement for one logical upload, discriminated on
+ * `outcome`. The JSON Schema conditionally requires `duplicateOf`
+ * when `outcome` is `DUPLICATE` (`if`/`then` in
+ * `contracts/upload-result.schema.json`); this union mirrors that
+ * rule at compile time, so a DUPLICATE literal without `duplicateOf`
+ * does not typecheck.
+ */
+export type UploadResult = UploadResultAccepted | UploadResultDuplicate;
 
 // ---------------------------------------------------------------------------
 // Synchronization errors

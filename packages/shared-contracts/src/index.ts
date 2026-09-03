@@ -41,6 +41,8 @@ export type {
   UploadPart,
   UploadRequest,
   UploadOutcome,
+  UploadResultAccepted,
+  UploadResultDuplicate,
   UploadResult,
   SyncErrorCode,
   SyncError,

@@ -140,6 +140,20 @@ describe("typed literals validate (TypeScript types match schemas)", () => {
     expectValid(validateUploadResult(result));
   });
 
+  it("a fully-typed DUPLICATE UploadResult literal validates and identifies the original asset", () => {
+    // Type-level mirror of the schema's conditional rule: the
+    // DUPLICATE arm requires duplicateOf at compile time, and the
+    // constructed literal validates against the schema.
+    const duplicate: UploadResult = {
+      contractVersion: CONTRACT_VERSION,
+      assetId: "1e2f3a4b-5c6d-4e7f-8a9b-0c1d2e3f4a5b",
+      outcome: "DUPLICATE",
+      receivedHash: "3f4ececbf6ee049d9107995d0c333cadc98c1906335faa4ae635ec82820809ea",
+      duplicateOf: "1e2f3a4b-5c6d-4e7f-8a9b-0c1d2e3f4a5b",
+    };
+    expectValid(validateUploadResult(duplicate));
+  });
+
   it("a fully-typed ModelVersionId literal validates", () => {
     const modelVersion: ModelVersionId = {
       contractVersion: CONTRACT_VERSION,
@@ -279,6 +293,17 @@ describe("negative validation (writer-strict schema discipline)", () => {
   it("rejects an upload result with an unknown outcome", () => {
     const result = loadFixtureJson("upload-result.accepted.json") as Record<string, unknown>;
     expectInvalid(validateUploadResult({ ...result, outcome: "REJECTED" }));
+  });
+
+  it("rejects a DUPLICATE upload result without duplicateOf", () => {
+    // Conditional enforcement: a DUPLICATE acknowledgement must
+    // identify the original logical asset (duplicateOf); without it
+    // the client cannot reconcile the retried upload with the
+    // already-stored asset, so the payload is invalid.
+    const result = loadFixtureJson("upload-result.duplicate.json") as Record<string, unknown>;
+    const mutated = { ...result };
+    delete mutated["duplicateOf"];
+    expectInvalid(validateUploadResult(mutated));
   });
 
   it("rejects a sync error with a string retryable flag", () => {

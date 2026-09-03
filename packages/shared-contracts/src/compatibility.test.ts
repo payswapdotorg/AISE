@@ -12,7 +12,7 @@
  * - retry decisions come from error data, not error code strings.
  */
 import { describe, expect, it } from "vitest";
-import type { CaptureIntent, Project, SyncError } from "./types.js";
+import type { CaptureIntent, Project, SyncError, UploadResult } from "./types.js";
 import {
   isCompatibleReader,
   isContractVersionFormat,
@@ -26,7 +26,7 @@ import {
   tolerateEnumValue,
   UNKNOWN_ENUM,
 } from "./compat.js";
-import { validateProject, validateSyncError } from "./validate.js";
+import { validateProject, validateSyncError, validateUploadResult } from "./validate.js";
 import { loadFixtureJson } from "./io.js";
 
 describe("version utilities", () => {
@@ -154,9 +154,21 @@ describe("version negotiation and error-data semantics", () => {
 
   it("a duplicate upload outcome is a success result, not an error", () => {
     // AC-012: interrupted synchronization resumes without
-    // duplicating logical capture assets. The duplicate fixture is a
-    // valid UploadResult, and the error fixtures validate too.
-    const retryable = loadFixtureJson("sync-error.retryable.json");
-    expect(validateSyncError(retryable).ok).toBe(true);
+    // duplicating logical capture assets. A retried upload that the
+    // server already received is acknowledged with a DUPLICATE
+    // UploadResult — a valid success envelope that identifies the
+    // original logical asset — and it is NOT a SyncError.
+    const duplicate = loadFixtureJson("upload-result.duplicate.json") as UploadResult;
+    const outcome = validateUploadResult(duplicate);
+    expect(outcome.errors).toEqual([]);
+    expect(outcome.ok).toBe(true);
+    expect(duplicate).toMatchObject({
+      outcome: "DUPLICATE",
+      duplicateOf: expect.any(String),
+    });
+    // The success and error envelopes are disjoint contracts
+    // (writer-strict, additionalProperties: false): a duplicate
+    // acknowledgement must never validate as an error envelope.
+    expect(validateSyncError(duplicate).ok).toBe(false);
   });
 });

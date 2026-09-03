@@ -67,10 +67,14 @@ engineering model).
   (architecture-lock §3).
 - **Idempotency:** one `idempotencyKey` per logical upload, reused
   across retries. Same key + same `contentHash` → outcome `DUPLICATE`
-  (success, no second logical asset). Same key + different hash →
-  `IDEMPOTENCY_CONFLICT` (halt, not retry) — interrupted
-  synchronization resumes without duplicating logical capture assets
-  (requirements AC-012).
+  (success, no second logical asset), and a `DUPLICATE`
+  acknowledgement **must** carry `duplicateOf` identifying the
+  original logical asset — the schema conditionally requires it
+  (`if`/`then` in `contracts/upload-result.schema.json`, mirrored by
+  the discriminated `UploadResult` union in `src/types.ts`). Same key
+  + different hash → `IDEMPOTENCY_CONFLICT` (halt, not retry) —
+  interrupted synchronization resumes without duplicating logical
+  capture assets (requirements AC-012).
 - **Retryability is data:** the sync-error `retryable` flag and
   `retryAfterMs` drive client retry decisions; clients must not
   parse `message` or switch on `code` to decide retries.
@@ -173,7 +177,8 @@ artifacts of this package):
 Run inside this package (or via the repository root):
 
 ```bash
-npm test            # 62 tests: fixtures, typed literals, negative cases, semantics
+npm test            # 64 tests: fixtures, typed literals, negative cases (incl. the
+                    # DUPLICATE → duplicateOf conditional), semantics
 npm run typecheck   # strict TypeScript, no emit
 ```
 
