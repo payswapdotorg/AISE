@@ -12,10 +12,12 @@
     "apps/*",
     "packages/*",
     "backend/packages/*",
-    "backend/services/*"
+    "backend/services/*",
+    "backend/services/reality/*"
   ],
   "scripts": {
     "dev:api": "npm run dev --workspace @aise/backend-api",
+    "dev:reconstruction": "npm run dev --workspace @aise/backend-reconstruction",
     "dev:worker": "npm run dev --workspace @aise/backend-worker",
     "dev:web": "npm run dev --workspace @aise/web",
     "lint": "eslint .",
