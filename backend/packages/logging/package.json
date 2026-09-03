@@ -1,0 +1,17 @@
+{
+  "name": "@aise/backend-logging",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Structured JSON logging with secret redaction for AISE backend services",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}

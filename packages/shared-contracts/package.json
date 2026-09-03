@@ -1,0 +1,6 @@
+{
+  "name": "@aise/shared-contracts",
+  "version": "0.0.0",
+  "private": true,
+  "description": "RESERVED (AISE-003): versioned cross-platform API/capture/model interchange contracts. Placeholder only in AISE-001."
+}

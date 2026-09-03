@@ -1,0 +1,17 @@
+{
+  "name": "@aise/backend-worker",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AISE background worker process boundary (foundation)",
+  "type": "module",
+  "dependencies": {
+    "@aise/backend-config": "*",
+    "@aise/backend-jobs": "*",
+    "@aise/backend-logging": "*"
+  },
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@aise/backend-jobs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Background job queue abstraction and worker loop for AISE backend services",
+  "type": "module",
+  "dependencies": {
+    "@aise/backend-logging": "*"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}

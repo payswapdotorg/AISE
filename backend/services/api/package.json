@@ -1,0 +1,16 @@
+{
+  "name": "@aise/backend-api",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AISE HTTP API service boundary (foundation: health, lifecycle, request logging)",
+  "type": "module",
+  "dependencies": {
+    "@aise/backend-config": "*",
+    "@aise/backend-logging": "*"
+  },
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}

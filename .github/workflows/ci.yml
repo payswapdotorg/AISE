@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  foundation:
+    name: Foundation verify (npm run verify)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies (exact, from lockfile)
+        run: npm ci
+
+      # Single authoritative verification entry point.
+      # package.json scripts.verify is the only place the stage list is
+      # defined (lint + typecheck + test + smoke + build:web). The smoke
+      # suite regression-guards this file against package.json/README drift.
+      - name: Verify (lint, typecheck, test, smoke, web build)
+        run: npm run verify

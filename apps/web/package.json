@@ -1,0 +1,22 @@
+{
+  "name": "@aise/web",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AISE web application (foundation scaffold; engineering workspace arrives in AISE-015)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "16.3.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.3"
+  }
+}
