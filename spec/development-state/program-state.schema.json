@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/pectoraux/AISE/blob/main/spec/development-state/program-state.schema.json",
+  "title": "AISE Development Program State",
+  "type": "object",
+  "required": ["$schema", "schemaVersion", "artifact", "governingArchitecture", "architectureState", "asOf", "agents", "authority", "workItems", "execution", "dogfood"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schemaVersion": {"type": "integer", "const": 1},
+    "artifact": {"type": "string"},
+    "governingArchitecture": {"type": "string"},
+    "architectureState": {"type": "string", "enum": ["frozen", "change_required"]},
+    "asOf": {"type": "string", "format": "date-time"},
+    "agents": {"type": "object"},
+    "authority": {"type": "object"},
+    "workItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "owner", "status", "dependencies", "assurance", "surfaces"],
+        "properties": {
+          "id": {"type": "string"},
+          "owner": {"type": "string"},
+          "primaryAgent": {"type": "string"},
+          "secondaryAgent": {"type": "string"},
+          "status": {"type": "string", "enum": ["draft", "ready", "activated", "implementing", "pr_open", "verifying", "architect_review", "blocked", "merged", "finalized", "dogfood", "signal"]},
+          "dependencies": {"type": "array", "items": {"type": "string"}},
+          "assurance": {"type": "string"},
+          "surfaces": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": true
+      }
+    },
+    "execution": {
+      "type": "object",
+      "required": ["activeHandoffs", "parallelEligible", "mergeGate", "selfMergeForbidden"],
+      "properties": {
+        "activeHandoffs": {"type": "array", "items": {"type": "string"}},
+        "parallelEligible": {"type": "array", "items": {"type": "string"}},
+        "mergeGate": {"type": "string"},
+        "selfMergeForbidden": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    },
+    "dogfood": {
+      "type": "object",
+      "required": ["enabledFromWorkItem", "physicalBenchmarkRequiredForCriticalChanges"],
+      "properties": {
+        "enabledFromWorkItem": {"type": "string"},
+        "physicalBenchmarkRequiredForCriticalChanges": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
