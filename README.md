@@ -26,6 +26,7 @@ aise/
 │   └── services/
 │       ├── api/                  # HTTP API service process (@aise/backend-api)
 │       ├── reality/
+│       │   ├── geometry/        # Geometry measurement primitives (AISE-009, ZAI; @aise/backend-geometry)
 │       │   └── reconstruction/   # Reconstruction pipeline foundation (AISE-008, ZAI; @aise/backend-reconstruction)
 │       └── worker/               # Background worker process (@aise/backend-worker)
 ├── packages/
@@ -49,6 +50,7 @@ cp .env.example .env   # optional: gitignored local configuration
 | Command | Purpose |
 | --- | --- |
 | `npm run dev:api` | Start the API service (default `127.0.0.1:8080`; `GET /healthz`, `GET /readyz`) |
+| `npm run dev:geometry` | Start the geometry measurement service (AISE-009 primitives) |
 | `npm run dev:reconstruction` | Start the reconstruction pipeline service (AISE-008 foundation) |
 | `npm run dev:worker` | Start the background worker process |
 | `npm run dev:web` | Start the web app dev server (Next.js) |
