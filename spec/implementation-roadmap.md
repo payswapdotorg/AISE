@@ -103,7 +103,7 @@ Legend: `✅ FINALIZED` is accepted/merged work; `🟦 ACTIVE` is an authorized 
 | AISE-018 | ⬜ BLOCKED | ZAI | CRITICAL | IFC export | blocked on AISE-017 |
 | AISE-019 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | DXF/PDF | blocked on AISE-017 |
 | AISE-020 | ✅ FINALIZED | ZAI | CRITICAL | `services/assurance/**` | PR #23; head `267a6b83ff095f694c838d54b68b5898c890e001`; CI `33897439954`; 1,540/1,540 repository tests; 8/8 mutation/discrimination; merge `8d351c43ca9cfed43ea507296ceedc2bffd3a12a` |
-| AISE-021 | ✅ FINALIZED | ZAI | CRITICAL | `services/verification/rules/**` | PR #26; head `20ed22e7bcb173ca36a592c7ffb3a6863aaac00f`; CI `33902235657`; 1,628/1,628 repository tests; 10/10 mutation/discrimination; merge `0de293d7081e4d9bdae6ef30e8d1dedc0d7bef4` |
+| AISE-021 | ✅ FINALIZED | ZAI | CRITICAL | `services/verification/rules/**` | PR #26; head `20ed22e7bcb173ca36a592c7ffb3a6863aaac00f`; CI `33902235657`; 1,628/1,628 repository tests; 10/10 mutation/discrimination; merge `0de293d7081e4d9b4dae6ef30e8d1dedc0d7bef4` |
 | AISE-022 | ✅ FINALIZED | ZAI | CRITICAL | `benchmarks/**`, CI | PR #29; head `d4788eaba2ff6c92978f89eb9d964ba7254e8f82`; CI `33907110274` (verify + benchmark green); 1,662/1,662 repository tests; benchmark `PASS / UNCHANGED`; 10/10 mutation/discrimination; merge `f79730b5bed0906a95c94c6d9bfcfa143d8a96b4` |
 | AISE-023 | ⛔ BLOCKED | SHARED | CRITICAL | Reality Lab | blocked on AISE-005 + AISE-022; AISE-022 finalized but AISE-005 remains blocked |
 | AISE-024 | ⬜ BLOCKED | ZAI | CRITICAL | integration/E2E | blocked on declared dependencies |
