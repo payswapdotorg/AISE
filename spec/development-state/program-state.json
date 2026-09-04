@@ -4,7 +4,7 @@
   "artifact": "aise-development-state/program-state",
   "governingArchitecture": "v1.0",
   "architectureState": "frozen",
-  "asOf": "2026-09-04T16:58:00Z",
+  "asOf": "2026-09-04T18:07:00Z",
   "agents": {
     "ZAI": {"role":"web-desktop-cloud","surfaces":["apps/web/**","apps/desktop/**","services/**","packages/engineering-model/**","packages/shared-contracts/** when assigned"],"forbidden":["apps/android/**"]},
     "GEMINI": {"role":"android-field-app","surfaces":["apps/android/**","apps/android-test/**","packages/mobile-contracts/**"],"forbidden":["services/**","apps/web/**","backend authority","canonical engineering verification"]}
@@ -39,11 +39,12 @@
     {"id":"AISE-013","owner":"ZAI","status":"finalized","dependencies":["AISE-009","AISE-011","AISE-012"],"assurance":"CRITICAL","surfaces":["services/assurance/**"],"evidence":{"pr":15,"head":"aa4bc27a4c8338beaa45229531711fe2ca37bd26","ciRun":33829570146,"mergeCommit":"66a9e329dd145f38ee69d3286278039f44e9ea70","governanceCommit":"0f1bc09faba49fad6f9af888e4597f86215aef0e"}},
     {"id":"AISE-014","owner":"ZAI","status":"finalized","dependencies":["AISE-011","AISE-013"],"assurance":"CRITICAL","surfaces":["services/verification/model-qa/**"],"evidence":{"pr":19,"head":"a6212c799a431a1348a3b6b45d2a667ebbde5560","ciRun":33854132772,"ciStatus":"success","mergeCommit":"934e32479d929bcdabf846663e6b625d24bdb8c3"}},
     {"id":"AISE-020","owner":"ZAI","status":"finalized","dependencies":["AISE-013"],"assurance":"CRITICAL","surfaces":["services/assurance/**"],"evidence":{"pr":23,"head":"267a6b83ff095f694c838d54b68b5898c890e001","ciRun":33897439954,"ciStatus":"success","repositoryTests":"1540/1540","aiSE020NewTests":54,"mutationDiscrimination":"8/8 detected; post-harness 182/182 green","mergeCommit":"8d351c43ca9cfed43ea507296ceedc2bffd3a12a"}},
-    {"id":"AISE-021","owner":"ZAI","status":"activated","dependencies":["AISE-011","AISE-013","AISE-014","AISE-020"],"assurance":"CRITICAL","surfaces":["services/verification/rules/**"]}
+    {"id":"AISE-021","owner":"ZAI","status":"finalized","dependencies":["AISE-011","AISE-013","AISE-014","AISE-020"],"assurance":"CRITICAL","surfaces":["services/verification/rules/**"],"evidence":{"pr":26,"head":"20ed22e7bcb173ca36a592c7ffb3a6863aaac00f","ciRun":33902235657,"ciStatus":"success","repositoryTests":"1628/1628","newTests":88,"mutationDiscrimination":"10/10 detected; post-harness 88/88 green","mergeCommit":"0de293d7081e4d9b4dae6ef30e8d1dedc0d7bef4"}},
+    {"id":"AISE-022","owner":"ZAI","status":"activated","dependencies":["AISE-008","AISE-009","AISE-010","AISE-011"],"assurance":"CRITICAL","surfaces":["benchmarks/**","CI"]}
   ],
   "execution": {
-    "activeHandoffs":["AISE-021"],
-    "parallelEligible":["AISE-021"],
+    "activeHandoffs":["AISE-022"],
+    "parallelEligible":["AISE-022"],
     "mergeGate":"architect",
     "selfMergeForbidden":true,
     "selectionRule":"Only explicitly activated work items in this state are started; dependency-eligible does not itself imply activation",
