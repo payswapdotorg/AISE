@@ -47,8 +47,8 @@ FINALIZED FOUNDATION
 AISE-001 ─┐
 AISE-002 ─┴─→ AISE-003 → AISE-004 → AISE-008 → AISE-009 → AISE-010 → AISE-011 → AISE-012 → AISE-013
                                                                     │                       │
-                                                                    │                       └──→ AISE-014 🟦 ACTIVE
-                                                                    │
+                                                                    │                       ├──→ AISE-014 ✅ FINALIZED
+                                                                    │                       │
                                                                     ├──→ AISE-015 ⬜ BLOCKED
                                                                     └──→ AISE-017 ⬜ BLOCKED
 
@@ -57,7 +57,7 @@ AISE-005 ⛔ BLOCKED (post-merge verification failure) ─→ AISE-006 ⬜ BLOCK
                                                    └→ AISE-007 ⬜ BLOCKED
 
 ASSURANCE / RULES
-AISE-013 → AISE-020 ⬜ BLOCKED → AISE-021 ⬜ BLOCKED
+AISE-013 → AISE-020 🟦 ACTIVE → AISE-021 ⬜ BLOCKED
 AISE-011 + AISE-013 + AISE-014 + AISE-020 → AISE-021
 
 BENCHMARK / COMPOSITION
@@ -95,13 +95,13 @@ Legend: `✅ FINALIZED` is accepted/merged work; `🟦 ACTIVE` is an authorized 
 | AISE-011 | ✅ FINALIZED | ZAI | CRITICAL | Reality Graph | PR #13; merge `b1731536203e6bc4698f5804cea882675c798abf`; CI `33806624742` |
 | AISE-012 | ✅ FINALIZED | ZAI | CRITICAL | evidence/provenance | PR #14; merge `80e7c6f7f5552d6b8562fe7c0c3954c8ad74da1a`; CI `33818256481` |
 | AISE-013 | ✅ FINALIZED | ZAI | CRITICAL | assurance/readiness | PR #15; head `aa4bc27a4c8338beaa45229531711fe2ca37bd26`; merge `66a9e329dd145f38ee69d3286278039f44e9ea70`; CI `33829570146` |
-| AISE-014 | 🟦 ACTIVE | ZAI | CRITICAL | `services/verification/model-qa/**` | dependency-eligible; active implementation handoff |
+| AISE-014 | ✅ FINALIZED | ZAI | CRITICAL | `services/verification/model-qa/**` | PR #19; head `a6212c799a431a1348a3b6b45d2a667ebbde5560`; CI `33854132772`; merge `934e32479d929bcdabf846663e6b625d24bdb8c3` |
 | AISE-015 | ⬜ BLOCKED | ZAI | STANDARD | `apps/web/**` | design-graph eligible but not activated by current scheduler |
 | AISE-016 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | `apps/web/review/**` | blocked on AISE-012 + AISE-013 + AISE-015 |
 | AISE-017 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | 2D export/UI | blocked by scheduler/dependency sequencing |
 | AISE-018 | ⬜ BLOCKED | ZAI | CRITICAL | IFC export | blocked on AISE-017 |
 | AISE-019 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | DXF/PDF | blocked on AISE-017 |
-| AISE-020 | ⬜ BLOCKED | ZAI | CRITICAL | assurance | dependency-eligible by graph, not yet activated |
+| AISE-020 | 🟦 ACTIVE | ZAI | CRITICAL | `services/assurance/**` | base `934e32479d929bcdabf846663e6b625d24bdb8c3`; resident worker dispatch iteration 1 |
 | AISE-021 | ⬜ BLOCKED | ZAI | CRITICAL | engineering rules | blocked on AISE-014 + AISE-020 |
 | AISE-022 | ⬜ BLOCKED | ZAI | CRITICAL | benchmarks/CI | blocked on planned benchmark fixtures |
 | AISE-023 | ⬜ BLOCKED | SHARED | CRITICAL | Reality Lab | blocked on AISE-005 + AISE-022 |
