@@ -4,26 +4,33 @@ This file is a human-readable execution handoff. Machine status remains `spec/de
 
 ## AISE-005 — Gemini
 
-Status: ACTIVE. PR: #8. Current head: `60d92a2cf13112e65b6bf2706ca5b33a4df1a30b`.
+Status: BLOCKED — corrective verification required. Original implementation PR #8 merged as `66d87da0a70a6f0013fd5bad8f2cf07b716e57d1` from exact implementation head `06a13f70262f5e50d011d29abb8bdfeec89dd705`.
 
-Architect requirements still binding:
+Authoritative final verification:
 
-- Room v1→v2 deterministic migration preserving existing data.
-- Manifest negative tests for missing/blank `relativePath` and `contentHash` separately.
-- Quaternion round-trip after Room reload.
+- Generic CI run `33847147969`: SUCCESS.
+- Android CI run `33847147977`: FAILURE.
+- Emulator boot: SUCCESS.
+- `compileDebugAndroidTestKotlin`: SUCCESS.
+- `connectedDebugAndroidTest`: FAILURE.
 
-Latest durable CI failure: Android CI run `33765308578` failed during instrumentation test compilation, before emulator execution:
+Failure:
 
 ```text
-:app:compileDebugAndroidTestKotlin FAILED
-AppShellEmulatorSmokeTest.kt:29:37 Unresolved reference: rememberNavController
+com.aise.field.AppShellEmulatorSmokeTest > fullAcceptancePath_emulatorSmokeTest FAILED
+java.lang.IllegalStateException: Method setCurrentState must be called on the main thread
+at androidx.lifecycle.LifecycleRegistry.enforceMainThreadIfNeeded(LifecycleRegistry.kt:304)
 ```
 
-Do not treat this as an emulator/device-runtime failure. Z.ai is forbidden from modifying `apps/android/**`.
+This is a real instrumentation runtime failure, not the earlier `rememberNavController` compile failure. The current test harness uses `createAndroidComposeRule<MainActivity>()`; the failure occurs while executing the UI smoke test after the emulator is operational.
+
+Required corrective outcome: Gemini must correct the Android-only instrumentation lifecycle/threading issue and produce a new exact head with green Android CI, including the emulator test. Fresh architect review is required before AISE-005 can be finalized.
+
+Scope remains `apps/android/**` only. Do not modify server, web, shared-contract, or canonical engineering-model authority to compensate.
 
 ## AISE-006 — Gemini
 
-Status: BLOCKED. PR: #10. Current head: `106de267e61e837bdca3c90878154a8d4f3d73ea`.
+Status: BLOCKED. PR #10. Current head: `106de267e61e837bdca3c90878154a8d4f3d73ea`.
 
 Android CI run `33834435135` is successful; local `assembleDebug` and `testDebugUnitTest` were reported 28/28. Implementation includes sync state machine, Room v3 migration 2→3, multipart upload with local hash/size validation, retry policy, and WorkManager worker.
 
@@ -44,6 +51,6 @@ Required outcomes: deterministic `QAReport` with stable finding IDs/codes; outco
 
 Required families: geometry, topology, semantic, evidence/epistemic, and cross-object contradiction checks.
 
-Required discrimination/mutation suite: disable geometry validity; disable topology; disable semantic contradiction; ignore invalidated evidence; treat UNKNOWN as absence; downgrade blocking contradiction to advisory; constant report digest; remove deterministic ordering; bypass input validation; mutate the canonical graph during QA.
+Required discrimination/mutation suite: disable geometry validity; disable topology; disable semantic contradiction; ignore invalidated evidence; treat UNKNOWN as absence; downgrade blocking contradiction to advisory; constant report digest; remove deterministic ordering; bypass input validation; mutate canonical graph during QA.
 
 Required completion evidence: exact final head SHA; changed-surface audit; `npm run verify`; AISE-014-specific and repository-wide test counts; deterministic replay; golden-room contradiction/consistency evidence; geometry/topology/semantic/evidence/epistemic/fail-closed/boundary-integrity evidence; known limitations and explicit out-of-scope. Do not merge your own PR.
