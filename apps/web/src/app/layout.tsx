@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AISE — Web Foundation",
+  title: "AISE — Engineering Workspace",
   description:
-    "AI Site Engineer web workspace foundation. The engineering workspace is implemented in AISE-015.",
+    "AI Site Engineer engineering workspace — authenticated, read-only model browsing over authoritative backend reads (AISE-015).",
 };
 
 export default function RootLayout({
