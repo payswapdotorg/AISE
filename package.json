@@ -14,7 +14,8 @@
     "backend/packages/*",
     "backend/services/*",
     "backend/services/reality/*",
-    "backend/services/verification/*"
+    "backend/services/verification/*",
+    "benchmarks"
   ],
   "scripts": {
     "dev:api": "npm run dev --workspace @aise/backend-api",
@@ -32,6 +33,7 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "smoke": "tsx scripts/smoke-foundation.ts",
+    "benchmark": "npm run benchmark --workspace @aise/benchmarks",
     "build:web": "npm run build --workspace @aise/web",
     "verify": "npm run lint && npm run typecheck && npm run test && npm run smoke && npm run build:web"
   },

@@ -1,0 +1,1030 @@
+{
+  "suiteVersion": "golden-captures/v1.0.0",
+  "verdict": "PASS",
+  "cases": [
+    {
+      "caseId": "exact-room",
+      "caseClass": "GATING_CRITICAL",
+      "description": "the noise-free 4.0 × 3.0 × 2.7 m golden room (0.05 m grid sampling; floor, ceiling, four walls, one door, one window) — GATING at CRITICAL (grid quantization only)",
+      "metrics": [
+        {
+          "caseId": "exact-room",
+          "metricId": "count-floor",
+          "observable": "count:FLOOR",
+          "expected": 1,
+          "observed": 1,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(FLOOR)"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "count-ceiling",
+          "observable": "count:CEILING",
+          "expected": 1,
+          "observed": 1,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(CEILING)"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "count-wall",
+          "observable": "count:WALL",
+          "expected": 4,
+          "observed": 4,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(WALL)"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "count-door",
+          "observable": "count:DOOR",
+          "expected": 1,
+          "observed": 1,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(DOOR)"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "count-window",
+          "observable": "count:WINDOW",
+          "expected": 1,
+          "observed": 1,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(WINDOW)"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "floor-width",
+          "observable": "floor-width",
+          "expected": 4,
+          "observed": 4,
+          "absError": 0,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "floor.width"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "floor-depth",
+          "observable": "floor-depth",
+          "expected": 3,
+          "observed": 3,
+          "absError": 0,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "floor.height"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "ceiling-elevation",
+          "observable": "ceiling-elevation",
+          "expected": 2.7,
+          "observed": 2.7000000000002307,
+          "absError": 2.304822999121825e-13,
+          "tolerance": 0.000001,
+          "verdict": "PASS",
+          "margin": 0.9999997695177001,
+          "source": "ceiling.elevation"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "room-height",
+          "observable": "room-height",
+          "expected": 2.7,
+          "observed": 2.7000000000002307,
+          "absError": 2.304822999121825e-13,
+          "tolerance": 0.000001,
+          "verdict": "PASS",
+          "margin": 0.9999997695177001,
+          "source": "space.roomHeight"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "wall-height",
+          "observable": "wall-height",
+          "expected": 2.7,
+          "observed": 2.5999999999999988,
+          "absError": 0.10000000000000142,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 0.09090909090907799,
+          "source": "max(wall.height)"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "door-width",
+          "observable": "door-width",
+          "expected": 0.9,
+          "observed": 0.8499999999999999,
+          "absError": 0.050000000000000155,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 0.5454545454545441,
+          "source": "door.width"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "door-height",
+          "observable": "door-height",
+          "expected": 2.1,
+          "observed": 2,
+          "absError": 0.10000000000000009,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 0.0909090909090901,
+          "source": "door.height"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "window-width",
+          "observable": "window-width",
+          "expected": 1.2,
+          "observed": 1.1,
+          "absError": 0.09999999999999987,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 0.09090909090909212,
+          "source": "window.width"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "window-height",
+          "observable": "window-height",
+          "expected": 1.2,
+          "observed": 1.1,
+          "absError": 0.09999999999999987,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 0.09090909090909212,
+          "source": "window.height"
+        },
+        {
+          "caseId": "exact-room",
+          "metricId": "window-sill",
+          "observable": "window-sill",
+          "expected": 0.9,
+          "observed": 0.9,
+          "absError": 0,
+          "tolerance": 0.000001,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "window.sillHeight"
+        }
+      ],
+      "verdict": "PASS",
+      "counts": {
+        "pass": 15,
+        "fail": 0,
+        "missing": 0
+      }
+    },
+    {
+      "caseId": "noisy-room",
+      "caseClass": "GATING_HIGH_ASSURANCE",
+      "description": "the same room with seeded Gaussian noise σ = 0.01 m (Box–Muller from the AISE-009 deterministic RNG, seed recorded in the fixture) — GATING at HIGH_ASSURANCE",
+      "metrics": [
+        {
+          "caseId": "noisy-room",
+          "metricId": "count-floor",
+          "observable": "count:FLOOR",
+          "expected": 1,
+          "observed": 1,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(FLOOR)"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "count-ceiling",
+          "observable": "count:CEILING",
+          "expected": 1,
+          "observed": 1,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(CEILING)"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "count-wall",
+          "observable": "count:WALL",
+          "expected": 4,
+          "observed": 4,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(WALL)"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "count-door",
+          "observable": "count:DOOR",
+          "expected": 1,
+          "observed": 1,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(DOOR)"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "count-window",
+          "observable": "count:WINDOW",
+          "expected": 1,
+          "observed": 1,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(WINDOW)"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "floor-width",
+          "observable": "floor-width",
+          "expected": 4,
+          "observed": 4.043942387614859,
+          "absError": 0.0439423876148588,
+          "tolerance": 0.15,
+          "verdict": "PASS",
+          "margin": 0.7070507492342747,
+          "source": "floor.width"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "floor-depth",
+          "observable": "floor-depth",
+          "expected": 3,
+          "observed": 3.047752572479917,
+          "absError": 0.04775257247991682,
+          "tolerance": 0.15,
+          "verdict": "PASS",
+          "margin": 0.6816495168005545,
+          "source": "floor.height"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "ceiling-elevation",
+          "observable": "ceiling-elevation",
+          "expected": 2.7,
+          "observed": 2.6997206874486177,
+          "absError": 0.00027931255138247124,
+          "tolerance": 0.05,
+          "verdict": "PASS",
+          "margin": 0.9944137489723506,
+          "source": "ceiling.elevation"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "room-height",
+          "observable": "room-height",
+          "expected": 2.7,
+          "observed": 2.6998442292022866,
+          "absError": 0.0001557707977135614,
+          "tolerance": 0.05,
+          "verdict": "PASS",
+          "margin": 0.9968845840457288,
+          "source": "space.roomHeight"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "wall-height",
+          "observable": "wall-height",
+          "expected": 2.7,
+          "observed": 2.7033167711198103,
+          "absError": 0.0033167711198101024,
+          "tolerance": 0.15,
+          "verdict": "PASS",
+          "margin": 0.9778881925345994,
+          "source": "max(wall.height)"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "door-width",
+          "observable": "door-width",
+          "expected": 0.9,
+          "observed": 0.95,
+          "absError": 0.04999999999999993,
+          "tolerance": 0.15,
+          "verdict": "PASS",
+          "margin": 0.6666666666666671,
+          "source": "door.width"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "door-height",
+          "observable": "door-height",
+          "expected": 2.1,
+          "observed": 2.0500000000000003,
+          "absError": 0.04999999999999982,
+          "tolerance": 0.15,
+          "verdict": "PASS",
+          "margin": 0.6666666666666679,
+          "source": "door.height"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "window-width",
+          "observable": "window-width",
+          "expected": 1.2,
+          "observed": 1.1500000000000004,
+          "absError": 0.0499999999999996,
+          "tolerance": 0.15,
+          "verdict": "PASS",
+          "margin": 0.6666666666666693,
+          "source": "window.width"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "window-height",
+          "observable": "window-height",
+          "expected": 1.2,
+          "observed": 1.1500000000000004,
+          "absError": 0.0499999999999996,
+          "tolerance": 0.15,
+          "verdict": "PASS",
+          "margin": 0.6666666666666693,
+          "source": "window.height"
+        },
+        {
+          "caseId": "noisy-room",
+          "metricId": "window-sill",
+          "observable": "window-sill",
+          "expected": 0.9,
+          "observed": 0.9,
+          "absError": 0,
+          "tolerance": 0.05,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "window.sillHeight"
+        }
+      ],
+      "verdict": "PASS",
+      "counts": {
+        "pass": 15,
+        "fail": 0,
+        "missing": 0
+      }
+    },
+    {
+      "caseId": "outlier-room",
+      "caseClass": "ANALYSIS",
+      "description": "the exact room with every 20th point displaced by 0.5 m (5% deterministic gross outliers) — ANALYSIS class: expected degradation, fully scored and quantified, never silently skipped, never gating",
+      "metrics": [
+        {
+          "caseId": "outlier-room",
+          "metricId": "count-floor",
+          "observable": "count:FLOOR",
+          "expected": 1,
+          "observed": 1,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(FLOOR)"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "count-ceiling",
+          "observable": "count:CEILING",
+          "expected": 1,
+          "observed": 1,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(CEILING)"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "count-wall",
+          "observable": "count:WALL",
+          "expected": 4,
+          "observed": 6,
+          "absError": 2,
+          "tolerance": 0,
+          "verdict": "FAIL",
+          "source": "count(WALL)"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "count-door",
+          "observable": "count:DOOR",
+          "expected": 1,
+          "observed": 1,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(DOOR)"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "count-window",
+          "observable": "count:WINDOW",
+          "expected": 1,
+          "observed": 1,
+          "absError": 0,
+          "tolerance": 0,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "count(WINDOW)"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "floor-width",
+          "observable": "floor-width",
+          "expected": 4,
+          "observed": 4,
+          "absError": 0,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "floor.width"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "floor-depth",
+          "observable": "floor-depth",
+          "expected": 3,
+          "observed": 3,
+          "absError": 0,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 1,
+          "source": "floor.height"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "ceiling-elevation",
+          "observable": "ceiling-elevation",
+          "expected": 2.7,
+          "observed": 2.700013430545124,
+          "absError": 0.000013430545124037963,
+          "tolerance": 0.0001,
+          "verdict": "PASS",
+          "margin": 0.8656945487596204,
+          "source": "ceiling.elevation"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "room-height",
+          "observable": "room-height",
+          "expected": 2.7,
+          "observed": 2.700013430545124,
+          "absError": 0.000013430545124037963,
+          "tolerance": 0.0001,
+          "verdict": "PASS",
+          "margin": 0.8656945487596204,
+          "source": "space.roomHeight"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "wall-height",
+          "observable": "wall-height",
+          "expected": 2.7,
+          "observed": 2.7099995225788533,
+          "absError": 0.00999952257885317,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 0.909095249283153,
+          "source": "max(wall.height)"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "door-width",
+          "observable": "door-width",
+          "expected": 0.9,
+          "observed": 0.9500000000000002,
+          "absError": 0.050000000000000155,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 0.5454545454545441,
+          "source": "door.width"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "door-height",
+          "observable": "door-height",
+          "expected": 2.1,
+          "observed": 2.0500000000000003,
+          "absError": 0.04999999999999982,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 0.5454545454545471,
+          "source": "door.height"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "window-width",
+          "observable": "window-width",
+          "expected": 1.2,
+          "observed": 1.2000000000000002,
+          "absError": 2.220446049250313e-16,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 0.999999999999998,
+          "source": "window.width"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "window-height",
+          "observable": "window-height",
+          "expected": 1.2,
+          "observed": 1.2000000000000002,
+          "absError": 2.220446049250313e-16,
+          "tolerance": 0.11,
+          "verdict": "PASS",
+          "margin": 0.999999999999998,
+          "source": "window.height"
+        },
+        {
+          "caseId": "outlier-room",
+          "metricId": "window-sill",
+          "observable": "window-sill",
+          "expected": 0.9,
+          "observed": 0.8500000000000001,
+          "absError": 0.04999999999999993,
+          "tolerance": 0.0001,
+          "verdict": "FAIL",
+          "source": "window.sillHeight"
+        }
+      ],
+      "verdict": "REPORTED",
+      "counts": {
+        "pass": 13,
+        "fail": 2,
+        "missing": 0
+      }
+    }
+  ],
+  "critical": {
+    "headroom": [
+      {
+        "caseId": "exact-room",
+        "worstMargin": 0.09090909090907799,
+        "worstMetricId": "wall-height",
+        "tightest": [
+          {
+            "metricId": "wall-height",
+            "margin": 0.09090909090907799
+          },
+          {
+            "metricId": "door-height",
+            "margin": 0.0909090909090901
+          },
+          {
+            "metricId": "window-width",
+            "margin": 0.09090909090909212
+          },
+          {
+            "metricId": "window-height",
+            "margin": 0.09090909090909212
+          },
+          {
+            "metricId": "door-width",
+            "margin": 0.5454545454545441
+          },
+          {
+            "metricId": "ceiling-elevation",
+            "margin": 0.9999997695177001
+          },
+          {
+            "metricId": "room-height",
+            "margin": 0.9999997695177001
+          },
+          {
+            "metricId": "count-floor",
+            "margin": 1
+          },
+          {
+            "metricId": "count-ceiling",
+            "margin": 1
+          },
+          {
+            "metricId": "count-wall",
+            "margin": 1
+          },
+          {
+            "metricId": "count-door",
+            "margin": 1
+          },
+          {
+            "metricId": "count-window",
+            "margin": 1
+          },
+          {
+            "metricId": "floor-width",
+            "margin": 1
+          },
+          {
+            "metricId": "floor-depth",
+            "margin": 1
+          },
+          {
+            "metricId": "window-sill",
+            "margin": 1
+          }
+        ]
+      },
+      {
+        "caseId": "noisy-room",
+        "worstMargin": 0.6666666666666671,
+        "worstMetricId": "door-width",
+        "tightest": [
+          {
+            "metricId": "door-width",
+            "margin": 0.6666666666666671
+          },
+          {
+            "metricId": "door-height",
+            "margin": 0.6666666666666679
+          },
+          {
+            "metricId": "window-width",
+            "margin": 0.6666666666666693
+          },
+          {
+            "metricId": "window-height",
+            "margin": 0.6666666666666693
+          },
+          {
+            "metricId": "floor-depth",
+            "margin": 0.6816495168005545
+          },
+          {
+            "metricId": "floor-width",
+            "margin": 0.7070507492342747
+          },
+          {
+            "metricId": "wall-height",
+            "margin": 0.9778881925345994
+          },
+          {
+            "metricId": "ceiling-elevation",
+            "margin": 0.9944137489723506
+          },
+          {
+            "metricId": "room-height",
+            "margin": 0.9968845840457288
+          },
+          {
+            "metricId": "count-floor",
+            "margin": 1
+          },
+          {
+            "metricId": "count-ceiling",
+            "margin": 1
+          },
+          {
+            "metricId": "count-wall",
+            "margin": 1
+          },
+          {
+            "metricId": "count-door",
+            "margin": 1
+          },
+          {
+            "metricId": "count-window",
+            "margin": 1
+          },
+          {
+            "metricId": "window-sill",
+            "margin": 1
+          }
+        ]
+      }
+    ],
+    "criticalMetrics": [
+      {
+        "caseId": "exact-room",
+        "metricId": "wall-height",
+        "margin": 0.09090909090907799,
+        "tolerance": 0.11
+      },
+      {
+        "caseId": "exact-room",
+        "metricId": "door-height",
+        "margin": 0.0909090909090901,
+        "tolerance": 0.11
+      },
+      {
+        "caseId": "exact-room",
+        "metricId": "window-width",
+        "margin": 0.09090909090909212,
+        "tolerance": 0.11
+      },
+      {
+        "caseId": "exact-room",
+        "metricId": "window-height",
+        "margin": 0.09090909090909212,
+        "tolerance": 0.11
+      }
+    ],
+    "degradation": [
+      {
+        "metricId": "count-floor",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0,
+        "degradedError": 0,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "count-ceiling",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0,
+        "degradedError": 0,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "count-wall",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0,
+        "degradedError": 0,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "count-door",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0,
+        "degradedError": 0,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "count-window",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0,
+        "degradedError": 0,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "floor-width",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0,
+        "degradedError": 0.0439423876148588,
+        "delta": 0.0439423876148588,
+        "verdict": "DEGRADED"
+      },
+      {
+        "metricId": "floor-depth",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0,
+        "degradedError": 0.04775257247991682,
+        "delta": 0.04775257247991682,
+        "verdict": "DEGRADED"
+      },
+      {
+        "metricId": "ceiling-elevation",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 2.304822999121825e-13,
+        "degradedError": 0.00027931255138247124,
+        "delta": 0.00027931255115198894,
+        "verdict": "DEGRADED"
+      },
+      {
+        "metricId": "room-height",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 2.304822999121825e-13,
+        "degradedError": 0.0001557707977135614,
+        "delta": 0.0001557707974830791,
+        "verdict": "DEGRADED"
+      },
+      {
+        "metricId": "wall-height",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0.10000000000000142,
+        "degradedError": 0.0033167711198101024,
+        "delta": -0.09668322888019132,
+        "verdict": "IMPROVED"
+      },
+      {
+        "metricId": "door-width",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0.050000000000000155,
+        "degradedError": 0.04999999999999993,
+        "delta": -2.220446049250313e-16,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "door-height",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0.10000000000000009,
+        "degradedError": 0.04999999999999982,
+        "delta": -0.050000000000000266,
+        "verdict": "IMPROVED"
+      },
+      {
+        "metricId": "window-width",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0.09999999999999987,
+        "degradedError": 0.0499999999999996,
+        "delta": -0.050000000000000266,
+        "verdict": "IMPROVED"
+      },
+      {
+        "metricId": "window-height",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0.09999999999999987,
+        "degradedError": 0.0499999999999996,
+        "delta": -0.050000000000000266,
+        "verdict": "IMPROVED"
+      },
+      {
+        "metricId": "window-sill",
+        "baselineCase": "exact-room",
+        "degradedCase": "noisy-room",
+        "baselineError": 0,
+        "degradedError": 0,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "count-floor",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0,
+        "degradedError": 0,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "count-ceiling",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0,
+        "degradedError": 0,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "count-wall",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0,
+        "degradedError": 2,
+        "delta": 2,
+        "verdict": "DEGRADED"
+      },
+      {
+        "metricId": "count-door",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0,
+        "degradedError": 0,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "count-window",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0,
+        "degradedError": 0,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "floor-width",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0,
+        "degradedError": 0,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "floor-depth",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0,
+        "degradedError": 0,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "ceiling-elevation",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 2.304822999121825e-13,
+        "degradedError": 0.000013430545124037963,
+        "delta": 0.000013430544893555663,
+        "verdict": "DEGRADED"
+      },
+      {
+        "metricId": "room-height",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 2.304822999121825e-13,
+        "degradedError": 0.000013430545124037963,
+        "delta": 0.000013430544893555663,
+        "verdict": "DEGRADED"
+      },
+      {
+        "metricId": "wall-height",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0.10000000000000142,
+        "degradedError": 0.00999952257885317,
+        "delta": -0.09000047742114825,
+        "verdict": "IMPROVED"
+      },
+      {
+        "metricId": "door-width",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0.050000000000000155,
+        "degradedError": 0.050000000000000155,
+        "delta": 0,
+        "verdict": "UNCHANGED"
+      },
+      {
+        "metricId": "door-height",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0.10000000000000009,
+        "degradedError": 0.04999999999999982,
+        "delta": -0.050000000000000266,
+        "verdict": "IMPROVED"
+      },
+      {
+        "metricId": "window-width",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0.09999999999999987,
+        "degradedError": 2.220446049250313e-16,
+        "delta": -0.09999999999999964,
+        "verdict": "IMPROVED"
+      },
+      {
+        "metricId": "window-height",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0.09999999999999987,
+        "degradedError": 2.220446049250313e-16,
+        "delta": -0.09999999999999964,
+        "verdict": "IMPROVED"
+      },
+      {
+        "metricId": "window-sill",
+        "baselineCase": "exact-room",
+        "degradedCase": "outlier-room",
+        "baselineError": 0,
+        "degradedError": 0.04999999999999993,
+        "delta": 0.04999999999999993,
+        "verdict": "DEGRADED"
+      }
+    ]
+  },
+  "counts": {
+    "cases": 3,
+    "gatingCases": 2,
+    "analysisCases": 1,
+    "metricsTotal": 45,
+    "metricsPassed": 43,
+    "metricsFailed": 2,
+    "metricsMissing": 0
+  },
+  "digest": "ba3e3b236b26f0d029fd1360bd1fbc17e1c13930f750bfe70b8f08d33716fd51",
+  "benchmarkId": "9ca442c73fcc4f3faad4f83632486ebf8764d89a4407ba06a4df2dc33d49bfa1"
+}
