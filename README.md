@@ -25,6 +25,8 @@ aise/
 │   │   └── jobs/                 # Job queue abstraction + worker loop (@aise/backend-jobs)
 │   └── services/
 │       ├── api/                  # HTTP API service process (@aise/backend-api)
+│       ├── assurance/             # Task-readiness assurance service (AISE-013, ZAI; @aise/backend-assurance)
+│       ├── evidence/              # Evidence & provenance service (AISE-012, ZAI; @aise/backend-evidence)
 │       ├── reality/
 │       │   ├── geometry/        # Geometry measurement primitives (AISE-009, ZAI; @aise/backend-geometry)
 │       │   ├── model/           # Reality Graph ingestion + versioned persistence (AISE-011, ZAI; @aise/backend-reality-model)
@@ -57,6 +59,7 @@ cp .env.example .env   # optional: gitignored local configuration
 | `npm run dev:semantics` | Start the architectural object extraction service (AISE-010) |
 | `npm run dev:model` | Start the Reality Graph model service (AISE-011 ingestion + persistence) |
 | `npm run dev:evidence` | Start the evidence & provenance service (AISE-012 registration, linking, validity) |
+| `npm run dev:assurance` | Start the assurance service (AISE-013 task profiles, readiness assessment, history) |
 | `npm run dev:worker` | Start the background worker process |
 | `npm run dev:web` | Start the web app dev server (Next.js) |
 | `npm run lint` | ESLint over all workspaces |

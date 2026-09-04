@@ -1,0 +1,29 @@
+{
+  "name": "@aise/backend-assurance",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AISE assurance service \u2014 task-specific model-readiness authority: declared task/assurance profiles, deterministic readiness assessment over evidence coverage, measurement-uncertainty discipline, verification validity and epistemic composition (AISE-013)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@aise/backend-config": "*",
+    "@aise/backend-logging": "*",
+    "@aise/engineering-model": "*",
+    "@aise/shared-contracts": "*"
+  },
+  "devDependencies": {
+    "@aise/backend-reality-model": "*",
+    "@aise/backend-semantics": "*",
+    "@aise/backend-evidence": "*"
+  },
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}
