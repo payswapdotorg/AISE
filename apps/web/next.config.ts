@@ -7,7 +7,8 @@ const nextConfig: NextConfig = {
   // Node-ESM `.js`-extension convention (pointing at `.ts`
   // sources), so they must be transpiled AND extension-aliased.
   // AISE-016 adds the evidence/assurance/config/logging services
-  // the review workspace composes (same convention).
+  // the review workspace composes (same convention). AISE-017
+  // adds the export-2d projection the 2D workspace composes.
   transpilePackages: [
     "@aise/engineering-model",
     "@aise/backend-reality-model",
@@ -17,6 +18,7 @@ const nextConfig: NextConfig = {
     "@aise/backend-assurance",
     "@aise/backend-config",
     "@aise/backend-logging",
+    "@aise/backend-export-2d",
   ],
   webpack: (config) => {
     // `.js` imports inside the workspace TS packages resolve to
