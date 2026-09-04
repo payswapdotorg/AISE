@@ -134,7 +134,10 @@ function reviewedVersion(v1: RealityModelGraph): RealityModelGraph {
         kind: "measurement",
         evidenceRefs: [SURVEY_EVIDENCE_ID],
         verifiedBy: "user:site-engineer",
-        verifiedAt: "2026-09-06T10:00:00Z",
+        // Fixture chronology (deterministic, never future-dated): survey
+        // measured 2026-09-03T14:00:00Z -> verified 2026-09-04T09:30:00Z
+        // -> committed at the store clock 2026-09-04T12:00:00Z.
+        verifiedAt: "2026-09-04T09:30:00Z",
       }),
     );
   }
