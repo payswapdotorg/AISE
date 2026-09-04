@@ -4,7 +4,7 @@
   "artifact": "aise-development-state/program-state",
   "governingArchitecture": "v1.0",
   "architectureState": "frozen",
-  "asOf": "2026-09-04T00:45:00Z",
+  "asOf": "2026-09-04T06:36:00Z",
   "agents": {
     "ZAI": {
       "role": "web-desktop-cloud",
@@ -31,16 +31,18 @@
     {"id":"AISE-003","owner":"SHARED","primaryAgent":"ZAI","secondaryAgent":"GEMINI","status":"finalized","dependencies":["AISE-001","AISE-002"],"assurance":"HIGH_ASSURANCE","surfaces":["packages/shared-contracts/**"]},
     {"id":"AISE-004","owner":"ZAI","status":"finalized","dependencies":["AISE-001","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["backend capture/API"]},
     {"id":"AISE-005","owner":"GEMINI","status":"activated","dependencies":["AISE-002","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/capture/**"]},
+    {"id":"AISE-006","owner":"GEMINI","status":"blocked","dependencies":["AISE-005","AISE-004"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/sync/**","explicit shared upload contract files"]},
     {"id":"AISE-008","owner":"ZAI","status":"finalized","dependencies":["AISE-004"],"assurance":"HIGH_ASSURANCE","surfaces":["services/reality/reconstruction/**"]},
     {"id":"AISE-009","owner":"ZAI","status":"finalized","dependencies":["AISE-008"],"assurance":"CRITICAL","surfaces":["services/reality/geometry/**"]},
     {"id":"AISE-010","owner":"ZAI","status":"finalized","dependencies":["AISE-008","AISE-009"],"assurance":"HIGH_ASSURANCE","surfaces":["services/reality/semantics/**"]},
     {"id":"AISE-011","owner":"ZAI","status":"finalized","dependencies":["AISE-009","AISE-010"],"assurance":"CRITICAL","surfaces":["packages/engineering-model/**","backend reality-model persistence"]},
     {"id":"AISE-012","owner":"ZAI","status":"finalized","dependencies":["AISE-004","AISE-011"],"assurance":"CRITICAL","surfaces":["services/evidence/**","packages/engineering-model/evidence/**"]},
-    {"id":"AISE-013","owner":"ZAI","status":"activated","dependencies":["AISE-009","AISE-011","AISE-012"],"assurance":"CRITICAL","surfaces":["services/assurance/**"]}
+    {"id":"AISE-013","owner":"ZAI","status":"finalized","dependencies":["AISE-009","AISE-011","AISE-012"],"assurance":"CRITICAL","surfaces":["services/assurance/**"]},
+    {"id":"AISE-014","owner":"ZAI","status":"activated","dependencies":["AISE-011","AISE-013"],"assurance":"CRITICAL","surfaces":["services/verification/model-qa/**"]}
   ],
   "execution": {
-    "activeHandoffs": ["AISE-005","AISE-013"],
-    "parallelEligible": ["AISE-005","AISE-013"],
+    "activeHandoffs": ["AISE-005","AISE-014"],
+    "parallelEligible": ["AISE-005","AISE-014"],
     "mergeGate": "architect",
     "selfMergeForbidden": true
   },
