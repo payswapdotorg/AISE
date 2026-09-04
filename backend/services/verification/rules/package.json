@@ -1,0 +1,30 @@
+{
+  "name": "@aise/backend-rules",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AISE engineering rule engine — machine-evaluable dimensions, tolerances and specification rules with deterministic PASS/FAIL/UNKNOWN semantics over the canonical Reality Graph, uncertainty-aware interval comparison, evidence/readiness gating and fail-closed critical behavior (AISE-021)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@aise/backend-config": "*",
+    "@aise/backend-logging": "*",
+    "@aise/engineering-model": "*",
+    "@aise/shared-contracts": "*"
+  },
+  "devDependencies": {
+    "@aise/backend-reality-model": "*",
+    "@aise/backend-semantics": "*",
+    "@aise/backend-evidence": "*",
+    "@aise/backend-assurance": "*"
+  },
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}

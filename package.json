@@ -25,6 +25,7 @@
     "dev:evidence": "npm run dev --workspace @aise/backend-evidence",
     "dev:assurance": "npm run dev --workspace @aise/backend-assurance",
     "dev:model-qa": "npm run dev --workspace @aise/backend-model-qa",
+    "dev:rules": "npm run dev --workspace @aise/backend-rules",
     "dev:worker": "npm run dev --workspace @aise/backend-worker",
     "dev:web": "npm run dev --workspace @aise/web",
     "lint": "eslint .",
