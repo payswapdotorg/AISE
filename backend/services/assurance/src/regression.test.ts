@@ -16,6 +16,7 @@ import { CAPTURE_INTENTS, ASSURANCE_PROFILES, REQUIREMENTS_BY_PROFILE } from "./
 const readinessSource = readFileSync(fileURLToPath(new URL("./readiness.ts", import.meta.url)), "utf8");
 const runtimeSource = readFileSync(fileURLToPath(new URL("./runtime.ts", import.meta.url)), "utf8");
 const storeSource = readFileSync(fileURLToPath(new URL("./store.ts", import.meta.url)), "utf8");
+const intentSource = readFileSync(fileURLToPath(new URL("./intent.ts", import.meta.url)), "utf8");
 
 describe("source-level separation of confidence from verdicts", () => {
   it("the readiness module references confidence ONLY inside the summary helper", () => {
@@ -97,6 +98,72 @@ describe("vocabulary alignment with the shared contracts", () => {
       expect(ASSURANCE_PROFILES).toContain(profile);
       expect(REQUIREMENTS_BY_PROFILE[profile]).toBeDefined();
     }
+  });
+});
+
+describe("source-level AISE-020 intent-engine discipline", () => {
+  // Each scan has a behavioral backstop in intent.test.ts /
+  // intent-runtime.test.ts (floors, fail-closed, lattice).
+
+  it("the engine defines NO second requirements table (single source of truth)", () => {
+    // Requirement rows (dimension literals with required flags)
+    // exist only in profile.ts's REQUIREMENTS_BY_PROFILE. The
+    // engine must project, never duplicate.
+    expect(intentSource).not.toMatch(
+      /dimension:\s*"(model-integrity|evidence-coverage|measurement-uncertainty|confirmed-validity|epistemic-composition|uncertainty-budget)"/,
+    );
+    expect(intentSource).not.toMatch(/REQUIREMENTS_BY\b(?!_PROFILE)/);
+    expect(intentSource).toContain("REQUIREMENTS_BY_PROFILE");
+  });
+
+  it("the engine has no depth-lowering path (the floor only raises)", () => {
+    // No minimum-of operation over depths; the effective profile
+    // is chosen by the max-of(floor, declared) pattern only.
+    expect(intentSource).not.toContain("Math.min");
+    // The flooring decision appears exactly in the two sanctioned
+    // places (resolution and the sanctioned constructor).
+    expect(intentSource).toMatch(/PROFILE_DEPTH\[declared\]\s*<\s*PROFILE_DEPTH\[contract\.minimumProfile\]/);
+    expect(intentSource).toMatch(/PROFILE_DEPTH\[record\.profile\]\s*<\s*PROFILE_DEPTH\[contract\.minimumProfile\]/);
+  });
+
+  it("the contract floors in source are exactly the documented table", () => {
+    // The CONTRACT_SOURCE literal: MAINTENANCE→STANDARD,
+    // AS_BUILT→HIGH_ASSURANCE, INSPECTION→CRITICAL (each once,
+    // as minimumProfile assignments).
+    const floors = [
+      ...intentSource.matchAll(/intent:\s*"(MAINTENANCE|AS_BUILT|INSPECTION)",\s*\n\s*minimumProfile:\s*"(STANDARD|HIGH_ASSURANCE|CRITICAL)"/g),
+    ];
+    expect(floors.map((match) => `${match[1]}>${match[2]}`)).toEqual([
+      "MAINTENANCE>STANDARD",
+      "AS_BUILT>HIGH_ASSURANCE",
+      "INSPECTION>CRITICAL",
+    ]);
+  });
+
+  it("the engine is deterministic (no clocks, randomness, or ambient state)", () => {
+    expect(intentSource).not.toMatch(/Date\b|Math\.random|process\.env|crypto\.random/);
+  });
+
+  it("the fail-closed refusal is thrown before any construction", () => {
+    // INTENT_PROFILE_BELOW_FLOOR is thrown in intent.ts (the
+    // pure layer) before taskProfile() is called.
+    const belowFloor = intentSource.indexOf("INTENT_PROFILE_BELOW_FLOOR");
+    expect(belowFloor).toBeGreaterThan(-1);
+    const delegate = intentSource.indexOf("return taskProfile({");
+    expect(delegate).toBeGreaterThan(-1);
+    // The refusal precedes the delegation in the constructor.
+    expect(belowFloor).toBeLessThan(delegate);
+  });
+
+  it("the service registers intent profiles only through the fail-closed constructor", () => {
+    // In runtime.ts's registerIntentTaskProfile, the constructor
+    // call precedes the store write (nothing half-registers).
+    const constructor = runtimeSource.indexOf("intentTaskProfile(input)");
+    const storeWrite = runtimeSource.indexOf("store.registerProfile(projectId, {", constructor);
+    expect(constructor).toBeGreaterThan(-1);
+    expect(storeWrite).toBeGreaterThan(constructor);
+    // The engine verbs write neither graph nor mapping.
+    expect(intentSource).not.toMatch(/getModelGraph|getMapping|commitModelVersion|linkEvidence/);
   });
 });
 
