@@ -61,12 +61,16 @@ describe("authentication at the boundary", () => {
   });
 
   it("login fails honestly in production without a session secret (never a dead cookie)", async () => {
-    const before = process.env.AISE_WEB_SESSION_SECRET;
-    const beforeEnv = process.env.AISE_ENV;
-    const beforeNode = process.env.NODE_ENV;
-    delete process.env.AISE_WEB_SESSION_SECRET;
-    process.env.AISE_ENV = "production";
-    process.env.NODE_ENV = "production";
+    // Indirect env access: Next's type context declares NODE_ENV
+    // read-only; tests mutate the process environment as a
+    // record (restored in finally).
+    const env = process.env as Record<string, string | undefined>;
+    const before = env.AISE_WEB_SESSION_SECRET;
+    const beforeEnv = env.AISE_ENV;
+    const beforeNode = env.NODE_ENV;
+    delete env.AISE_WEB_SESSION_SECRET;
+    env.AISE_ENV = "production";
+    env.NODE_ENV = "production";
     try {
       const response = await loginPost(
         new Request("https://aise.test/api/auth/login", {
@@ -81,19 +85,19 @@ describe("authentication at the boundary", () => {
       expect(response.headers.get("set-cookie")).toBeNull();
     } finally {
       if (before !== undefined) {
-        process.env.AISE_WEB_SESSION_SECRET = before;
+        env.AISE_WEB_SESSION_SECRET = before;
       } else {
-        delete process.env.AISE_WEB_SESSION_SECRET;
+        delete env.AISE_WEB_SESSION_SECRET;
       }
       if (beforeEnv !== undefined) {
-        process.env.AISE_ENV = beforeEnv;
+        env.AISE_ENV = beforeEnv;
       } else {
-        delete process.env.AISE_ENV;
+        delete env.AISE_ENV;
       }
       if (beforeNode !== undefined) {
-        process.env.NODE_ENV = beforeNode;
+        env.NODE_ENV = beforeNode;
       } else {
-        delete process.env.NODE_ENV;
+        delete env.NODE_ENV;
       }
     }
   });
