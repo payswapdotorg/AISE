@@ -1,0 +1,579 @@
+/* The AISE-016 review workspace styles (co-located under the
+ * review surface — globals.css stays untouched). Same design
+ * language as the AISE-015 workspace: dark, surface-soft panels,
+ * the shared epistemic vocabulary, honest trace states. */
+
+.shell {
+  display: grid;
+  grid-template-columns: 260px minmax(360px, 1fr) 380px;
+  gap: 14px;
+  min-height: calc(100vh - 190px);
+}
+
+@media (max-width: 1180px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
+}
+
+.panel h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+}
+
+.panel h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ink-soft);
+  margin: 16px 0 6px;
+}
+
+/* --- entity list ---------------------------------------------------------- */
+
+.entityList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.entityRow {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ink-soft);
+  border-radius: 6px;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+
+.entityRow:hover {
+  background: #1d2532;
+}
+
+.entityRow[data-selected="true"] {
+  background: #1d2f35;
+  border-color: var(--accent);
+}
+
+.entityRow[data-entity-kind="space"] {
+  border-left-color: #64748b;
+}
+
+.entityLabel {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.entitySub {
+  display: block;
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+/* --- version selector ------------------------------------------------------ */
+
+.versionBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.versionLink {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  padding: 3px 10px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--ink-soft);
+}
+
+.versionLink.current {
+  color: #5eead4;
+  border-color: var(--accent);
+  background: rgba(20, 184, 166, 0.12);
+}
+
+/* --- validity summary ------------------------------------------------------ */
+
+.validityBanner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #10151c;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.validityBanner[data-invalidated="true"] {
+  border-color: var(--danger);
+}
+
+.validityStat {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.validityStat b {
+  font-size: 15px;
+}
+
+.validityWarn {
+  color: var(--danger);
+  font-size: 12px;
+}
+
+/* --- property table -------------------------------------------------------- */
+
+.propertyList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.propertyCard {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ink-soft);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  color: var(--ink);
+  font-family: inherit;
+}
+
+.propertyCard:hover {
+  background: #1d2532;
+}
+
+.propertyCard[data-selected="true"] {
+  background: #1d2f35;
+  border-color: var(--accent);
+}
+
+.propertyHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.propertyKey {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+.propertyValue {
+  margin-left: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.propertyMeta {
+  margin: 6px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+/* --- evidence traces (the acceptance core) --------------------------------- */
+
+.traceList {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.traceRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.traceId {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink-soft);
+}
+
+.traceState {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+
+.traceState[data-state="VALID"] {
+  color: #5eead4;
+  border-color: #14b8a6;
+  background: rgba(20, 184, 166, 0.12);
+}
+
+.traceState[data-state="UNMAPPED_CITATION"] {
+  color: #fca5a5;
+  border-color: var(--danger);
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.traceState[data-state="UNSUPPORTED"] {
+  color: #fcd34d;
+  border-color: #d97706;
+  background: rgba(217, 119, 6, 0.12);
+}
+
+.supportRow {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+/* --- epistemic badge (re-uses the global vocabulary) ------------------------ */
+
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+
+.badge[data-state="CONFIRMED"] {
+  color: #5eead4;
+  border-color: #14b8a6;
+  background: rgba(20, 184, 166, 0.12);
+}
+
+.badge[data-state="OBSERVED"] {
+  color: #93c5fd;
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.badge[data-state="INFERRED"] {
+  color: #fcd34d;
+  border-color: #d97706;
+  background: rgba(217, 119, 6, 0.12);
+}
+
+.badge[data-state="PROPOSED"] {
+  color: #cbd5e1;
+  border-color: #64748b;
+  background: rgba(100, 116, 139, 0.12);
+}
+
+.badge[data-state="READY"] {
+  color: #5eead4;
+  border-color: #14b8a6;
+  background: rgba(20, 184, 166, 0.12);
+}
+
+.badge[data-state="NOT_READY"] {
+  color: #fca5a5;
+  border-color: var(--danger);
+  background: rgba(248, 113, 113, 0.12);
+}
+
+/* --- readiness panel ------------------------------------------------------- */
+
+.readinessList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.readinessCard {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+}
+
+.readinessHead {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.readinessTask {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 600;
+}
+
+.dimensionList {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 3px;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+}
+
+.dimensionList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dimensionVerdict {
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.dimensionVerdict[data-verdict="PASS"] {
+  color: #5eead4;
+}
+
+.dimensionVerdict[data-verdict="FAIL"] {
+  color: #fca5a5;
+}
+
+.dimensionVerdict[data-verdict="REPORTED"] {
+  color: #fcd34d;
+}
+
+.dimensionVerdict[data-verdict="NOT_APPLICABLE"] {
+  color: var(--ink-soft);
+}
+
+/* --- evidence inventory ---------------------------------------------------- */
+
+.evidenceList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.evidenceCard {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+}
+
+.evidenceCard[data-retracted="true"] {
+  opacity: 0.55;
+  border-color: var(--danger);
+}
+
+.evidenceHead {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.evidenceId {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 600;
+}
+
+.evidenceKind {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+
+.evidenceSummary {
+  margin: 6px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.evidenceMeta {
+  margin: 4px 0 0;
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
+/* --- the decision form (the governed write) -------------------------------- */
+
+.decisionForm {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  background: var(--surface-soft);
+}
+
+.decisionForm h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ink-soft);
+  margin: 0 0 4px;
+}
+
+.decisionTarget {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin: 0 0 12px;
+}
+
+.decisionTarget code {
+  color: var(--ink);
+}
+
+.fieldRow {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.fieldRow label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--ink-soft);
+}
+
+.fieldRow input,
+.fieldRow select {
+  background: #10151c;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 13px;
+  width: 100%;
+}
+
+.fieldRow input:focus,
+.fieldRow select:focus {
+  outline: 1px solid var(--accent);
+}
+
+.radioRow {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.radioRow label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #04211d;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  filter: brightness(1.08);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.formErrors {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+  color: #fca5a5;
+  font-size: 12.5px;
+  display: grid;
+  gap: 4px;
+}
+
+.outcomeBanner {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid #14b8a6;
+  border-radius: 8px;
+  background: rgba(20, 184, 166, 0.12);
+  font-size: 12.5px;
+  display: grid;
+  gap: 4px;
+}
+
+.outcomeBanner a {
+  color: #5eead4;
+}
+
+.emptyState {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.epistemicLegend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 12.5px;
+}
+
+.epistemicLegend li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}

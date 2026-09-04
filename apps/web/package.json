@@ -2,7 +2,7 @@
   "name": "@aise/web",
   "version": "0.0.0",
   "private": true,
-  "description": "AISE web engineering workspace \u2014 authenticated read-only model browsing, 3D shell over authoritative backend reads (AISE-015)",
+  "description": "AISE web engineering workspace \u2014 authenticated read-only model browsing, 3D shell over authoritative backend reads (AISE-015); evidence-aware object review UI with governed corrections (AISE-016)",
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",
@@ -15,6 +15,10 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "three": "^0.180.0",
+    "@aise/backend-assurance": "*",
+    "@aise/backend-config": "*",
+    "@aise/backend-evidence": "*",
+    "@aise/backend-logging": "*",
     "@aise/backend-reality-model": "*",
     "@aise/backend-semantics": "*",
     "@aise/engineering-model": "*"
