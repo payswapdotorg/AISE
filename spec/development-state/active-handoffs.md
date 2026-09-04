@@ -60,64 +60,79 @@ Final evidence: PR #26; implementation head `20ed22e7bcb173ca36a592c7ffb3a6863aa
 
 Accepted implementation provides deterministic dimension/specification rules with PASS/FAIL/UNKNOWN semantics, uncertainty-aware interval evaluation, evidence/readiness gating, fail-closed CRITICAL behavior, reader-port-only composition, and content-pinned reports without creating a second authority.
 
-## AISE-022 — Z.ai — RESIDENT WORKER DISPATCH
+## AISE-022 — Z.ai
 
-Status: ACTIVE. Owner: ZAI. Assurance: CRITICAL. Base SHA: `0de293d7081e4d9b4dae6ef30e8d1dedc0d7bef4`.
+Status: FINALIZED. Owner: ZAI. Assurance: CRITICAL. Declared surfaces: `benchmarks/**`, CI.
 
-Work Order: `spec/work-orders.md` — AISE-022. Dependencies AISE-008, AISE-009, AISE-010, and AISE-011 are finalized.
+Final evidence: PR #29; implementation head `d4788eaba2ff6c92978f89eb9d964ba7254e8f82`; CI run `33907110274` SUCCESS with both verify and benchmark jobs; 1,662/1,662 repository tests; benchmark `PASS / UNCHANGED` versus committed baseline; 10/10 mutation/discrimination tests detected; merge commit `f79730b5bed0906a95c94c6d9bfcfa143d8a96b4`.
 
-Declared surfaces: `benchmarks/**`, CI.
+Accepted implementation provides versioned deterministic golden-capture fixtures, ground-truth scoring, honest MISSING handling, regression reporting, critical-class analysis, integrity-verified baseline state, and a dedicated CI benchmark gate without changing the canonical verify stage chain.
 
-Forbidden surfaces: `apps/android/**` and unrelated/cross-scope changes. Do not modify architecture authority, epistemic semantics, Reality Graph authority, Evidence authority, Assurance authority, dependency rules, or Work Item scope.
+## AISE-023 — SHARED
 
-Objective: versioned representative capture/ground-truth fixtures and automated scoring.
+Status: BLOCKED. Owner: SHARED; primary ZAI, secondary GEMINI. Assurance: CRITICAL. Dependencies: AISE-005 and AISE-022. AISE-022 is finalized, but AISE-005 remains blocked; implementation must not begin until AISE-005 is genuinely finalized.
 
-Acceptance:
+Declared surfaces: `docs/reality-lab/**`, benchmark manifests, Android fixture hooks.
 
-- repeatable benchmark run;
-- ground-truth comparison;
-- regression reporting;
-- critical-class analysis.
+Objective: repeatable physical capture missions, ground truth, device metadata and acceptance procedure.
+
+Acceptance: mission manifests; capture protocol; traceable ground truth; repeatable acceptance package.
+
+Dependency gate is explicit: benchmark completion does not satisfy the physical/Android prerequisite represented by AISE-005.
+
+## AISE-015 — Z.ai — RESIDENT WORKER DISPATCH
+
+Status: ACTIVE. Owner: ZAI. Assurance: STANDARD. Base SHA: `f79730b5bed0906a95c94c6d9bfcfa143d8a96b4`.
+
+Work Order: `spec/work-orders.md` — AISE-015. Dependencies AISE-001 and AISE-011 are finalized.
+
+Declared surface: `apps/web/**`.
+
+Forbidden surfaces: `apps/android/**`; unrelated/cross-scope changes; browser-side canonical authority; architecture/epistemic/assurance semantic changes.
+
+Objective: browser project/model workspace with 3D shell and authoritative backend reads.
+
+Acceptance: authenticated/read-only model browsing, stable routing, no browser-side canonical state authority.
 
 Resident worker operating contract:
 
-- Prefer continuation of one resident Z.ai session for this Work Item/change loop.
-- Session must remain bound to repository `pectoraux/AISE`, Work Item `AISE-022`, this exact base SHA, the Work Order, declared scope, required checks, and one branch/PR.
-- Session identity is non-authoritative; recovery must reconstruct from repository + GitHub state.
-- Worker may implement and open/update its one PR, but may not approve, merge, rewrite architecture, or silently broaden scope.
-- On review changes, resume the same branch/PR where possible and apply the exact immutable review packet without dropping or paraphrasing findings.
-- Worker narrative is not verification evidence; Architect independently verifies the repository, diff, CI, and required evidence.
+- Remain resident for the Work Item/change loop where possible.
+- Bind the session to repository `pectoraux/AISE`, Work Item `AISE-015`, exact base SHA `f79730b5bed0906a95c94c6d9bfcfa143d8a96b4`, the Work Order, declared web scope, required checks, and one branch/PR.
+- Recover from repository + GitHub state rather than chat history.
+- One Work Item = one branch = one implementation PR.
+- Worker may implement and update the PR, but may not approve, self-merge, rewrite architecture, or silently broaden scope.
+- Apply review packets exactly on the same branch/PR where possible.
+- Stop on any request to move canonical authority into the browser or change frozen architecture/epistemic semantics.
 
 Required completion evidence:
 
-- exact final implementation head SHA;
-- changed-surface audit showing only authorized benchmark/CI surfaces;
-- `npm run verify` and Work Item-specific benchmark tests;
-- repeatable benchmark execution evidence;
-- ground-truth comparison and scoring evidence;
-- regression reporting;
-- critical-class analysis;
+- exact implementation head SHA;
+- changed-surface audit showing only `apps/web/**`;
+- required lint/typecheck/tests/build evidence;
+- authenticated/read-only model browsing evidence;
+- stable routing evidence;
+- explicit proof that no browser-side canonical authority is introduced;
 - known limitations and explicit out-of-scope;
 - no self-merge.
 
-Stop conditions: any proposed architecture/authority change, epistemic-semantic change, dependency/assurance change, or cross-scope change requires a governed amendment and must stop implementation.
+Stop conditions: any architecture/authority/epistemic/dependency/assurance/scope change requires a governed amendment.
 
 Canonical dispatch packet:
 
 ```text
-WORK_ITEM=AISE-022
+WORK_ITEM=AISE-015
 OWNER=ZAI
 REPOSITORY=pectoraux/AISE
-BASE_SHA=0de293d7081e4d9b4dae6ef30e8d1dedc0d7bef4
-WORK_ORDER=spec/work-orders.md#AISE-022
+BASE_SHA=f79730b5bed0906a95c94c6d9bfcfa143d8a96b4
+WORK_ORDER=spec/work-orders.md#AISE-015
 ARCHITECTURE=v1.0 frozen
-BRANCH=feat/AISE-022-golden-capture-benchmark
-PR=(none yet; create exactly one for AISE-022)
-OWNED_SURFACE=benchmarks/**; CI
-FORBIDDEN_SURFACES=apps/android/**; unrelated/cross-scope changes
-ASSURANCE=CRITICAL
-DEPENDENCIES=AISE-008; AISE-009; AISE-010; AISE-011 (all finalized)
-ACCEPTANCE=repeatable benchmark run; ground-truth comparison; regression reporting; critical-class analysis
+BRANCH=feat/AISE-015-web-workspace
+PR=(none yet; create exactly one for AISE-015)
+OWNED_SURFACE=apps/web/**
+FORBIDDEN_SURFACES=apps/android/**; unrelated/cross-scope changes; browser canonical authority
+ASSURANCE=STANDARD
+DEPENDENCIES=AISE-001; AISE-011 (all finalized)
+ACCEPTANCE=authenticated/read-only model browsing; stable routing; no browser-side canonical state authority
 MERGE_GATE=ARCHITECT
 SELF_MERGE=FORBIDDEN
 ```
