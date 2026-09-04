@@ -19,7 +19,13 @@
  * 6. every failure mode fails closed with a typed error.
  */
 import { describe, expect, it } from "vitest";
-import { applyDecision, readinessReports, reviewStore, seedReviewComposition } from "./review-store";
+import {
+  applyDecision,
+  installReviewCompositionForTesting,
+  readinessReports,
+  reviewStore,
+  seedReviewComposition,
+} from "./review-store";
 import { ReviewDecisionError } from "./review-store";
 import type { ReviewDecisionRequest } from "./decision-contract";
 import { getVersion, listVersions } from "@/server/model-store";
@@ -324,5 +330,143 @@ describe("every failure mode fails closed (typed errors, never a guess)", () => 
     expect(
       version.graph.objects.filter((object) => object.epistemicState === "INFERRED").length,
     ).toBe(v2.graph.objects.filter((object) => object.epistemicState === "INFERRED").length - 1);
+  });
+});
+
+describe("the staged transaction: no partial state, ever (architect review finding 2, PR #35)", () => {
+  it("citing RETRACTED evidence fails closed at resolution — no version, no mapping change", () => {
+    const survey = reviewStore()
+      .evidence.listEvidence("project-golden-room")
+      .find((entry) => entry.record.kind === "MEASUREMENT")!.record;
+    // Retraction is final (the canonical compensating act).
+    reviewStore().evidence.retractEvidence("project-golden-room", survey.evidenceId, {
+      retractedBy: "svc:test-rollback",
+      reason: "test: force the retracted-citation failure mode",
+    });
+
+    const versionsBefore = listVersions(MODEL).map((entry) => entry.version);
+    try {
+      applyDecision(
+        {
+          modelId: MODEL,
+          version: 2,
+          entityId: "room-golden-room",
+          propertyKey: "roomHeight",
+          decision: "CONFIRM",
+          evidenceId: survey.evidenceId,
+        },
+        "reviewer",
+        "2026-09-04T18:00:00Z",
+      );
+      expect.unreachable("expected ReviewDecisionError retracted_evidence");
+    } catch (error) {
+      expect(error).toBeInstanceOf(ReviewDecisionError);
+      expect((error as ReviewDecisionError).code).toBe("retracted_evidence");
+      expect((error as ReviewDecisionError).httpStatus).toBe(400);
+    }
+    // THE no-partial-state proof: the version chain is untouched — the OLD
+    // order (commit first) would have committed a version before the link
+    // failed; the staged order never touches the model store.
+    expect(listVersions(MODEL).map((entry) => entry.version)).toEqual(versionsBefore);
+  });
+
+  it("a mid-transaction mapping failure rolls the journal back — no partial model version remains", () => {
+    const versionsBefore = listVersions(MODEL).map((entry) => entry.version);
+    const headBefore = Math.max(...versionsBefore);
+
+    // A deterministically bounded composition: the fresh seed carries N live
+    // links; the bound N + 2 lets the decision link and ONE carry land, then
+    // the next carry hits BOUNDS_EXCEEDED mid-transaction (the exact position
+    // where the OLD order had already committed the version).
+    const probe = seedReviewComposition();
+    const seedLinks = probe.evidence.listLinks("project-golden-room").length;
+    const tight = seedReviewComposition({ maxEvidenceLinks: seedLinks + 2 });
+    installReviewCompositionForTesting(tight);
+
+    try {
+      applyDecision(
+        {
+          modelId: MODEL,
+          version: 2,
+          entityId: "room-golden-room",
+          propertyKey: "roomHeight",
+          decision: "CONFIRM",
+          measurement: {
+            value: 2.74,
+            unit: "meter",
+            method: "survey/laser-tape",
+            measuredBy: "surveyor-bob",
+            measuredAt: "2026-09-04T14:45:00Z",
+            uncertaintyU: 0.01,
+            confidence: 0.9,
+          },
+        },
+        "reviewer",
+        "2026-09-04T18:30:00Z",
+      );
+      expect.unreachable("expected the bounds failure to roll the transaction back");
+    } catch (error) {
+      expect(error).toBeInstanceOf(ReviewDecisionError);
+      expect((error as ReviewDecisionError).code).toBe("invalid_decision");
+      expect((error as ReviewDecisionError).message).toContain("BOUNDS_EXCEEDED");
+    }
+
+    // THE core proof (the architect's demanded regression): no partial model
+    // version remains — the chain is exactly what it was before the decision.
+    expect(listVersions(MODEL).map((entry) => entry.version)).toEqual(versionsBefore);
+    expect(Math.max(...listVersions(MODEL).map((entry) => entry.version))).toBe(headBefore);
+    expect(getVersion(MODEL, headBefore + 1)).toBeUndefined();
+
+    // The journaled mutations were compensated through honest retractions:
+    // every mapping event pinned to the never-committed staged version is
+    // retracted (none stays live as an orphan).
+    const staged = tight.evidence
+      .listLinks("project-golden-room")
+      .filter((stored) => stored.link.subject.version === headBefore + 1);
+    expect(staged.length).toBeGreaterThanOrEqual(2); // the decision link + at least one carry
+    for (const stored of staged) {
+      expect(stored.retraction).toBeDefined();
+    }
+
+    // The measurement registered during the transaction was retracted too.
+    const registered = tight.evidence
+      .listEvidence("project-golden-room")
+      .find(
+        (entry) =>
+          entry.record.source.kind === "manual-measurement" &&
+          (entry.record.source as { value?: number }).value === 2.74,
+      );
+    expect(registered).toBeDefined();
+    expect(registered!.retraction).toBeDefined();
+  });
+
+  it("the rollback leaves no poisoned state: a later governed decision commits cleanly", () => {
+    // A fresh default-bounds composition (the seed is idempotent over the
+    // same model store) — the failed transaction's retractions live only in
+    // the bounded instance it mutated.
+    installReviewCompositionForTesting(seedReviewComposition());
+    const survey = reviewStore()
+      .evidence.listEvidence("project-golden-room")
+      .find((entry) => entry.record.kind === "MEASUREMENT" && entry.retraction === undefined)!.record;
+    const headBefore = Math.max(...listVersions(MODEL).map((entry) => entry.version));
+
+    const outcome = applyDecision(
+      {
+        modelId: MODEL,
+        version: 2,
+        entityId: "room-golden-room",
+        propertyKey: "roomHeight",
+        decision: "CONFIRM",
+        evidenceId: survey.evidenceId,
+      },
+      "engineer",
+      "2026-09-04T19:00:00Z",
+    );
+    expect(outcome.status).toBe("committed");
+    expect(outcome.newVersion).toBe(headBefore + 1);
+    // The governed mapping is fully live on the new version (citation VALID,
+    // carried support live) — the store is healthy after the rollback.
+    const validity = reviewStore().evidence.computeVersionValidity(MODEL, outcome.newVersion);
+    expect(validity.invalidatedCount).toBe(0);
   });
 });
