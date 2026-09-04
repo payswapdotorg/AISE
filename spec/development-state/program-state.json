@@ -4,7 +4,7 @@
   "artifact": "aise-development-state/program-state",
   "governingArchitecture": "v1.0",
   "architectureState": "frozen",
-  "asOf": "2026-09-04T07:30:00Z",
+  "asOf": "2026-09-04T10:00:00Z",
   "agents": {
     "ZAI": {
       "role": "web-desktop-cloud",
@@ -36,7 +36,7 @@
     {"id":"AISE-002","owner":"GEMINI","status":"finalized","dependencies":[],"assurance":"STANDARD","surfaces":["apps/android/**","Android CI"],"evidence":{"pr":5,"mergeCommit":"52e3a722735dd3265e23177a5191f27f245decb1"}},
     {"id":"AISE-003","owner":"SHARED","primaryAgent":"ZAI","secondaryAgent":"GEMINI","status":"finalized","dependencies":["AISE-001","AISE-002"],"assurance":"HIGH_ASSURANCE","surfaces":["packages/shared-contracts/**"],"evidence":{"pr":6,"mergeCommit":"492fbddc3b7633b49ff6e710ba291a01f78fcb75"}},
     {"id":"AISE-004","owner":"ZAI","status":"finalized","dependencies":["AISE-001","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["backend capture/API"],"evidence":{"pr":7,"mergeCommit":"55146bae0edd0724a487e30becb458493b1c003d"}},
-    {"id":"AISE-005","owner":"GEMINI","status":"blocked","dependencies":["AISE-002","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/capture/**"],"evidence":{"pr":8,"head":"06a13f70262f5e50d011d29abb8bdfeec89dd705","ciRun":33847147969,"ciStatus":"success","androidCiRun":33847147977,"androidCiStatus":"failed","mergeCommit":"66d87da0a70a6f0013fd5bad8f2cf07b716e57d1","blocker":"Post-merge Android CI connectedDebugAndroidTest failed: AppShellEmulatorSmokeTest throws LifecycleRegistry 'Method setCurrentState must be called on the main thread'. Android emulator booted and AndroidTest compilation passed; failure occurs during instrumentation execution."},
+    {"id":"AISE-005","owner":"GEMINI","status":"blocked","dependencies":["AISE-002","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/capture/**"],"evidence":{"pr":8,"head":"06a13f70262f5e50d011d29abb8bdfeec89dd705","ciRun":33847147969,"ciStatus":"success","androidCiRun":33847147977,"androidCiStatus":"failed","mergeCommit":"66d87da0a70a6f0013fd5bad8f2cf07b716e57d1","blocker":"Post-merge Android CI connectedDebugAndroidTest failed: AppShellEmulatorSmokeTest throws LifecycleRegistry 'Method setCurrentState must be called on the main thread'. Android emulator booted and AndroidTest compilation passed; failure occurs during instrumentation execution."}},
     {"id":"AISE-006","owner":"GEMINI","status":"blocked","dependencies":["AISE-005","AISE-004"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/sync/**","explicit shared upload contract files"],"evidence":{"pr":10,"head":"106de267e61e837bdca3c90878154a8d4f3d73ea","ciRun":33834435135,"ciStatus":"success","localTests":"assembleDebug + testDebugUnitTest 28/28","mergeBlock":"AISE-005 is not finalized"},"handoff":"spec/development-state/active-handoffs.md#aise-006--gemini"},
     {"id":"AISE-007","owner":"GEMINI","status":"blocked","dependencies":["AISE-005"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/capture/**"],"evidence":{"mergeBlock":"AISE-005 is not finalized"}},
     {"id":"AISE-008","owner":"ZAI","status":"finalized","dependencies":["AISE-004"],"assurance":"HIGH_ASSURANCE","surfaces":["services/reality/reconstruction/**"]},
@@ -45,11 +45,12 @@
     {"id":"AISE-011","owner":"ZAI","status":"finalized","dependencies":["AISE-009","AISE-010"],"assurance":"CRITICAL","surfaces":["packages/engineering-model/**","backend reality-model persistence"],"evidence":{"pr":13,"head":"0ba9649cd224b1de89c792249f8ad0fb06933bde","ciRun":33806624742,"mergeCommit":"b1731536203e6bc4698f5804cea882675c798abf"}},
     {"id":"AISE-012","owner":"ZAI","status":"finalized","dependencies":["AISE-004","AISE-011"],"assurance":"CRITICAL","surfaces":["services/evidence/**","packages/engineering-model/evidence/**"],"evidence":{"pr":14,"head":"a3efef2da317aca26fc39b3599bf1ae683e3fe1a","ciRun":33818256481,"mergeCommit":"80e7c6f7f5552d6b8562fe7c0c3954c8ad74da1a"}},
     {"id":"AISE-013","owner":"ZAI","status":"finalized","dependencies":["AISE-009","AISE-011","AISE-012"],"assurance":"CRITICAL","surfaces":["services/assurance/**"],"evidence":{"pr":15,"head":"aa4bc27a4c8338beaa45229531711fe2ca37bd26","ciRun":33829570146,"mergeCommit":"66a9e329dd145f38ee69d3286278039f44e9ea70","governanceCommit":"0f1bc09faba49fad6f9af888e4597f86215aef0e"}},
-    {"id":"AISE-014","owner":"ZAI","status":"activated","dependencies":["AISE-011","AISE-013"],"assurance":"CRITICAL","surfaces":["services/verification/model-qa/**"]}
+    {"id":"AISE-014","owner":"ZAI","status":"finalized","dependencies":["AISE-011","AISE-013"],"assurance":"CRITICAL","surfaces":["services/verification/model-qa/**"],"evidence":{"pr":19,"head":"a6212c799a431a1348a3b6b45d2a667ebbde5560","ciRun":33854132772,"ciStatus":"success","mergeCommit":"934e32479d929bcdabf846663e6b625d24bdb8c3"}},
+    {"id":"AISE-020","owner":"ZAI","status":"activated","dependencies":["AISE-013"],"assurance":"CRITICAL","surfaces":["services/assurance/**"]}
   ],
   "execution": {
-    "activeHandoffs": ["AISE-014"],
-    "parallelEligible": ["AISE-014"],
+    "activeHandoffs": ["AISE-020"],
+    "parallelEligible": ["AISE-020"],
     "mergeGate": "architect",
     "selfMergeForbidden": true,
     "selectionRule": "Only explicitly activated work items in this state are started; dependency-eligible does not itself imply activation",
@@ -65,6 +66,7 @@
     "repositorySoleSourceOfTruth": true,
     "conversationIsNonAuthoritative": true,
     "adoptionRecord":"spec/governance/roadmap-authority.md",
+    "residentWorkerProcess":"spec/resident-zai-worker-process.md",
     "postMergeVerificationIncident":"AISE-005 was merged before the separate Android CI workflow was accounted for; status is deliberately non-finalized until corrective verification succeeds."
   }
 }
