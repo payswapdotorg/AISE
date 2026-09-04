@@ -575,3 +575,148 @@ describe("the golden composition (AISE-004 → 010 → 011 → 012 → 013)", ()
     expect(replay.v2Critical.record.assessmentId).toBe(golden.v2Critical.record.assessmentId);
   });
 });
+
+describe("the AISE-020 intent chain over the golden room (REQ-003 / AC-021)", () => {
+  it("capture planning: the declared intent determines required evidence BEFORE capture (REQ-003)", () => {
+    const fresh = compose();
+    const plan = fresh.assurance.resolveTaskAssurance({ intent: "INSPECTION" });
+    expect(plan.declaredProfile).toBeUndefined();
+    expect(plan.effectiveProfile).toBe("CRITICAL");
+    // The system's answer: what an inspection of this project requires.
+    expect(plan.evidenceRequirements).toEqual({
+      minCoverageRatio: 1,
+      uncertaintyOnAllMeasurements: true,
+      requireAtLeastOneMeasurement: true,
+      zeroInvalidatedConfirmed: true,
+      zeroProposedContent: true,
+      budgetEnforced: true,
+    });
+    expect(plan.requiredDimensions).toContain("epistemic-composition");
+    // Deterministic: the same declared intent replays bit-identically.
+    expect(fresh.assurance.resolveTaskAssurance({ intent: "INSPECTION" })).toEqual(plan);
+  });
+
+  it("no hidden downgrade: an INSPECTION task cannot bind below CRITICAL (fail-closed, nothing written)", () => {
+    const fresh = compose();
+    expect(() =>
+      fresh.assurance.registerIntentTaskProfile(PROJECT, {
+        taskId: "task-inspect-cheap",
+        intent: "INSPECTION",
+        profile: "LIGHT",
+      }),
+    ).toThrowError(/below the .* contract floor/);
+    expect(
+      fresh.assurance.listTaskProfiles(PROJECT).map((record) => record.taskId),
+    ).not.toContain("task-inspect-cheap");
+  });
+
+  it("the engine composes on the primitive, it does not rewrite it (additive)", () => {
+    // The AISE-013 primitive verdict stands: the golden
+    // exploration task (INSPECTION declared LIGHT through the
+    // caller-owned path) still reads READY at LIGHT.
+    expect(golden.v1Light.report.verdict).toBe("READY");
+    // ...while the ENGINE's answer for the same intent floors
+    // the requirements to CRITICAL with an explicit finding:
+    const floored = golden.assurance.resolveTaskAssurance({
+      intent: "INSPECTION",
+      declaredProfile: "LIGHT",
+    });
+    expect(floored.effectiveProfile).toBe("CRITICAL");
+    expect(floored.findings).toHaveLength(1);
+    expect(floored.findings[0]!.code).toBe("INTENT_PROFILE_FLOORED");
+    expect(floored.findings[0]!.declaredProfile).toBe("LIGHT");
+    // ...and the binding path refuses that pair outright (above).
+  });
+
+  it("the intent-bound inspection task: v1 NOT_READY at the required depth, v2 READY after the review", () => {
+    const fresh = compose();
+    const register = fresh.assurance.registerIntentTaskProfile(PROJECT, {
+      taskId: "task-inspect",
+      intent: "INSPECTION",
+      profile: "CRITICAL",
+      description: "dimensional compliance inspection",
+      uncertaintyBudget: { lengthM: 0.05 },
+    });
+    expect(register.status).toBe("created");
+    expect(register.record.profile).toBe("CRITICAL");
+
+    // The raw extraction honestly fails the inspection floor.
+    const v1 = fresh.assurance.assessModelVersion(PROJECT, {
+      modelId: MODEL,
+      version: 1,
+      taskId: "task-inspect",
+      assessedBy: "svc:assurance",
+    });
+    expect(v1.report.verdict).toBe("NOT_READY");
+    // The engine's required evidence IS the CRITICAL requirement
+    // set — same blockers as the primitive CRITICAL assessment.
+    expect(v1.report.blockingDimensions).toEqual(golden.v1Critical.report.blockingDimensions);
+    expect(v1.report.blockingDimensions).toContain("measurement-uncertainty");
+
+    // The review pass produced exactly what the intent required
+    // (full linking, a measured confirmation, a satisfied budget).
+    const v2 = fresh.assurance.assessModelVersion(PROJECT, {
+      modelId: MODEL,
+      version: 2,
+      taskId: "task-inspect",
+      assessedBy: "svc:assurance",
+    });
+    expect(v2.report.verdict).toBe("READY");
+    expect(v2.report.blockingDimensions).toEqual([]);
+    expect(v2.report.assertionTotals.withSupport).toBe(9);
+  });
+
+  it("the intent chain is deterministic (bit-identical resolutions and reports on replay)", () => {
+    const a = compose();
+    const b = compose();
+    const resolveA = a.assurance.resolveTaskAssurance({ intent: "AS_BUILT", declaredProfile: "STANDARD" });
+    const resolveB = b.assurance.resolveTaskAssurance({ intent: "AS_BUILT", declaredProfile: "STANDARD" });
+    expect(resolveA).toEqual(resolveB);
+    expect(resolveA.digest).toBe(resolveB.digest);
+
+    const input = {
+      taskId: "task-asbuilt",
+      intent: "AS_BUILT" as const,
+      profile: "CRITICAL" as const,
+      uncertaintyBudget: { lengthM: 0.05 },
+    };
+    a.assurance.registerIntentTaskProfile(PROJECT, input);
+    b.assurance.registerIntentTaskProfile(PROJECT, input);
+    const reportA = a.assurance.assessModelVersion(PROJECT, {
+      modelId: MODEL,
+      version: 2,
+      taskId: "task-asbuilt",
+      assessedBy: "svc:assurance",
+    });
+    const reportB = b.assurance.assessModelVersion(PROJECT, {
+      modelId: MODEL,
+      version: 2,
+      taskId: "task-asbuilt",
+      assessedBy: "svc:assurance",
+    });
+    expect(reportA.record.reportDigest).toBe(reportB.record.reportDigest);
+    expect(reportA.record.assessmentId).toBe(reportB.record.assessmentId);
+  });
+
+  it("no second authority: intent operations leave the canonical digests bit-identical", () => {
+    const fresh = compose();
+    fresh.assurance.resolveTaskAssurance({ intent: "MAINTENANCE", declaredProfile: "LIGHT" });
+    fresh.assurance.registerIntentTaskProfile(PROJECT, {
+      taskId: "task-maint",
+      intent: "MAINTENANCE",
+      description: "routine servicing of the golden room",
+    });
+    const maintenance = fresh.assurance.assessModelVersion(PROJECT, {
+      modelId: MODEL,
+      version: 2,
+      taskId: "task-maint",
+      assessedBy: "svc:assurance",
+    });
+    expect(maintenance.report.assuranceProfile).toBe("STANDARD");
+    expect(maintenance.report.verdict).toBe("READY");
+
+    const v2 = fresh.realityStore.getVersion(MODEL, 2)!;
+    expect(v2.record.digest).toBe(fresh.v2Digest);
+    expect(fresh.evidence.snapshot(PROJECT)!.digest).toBe(fresh.mappingDigest);
+  });
+});

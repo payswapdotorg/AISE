@@ -1,17 +1,22 @@
 /**
- * @aise/backend-assurance — the AISE-013 assurance service.
+ * @aise/backend-assurance — the AISE-013/AISE-020 assurance service.
  *
  * The task-specific model-readiness authority (architecture-lock
  * §1): declared task/assurance profiles and deterministic,
  * content-pinned readiness assessments over the canonical
  * Reality Graph (AISE-011) and the authoritative evidence mapping
- * (AISE-012).
+ * (AISE-012); the task-intent engine (AISE-020) binding capture
+ * intent to required evidence and verification depth.
  *
  * Public surface:
  * - errors   — typed, fail-closed AssuranceError
  * - units    — exact SI conversion factors (budget evaluation)
  * - profile  — task profile vocabulary + the fixed, monotone
  *   profile→requirements mapping
+ * - intent   — the AISE-020 engine: explicit intent contracts
+ *   (frozen floors), the deterministic intent→requirements
+ *   resolution, and the fail-closed intent-bound profile
+ *   constructor
  * - readiness — the pure readiness computation (six dimensions,
  *   binary verdict, reporting-only confidence)
  * - store    — immutable profiles + append-only, integrity-
@@ -49,6 +54,20 @@ export {
   type TaskProfileRecord,
   type UncertaintyBudget,
 } from "./profile.js";
+
+export {
+  INTENT_CONTRACTS,
+  PROFILE_DEPTH,
+  assertIntentFloor,
+  intentTaskProfile,
+  resolveTaskAssurance,
+  type EvidenceRequirements,
+  type IntentContract,
+  type IntentFinding,
+  type IntentFindingCode,
+  type TaskAssuranceInput,
+  type TaskAssuranceResolution,
+} from "./intent.js";
 
 export {
   computeReadiness,

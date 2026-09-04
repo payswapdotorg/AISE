@@ -23,6 +23,10 @@ import { EngineeringModelError, EvidenceError } from "@aise/engineering-model";
 export type AssuranceErrorCode =
   /** A task profile input is invalid (enums, budget, ids). */
   | "PROFILE_INVALID"
+  /** An intent-engine input is invalid (unknown intent/profile). */
+  | "INTENT_INVALID"
+  /** A declared profile is below the intent's contract floor (AISE-020). */
+  | "INTENT_PROFILE_BELOW_FLOOR"
   /** The requested task profile is not registered for the project. */
   | "TASK_NOT_FOUND"
   /** The requested model/version does not exist. */

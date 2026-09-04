@@ -2,7 +2,7 @@
   "name": "@aise/backend-assurance",
   "version": "0.0.0",
   "private": true,
-  "description": "AISE assurance service \u2014 task-specific model-readiness authority: declared task/assurance profiles, deterministic readiness assessment over evidence coverage, measurement-uncertainty discipline, verification validity and epistemic composition (AISE-013)",
+  "description": "AISE assurance service — task-specific model-readiness authority: declared task/assurance profiles, deterministic readiness assessment over evidence coverage, measurement-uncertainty discipline, verification validity and epistemic composition (AISE-013); the task-intent assurance engine: deterministic intent→required-evidence/verification-depth mapping with fail-closed intent floors (AISE-020)",
   "type": "module",
   "exports": {
     ".": {

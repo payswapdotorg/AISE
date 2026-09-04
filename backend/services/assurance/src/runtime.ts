@@ -44,6 +44,12 @@ import {
   type ReadinessReport,
 } from "./readiness.js";
 import type { TaskProfileInput, TaskProfileRecord } from "./profile.js";
+import {
+  intentTaskProfile,
+  resolveTaskAssurance,
+  type TaskAssuranceInput,
+  type TaskAssuranceResolution,
+} from "./intent.js";
 
 /** The assurance service surface. */
 export interface AssuranceService {
@@ -87,6 +93,32 @@ export interface AssuranceService {
     projectId: string,
     filter: { modelId: string; version: number; taskId: string },
   ) => readonly ReadinessAssessmentRecord[];
+
+  /**
+   * The deterministic intent→requirements mapping (AISE-020,
+   * AC-021): what evidence and verification depth work of this
+   * intent REQUIRES. Pure — the REQ-003 capture-planning query
+   * (declare intent, the system determines the requirements).
+   * Below-floor declarations floor TRANSPARENTLY (finding),
+   * never silently.
+   */
+  readonly resolveTaskAssurance: (input: TaskAssuranceInput) => TaskAssuranceResolution;
+
+  /**
+   * Registers an intent-bound task profile through the
+   * fail-closed AISE-020 constructor: a declared profile below
+   * the intent's contract floor is REFUSED
+   * (`INTENT_PROFILE_BELOW_FLOOR`) and nothing is written; at
+   * or above the floor the profile registers exactly like
+   * AISE-013's (immutable, content-pinned, idempotent).
+   */
+  readonly registerIntentTaskProfile: (
+    projectId: string,
+    input: Omit<TaskProfileInput, "intent" | "profile"> & {
+      intent: TaskAssuranceInput["intent"];
+      profile?: TaskProfileInput["profile"];
+    },
+  ) => RegisterProfileResult;
 
   readonly limits: { readonly maxAssertions: number; readonly maxTaskProfiles: number; readonly maxAssessments: number };
 }
@@ -234,6 +266,44 @@ export function buildAssuranceService(
 
     assessmentHistory(projectId, filter) {
       return store.listAssessments(projectId, filter);
+    },
+
+    resolveTaskAssurance(input) {
+      const resolution = resolveTaskAssurance(input);
+      logger.info("assurance.intent.resolved", {
+        intent: resolution.intent,
+        ...(resolution.declaredProfile !== undefined
+          ? { declaredProfile: resolution.declaredProfile }
+          : {}),
+        minimumProfile: resolution.minimumProfile,
+        effectiveProfile: resolution.effectiveProfile,
+        findings: resolution.findings.length,
+        digest: resolution.digest,
+      });
+      return resolution;
+    },
+
+    registerIntentTaskProfile(projectId, input) {
+      // Fail-closed at the boundary: below-floor inputs throw
+      // BEFORE any store write (nothing is half-registered).
+      const record = intentTaskProfile(input);
+      const result = store.registerProfile(projectId, {
+        taskId: record.taskId,
+        intent: record.intent,
+        profile: record.profile,
+        ...(record.description !== undefined ? { description: record.description } : {}),
+        ...(record.uncertaintyBudget !== undefined
+          ? { uncertaintyBudget: { ...record.uncertaintyBudget } }
+          : {}),
+      });
+      logger.info("assurance.intent.profile.registered", {
+        projectId,
+        taskId: result.record.taskId,
+        intent: result.record.intent,
+        profile: result.record.profile,
+        status: result.status,
+      });
+      return result;
     },
 
     limits: {
