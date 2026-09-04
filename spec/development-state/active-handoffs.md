@@ -44,28 +44,38 @@ Final evidence: PR #19; implementation head `a6212c799a431a1348a3b6b45d2a667ebbd
 
 The accepted implementation is read-only over the Reality Graph, Evidence mapping, and AISE-013 readiness state. It provides deterministic QA reports and fail-closed outcomes without mutating canonical authority.
 
-## AISE-020 — Z.ai — RESIDENT WORKER DISPATCH
+## AISE-020 — Z.ai
 
-Status: ACTIVE. Owner: ZAI. Assurance: CRITICAL. Base SHA: `934e32479d929bcdabf846663e6b625d24bdb8c3`.
+Status: FINALIZED. Owner: ZAI. Assurance: CRITICAL. Declared surface: `services/assurance/**`.
 
-Work Order: `spec/work-orders.md` — AISE-020. Dependency AISE-013 is finalized.
+Final evidence: PR #23; implementation head `267a6b83ff095f694c838d54b68b5898c890e001`; CI run `33897439954` SUCCESS; merge commit `8d351c43ca9cfed43ea507296ceedc2bffd3a12a`.
 
-Declared surface: `services/assurance/**`.
+Accepted implementation is the additive task-intent policy layer over AISE-013. It keeps AISE-013 as the single profile→requirements authority, floors intent resolution transparently, rejects below-floor intent-bound profiles before store write, and does not rewrite the AISE-013 primitive path.
 
-Forbidden surfaces: `apps/android/**` and unrelated/cross-scope changes. Do not modify architecture authority, epistemic semantics, verification authority, dependency rules, or the Work Item scope.
+## AISE-021 — Z.ai — RESIDENT WORKER DISPATCH
 
-Objective: deterministic mapping from engineering intent to required evidence and verification depth.
+Status: ACTIVE. Owner: ZAI. Assurance: CRITICAL. Base SHA: `8d351c43ca9cfed43ea507296ceedc2bffd3a12a`.
+
+Work Order: `spec/work-orders.md` — AISE-021. Dependencies AISE-011, AISE-013, AISE-014, and AISE-020 are finalized.
+
+Declared surface: `services/verification/rules/**`.
+
+Forbidden surfaces: `apps/android/**` and unrelated/cross-scope changes. Do not modify architecture authority, epistemic semantics, Reality Graph authority, Evidence authority, Assurance authority, dependency rules, or Work Item scope.
+
+Objective: machine-evaluable dimensions, tolerances and specification rules with PASS/FAIL/UNKNOWN semantics.
 
 Acceptance:
 
-- explicit task profiles;
-- monotone assurance requirements;
-- no hidden downgrade for critical work.
+- deterministic rule evaluation;
+- uncertainty-aware tolerances;
+- evidence/readiness gating;
+- fail-closed critical behavior;
+- discrimination tests.
 
 Resident worker operating contract:
 
 - Prefer continuation of one resident Z.ai session for this Work Item/change loop.
-- Session must remain bound to repository `pectoraux/AISE`, Work Item `AISE-020`, this exact base SHA until a governed transition changes it, the Work Order, declared scope, required checks, and one branch/PR.
+- Session must remain bound to repository `pectoraux/AISE`, Work Item `AISE-021`, this exact base SHA, the Work Order, declared scope, required checks, and one branch/PR.
 - Session identity is non-authoritative; recovery must reconstruct from repository + GitHub state.
 - Worker may implement and open/update its one PR, but may not approve, merge, rewrite architecture, or silently broaden scope.
 - On review changes, resume the same branch/PR where possible and apply the exact immutable review packet without dropping or paraphrasing findings.
@@ -76,10 +86,11 @@ Required completion evidence:
 - exact final implementation head SHA;
 - changed-surface audit showing only authorized surfaces;
 - `npm run verify` and Work Item-specific tests;
-- deterministic behavior/replay evidence;
-- proof that assurance requirements are monotone;
-- explicit task-profile coverage;
-- negative/discrimination evidence showing critical work cannot silently downgrade assurance;
+- deterministic rule-evaluation/replay evidence;
+- uncertainty-aware tolerance evidence;
+- evidence/readiness gating evidence;
+- fail-closed CRITICAL evidence;
+- discrimination/mutation evidence demonstrating unsafe rule downgrades are detected;
 - known limitations and explicit out-of-scope;
 - no self-merge.
 
@@ -88,19 +99,19 @@ Stop conditions: any proposed architecture/authority change, epistemic-semantic 
 Canonical dispatch packet:
 
 ```text
-WORK_ITEM=AISE-020
+WORK_ITEM=AISE-021
 OWNER=ZAI
 REPOSITORY=pectoraux/AISE
-BASE_SHA=934e32479d929bcdabf846663e6b625d24bdb8c3
-WORK_ORDER=spec/work-orders.md#AISE-020
+BASE_SHA=8d351c43ca9cfed43ea507296ceedc2bffd3a12a
+WORK_ORDER=spec/work-orders.md#AISE-021
 ARCHITECTURE=v1.0 frozen
-BRANCH=feat/AISE-020-task-intent-assurance
-PR=(none yet; create exactly one for AISE-020)
-OWNED_SURFACE=services/assurance/**
+BRANCH=feat/AISE-021-engineering-rule-engine
+PR=(none yet; create exactly one for AISE-021)
+OWNED_SURFACE=services/verification/rules/**
 FORBIDDEN_SURFACES=apps/android/**; unrelated/cross-scope changes
 ASSURANCE=CRITICAL
-DEPENDENCIES=AISE-013 (finalized)
-ACCEPTANCE=explicit task profiles; monotone assurance requirements; no hidden downgrade for critical work
+DEPENDENCIES=AISE-011; AISE-013; AISE-014; AISE-020 (all finalized)
+ACCEPTANCE=deterministic rule evaluation; uncertainty-aware tolerances; evidence/readiness gating; fail-closed critical behavior; discrimination tests
 MERGE_GATE=ARCHITECT
 SELF_MERGE=FORBIDDEN
-``` 
+```
