@@ -57,7 +57,7 @@ AISE-005 ⛔ BLOCKED (post-merge verification failure) ─→ AISE-006 ⬜ BLOCK
                                                    └→ AISE-007 ⬜ BLOCKED
 
 ASSURANCE / RULES
-AISE-013 → AISE-020 🟦 ACTIVE → AISE-021 ⬜ BLOCKED
+AISE-020 ✅ FINALIZED → AISE-021 🟦 ACTIVE
 AISE-011 + AISE-013 + AISE-014 + AISE-020 → AISE-021
 
 BENCHMARK / COMPOSITION
@@ -101,9 +101,9 @@ Legend: `✅ FINALIZED` is accepted/merged work; `🟦 ACTIVE` is an authorized 
 | AISE-017 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | 2D export/UI | blocked by scheduler/dependency sequencing |
 | AISE-018 | ⬜ BLOCKED | ZAI | CRITICAL | IFC export | blocked on AISE-017 |
 | AISE-019 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | DXF/PDF | blocked on AISE-017 |
-| AISE-020 | 🟦 ACTIVE | ZAI | CRITICAL | `services/assurance/**` | base `934e32479d929bcdabf846663e6b625d24bdb8c3`; resident worker dispatch iteration 1 |
-| AISE-021 | ⬜ BLOCKED | ZAI | CRITICAL | engineering rules | blocked on AISE-014 + AISE-020 |
-| AISE-022 | ⬜ BLOCKED | ZAI | CRITICAL | benchmarks/CI | blocked on planned benchmark fixtures |
+| AISE-020 | ✅ FINALIZED | ZAI | CRITICAL | `services/assurance/**` | PR #23; head `267a6b83ff095f694c838d54b68b5898c890e001`; CI `33897439954`; 1,540/1,540 repository tests; 8/8 mutation/discrimination; merge `8d351c43ca9cfed43ea507296ceedc2bffd3a12a` |
+| AISE-021 | 🟦 ACTIVE | ZAI | CRITICAL | `services/verification/rules/**` | base `8d351c43ca9cfed43ea507296ceedc2bffd3a12a`; resident worker dispatch |
+| AISE-022 | ⬜ BLOCKED | ZAI | CRITICAL | benchmarks/CI | dependency-eligible by graph but not explicitly activated |
 | AISE-023 | ⬜ BLOCKED | SHARED | CRITICAL | Reality Lab | blocked on AISE-005 + AISE-022 |
 | AISE-024 | ⬜ BLOCKED | ZAI | CRITICAL | integration/E2E | blocked on declared dependencies |
 | AISE-025 | ⬜ BLOCKED | SHARED | CRITICAL | dogfood | blocked on AISE-024 |
