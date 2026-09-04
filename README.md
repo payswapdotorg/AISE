@@ -12,6 +12,29 @@ The governing principle is:
 
 Implementation is performed by replaceable coding agents. The architect/reviewer owns architectural decisions and merge approval. The repository is the durable source of project state; conversational context is not authoritative.
 
+### Read first — all agents
+
+1. [`AGENTS.md`](AGENTS.md) — mandatory operating contract and fresh-agent rule
+2. [`spec/implementation-roadmap.md`](spec/implementation-roadmap.md) — **frozen human-readable roadmap and progress authority**
+3. [`spec/implementation-map.md`](spec/implementation-map.md) — detailed dependency/authority map
+4. [`spec/development-state/program-state.json`](spec/development-state/program-state.json) — canonical machine-readable status and evidence state
+5. [`spec/architecture-lock.md`](spec/architecture-lock.md) — frozen architecture invariants
+6. [`spec/architecture.md`](spec/architecture.md) — architecture description
+7. [`spec/requirements.md`](spec/requirements.md) — product requirements
+8. [`spec/work-items.md`](spec/work-items.md) — work-item scope
+9. [`spec/work-orders.md`](spec/work-orders.md) — durable implementation instructions and acceptance evidence
+10. [`spec/dependency-graph.md`](spec/dependency-graph.md) — dependency authority
+11. [`spec/development-protocol.md`](spec/development-protocol.md) — implementation/governance protocol
+12. [`spec/agent-ownership.md`](spec/agent-ownership.md) — ownership boundaries
+
+### Project tracking rule
+
+The human-readable roadmap and machine state are a synchronized governance pair. The roadmap is the human-facing sequencing/progress authority; `program-state.json` is its machine-readable status/evidence counterpart. A Work Item is selected only from the current repository state, never from chat memory.
+
+After acceptance/merge, the repository must record the exact evidence and merged SHA, finalize the Work Item, synchronize the roadmap row, and recompute dependency eligibility. Important active blockers, exact PR heads, CI failures, and handoff instructions must live under `spec/development-state/`.
+
+The roadmap itself is frozen. Changes to sequencing, dependencies, assurance, scope, or architecture-sensitive governance require a governed repository change and must preserve the architecture lock. Routine status/evidence synchronization must not smuggle scope changes.
+
 ## Repository layout (AISE-001 foundation)
 
 ```text
@@ -25,8 +48,8 @@ aise/
 │   │   └── jobs/                 # Job queue abstraction + worker loop (@aise/backend-jobs)
 │   └── services/
 │       ├── api/                  # HTTP API service process (@aise/backend-api)
-│       ├── assurance/             # Task-readiness assurance service (AISE-013, ZAI; @aise/backend-assurance)
-│       ├── evidence/              # Evidence & provenance service (AISE-012, ZAI; @aise/backend-evidence)
+│       ├── assurance/            # Task-readiness assurance service (AISE-013, ZAI; @aise/backend-assurance)
+│       ├── evidence/             # Evidence & provenance service (AISE-012, ZAI; @aise/backend-evidence)
 │       ├── reality/
 │       │   ├── geometry/        # Geometry measurement primitives (AISE-009, ZAI; @aise/backend-geometry)
 │       │   ├── model/           # Reality Graph ingestion + versioned persistence (AISE-011, ZAI; @aise/backend-reality-model)

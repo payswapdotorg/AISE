@@ -4,7 +4,7 @@
   "artifact": "aise-development-state/program-state",
   "governingArchitecture": "v1.0",
   "architectureState": "frozen",
-  "asOf": "2026-09-04T06:36:00Z",
+  "asOf": "2026-09-04T07:00:00Z",
   "agents": {
     "ZAI": {
       "role": "web-desktop-cloud",
@@ -21,33 +21,48 @@
     "architecture": "spec/architecture.md + spec/architecture-lock.md",
     "requirements": "spec/requirements.md",
     "workItems": "spec/work-items.md",
+    "workOrders": "spec/work-orders.md",
     "dependencies": "spec/dependency-graph.md",
+    "roadmap": "spec/implementation-roadmap.md",
+    "implementationMap": "spec/implementation-map.md",
     "ownership": "spec/agent-ownership.md",
-    "protocol": "spec/development-protocol.md"
+    "protocol": "spec/development-protocol.md",
+    "activeHandoffs": "spec/development-state/active-handoffs.md",
+    "governanceRecord": "spec/governance/roadmap-authority.md",
+    "roadmapStatusContract": "Frozen human-readable sequencing/progress; synchronized with this machine state"
   },
   "workItems": [
-    {"id":"AISE-001","owner":"ZAI","status":"finalized","dependencies":[],"assurance":"STANDARD","surfaces":["root","backend","packages","CI"]},
-    {"id":"AISE-002","owner":"GEMINI","status":"finalized","dependencies":[],"assurance":"STANDARD","surfaces":["apps/android/**","Android CI"]},
-    {"id":"AISE-003","owner":"SHARED","primaryAgent":"ZAI","secondaryAgent":"GEMINI","status":"finalized","dependencies":["AISE-001","AISE-002"],"assurance":"HIGH_ASSURANCE","surfaces":["packages/shared-contracts/**"]},
-    {"id":"AISE-004","owner":"ZAI","status":"finalized","dependencies":["AISE-001","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["backend capture/API"]},
-    {"id":"AISE-005","owner":"GEMINI","status":"activated","dependencies":["AISE-002","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/capture/**"]},
-    {"id":"AISE-006","owner":"GEMINI","status":"blocked","dependencies":["AISE-005","AISE-004"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/sync/**","explicit shared upload contract files"]},
+    {"id":"AISE-001","owner":"ZAI","status":"finalized","dependencies":[],"assurance":"STANDARD","surfaces":["root","backend","packages","CI"],"evidence":{"pr":4,"mergeCommit":"c448f587637f4ad45281ec89ce21daeb96cdfdb"}},
+    {"id":"AISE-002","owner":"GEMINI","status":"finalized","dependencies":[],"assurance":"STANDARD","surfaces":["apps/android/**","Android CI"],"evidence":{"pr":5,"mergeCommit":"52e3a722735dd3265e23177a5191f27f245decb1"}},
+    {"id":"AISE-003","owner":"SHARED","primaryAgent":"ZAI","secondaryAgent":"GEMINI","status":"finalized","dependencies":["AISE-001","AISE-002"],"assurance":"HIGH_ASSURANCE","surfaces":["packages/shared-contracts/**"],"evidence":{"pr":6,"mergeCommit":"492fbddc3b7633b49ff6e710ba291a01f78fcb75"}},
+    {"id":"AISE-004","owner":"ZAI","status":"finalized","dependencies":["AISE-001","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["backend capture/API"],"evidence":{"pr":7,"mergeCommit":"55146bae0edd0724a487e30becb458493b1c003d"}},
+    {"id":"AISE-005","owner":"GEMINI","status":"activated","dependencies":["AISE-002","AISE-003"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/capture/**"],"evidence":{"pr":8,"head":"60d92a2cf13112e65b6bf2706ca5b33a4df1a30b","ciRun":33765308578,"ciStatus":"failed","blocker":"Android instrumentation-test compilation fails at AppShellEmulatorSmokeTest.kt:29:37 with unresolved rememberNavController"},"handoff":"spec/development-state/active-handoffs.md#aise-005--gemini"},
+    {"id":"AISE-006","owner":"GEMINI","status":"blocked","dependencies":["AISE-005","AISE-004"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/sync/**","explicit shared upload contract files"],"evidence":{"pr":10,"head":"106de267e61e837bdca3c90878154a8d4f3d73ea","ciRun":33834435135,"ciStatus":"success","localTests":"assembleDebug + testDebugUnitTest 28/28","mergeBlock":"hard dependency AISE-005 not finalized"},"handoff":"spec/development-state/active-handoffs.md#aise-006--gemini"},
+    {"id":"AISE-007","owner":"GEMINI","status":"blocked","dependencies":["AISE-005"],"assurance":"HIGH_ASSURANCE","surfaces":["apps/android/capture/**"]},
     {"id":"AISE-008","owner":"ZAI","status":"finalized","dependencies":["AISE-004"],"assurance":"HIGH_ASSURANCE","surfaces":["services/reality/reconstruction/**"]},
-    {"id":"AISE-009","owner":"ZAI","status":"finalized","dependencies":["AISE-008"],"assurance":"CRITICAL","surfaces":["services/reality/geometry/**"]},
-    {"id":"AISE-010","owner":"ZAI","status":"finalized","dependencies":["AISE-008","AISE-009"],"assurance":"HIGH_ASSURANCE","surfaces":["services/reality/semantics/**"]},
-    {"id":"AISE-011","owner":"ZAI","status":"finalized","dependencies":["AISE-009","AISE-010"],"assurance":"CRITICAL","surfaces":["packages/engineering-model/**","backend reality-model persistence"]},
-    {"id":"AISE-012","owner":"ZAI","status":"finalized","dependencies":["AISE-004","AISE-011"],"assurance":"CRITICAL","surfaces":["services/evidence/**","packages/engineering-model/evidence/**"]},
-    {"id":"AISE-013","owner":"ZAI","status":"finalized","dependencies":["AISE-009","AISE-011","AISE-012"],"assurance":"CRITICAL","surfaces":["services/assurance/**"]},
+    {"id":"AISE-009","owner":"ZAI","status":"finalized","dependencies":["AISE-008"],"assurance":"CRITICAL","surfaces":["services/reality/geometry/**"],"evidence":{"pr":11,"head":"2d43515c74b607278768c09e3d31bf180bbbe133","ciRun":33789886879,"mergeCommit":"77edaca38fadea95c431d4f191642e0395d8cc17"}},
+    {"id":"AISE-010","owner":"ZAI","status":"finalized","dependencies":["AISE-008","AISE-009"],"assurance":"HIGH_ASSURANCE","surfaces":["services/reality/semantics/**"],"evidence":{"pr":12,"head":"ec0a319e40009e4ed5e29b6fa8267595419ccb5e","ciRun":33801132802,"mergeCommit":"5c840c1465fa5213e02b547dd03ad456066fe820"}},
+    {"id":"AISE-011","owner":"ZAI","status":"finalized","dependencies":["AISE-009","AISE-010"],"assurance":"CRITICAL","surfaces":["packages/engineering-model/**","backend reality-model persistence"],"evidence":{"pr":13,"head":"0ba9649cd224b1de89c792249f8ad0fb06933bde","ciRun":33806624742,"mergeCommit":"b1731536203e6bc4698f5804cea882675c798abf"}},
+    {"id":"AISE-012","owner":"ZAI","status":"finalized","dependencies":["AISE-004","AISE-011"],"assurance":"CRITICAL","surfaces":["services/evidence/**","packages/engineering-model/evidence/**"],"evidence":{"pr":14,"head":"a3efef2da317aca26fc39b3599bf1ae683e3fe1a","ciRun":33818256481,"mergeCommit":"80e7c6f7f5552d6b8562fe7c0c3954c8ad74da1a"}},
+    {"id":"AISE-013","owner":"ZAI","status":"finalized","dependencies":["AISE-009","AISE-011","AISE-012"],"assurance":"CRITICAL","surfaces":["services/assurance/**"],"evidence":{"pr":15,"head":"aa4bc27a4c8338beaa45229531711fe2ca37bd26","ciRun":33829570146,"mergeCommit":"66a9e329dd145f38ee69d3286278039f44e9ea70","governanceCommit":"0f1bc09faba49fad6f9af888e4597f86215aef0e"}},
     {"id":"AISE-014","owner":"ZAI","status":"activated","dependencies":["AISE-011","AISE-013"],"assurance":"CRITICAL","surfaces":["services/verification/model-qa/**"]}
   ],
   "execution": {
     "activeHandoffs": ["AISE-005","AISE-014"],
     "parallelEligible": ["AISE-005","AISE-014"],
     "mergeGate": "architect",
-    "selfMergeForbidden": true
+    "selfMergeForbidden": true,
+    "selectionRule": "Only explicitly activated work items in this state are started; dependency-eligible does not itself imply activation"
   },
   "dogfood": {
     "enabledFromWorkItem": "AISE-025",
     "physicalBenchmarkRequiredForCriticalChanges": true
+  },
+  "governance": {
+    "roadmapFrozen": true,
+    "roadmapSyncRequired": true,
+    "repositorySoleSourceOfTruth": true,
+    "conversationIsNonAuthoritative": true,
+    "adoptionRecord":"spec/governance/roadmap-authority.md"
   }
 }

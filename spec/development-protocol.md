@@ -6,6 +6,13 @@ This protocol adapts the proven WorkflowOS development pattern to a physical-wor
 
 The repository is the durable source of development truth. Architecture, requirements, Work Items, dependency graph, agent ownership, assurance rules, decisions, handoffs and completion evidence must be repository-resident.
 
+The project-tracking authority is a synchronized pair:
+
+- `spec/implementation-roadmap.md` — frozen, human-readable implementation sequencing and progress artifact.
+- `spec/development-state/program-state.json` — canonical machine-readable status/evidence counterpart used by automation and eligibility checks.
+
+`spec/implementation-map.md` provides detailed dependency/authority mapping and is not a second status authority. `spec/work-orders.md` provides durable implementation contracts. A roadmap/program-state mismatch is an invalid governed state. Conversation history is never required for implementation or recovery.
+
 ## 2. Work Item lifecycle
 
 ```text
@@ -43,7 +50,8 @@ A Work Item may run concurrently only if:
 - its declared change surfaces do not conflict with another in-flight Work Item;
 - it has an assigned owner agent;
 - required assurance profile is known;
-- required verification environment is available.
+- required verification environment is available;
+- it is explicitly activated in current program state.
 
 An independent branch/PR is the unit of parallel execution.
 
@@ -70,7 +78,7 @@ Each agent receives a durable Work Order containing:
 - evidence requirements;
 - stop conditions.
 
-An agent should be able to implement from the Work Order plus repository state without conversational history.
+Active operational blockers and exact implementation handoffs belong under `spec/development-state/`.
 
 ## 6. Evidence package
 
@@ -155,8 +163,12 @@ If implementation discovers that the frozen architecture is insufficient, stop t
 
 ## 12. Recovery
 
-A partially completed Work Item must leave durable handoff state sufficient for a new agent to resume without relying on chat memory.
+A partially completed Work Item must leave durable handoff state sufficient for a new agent to resume without relying on chat memory. Exact PR heads, CI failures, merge blocks and required corrective actions should be recorded in `spec/development-state/active-handoffs.md` when relevant.
 
-## 13. Quality principle
+## 13. Status synchronization
+
+After acceptance/merge, synchronize the exact evidence and merged SHA in `program-state.json`, update the corresponding roadmap ledger row, and recompute dependency eligibility before the next activation. Never mark a Work Item final from agent narrative alone.
+
+## 14. Quality principle
 
 Parallelism increases throughput; it must not reduce assurance. The merge gate is independent verification plus architect review, not agent count or execution speed.
