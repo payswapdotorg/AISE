@@ -32,6 +32,8 @@ aise/
 │       │   ├── model/           # Reality Graph ingestion + versioned persistence (AISE-011, ZAI; @aise/backend-reality-model)
 │       │   ├── reconstruction/   # Reconstruction pipeline foundation (AISE-008, ZAI; @aise/backend-reconstruction)
 │       │   └── semantics/       # Architectural object extraction (AISE-010, ZAI; @aise/backend-semantics)
+│       ├── verification/
+│       │   └── model-qa/         # Self-consistency/geometry QA verifier (AISE-014, ZAI; @aise/backend-model-qa)
 │       └── worker/               # Background worker process (@aise/backend-worker)
 ├── packages/
 │   ├── shared-contracts/         # Versioned cross-platform interchange contracts (AISE-003, SHARED; @aise/shared-contracts)
@@ -60,6 +62,7 @@ cp .env.example .env   # optional: gitignored local configuration
 | `npm run dev:model` | Start the Reality Graph model service (AISE-011 ingestion + persistence) |
 | `npm run dev:evidence` | Start the evidence & provenance service (AISE-012 registration, linking, validity) |
 | `npm run dev:assurance` | Start the assurance service (AISE-013 task profiles, readiness assessment, history) |
+| `npm run dev:model-qa` | Start the model-QA service (AISE-014 self-consistency/geometry verification) |
 | `npm run dev:worker` | Start the background worker process |
 | `npm run dev:web` | Start the web app dev server (Next.js) |
 | `npm run lint` | ESLint over all workspaces |

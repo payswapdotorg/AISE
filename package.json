@@ -13,7 +13,8 @@
     "packages/*",
     "backend/packages/*",
     "backend/services/*",
-    "backend/services/reality/*"
+    "backend/services/reality/*",
+    "backend/services/verification/*"
   ],
   "scripts": {
     "dev:api": "npm run dev --workspace @aise/backend-api",
@@ -23,6 +24,7 @@
     "dev:model": "npm run dev --workspace @aise/backend-reality-model",
     "dev:evidence": "npm run dev --workspace @aise/backend-evidence",
     "dev:assurance": "npm run dev --workspace @aise/backend-assurance",
+    "dev:model-qa": "npm run dev --workspace @aise/backend-model-qa",
     "dev:worker": "npm run dev --workspace @aise/backend-worker",
     "dev:web": "npm run dev --workspace @aise/web",
     "lint": "eslint .",
