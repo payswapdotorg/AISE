@@ -62,6 +62,7 @@ aise/
 ├── packages/
 │   ├── shared-contracts/         # Versioned cross-platform interchange contracts (AISE-003, SHARED; @aise/shared-contracts)
 │   └── engineering-model/        # Reality Graph core — canonical engineering model (AISE-011, ZAI; @aise/engineering-model)
+├── benchmarks/                   # Golden-capture benchmark harness — versioned fixtures, scoring, baselines (AISE-022, ZAI; @aise/benchmarks)
 ├── scripts/                      # Repository tooling (foundation smoke test)
 └── .github/workflows/            # CI configuration
 ```
@@ -88,6 +89,7 @@ cp .env.example .env   # optional: gitignored local configuration
 | `npm run dev:assurance` | Start the assurance service (AISE-013 task profiles, readiness assessment, history) |
 | `npm run dev:model-qa` | Start the model-QA service (AISE-014 self-consistency/geometry verification) |
 | `npm run dev:rules` | Start the engineering rule engine service (AISE-021 deterministic rule evaluation) |
+| `npm run benchmark` | Run the golden-capture benchmark: scoring, critical-class analysis, baseline regression (AISE-022; separate CI job) |
 | `npm run dev:worker` | Start the background worker process |
 | `npm run dev:web` | Start the web app dev server (Next.js) |
 | `npm run lint` | ESLint over all workspaces |

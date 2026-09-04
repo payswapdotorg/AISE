@@ -28,3 +28,27 @@ jobs:
       # suite regression-guards this file against package.json/README drift.
       - name: Verify (lint, typecheck, test, smoke, web build)
         run: npm run verify
+
+  benchmark:
+    name: Golden capture benchmark (npm run benchmark)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies (exact, from lockfile)
+        run: npm ci
+
+      # AISE-022 (REQ-014 / AC-131): model/reconstruction changes
+      # run against the golden captures before critical release.
+      # The benchmark is its own gate — deliberately NOT part of
+      # scripts.verify (the single verification-contract guard in
+      # the smoke suite keeps the verify stage list frozen).
+      - name: Benchmark (golden captures vs committed baseline)
+        run: npm run benchmark

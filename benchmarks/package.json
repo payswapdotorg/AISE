@@ -1,0 +1,25 @@
+{
+  "name": "@aise/benchmarks",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AISE golden-capture benchmark harness \u2014 versioned representative capture/ground-truth fixtures, deterministic automated scoring against ground truth, regression reporting against committed baselines and critical-class analysis (AISE-022)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@aise/backend-semantics": "*",
+    "@aise/backend-reality-model": "*",
+    "@aise/engineering-model": "*",
+    "@aise/backend-geometry": "*"
+  },
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "benchmark": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}
