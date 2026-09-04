@@ -48,24 +48,32 @@ Final evidence: PR #32; exact implementation head `cb8743f70c2a146892e5fab701bef
 
 Accepted outcome: authenticated/read-only browser workspace, stable model/version routing, authoritative server-side model reads, epistemic passthrough, 3D inspection shell, and no browser-side canonical authority. Corrections addressed the read-only `process.env.NODE_ENV` typing issue and future-dated fixture timestamp.
 
-## AISE-016 — Z.ai — RESIDENT WORKER DISPATCH
+## AISE-016 — Z.ai
 
-Status: ACTIVE. Owner: ZAI. Assurance: HIGH_ASSURANCE. Base SHA: `197bce9ec96198a049d3db29675c14800729987c`.
+Status: FINALIZED. Owner: ZAI. Assurance: HIGH_ASSURANCE. Declared surface: `apps/web/review/**`.
 
-Work Order: `spec/work-orders.md` — AISE-016. Dependencies AISE-012, AISE-013, AISE-015 are finalized.
+Final evidence: PR #35; exact implementation head `4ec9ca559ec241f86d00d909a1880bafe21df859`; CI `33925697514` SUCCESS; 1,738/1,738 repository tests; 11/11 mutation/discrimination detected; architect clearance review `5118400479`; merge `51ffa38a2887d39671b83ef174d2517c5fab248d`.
 
-Declared surface: `apps/web/review/**`.
+Accepted outcome: evidence-aware object/property review with authoritative evidence traces, epistemic/confidence/uncertainty presentation, and a staged governed decision path. Transaction safety was corrected so mapping mutations are staged and journaled before the final model-version commit; failure is compensated through canonical retractions with no partial committed model version.
 
-Forbidden surfaces: `apps/android/**`; unrelated/cross-scope changes; canonical authority outside the governed model/evidence/readiness services; architecture or epistemic semantic changes.
+## AISE-017 — Z.ai — RESIDENT WORKER DISPATCH
 
-Objective: evidence-aware object review UI covering object selection, evidence, properties, uncertainty, confidence, epistemic state, and governed review/correction interactions.
+Status: ACTIVE. Owner: ZAI. Assurance: HIGH_ASSURANCE. Base SHA: `51ffa38a2887d39671b83ef174d2517c5fab248d`.
 
-Acceptance: every consequential displayed assertion can trace to evidence/authority; corrections produce governed model changes, not UI-only mutations.
+Work Order: `spec/work-orders.md` — AISE-017. Dependencies AISE-009 and AISE-011 are finalized.
+
+Declared surfaces: `services/export/2d/**`, `apps/web/2d/**`.
+
+Forbidden surfaces: `apps/android/**`; unrelated/cross-scope changes; canonical authority changes; architecture or epistemic semantic changes.
+
+Objective: deterministic 2D plan projection/export over the canonical Reality Graph with traceable source/evidence references and explicit limitations; browser code must not become canonical authority.
+
+Acceptance: produce the governed 2D plan capability defined by AISE-017; derived outputs remain downstream of authoritative server-side model state; limitations are explicit; no silent epistemic upgrades or second authority.
 
 Resident worker operating contract:
 
 - Remain resident for the Work Item/change loop where possible.
-- Bind the session to repository `pectoraux/AISE`, Work Item `AISE-016`, exact base SHA above, the Work Order, declared review scope, required checks, and one branch/PR.
+- Bind the session to repository `pectoraux/AISE`, Work Item `AISE-017`, exact base SHA above, the Work Order, declared review scope, required checks, and one branch/PR.
 - Recover from repository + GitHub state rather than chat history.
 - One Work Item = one branch = one implementation PR.
 - Worker may implement/update the PR but may not approve, self-merge, rewrite architecture, or silently broaden scope.
@@ -75,19 +83,21 @@ Resident worker operating contract:
 Canonical dispatch packet:
 
 ```text
-WORK_ITEM=AISE-016
+WORK_ITEM=AISE-017
 OWNER=ZAI
 REPOSITORY=pectoraux/AISE
-BASE_SHA=197bce9ec96198a049d3db29675c14800729987c
-WORK_ORDER=spec/work-orders.md#AISE-016
+BASE_SHA=51ffa38a2887d39671b83ef174d2517c5fab248d
+WORK_ORDER=spec/work-orders.md#AISE-017
 ARCHITECTURE=v1.0 frozen
-BRANCH=feat/AISE-016-evidence-review-ui
-PR=(none yet; create exactly one for AISE-016)
-OWNED_SURFACE=apps/web/review/**
+BRANCH=feat/AISE-017-2d-plan
+PR=(none yet; create exactly one for AISE-017)
+OWNED_SURFACE=services/export/2d/**;apps/web/2d/**
 FORBIDDEN_SURFACES=apps/android/**; unrelated/cross-scope changes; canonical authority changes; epistemic semantic changes
 ASSURANCE=HIGH_ASSURANCE
-DEPENDENCIES=AISE-012; AISE-013; AISE-015 (all finalized)
-ACCEPTANCE=every consequential displayed assertion traces to evidence/authority; corrections produce governed model changes, not UI-only mutations
+DEPENDENCIES=AISE-009; AISE-011 (all finalized)
+ACCEPTANCE=deterministic 2D plan projection/export over canonical Reality Graph with traceable source/evidence references and explicit limitations; no browser canonical authority
 MERGE_GATE=ARCHITECT
 SELF_MERGE=FORBIDDEN
 ```
+
+Dispatch relay issue: GitHub Issue #36. It is the canonical relay packet and does not claim direct transport to Z.ai.
