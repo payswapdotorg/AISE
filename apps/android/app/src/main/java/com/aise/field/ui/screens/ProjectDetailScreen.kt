@@ -1,5 +1,6 @@
 package com.aise.field.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,6 +23,7 @@ fun ProjectDetailScreen(
     projectStore: LocalProjectStore,
     captureStore: LocalCaptureStore,
     onStartCaptureClick: (String) -> Unit,
+    onSessionClick: (String) -> Unit = {},
     onBackClick: () -> Unit
 ) {
     val project by projectStore.getProjectById(projectId).collectAsState(initial = null)
@@ -103,6 +105,7 @@ fun ProjectDetailScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 4.dp)
+                                    .clickable { onSessionClick(session.id) }
                                     .testTag("session_item_${session.id}"),
                                 colors = CardDefaults.cardColors(
                                     containerColor = MaterialTheme.colorScheme.surface

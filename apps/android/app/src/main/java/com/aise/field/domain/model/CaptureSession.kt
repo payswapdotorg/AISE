@@ -13,5 +13,6 @@ data class CaptureSession(
     val intent: CaptureIntent,
     val assuranceProfile: AssuranceProfile,
     val status: SessionStatus = SessionStatus.DRAFT,
-    val createdAt: Long
+    val createdAt: Long,
+    val updatedAt: Long? = null
 )

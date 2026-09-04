@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.aise.field.data.store.LocalCaptureStore
 import com.aise.field.data.store.LocalProjectStore
+import com.aise.field.ui.screens.CaptureSessionScreen
 import com.aise.field.ui.screens.ProjectDetailScreen
 import com.aise.field.ui.screens.ProjectListScreen
 import com.aise.field.ui.screens.SettingsScreen
@@ -17,10 +18,12 @@ object AiseDestinations {
     const val PROJECT_LIST = "project_list"
     const val PROJECT_DETAIL = "project_detail/{projectId}"
     const val START_CAPTURE = "start_capture/{projectId}"
+    const val CAPTURE_SESSION = "capture_session/{sessionId}"
     const val SETTINGS = "settings"
 
     fun projectDetail(projectId: String) = "project_detail/$projectId"
     fun startCapture(projectId: String) = "start_capture/$projectId"
+    fun captureSession(sessionId: String) = "capture_session/$sessionId"
 }
 
 @Composable
@@ -57,6 +60,9 @@ fun AiseNavGraph(
                 onStartCaptureClick = { pId ->
                     navController.navigate(AiseDestinations.startCapture(pId))
                 },
+                onSessionClick = { sessionId ->
+                    navController.navigate(AiseDestinations.captureSession(sessionId))
+                },
                 onBackClick = {
                     navController.popBackStack()
                 }
@@ -74,6 +80,20 @@ fun AiseNavGraph(
                 onSessionCreated = {
                     navController.popBackStack()
                 },
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(
+            route = AiseDestinations.CAPTURE_SESSION,
+            arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val sessionId = backStackEntry.arguments?.getString("sessionId") ?: ""
+            CaptureSessionScreen(
+                sessionId = sessionId,
+                captureStore = captureStore,
                 onBackClick = {
                     navController.popBackStack()
                 }
