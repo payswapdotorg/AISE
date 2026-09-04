@@ -57,11 +57,12 @@ AISE-005 ⛔ BLOCKED (post-merge verification failure) ─→ AISE-006 ⬜ BLOCK
                                                    └→ AISE-007 ⬜ BLOCKED
 
 ASSURANCE / RULES
-AISE-020 ✅ FINALIZED → AISE-021 🟦 ACTIVE
-AISE-011 + AISE-013 + AISE-014 + AISE-020 → AISE-021
+AISE-020 ✅ FINALIZED → AISE-021 ✅ FINALIZED
+                                  │
+                                  └──→ AISE-030 ⬜
 
 BENCHMARK / COMPOSITION
-AISE-008 + AISE-009 + AISE-010 + AISE-011 → AISE-022 ⬜ BLOCKED
+AISE-008 + AISE-009 + AISE-010 + AISE-011 → AISE-022 🟦 ACTIVE
 AISE-005 + AISE-022 → AISE-023 ⬜ BLOCKED
 AISE-006 + AISE-008 + AISE-011 + AISE-012 + AISE-015 + AISE-018 + AISE-019 → AISE-024 ⬜
 AISE-024 → AISE-025 ⬜
@@ -102,8 +103,8 @@ Legend: `✅ FINALIZED` is accepted/merged work; `🟦 ACTIVE` is an authorized 
 | AISE-018 | ⬜ BLOCKED | ZAI | CRITICAL | IFC export | blocked on AISE-017 |
 | AISE-019 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | DXF/PDF | blocked on AISE-017 |
 | AISE-020 | ✅ FINALIZED | ZAI | CRITICAL | `services/assurance/**` | PR #23; head `267a6b83ff095f694c838d54b68b5898c890e001`; CI `33897439954`; 1,540/1,540 repository tests; 8/8 mutation/discrimination; merge `8d351c43ca9cfed43ea507296ceedc2bffd3a12a` |
-| AISE-021 | 🟦 ACTIVE | ZAI | CRITICAL | `services/verification/rules/**` | base `8d351c43ca9cfed43ea507296ceedc2bffd3a12a`; resident worker dispatch |
-| AISE-022 | ⬜ BLOCKED | ZAI | CRITICAL | benchmarks/CI | dependency-eligible by graph but not explicitly activated |
+| AISE-021 | ✅ FINALIZED | ZAI | CRITICAL | `services/verification/rules/**` | PR #26; head `20ed22e7bcb173ca36a592c7ffb3a6863aaac00f`; CI `33902235657`; 1,628/1,628 repository tests; 10/10 mutation/discrimination; merge `0de293d7081e4d9b4dae6ef30e8d1dedc0d7bef4` |
+| AISE-022 | 🟦 ACTIVE | ZAI | CRITICAL | benchmarks/CI | base `0de293d7081e4d9b4dae6ef30e8d1dedc0d7bef4`; resident worker dispatch |
 | AISE-023 | ⬜ BLOCKED | SHARED | CRITICAL | Reality Lab | blocked on AISE-005 + AISE-022 |
 | AISE-024 | ⬜ BLOCKED | ZAI | CRITICAL | integration/E2E | blocked on declared dependencies |
 | AISE-025 | ⬜ BLOCKED | SHARED | CRITICAL | dogfood | blocked on AISE-024 |
