@@ -4,7 +4,7 @@
   "artifact": "aise-development-state/program-state",
   "governingArchitecture": "v1.0",
   "architectureState": "frozen",
-  "asOf": "2026-09-03T20:30:00Z",
+  "asOf": "2026-09-04T00:45:00Z",
   "agents": {
     "ZAI": {
       "role": "web-desktop-cloud",
@@ -35,11 +35,12 @@
     {"id":"AISE-009","owner":"ZAI","status":"finalized","dependencies":["AISE-008"],"assurance":"CRITICAL","surfaces":["services/reality/geometry/**"]},
     {"id":"AISE-010","owner":"ZAI","status":"finalized","dependencies":["AISE-008","AISE-009"],"assurance":"HIGH_ASSURANCE","surfaces":["services/reality/semantics/**"]},
     {"id":"AISE-011","owner":"ZAI","status":"finalized","dependencies":["AISE-009","AISE-010"],"assurance":"CRITICAL","surfaces":["packages/engineering-model/**","backend reality-model persistence"]},
-    {"id":"AISE-012","owner":"ZAI","status":"activated","dependencies":["AISE-004","AISE-011"],"assurance":"CRITICAL","surfaces":["services/evidence/**","packages/engineering-model/evidence/**"]}
+    {"id":"AISE-012","owner":"ZAI","status":"finalized","dependencies":["AISE-004","AISE-011"],"assurance":"CRITICAL","surfaces":["services/evidence/**","packages/engineering-model/evidence/**"]},
+    {"id":"AISE-013","owner":"ZAI","status":"activated","dependencies":["AISE-009","AISE-011","AISE-012"],"assurance":"CRITICAL","surfaces":["services/assurance/**"]}
   ],
   "execution": {
-    "activeHandoffs": ["AISE-005","AISE-012"],
-    "parallelEligible": ["AISE-005","AISE-012"],
+    "activeHandoffs": ["AISE-005","AISE-013"],
+    "parallelEligible": ["AISE-005","AISE-013"],
     "mergeGate": "architect",
     "selfMergeForbidden": true
   },
