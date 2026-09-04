@@ -1,14 +1,11 @@
 package com.aise.field
 
-import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.aise.field.domain.model.AssuranceProfile
 import com.aise.field.domain.model.CaptureIntent
-import com.aise.field.ui.navigation.AiseNavGraph
-import com.aise.field.ui.theme.AiseTheme
+import com.aise.field.ui.MainActivity
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,27 +14,19 @@ import org.junit.runner.RunWith
 class AppShellEmulatorSmokeTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun fullAcceptancePath_emulatorSmokeTest() {
-        val app = ApplicationProvider.getApplicationContext<AiseApplication>()
-
-        composeTestRule.setContent {
-            AiseTheme {
-                val navController = rememberNavController()
-                AiseNavGraph(
-                    navController = navController,
-                    projectStore = app.projectStore,
-                    captureStore = app.captureStore
-                )
-            }
-        }
-
         // 1. Launch -> ProjectList: Create a new project draft
         composeTestRule.onNodeWithTag("btn_new_project").performClick()
-        composeTestRule.waitForIdle()
+
+        // Wait for created project item to appear in Room Flow collection
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onAllNodesWithText("Project 1", substring = true)
+                .fetchSemanticsNodes().isNotEmpty()
+        }
 
         // 2. Click created Project -> ProjectDetail
         composeTestRule.onNodeWithText("Project 1", substring = true).performClick()
