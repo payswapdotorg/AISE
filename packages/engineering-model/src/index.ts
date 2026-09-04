@@ -171,3 +171,89 @@ export {
   toModelObjectRef,
   type RelationshipView,
 } from "./query.js";
+
+// --- AISE-012: evidence and provenance graph layer -------------------------
+
+export {
+  EvidenceError,
+  toEvidenceError,
+  type EvidenceErrorCode,
+  type EvidenceErrorDetails,
+} from "./evidence/errors.js";
+
+export {
+  EVIDENCE_KINDS,
+  compatibleAssetTypes,
+  deriveEvidenceId,
+  evidenceRecord,
+  recordContentHash,
+  sourcePin,
+  validateAcquisition,
+  type CaptureSource,
+  type DocumentSource,
+  type EvidenceKind,
+  type EvidenceRecord,
+  type EvidenceRecordInput,
+  type EvidenceSource,
+  type HumanObservationSource,
+  type ManualMeasurementSource,
+} from "./evidence/records.js";
+
+export {
+  describeSubject,
+  evidenceSubject,
+  resolveSubject,
+  subjectKey,
+  validateSubject,
+  type EvidenceSubject,
+  type EvidenceSubjectKind,
+  type ResolvedSubject,
+} from "./evidence/subjects.js";
+
+export {
+  assertRetractionNotBefore,
+  deriveLinkId,
+  evidenceLink,
+  evidenceRetraction,
+  linkRetraction,
+  validateEvidenceRetraction,
+  validateLink,
+  validateLinkRetraction,
+  type EvidenceLink,
+  type EvidenceLinkInput,
+  type EvidenceRetraction,
+  type LinkRetraction,
+} from "./evidence/links.js";
+
+export {
+  assembleEvidenceGraph,
+  isEvidenceLive,
+  liveEvidenceForSubject,
+  liveLinks,
+  liveLinksForSubject,
+  liveRecords,
+  subjectsForEvidence,
+  type AssembleEvidenceGraphInput,
+  type EvidenceGraph,
+} from "./evidence/graph.js";
+
+export { validateEvidenceGraph } from "./evidence/validate.js";
+
+export {
+  assertionSupport,
+  computeVersionValidity,
+  listConfirmedAssertionSubjects,
+  type AssertionSupport,
+  type ConfirmedAssertionRef,
+  type ConfirmedAssertionValidity,
+  type InvalidationReason,
+  type VersionValidityReport,
+} from "./evidence/validity.js";
+
+export {
+  evidenceBundleForEntity,
+  evidenceCoverage,
+  type EntityEvidenceCoverage,
+  type EvidenceCoverageReport,
+  type SubjectEvidenceBundle,
+} from "./evidence/query.js";

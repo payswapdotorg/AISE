@@ -1,0 +1,28 @@
+{
+  "name": "@aise/backend-evidence",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AISE evidence service — first-class immutable content-pinned evidence records, the authoritative assertion→evidence provenance mapping, and verification-validity persistence with boundary verification (AISE-012)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@aise/backend-config": "*",
+    "@aise/backend-logging": "*",
+    "@aise/engineering-model": "*",
+    "@aise/shared-contracts": "*"
+  },
+  "devDependencies": {
+    "@aise/backend-reality-model": "*",
+    "@aise/backend-semantics": "*"
+  },
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}
