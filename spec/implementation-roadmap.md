@@ -53,8 +53,8 @@ AISE-002 ─┴─→ AISE-003 → AISE-004 → AISE-008 → AISE-009 → AISE-0
                                                                     └──→ AISE-017 ⬜ BLOCKED
 
 CAPTURE FRONT
-AISE-005 🟦 ACTIVE ─→ AISE-006 ⬜ BLOCKED ─→ AISE-024 ⬜
-                 └→ AISE-007 ⬜ BLOCKED
+AISE-005 ⛔ BLOCKED (post-merge verification failure) ─→ AISE-006 ⬜ BLOCKED
+                                                   └→ AISE-007 ⬜ BLOCKED
 
 ASSURANCE / RULES
 AISE-013 → AISE-020 ⬜ BLOCKED → AISE-021 ⬜ BLOCKED
@@ -76,7 +76,7 @@ AISE-011 + AISE-012 + AISE-022 → AISE-031 ⬜
 AISE-012 + AISE-013 + AISE-021 + AISE-024 → AISE-032 ⬜
 ```
 
-Legend: `✅ FINALIZED` is accepted/merged work; `🟦 ACTIVE` is an authorized current handoff; `⬜ BLOCKED` is not start-eligible; `⬜` without a current handoff is planned but not activated.
+Legend: `✅ FINALIZED` is accepted/merged work; `🟦 ACTIVE` is an authorized current handoff; `⛔ BLOCKED` is blocked after implementation/verification; `⬜ BLOCKED` is not start-eligible; `⬜` without a current handoff is planned but not activated.
 
 ## Work-item status ledger
 
@@ -86,9 +86,9 @@ Legend: `✅ FINALIZED` is accepted/merged work; `🟦 ACTIVE` is an authorized 
 | AISE-002 | ✅ FINALIZED | GEMINI | STANDARD | `apps/android/**` | PR #5; merge `52e3a722735dd3265e23177a5191f27f245decb1` |
 | AISE-003 | ✅ FINALIZED | SHARED | HIGH_ASSURANCE | shared contracts | PR #6; merge `492fbddc3b7633b49ff6e710ba291a01f78fcb75` |
 | AISE-004 | ✅ FINALIZED | ZAI | HIGH_ASSURANCE | capture ingestion | PR #7; merge `55146bae0edd0724a487e30becb458493b1c003d` |
-| AISE-005 | 🟦 ACTIVE | GEMINI | HIGH_ASSURANCE | `apps/android/capture/**` | PR #8; head `60d92a2cf13112e65b6bf2706ca5b33a4df1a30b`; Android CI compile failure in instrumentation source |
-| AISE-006 | ⬜ BLOCKED | GEMINI | HIGH_ASSURANCE | `apps/android/sync/**` | PR #10; head `106de267e61e837bdca3c90878154a8d4f3d73ea`; Android CI green; merge held on AISE-005 |
-| AISE-007 | ⬜ BLOCKED | GEMINI | HIGH_ASSURANCE | `apps/android/capture/**` | blocked on AISE-005 |
+| AISE-005 | ⛔ BLOCKED | GEMINI | HIGH_ASSURANCE | `apps/android/capture/**` | PR #8 merged `66d87da0a70a6f0013fd5bad8f2cf07b716e57d1` from head `06a13f70262f5e50d011d29abb8bdfeec89dd705`; generic CI `33847147969` green, Android CI `33847147977` failed during `connectedDebugAndroidTest`: `LifecycleRegistry` main-thread `setCurrentState` exception |
+| AISE-006 | ⬜ BLOCKED | GEMINI | HIGH_ASSURANCE | `apps/android/sync/**` | PR #10; head `106de267e61e837bdca3c90878154a8d4f3d73ea`; Android CI green; held on AISE-005 |
+| AISE-007 | ⬜ BLOCKED | GEMINI | HIGH_ASSURANCE | `apps/android/capture/**` | held on AISE-005 |
 | AISE-008 | ✅ FINALIZED | ZAI | HIGH_ASSURANCE | reconstruction | PR #9; accepted and merged |
 | AISE-009 | ✅ FINALIZED | ZAI | CRITICAL | geometry | PR #11; merge `77edaca38fadea95c431d4f191642e0395d8cc17`; CI `33789886879` |
 | AISE-010 | ✅ FINALIZED | ZAI | HIGH_ASSURANCE | semantics | PR #12; merge `5c840c1465fa5213e02b547dd03ad456066fe820`; CI `33801132802` |
@@ -146,7 +146,7 @@ recompute dependency eligibility
 activate only the next governed item(s)
 ```
 
-A failed review, failed verification, or unresolved blocker returns the item to implementation/blocked state; it is not marked final from agent narrative.
+A failed review, failed verification, or unresolved blocker returns the item to implementation/blocked state; it is not marked final from agent narrative. A post-merge verification failure must also be recorded explicitly and must block dependent Work Items until corrected and re-verified.
 
 ## Freeze/change rule
 
