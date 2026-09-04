@@ -22,6 +22,7 @@
     "dev:semantics": "npm run dev --workspace @aise/backend-semantics",
     "dev:model": "npm run dev --workspace @aise/backend-reality-model",
     "dev:evidence": "npm run dev --workspace @aise/backend-evidence",
+    "dev:assurance": "npm run dev --workspace @aise/backend-assurance",
     "dev:worker": "npm run dev --workspace @aise/backend-worker",
     "dev:web": "npm run dev --workspace @aise/web",
     "lint": "eslint .",
