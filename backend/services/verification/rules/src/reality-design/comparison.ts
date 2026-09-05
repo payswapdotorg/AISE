@@ -49,7 +49,7 @@ export function compareRealityToDesign(input: ComparisonInput): ComparisonReport
   const matched = new Set<string>(); const correspondences: Correspondence[] = []; const mismatches: Mismatch[] = []; const unmatchedDesign: string[] = []; const unmatchedReality: string[] = []; let ambiguous = false;
   const designs = [...input.design].sort((a,b) => a.designId.localeCompare(b.designId)); const realities = [...input.reality].sort((a,b) => a.realityId.localeCompare(b.realityId));
   for (const d of designs) {
-    const candidates = realities.filter(r => !matched.has(r.realityId) && r.kind === d.kind).map(r => ({ reality:r, distance:dist(d.position,r.position) })).filter(c => c.distance <= correspondenceTolerance).sort((a,b) => a.distance-b.distance || a.reality.realityId.localeCompare(b.realityId));
+    const candidates = realities.filter(r => !matched.has(r.realityId) && r.kind === d.kind).map(r => ({ reality:r, distance:dist(d.position,r.position) })).filter(c => c.distance <= correspondenceTolerance).sort((a,b) => a.distance-b.distance || a.reality.realityId.localeCompare(b.reality.realityId));
     if (!candidates.length) { unmatchedDesign.push(d.designId); continue; }
     if (candidates.length > 1 && candidates[1]!.distance - candidates[0]!.distance <= ambiguityMargin) {
       ambiguous = true; unmatchedDesign.push(d.designId);
