@@ -24,43 +24,46 @@ Status: FINALIZED. PR #3; exact accepted head `59166b974780768051246d1341ca60dcb
 
 Accepted outcome: deterministic MEP asset/topology reconstruction with geometric/evidence-pinned valve/equipment roles, connectivity graph, uncertainty and provenance, fail-closed validator and content-bound topology digest. Canonical model authority and epistemic semantics remained unchanged.
 
-## AISE-029 — Z.ai — CURRENT RESIDENT WORKER DISPATCH
+## AISE-029 — Z.ai — FINALIZED
 
-Status: PR OPEN / ACTIVE. Owner: ZAI. Assurance: CRITICAL. Dependencies AISE-018 and AISE-022 are finalized.
+Status: FINALIZED. Owner: ZAI. Assurance: CRITICAL. Dependencies AISE-018 and AISE-022 were finalized.
 
-Work Order: `spec/work-orders.md` — AISE-029.
+Implementation PR #7, branch `feat/AISE-029-reality-design-comparison`. Accepted head `574bb7fa1e28912fa8874a4e57b3f3e8af162be8`; base `b05974094ee40fd4d3de23fe80a71d2f77c3a144`; CI `33976810894` SUCCESS; architect review `5122091269`; merge `709d6282595d68964200ba47075071b117fe0458`.
 
-Implementation surface: `backend/services/verification/rules/src/reality-design/**`.
+Accepted outcome: deterministic read-only Reality-vs-Design comparison with explicit correspondence/unmatched facts, quantity-specific uncertainty, fail-closed ambiguity, provenance-linked evidence, and content-bound report digest/validator. Canonical Reality Graph/design authority were not mutated.
 
-Objective: compare authoritative reality model against design reference with provenance and uncertainty.
+## AISE-031 — Z.ai — CURRENT RESIDENT WORKER DISPATCH
 
-Acceptance: explicit correspondence, mismatch evidence and fail-closed ambiguous cases.
+Status: ACTIVE. Owner: ZAI. Assurance: HIGH_ASSURANCE. Dependencies AISE-011, AISE-012, and AISE-022 are finalized.
 
-Current implementation PR: #7, branch `feat/AISE-029-reality-design-comparison`, exact head `4f919bf04a6ee8765e2cff3af5d78e4024d42bfb`, base `b05974094ee40fd4d3de23fe80a71d2f77c3a144`.
+Work Order: `spec/work-orders.md` — AISE-031.
 
-CI: run `33974399447` is queued on the exact current head.
+Implementation surface: as defined by the selected AISE-031 Work Order; do not cross declared surfaces without governed change.
 
-Implementation is read-only with respect to canonical model authority and composes into the existing verification/rules workspace so `npm ci` remains lockfile-stable. The comparison engine provides deterministic kind+geometry correspondence, explicit unmatched facts, quantity-specific uncertainty bounds, fail-closed ambiguity, provenance-linked mismatch evidence, and a content-bound report digest/validator.
+Objective: version-to-version geometry/semantic/evidence comparison without collapsing uncertainty.
 
-Required fresh-agent loop: inspect current PR/CI, correct any review or verification findings on the same branch, run objective verification, then sole-architect review and merge exact accepted head.
+Acceptance: deterministic change records with provenance and confidence/uncertainty separation.
+
+Dispatch Issue: #8.
+
+Base: `709d6282595d68964200ba47075071b117fe0458`.
+
+Required fresh-agent loop: inspect the current frozen architecture, work item/work order, dependency graph, and repository implementation; create exactly one branch and one PR; run objective verification and required evidence; then sole-architect review and merge exact accepted head.
 
 Canonical dispatch packet:
 
 ```text
-WORK_ITEM=AISE-029
+WORK_ITEM=AISE-031
 OWNER=ZAI
 REPOSITORY=payswapdotorg/AISE
-BASE_SHA=b05974094ee40fd4d3de23fe80a71d2f77c3a144
-WORK_ORDER=spec/work-orders.md#AISE-029
+BASE_SHA=709d6282595d68964200ba47075071b117fe0458
+WORK_ORDER=spec/work-orders.md#AISE-031
 ARCHITECTURE=v1.0 frozen
-BRANCH=feat/AISE-029-reality-design-comparison
-PR=7
-HEAD_SHA=4f919bf04a6ee8765e2cff3af5d78e4024d42bfb
-OWNED_SURFACE=backend/services/verification/rules/src/reality-design/**
-ASSURANCE=CRITICAL
-DEPENDENCIES=AISE-018, AISE-022 (finalized)
-ACCEPTANCE=explicit correspondence; provenance/uncertainty-aware mismatch evidence; fail-closed ambiguity
-CI_RUN=33974399447 (queued)
+PRIOR_FINALIZED=AISE-029 / PR #7 / merge 709d6282595d68964200ba47075071b117fe0458
+ASSURANCE=HIGH_ASSURANCE
+DEPENDENCIES=AISE-011, AISE-012, AISE-022 (finalized)
+ACCEPTANCE=deterministic version-to-version change records; provenance; confidence/uncertainty separation
+DISPATCH_ISSUE=8
 MERGE_GATE=ARCHITECT
 SOLE_ARCHITECT=payswapdotorg connected architect identity
 ```
