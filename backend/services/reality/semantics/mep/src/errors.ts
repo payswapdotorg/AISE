@@ -32,6 +32,8 @@ export type MepErrorCode =
   | "OPTION_INVALID"
   /** The produced network failed the built-in validator (fail-closed self-check). */
   | "NETWORK_INVALID"
+  /** The produced topology failed the built-in topology validator (AISE-027 fail-closed self-check). */
+  | "TOPOLOGY_INVALID"
   /** Unexpected internal failure (implementation defect). */
   | "INTERNAL_ERROR";
 

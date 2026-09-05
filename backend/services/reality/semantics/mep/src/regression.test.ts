@@ -1,12 +1,14 @@
 /**
- * Regression tests (AISE-026) — purity discipline and frozen
- * honesty surfaces (source-scanned, the sibling precedent).
+ * Regression tests (AISE-026 + AISE-027) — purity discipline and
+ * frozen honesty surfaces (source-scanned, the sibling precedent).
  */
 import { describe, expect, it } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
 import * as path from "node:path";
 import { reconstructPipeNetwork, MEP_LIMITATIONS } from "./network.js";
+import { reconstructMepTopology, MEP_TOPOLOGY_LIMITATIONS } from "./topology.js";
 import { exactPipeNetworkPoints, GOLDEN_JOIN_TOLERANCE } from "./fixtures/golden.js";
+import { exactTopologyPoints, TOPOLOGY_ASSET_TOLERANCE, TOPOLOGY_JOIN_TOLERANCE } from "./fixtures/topology.js";
 
 const SRC_DIR = path.join(import.meta.dirname, "..", "src");
 
@@ -20,7 +22,7 @@ function sourceFiles(): string[] {
 describe("deterministic reconstruction discipline (source-scanned)", () => {
   it("production sources exist with the expected modules", () => {
     const files = sourceFiles().map((file) => path.basename(file));
-    for (const file of ["network.ts", "fit.ts", "cluster.ts", "validate.ts", "runtime.ts"]) {
+    for (const file of ["network.ts", "fit.ts", "cluster.ts", "validate.ts", "runtime.ts", "internal.ts", "asset.ts", "topology.ts"]) {
       expect(files).toContain(file);
     }
   });
@@ -35,7 +37,7 @@ describe("deterministic reconstruction discipline (source-scanned)", () => {
   });
 
   it("no environment or clock reads; no canonical model mutation surface", () => {
-    for (const file of ["network.ts", "fit.ts", "cluster.ts", "validate.ts"]) {
+    for (const file of ["network.ts", "fit.ts", "cluster.ts", "validate.ts", "internal.ts", "asset.ts", "topology.ts"]) {
       const content = readFileSync(path.join(SRC_DIR, file), "utf8");
       expect(content, `${file} must not read process.env`).not.toContain("process.env");
       expect(content).not.toContain("createInMemoryRealityModelStore");
@@ -46,9 +48,11 @@ describe("deterministic reconstruction discipline (source-scanned)", () => {
   });
 
   it("the reconstruction never touches the canonical object vocabulary (no class changes)", () => {
-    const content = readFileSync(path.join(SRC_DIR, "network.ts"), "utf8");
-    expect(content).not.toContain("RealityObjectClass");
-    expect(content).not.toContain("objectClass");
+    for (const file of ["network.ts", "asset.ts", "topology.ts"]) {
+      const content = readFileSync(path.join(SRC_DIR, file), "utf8");
+      expect(content).not.toContain("RealityObjectClass");
+      expect(content).not.toContain("objectClass");
+    }
   });
 });
 
@@ -74,5 +78,47 @@ describe("frozen honesty surfaces", () => {
     expect(serialized).toContain('"diameterRelation":"mismatch"');
     expect(serialized).toContain('"inputContentHash"');
     expect(serialized).toContain('"limitations"');
+  });
+});
+
+describe("frozen honesty surfaces (AISE-027 topology)", () => {
+  const topology = reconstructMepTopology({
+    points: exactTopologyPoints(),
+    unit: "meter",
+    joinTolerance: TOPOLOGY_JOIN_TOLERANCE,
+    assetTolerance: TOPOLOGY_ASSET_TOLERANCE,
+  });
+
+  it("embeds the topology limitations in every topology (pipe + asset/topology entries)", () => {
+    expect(topology.limitations).toEqual(MEP_TOPOLOGY_LIMITATIONS);
+    expect(topology.limitations.length).toBe(14);
+    expect(topology.limitations.slice(0, 7)).toEqual(MEP_LIMITATIONS);
+  });
+
+  it("epistemic passthrough stays frozen for assets (INFERRED default)", () => {
+    expect(topology.sourceEpistemic).toBe("INFERRED");
+    expect(topology.assets.every((asset) => asset.epistemic === "INFERRED")).toBe(true);
+    expect(topology.pipes.every((pipe) => pipe.epistemic === "INFERRED")).toBe(true);
+  });
+
+  it("the frozen exact-topology shape repeats (structure pin, not fresh-build digests)", () => {
+    const serialized = JSON.stringify(topology);
+    expect(serialized).toContain('"kind":"mep-topology"');
+    expect(serialized).toContain('"role":"valve"');
+    expect(serialized).toContain('"role":"equipment"');
+    expect(serialized).toContain('"roleBasis":"inline-continuation"');
+    expect(serialized).toContain('"roleBasis":"terminal"');
+    expect((serialized.match(/"kind":"asset-connection"/g) ?? []).length).toBe(3);
+    expect(serialized).toContain('"kind":"pipe-junction"');
+    expect(serialized).toContain('"components":1');
+    // The exact fixture refuses nothing.
+    expect(serialized).not.toContain('"unconnected-cluster"');
+  });
+
+  it("role labels never leak semantic identification (no manufacturer vocabulary)", () => {
+    const assets = JSON.stringify(topology.assets);
+    expect(assets).not.toContain('"class"');
+    expect(assets).not.toContain("manufacturer");
+    expect(assets).not.toContain("catalog");
   });
 });
