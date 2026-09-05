@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/pectoraux/AISE/blob/main/spec/development-state/program-state.schema.json",
+  "$id": "https://github.com/payswapdotorg/AISE/blob/main/spec/development-state/program-state.schema.json",
   "title": "AISE Development Program State",
   "type": "object",
   "required": ["$schema", "schemaVersion", "artifact", "governingArchitecture", "architectureState", "asOf", "agents", "authority", "workItems", "execution", "dogfood"],
