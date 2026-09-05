@@ -52,7 +52,7 @@ Objective: photo/video capture session with acquisition metadata and local persi
 
 Acceptance: Room migration is deterministic and preserves existing data; manifest negative tests reject missing/blank `relativePath` and `contentHash` independently; quaternion values round-trip after Room reload; required unit/compile tests and Android CI are green.
 
-Current durable handoff: PR #8 is active at head `60d92a2cf13112e65b6bf2706ca5b33a4df1a30b`. Android CI run `33765308578` failed during instrumentation-test compilation with unresolved `rememberNavController` in `AppShellEmulatorSmokeTest.kt:29:37`; this is a compile/test-source issue, not an emulator failure. Earlier requested corrections include Room v1→v2 deterministic migration, separate manifest negative tests, and quaternion round-trip.
+Durable post-merge blocker: the original implementation PR #8 merged as `66d87da0a70a6f0013fd5bad8f2cf07b716e57d1` from head `06a13f70262f5e50d011d29abb8bdfeec89dd705`. Generic CI `33847147969` was green, but Android CI `33847147977` failed during `connectedDebugAndroidTest` because `AppShellEmulatorSmokeTest` called `LifecycleRegistry` `setCurrentState` off the main thread. AISE-005 remains BLOCKED until Gemini produces a corrective Android-only implementation with green emulator instrumentation CI and a fresh architect review. Do not treat this item as finalized merely because PR #8 merged.
 
 Forbidden: server/backend authority; non-Android surfaces.
 
