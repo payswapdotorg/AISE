@@ -71,6 +71,7 @@ export {
   compareObjects,
   compareRelationships,
   compareSpaces,
+  type ComparedVersion,
 } from "./compare.js";
 
 export {

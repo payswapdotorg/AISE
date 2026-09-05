@@ -4,12 +4,20 @@
  * Compares two committed graphs of the SAME model and decomposes
  * every identity-preserving content change into change records:
  * object existence/epistemic/class/name, structured geometry
- * (frame/extent/quantities/quality/assets), property assertions
+ * (frame/extent/quantities — including the presence of optional
+ * quantities/quality/assets), property assertions
  * (shape/quantity/status/presence/confidence/kind/evidence refs),
  * spaces, and relationships. Added/removed entities produce
  * identity-fact records only — no correspondence is ever inferred
  * (AISE-011 identity discipline: identity is lineage, so a
  * re-extraction yields removal+addition, never "moved").
+ *
+ * Provenance authority: object-family records carry the per-object
+ * producer provenance of the compared graphs (authoritative at
+ * ingest). Spaces and relationships carry no per-entity provenance
+ * in the Reality Graph v1, so their records carry the compared
+ * VERSIONS' commit producers — the authoritative source-version
+ * producers, never a synthesized second authority.
  *
  * Uncertainty discipline: quantities pass through verbatim with
  * their per-side uncertainty; deltas are derived only for
@@ -28,6 +36,13 @@ import type {
 import type { ProvenanceSummary, QuantitySnapshot } from "./records.js";
 import { makeChange, type ChangeRecord } from "./records.js";
 import { deriveQuantityDelta, formatQuantity, quantityEquals } from "./quantities.js";
+
+/** One comparison side: the graph plus its authoritative version producer. */
+export interface ComparedVersion {
+  readonly graph: RealityModelGraph;
+  /** The producer the compared source version was committed under (authoritative). */
+  readonly producer: ModelProvenance;
+}
 
 function summaryOf(provenance: ModelProvenance): ProvenanceSummary {
   return {
@@ -253,7 +268,39 @@ function structuredGeometryRecords(
     ["sillHeight", before.sillHeight, after.sillHeight],
     ["headHeight", before.headHeight, after.headHeight],
   ] as const) {
-    if (quantityBefore === undefined || quantityAfter === undefined) {
+    if (quantityBefore === undefined && quantityAfter === undefined) {
+      continue;
+    }
+    if (quantityBefore === undefined) {
+      // Presence change on one optional quantity: its own honest record —
+      // the snapshot of the side that states it, never a fabricated default.
+      const introduced = quantityOf(quantityAfter!);
+      records.push(
+        makeChange({
+          category: "geometry",
+          kind: "geometry-quantity-added",
+          subject,
+          side: "to",
+          singleQuantity: introduced,
+          provenance,
+          detail: `object "${objectId}" geometry ${label}: absent -> ${formatQuantity(introduced)} (quantity introduced in the later version)`,
+        }),
+      );
+      continue;
+    }
+    if (quantityAfter === undefined) {
+      const removed = quantityOf(quantityBefore);
+      records.push(
+        makeChange({
+          category: "geometry",
+          kind: "geometry-quantity-removed",
+          subject,
+          side: "from",
+          singleQuantity: removed,
+          provenance,
+          detail: `object "${objectId}" geometry ${label}: ${formatQuantity(removed)} -> absent (quantity absent from the later version)`,
+        }),
+      );
       continue;
     }
     const previousQuantity = quantityOf(quantityBefore);
@@ -485,11 +532,11 @@ function assertionPairRecords(
   return records;
 }
 
-/** Compares the space sets of two graphs. */
-export function compareSpaces(previous: RealityModelGraph, current: RealityModelGraph): ChangeRecord[] {
+/** Compares the space sets of two versions (spaces carry no per-entity provenance — the version producers are authoritative). */
+export function compareSpaces(previous: ComparedVersion, current: ComparedVersion): ChangeRecord[] {
   const records: ChangeRecord[] = [];
-  const previousById = new Map(previous.spaces.map((space) => [space.spaceId, space] as const));
-  const currentById = new Map(current.spaces.map((space) => [space.spaceId, space] as const));
+  const previousById = new Map(previous.graph.spaces.map((space) => [space.spaceId, space] as const));
+  const currentById = new Map(current.graph.spaces.map((space) => [space.spaceId, space] as const));
 
   for (const [spaceId, space] of currentById) {
     const before = previousById.get(spaceId);
@@ -500,12 +547,15 @@ export function compareSpaces(previous: RealityModelGraph, current: RealityModel
           kind: "space-added",
           subject: { kind: "space", spaceId },
           side: "to",
-          provenance: { current: { serviceId: "aise.reality-model", method: "space-declaration", methodVersion: "v1.0" } },
+          provenance: { current: summaryOf(current.producer) },
           detail: `space "${spaceId}" (${space.kind}) added`,
         }),
       );
     } else {
-      records.push(...spaceRecords(before, space));
+      records.push(...spaceRecords(before, space, {
+        previous: summaryOf(previous.producer),
+        current: summaryOf(current.producer),
+      }));
     }
   }
   for (const [spaceId, space] of previousById) {
@@ -516,7 +566,7 @@ export function compareSpaces(previous: RealityModelGraph, current: RealityModel
           kind: "space-removed",
           subject: { kind: "space", spaceId },
           side: "from",
-          provenance: { previous: { serviceId: "aise.reality-model", method: "space-declaration", methodVersion: "v1.0" } },
+          provenance: { previous: summaryOf(previous.producer) },
           detail: `space "${spaceId}" (${space.kind}) removed`,
         }),
       );
@@ -525,14 +575,14 @@ export function compareSpaces(previous: RealityModelGraph, current: RealityModel
   return records;
 }
 
-/** Decomposes one identity-preserving space change (spaces carry no epistemic state). */
-function spaceRecords(before: SpaceNode, after: SpaceNode): ChangeRecord[] {
+/** Decomposes one identity-preserving space change (spaces carry no epistemic state; the version producers are the provenance authority). */
+function spaceRecords(
+  before: SpaceNode,
+  after: SpaceNode,
+  provenance: { previous: ProvenanceSummary; current: ProvenanceSummary },
+): ChangeRecord[] {
   const records: ChangeRecord[] = [];
   const spaceId = after.spaceId;
-  const provenance = {
-    previous: { serviceId: "aise.reality-model", method: "space-declaration", methodVersion: "v1.0" },
-    current: { serviceId: "aise.reality-model", method: "space-declaration", methodVersion: "v1.0" },
-  };
 
   const nameBefore = before.name ?? null;
   const nameAfter = after.name ?? null;
@@ -599,13 +649,13 @@ function spaceRecords(before: SpaceNode, after: SpaceNode): ChangeRecord[] {
   return records;
 }
 
-/** Compares the relationship sets (identity-only in v1: same id ⇒ same triple). */
-export function compareRelationships(previous: RealityModelGraph, current: RealityModelGraph): ChangeRecord[] {
+/** Compares the relationship sets of two versions (identity-only in v1: same id ⇒ same triple; the version producers are authoritative). */
+export function compareRelationships(previous: ComparedVersion, current: ComparedVersion): ChangeRecord[] {
   const records: ChangeRecord[] = [];
-  const previousIds = new Set(previous.relationships.map((rel) => rel.relationId));
-  const currentIds = new Set(current.relationships.map((rel) => rel.relationId));
+  const previousIds = new Set(previous.graph.relationships.map((rel) => rel.relationId));
+  const currentIds = new Set(current.graph.relationships.map((rel) => rel.relationId));
   const byId = new Map(
-    [...previous.relationships, ...current.relationships].map((rel) => [rel.relationId, rel] as const),
+    [...previous.graph.relationships, ...current.graph.relationships].map((rel) => [rel.relationId, rel] as const),
   );
 
   for (const relationId of currentIds) {
@@ -617,6 +667,7 @@ export function compareRelationships(previous: RealityModelGraph, current: Reali
           kind: "relationship-added",
           subject: { kind: "relationship", relationId },
           side: "to",
+          provenance: { current: summaryOf(current.producer) },
           detail: `relationship "${relationId}" (${rel.type} ${rel.fromId} -> ${rel.toId}) added`,
         }),
       );
@@ -631,6 +682,7 @@ export function compareRelationships(previous: RealityModelGraph, current: Reali
           kind: "relationship-removed",
           subject: { kind: "relationship", relationId },
           side: "from",
+          provenance: { previous: summaryOf(previous.producer) },
           detail: `relationship "${relationId}" (${rel.type} ${rel.fromId} -> ${rel.toId}) removed`,
         }),
       );

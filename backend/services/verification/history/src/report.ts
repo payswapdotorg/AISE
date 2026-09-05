@@ -3,8 +3,9 @@
  * (AISE-031).
  *
  * `compareModelVersions` is the pure entry point: it re-validates
- * both pinned versions (structural validation + digest
- * re-derivation — tampered inputs fail closed), decomposes the
+ * both pinned versions (structural validation, authoritative
+ * commit-producer validation, and digest re-derivation — tampered
+ * or under-provenanced inputs fail closed), decomposes the
  * difference into deterministic change records, optionally
  * compares the two versions' evidence-validity projections, and
  * assembles the content-bound report.
@@ -18,8 +19,10 @@ import {
   canonicalJsonString,
   graphContentDigest,
   sha256Hex,
+  validateModelProvenance,
   validateRealityGraph,
   type EvidenceGraph,
+  type ModelProvenance,
   type ModelVersionRecord,
   type RealityModelGraph,
 } from "@aise/engineering-model";
@@ -33,10 +36,17 @@ import {
   type ChangeRecord,
 } from "./records.js";
 
-/** One side of the comparison: the committed version record and its graph. */
+/** One side of the comparison: the committed version record, its graph, and its authoritative commit producer. */
 export interface VersionedGraph {
   readonly record: ModelVersionRecord;
   readonly graph: RealityModelGraph;
+  /**
+   * The authoritative producer the source version was committed
+   * under (fail-closed validated). Space/relationship records carry
+   * this version producer; object-family records carry the richer
+   * per-object producer provenance of the graphs themselves.
+   */
+  readonly producer: ModelProvenance;
 }
 
 /** Evidence input: BOTH versions' evidence mapping states (or neither). */
@@ -83,9 +93,10 @@ export const HISTORICAL_CHANGE_LIMITATIONS = Object.freeze([
   "Added/removed records state identity facts only; no correspondence between a removed and an added object is ever inferred (AISE-011 identity discipline: identity is lineage).",
   "Quantity uncertainties pass through verbatim per side and are never recomputed, converted, or folded into confidence; confidence (a model probability, AC-070) is reported on its own axis.",
   "Derived quantity deltas exist only for same-unit comparisons; combined uncertainties exist only when both sides state standard uncertainties (RSS).",
-  "Per-record provenance is the producer summary (serviceId, method, methodVersion); the full ModelProvenance remains pinned inside the compared versions (pinned here by digest).",
+  "Per-record provenance is the producer summary (serviceId, method, methodVersion) of the authoritative source: object-family records carry the per-object producer provenance of the compared graphs; space/relationship records (spaces and relationships carry no per-entity provenance in the Reality Graph v1) carry the compared versions' commit producers, supplied and fail-closed validated at the boundary — never a synthesized authority.",
+  "Evidence-validity records carry no producer summary: a validity flip is derived from the two pinned evidence graphs (the evidence subsystem is the authority, with its own recordedBy/linkedBy/retractedBy lineage inside those graphs); pinning a version producer on a derived validity flip would misattribute it. All other change kinds carry provenance.",
   "Evidence-validity records cover logical assertions CONFIRMED in both compared versions only; first-time confirmations are property/object change records, not validity changes.",
-  "Optional structured-geometry quantities (elevation/sillHeight/headHeight), assertion metadata (method label, verifiedBy/verifiedAt) and space kind changes are covered by the changed content identity but are not decomposed into dedicated records in v1; the summary's identical flag reflects the pinned version digests, so such changes are never silently identical.",
+  "Non-decomposed fields in v1 — assertion metadata (method label, verifiedBy/verifiedAt) and space kind changes — are covered by the changed content identity but not decomposed into dedicated records; the summary's identical flag reflects the pinned version digests, so such changes are never silently identical. Optional structured-geometry quantities ARE decomposed into their own added/removed records.",
   "The comparison is read-only: the canonical Reality Graph and the evidence mapping are never mutated (fail-closed, no partial output).",
   "The report states WHAT changed, never WHY: cause attribution belongs to provenance and review, not to derived comparison facts.",
 ]);
@@ -95,14 +106,31 @@ export const HISTORY_LIMITS = Object.freeze({
   maxRecords: 5000,
 });
 
-/** Validates one side of the comparison (structural + digest re-derivation). */
+/** Validates one side of the comparison (structural + producer + digest re-derivation). */
 function validateSide(side: VersionedGraph, label: "from" | "to"): void {
   if (side === null || typeof side !== "object" || typeof side.record !== "object" || typeof side.graph !== "object") {
     throw new HistoryError("INPUT_INVALID", `${label} must carry a version record and a graph`, {
       details: { field: label },
     });
   }
-  const { record, graph } = side;
+  const { record, graph, producer } = side;
+  if (record === undefined || graph === undefined) {
+    throw new HistoryError("INPUT_INVALID", `${label} must carry a version record and a graph`, {
+      details: { field: label },
+    });
+  }
+  // The authoritative source-version producer (fail-closed: an absent
+  // or malformed producer is a gap in provenance, never a default).
+  try {
+    if (producer === undefined) {
+      throw new Error("producer is required (the authoritative source-version producer)");
+    }
+    validateModelProvenance(producer);
+  } catch (error) {
+    throw new HistoryError("INPUT_INVALID", `${label}.producer is not a valid ModelProvenance: ${String((error as Error).message)}`, {
+      details: { field: `${label}.producer` },
+    });
+  }
   if (typeof record.modelId !== "string" || record.modelId.length === 0) {
     throw new HistoryError("INPUT_INVALID", `${label}.record.modelId must be a non-empty string`);
   }
@@ -186,8 +214,8 @@ export function compareModelVersions(input: CompareInput): HistoricalChangeRepor
 
   const records: ChangeRecord[] = [
     ...compareObjects(from.graph, to.graph),
-    ...compareRelationships(from.graph, to.graph),
-    ...compareSpaces(from.graph, to.graph),
+    ...compareRelationships(from, to),
+    ...compareSpaces(from, to),
   ];
   if (evidence !== undefined) {
     records.push(

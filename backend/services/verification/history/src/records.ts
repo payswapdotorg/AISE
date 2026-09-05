@@ -9,10 +9,16 @@
  *   re-derives it);
  * - **decomposed** — geometry/semantic/evidence changes are separate
  *   records; an epistemic transition never rides along a quantity
- *   change (confidence and uncertainty are separate axes);
- * - **provenance-carrying** — the producer summary of both sides
- *   (full `ModelProvenance` stays pinned inside the compared
- *   versions, which the report pins by digest);
+ *   change (confidence and uncertainty are separate axes); the
+ *   presence of an optional structured-geometry quantity is its own
+ *   added/removed record, never silently dropped;
+ * - **provenance-carrying** — the authoritative producer summary of
+ *   the relevant side(s): object-family records carry the per-object
+ *   producer provenance of the compared graphs; space/relationship
+ *   records carry the compared versions' commit producers (spaces
+ *   and relationships carry no per-entity provenance in the Reality
+ *   Graph v1 — the version producer is the first and only authority,
+ *   never a synthesized second one);
  * - **honest** — added/removed report identity facts only; no
  *   correspondence ("the same wall moved") is ever inferred
  *   (AISE-011 identity discipline).
@@ -51,6 +57,8 @@ export type ChangeKind =
   | "geometry-frame-changed"
   | "geometry-extent-changed"
   | "geometry-quantity-changed"
+  | "geometry-quantity-added"
+  | "geometry-quantity-removed"
   | "geometry-quality-changed"
   | "geometry-assets-changed"
   // property assertions (object- or space-owned)
@@ -97,8 +105,10 @@ const KIND_RANK: Readonly<Record<ChangeKind, number>> = Object.freeze({
   "geometry-frame-changed": 2,
   "geometry-extent-changed": 3,
   "geometry-quantity-changed": 4,
-  "geometry-quality-changed": 5,
-  "geometry-assets-changed": 6,
+  "geometry-quantity-added": 5,
+  "geometry-quantity-removed": 6,
+  "geometry-quality-changed": 7,
+  "geometry-assets-changed": 8,
   "property-added": 0,
   "property-removed": 1,
   "property-shape-changed": 2,
@@ -187,7 +197,11 @@ export interface ChangeRecord {
   readonly category: ChangeCategory;
   readonly kind: ChangeKind;
   readonly subject: HistorySubjectRef;
-  /** Which version the subject exists in (added/removed records only). */
+  /**
+   * Which version the record's subject (or, for single-quantity
+   * records, the carried quantity) exists in (added/removed records
+   * only).
+   */
   readonly side?: "from" | "to";
   /** Existence-state transition (object epistemic / property status). */
   readonly epistemic?: { readonly previous: EpistemicState; readonly current: EpistemicState };
@@ -200,6 +214,13 @@ export interface ChangeRecord {
   };
   /** Derived delta (same unit; combined uncertainty only when both sides state standard). */
   readonly quantityDelta?: QuantityDelta;
+  /**
+   * Single-side verbatim quantity snapshot — the presence of an
+   * optional structured-geometry quantity that exists only in the
+   * version named by `side` (added/removed quantity records; never
+   * a fabricated counterpart on the absent side).
+   */
+  readonly singleQuantity?: QuantitySnapshot;
   /** Model-probability transition (AC-070 axis — separate from uncertainty; null = unstated). */
   readonly confidence?: { readonly previous: number | null; readonly current: number | null };
   /** measurement↔estimate transition (lock §3). */
@@ -246,6 +267,8 @@ const KIND_FIELDS: Readonly<Record<ChangeKind, readonly RecordField[]>> = Object
   "geometry-frame-changed": ["frame", "provenance"],
   "geometry-extent-changed": ["extent", "provenance"],
   "geometry-quantity-changed": ["quantity", "quantityDelta", "provenance"],
+  "geometry-quantity-added": ["side", "singleQuantity", "provenance"],
+  "geometry-quantity-removed": ["side", "singleQuantity", "provenance"],
   "geometry-quality-changed": ["quality", "provenance"],
   "geometry-assets-changed": ["refs", "provenance"],
   "property-added": ["provenance"],
@@ -262,8 +285,8 @@ const KIND_FIELDS: Readonly<Record<ChangeKind, readonly RecordField[]>> = Object
   "space-name-changed": ["name", "provenance"],
   "space-parent-changed": ["parent", "provenance"],
   "space-frame-changed": ["spaceFrame", "provenance"],
-  "relationship-added": ["side"],
-  "relationship-removed": ["side"],
+  "relationship-added": ["side", "provenance"],
+  "relationship-removed": ["side", "provenance"],
   "evidence-validity-invalidated": ["validity", "invalidationReasons"],
   "evidence-validity-restored": ["validity", "invalidationReasons"],
 });
@@ -274,6 +297,7 @@ const ALL_PAYLOAD_FIELDS: readonly RecordField[] = [
   "presence",
   "quantity",
   "quantityDelta",
+  "singleQuantity",
   "confidence",
   "measurementKind",
   "shape",
@@ -308,6 +332,7 @@ function recordContent(record: ChangeRecordInput): unknown {
     record.presence ?? null,
     record.quantity ?? null,
     record.quantityDelta ?? null,
+    record.singleQuantity ?? null,
     record.confidence ?? null,
     record.measurementKind ?? null,
     record.shape ?? null,

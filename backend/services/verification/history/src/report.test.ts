@@ -59,7 +59,7 @@ describe("AISE-031 comparison boundary (fail-closed)", () => {
     const { from, to } = simplePair();
     const tamperedRecord = { ...to.record, digest: "0".repeat(64) };
     try {
-      compareModelVersions({ from, to: { record: tamperedRecord, graph: to.graph } });
+      compareModelVersions({ from, to: { record: tamperedRecord, graph: to.graph, producer: to.producer } });
       expect.unreachable();
     } catch (error) {
       expect((error as { code: string }).code).toBe("DIGEST_MISMATCH");
@@ -74,10 +74,35 @@ describe("AISE-031 comparison boundary (fail-closed)", () => {
       objects: clone.objects.map((object) => ({ ...object, epistemicState: "PROPOSED" as const })),
     };
     try {
-      compareModelVersions({ from, to: { record: to.record, graph: tamperedGraph } });
+      compareModelVersions({ from, to: { record: to.record, graph: tamperedGraph, producer: to.producer } });
       expect.unreachable();
     } catch (error) {
       expect(isHistoryError(error)).toBe(true);
+    }
+  });
+
+  it("rejects a MISSING version producer (provenance is mandatory, never defaulted)", () => {
+    const { from, to } = simplePair();
+    try {
+      compareModelVersions({ from, to: { record: to.record, graph: to.graph } as never });
+      expect.unreachable();
+    } catch (error) {
+      expect(isHistoryError(error)).toBe(true);
+      expect((error as { code: string }).code).toBe("INPUT_INVALID");
+      expect((error as { message: string }).message).toContain("producer");
+    }
+  });
+
+  it("rejects a MALFORMED version producer (fail-closed ModelProvenance validation)", () => {
+    const { from, to } = simplePair();
+    const malformed = { ...deepClone(to.producer), methodVersion: "not-semver" };
+    try {
+      compareModelVersions({ from, to: { record: to.record, graph: to.graph, producer: malformed } });
+      expect.unreachable();
+    } catch (error) {
+      expect(isHistoryError(error)).toBe(true);
+      expect((error as { code: string }).code).toBe("INPUT_INVALID");
+      expect((error as { message: string }).message).toContain("producer");
     }
   });
 
@@ -251,6 +276,19 @@ describe("AISE-031 report determinism and honesty", () => {
     expect(objectRecords.map((record) => record.kind).sort()).toEqual(["object-added", "object-removed"]);
     for (const record of objectRecords) {
       expect(record.detail).toContain("no correspondence");
+    }
+    // The relationship records now REQUIRE and carry the authoritative version producers.
+    const relationshipRecords = report.records.filter((record) => record.category === "relationship");
+    expect(relationshipRecords.map((record) => record.kind).sort()).toEqual([
+      "relationship-added",
+      "relationship-removed",
+    ]);
+    for (const record of relationshipRecords) {
+      if (record.kind === "relationship-added") {
+        expect(record.provenance?.current?.method).toBe("history/test/version-commit/v2");
+      } else {
+        expect(record.provenance?.previous?.method).toBe("history/test/version-commit/v1");
+      }
     }
   });
 

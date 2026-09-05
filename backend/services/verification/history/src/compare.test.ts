@@ -4,6 +4,7 @@ import { makeRealityObject } from "@aise/engineering-model";
 import {
   roomGraph,
   versionRecord,
+  versionProducer,
   wallInput,
   wallGeometry,
   heightProperty,
@@ -141,6 +142,61 @@ describe("AISE-031 geometry decomposition", () => {
     const assets = records.find((record) => record.kind === "geometry-assets-changed")!;
     expect(assets.refs).toEqual({ previous: [], current: [HASHES.scan] });
   });
+
+  it("optional-quantity presence changes are their OWN records (never silently dropped)", () => {
+    const withElevation = wallGeometry({
+      elevation: { value: 3.1, unit: "meter", uncertainty: { kind: "standard", u: 0.02 } },
+    });
+    const v1 = versionRecord(
+      roomGraph({ objects: [wallInput({ geometry: withElevation })] }),
+      1,
+      V1_AT,
+    );
+    const v2 = versionRecord(
+      roomGraph({ objects: [wallInput({ geometry: wallGeometry({}) })] }),
+      2,
+      V2_AT,
+    );
+    const removedSide = compareObjects(v1.graph, v2.graph);
+    expect(removedSide.map((record) => record.kind)).toEqual(["geometry-quantity-removed"]);
+    const removed = removedSide[0]!;
+    expect(removed.detail).toContain("elevation");
+    expect(removed.side).toBe("from");
+    // The verbatim snapshot of the side that stated it — uncertainty included,
+    // never a fabricated counterpart on the absent side.
+    expect(removed.singleQuantity).toEqual({
+      value: 3.1,
+      unit: "meter",
+      uncertainty: { kind: "standard", u: 0.02 },
+    });
+    expect(removed.quantity).toBeUndefined();
+    expect(removed.quantityDelta).toBeUndefined();
+
+    const addedSide = compareObjects(v2.graph, v1.graph);
+    expect(addedSide.map((record) => record.kind)).toEqual(["geometry-quantity-added"]);
+    const added = addedSide[0]!;
+    expect(added.detail).toContain("elevation");
+    expect(added.side).toBe("to");
+    expect(added.singleQuantity).toEqual({
+      value: 3.1,
+      unit: "meter",
+      uncertainty: { kind: "standard", u: 0.02 },
+    });
+
+    // A value change on a BOTH-side-present quantity stays a change record
+    // (presence and value changes never mix kinds).
+    const v2changed = versionRecord(
+      roomGraph({
+        objects: [
+          wallInput({ geometry: wallGeometry({ elevation: { value: 3.4, unit: "meter" } }) }),
+        ],
+      }),
+      2,
+      V2_AT,
+    );
+    const changed = compareObjects(v1.graph, v2changed.graph);
+    expect(changed.map((record) => record.kind)).toEqual(["geometry-quantity-changed"]);
+  });
 });
 
 describe("AISE-031 property decomposition", () => {
@@ -266,11 +322,15 @@ describe("AISE-031 property decomposition", () => {
       2,
       V2_AT,
     );
-    const records = compareSpaces(v1.graph, v2.graph);
+    const records = compareSpaces(v1, v2);
     const kinds = records.map((record) => record.kind).sort();
     expect(kinds).toEqual(["property-evidence-changed", "property-kind-changed", "property-status-changed"]);
     const status = records.find((record) => record.kind === "property-status-changed")!;
     expect(status.subject).toEqual({ kind: "property", ownerSpaceId: SPACE, propertyKey: "roomHeight" });
+    // Space-owned property records carry the compared VERSIONS' producers
+    // (the authoritative source-version provenance, not a synthesized one).
+    expect(status.provenance?.previous?.method).toBe("history/test/version-commit/v1");
+    expect(status.provenance?.current?.method).toBe("history/test/version-commit/v2");
   });
 });
 
@@ -285,12 +345,37 @@ describe("AISE-031 space and relationship comparison", () => {
       V2_AT,
     );
     // Same space id, no changes -> no records.
-    expect(compareSpaces(v1.graph, v2.graph)).toHaveLength(0);
+    expect(compareSpaces(v1, v2)).toHaveLength(0);
 
     const renamed = assembleRenamedSpace();
-    const records = compareSpaces(v1.graph, renamed);
+    const records = compareSpaces(v1, { graph: renamed, producer: versionProducer(2) });
     expect(records.map((record) => record.kind)).toEqual(["space-name-changed"]);
     expect(records[0]!.name).toEqual({ previous: "test room", current: "renamed room" });
+    // Authoritative version-producer provenance (both sides pinned, never synthesized).
+    expect(records[0]!.provenance?.previous?.method).toBe("history/test/version-commit/v1");
+    expect(records[0]!.provenance?.current?.method).toBe("history/test/version-commit/v2");
+  });
+
+  it("space added/removed carry the introducing version's producer", () => {
+    const v1 = versionRecord(roomGraph({}), 1, V1_AT);
+    const introducingProducer = versionProducer(9);
+    const spaceless = { ...v1.graph, spaces: [], relationships: [] };
+
+    const added = compareSpaces(
+      { graph: spaceless, producer: versionProducer(1) },
+      { graph: v1.graph, producer: introducingProducer },
+    );
+    expect(added.map((record) => record.kind)).toEqual(["space-added"]);
+    expect(added[0]!.provenance?.current?.method).toBe("history/test/version-commit/v9");
+    expect(added[0]!.provenance?.previous).toBeUndefined();
+
+    const removed = compareSpaces(
+      { graph: v1.graph, producer: introducingProducer },
+      { graph: spaceless, producer: versionProducer(10) },
+    );
+    expect(removed.map((record) => record.kind)).toEqual(["space-removed"]);
+    expect(removed[0]!.provenance?.previous?.method).toBe("history/test/version-commit/v9");
+    expect(removed[0]!.provenance?.current).toBeUndefined();
   });
 
   it("relationships added/removed (identity-only in v1)", () => {
@@ -321,14 +406,24 @@ describe("AISE-031 space and relationship comparison", () => {
       2,
       V2_AT,
     );
-    const records = compareRelationships(v1.graph, v2.graph);
+    const records = compareRelationships(v1, v2);
     expect(records).toHaveLength(2);
     expect(records.every((record) => record.kind === "relationship-removed" && record.side === "from")).toBe(true);
     expect(records.some((record) => record.detail.includes("OPENING_IN"))).toBe(true);
+    // REQUIRED authoritative provenance: the removed side's version producer.
+    for (const record of records) {
+      expect(record.provenance?.previous?.method).toBe("history/test/version-commit/v1");
+      expect(record.provenance?.current).toBeUndefined();
+    }
 
-    const added = compareRelationships(v2.graph, v1.graph);
+    const added = compareRelationships(v2, v1);
     expect(added).toHaveLength(2);
     expect(added.every((record) => record.kind === "relationship-added")).toBe(true);
+    // The added side carries the CURRENT (introducing) version's producer.
+    for (const record of added) {
+      expect(record.provenance?.current?.method).toBe("history/test/version-commit/v1");
+      expect(record.provenance?.previous).toBeUndefined();
+    }
   });
 });
 

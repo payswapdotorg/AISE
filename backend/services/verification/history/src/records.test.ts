@@ -65,6 +65,77 @@ describe("AISE-031 change records", () => {
     ).toThrow(/does not belong to category/);
     expect(categoryOfKind("property-quantity-changed")).toBe("property");
     expect(categoryOfKind("evidence-validity-invalidated")).toBe("evidence");
+    expect(categoryOfKind("geometry-quantity-added")).toBe("geometry");
+    expect(categoryOfKind("geometry-quantity-removed")).toBe("geometry");
+  });
+
+  it("relationship records REQUIRE provenance (authoritative producer — architect finding)", () => {
+    const relationshipAdded = {
+      category: "relationship" as const,
+      kind: "relationship-added" as const,
+      subject: { kind: "relationship" as const, relationId: "rel-1" },
+      side: "to" as const,
+      detail: "relationship added",
+    };
+    // Missing provenance is a contract violation, fail closed.
+    expect(() => makeChange(relationshipAdded)).toThrow(/requires field "provenance"/);
+    const withProvenance = makeChange({
+      ...relationshipAdded,
+      provenance: { current: { serviceId: "svc", method: "m", methodVersion: "1.0.0" } },
+    });
+    expect(withProvenance.provenance?.current?.serviceId).toBe("svc");
+    const relationshipRemoved = {
+      ...relationshipAdded,
+      kind: "relationship-removed" as const,
+      side: "from" as const,
+      detail: "relationship removed",
+    };
+    expect(() => makeChange(relationshipRemoved)).toThrow(/requires field "provenance"/);
+    expect(() =>
+      makeChange({
+        ...relationshipRemoved,
+        provenance: { previous: { serviceId: "svc", method: "m", methodVersion: "1.0.0" } },
+      }),
+    ).not.toThrow();
+  });
+
+  it("geometry-quantity-added/removed carry the single-side snapshot (strict contract)", () => {
+    const snapshot = { value: 3.1, unit: "meter" as const, uncertainty: { kind: "standard" as const, u: 0.02 } };
+    const added = makeChange({
+      category: "geometry",
+      kind: "geometry-quantity-added",
+      subject: { kind: "object", objectId: "ro-1" },
+      side: "to",
+      singleQuantity: snapshot,
+      provenance: baseInput.provenance,
+      detail: "elevation introduced",
+    });
+    expect(added.singleQuantity).toEqual(snapshot);
+    // The pair form and the delta are FORBIDDEN on single-side records.
+    expect(() =>
+      makeChange({
+        ...added,
+        quantity: { previous: { value: 1, unit: "meter" }, current: { value: 2, unit: "meter" } },
+      } as never),
+    ).toThrow(/forbids field/);
+    expect(() =>
+      makeChange({ ...added, quantityDelta: { value: 1, unit: "meter" } } as never),
+    ).toThrow(/forbids field/);
+    // Missing the single-side snapshot is a contract violation.
+    const { singleQuantity: _drop, ...withoutSnapshot } = added;
+    void _drop;
+    expect(() => makeChange(withoutSnapshot as never)).toThrow(/requires field/);
+    expect(() =>
+      makeChange({
+        category: "geometry",
+        kind: "geometry-quantity-removed",
+        subject: { kind: "object", objectId: "ro-1" },
+        side: "from",
+        singleQuantity: snapshot,
+        provenance: baseInput.provenance,
+        detail: "elevation removed",
+      }),
+    ).not.toThrow();
   });
 
   it("checkRecordShape re-derives the identity binding (tamper detection)", () => {

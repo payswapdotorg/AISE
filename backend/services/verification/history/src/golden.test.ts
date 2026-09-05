@@ -30,6 +30,7 @@ import { ingestArchitecturalScene } from "@aise/backend-reality-model";
 import {
   assembleModelGraph,
   makeSpaceNode,
+  modelProvenance,
   propertyAssertion,
   evidenceLink,
   evidenceRecord,
@@ -38,6 +39,7 @@ import {
   deriveLinkId,
   listConfirmedAssertionSubjects,
   graphContentDigest,
+  type ModelProvenance,
   type PropertyAssertion,
   type RealityModelGraph,
   type EvidenceSubject,
@@ -182,6 +184,20 @@ function version3(v2: RealityModelGraph, measurementId: string): RealityModelGra
   });
 }
 
+/** The authoritative commit producer of one golden version (one per version). */
+function goldenProducer(version: number): ModelProvenance {
+  return modelProvenance(`golden/history-commit/v${version}`, { version }, [
+    {
+      kind: "object",
+      serviceId: "aise.backend-history-golden",
+      method: "golden/history-store-commit",
+      objectId: `golden-commit-v${version}`,
+      contentHash: `${version}`.repeat(64).slice(0, 64),
+      epistemic: "INFERRED",
+    },
+  ]);
+}
+
 function pin(graph: RealityModelGraph, version: number, committedAt: string) {
   return {
     record: {
@@ -195,6 +211,7 @@ function pin(graph: RealityModelGraph, version: number, committedAt: string) {
       relationshipCount: graph.relationships.length,
     },
     graph,
+    producer: goldenProducer(version),
   };
 }
 

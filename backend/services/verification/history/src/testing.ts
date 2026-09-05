@@ -88,6 +88,10 @@ export function wallGeometry(overrides: {
   vMin?: number;
   vMax?: number;
   planeY?: number;
+  /** Optional quantities — pass undefined to OMIT (presence tests). */
+  elevation?: { value: number; unit: "meter"; uncertainty?: { kind: "standard"; u: number } };
+  sillHeight?: { value: number; unit: "meter"; uncertainty?: { kind: "standard"; u: number } };
+  headHeight?: { value: number; unit: "meter"; uncertainty?: { kind: "standard"; u: number } };
 }): StructuredPlanarGeometryInput {
   const width = overrides.width ?? 4;
   const height = overrides.height ?? 2.7;
@@ -104,6 +108,9 @@ export function wallGeometry(overrides: {
     },
     height: { value: height, unit: "meter" },
     area: { value: overrides.area ?? width * height, unit: "square_meter" },
+    ...(overrides.elevation !== undefined ? { elevation: overrides.elevation } : {}),
+    ...(overrides.sillHeight !== undefined ? { sillHeight: overrides.sillHeight } : {}),
+    ...(overrides.headHeight !== undefined ? { headHeight: overrides.headHeight } : {}),
     quality: {
       pointCount: overrides.pointCount ?? 1200,
       residualRms: 0.0031,
@@ -218,9 +225,15 @@ export function roomGraph(overrides: GraphOverrides = {}): RealityModelGraph {
 }
 
 /** Builds a version record for a graph (test store substitute — deterministic). */
-export function versionRecord(graph: RealityModelGraph, version: number, committedAt: string): {
+export function versionRecord(
+  graph: RealityModelGraph,
+  version: number,
+  committedAt: string,
+  producer: ModelProvenance = versionProducer(version),
+): {
   record: { modelId: string; version: number; parentVersion?: number; digest: string; committedAt: string; spaceCount: number; objectCount: number; relationshipCount: number };
   graph: RealityModelGraph;
+  producer: ModelProvenance;
 } {
   const record = {
     modelId: graph.modelId,
@@ -232,7 +245,25 @@ export function versionRecord(graph: RealityModelGraph, version: number, committ
     objectCount: graph.objects.length,
     relationshipCount: graph.relationships.length,
   };
-  return Object.freeze({ record, graph });
+  return Object.freeze({ record, graph, producer });
+}
+
+/**
+ * The authoritative commit producer for a test version (one distinct
+ * producer per version — the provenance of the compared source
+ * versions, exactly as a real store commit would record it).
+ */
+export function versionProducer(version: number): ModelProvenance {
+  return modelProvenance(`history/test/version-commit/v${version}`, { version }, [
+    {
+      kind: "object",
+      serviceId: "aise.backend-history-test",
+      method: "history/test-store-commit",
+      objectId: `commit-v${version}`,
+      contentHash: `${version}`.repeat(64).slice(0, 64),
+      epistemic: "INFERRED",
+    },
+  ]);
 }
 
 /** Deep clone for tamper tests (structuredClone keeps frozen-ness off). */
