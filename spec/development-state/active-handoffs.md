@@ -74,24 +74,32 @@ Accepted outcome: deterministic schema-valid IFC 4.3 export from the canonical R
 
 The built-in validator remains a declared subset-level conformance proof; full EXPRESS validation requires external tooling and is not implied.
 
-## AISE-019 — Z.ai — RESIDENT WORKER DISPATCH
+## AISE-019 — Z.ai
 
-Status: ACTIVE. Owner: ZAI. Assurance: HIGH_ASSURANCE. Base SHA: `2286090ee542c4d82e9608e72a96f32957748bae`.
+Status: FINALIZED. Owner: ZAI. Assurance: HIGH_ASSURANCE. Declared surfaces: `services/export/dxf/**`, `services/reporting/**`.
 
-Work Order: `spec/work-orders.md` — AISE-019. Dependency AISE-017 is finalized; AISE-018 is now finalized and incorporated in the exact activation base.
+Final evidence: PR #44; exact implementation head `6334647d619ed10c4305cf198c6d14c20da42d93`; parent = exact dispatched base `2286090ee542c4d82e9608e72a96f32957748bae`; CI `33951984063` SUCCESS; 2,016/2,016 repository tests; 102 new tests; 10/10 mutation/discrimination detected with bit-identical restore; architect clearance recorded at comment `5550318933`; merge commit `b63f973c8512c3728413625911c37854a16ed3f5`.
 
-Declared surfaces: `services/export/dxf/**`, `services/reporting/**`.
+Accepted outcome: deterministic DXF 2000 plan export and evidence-linked site PDF report with units, source links, epistemic distinction, honest limitations, deterministic output, and no canonical model mutation. DXF external ezdxf audit and PDF external pypdf parse were included in the golden runtime path.
+
+## AISE-026 — Z.ai — RESIDENT WORKER DISPATCH
+
+Status: ACTIVE. Owner: ZAI. Assurance: CRITICAL. Base SHA: `b63f973c8512c3728413625911c37854a16ed3f5`.
+
+Work Order: `spec/work-orders.md` — AISE-026. Dependencies AISE-009, AISE-011, AISE-012 and AISE-022 are finalized.
+
+Declared surface: `services/reality/semantics/mep/**`.
 
 Forbidden surfaces: `apps/android/**`; `apps/web/**` unless explicitly required by the Work Order; unrelated/cross-scope changes; canonical authority changes; architecture or epistemic semantic changes.
 
-Objective: deterministic DXF geometry and evidence-linked site PDF report with units and source links preserved; exports remain derived state and do not mutate canonical model authority.
+Objective: pipe centerline, diameter and connectivity representation.
 
-Acceptance: deterministic geometry/report content, units and source links preserved, evidence traceability retained, and no export mutation of canonical model authority.
+Acceptance: controlled fixture benchmark and topology/evidence correctness.
 
 Resident worker operating contract:
 
 - Remain resident for the Work Item/change loop where possible.
-- Bind the session to repository `pectoraux/AISE`, Work Item `AISE-019`, exact base SHA above, the Work Order, declared review scope, required checks, and one branch/PR.
+- Bind the session to repository `pectoraux/AISE`, Work Item `AISE-026`, exact base SHA above, the Work Order, declared review scope, required checks, and one branch/PR.
 - Recover from repository + GitHub state rather than chat history.
 - One Work Item = one branch = one implementation PR.
 - Worker may implement/update the PR but may not approve, self-merge, rewrite architecture, or silently broaden scope.
@@ -101,21 +109,21 @@ Resident worker operating contract:
 Canonical dispatch packet:
 
 ```text
-WORK_ITEM=AISE-019
+WORK_ITEM=AISE-026
 OWNER=ZAI
 REPOSITORY=pectoraux/AISE
-BASE_SHA=2286090ee542c4d82e9608e72a96f32957748bae
-WORK_ORDER=spec/work-orders.md#AISE-019
+BASE_SHA=b63f973c8512c3728413625911c37854a16ed3f5
+WORK_ORDER=spec/work-orders.md#AISE-026
 ARCHITECTURE=v1.0 frozen
-BRANCH=feat/AISE-019-dxf-pdf
-PR=(none yet; create exactly one for AISE-019)
-OWNED_SURFACE=services/export/dxf/**;services/reporting/**
+BRANCH=feat/AISE-026-mep-pipe-reconstruction
+PR=(none yet; create exactly one for AISE-026)
+OWNED_SURFACE=services/reality/semantics/mep/**
 FORBIDDEN_SURFACES=apps/android/**; apps/web/** unless explicitly required by the Work Order; unrelated/cross-scope changes; canonical authority changes; epistemic semantic changes
-ASSURANCE=HIGH_ASSURANCE
-DEPENDENCIES=AISE-017 (finalized)
-ACCEPTANCE=deterministic DXF geometry and evidence-linked site PDF report with units and source links preserved; exports remain derived state and do not mutate canonical model authority
+ASSURANCE=CRITICAL
+DEPENDENCIES=AISE-009; AISE-011; AISE-012; AISE-022 (all finalized)
+ACCEPTANCE=controlled fixture benchmark and topology/evidence correctness for pipe centerline, diameter, and connectivity representation
 MERGE_GATE=ARCHITECT
 SELF_MERGE=FORBIDDEN
 ```
 
-Dispatch relay issue: GitHub Issue #42. It is the canonical relay packet and does not claim direct transport to Z.ai.
+Dispatch relay issue: GitHub Issue #45. It is the canonical relay packet and does not claim direct transport to Z.ai.
