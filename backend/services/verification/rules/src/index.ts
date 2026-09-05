@@ -1,29 +1,6 @@
 /**
- * @aise/backend-rules — the AISE-021 engineering rule engine.
- *
- * Machine-evaluable dimensions, tolerances and specification
- * rules with PASS/FAIL/UNKNOWN semantics over the canonical
- * Reality Graph (AISE-011), the authoritative evidence mapping
- * (AISE-012), and the AISE-013 readiness authority — a
- * deterministic evaluator, never a model authority.
- *
- * Public surface:
- * - errors    — typed, fail-closed RulesError
- * - units     — exact SI conversion factors (interval comparison)
- * - vocabulary — kinds, operators, outcomes, codes, the fixed
- *   monotone gating tables
- * - rule      — machine-evaluable rule/rule-set definitions
- *   (validated, content-pinned, frozen; CRITICAL sets must
- *   declare a readiness gate)
- * - inputs    — narrow reader ports + run-input records
- * - boundary  — fail-closed input validation (re-validation +
- *   digest re-derivation; no profile downgrade)
- * - view      — the immutable read view (subjects + support)
- * - evaluate  — the deterministic evaluators (uncertainty-aware
- *   interval comparison; the fixed gating ladder)
- * - report    — the deterministic tri-state report
- * - runtime   — bounded composition (runRuleEvaluation pure
- *   entry + the port-driven service)
+ * @aise/backend-rules — the AISE-021 engineering rule engine plus
+ * the AISE-029 read-only Reality-vs-Design comparison surface.
  */
 export {
   RulesError,
@@ -134,3 +111,17 @@ export {
   type RulesLimits,
   type RulesService,
 } from "./runtime.js";
+
+export {
+  REALITY_DESIGN_LIMITATIONS,
+  compareRealityToDesign,
+  validateComparisonReport,
+  comparisonDigest,
+  type ComparisonInput,
+  type ComparisonReport,
+  type Correspondence,
+  type DesignElement,
+  type EvidenceRef,
+  type Mismatch,
+  type RealityElement,
+} from "./reality-design/comparison.js";
