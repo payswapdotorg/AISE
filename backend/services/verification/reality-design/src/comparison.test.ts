@@ -66,7 +66,7 @@ describe("AISE-029 comparison", () => {
     });
     expect(report.status).toBe("AMBIGUOUS");
     expect(report.correspondences).toHaveLength(0);
-    expect(report.unmatchedDesign).toEqual([]);
+    expect(report.unmatchedDesign).toEqual(["D-1"]);
     expect(report.unmatchedReality).toEqual(["R-1", "R-2"]);
   });
 
