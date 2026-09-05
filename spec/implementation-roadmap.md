@@ -22,10 +22,7 @@ The canonical product object is the **Engineering Reality Graph**: geometry + se
 ## Current governed frontier
 
 ```text
-ACTIVE
-AISE-031 🟦 ACTIVE
-  base AISE-029 merge `709d6282595d68964200ba47075071b117fe0458`
-  dispatch Issue #8
+NO ACTIVE WORK ITEM
 
 MEP
 AISE-026 ✅ → AISE-027 ✅ → AISE-028 ⬜ BLOCKED
@@ -35,8 +32,12 @@ AISE-005 ⛔ BLOCKED → AISE-006 ⬜ BLOCKED / AISE-007 ⬜ BLOCKED
 AISE-005 + AISE-022 → AISE-023 ⛔ BLOCKED
 AISE-006 + core services → AISE-024 ⬜ BLOCKED → AISE-025 ⬜ BLOCKED
 
-OTHER ELIGIBILITY
-AISE-031 is now explicitly activated as the sole active handoff.
+FUTURE
+AISE-029 ✅ → AISE-031 ✅
+AISE-030 ⬜ BLOCKED
+AISE-032 ⬜ BLOCKED
+
+No dependency-eligible work item remains activated. The next implementation activation must follow the governance selection rule; blocked items are not activated automatically.
 ```
 
 Legend: `✅ FINALIZED` = accepted/merged; `🟦 ACTIVE` = explicitly activated governed implementation; `🟦 PR OPEN` = active implementation PR; `⛔ BLOCKED` = blocked after implementation/verification; `⬜ BLOCKED` = not start-eligible; planned items are not activated merely because dependencies are complete.
@@ -75,16 +76,16 @@ Legend: `✅ FINALIZED` = accepted/merged; `🟦 ACTIVE` = explicitly activated 
 | AISE-028 | ⬜ BLOCKED | SHARED | CRITICAL | MEP dogfood benchmark | blocked on AISE-023 + AISE-026 + AISE-027 |
 | AISE-029 | ✅ FINALIZED | ZAI | CRITICAL | `backend/services/verification/rules/src/reality-design/**` | PR #7; accepted head `574bb7fa1e28912fa8874a4e57b3f3e8af162be8`; CI `33976810894` SUCCESS; architect review `5122091269`; merge `709d6282595d68964200ba47075071b117fe0458` |
 | AISE-030 | ⬜ BLOCKED | SHARED | CRITICAL | manhole verification | blocked on AISE-024 |
-| AISE-031 | 🟦 ACTIVE | ZAI | HIGH_ASSURANCE | historical comparison | explicitly activated by dispatch Issue #8; base `709d6282595d68964200ba47075071b117fe0458` |
+| AISE-031 | ✅ FINALIZED | ZAI | HIGH_ASSURANCE | `backend/services/verification/history/**` | PR #9; accepted head `34c2e89b7f32515d72d29f546b1fe8bf076d1ea2`; CI `33983126193` SUCCESS; architect review `5122431137`; merge `3752a3482f409827b69371beadb245d2eead89b8` |
 | AISE-032 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | Engineering Copilot | blocked on AISE-024 |
 
 ## AISE-029 acceptance contract
 
 Reality-vs-design comparison is read-only with respect to canonical model authority. The implementation provides deterministic explicit correspondence, provenance-linked mismatch evidence, quantity-specific uncertainty handling, explicit unmatched elements, and fail-closed ambiguity. It must not mutate the Reality Graph, invent semantic identity, or convert absence of evidence into success.
 
-## AISE-031 activation contract
+## AISE-031 acceptance contract
 
-Historical comparison/change detection is explicitly activated after AISE-029 finalization. It remains limited to version-to-version geometry/semantic/evidence comparison, preserves uncertainty and confidence as separate dimensions, and emits deterministic change records with provenance.
+Historical comparison/change detection was explicitly activated after AISE-029 finalization. The accepted implementation remains limited to version-to-version geometry/semantic/evidence comparison, preserves uncertainty and confidence as separate dimensions, emits deterministic change records with provenance, validates report and record identity bindings, and remains read-only with respect to canonical authority.
 
 ## Governance and authority
 
