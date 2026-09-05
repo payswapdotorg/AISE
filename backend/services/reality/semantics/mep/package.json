@@ -1,0 +1,24 @@
+{
+  "name": "@aise/backend-semantics-mep",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AISE MEP pipe reconstruction — deterministic pipe centerline, diameter and connectivity representation from capture point clouds with evidence-pinned provenance (AISE-026)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@aise/backend-config": "*",
+    "@aise/backend-geometry": "*",
+    "@aise/backend-logging": "*",
+    "@aise/engineering-model": "*"
+  },
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}

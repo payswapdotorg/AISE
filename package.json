@@ -15,6 +15,7 @@
     "backend/services/*",
     "backend/services/export/*",
     "backend/services/reality/*",
+    "backend/services/reality/semantics/*",
     "backend/services/verification/*",
     "benchmarks"
   ],
@@ -33,6 +34,7 @@
     "dev:export-ifc": "npm run dev --workspace @aise/backend-export-ifc",
     "dev:export-dxf": "npm run dev --workspace @aise/backend-export-dxf",
     "dev:reporting": "npm run dev --workspace @aise/backend-reporting",
+    "dev:mep": "npm run dev --workspace @aise/backend-semantics-mep",
     "dev:web": "npm run dev --workspace @aise/web",
     "lint": "eslint .",
     "typecheck": "npm run typecheck --workspaces --if-present",
