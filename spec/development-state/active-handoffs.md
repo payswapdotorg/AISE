@@ -56,24 +56,32 @@ Final evidence: PR #35; exact implementation head `4ec9ca559ec241f86d00d909a1880
 
 Accepted outcome: evidence-aware object/property review with authoritative evidence traces, epistemic/confidence/uncertainty presentation, and a staged governed decision path. Transaction safety was corrected so mapping mutations are staged and journaled before the final model-version commit; failure is compensated through canonical retractions with no partial committed model version.
 
-## AISE-017 — Z.ai — RESIDENT WORKER DISPATCH
+## AISE-017 — Z.ai
 
-Status: ACTIVE. Owner: ZAI. Assurance: HIGH_ASSURANCE. Base SHA: `51ffa38a2887d39671b83ef174d2517c5fab248d`.
+Status: FINALIZED. Owner: ZAI. Assurance: HIGH_ASSURANCE. Declared surfaces: `services/export/2d/**`, `apps/web/2d/**`.
 
-Work Order: `spec/work-orders.md` — AISE-017. Dependencies AISE-009 and AISE-011 are finalized.
+Final evidence: PR #38; exact implementation head `b18adbb2e98ac9243a9be805f5a317b14163ee30`; CI `33931455302` SUCCESS; 1,807/1,807 repository tests; 69 new tests; 10/10 mutation/discrimination detected; architect clearance review `5119539617`; merge `077fcb2120b06d0aa93ab47d612e9f193113e99c`.
 
-Declared surfaces: `services/export/2d/**`, `apps/web/2d/**`.
+Accepted outcome: deterministic vector plan/elevation projection over the canonical Reality Graph with source/content/provenance traceability, explicit limitations and honest unprojected cases. The browser remains a read-only renderer/selection surface; canonical model authority is unchanged.
 
-Forbidden surfaces: `apps/android/**`; unrelated/cross-scope changes; canonical authority changes; architecture or epistemic semantic changes.
+## AISE-018 — Z.ai — RESIDENT WORKER DISPATCH
 
-Objective: deterministic 2D plan projection/export over the canonical Reality Graph with traceable source/evidence references and explicit limitations; browser code must not become canonical authority.
+Status: ACTIVE. Owner: ZAI. Assurance: CRITICAL. Base SHA: `077fcb2120b06d0aa93ab47d612e9f193113e99c`.
 
-Acceptance: produce the governed 2D plan capability defined by AISE-017; derived outputs remain downstream of authoritative server-side model state; limitations are explicit; no silent epistemic upgrades or second authority.
+Work Order: `spec/work-orders.md` — AISE-018. Dependencies AISE-011, AISE-012 and AISE-017 are finalized.
+
+Declared surface: `services/export/ifc/**`.
+
+Forbidden surfaces: `apps/android/**`; `apps/web/**` unless explicitly required by the Work Order; unrelated/cross-scope changes; canonical authority changes; architecture or epistemic semantic changes.
+
+Objective: deterministic, schema-valid IFC 4.3 export from the canonical Reality Graph with evidence/epistemic metadata preserved where supported; export must not mutate canonical model state or become a second authority.
+
+Acceptance: representative IFC 4.3 export is schema-valid and deterministic; supported evidence/epistemic metadata survives into the export; canonical model state and digests are unchanged by export operations.
 
 Resident worker operating contract:
 
 - Remain resident for the Work Item/change loop where possible.
-- Bind the session to repository `pectoraux/AISE`, Work Item `AISE-017`, exact base SHA above, the Work Order, declared review scope, required checks, and one branch/PR.
+- Bind the session to repository `pectoraux/AISE`, Work Item `AISE-018`, exact base SHA above, the Work Order, declared review scope, required checks, and one branch/PR.
 - Recover from repository + GitHub state rather than chat history.
 - One Work Item = one branch = one implementation PR.
 - Worker may implement/update the PR but may not approve, self-merge, rewrite architecture, or silently broaden scope.
@@ -83,21 +91,21 @@ Resident worker operating contract:
 Canonical dispatch packet:
 
 ```text
-WORK_ITEM=AISE-017
+WORK_ITEM=AISE-018
 OWNER=ZAI
 REPOSITORY=pectoraux/AISE
-BASE_SHA=51ffa38a2887d39671b83ef174d2517c5fab248d
-WORK_ORDER=spec/work-orders.md#AISE-017
+BASE_SHA=077fcb2120b06d0aa93ab47d612e9f193113e99c
+WORK_ORDER=spec/work-orders.md#AISE-018
 ARCHITECTURE=v1.0 frozen
-BRANCH=feat/AISE-017-2d-plan
-PR=(none yet; create exactly one for AISE-017)
-OWNED_SURFACE=services/export/2d/**;apps/web/2d/**
-FORBIDDEN_SURFACES=apps/android/**; unrelated/cross-scope changes; canonical authority changes; epistemic semantic changes
-ASSURANCE=HIGH_ASSURANCE
-DEPENDENCIES=AISE-009; AISE-011 (all finalized)
-ACCEPTANCE=deterministic 2D plan projection/export over canonical Reality Graph with traceable source/evidence references and explicit limitations; no browser canonical authority
+BRANCH=feat/AISE-018-ifc-export
+PR=(none yet; create exactly one for AISE-018)
+OWNED_SURFACE=services/export/ifc/**
+FORBIDDEN_SURFACES=apps/android/**; apps/web/** unless explicitly required by the Work Order; unrelated/cross-scope changes; canonical authority changes; epistemic semantic changes
+ASSURANCE=CRITICAL
+DEPENDENCIES=AISE-011; AISE-012; AISE-017 (all finalized)
+ACCEPTANCE=schema-valid deterministic IFC 4.3 export from the canonical Reality Graph with evidence/epistemic metadata preserved where supported; export must not mutate canonical model state
 MERGE_GATE=ARCHITECT
 SELF_MERGE=FORBIDDEN
 ```
 
-Dispatch relay issue: GitHub Issue #36. It is the canonical relay packet and does not claim direct transport to Z.ai.
+Dispatch relay issue: GitHub Issue #39. It is the canonical relay packet and does not claim direct transport to Z.ai.
