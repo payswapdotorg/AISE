@@ -127,7 +127,7 @@ function canonicalize(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonicalize).join(",")}]`;
   if (value !== null && typeof value === "object") {
     const entries = Object.entries(value as Record<string, unknown>).sort(([a], [b]) => a.localeCompare(b));
-    return `{${entries.map(([key, item]) => `${JSON.stringify(key)}:${canonicalize(item)}`).join(",`)}`;
+    return `{${entries.map(([key, item]) => `${JSON.stringify(key)}:${canonicalize(item)}`).join(",")}}`;
   }
   return JSON.stringify(value);
 }
@@ -151,6 +151,7 @@ function reportBody(report: Omit<ComparisonReport, "digest">): object {
 
 /**
  * Compares normalized design/reference and authoritative reality snapshots.
+ *
  * Critical ambiguity fails closed as AMBIGUOUS; explicit disagreement is MISMATCH.
  */
 export function compareRealityToDesign(input: ComparisonInput): ComparisonReport {
@@ -208,22 +209,23 @@ export function compareRealityToDesign(input: ComparisonInput): ComparisonReport
       continue;
     }
 
-    const evidence = [...design.provenance, ...candidates[0]!.reality.provenance];
     if (candidates.length > 1 && candidates[1]!.distance - candidates[0]!.distance <= ambiguityMargin) {
       ambiguous = true;
+      unmatchedDesign.push(design.designId);
+      const firstEvidence = [...design.provenance, ...candidates[0]!.reality.provenance];
       mismatches.push({
         designId: design.designId,
-        realityId: candidates[0]!.reality.realityId,
         kind: "position",
         observedDifference: candidates[1]!.distance - candidates[0]!.distance,
         allowedDifference: ambiguityMargin,
-        evidence: [...evidence, ...candidates[1]!.reality.provenance],
+        evidence: [...firstEvidence, ...candidates[1]!.reality.provenance],
       });
       continue;
     }
 
     const reality = candidates[0]!.reality;
     matchedReality.add(reality.realityId);
+    const evidence = [...design.provenance, ...reality.provenance];
     correspondences.push({
       designId: design.designId,
       realityId: reality.realityId,
@@ -245,7 +247,7 @@ export function compareRealityToDesign(input: ComparisonInput): ComparisonReport
   }
 
   for (const reality of sortedReality) {
-    if (!matchedReality.has(reality.realityId) && !correspondences.some((item) => item.realityId === reality.realityId)) unmatchedReality.push(reality.realityId);
+    if (!matchedReality.has(reality.realityId)) unmatchedReality.push(reality.realityId);
   }
 
   const status: ComparisonStatus = ambiguous
