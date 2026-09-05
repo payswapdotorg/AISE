@@ -49,8 +49,8 @@ AISE-002 ─┴─→ AISE-003 → AISE-004 → AISE-008 → AISE-009 → AISE-0
                                                                     │                       │
                                                                     │                       ├──→ AISE-014 ✅ FINALIZED
                                                                     │                       │
-                                                                    ├──→ AISE-015 ✅ FINALIZED ─→ AISE-016 ✅ FINALIZED ─→ AISE-017 🟦 ACTIVE
-                                                                    └──→ AISE-017 🟦 ACTIVE
+                                                                    ├──→ AISE-015 ✅ FINALIZED ─→ AISE-016 ✅ FINALIZED ─→ AISE-017 ✅ FINALIZED ─→ AISE-018 🟦 ACTIVE
+                                                                    └──→ AISE-018 🟦 ACTIVE
 
 CAPTURE FRONT
 AISE-005 ⛔ BLOCKED (post-merge verification failure) ─→ AISE-006 ⬜ BLOCKED
@@ -99,8 +99,8 @@ Legend: `✅ FINALIZED` is accepted/merged work; `🟦 ACTIVE` is an authorized 
 | AISE-014 | ✅ FINALIZED | ZAI | CRITICAL | `services/verification/model-qa/**` | PR #19; head `a6212c799a431a1348a3b6b45d2a667ebbde5560`; CI `33854132772`; merge `934e32479d929bcdabf846663e6b625d24bdb8c3` |
 | AISE-015 | ✅ FINALIZED | ZAI | STANDARD | `apps/web/**` | PR #32; head `cb8743f70c2a146892e5fab701bef46adb99b47c`; CI `33912710174` SUCCESS (verify + benchmark); 1,690/1,690 tests; 28 new tests; 6/6 discrimination; architect clearance review `5117458821`; merge `197bce9ec96198a049d3db29675c14800729987c` |
 | AISE-016 | ✅ FINALIZED | ZAI | HIGH_ASSURANCE | `apps/web/review/**` | PR #35; head `4ec9ca559ec241f86d00d909a1880bafe21df859`; CI `33925697514` SUCCESS; 1,738/1,738 tests; 11/11 mutation/discrimination; architect clearance review `5118400479`; merge `51ffa38a2887d39671b83ef174d2517c5fab248d` |
-| AISE-017 | 🟦 ACTIVE | ZAI | HIGH_ASSURANCE | 2D export/UI | dispatch Issue #36; base `51ffa38a2887d39671b83ef174d2517c5fab248d`; dependencies AISE-009 + AISE-011 finalized |
-| AISE-018 | ⬜ BLOCKED | ZAI | CRITICAL | IFC export | blocked on AISE-017 |
+| AISE-017 | ✅ FINALIZED | ZAI | HIGH_ASSURANCE | 2D export/UI | PR #38; head `b18adbb2e98ac9243a9be805f5a317b14163ee30`; CI `33931455302` SUCCESS; 1,807/1,807 repository tests; 69 new tests; 10/10 mutation/discrimination; architect clearance review `5119539617`; merge `077fcb2120b06d0aa93ab47d612e9f193113e99c` |
+| AISE-018 | 🟦 ACTIVE | ZAI | CRITICAL | IFC export | dispatch Issue #39; base `077fcb2120b06d0aa93ab47d612e9f193113e99c`; dependencies AISE-011 + AISE-012 + AISE-017 finalized |
 | AISE-019 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | DXF/PDF | blocked on AISE-017 |
 | AISE-020 | ✅ FINALIZED | ZAI | CRITICAL | `services/assurance/**` | PR #23; head `267a6b83ff095f694c838d54b68b5898c890e001`; CI `33897439954`; 1,540/1,540 repository tests; 8/8 mutation/discrimination; merge `8d351c43ca9cfed43ea507296ceedc2bffd3a12a` |
 | AISE-021 | ✅ FINALIZED | ZAI | CRITICAL | `services/verification/rules/**` | PR #26; head `20ed22e7bcb173ca36a592c7ffb3a6863aaac00f`; CI `33902235657`; 1,628/1,628 repository tests; 10/10 mutation/discrimination; merge `0de293d7081e4d9b4dae6ef30e8d1dedc0d7bef4` |
