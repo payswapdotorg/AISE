@@ -5,17 +5,18 @@ This repository is the sole source of truth for implementation. Assume no access
 ## Mandatory reading order
 
 1. `README.md`
-2. `spec/implementation-roadmap.md` — frozen human-readable roadmap and progress authority
-3. `spec/implementation-map.md` — detailed supporting roadmap/contracts map
-4. `spec/development-state/program-state.json` — canonical machine-readable progress state and evidence ledger
-5. `spec/architecture-lock.md` — frozen architecture invariants
-6. `spec/architecture.md` — architecture description
-7. `spec/requirements.md` — product requirements
-8. `spec/work-items.md` — work-item scope
-9. `spec/work-orders.md` — implementation contracts and acceptance evidence
-10. `spec/dependency-graph.md` — dependency authority
-11. `spec/development-protocol.md` — implementation/governance protocol
-12. `spec/agent-ownership.md` — surface ownership
+2. `spec/development-state/CONTINUATION.md` — **durable current architect/worker continuation packet**; use it to orient immediately to the current mission, active Work Item, exact handoff, blockers and next-step protocol
+3. `spec/implementation-roadmap.md` — frozen human-readable roadmap and progress authority
+4. `spec/implementation-map.md` — detailed supporting roadmap/contracts map
+5. `spec/development-state/program-state.json` — canonical machine-readable progress state and evidence ledger
+6. `spec/architecture-lock.md` — frozen architecture invariants
+7. `spec/architecture.md` — architecture description
+8. `spec/requirements.md` — product requirements
+9. `spec/work-items.md` — work-item scope
+10. `spec/work-orders.md` — implementation contracts and acceptance evidence
+11. `spec/dependency-graph.md` — dependency authority
+12. `spec/development-protocol.md` — implementation/governance protocol
+13. `spec/agent-ownership.md` — surface ownership
 
 Then read the specialist contract for the assigned surface where present.
 
