@@ -85,7 +85,7 @@ Acceptance: asset/topology fixtures, uncertainty and evidence linkage.
 Resident worker operating contract:
 
 - Remain resident for the Work Item/change loop where possible.
-- Bind the session to repository `pectoraux/AISE`, Work Item `AISE-027`, exact base SHA above, the Work Order, declared review scope, required checks, and one branch/PR.
+- Bind the session to repository `payswapdotorg/AISE`, Work Item `AISE-027`, exact base SHA above, the Work Order, declared review scope, required checks, and one branch/PR.
 - Recover from repository + GitHub state rather than chat history.
 - One Work Item = one branch = one implementation PR.
 - Worker may implement/update the PR but may not approve, self-merge, rewrite architecture, or silently broaden scope.
@@ -97,7 +97,7 @@ Canonical dispatch packet:
 ```text
 WORK_ITEM=AISE-027
 OWNER=ZAI
-REPOSITORY=pectoraux/AISE
+REPOSITORY=payswapdotorg/AISE
 BASE_SHA=9a65b56804c26d79b76132b984c2a2e32660eb74
 WORK_ORDER=spec/work-orders.md#AISE-027
 ARCHITECTURE=v1.0 frozen
@@ -112,4 +112,4 @@ MERGE_GATE=ARCHITECT
 SELF_MERGE=FORBIDDEN
 ```
 
-Dispatch relay issue: GitHub Issue #48. It is the canonical relay packet and does not claim direct transport to Z.ai.
+Dispatch relay issue: GitHub Issue #1 in `payswapdotorg/AISE`. It is the canonical relay packet for this remote and does not claim direct transport to Z.ai.
