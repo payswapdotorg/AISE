@@ -1,0 +1,328 @@
+/* The AISE-017 2D plan/elevation workspace styles (co-located
+ * under the 2d surface — globals.css stays untouched). Same
+ * design language as the AISE-015/016 workspaces: dark,
+ * surface-soft panels, the shared epistemic vocabulary. */
+
+.shell {
+  display: grid;
+  grid-template-columns: 250px minmax(360px, 1fr) 400px;
+  gap: 14px;
+  min-height: calc(100vh - 190px);
+}
+
+@media (max-width: 1180px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
+}
+
+.panel h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+}
+
+.panel h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ink-soft);
+  margin: 16px 0 6px;
+}
+
+/* --- view + version switchers ------------------------------------------------ */
+
+.viewList,
+.versionBar {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.versionBar {
+  margin-bottom: 4px;
+}
+
+.viewLink,
+.versionLink {
+  display: inline-block;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.viewLink:hover,
+.versionLink:hover {
+  background: #1d2532;
+}
+
+.viewLink.current,
+.versionLink.current {
+  background: #1d2f35;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* --- primitive list ---------------------------------------------------------- */
+
+.primitiveList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.primitiveRow {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ink-soft);
+  border-radius: 6px;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+
+.primitiveRow:hover {
+  background: #1d2532;
+}
+
+.primitiveRow[data-selected="true"] {
+  background: #1d2f35;
+  border-color: var(--accent);
+}
+
+.primitiveRow[data-class="FLOOR"],
+.primitiveRow[data-class="CEILING"] {
+  border-left-color: #0f766e;
+}
+
+.primitiveRow[data-class="WALL"] {
+  border-left-color: #475569;
+}
+
+.primitiveRow[data-class="DOOR"],
+.primitiveRow[data-class="WINDOW"] {
+  border-left-color: #b45309;
+}
+
+.primitiveLabel {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.primitiveSub {
+  display: block;
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+/* --- the SVG canvas ----------------------------------------------------------- */
+
+.canvas {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
+}
+
+.canvasHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.canvasTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.canvasMeta {
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  background: #0d1218;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: block;
+}
+
+.svg polygon,
+.svg line {
+  cursor: pointer;
+}
+
+.svg polygon:hover,
+.svg line:hover {
+  stroke-width: 3;
+}
+
+/* Epistemic fill colors: the shared vocabulary (epistemic-badge). */
+.svg [data-epistemic="CONFIRMED"] {
+  stroke: #14b8a6;
+}
+
+.svg [data-epistemic="OBSERVED"] {
+  stroke: #3b82f6;
+}
+
+.svg [data-epistemic="INFERRED"] {
+  stroke: #d97706;
+}
+
+.svg [data-epistemic="PROPOSED"] {
+  stroke: #6b7280;
+}
+
+.svg [data-selected="true"] {
+  stroke-width: 3;
+  filter: brightness(1.4);
+}
+
+/* --- detail panel --------------------------------------------------------------- */
+
+.traceList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 12.5px;
+}
+
+.traceRow {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.traceKey {
+  color: var(--ink-soft);
+}
+
+.traceValue {
+  word-break: break-all;
+}
+
+.dimensionList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.dimensionRow {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 8px;
+  padding: 6px 8px;
+  background: #151b26;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12.5px;
+}
+
+.dimensionKey {
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.4px;
+}
+
+.dimensionValue {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* --- limitations + unprojected --------------------------------------------------- */
+
+.limitationList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.limitationItem {
+  padding: 6px 8px 6px 10px;
+  border-left: 2px solid #b45309;
+  background: #17130c;
+  border-radius: 4px;
+  line-height: 1.45;
+}
+
+.unprojectedList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.unprojectedRow {
+  padding: 6px 8px;
+  border: 1px dashed #b45309;
+  border-radius: 6px;
+  color: var(--ink-soft);
+}
+
+.readonlyNote {
+  margin: 12px 0 0;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.emptyNote {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  margin: 0;
+}

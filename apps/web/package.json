@@ -2,7 +2,7 @@
   "name": "@aise/web",
   "version": "0.0.0",
   "private": true,
-  "description": "AISE web engineering workspace \u2014 authenticated read-only model browsing, 3D shell over authoritative backend reads (AISE-015); evidence-aware object review UI with governed corrections (AISE-016)",
+  "description": "AISE web engineering workspace \u2014 authenticated read-only model browsing, 3D shell over authoritative backend reads (AISE-015); evidence-aware object review UI with governed corrections (AISE-016); deterministic 2D plan/elevation workspace (AISE-017)",
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",
@@ -21,7 +21,8 @@
     "@aise/backend-logging": "*",
     "@aise/backend-reality-model": "*",
     "@aise/backend-semantics": "*",
-    "@aise/engineering-model": "*"
+    "@aise/engineering-model": "*",
+    "@aise/backend-export-2d": "*"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
