@@ -31,6 +31,8 @@
     "dev:worker": "npm run dev --workspace @aise/backend-worker",
     "dev:export-2d": "npm run dev --workspace @aise/backend-export-2d",
     "dev:export-ifc": "npm run dev --workspace @aise/backend-export-ifc",
+    "dev:export-dxf": "npm run dev --workspace @aise/backend-export-dxf",
+    "dev:reporting": "npm run dev --workspace @aise/backend-reporting",
     "dev:web": "npm run dev --workspace @aise/web",
     "lint": "eslint .",
     "typecheck": "npm run typecheck --workspaces --if-present",
