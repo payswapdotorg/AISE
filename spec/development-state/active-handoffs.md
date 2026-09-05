@@ -32,41 +32,21 @@ Implementation PR #7, branch `feat/AISE-029-reality-design-comparison`. Accepted
 
 Accepted outcome: deterministic read-only Reality-vs-Design comparison with explicit correspondence/unmatched facts, quantity-specific uncertainty, fail-closed ambiguity, provenance-linked evidence, and content-bound report digest/validator. Canonical Reality Graph/design authority were not mutated.
 
-## AISE-031 — Z.ai — CURRENT RESIDENT WORKER DISPATCH
+## AISE-031 — Z.ai — FINALIZED
 
-Status: ACTIVE. Owner: ZAI. Assurance: HIGH_ASSURANCE. Dependencies AISE-011, AISE-012, and AISE-022 are finalized.
+Status: FINALIZED. Owner: ZAI. Assurance: HIGH_ASSURANCE. Dependencies AISE-011, AISE-012, and AISE-022 were finalized.
 
-Work Order: `spec/work-orders.md` — AISE-031.
+Dispatch Issue: #8. Base `709d6282595d68964200ba47075071b117fe0458`.
 
-Implementation surface: as defined by the selected AISE-031 Work Order; do not cross declared surfaces without governed change.
+Implementation PR #9, branch `feat/AISE-031-historical-comparison`. Accepted head `34c2e89b7f32515d72d29f546b1fe8bf076d1ea2`; CI `33983126193` SUCCESS; architect review `5122431137`; merge `3752a3482f409827b69371beadb245d2eead89b8`.
 
-Objective: version-to-version geometry/semantic/evidence comparison without collapsing uncertainty.
+Accepted outcome: deterministic version-to-version geometry/semantic/evidence change detection with provenance, strict confidence/uncertainty separation, explicit optional-quantity presence changes, authoritative source-version provenance for spaces/relationships, fail-closed input/report validation, content-bound record/report identities, and read-only canonical authority.
 
-Acceptance: deterministic change records with provenance and confidence/uncertainty separation.
+## Current resident worker dispatch
 
-Dispatch Issue: #8.
+There is currently **no active Work Item**. The governed frontier is held by blocked dependencies, principally AISE-005 → AISE-006/007 → AISE-023 → AISE-028 and AISE-024 → AISE-025/AISE-030/AISE-032.
 
-Base: `709d6282595d68964200ba47075071b117fe0458`.
-
-Required fresh-agent loop: inspect the current frozen architecture, work item/work order, dependency graph, and repository implementation; create exactly one branch and one PR; run objective verification and required evidence; then sole-architect review and merge exact accepted head.
-
-Canonical dispatch packet:
-
-```text
-WORK_ITEM=AISE-031
-OWNER=ZAI
-REPOSITORY=payswapdotorg/AISE
-BASE_SHA=709d6282595d68964200ba47075071b117fe0458
-WORK_ORDER=spec/work-orders.md#AISE-031
-ARCHITECTURE=v1.0 frozen
-PRIOR_FINALIZED=AISE-029 / PR #7 / merge 709d6282595d68964200ba47075071b117fe0458
-ASSURANCE=HIGH_ASSURANCE
-DEPENDENCIES=AISE-011, AISE-012, AISE-022 (finalized)
-ACCEPTANCE=deterministic version-to-version change records; provenance; confidence/uncertainty separation
-DISPATCH_ISSUE=8
-MERGE_GATE=ARCHITECT
-SOLE_ARCHITECT=payswapdotorg connected architect identity
-```
+No blocked or merely dependency-eligible item is to be activated automatically. A fresh agent must recompute eligibility from `program-state.json` and activate a new Work Item only through an explicit governance action.
 
 ## Governance rule
 
