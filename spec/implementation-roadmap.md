@@ -53,7 +53,7 @@ AISE-002 ─┴─→ AISE-003 → AISE-004 → AISE-008 → AISE-009 → AISE-0
                                                                     └──→ AISE-018 ✅ FINALIZED
 
 ACTIVE MEP FRONT
-AISE-009 + AISE-011 + AISE-012 + AISE-022 → AISE-026 🟦 ACTIVE → AISE-027 ⬜ BLOCKED → AISE-028 ⬜ BLOCKED
+AISE-009 + AISE-011 + AISE-012 + AISE-022 → AISE-026 ✅ FINALIZED → AISE-027 🟦 ACTIVE → AISE-028 ⬜ BLOCKED
 
 CAPTURE FRONT
 AISE-005 ⛔ BLOCKED (post-merge verification failure) ─→ AISE-006 ⬜ BLOCKED
@@ -108,12 +108,12 @@ Legend: `✅ FINALIZED` is accepted/merged work; `🟦 ACTIVE` is an authorized 
 | AISE-023 | ⛔ BLOCKED | SHARED | CRITICAL | Reality Lab | blocked on AISE-005 + AISE-022; AISE-022 finalized but AISE-005 remains blocked |
 | AISE-024 | ⬜ BLOCKED | ZAI | CRITICAL | integration/E2E | blocked on declared dependencies |
 | AISE-025 | ⬜ BLOCKED | SHARED | CRITICAL | dogfood | blocked on AISE-024 |
-| AISE-026 | 🟦 ACTIVE | ZAI | CRITICAL | MEP semantics | dispatch Issue #45; exact base `b63f973c8512c3728413625911c37854a16ed3f5`; dependencies AISE-009 + AISE-011 + AISE-012 + AISE-022 finalized |
-| AISE-027 | ⬜ BLOCKED | ZAI | CRITICAL | MEP topology | held on AISE-026 |
+| AISE-026 | ✅ FINALIZED | ZAI | CRITICAL | MEP semantics | dispatch Issue #45; exact base `b63f973c8512c3728413625911c37854a16ed3f5`; PR #47; head `79778fb0096dcc1b7f540254c34879c7b3cbd233`; CI `33954644880` SUCCESS; 2,059/2,059 tests; 43 new; benchmark PASS/UNCHANGED; 10/10 mutation/discrimination; architect merge authorization `5120633672`; merge `9a65b56804c26d79b76132b984c2a2e32660eb74` |
+| AISE-027 | 🟦 ACTIVE | ZAI | CRITICAL | MEP topology | dispatch Issue #48; exact base `9a65b56804c26d79b76132b984c2a2e32660eb74`; dependency AISE-026 finalized |
 | AISE-028 | ⬜ BLOCKED | SHARED | CRITICAL | MEP benchmark | blocked on AISE-023 + AISE-026 + AISE-027 |
 | AISE-029 | ⬜ BLOCKED | ZAI | CRITICAL | reality-vs-design | future expansion |
 | AISE-030 | ⬜ BLOCKED | SHARED | CRITICAL | manhole verification | future expansion |
-| AISE-031 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | historical comparison | future expansion |
+| AISE-031 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | historical comparison | dependency-complete but not activated |
 | AISE-032 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | Engineering Copilot | future expansion |
 
 ## Governance and authority
