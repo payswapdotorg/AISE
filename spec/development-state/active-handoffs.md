@@ -26,28 +26,21 @@ Accepted outcome: deterministic MEP asset/topology reconstruction with geometric
 
 ## AISE-029 — Z.ai — CURRENT RESIDENT WORKER DISPATCH
 
-Status: PR OPEN / ACTIVE. Owner: ZAI. Assurance: CRITICAL. Dependency AISE-018 and AISE-022 are finalized.
+Status: PR OPEN / ACTIVE. Owner: ZAI. Assurance: CRITICAL. Dependencies AISE-018 and AISE-022 are finalized.
 
 Work Order: `spec/work-orders.md` — AISE-029.
 
-Declared implementation surface: `backend/services/verification/reality-design/**`.
+Implementation surface: `backend/services/verification/rules/src/reality-design/**`.
 
 Objective: compare authoritative reality model against design reference with provenance and uncertainty.
 
 Acceptance: explicit correspondence, mismatch evidence and fail-closed ambiguous cases.
 
-Current implementation PR: #7, branch `feat/AISE-029-reality-design-comparison`, exact head `256ec84439702a07764510d88c5863c9d919f32f`, base `b05974094ee40fd4d3de23fe80a71d2f77c3a144`.
+Current implementation PR: #7, branch `feat/AISE-029-reality-design-comparison`, exact head `4f919bf04a6ee8765e2cff3af5d78e4024d42bfb`, base `b05974094ee40fd4d3de23fe80a71d2f77c3a144`.
 
-Dispatch issue: #5. Implementation tracking issue: #6.
+CI: run `33974399447` is queued on the exact current head.
 
-Implemented v1 surface:
-- deterministic geometric correspondence by kind and position;
-- explicit unmatched design/reality elements;
-- position- and size-specific uncertainty bounds;
-- fail-closed `AMBIGUOUS` correspondence;
-- provenance-linked evidence on correspondence/mismatches;
-- content-bound deterministic report digest and validator;
-- read-only behavior with respect to canonical Reality Graph authority.
+Implementation is read-only with respect to canonical model authority and composes into the existing verification/rules workspace so `npm ci` remains lockfile-stable. The comparison engine provides deterministic kind+geometry correspondence, explicit unmatched facts, quantity-specific uncertainty bounds, fail-closed ambiguity, provenance-linked mismatch evidence, and a content-bound report digest/validator.
 
 Required fresh-agent loop: inspect current PR/CI, correct any review or verification findings on the same branch, run objective verification, then sole-architect review and merge exact accepted head.
 
@@ -62,15 +55,16 @@ WORK_ORDER=spec/work-orders.md#AISE-029
 ARCHITECTURE=v1.0 frozen
 BRANCH=feat/AISE-029-reality-design-comparison
 PR=7
-HEAD_SHA=256ec84439702a07764510d88c5863c9d919f32f
-OWNED_SURFACE=backend/services/verification/reality-design/**
+HEAD_SHA=4f919bf04a6ee8765e2cff3af5d78e4024d42bfb
+OWNED_SURFACE=backend/services/verification/rules/src/reality-design/**
 ASSURANCE=CRITICAL
 DEPENDENCIES=AISE-018, AISE-022 (finalized)
 ACCEPTANCE=explicit correspondence; provenance/uncertainty-aware mismatch evidence; fail-closed ambiguity
+CI_RUN=33974399447 (queued)
 MERGE_GATE=ARCHITECT
 SOLE_ARCHITECT=payswapdotorg connected architect identity
 ```
 
 ## Governance rule
 
-The architect is the sole merge authority in this project. Worker restrictions prevent an implementation worker from self-approving; they do not require a second human where the connected project role is explicitly the sole architect. Conversation remains non-authoritative; repository state controls continuation.
+The architect is the sole merge authority in this project. The connected `payswapdotorg` architect identity may approve and merge the Work Item when objective acceptance evidence is satisfied. Conversation remains non-authoritative; repository state controls continuation.
