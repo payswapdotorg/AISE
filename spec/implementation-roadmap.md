@@ -23,10 +23,9 @@ The canonical product object is the **Engineering Reality Graph**: geometry + se
 
 ```text
 ACTIVE
-AISE-029 🟦 PR OPEN
-  base AISE-027 merge `b05974094ee40fd4d3de23fe80a71d2f77c3a144`
-  head `4f919bf04a6ee8765e2cff3af5d78e4024d42bfb`
-  CI run `33974399447` QUEUED
+AISE-031 🟦 ACTIVE
+  base AISE-029 merge `709d6282595d68964200ba47075071b117fe0458`
+  dispatch Issue #8
 
 MEP
 AISE-026 ✅ → AISE-027 ✅ → AISE-028 ⬜ BLOCKED
@@ -37,10 +36,10 @@ AISE-005 + AISE-022 → AISE-023 ⛔ BLOCKED
 AISE-006 + core services → AISE-024 ⬜ BLOCKED → AISE-025 ⬜ BLOCKED
 
 OTHER ELIGIBILITY
-AISE-031 is dependency-complete but intentionally not activated while AISE-029 is the sole active handoff.
+AISE-031 is now explicitly activated as the sole active handoff.
 ```
 
-Legend: `✅ FINALIZED` = accepted/merged; `🟦 PR OPEN` = active governed implementation; `⛔ BLOCKED` = blocked after implementation/verification; `⬜ BLOCKED` = not start-eligible; planned items are not activated merely because dependencies are complete.
+Legend: `✅ FINALIZED` = accepted/merged; `🟦 ACTIVE` = explicitly activated governed implementation; `🟦 PR OPEN` = active implementation PR; `⛔ BLOCKED` = blocked after implementation/verification; `⬜ BLOCKED` = not start-eligible; planned items are not activated merely because dependencies are complete.
 
 ## Work-item status ledger
 
@@ -74,14 +73,18 @@ Legend: `✅ FINALIZED` = accepted/merged; `🟦 PR OPEN` = active governed impl
 | AISE-026 | ✅ FINALIZED | ZAI | CRITICAL | MEP pipe reconstruction | PR #47; merge `9a65b56804c26d79b76132b984c2a2e32660eb74` |
 | AISE-027 | ✅ FINALIZED | ZAI | CRITICAL | MEP asset/topology | PR #3; head `59166b974780768051246d1341ca60dcbb0c45e0`; CI `33972057728` SUCCESS; merge `b05974094ee40fd4d3de23fe80a71d2f77c3a144` |
 | AISE-028 | ⬜ BLOCKED | SHARED | CRITICAL | MEP dogfood benchmark | blocked on AISE-023 + AISE-026 + AISE-027 |
-| AISE-029 | 🟦 PR OPEN | ZAI | CRITICAL | `backend/services/verification/rules/src/reality-design/**` | dispatch Issue #5; PR #7; head `4f919bf04a6ee8765e2cff3af5d78e4024d42bfb`; base `b05974094ee40fd4d3de23fe80a71d2f77c3a144`; CI `33974399447` QUEUED |
+| AISE-029 | ✅ FINALIZED | ZAI | CRITICAL | `backend/services/verification/rules/src/reality-design/**` | PR #7; accepted head `574bb7fa1e28912fa8874a4e57b3f3e8af162be8`; CI `33976810894` SUCCESS; architect review `5122091269`; merge `709d6282595d68964200ba47075071b117fe0458` |
 | AISE-030 | ⬜ BLOCKED | SHARED | CRITICAL | manhole verification | blocked on AISE-024 |
-| AISE-031 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | historical comparison | dependency-complete but not activated |
+| AISE-031 | 🟦 ACTIVE | ZAI | HIGH_ASSURANCE | historical comparison | explicitly activated by dispatch Issue #8; base `709d6282595d68964200ba47075071b117fe0458` |
 | AISE-032 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | Engineering Copilot | blocked on AISE-024 |
 
 ## AISE-029 acceptance contract
 
 Reality-vs-design comparison is read-only with respect to canonical model authority. The implementation provides deterministic explicit correspondence, provenance-linked mismatch evidence, quantity-specific uncertainty handling, explicit unmatched elements, and fail-closed ambiguity. It must not mutate the Reality Graph, invent semantic identity, or convert absence of evidence into success.
+
+## AISE-031 activation contract
+
+Historical comparison/change detection is explicitly activated after AISE-029 finalization. It remains limited to version-to-version geometry/semantic/evidence comparison, preserves uncertainty and confidence as separate dimensions, and emits deterministic change records with provenance.
 
 ## Governance and authority
 
