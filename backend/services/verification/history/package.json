@@ -1,0 +1,24 @@
+{
+  "name": "@aise/backend-history",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AISE historical comparison service — deterministic version-to-version geometry/semantic/evidence change detection over committed Reality Graph versions, with provenance and strict confidence/uncertainty separation (AISE-031)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@aise/engineering-model": "*"
+  },
+  "devDependencies": {
+    "@aise/backend-reality-model": "*",
+    "@aise/backend-semantics": "*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}
