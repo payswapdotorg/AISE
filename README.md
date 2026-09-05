@@ -15,21 +15,22 @@ Implementation is performed by replaceable coding agents. The architect/reviewer
 ### Read first — all agents
 
 1. [`AGENTS.md`](AGENTS.md) — mandatory operating contract and fresh-agent rule
-2. [`spec/implementation-roadmap.md`](spec/implementation-roadmap.md) — **frozen human-readable roadmap and progress authority**
-3. [`spec/implementation-map.md`](spec/implementation-map.md) — detailed dependency/authority map
-4. [`spec/development-state/program-state.json`](spec/development-state/program-state.json) — canonical machine-readable status and evidence state
-5. [`spec/architecture-lock.md`](spec/architecture-lock.md) — frozen architecture invariants
-6. [`spec/architecture.md`](spec/architecture.md) — architecture description
-7. [`spec/requirements.md`](spec/requirements.md) — product requirements
-8. [`spec/work-items.md`](spec/work-items.md) — work-item scope
-9. [`spec/work-orders.md`](spec/work-orders.md) — durable implementation instructions and acceptance evidence
-10. [`spec/dependency-graph.md`](spec/dependency-graph.md) — dependency authority
-11. [`spec/development-protocol.md`](spec/development-protocol.md) — implementation/governance protocol
-12. [`spec/agent-ownership.md`](spec/agent-ownership.md) — ownership boundaries
+2. [`spec/development-state/CONTINUATION.md`](spec/development-state/CONTINUATION.md) — **current durable architect/worker continuation state**
+3. [`spec/implementation-roadmap.md`](spec/implementation-roadmap.md) — **frozen human-readable roadmap and progress authority**
+4. [`spec/implementation-map.md`](spec/implementation-map.md) — detailed dependency/authority map
+5. [`spec/development-state/program-state.json`](spec/development-state/program-state.json) — canonical machine-readable status and evidence state
+6. [`spec/architecture-lock.md`](spec/architecture-lock.md) — frozen architecture invariants
+7. [`spec/architecture.md`](spec/architecture.md) — architecture description
+8. [`spec/requirements.md`](spec/requirements.md) — product requirements
+9. [`spec/work-items.md`](spec/work-items.md) — work-item scope
+10. [`spec/work-orders.md`](spec/work-orders.md) — durable implementation instructions and acceptance evidence
+11. [`spec/dependency-graph.md`](spec/dependency-graph.md) — dependency authority
+12. [`spec/development-protocol.md`](spec/development-protocol.md) — implementation/governance protocol
+13. [`spec/agent-ownership.md`](spec/agent-ownership.md) — ownership boundaries
 
 ### Project tracking rule
 
-The human-readable roadmap and machine state are a synchronized governance pair. The roadmap is the human-facing sequencing/progress authority; `program-state.json` is its machine-readable status/evidence counterpart. A Work Item is selected only from the current repository state, never from chat memory.
+The human-readable roadmap and machine state are a synchronized governance pair. The roadmap is the human-facing sequencing/progress authority; `program-state.json` is its machine-readable status/evidence counterpart. A mismatch is an invalid governed repository state.
 
 After acceptance/merge, the repository must record the exact evidence and merged SHA, finalize the Work Item, synchronize the roadmap row, and recompute dependency eligibility. Important active blockers, exact PR heads, CI failures, and handoff instructions must live under `spec/development-state/`.
 
