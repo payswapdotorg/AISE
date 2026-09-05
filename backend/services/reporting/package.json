@@ -1,0 +1,28 @@
+{
+  "name": "@aise/backend-reporting",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AISE deterministic evidence-linked site PDF report — project/capture metadata, measurements, model status, epistemic distinction and plan drawing derived from the canonical Reality Graph (AISE-019)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@aise/backend-config": "*",
+    "@aise/backend-export-2d": "*",
+    "@aise/backend-logging": "*",
+    "@aise/engineering-model": "*"
+  },
+  "devDependencies": {
+    "@aise/backend-semantics": "*",
+    "@aise/backend-reality-model": "*"
+  },
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@aise/backend-export-dxf",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AISE deterministic DXF 2000 export — structured CAD drawing derived from the canonical 2D plan document with unit fidelity and traceable source IDs (AISE-019)",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@aise/backend-config": "*",
+    "@aise/backend-export-2d": "*",
+    "@aise/backend-logging": "*",
+    "@aise/engineering-model": "*"
+  },
+  "devDependencies": {
+    "@aise/backend-semantics": "*",
+    "@aise/backend-reality-model": "*"
+  },
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  }
+}
