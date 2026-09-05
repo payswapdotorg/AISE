@@ -30,11 +30,11 @@ Status: FINALIZED. PR #19; head `a6212c799a431a1348a3b6b45d2a667ebbde5560`; CI `
 
 ## AISE-020 — Z.ai
 
-Status: FINALIZED. PR #23; head `267a6b83ff095f694c838d54b68b5898c890e001`; CI `33897439954` SUCCESS; merge `8d351c43ca9cfed43ea507296ceedc2bffd3a12a`.
+Status: FINALIZED. PR #23; head `267a6b83ff095f694c838d54b68b5898c890e001`; CI `33897439954`; merge `8d351c43ca9cfed43ea507296ceedc2bffd3a12a`.
 
 ## AISE-021 — Z.ai
 
-Status: FINALIZED. PR #26; head `20ed22e7bcb173ca36a592c7ffb3a6863aaac00f`; CI `33902235657` SUCCESS; 1,628/1,628 tests; 10/10 mutation/discrimination detected; merge `0de293d7081e4d9b4dae6ef30e8d1dedc0d7bef4`.
+Status: FINALIZED. PR #26; head `20ed22e7bcb173ca36a592c7ffb3a6863aaac00f`; CI `33902235657`; 1,628/1,628 tests; 10/10 mutation/discrimination detected; merge `0de293d7081e4d9b4dae6ef30e8d1dedc0d7bef4`.
 
 ## AISE-022 — Z.ai
 
@@ -68,9 +68,9 @@ Final evidence: dispatch Issue #45; exact dispatched base `b63f973c8512c37284136
 
 Accepted outcome: deterministic pipe centerline, diameter and connectivity representation with content-derived identity, provenance/evidence linkage, epistemic passthrough, controlled exact/noisy fixtures, deterministic replay and honest refusals. Canonical model authority was not changed.
 
-## AISE-027 — Z.ai — RESIDENT WORKER DISPATCH
+## AISE-027 — Z.ai — CURRENT RESIDENT WORKER DISPATCH
 
-Status: ACTIVE. Owner: ZAI. Assurance: CRITICAL. Base SHA: `9a65b56804c26d79b76132b984c2a2e32660eb74`.
+Status: PR OPEN / ACTIVE. Owner: ZAI. Assurance: CRITICAL. Base SHA: `9a65b56804c26d79b76132b984c2a2e32660eb74`.
 
 Work Order: `spec/work-orders.md` — AISE-027. Dependency AISE-026 is finalized.
 
@@ -81,6 +81,10 @@ Forbidden surfaces: `apps/android/**`; `apps/web/**` unless explicitly required 
 Objective: valves/equipment and connectivity graph.
 
 Acceptance: asset/topology fixtures, uncertainty and evidence linkage.
+
+Current implementation PR: #3, branch `feat/AISE-027-mep-asset-topology`, exact head `59166b974780768051246d1341ca60dcbb0c45e0`.
+
+CI: run `33972057728` is currently QUEUED for the exact implementation head. Local verification reported by the worker is PASS; architect acceptance and merge remain pending until CI is green and evidence is reviewed.
 
 Resident worker operating contract:
 
@@ -102,7 +106,8 @@ BASE_SHA=9a65b56804c26d79b76132b984c2a2e32660eb74
 WORK_ORDER=spec/work-orders.md#AISE-027
 ARCHITECTURE=v1.0 frozen
 BRANCH=feat/AISE-027-mep-asset-topology
-PR=(none yet; create exactly one for AISE-027)
+PR=3
+HEAD_SHA=59166b974780768051246d1341ca60dcbb0c45e0
 OWNED_SURFACE=services/reality/semantics/mep/**
 FORBIDDEN_SURFACES=apps/android/**; apps/web/** unless explicitly required by the Work Order; unrelated/cross-scope changes; canonical authority changes; epistemic semantic changes
 ASSURANCE=CRITICAL
@@ -110,6 +115,7 @@ DEPENDENCIES=AISE-026 (finalized)
 ACCEPTANCE=asset/topology fixtures, uncertainty and evidence linkage for valves/equipment and connectivity graph
 MERGE_GATE=ARCHITECT
 SELF_MERGE=FORBIDDEN
+CI_RUN=33972057728 (queued)
 ```
 
 Dispatch relay issue: GitHub Issue #1 in `payswapdotorg/AISE`. It is the canonical relay packet for this remote and does not claim direct transport to Z.ai.
