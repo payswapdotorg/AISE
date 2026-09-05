@@ -109,12 +109,12 @@ Legend: `✅ FINALIZED` is accepted/merged work; `🟦 ACTIVE` is an authorized 
 | AISE-024 | ⬜ BLOCKED | ZAI | CRITICAL | integration/E2E | blocked on declared dependencies |
 | AISE-025 | ⬜ BLOCKED | SHARED | CRITICAL | dogfood | blocked on AISE-024 |
 | AISE-026 | ✅ FINALIZED | ZAI | CRITICAL | MEP semantics | dispatch Issue #45; exact base `b63f973c8512c3728413625911c37854a16ed3f5`; PR #47; head `79778fb0096dcc1b7f540254c34879c7b3cbd233`; CI `33954644880` SUCCESS; 2,059/2,059 tests; 43 new; benchmark PASS/UNCHANGED; 10/10 mutation/discrimination; architect clearance `5120633672`; merge `9a65b56804c26d79b76132b984c2a2e32660eb74` |
-| AISE-027 | 🟦 ACTIVE | ZAI | CRITICAL | MEP topology | dispatch Issue #1 in payswapdotorg/AISE; exact base `9a65b56804c26d79b76132b984c2a2e32660eb74`; dependency AISE-026 finalized |
+| AISE-027 | 🟦 ACTIVE | ZAI | CRITICAL | MEP topology | PR #3; branch `feat/AISE-027-mep-asset-topology`; head `59166b974780768051246d1341ca60dcbb0c45e0`; base `9a65b56804c26d79b76132b984c2a2e32660eb74`; CI `33972057728` QUEUED; architect merge gate pending |
 | AISE-028 | ⬜ BLOCKED | SHARED | CRITICAL | MEP benchmark | blocked on AISE-023 + AISE-026 + AISE-027 |
 | AISE-029 | ⬜ BLOCKED | ZAI | CRITICAL | reality-vs-design | future expansion |
-| AISE-030 | ⬜ BLOCKED | SHARED | CRITICAL | manhole verification | future expansion |
+| AISE-030 | ⬜ BLOCKED | SHARED | CRITICAL | manhole verification | future expansion; hard dependency AISE-024 not finalized |
 | AISE-031 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | historical comparison | dependency-complete but not activated |
-| AISE-032 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | Engineering Copilot | future expansion |
+| AISE-032 | ⬜ BLOCKED | ZAI | HIGH_ASSURANCE | Engineering Copilot | future expansion; hard dependency AISE-024 not finalized |
 
 ## Governance and authority
 
