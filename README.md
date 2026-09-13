@@ -27,6 +27,12 @@ Represents proposed interventions as a sequence of model states. Each state can 
 ### Outcome Loop
 After work is performed, AISE captures the changed condition and outcome. This creates a trace from observed problem → diagnosis → proposed intervention → executed work → post-work evidence → observed outcome.
 
+## Integration-first adoption
+
+AISE is designed to become the primary engineering interface without demanding a rip-and-replace migration. Existing BIM, BOQ, CAD, project-management, ERP, procurement and document systems can remain systems of record while AISE exposes their context and authorized actions through connectors. Workflow migration is incremental, reversible and evidence-backed.
+
+AISE can also be plugged into `payswapdotorg/codex` as a vertical: Codex supplies agent/workflow orchestration while AISE remains authoritative for engineering reality, evidence, assurance and BOQ semantics. The initial integration is external and requires no Codex-core modification.
+
 ## Canonical lifecycle
 
 ```text
@@ -58,7 +64,7 @@ AUTHORITATIVE REALITY MODEL
         ↓
 REASONING / BOQ INTELLIGENCE / INTERVENTION SIMULATION
         ↓
-EXECUTION + RECATURE
+EXECUTION + RECAPTURE
         ↓
 OUTCOME LEARNING
 ```
@@ -72,45 +78,12 @@ OUTCOME LEARNING
 - **Workflow/Domain services:** propose and orchestrate; they do not become alternate sources of truth.
 - **LLMs:** advisory reasoning participants. They may interpret, retrieve, rank, explain and propose; they do not become authoritative geometry, measurement, compliance or model-state authorities.
 
-## Device-aware reconstruction
-
-A capture mission is negotiated from:
-
-1. the engineering objective;
-2. the required assurance profile;
-3. the device capability snapshot;
-4. existing project evidence;
-5. the physical environment;
-6. acceptable evidence substitutions.
-
-The mission can ask an operator to walk, pan, revisit an occluded region, show a reference object, enter a dimension, place a ruler/tape, photograph a product label, answer a material question, or escalate to another instrument.
-
-Readiness is multidimensional. AISE separately tracks spatial coverage, geometry completeness, semantic completeness, metric certainty, evidence completeness and task readiness. Confidence never substitutes for measurement uncertainty.
-
-## Interoperability
-
-AISE is an evidence and context layer, not a forced replacement for the existing construction stack. It must interoperate with BOQ spreadsheets/PDFs, drawings, BIM/IFC, point clouds, CAD/DXF, project management systems, document systems, ERP/procurement systems and external AI agents.
-
 ## Development governance
 
 The repository is the sole implementation truth. A fresh Tech Lead must be able to read `AGENTS.md`, the architecture, requirements, work-item DAG, work orders and machine state and dispatch three workers without chat history.
 
-See:
-
-- `AGENTS.md` — agent operating contract
-- `spec/architecture.md` — complete architecture
-- `spec/architecture-lock.md` — immutable v2 invariants
-- `spec/requirements.md` — product/quality requirements
-- `spec/domain-model.md` — canonical domain model
-- `spec/work-items.md` — implementation units
-- `spec/work-orders.md` — executable contracts
-- `spec/dependency-graph.md` — hard dependency DAG and three-worker waves
-- `spec/implementation-roadmap.md` — human sequence/progress authority
-- `spec/development-state/program-state.json` — machine sequence/progress authority
-- `docs/adoption-simulation.md` — 72-agent/576-project competitive adoption simulation
-- `docs/research-and-competitive-baseline.md` — current market/technology baseline
-- `docs/TECH-LEAD-HANDOFF.md` — fresh orchestrator bootstrap
+See `spec/governance/architecture-change-record-002.md`, `docs/codex-integration-strategy.md`, `docs/adoption-sensitivity-analysis.md`, and `docs/TECH-LEAD-HANDOFF.md` for the locked integration, adoption and orchestration strategy.
 
 ## Architecture provenance
 
-This v2 baseline was derived from an audit of the earlier `pectoraux/AISE` v1 architecture. The earlier design already had the right foundations—Reality Graph, evidence/provenance, task-specific assurance, deterministic geometry, explicit epistemic states, device adapters and separate Android/backend ownership. v2 makes capability-aware acquisition, adaptive evidence collection, BOQ intelligence and intervention state simulation first-class rather than later add-ons.
+This v2 baseline was derived from an audit of the earlier `pectoraux/AISE` v1 architecture. v2 makes capability-aware acquisition, adaptive evidence collection, BOQ intelligence, intervention state simulation and incumbent-first adoption first-class.
