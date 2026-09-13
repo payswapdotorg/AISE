@@ -10,34 +10,39 @@ Intent → Assurance → Capability Assessment → Capture Mission → Evidence
 → BOQ Lens / Engineering Case → Intervention Simulation → Execution → Outcome
 ```
 
-## Waves
+## Earliest-safe three-worker waves
 
 | Wave | Work Items | Goal |
 |---:|---|---|
 | 0 | 001, 002 | repository + Android foundation |
-| 1 | 003, 004, 005 | contracts, ingestion, capture |
-| 2 | 006, 007, 008 | device capabilities, missions, evidence |
-| 3 | 009, 010, 011 | guided capture, reconstruction orchestration, BOQ ingest |
-| 4 | 012, 013, 014 | reconstruction adapters, geometry, BOQ normalization |
-| 5 | 015, 016, 017 | semantics, Reality Graph, BOQ mappings |
-| 6 | 018, 019, 020 | adaptive evidence, benchmarks, 2D |
-| 7 | 021, 022, 023 | workspace, readiness, verification |
-| 8 | 024, 025, 026 | BOQ Lens, Engineering Case, intervention model |
-| 9 | 027, 028, 029 | synchronized simulation, cost impacts, reasoning |
-| 10 | 030, 031, 032 | mobile hardening, outcomes, design comparison |
-| 11 | 033, 034, 035 | change history, MEP, dogfood lab |
-| 12 | 036, 037, 038 | enterprise, connectors, developer API |
-| 13 | 039 | production pilot hardening |
+| 1 | 003 | shared contract foundation |
+| 2 | 004, 005 | ingestion + capture session |
+| 3 | 006, 007, 008 | device capability, mission planner, evidence |
+| 4 | 009, 010, 011 | guided capture, reconstruction orchestration, BOQ ingest |
+| 5 | 012, 014, 030 | reconstruction adapters, BOQ normalization, mobile hardening |
+| 6 | 013 | deterministic geometry/measurement |
+| 7 | 015 | architectural semantics |
+| 8 | 016 | Reality Graph v2 |
+| 9 | 017, 018, 019 | BOQ mapping, adaptive evidence, benchmarks |
+| 10 | 020, 022, 033 | 2D, assurance, historical comparison |
+| 11 | 021, 023, 032 | workspace, verification, reality-vs-design |
+| 12 | 024, 025, 034 | BOQ Lens, Engineering Case, MEP semantics |
+| 13 | 026, 029, 037 | intervention model, reasoning, connectors |
+| 14 | 027, 031, 036 | synchronized simulation, outcomes, enterprise controls |
+| 15 | 028, 035, 038 | cost impacts, physical lab/dogfood, developer API |
+| 16 | 039 | production pilot hardening |
+
+Some waves contain fewer than three items because authority-sensitive model/contract joins deliberately serialize the critical path.
 
 ## Product gates
 
 **Gate A:** guided room capture creates evidence-linked measurable model.
 
-**Gate B:** same task produces different capture plans on different devices without assurance downgrade.
+**Gate B:** the same task produces different capture plans on different devices without assurance downgrade.
 
 **Gate C:** BOQ lines can be explained and traced into 2D/3D/evidence.
 
-**Gate D:** an issue can be inspected as a structured case and proposed repair stepped layer-by-layer with synchronized BOQ/2D/3D.
+**Gate D:** an issue can be inspected as a structured case and a proposed repair stepped layer-by-layer with synchronized BOQ/2D/3D.
 
 **Gate E:** executed work can be recaptured and compared to the proposed state.
 
