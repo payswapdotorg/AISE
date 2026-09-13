@@ -1,0 +1,14 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object",
+  "required":["$schema","schemaVersion","governingArchitecture","architectureState","asOf","execution","workItems"],
+  "properties":{
+    "$schema":{"type":"string"},
+    "schemaVersion":{"const":2},
+    "governingArchitecture":{"const":"2.0"},
+    "architectureState":{"const":"frozen"},
+    "asOf":{"type":"string"},
+    "execution":{"type":"object","required":["maxConcurrentWorkers","mergeGate","selfMergeForbidden","currentWave","selectionRule"]},
+    "workItems":{"type":"array","items":{"type":"object","required":["id","owner","status","dependencies"],"properties":{"id":{"pattern":"^AISE-[0-9]{3}$"},"owner":{"enum":["ZAI","GEMINI","SHARED"]},"primaryAgent":{"type":"string"},"secondaryAgent":{"type":"string"},"status":{"enum":["draft","ready","activated","implementing","pr-open","verifying","merged","finalized","blocked"]},"dependencies":{"type":"array","items":{"type":"string"}}}}}
+  }
+}
