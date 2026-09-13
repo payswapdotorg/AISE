@@ -1,7 +1,8 @@
 # AISE v2 Architecture Lock
 
-**Version:** 2.0
+**Version:** 2.1
 **Status:** FROZEN BASELINE
+**Change record:** `spec/governance/architecture-change-record-002.md`
 
 These invariants cannot be changed by implementation workers. Changes require an Architecture Change Record approved by the Architect/Tech Lead.
 
@@ -15,6 +16,7 @@ These invariants cannot be changed by implementation workers. Changes require an
 6. Intervention states are proposals until supported by post-execution evidence.
 7. LLMs and agents are non-authoritative.
 8. UI state, mobile state and exported files are not canonical authorities.
+9. External construction systems of record may remain authoritative for their own domains; AISE stores explicit references, mappings and synchronization provenance.
 
 ## Truth and uncertainty
 
@@ -58,6 +60,16 @@ These invariants cannot be changed by implementation workers. Changes require an
 - BOQ-to-reality mappings carry provenance and uncertainty/confidence.
 - The platform can report mismatch without silently changing either source.
 
+## Incumbent integration and adoption
+
+- AISE is the primary engineering interface and context/action layer, not a mandatory rip-and-replace migration.
+- Connectors preserve external systems of record and make their capabilities available from AISE where authorized.
+- Integration quality is a first-class product quality attribute.
+- Workflow migration is progressive, reversible and evidence-backed.
+- An incumbent step is not considered replaced without semantic equivalence, operational acceptance and rollback capability.
+- Codex Universal may orchestrate AISE through stable capabilities, workflows, plugins/connectors and API/MCP, but AISE remains the authority for its engineering domain.
+- Initial Codex integration must not require modifications to Codex core.
+
 ## Intervention
 
 - Proposed intervention states cannot mutate authoritative existing reality.
@@ -67,4 +79,4 @@ These invariants cannot be changed by implementation workers. Changes require an
 
 ## Critical assurance
 
-Any change touching measurement, reconstruction, model semantics, evidence, readiness, engineering rules, BOQ quantity mapping or intervention simulation is CRITICAL and requires the applicable benchmark, negative/discrimination and physical evidence.
+Any change touching measurement, reconstruction, model semantics, evidence, readiness, engineering rules, BOQ quantity mapping, intervention simulation, external-source mapping or migration equivalence is CRITICAL and requires the applicable benchmark, negative/discrimination and physical evidence.
