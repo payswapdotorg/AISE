@@ -1,7 +1,8 @@
 # AISE v2 Architecture
 
 **Status:** FROZEN BASELINE
-**Version:** 2.0
+**Version:** 2.1
+**Change record:** `spec/governance/architecture-change-record-002.md`
 **Core thesis:** define the engineering question first; acquire the minimum sufficient evidence using the available device/instruments; reconstruct a versioned engineering reality; reason and intervene without corrupting observed reality.
 
 ## 1. System lifecycle
@@ -188,14 +189,33 @@ Reasoning may use multiple LLM/providers, tools or local models. It consumes str
 
 Post-work captures establish observed outcomes. Outcome records link diagnosis, intervention scenario, actual work, materials, conditions and recurrence/success signals. Learning datasets are derived and versioned; they never rewrite historical reality.
 
-## 14. Interoperability
+## 14. Interoperability and incumbent-first integration
 
-IFC, DXF, PDF, point clouds, common meshes, drawing packages and APIs are exports/integrations from canonical model state. Third-party platforms such as BIM/project-management/estimating systems remain external systems of record unless a governed integration policy explicitly says otherwise.
+IFC, DXF, PDF, point clouds, common meshes, drawing packages, BOQs, project-management systems, ERP/procurement systems, document platforms and APIs are integrated through explicit adapters. External systems may remain systems of record for their own domains.
+
+AISE is designed to become the primary engineering interface without requiring immediate replacement of incumbent systems. Connectors expose external context and authorized actions from AISE, while preserving external identifiers, provenance, permissions and source-of-record status.
+
+### Integration boundary
+
+```text
+Systems of record
+  ↕ adapters/connectors
+AISE domain platform
+  Reality + Evidence + Assurance + BOQ + Cases + Intervention + Outcome
+  ↕ API / MCP / capability contract
+Codex Universal / other agents / enterprise applications
+```
+
+Codex Universal is an optional orchestration substrate. It may invoke AISE capabilities, workflows, plugins or MCP, but it does not own AISE engineering truth.
+
+### Workflow migration
+
+AISE maintains a migration representation for incumbent workflows containing system of record, dependency/resource, role, integration readiness, switching friction, semantic-equivalence evidence, migration state and rollback path. Migration is progressive and reversible.
 
 ## 15. Security and tenancy
 
-Organization/project authorization is server-side. Raw media may be sensitive; access controls, immutable object identity, audit logs and retention policies apply to source evidence. LLM calls receive only the minimum authorized context.
+Organization/project authorization is server-side. Raw media may be sensitive; access controls, immutable object identity, audit logs and retention policies apply to source evidence. LLM calls receive only the minimum authorized context. External connector outputs are untrusted input.
 
 ## 16. Failure posture
 
-The platform must be explicit about insufficient evidence. Consequential workflows fail closed rather than fabricate. Partial reconstructions remain usable for visualization where policy permits but are not silently promoted to engineering-ready status.
+The platform must be explicit about insufficient evidence. Consequential workflows fail closed rather than fabricate. Partial reconstructions remain usable for visualization where policy permits but are not silently promoted to engineering-ready status. Connector or Codex failures never create false engineering confirmation.
