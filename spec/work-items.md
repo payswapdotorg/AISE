@@ -13,16 +13,16 @@ Each item is independently reviewable and intentionally bounded for a three-work
 | AISE-007 | 3 | ZAI | 003,004 | adaptive capture mission planner |
 | AISE-008 | 3 | ZAI | 004 | evidence/source service |
 | AISE-009 | 4 | GEMINI | 006,007 | guided mission executor/offline capture UX |
-| AISE-010 | 4 | ZAI | 004,007 | reconstruction orchestration/strategy interface |
+| AISE-010 | 4 | ZAI | 004,007 | reconstruction orchestration/strategy interface including external-engine registry |
 | AISE-011 | 4 | ZAI | 004,003 | BOQ ingestion |
-| AISE-012 | 5 | ZAI | 010 | reconstruction engine adapters |
+| AISE-012 | 5 | ZAI | 010 | reconstruction engine adapters, including WorldSculpt |
 | AISE-013 | 6 | ZAI | 012 | deterministic geometry/measurement primitives |
 | AISE-014 | 5 | ZAI | 011 | BOQ normalization/interpretation |
 | AISE-015 | 7 | ZAI | 012,013 | architectural semantics |
 | AISE-016 | 8 | ZAI | 013,015 | Reality Graph v2 persistence/core |
 | AISE-017 | 9 | ZAI | 014,016 | BOQ↔reality scope mapping |
 | AISE-018 | 9 | ZAI | 008,016 | adaptive evidence-gap/information-gain engine |
-| AISE-019 | 9 | ZAI | 012,013,016 | golden capture/device benchmark harness |
+| AISE-019 | 9 | ZAI | 012,013,016 | golden capture/device benchmark harness, including WorldSculpt |
 | AISE-020 | 10 | ZAI | 013,016 | vector 2D plan/elevation projections |
 | AISE-021 | 11 | ZAI | 016,020 | browser 2D/3D/evidence workspace |
 | AISE-022 | 10 | ZAI | 007,008,016 | assurance/readiness v2 |
@@ -45,6 +45,10 @@ Each item is independently reviewable and intentionally bounded for a three-work
 | AISE-039 | 17 | SHARED | 031,032,033,034,035,036,037,038,041 | production pilot hardening |
 | AISE-040 | 16 | ZAI | 024,036,037 | primary-interface adoption shell and action broker |
 | AISE-041 | 16 | ZAI | 024,036,037,040 | workflow migration and switching-friction profiler |
+
+## WorldSculpt integration rule
+
+WorldSculpt is an implementation option inside AISE-010/012, not an architectural prerequisite. AISE must remain functional with alternate reconstruction strategies or an explicit insufficient-evidence state. WorldSculpt outputs are candidate derived artifacts until AISE evidence, uncertainty, verification and assurance gates accept them.
 
 ## Wave policy
 
