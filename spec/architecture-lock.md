@@ -1,8 +1,8 @@
 # AISE v2 Architecture Lock
 
-**Version:** 2.1
+**Version:** 2.2
 **Status:** FROZEN BASELINE
-**Change record:** `spec/governance/architecture-change-record-002.md`
+**Change records:** `spec/governance/architecture-change-record-002.md`, `spec/governance/architecture-change-record-003.md`
 
 These invariants cannot be changed by implementation workers. Changes require an Architecture Change Record approved by the Architect/Tech Lead.
 
@@ -48,9 +48,21 @@ These invariants cannot be changed by implementation workers. Changes require an
 ## Reconstruction
 
 - Reconstruction strategy selection is explicit and versioned.
-- Algorithms may be replaced/combined behind a stable processing contract.
+- All reconstruction/world-model engines are replaceable providers behind a stable provider-neutral contract.
+- Provider identity, model/checkpoint identity, version, input evidence, coordinate frame, transforms, scale semantics, output representation, diagnostics and limitations are retained as provenance.
+- A provider may be added, removed, replaced, skipped or combined without changing AISE domain semantics.
+- Provider availability, access restrictions, hardware requirements, licensing/terms or inference failure cannot lower the engineering assurance requirement.
 - Photorealistic, measurable 3D and 2D representations are projections of the canonical model, not competing authorities.
 - Deterministic geometry and measurement computations are used when consequences are measurable.
+- Generated/imaginative completion from a world model is never automatically equivalent to directly observed evidence.
+
+## Reconstruction provider examples
+
+- WorldSculpt: compositional multi-view/object reconstruction provider.
+- World Labs Atlas: sparse/multimodal world-model provider, including image/video/camera-pose/depth pathways where access permits.
+- Magic Leap Atlas: posed-image scene reconstruction provider.
+- Classical SfM/MVS, LiDAR/depth fusion, reference-constrained and specialist-instrument engines are also valid providers.
+- Future engines conform to the same provider contract.
 
 ## BOQ Lens
 
@@ -79,4 +91,4 @@ These invariants cannot be changed by implementation workers. Changes require an
 
 ## Critical assurance
 
-Any change touching measurement, reconstruction, model semantics, evidence, readiness, engineering rules, BOQ quantity mapping, intervention simulation, external-source mapping or migration equivalence is CRITICAL and requires the applicable benchmark, negative/discrimination and physical evidence.
+Any change touching measurement, reconstruction/provider integration, model semantics, evidence, readiness, engineering rules, BOQ quantity mapping, intervention simulation, external-source mapping or migration equivalence is CRITICAL and requires the applicable benchmark, negative/discrimination and physical evidence.
