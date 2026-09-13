@@ -115,11 +115,17 @@ Owner SHARED, ZAI processing primary/GEMINI capture primary. Establish repeatabl
 ### 036 — Enterprise identity/permissions/audit
 Owner ZAI. Implement organization/project/role/permission/retention/audit policy and least-privilege AI context selection. Verify tenant-isolation and unauthorized-access discrimination. CRITICAL.
 
-### 037 — Imports/exports/connectors
-Owner ZAI. Support IFC, DXF/PDF, common point cloud/mesh, BOQ/document and project-system connector adapters. Verify imports preserve provenance and exports are derived only.
+### 037 — Universal incumbent integration/adapter layer
+Owner ZAI. Implement stable adapter contracts for BIM/IFC, CAD/DXF, BOQ/document, project-management, ERP/procurement and storage/document systems. Preserve source-of-record identity, sync lineage, permissions and explicit failure states. Verify import/export provenance, connector retries, least privilege and no silent authority transfer.
 
 ### 038 — Developer API/SDK
 Owner ZAI. Expose stable APIs for capture, reality, BOQ, case, intervention and rendering projections. Verify versioning, scopes, idempotency and provider-neutral semantics.
+
+### 040 — Primary-interface adoption shell/action broker
+Owner ZAI. Build the AISE project-facing shell that lets users inspect context, reality, BOQ, evidence and cases and initiate authorized connector actions without routine system switching. Provide deep links/context return paths and explicit external-system status. Verify an end-to-end task can remain AISE-centered while external systems retain their authority.
+
+### 041 — Workflow migration and switching-friction profiler
+Owner ZAI. Inventory incumbent workflows, systems of record, resources, user roles, manual re-entry, approvals, irreversibility, training burden, latency, rollback and contractual constraints. Score integration readiness and switching friction, identify candidate AISE replacement steps, record semantic-equivalence evidence and migration state. Verify progressive/reversible migration, no false replacement claims and friction metrics tied to pilot outcomes. CRITICAL where equivalence changes engineering outcomes.
 
 ### 039 — Production pilot hardening
 Owner SHARED. Run multi-project pilot across large and small ICP environments, performance/security/usability hardening, release criteria and regression suite. Acceptance requires adoption metrics plus technical gates; no claims based on simulated users alone.
