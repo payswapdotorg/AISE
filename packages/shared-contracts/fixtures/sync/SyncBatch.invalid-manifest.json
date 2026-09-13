@@ -1,0 +1,87 @@
+{
+  "contractVersion": "1.0.0",
+  "batchId": "batch-bad-manifest",
+  "sessionId": "session-2026-0007",
+  "sequence": 0,
+  "idempotencyKey": "idem-bad-manifest",
+  "envelope": {
+    "contractVersion": "1.0.0",
+    "sessionId": "session-2026-0007",
+    "deviceIdentity": {
+      "deviceId": "device-field-007",
+      "platform": "android",
+      "model": "Pixel 8 Pro",
+      "osVersion": "15",
+      "appVersion": "0.3.0"
+    },
+    "capabilityProfile": {
+      "contractVersion": "1.0.0",
+      "profileId": "cap-profile-2026-0142",
+      "capturedAt": "2026-01-15T09:30:00.000Z",
+      "deviceIdentity": {
+        "deviceId": "device-field-007",
+        "platform": "android",
+        "model": "Pixel 8 Pro",
+        "osVersion": "15",
+        "appVersion": "0.3.0"
+      },
+      "device": {
+        "contractVersion": "1.0.0",
+        "status": "supported",
+        "details": {},
+        "limitations": []
+      },
+      "camera": {
+        "contractVersion": "1.0.0",
+        "status": "supported",
+        "details": {},
+        "limitations": []
+      },
+      "depth": {
+        "contractVersion": "1.0.0",
+        "status": "supported",
+        "details": {},
+        "limitations": []
+      },
+      "imu": {
+        "contractVersion": "1.0.0",
+        "status": "supported",
+        "details": {},
+        "limitations": []
+      },
+      "tracking": {
+        "contractVersion": "1.0.0",
+        "status": "supported",
+        "details": {},
+        "limitations": []
+      },
+      "compute": {
+        "contractVersion": "1.0.0",
+        "status": "supported",
+        "details": {},
+        "limitations": []
+      },
+      "calibration": {
+        "contractVersion": "1.0.0",
+        "status": "supported",
+        "details": {},
+        "limitations": []
+      },
+      "environment": {
+        "contractVersion": "1.0.0",
+        "status": "supported",
+        "details": {},
+        "limitations": []
+      }
+    },
+    "startedAt": "2026-01-15T09:30:00.000Z",
+    "assets": []
+  },
+  "manifest": [
+    {
+      "contentId": "NOT-A-SHA256",
+      "byteSize": 10,
+      "mediaType": "image/jpeg"
+    }
+  ]
+}

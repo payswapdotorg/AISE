@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "evidenceContentId": {
+      "description": "sha-256 content address (64 lowercase hex). Normative derivation: the frozen AISE-CONTENT-V1 canonical encoding (see apps/android ContentIdentity).",
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "role": {
+      "enum": [
+        "SUPPORTS",
+        "CONTRADICTS",
+        "DERIVED_FROM",
+        "CONTEXT"
+      ],
+      "type": "string"
+    },
+    "subjectId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "subjectKind": {
+      "description": "Open vocabulary (lower_snake_case) naming the subject's entity kind, seeded from spec/domain-model.md entity families (e.g. `property_assertion`, `measurement`, `reality_object`, `boq_item`).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "subjectKind",
+    "subjectId",
+    "evidenceContentId",
+    "role"
+  ],
+  "type": "object"
+}

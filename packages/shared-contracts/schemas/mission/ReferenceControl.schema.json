@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "controlId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 4096,
+      "minLength": 1,
+      "type": "string"
+    },
+    "kind": {
+      "description": "Open vocabulary for the reference object type, e.g. `scale_bar`, `checkerboard`, `marker`.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "knownDimensions": {
+      "description": "Certified/known dimensions providing metric ground truth.",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "label": {
+            "description": "Dimension label, e.g. `length`, `diagonal`.",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "uncertainty": {
+            "additionalProperties": true,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "DIMENSIONAL",
+                  "STATISTICAL",
+                  "INTERVAL"
+                ],
+                "type": "string"
+              },
+              "level": {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              "lower": {
+                "type": "number"
+              },
+              "plusMinus": {
+                "type": "number"
+              },
+              "upper": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kind"
+            ],
+            "type": "object"
+          },
+          "unit": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "label",
+          "value",
+          "unit"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "controlId",
+    "kind",
+    "knownDimensions"
+  ],
+  "type": "object"
+}

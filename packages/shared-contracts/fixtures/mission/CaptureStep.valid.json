@@ -1,0 +1,10 @@
+{
+  "contractVersion": "1.0.0",
+  "stepId": "step-video-sweep",
+  "sequence": 1,
+  "title": "Video sweep of the room",
+  "instructions": "Walk the room perimeter at a slow, steady pace keeping all surfaces in frame; pause 2 s at each corner.",
+  "method": "VIDEO_FOOTAGE",
+  "requirementRefs": ["req-full-visual-coverage"],
+  "mandatory": true
+}

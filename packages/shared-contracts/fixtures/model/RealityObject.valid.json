@@ -1,0 +1,10 @@
+{
+  "contractVersion": "1.0.0",
+  "objectId": "reality-object-204-room-shell",
+  "version": 3,
+  "kind": "room_shell",
+  "units": {
+    "linear": "m",
+    "angular": "deg"
+  }
+}

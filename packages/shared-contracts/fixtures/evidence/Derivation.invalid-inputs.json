@@ -1,0 +1,10 @@
+{
+  "contractVersion": "1.0.0",
+  "derivationId": "derivation-bad-inputs",
+  "outputContentId": "307b69cef4a8d3321b06fd18d6c116e54c1bbe15e9e928fb90d949678d942f27",
+  "inputEvidenceContentIds": "not-an-array",
+  "method": "reconstruction.worldsculpt",
+  "methodVersion": "1.4.2",
+  "parameters": {},
+  "createdAt": "2026-01-15T11:14:29.000Z"
+}

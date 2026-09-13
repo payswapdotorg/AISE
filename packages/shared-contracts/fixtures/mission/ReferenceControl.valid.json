@@ -1,0 +1,17 @@
+{
+  "contractVersion": "1.0.0",
+  "controlId": "refcontrol-scalebar-001",
+  "kind": "scale_bar",
+  "description": "Certified 1 m aluminium scale bar with cm graduations.",
+  "knownDimensions": [
+    {
+      "label": "length",
+      "value": 1000,
+      "unit": "mm",
+      "uncertainty": {
+        "kind": "DIMENSIONAL",
+        "plusMinus": 0.5
+      }
+    }
+  ]
+}

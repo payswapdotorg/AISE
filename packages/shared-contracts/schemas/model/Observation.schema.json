@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "evidenceContentIds": {
+      "items": {
+        "description": "sha-256 content address (64 lowercase hex). Normative derivation: the frozen AISE-CONTENT-V1 canonical encoding (see apps/android ContentIdentity).",
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "observationId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "observedAt": {
+      "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "observer": {
+      "description": "Identity of the observing entity (operator id, or sensor+session reference).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "statement": {
+      "description": "The observed fact, stated plainly.",
+      "maxLength": 4096,
+      "minLength": 1,
+      "type": "string"
+    },
+    "subjectRef": {
+      "description": "Stable id of the observed RealityObject.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "observationId",
+    "subjectRef",
+    "statement",
+    "observedAt",
+    "observer",
+    "evidenceContentIds"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,7 @@
+{
+  "contractVersion": "1.0.0",
+  "gapId": "gap-bad-kind",
+  "kind": "ABSENT",
+  "description": "Gap kind outside the MISSING/WEAK/AMBIGUOUS vocabulary.",
+  "subjectRef": "reality-object-204-west-wall"
+}

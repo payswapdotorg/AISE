@@ -1,0 +1,12 @@
+{
+  "contractVersion": "1.0.0",
+  "controlId": "refcontrol-bad-dimension",
+  "kind": "scale_bar",
+  "knownDimensions": [
+    {
+      "label": "length",
+      "value": "one thousand millimetres",
+      "unit": "mm"
+    }
+  ]
+}

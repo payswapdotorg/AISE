@@ -1,0 +1,15 @@
+{
+  "contractVersion": "1.0.0",
+  "contentId": "fe637af931c15f4569a71f141c12d1c4d6606a91ba1a09a6a043182e2675c98c",
+  "byteSize": 218,
+  "mediaType": "application/json",
+  "capturedAt": "2026-01-15T09:52:03.000Z",
+  "acquisitionMethod": "MANUAL_MEASUREMENT",
+  "acquisitionMetadata": {
+    "mission.id": "mission-2026-000042",
+    "session.id": "session-2026-0007",
+    "device.id": "device-field-007",
+    "capture.kind": "manual.note",
+    "tape.serial": "T-118"
+  }
+}

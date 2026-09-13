@@ -1,0 +1,648 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "batchId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "envelope": {
+      "additionalProperties": true,
+      "properties": {
+        "assets": {
+          "description": "Evidence record for every asset captured in this session.",
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "acquisitionMetadata": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Open string map. Well-known keys: mission.id, session.id, device.id, capture.kind, acquisition.sensorId. Unknown keys are data and must be preserved.",
+                "type": "object"
+              },
+              "acquisitionMethod": {
+                "enum": [
+                  "DEPTH_SENSING",
+                  "VISUAL_RECONSTRUCTION",
+                  "CALIBRATED_REFERENCE",
+                  "MANUAL_MEASUREMENT",
+                  "SPECIALIST_INSTRUMENT",
+                  "VIDEO_FOOTAGE",
+                  "STILL_IMAGERY",
+                  "INSTRUMENT_READING",
+                  "HUMAN_ANSWER",
+                  "DOCUMENT_REGION"
+                ],
+                "type": "string"
+              },
+              "byteSize": {
+                "description": "Payload size in bytes.",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "capturedAt": {
+                "description": "Acquisition instant (UTC).",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+                "type": "string"
+              },
+              "contentId": {
+                "description": "Content address: sha-256 over the AISE-CONTENT-V1 canonical encoding of (payload, acquisitionMetadata). This IS the evidence identity.",
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "contractVersion": {
+                "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+                "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                "type": "string"
+              },
+              "mediaType": {
+                "description": "IANA-style media type of the content.",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,126}\\/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,126}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "contractVersion",
+              "contentId",
+              "byteSize",
+              "mediaType",
+              "capturedAt",
+              "acquisitionMethod",
+              "acquisitionMetadata"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "capabilityProfile": {
+          "additionalProperties": true,
+          "description": "Session-time capability snapshot embedded with the session.",
+          "properties": {
+            "calibration": {
+              "additionalProperties": true,
+              "properties": {
+                "contractVersion": {
+                  "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+                  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                  "type": "string"
+                },
+                "details": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+                  "type": "object"
+                },
+                "limitations": {
+                  "description": "Material limitations of this domain on this device right now.",
+                  "items": {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "status": {
+                  "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+                  "enum": [
+                    "supported",
+                    "unavailable",
+                    "degraded",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "contractVersion",
+                "status",
+                "details",
+                "limitations"
+              ],
+              "type": "object"
+            },
+            "camera": {
+              "additionalProperties": true,
+              "properties": {
+                "contractVersion": {
+                  "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+                  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                  "type": "string"
+                },
+                "details": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+                  "type": "object"
+                },
+                "limitations": {
+                  "description": "Material limitations of this domain on this device right now.",
+                  "items": {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "status": {
+                  "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+                  "enum": [
+                    "supported",
+                    "unavailable",
+                    "degraded",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "contractVersion",
+                "status",
+                "details",
+                "limitations"
+              ],
+              "type": "object"
+            },
+            "capturedAt": {
+              "description": "Instant the snapshot was taken (session time).",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+              "type": "string"
+            },
+            "compute": {
+              "additionalProperties": true,
+              "properties": {
+                "contractVersion": {
+                  "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+                  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                  "type": "string"
+                },
+                "details": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+                  "type": "object"
+                },
+                "limitations": {
+                  "description": "Material limitations of this domain on this device right now.",
+                  "items": {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "status": {
+                  "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+                  "enum": [
+                    "supported",
+                    "unavailable",
+                    "degraded",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "contractVersion",
+                "status",
+                "details",
+                "limitations"
+              ],
+              "type": "object"
+            },
+            "contractVersion": {
+              "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            },
+            "depth": {
+              "additionalProperties": true,
+              "properties": {
+                "contractVersion": {
+                  "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+                  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                  "type": "string"
+                },
+                "details": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+                  "type": "object"
+                },
+                "limitations": {
+                  "description": "Material limitations of this domain on this device right now.",
+                  "items": {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "status": {
+                  "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+                  "enum": [
+                    "supported",
+                    "unavailable",
+                    "degraded",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "contractVersion",
+                "status",
+                "details",
+                "limitations"
+              ],
+              "type": "object"
+            },
+            "device": {
+              "additionalProperties": true,
+              "description": "Device-level capability facts.",
+              "properties": {
+                "contractVersion": {
+                  "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+                  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                  "type": "string"
+                },
+                "details": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+                  "type": "object"
+                },
+                "limitations": {
+                  "description": "Material limitations of this domain on this device right now.",
+                  "items": {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "status": {
+                  "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+                  "enum": [
+                    "supported",
+                    "unavailable",
+                    "degraded",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "contractVersion",
+                "status",
+                "details",
+                "limitations"
+              ],
+              "type": "object"
+            },
+            "deviceIdentity": {
+              "additionalProperties": true,
+              "properties": {
+                "appVersion": {
+                  "description": "Capturing application version.",
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "deviceId": {
+                  "description": "Stable device identifier (metadata key `device.id`).",
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "model": {
+                  "description": "Device model label, advisory only.",
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "osVersion": {
+                  "description": "Operating system version.",
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "platform": {
+                  "description": "Platform, e.g. `android`, `ios`, `web`.",
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "deviceId",
+                "platform",
+                "model",
+                "osVersion",
+                "appVersion"
+              ],
+              "type": "object"
+            },
+            "environment": {
+              "additionalProperties": true,
+              "properties": {
+                "contractVersion": {
+                  "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+                  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                  "type": "string"
+                },
+                "details": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+                  "type": "object"
+                },
+                "limitations": {
+                  "description": "Material limitations of this domain on this device right now.",
+                  "items": {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "status": {
+                  "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+                  "enum": [
+                    "supported",
+                    "unavailable",
+                    "degraded",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "contractVersion",
+                "status",
+                "details",
+                "limitations"
+              ],
+              "type": "object"
+            },
+            "imu": {
+              "additionalProperties": true,
+              "properties": {
+                "contractVersion": {
+                  "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+                  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                  "type": "string"
+                },
+                "details": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+                  "type": "object"
+                },
+                "limitations": {
+                  "description": "Material limitations of this domain on this device right now.",
+                  "items": {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "status": {
+                  "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+                  "enum": [
+                    "supported",
+                    "unavailable",
+                    "degraded",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "contractVersion",
+                "status",
+                "details",
+                "limitations"
+              ],
+              "type": "object"
+            },
+            "profileId": {
+              "description": "Stable identifier of this snapshot.",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "tracking": {
+              "additionalProperties": true,
+              "properties": {
+                "contractVersion": {
+                  "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+                  "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                  "type": "string"
+                },
+                "details": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+                  "type": "object"
+                },
+                "limitations": {
+                  "description": "Material limitations of this domain on this device right now.",
+                  "items": {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "status": {
+                  "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+                  "enum": [
+                    "supported",
+                    "unavailable",
+                    "degraded",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "contractVersion",
+                "status",
+                "details",
+                "limitations"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "contractVersion",
+            "profileId",
+            "capturedAt",
+            "deviceIdentity",
+            "device",
+            "camera",
+            "depth",
+            "imu",
+            "tracking",
+            "compute",
+            "calibration",
+            "environment"
+          ],
+          "type": "object"
+        },
+        "contractVersion": {
+          "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        },
+        "deviceIdentity": {
+          "additionalProperties": true,
+          "properties": {
+            "appVersion": {
+              "description": "Capturing application version.",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "deviceId": {
+              "description": "Stable device identifier (metadata key `device.id`).",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "model": {
+              "description": "Device model label, advisory only.",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "osVersion": {
+              "description": "Operating system version.",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "platform": {
+              "description": "Platform, e.g. `android`, `ios`, `web`.",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "deviceId",
+            "platform",
+            "model",
+            "osVersion",
+            "appVersion"
+          ],
+          "type": "object"
+        },
+        "endedAt": {
+          "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "missionRef": {
+          "description": "Mission this session executes, when known (metadata key `mission.id`).",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "sessionId": {
+          "description": "Opaque stable identifier assigned by the authority that owns the object.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "startedAt": {
+          "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "sessionId",
+        "deviceIdentity",
+        "capabilityProfile",
+        "startedAt",
+        "assets"
+      ],
+      "type": "object"
+    },
+    "idempotencyKey": {
+      "description": "Client-generated key that is STABLE across retries of the same batch.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "manifest": {
+      "description": "Content manifest: one entry per asset, each carrying its sha-256 content address.",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "byteSize": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "contentId": {
+            "description": "Per-asset sha-256 content address.",
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "mediaType": {
+            "description": "IANA-style media type of the content.",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,126}\\/[a-zA-Z0-9][a-zA-Z0-9!#$&^_.+-]{0,126}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "contentId",
+          "byteSize",
+          "mediaType"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "sequence": {
+      "description": "0-based, per-session, monotonically increasing batch order.",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "sessionId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "batchId",
+    "sessionId",
+    "sequence",
+    "idempotencyKey",
+    "envelope",
+    "manifest"
+  ],
+  "type": "object"
+}

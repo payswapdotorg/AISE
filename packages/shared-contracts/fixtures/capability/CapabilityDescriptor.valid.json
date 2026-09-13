@@ -1,0 +1,11 @@
+{
+  "contractVersion": "1.0.0",
+  "status": "unknown",
+  "details": {
+    "lidar": "false",
+    "depth.mode": "not-probed"
+  },
+  "limitations": [
+    "Depth capability not yet determined on this device"
+  ]
+}

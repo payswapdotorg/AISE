@@ -1,0 +1,115 @@
+{
+  "contractVersion": "1.0.0",
+  "dialect": "http://json-schema.org/draft-07/schema#",
+  "families": {
+    "capability": "1.0.0",
+    "evidence": "1.0.0",
+    "mission": "1.0.0",
+    "model": "1.0.0",
+    "sync": "1.0.0"
+  },
+  "objects": [
+    {
+      "contractVersion": "1.0.0",
+      "family": "capability",
+      "file": "schemas/capability/CapabilityDescriptor.schema.json",
+      "name": "CapabilityDescriptor"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "mission",
+      "file": "schemas/mission/CaptureMission.schema.json",
+      "name": "CaptureMission"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "sync",
+      "file": "schemas/sync/CaptureSessionEnvelope.schema.json",
+      "name": "CaptureSessionEnvelope"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "mission",
+      "file": "schemas/mission/CaptureStep.schema.json",
+      "name": "CaptureStep"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "evidence",
+      "file": "schemas/evidence/Derivation.schema.json",
+      "name": "Derivation"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "capability",
+      "file": "schemas/capability/DeviceCapabilityProfile.schema.json",
+      "name": "DeviceCapabilityProfile"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "evidence",
+      "file": "schemas/evidence/Evidence.schema.json",
+      "name": "Evidence"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "evidence",
+      "file": "schemas/evidence/EvidenceBundle.schema.json",
+      "name": "EvidenceBundle"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "mission",
+      "file": "schemas/mission/EvidenceGap.schema.json",
+      "name": "EvidenceGap"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "model",
+      "file": "schemas/model/Measurement.schema.json",
+      "name": "Measurement"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "model",
+      "file": "schemas/model/Observation.schema.json",
+      "name": "Observation"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "model",
+      "file": "schemas/model/PropertyAssertion.schema.json",
+      "name": "PropertyAssertion"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "evidence",
+      "file": "schemas/evidence/ProvenanceLink.schema.json",
+      "name": "ProvenanceLink"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "model",
+      "file": "schemas/model/RealityObject.schema.json",
+      "name": "RealityObject"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "mission",
+      "file": "schemas/mission/ReferenceControl.schema.json",
+      "name": "ReferenceControl"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "sync",
+      "file": "schemas/sync/SyncAck.schema.json",
+      "name": "SyncAck"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "sync",
+      "file": "schemas/sync/SyncBatch.schema.json",
+      "name": "SyncBatch"
+    }
+  ]
+}

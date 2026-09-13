@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "evidenceContentIds": {
+      "items": {
+        "description": "sha-256 content address (64 lowercase hex). Normative derivation: the frozen AISE-CONTENT-V1 canonical encoding (see apps/android ContentIdentity).",
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "measuredAt": {
+      "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "measurementId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "method": {
+      "description": "Measurement/derivation method.",
+      "maxLength": 4096,
+      "minLength": 1,
+      "type": "string"
+    },
+    "quantity": {
+      "description": "Measured quantity, e.g. `length`, `area`.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "status": {
+      "description": "OBSERVED | INFERRED | CONFIRMED | PROPOSED — epistemically distinct states. PROPOSED applies to intervention states until supported by post-execution evidence; estimates never silently become measurements.",
+      "enum": [
+        "OBSERVED",
+        "INFERRED",
+        "CONFIRMED",
+        "PROPOSED"
+      ],
+      "type": "string"
+    },
+    "subjectRef": {
+      "description": "Stable id of the measured RealityObject.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "uncertainty": {
+      "additionalProperties": true,
+      "properties": {
+        "kind": {
+          "enum": [
+            "DIMENSIONAL",
+            "STATISTICAL",
+            "INTERVAL"
+          ],
+          "type": "string"
+        },
+        "level": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "lower": {
+          "type": "number"
+        },
+        "plusMinus": {
+          "type": "number"
+        },
+        "upper": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "type": "object"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Unit symbol/code, or null for unitless quantities (counts, ratios)."
+    },
+    "value": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "measurementId",
+    "subjectRef",
+    "quantity",
+    "value",
+    "unit",
+    "status",
+    "method",
+    "evidenceContentIds",
+    "measuredAt"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "instructions": {
+      "description": "Operator guidance (coverage, angles, prompts).",
+      "maxLength": 4096,
+      "minLength": 1,
+      "type": "string"
+    },
+    "mandatory": {
+      "type": "boolean"
+    },
+    "method": {
+      "enum": [
+        "DEPTH_SENSING",
+        "VISUAL_RECONSTRUCTION",
+        "CALIBRATED_REFERENCE",
+        "MANUAL_MEASUREMENT",
+        "SPECIALIST_INSTRUMENT",
+        "VIDEO_FOOTAGE",
+        "STILL_IMAGERY",
+        "INSTRUMENT_READING",
+        "HUMAN_ANSWER",
+        "DOCUMENT_REGION"
+      ],
+      "type": "string"
+    },
+    "requirementRefs": {
+      "description": "Evidence requirements this step serves (may be empty).",
+      "items": {
+        "description": "Opaque stable identifier assigned by the authority that owns the object.",
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "sequence": {
+      "description": "Execution order within the mission; unique and ascending.",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "stepId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "stepId",
+    "sequence",
+    "title",
+    "instructions",
+    "method",
+    "requirementRefs",
+    "mandatory"
+  ],
+  "type": "object"
+}
