@@ -1,0 +1,88 @@
+{
+  "contractVersion": "1.0.0",
+  "profileId": "cap-profile-2026-0142",
+  "capturedAt": "2026-01-15T09:30:00.000Z",
+  "deviceIdentity": {
+    "deviceId": "device-field-007",
+    "platform": "android",
+    "model": "Pixel 8 Pro",
+    "osVersion": "15",
+    "appVersion": "0.3.0"
+  },
+  "device": {
+    "contractVersion": "1.0.0",
+    "status": "supported",
+    "details": {
+      "thermal.state": "nominal",
+      "battery.level": "82%"
+    },
+    "limitations": []
+  },
+  "camera": {
+    "contractVersion": "1.0.0",
+    "status": "supported",
+    "details": {
+      "rear.sensors": "wide,ultrawide,tele",
+      "raw.capture": "true"
+    },
+    "limitations": []
+  },
+  "depth": {
+    "contractVersion": "1.0.0",
+    "status": "degraded",
+    "details": {
+      "lidar": "false",
+      "depth.mode": "stereo-disparity"
+    },
+    "limitations": [
+      "No LiDAR; depth from stereo disparity degrades beyond 3.5 m"
+    ]
+  },
+  "imu": {
+    "contractVersion": "1.0.0",
+    "status": "supported",
+    "details": {
+      "accelerometer": "true",
+      "gyroscope": "true",
+      "magnetometer": "true"
+    },
+    "limitations": []
+  },
+  "tracking": {
+    "contractVersion": "1.0.0",
+    "status": "supported",
+    "details": {
+      "pose.provider": "ARCore",
+      "world.drift": "low"
+    },
+    "limitations": []
+  },
+  "compute": {
+    "contractVersion": "1.0.0",
+    "status": "supported",
+    "details": {
+      "ml.accelerator": "NPU",
+      "ram.gb": "12"
+    },
+    "limitations": []
+  },
+  "calibration": {
+    "contractVersion": "1.0.0",
+    "status": "unknown",
+    "details": {},
+    "limitations": [
+      "Camera intrinsics not yet verified against a calibration target this session"
+    ]
+  },
+  "environment": {
+    "contractVersion": "1.0.0",
+    "status": "degraded",
+    "details": {
+      "illumination": "low-artificial",
+      "surface.reflectivity": "variable"
+    },
+    "limitations": [
+      "Low mixed lighting; expect weaker texture match on the west wall"
+    ]
+  }
+}

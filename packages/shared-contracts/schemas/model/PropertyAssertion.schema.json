@@ -1,0 +1,174 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "assertionId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "confidence": {
+      "additionalProperties": true,
+      "description": "Optional probabilistic/qualitative support. Never a substitute for uncertainty.",
+      "properties": {
+        "basis": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "PROBABILISTIC",
+            "QUALITATIVE"
+          ],
+          "type": "string"
+        },
+        "value": {
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "kind",
+        "value"
+      ],
+      "type": "object"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "method": {
+      "description": "How the value was obtained or derived.",
+      "maxLength": 4096,
+      "minLength": 1,
+      "type": "string"
+    },
+    "property": {
+      "description": "Property name/key, e.g. `height`, `material`.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "source_evidence": {
+      "description": "Content ids of the source evidence (exact domain-model field name).",
+      "items": {
+        "description": "sha-256 content address (64 lowercase hex). Normative derivation: the frozen AISE-CONTENT-V1 canonical encoding (see apps/android ContentIdentity).",
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "status": {
+      "description": "OBSERVED | INFERRED | CONFIRMED | PROPOSED — epistemically distinct states. PROPOSED applies to intervention states until supported by post-execution evidence; estimates never silently become measurements.",
+      "enum": [
+        "OBSERVED",
+        "INFERRED",
+        "CONFIRMED",
+        "PROPOSED"
+      ],
+      "type": "string"
+    },
+    "subjectRef": {
+      "description": "Stable id of the RealityObject asserted about.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "uncertainty": {
+      "additionalProperties": true,
+      "description": "Where applicable.",
+      "properties": {
+        "kind": {
+          "enum": [
+            "DIMENSIONAL",
+            "STATISTICAL",
+            "INTERVAL"
+          ],
+          "type": "string"
+        },
+        "level": {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "lower": {
+          "type": "number"
+        },
+        "plusMinus": {
+          "type": "number"
+        },
+        "upper": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "type": "object"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Unit symbol/code, or null when not applicable."
+    },
+    "value": {
+      "description": "Property value (dimensional, categorical or flag).",
+      "type": [
+        "number",
+        "string",
+        "boolean"
+      ]
+    },
+    "verified_at": {
+      "anyOf": [
+        {
+          "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Verification instant, or null when unverified."
+    },
+    "verified_by": {
+      "anyOf": [
+        {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Identity of the human/process that verified, or null when unverified."
+    }
+  },
+  "required": [
+    "contractVersion",
+    "assertionId",
+    "subjectRef",
+    "property",
+    "value",
+    "unit",
+    "status",
+    "method",
+    "source_evidence",
+    "verified_by",
+    "verified_at"
+  ],
+  "type": "object"
+}

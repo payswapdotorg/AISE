@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Open vocabulary (lower_snake_case), e.g. `wall`, `slab`, `door` (semantics: AISE-015).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "objectId": {
+      "description": "Stable identity that survives model versions.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "units": {
+      "additionalProperties": true,
+      "properties": {
+        "angular": {
+          "description": "Angular unit, e.g. `deg`, `rad`.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "linear": {
+          "description": "Linear unit, e.g. `mm`, `m`, `ft`.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "linear",
+        "angular"
+      ],
+      "type": "object"
+    },
+    "version": {
+      "description": "Versioned model state; reprocessing creates new versions.",
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "objectId",
+    "version",
+    "kind",
+    "units"
+  ],
+  "type": "object"
+}

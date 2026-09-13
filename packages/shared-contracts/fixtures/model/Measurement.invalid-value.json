@@ -1,0 +1,12 @@
+{
+  "contractVersion": "1.0.0",
+  "measurementId": "measurement-bad-value",
+  "subjectRef": "reality-object-204-room-shell",
+  "quantity": "width",
+  "value": "4.21 m",
+  "unit": "m",
+  "status": "OBSERVED",
+  "method": "manual tape measurement",
+  "evidenceContentIds": [],
+  "measuredAt": "2026-01-15T09:52:03.000Z"
+}

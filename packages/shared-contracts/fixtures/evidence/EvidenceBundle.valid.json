@@ -1,0 +1,11 @@
+{
+  "contractVersion": "1.0.0",
+  "bundleId": "bundle-mission-2026-000042-room-204",
+  "description": "All evidence captured for room 204 under mission mission-2026-000042.",
+  "evidenceContentIds": [
+    "b1f5de0e80d632a4c7ab9d9536cd4516804852cd29913229944f3625ea6f5f40",
+    "38167a47831dad3a5c7ec174d36334ed9189324069bca4ca78b0485f517441c8",
+    "d82431845788c57bc385cf0a8f4cf790986c7adda163caf51f05b58ece317018",
+    "fe637af931c15f4569a71f141c12d1c4d6606a91ba1a09a6a043182e2675c98c"
+  ]
+}

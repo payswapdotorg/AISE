@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "createdAt": {
+      "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "derivationId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "inputEvidenceContentIds": {
+      "description": "Ordered input evidence content ids.",
+      "items": {
+        "description": "sha-256 content address (64 lowercase hex). Normative derivation: the frozen AISE-CONTENT-V1 canonical encoding (see apps/android ContentIdentity).",
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "method": {
+      "description": "Provider-neutral method identity, e.g. `reconstruction.worldsculpt`. No engine is an authority; outputs are candidates until AISE gates accept them.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "methodVersion": {
+      "description": "Method/engine/checkpoint version identity.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "outputContentId": {
+      "description": "Content address of the derived artifact (derived outputs are content-addressed too).",
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "parameters": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Deterministic parameters as an inspectable string map.",
+      "type": "object"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "derivationId",
+    "outputContentId",
+    "inputEvidenceContentIds",
+    "method",
+    "methodVersion",
+    "parameters",
+    "createdAt"
+  ],
+  "type": "object"
+}

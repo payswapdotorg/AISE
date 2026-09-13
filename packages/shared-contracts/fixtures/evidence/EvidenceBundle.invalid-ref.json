@@ -1,0 +1,8 @@
+{
+  "contractVersion": "1.0.0",
+  "bundleId": "bundle-bad-ref",
+  "description": "Bundle whose evidence reference is not a 64-hex content id.",
+  "evidenceContentIds": [
+    "not-a-content-id"
+  ]
+}

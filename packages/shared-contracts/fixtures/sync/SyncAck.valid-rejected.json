@@ -1,0 +1,11 @@
+{
+  "contractVersion": "1.0.0",
+  "batchId": "batch-2026-0007-003",
+  "idempotencyKey": "idem-session-2026-0007-batch-003",
+  "outcome": "REJECTED",
+  "reasonCode": "SEQUENCE_GAP",
+  "reasonDetail": "Expected sequence 1 for session session-2026-0007; received 3. Resume from the reported sequence.",
+  "lastAcceptedSequence": 0,
+  "resumeFromSequence": 1,
+  "acknowledgedAt": "2026-01-15T10:03:41.000Z"
+}

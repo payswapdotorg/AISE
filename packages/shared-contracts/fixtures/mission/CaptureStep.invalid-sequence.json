@@ -1,0 +1,10 @@
+{
+  "contractVersion": "1.0.0",
+  "stepId": "step-bad-sequence",
+  "sequence": -1,
+  "title": "Step with a negative sequence",
+  "instructions": "Execution order must be a non-negative integer.",
+  "method": "VIDEO_FOOTAGE",
+  "requirementRefs": [],
+  "mandatory": true
+}

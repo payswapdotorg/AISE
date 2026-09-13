@@ -1,0 +1,60 @@
+{
+  "contractVersion": "1.0.0",
+  "profileId": "cap-profile-bad-status",
+  "capturedAt": "2026-01-15T09:30:00.000Z",
+  "deviceIdentity": {
+    "deviceId": "device-field-007",
+    "platform": "android",
+    "model": "Pixel 8 Pro",
+    "osVersion": "15",
+    "appVersion": "0.3.0"
+  },
+  "device": {
+    "contractVersion": "1.0.0",
+    "status": "maybe",
+    "details": {},
+    "limitations": []
+  },
+  "camera": {
+    "contractVersion": "1.0.0",
+    "status": "supported",
+    "details": {},
+    "limitations": []
+  },
+  "depth": {
+    "contractVersion": "1.0.0",
+    "status": "supported",
+    "details": {},
+    "limitations": []
+  },
+  "imu": {
+    "contractVersion": "1.0.0",
+    "status": "supported",
+    "details": {},
+    "limitations": []
+  },
+  "tracking": {
+    "contractVersion": "1.0.0",
+    "status": "supported",
+    "details": {},
+    "limitations": []
+  },
+  "compute": {
+    "contractVersion": "1.0.0",
+    "status": "supported",
+    "details": {},
+    "limitations": []
+  },
+  "calibration": {
+    "contractVersion": "1.0.0",
+    "status": "supported",
+    "details": {},
+    "limitations": []
+  },
+  "environment": {
+    "contractVersion": "1.0.0",
+    "status": "supported",
+    "details": {},
+    "limitations": []
+  }
+}

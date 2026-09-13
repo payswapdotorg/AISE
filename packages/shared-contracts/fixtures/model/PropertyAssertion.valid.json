@@ -1,0 +1,26 @@
+{
+  "contractVersion": "1.0.0",
+  "assertionId": "assertion-204-width-001",
+  "subjectRef": "reality-object-204-room-shell",
+  "property": "width",
+  "value": 4.213,
+  "unit": "m",
+  "status": "CONFIRMED",
+  "confidence": {
+    "kind": "PROBABILISTIC",
+    "value": 0.93,
+    "basis": "two agreeing measurement chains (depth fusion + manual tape)"
+  },
+  "uncertainty": {
+    "kind": "STATISTICAL",
+    "plusMinus": 0.018,
+    "level": "95%"
+  },
+  "method": "depth-fusion cross-checked against manual tape measurement at floor level",
+  "source_evidence": [
+    "d82431845788c57bc385cf0a8f4cf790986c7adda163caf51f05b58ece317018",
+    "fe637af931c15f4569a71f141c12d1c4d6606a91ba1a09a6a043182e2675c98c"
+  ],
+  "verified_by": "reviewer-jdoe",
+  "verified_at": "2026-01-15T14:02:00.000Z"
+}
