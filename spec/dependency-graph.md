@@ -37,12 +37,14 @@
 023+024+029 → 036
 016+017+020+021 → 037
 024+027+029+037 → 038
-031+032+033+034+035+036+037+038 → 039
+024+036+037 → 040
+024+036+037+040 → 041
+031+032+033+034+035+036+037+038+041 → 039
 ```
 
 ## Three-worker waves
 
-The wave numbers are the **earliest safe batches** under the hard DAG. Some waves contain fewer than three because a canonical model dependency intentionally serializes the critical path.
+The wave numbers are the earliest safe batches under the hard DAG. Some waves contain fewer than three because a canonical model dependency intentionally serializes the critical path.
 
 | Wave | Work Items |
 |---:|---|
@@ -62,11 +64,12 @@ The wave numbers are the **earliest safe batches** under the hard DAG. Some wave
 | 13 | 026, 029, 037 |
 | 14 | 027, 031, 036 |
 | 15 | 028, 035, 038 |
-| 16 | 039 |
+| 16 | 040, 041 |
+| 17 | 039 |
 
 ## Why the serial waves exist
 
-The Reality Graph, geometry semantics and intervention state model are authority-sensitive joins. They deliberately serialize some work instead of creating unsafe parallel schema/migration conflicts. Where possible, independent domain/UI/benchmark work is placed in groups of three.
+The Reality Graph, geometry semantics and intervention state model are authority-sensitive joins. They deliberately serialize some work instead of creating unsafe parallel schema/migration conflicts. The adoption items remain late enough to consume stabilized enterprise and connector contracts, while the pilot gate remains last.
 
 ## Tech Lead rule
 
