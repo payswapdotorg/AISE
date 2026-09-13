@@ -2,9 +2,9 @@
   "$schema": "./program-state.schema.json",
   "schemaVersion": 2,
   "artifact": "aise-development-state/program-state",
-  "governingArchitecture": "2.1",
+  "governingArchitecture": "2.2",
   "architectureState": "frozen",
-  "asOf": "2026-09-13T08:20:00Z",
+  "asOf": "2026-09-13T10:20:00Z",
   "execution": {
     "maxConcurrentWorkers": 3,
     "mergeGate": "architect",
@@ -66,10 +66,17 @@
     "codexCoreChangesRequiredForInitialIntegration": false,
     "architectureRecord": "spec/governance/architecture-change-record-002.md"
   },
+  "reconstructionReference": {
+    "worldSculptRepository": "payswapdotorg/WorldSculpt",
+    "strategy": "optional-pluggable-reconstruction-engine",
+    "codexCoreChangesRequired": false,
+    "architectureRecord": "spec/governance/architecture-change-record-003.md"
+  },
   "notes": [
     "Target repository was empty at baseline creation.",
-    "This state represents the v2.1 architecture program before code implementation.",
+    "This state represents the v2.2 architecture program before code implementation.",
     "AISE-001 and AISE-002 are the only initially activated work items because shared contracts require both foundations.",
-    "Primary-interface adoption is optimized before exclusive adoption; migration is progressive and reversible."
+    "Primary-interface adoption is optimized before exclusive adoption; migration is progressive and reversible.",
+    "WorldSculpt is an optional reconstruction implementation; removing it must not require an AISE data-model migration."
   ]
 }
