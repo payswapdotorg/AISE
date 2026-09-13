@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "acknowledgedAt": {
+      "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "batchId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "idempotencyKey": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "lastAcceptedSequence": {
+      "description": "Last accepted batch sequence for the session, when relevant (resume semantics).",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "outcome": {
+      "enum": [
+        "ACCEPTED",
+        "DUPLICATE",
+        "REJECTED"
+      ],
+      "type": "string"
+    },
+    "reasonCode": {
+      "enum": [
+        "CONTENT_ID_MISMATCH",
+        "CONTENT_COLLISION",
+        "MANIFEST_MISMATCH",
+        "CONTRACT_VERSION_UNSUPPORTED",
+        "SEQUENCE_GAP",
+        "IDEMPOTENCY_CONFLICT",
+        "SESSION_CONFLICT"
+      ],
+      "type": "string"
+    },
+    "reasonDetail": {
+      "description": "Human-readable supplement; never replaces the stable reason code.",
+      "maxLength": 4096,
+      "minLength": 1,
+      "type": "string"
+    },
+    "resumeFromSequence": {
+      "description": "Sequence the client should resend from (conflict/gap recovery).",
+      "minimum": 0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "batchId",
+    "idempotencyKey",
+    "outcome",
+    "acknowledgedAt"
+  ],
+  "type": "object"
+}

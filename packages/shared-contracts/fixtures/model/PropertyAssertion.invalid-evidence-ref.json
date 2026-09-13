@@ -1,0 +1,15 @@
+{
+  "contractVersion": "1.0.0",
+  "assertionId": "assertion-bad-evidence-ref",
+  "subjectRef": "reality-object-204-room-shell",
+  "property": "width",
+  "value": 4.213,
+  "unit": "m",
+  "status": "OBSERVED",
+  "method": "manual tape measurement",
+  "source_evidence": [
+    42
+  ],
+  "verified_by": null,
+  "verified_at": null
+}

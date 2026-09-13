@@ -1,0 +1,18 @@
+{
+  "contractVersion": "1.0.0",
+  "derivationId": "derivation-204-pointcloud-001",
+  "outputContentId": "307b69cef4a8d3321b06fd18d6c116e54c1bbe15e9e928fb90d949678d942f27",
+  "inputEvidenceContentIds": [
+    "38167a47831dad3a5c7ec174d36334ed9189324069bca4ca78b0485f517441c8",
+    "b1f5de0e80d632a4c7ab9d9536cd4516804852cd29913229944f3625ea6f5f40",
+    "d82431845788c57bc385cf0a8f4cf790986c7adda163caf51f05b58ece317018"
+  ],
+  "method": "reconstruction.worldsculpt",
+  "methodVersion": "1.4.2+checkpoint.9f31ac",
+  "parameters": {
+    "strategy": "multimodal-fusion",
+    "scale.source": "reference_control:refcontrol-scalebar-001",
+    "coordinate.frame": "world-gravity-aligned"
+  },
+  "createdAt": "2026-01-15T11:14:29.000Z"
+}

@@ -1,0 +1,15 @@
+{
+  "contractVersion": "1.0.0",
+  "missionId": "mission-bad-state",
+  "state": "cancelled",
+  "intent": "Mission with a state outside the lifecycle enum.",
+  "assurance": {
+    "summary": "Room dimensions to ±20 mm at 95%."
+  },
+  "requiredEvidence": [],
+  "steps": [],
+  "referenceControls": [],
+  "revision": 0,
+  "createdAt": "2026-01-15T08:02:11.000Z",
+  "updatedAt": "2026-01-15T08:02:11.000Z"
+}

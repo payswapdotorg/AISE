@@ -1,0 +1,11 @@
+{
+  "contractVersion": "1.0.0",
+  "observationId": "observation-204-damp-stain-001",
+  "subjectRef": "reality-object-204-west-wall",
+  "statement": "Damp staining approximately 400 mm wide at the skirting on the west wall, lower third; slight mould odour.",
+  "observedAt": "2026-01-15T09:44:51.000Z",
+  "observer": "operator-mrose",
+  "evidenceContentIds": [
+    "b1f5de0e80d632a4c7ab9d9536cd4516804852cd29913229944f3625ea6f5f40"
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "contractVersion": "1.0.0",
+  "missionId": "mission-2026-000042",
+  "state": "active",
+  "intent": "Establish as-built room dimensions and wall condition for level 2, room 204 ahead of the partition rework quote.",
+  "assurance": {
+    "summary": "Room dimensions to ±20 mm at 95%; wall verticality to ±0.5 deg; every dimension traceable to evidence.",
+    "assuranceProfileRef": "assurance-profile-interior-asbuilt-v3"
+  },
+  "requiredEvidence": [
+    {
+      "requirementId": "req-full-visual-coverage",
+      "description": "Full visual coverage of all six room surfaces with overlap for registration.",
+      "preferredMethod": "VIDEO_FOOTAGE",
+      "fallbackMethods": ["STILL_IMAGERY"]
+    },
+    {
+      "requirementId": "req-room-dimensions",
+      "description": "Room length/width/height with stated tolerance.",
+      "preferredMethod": "DEPTH_SENSING",
+      "fallbackMethods": [
+        "VISUAL_RECONSTRUCTION",
+        "CALIBRATED_REFERENCE",
+        "MANUAL_MEASUREMENT"
+      ]
+    },
+    {
+      "requirementId": "req-wall-condition",
+      "description": "Wall surface condition on all elevations, unobstructed where possible.",
+      "preferredMethod": "STILL_IMAGERY",
+      "fallbackMethods": ["VIDEO_FOOTAGE"]
+    }
+  ],
+  "steps": [
+    {
+      "contractVersion": "1.0.0",
+      "stepId": "step-place-reference",
+      "sequence": 0,
+      "title": "Place the scale bar",
+      "instructions": "Place the 1 m scale bar flat on the floor near the room center, clear of furniture shadow.",
+      "method": "CALIBRATED_REFERENCE",
+      "requirementRefs": ["req-room-dimensions"],
+      "mandatory": true
+    },
+    {
+      "contractVersion": "1.0.0",
+      "stepId": "step-video-sweep",
+      "sequence": 1,
+      "title": "Video sweep of the room",
+      "instructions": "Walk the room perimeter at a slow, steady pace keeping all surfaces in frame; pause 2 s at each corner.",
+      "method": "VIDEO_FOOTAGE",
+      "requirementRefs": ["req-full-visual-coverage", "req-wall-condition"],
+      "mandatory": true
+    },
+    {
+      "contractVersion": "1.0.0",
+      "stepId": "step-manual-measure",
+      "sequence": 2,
+      "title": "Tape-measure the room width (fallback)",
+      "instructions": "If depth capture quality is insufficient, measure room width at floor level with the tape and photograph the tape reading.",
+      "method": "MANUAL_MEASUREMENT",
+      "requirementRefs": ["req-room-dimensions"],
+      "mandatory": false
+    }
+  ],
+  "referenceControls": [
+    {
+      "contractVersion": "1.0.0",
+      "controlId": "refcontrol-scalebar-001",
+      "kind": "scale_bar",
+      "description": "Certified 1 m aluminium scale bar with cm graduations.",
+      "knownDimensions": [
+        {
+          "label": "length",
+          "value": 1000,
+          "unit": "mm",
+          "uncertainty": {
+            "kind": "DIMENSIONAL",
+            "plusMinus": 0.5
+          }
+        },
+        {
+          "label": "diagonal",
+          "value": 1414.2,
+          "unit": "mm",
+          "uncertainty": {
+            "kind": "DIMENSIONAL",
+            "plusMinus": 0.8
+          }
+        }
+      ]
+    }
+  ],
+  "revision": 3,
+  "createdAt": "2026-01-15T08:02:11.000Z",
+  "updatedAt": "2026-01-15T09:41:07.000Z"
+}

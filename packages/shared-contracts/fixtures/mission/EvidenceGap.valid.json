@@ -1,0 +1,7 @@
+{
+  "contractVersion": "1.0.0",
+  "gapId": "gap-204-west-wall-thickness",
+  "kind": "AMBIGUOUS",
+  "description": "West wall thickness is not separable from the neighbouring unit in current evidence; two partition hypotheses remain viable.",
+  "subjectRef": "reality-object-204-west-wall"
+}

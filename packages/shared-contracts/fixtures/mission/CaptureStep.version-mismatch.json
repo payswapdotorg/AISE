@@ -1,0 +1,10 @@
+{
+  "contractVersion": "2.0.0",
+  "stepId": "step-version-mismatch",
+  "sequence": 0,
+  "title": "Step from a future contract major",
+  "instructions": "This payload is schema-valid but codec-incompatible.",
+  "method": "VIDEO_FOOTAGE",
+  "requirementRefs": [],
+  "mandatory": true
+}

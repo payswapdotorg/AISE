@@ -1,0 +1,18 @@
+{
+  "contractVersion": "1.0.0",
+  "measurementId": "measurement-204-width-001",
+  "subjectRef": "reality-object-204-room-shell",
+  "quantity": "width",
+  "value": 4.21,
+  "unit": "m",
+  "status": "OBSERVED",
+  "uncertainty": {
+    "kind": "DIMENSIONAL",
+    "plusMinus": 0.01
+  },
+  "method": "manual tape measurement at floor level, photograph of tape retained",
+  "evidenceContentIds": [
+    "fe637af931c15f4569a71f141c12d1c4d6606a91ba1a09a6a043182e2675c98c"
+  ],
+  "measuredAt": "2026-01-15T09:52:03.000Z"
+}

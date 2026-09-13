@@ -1,0 +1,17 @@
+{
+  "contractVersion": "1.0.0",
+  "contentId": "38167a47831dad3a5c7ec174d36334ed9189324069bca4ca78b0485f517441c8",
+  "byteSize": 184502271,
+  "mediaType": "video/mp4",
+  "capturedAt": "2026-01-15T09:37:40.000Z",
+  "acquisitionMethod": "VIDEO_FOOTAGE",
+  "acquisitionMetadata": {
+    "mission.id": "mission-2026-000042",
+    "session.id": "session-2026-0007",
+    "device.id": "device-field-007",
+    "capture.kind": "video",
+    "acquisition.sensorId": "rear-wide",
+    "duration.ms": "214000",
+    "fps": "30"
+  }
+}

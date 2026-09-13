@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "assertionId": "assertion-bad-status",
+  "subjectRef": "reality-object-204-room-shell",
+  "property": "width",
+  "value": 4.213,
+  "unit": "m",
+  "status": "GUESSED",
+  "method": "eyeballed from the doorway",
+  "source_evidence": [],
+  "verified_by": null,
+  "verified_at": null
+}
