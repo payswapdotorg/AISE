@@ -4,7 +4,7 @@
   "artifact": "aise-development-state/program-state",
   "governingArchitecture": "2.2",
   "architectureState": "frozen",
-  "asOf": "2026-09-13T10:20:00Z",
+  "asOf": "2026-09-13T10:35:00Z",
   "execution": {
     "maxConcurrentWorkers": 3,
     "mergeGate": "architect",
@@ -67,16 +67,19 @@
     "architectureRecord": "spec/governance/architecture-change-record-002.md"
   },
   "reconstructionReference": {
-    "worldSculptRepository": "payswapdotorg/WorldSculpt",
-    "strategy": "optional-pluggable-reconstruction-engine",
-    "codexCoreChangesRequired": false,
-    "architectureRecord": "spec/governance/architecture-change-record-003.md"
+    "contract": "spec/reconstruction-engine-contract.md",
+    "strategy": "provider-neutral-pluggable-reconstruction-engine-registry",
+    "initialProviders": ["WORLD_SCULPT", "WORLD_LABS_ATLAS", "MAGIC_LEAP_ATLAS"],
+    "additionalProviderClasses": ["CLASSICAL_SFM_MVS", "LIDAR_DEPTH_FUSION", "REFERENCE_CONSTRAINED", "SPECIALIST_INSTRUMENT", "FUTURE_WORLD_MODEL"],
+    "architectureRecord": "spec/governance/architecture-change-record-003.md",
+    "codexCoreChangesRequired": false
   },
   "notes": [
     "Target repository was empty at baseline creation.",
     "This state represents the v2.2 architecture program before code implementation.",
     "AISE-001 and AISE-002 are the only initially activated work items because shared contracts require both foundations.",
     "Primary-interface adoption is optimized before exclusive adoption; migration is progressive and reversible.",
-    "WorldSculpt is an optional reconstruction implementation; removing it must not require an AISE data-model migration."
+    "No reconstruction provider is canonical; removing any provider must not require an AISE data-model migration.",
+    "World Labs Atlas is currently an access-controlled/early-access option and must be represented as a provider whose availability can be unavailable without changing AISE semantics."
   ]
 }
