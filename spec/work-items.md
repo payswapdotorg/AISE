@@ -21,11 +21,11 @@ Each item is independently reviewable and intentionally bounded for a three-work
 | AISE-015 | 5 | ZAI | 012,013 | architectural semantics |
 | AISE-016 | 5 | ZAI | 013,015 | Reality Graph v2 persistence/core |
 | AISE-017 | 5 | ZAI | 014,016 | BOQ↔reality scope mapping |
-| AISE-018 | 6 | ZAI | 008,016,022? | adaptive evidence-gap/information-gain engine |
+| AISE-018 | 6 | ZAI | 008,016 | adaptive evidence-gap/information-gain engine |
 | AISE-019 | 6 | ZAI | 012,013,016 | golden capture/device benchmark harness |
 | AISE-020 | 6 | ZAI | 013,016 | vector 2D plan/elevation projections |
 | AISE-021 | 7 | ZAI | 016,020 | browser 2D/3D/evidence workspace |
-| AISE-022 | 7 | ZAI | 007,016,008 | assurance/readiness v2 |
+| AISE-022 | 7 | ZAI | 007,008,016 | assurance/readiness v2 |
 | AISE-023 | 7 | ZAI | 016,022 | model QA/verification v2 |
 | AISE-024 | 8 | ZAI | 017,021 | BOQ Lens intelligence workspace |
 | AISE-025 | 8 | ZAI | 016,008,023 | Engineering Case domain |
