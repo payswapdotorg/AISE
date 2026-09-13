@@ -1,0 +1,62 @@
+# AISE Android CI (AISE-002) — self-contained gate for the field client.
+#
+# Runs the exact same verification path documented in apps/android/README.md:
+#   1. wrapper integrity,
+#   2. pure-JVM unit tests for :core and :app (offline-safe at execution time),
+#   3. full Android debug build (:app:assembleDebug).
+#
+# The Android SDK is provisioned per-job; nothing is cached across machines
+# except Gradle dependencies (via setup-gradle).
+name: Android CI
+
+on:
+  push:
+    paths:
+      - "apps/android/**"
+      - ".github/workflows/android.yml"
+  pull_request:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  android:
+    name: Build & test (apps/android)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/android
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Set up Android SDK (command-line tools)
+        uses: android-actions/setup-android@v3
+
+      - name: Accept licenses and install SDK pieces
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0" >/dev/null
+
+      - name: Set up Gradle (dependency cache)
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: JVM unit tests (:core, :app)
+        run: ./gradlew :core:test :app:test
+
+      - name: Assemble debug APK
+        run: ./gradlew :app:assembleDebug
