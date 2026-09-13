@@ -40,9 +40,11 @@ Each item is independently reviewable and intentionally bounded for a three-work
 | AISE-034 | 12 | ZAI | 013,015,016,019 | MEP semantics foundation |
 | AISE-035 | 15 | SHARED | 019,030,031 | physical reality lab + end-to-end dogfood |
 | AISE-036 | 14 | ZAI | 023,024,029 | enterprise identity/permissions/audit |
-| AISE-037 | 13 | ZAI | 016,017,020,021 | imports/exports/connectors |
+| AISE-037 | 13 | ZAI | 016,017,020,021 | universal incumbent integration/adapter layer + imports/exports/connectors |
 | AISE-038 | 15 | ZAI | 024,027,029,037 | developer API/SDK |
-| AISE-039 | 16 | SHARED | 031,032,033,034,035,036,037,038 | production pilot hardening |
+| AISE-039 | 17 | SHARED | 031,032,033,034,035,036,037,038,041 | production pilot hardening |
+| AISE-040 | 16 | ZAI | 024,036,037 | primary-interface adoption shell and action broker |
+| AISE-041 | 16 | ZAI | 024,036,037,040 | workflow migration and switching-friction profiler |
 
 ## Wave policy
 
