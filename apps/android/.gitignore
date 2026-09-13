@@ -1,0 +1,21 @@
+# AISE v2 — Android field client (AISE-002). Build outputs and
+# machine-specific files are never committed. The Gradle wrapper
+# (gradle/wrapper/*, gradlew, gradlew.bat) IS committed on purpose.
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Machine-specific SDK location
+local.properties
+
+# IDE noise
+.idea/
+*.iml
+.kotlin/
+captures/
+.cxx/
+
+# Logs
+*.log

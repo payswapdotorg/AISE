@@ -1,0 +1,46 @@
+# AISE v2 — Android field client version catalog (AISE-002).
+#
+# Every version is pinned exactly (no ranges, no dynamic versions) so the
+# build is deterministic and any gate (local or CI) can be re-run
+# independently by the Tech Lead. Each pin below was verified to exist in
+# its repository at the time this foundation was authored.
+
+[versions]
+agp = "8.7.3"
+kotlin = "2.1.21"
+coreKtx = "1.15.0"
+activityCompose = "1.9.3"
+composeBom = "2025.01.00"
+lifecycleViewmodelCompose = "2.8.7"
+navigationCompose = "2.8.6"
+junitJupiter = "5.11.4"
+junitPlatformLauncher = "1.11.4"
+androidxTestCore = "1.6.1"
+androidxTestExtJunit = "1.2.1"
+androidxTestRunner = "1.6.2"
+
+[libraries]
+# ---- :app runtime -----------------------------------------------------------
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+
+# ---- tests (pure JVM, offline-safe) -----------------------------------------
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junitPlatformLauncher" }
+
+# ---- instrumented tests (declared structure only; require an emulator) ------
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
