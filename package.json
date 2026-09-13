@@ -1,0 +1,25 @@
+{
+  "name": "aise",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE v2 monorepo — repository, runtime and CI foundation. See README.md, AGENTS.md and spec/ for governance.",
+  "workspaces": [
+    "apps/*",
+    "backend/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "verify": "bun tools/verify.ts",
+    "typecheck": "bun tools/verify.ts typecheck",
+    "lint": "bun tools/verify.ts lint",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/bun": "^1.4.2",
+    "eslint": "^10.10.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.70.0"
+  }
+}
