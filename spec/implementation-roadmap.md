@@ -20,7 +20,7 @@ WorldSculpt is integrated as an optional reconstruction engine, not adopted as t
 | Wave | Work Items | Goal |
 |---:|---|---|
 | 0 | 001, 002 | repository + Android foundation | MERGED (finalized 2026-09-13; 001 @ 608fb5c0c2eb, 002 @ d7486dd9841e) |
-| 1 | 003 | shared contract foundation |
+| 1 | 003 | shared contract foundation | MERGED (finalized 2026-09-13; 003 @ c5dabfe37fdd) |
 | 2 | 004, 005 | ingestion + capture session |
 | 3 | 006, 007, 008 | device capability, mission planner, evidence |
 | 4 | 009, 010, 011 | guided capture, reconstruction orchestration, BOQ ingest |
