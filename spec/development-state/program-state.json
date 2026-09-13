@@ -4,12 +4,12 @@
   "artifact": "aise-development-state/program-state",
   "governingArchitecture": "2.2",
   "architectureState": "frozen",
-  "asOf": "2026-09-13T17:15:12Z",
+  "asOf": "2026-09-13T18:11:56Z",
   "execution": {
     "maxConcurrentWorkers": 3,
     "mergeGate": "architect",
     "selfMergeForbidden": true,
-    "currentWave": 0,
+    "currentWave": 1,
     "selectionRule": "activate only dependency-eligible items; prefer up to three disjoint items"
   },
   "workItems": [
@@ -24,15 +24,17 @@
     {
       "id": "AISE-002",
       "owner": "GEMINI",
-      "status": "activated",
-      "dependencies": []
+      "status": "finalized",
+      "dependencies": [],
+      "mergedSha": "d7486dd9841e0089a73d2aa9fb7e10b1ce8f40d2",
+      "mergedAt": "2026-09-13T18:11:56Z"
     },
     {
       "id": "AISE-003",
       "owner": "SHARED",
       "primaryAgent": "ZAI",
       "secondaryAgent": "GEMINI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-001",
         "AISE-002"
@@ -442,6 +444,8 @@
     "Primary-interface adoption is optimized before exclusive adoption; migration is progressive and reversible.",
     "No reconstruction provider is canonical; removing any provider must not require an AISE data-model migration.",
     "World Labs Atlas is currently an access-controlled/early-access option and must be represented as a provider whose availability can be unavailable without changing AISE semantics.",
-    "AISE-001 merged @ 608fb5c0c2eb (architect-verified evidence, CI green)."
+    "AISE-001 merged @ 608fb5c0c2eb (architect-verified evidence, CI green).",
+    "AISE-002 merged @ d7486dd9841e (architect-verified evidence, CI green). Newly eligible: AISE-003. Activated: AISE-003.",
+    "Wave 0 complete: repo/runtime foundation (608fb5c) + Android foundation (d7486dd). Worker completion reports delivered via staged tarball evidence; 001 chat report was capacity-queued, merge decided on objective evidence per development-protocol section 4."
   ]
 }
