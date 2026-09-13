@@ -18,7 +18,7 @@ Acceptance: missing evidence creates actionable requests; accepted alternatives 
 ## R4 — Reconstruction
 AISE shall generate registered spatial geometry and structured architectural elements from supported multimodal capture.
 
-Acceptance: point cloud/mesh or equivalent scene is produced where evidence permits; structured walls, floors, ceilings, doors and windows can be represented; provenance survives reprocessing.
+Acceptance: point cloud/mesh or equivalent scene is produced where evidence permits; structured walls, floors, ceilings, doors and windows can be represented; provenance survives reprocessing. Reconstruction must be strategy-neutral: WorldSculpt may be used through an adapter for grounded multi-view compositional reconstruction, while depth/LiDAR, photogrammetry, reference-constrained and specialist-instrument strategies remain valid alternatives.
 
 ## R5 — 2D/3D synchronization
 AISE shall provide synchronized 2D, measurable 3D and evidence views of the same model version.
@@ -104,3 +104,8 @@ Acceptance: migration candidates can be evaluated and moved incrementally; no in
 AISE shall expose stable provider-neutral APIs and optional MCP/capability interfaces and a Codex Universal integration pack. Codex may orchestrate AISE without becoming an AISE domain authority.
 
 Acceptance: AISE capabilities can be invoked from a Codex workflow without Codex core changes; authorization, assurance failures and source provenance remain explicit.
+
+## R22 — Pluggable reconstruction engines
+AISE shall support external reconstruction engines through stable adapter contracts, with engine identity, model/checkpoint identity, input evidence, coordinate transforms, diagnostics and limitations retained as provenance.
+
+Acceptance: WorldSculpt can be enabled/disabled without changing AISE canonical data; an unavailable or failed engine produces explicit fallback/escalation; no engine output is promoted to engineering-ready status without AISE assurance.
