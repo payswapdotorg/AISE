@@ -89,3 +89,18 @@ Acceptance: aggregate metrics may not hide critical-class regressions.
 Every implementation Work Item shall have bounded surfaces and dependencies suitable for a Tech Lead dispatching up to three concurrent workers.
 
 Acceptance: work graph identifies safe three-worker waves and composition checkpoints.
+
+## R19 — Primary-interface adoption
+AISE shall be usable as the primary project interface while incumbent systems remain connected as systems of record where required.
+
+Acceptance: a pilot user can discover project context, inspect evidence/BOQ/reality, initiate authorized actions and return to incumbent records from AISE without routine context switching for the targeted workflow.
+
+## R20 — Workflow migration and switching-friction reduction
+AISE shall inventory incumbent workflows and represent migration friction, dependencies, equivalence evidence, candidate replacements, rollout state and rollback paths.
+
+Acceptance: migration candidates can be evaluated and moved incrementally; no incumbent step is declared replaced without semantic equivalence and operational acceptance.
+
+## R21 — Codex vertical integration
+AISE shall expose stable provider-neutral APIs and optional MCP/capability interfaces and a Codex Universal integration pack. Codex may orchestrate AISE without becoming an AISE domain authority.
+
+Acceptance: AISE capabilities can be invoked from a Codex workflow without Codex core changes; authorization, assurance failures and source provenance remain explicit.
