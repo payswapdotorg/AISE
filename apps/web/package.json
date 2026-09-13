@@ -1,0 +1,15 @@
+{
+  "name": "@aise/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE web workspace — foundation placeholder. No product UI (that is AISE-021).",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.3.0"
+  }
+}

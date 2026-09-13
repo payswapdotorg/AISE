@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+.vite/
+
+# Environment — real env files are never committed; only .env.example is.
+.env
+.env.*
+!.env.example
+
+# Logs and OS noise
+*.log
+.DS_Store

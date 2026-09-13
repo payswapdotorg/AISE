@@ -1,0 +1,29 @@
+# AISE continuous integration — clean-checkout deterministic verify gate (AISE-001).
+# Runs the exact same gate as local development: bun install --frozen-lockfile,
+# then bun run verify. Nothing else is allowed to pass or fail the branch.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    name: Verify (bun)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          # Pinned so the gate runs the same bun the work item was built on.
+          bun-version: "1.3.14"
+
+      - name: Install dependencies (frozen lockfile)
+        run: bun install --frozen-lockfile
+
+      - name: Run deterministic verify gate
+        run: bun run verify

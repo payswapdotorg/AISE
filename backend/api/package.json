@@ -1,0 +1,11 @@
+{
+  "name": "@aise/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE backend API service skeleton — health/readiness plumbing only, no product logic.",
+  "scripts": {
+    "start": "bun run src/main.ts",
+    "dev": "bun --watch run src/main.ts"
+  }
+}
