@@ -8,6 +8,7 @@
 Intent → Assurance → Capability Assessment → Capture Mission → Evidence
 → Reconstruction → Reality Graph → Adaptive Evidence → Verification
 → BOQ Lens / Engineering Case → Intervention Simulation → Execution → Outcome
+→ Integration → Primary Interface → Workflow Migration → Pilot
 ```
 
 ## Earliest-safe three-worker waves
@@ -27,10 +28,11 @@ Intent → Assurance → Capability Assessment → Capture Mission → Evidence
 | 10 | 020, 022, 033 | 2D, assurance, historical comparison |
 | 11 | 021, 023, 032 | workspace, verification, reality-vs-design |
 | 12 | 024, 025, 034 | BOQ Lens, Engineering Case, MEP semantics |
-| 13 | 026, 029, 037 | intervention model, reasoning, connectors |
+| 13 | 026, 029, 037 | intervention model, reasoning, universal connectors |
 | 14 | 027, 031, 036 | synchronized simulation, outcomes, enterprise controls |
 | 15 | 028, 035, 038 | cost impacts, physical lab/dogfood, developer API |
-| 16 | 039 | production pilot hardening |
+| 16 | 040, 041 | primary-interface shell, workflow migration/friction |
+| 17 | 039 | production pilot hardening |
 
 Some waves contain fewer than three items because authority-sensitive model/contract joins deliberately serialize the critical path.
 
@@ -47,6 +49,14 @@ Some waves contain fewer than three items because authority-sensitive model/cont
 **Gate E:** executed work can be recaptured and compared to the proposed state.
 
 **Gate F:** pilot users can use AISE as their primary project interface while incumbents remain connected where needed.
+
+**Gate G:** targeted workflows can be migrated incrementally from incumbents with semantic equivalence, operational acceptance and rollback.
+
+**Gate H:** Codex Universal can orchestrate AISE capabilities through the integration pack without requiring Codex-core changes.
+
+## Adoption operating principle
+
+Primary-interface adoption is the first commercial target. Exclusive adoption is a consequence of successful workflow migration, not an architectural requirement. AISE must reduce context switching and integration friction before attempting to replace incumbent systems.
 
 ## Activation rule
 
