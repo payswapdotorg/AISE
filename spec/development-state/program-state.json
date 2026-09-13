@@ -2,9 +2,9 @@
   "$schema": "./program-state.schema.json",
   "schemaVersion": 2,
   "artifact": "aise-development-state/program-state",
-  "governingArchitecture": "2.0",
+  "governingArchitecture": "2.1",
   "architectureState": "frozen",
-  "asOf": "2026-09-13T07:50:00Z",
+  "asOf": "2026-09-13T08:20:00Z",
   "execution": {
     "maxConcurrentWorkers": 3,
     "mergeGate": "architect",
@@ -51,16 +51,25 @@
     {"id":"AISE-036","owner":"ZAI","status":"blocked","dependencies":["AISE-023","AISE-024","AISE-029"]},
     {"id":"AISE-037","owner":"ZAI","status":"blocked","dependencies":["AISE-016","AISE-017","AISE-020","AISE-021"]},
     {"id":"AISE-038","owner":"ZAI","status":"blocked","dependencies":["AISE-024","AISE-027","AISE-029","AISE-037"]},
-    {"id":"AISE-039","owner":"SHARED","primaryAgent":"ZAI","secondaryAgent":"GEMINI","status":"blocked","dependencies":["AISE-031","AISE-032","AISE-033","AISE-034","AISE-035","AISE-036","AISE-037","AISE-038"]}
+    {"id":"AISE-039","owner":"SHARED","primaryAgent":"ZAI","secondaryAgent":"GEMINI","status":"blocked","dependencies":["AISE-031","AISE-032","AISE-033","AISE-034","AISE-035","AISE-036","AISE-037","AISE-038","AISE-041"]},
+    {"id":"AISE-040","owner":"ZAI","status":"blocked","dependencies":["AISE-024","AISE-036","AISE-037"]},
+    {"id":"AISE-041","owner":"ZAI","status":"blocked","dependencies":["AISE-024","AISE-036","AISE-037","AISE-040"]}
   ],
   "legacyReference": {
     "sourceRepository": "pectoraux/AISE",
     "sourceArchitecture": "v1.0",
     "purpose": "architecture archaeology only; not an implementation dependency"
   },
+  "integrationReference": {
+    "codexRepository": "payswapdotorg/codex",
+    "strategy": "standalone-AISE-vertical-with-external-Codex-pack",
+    "codexCoreChangesRequiredForInitialIntegration": false,
+    "architectureRecord": "spec/governance/architecture-change-record-002.md"
+  },
   "notes": [
     "Target repository was empty at baseline creation.",
-    "This state represents the v2 architecture program before code implementation.",
-    "AISE-001 and AISE-002 are the only initially activated work items because shared contracts require both foundations."
+    "This state represents the v2.1 architecture program before code implementation.",
+    "AISE-001 and AISE-002 are the only initially activated work items because shared contracts require both foundations.",
+    "Primary-interface adoption is optimized before exclusive adoption; migration is progressive and reversible."
   ]
 }
