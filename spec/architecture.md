@@ -1,6 +1,6 @@
 # AISE v2 Architecture
 
-**Status:** PROPOSED FOR IMPLEMENTATION / architecture baseline committed by Architect
+**Status:** FROZEN BASELINE
 **Version:** 2.0
 **Core thesis:** define the engineering question first; acquire the minimum sufficient evidence using the available device/instruments; reconstruct a versioned engineering reality; reason and intervene without corrupting observed reality.
 
