@@ -1,8 +1,8 @@
 # AISE v2 Architecture
 
 **Status:** FROZEN BASELINE
-**Version:** 2.1
-**Change record:** `spec/governance/architecture-change-record-002.md`
+**Version:** 2.2
+**Change record:** `spec/governance/architecture-change-record-003.md`
 **Core thesis:** define the engineering question first; acquire the minimum sufficient evidence using the available device/instruments; reconstruct a versioned engineering reality; reason and intervene without corrupting observed reality.
 
 ## 1. System lifecycle
@@ -74,7 +74,7 @@ Offline capture is first-class. Every asset carries content identity and acquisi
 
 ## 5. Reconstruction architecture
 
-The reconstruction service is strategy-based rather than a single algorithm.
+The reconstruction service is strategy-based rather than a single algorithm. AISE treats external reconstruction research/codebases as adapters behind this boundary.
 
 ```text
 Capture characterization
@@ -87,7 +87,15 @@ Capture characterization
  → model candidate
 ```
 
-Strategy selection may choose LiDAR/depth-first fusion, visual-inertial/photogrammetric reconstruction, reference-constrained reconstruction, specialist-instrument fusion, or an explicit insufficient-evidence path.
+### WorldSculpt integration
+
+`WorldSculpt` is a first-class optional reconstruction engine behind the strategy contract. Its current research contribution is compositional scene reconstruction from grounded multi-view observations, including object-level meshes in a shared metric world frame and reconstruction under clutter/occlusion. This makes it particularly relevant to AISE's scene reconstruction stage.
+
+AISE must not depend semantically on WorldSculpt internals. The `WorldSculptAdapter` translates AISE evidence and camera/pose metadata into the engine input contract and returns a versioned candidate reconstruction with engine identity, commit/checkpoint identity, input evidence references, coordinate transforms, quality diagnostics and limitations.
+
+WorldSculpt output is never automatically authoritative. It enters AISE as derived candidate geometry and must pass AISE geometry, evidence, uncertainty, verification and assurance rules before it can contribute to an engineering-ready model.
+
+AISE retains other strategies including depth/LiDAR-first fusion, visual-inertial/photogrammetric reconstruction, reference-constrained reconstruction, specialist-instrument fusion and explicit insufficient-evidence paths. WorldSculpt may be skipped, replaced, combined or disabled without changing AISE semantics.
 
 The system may output a photorealistic scene representation, a measurable structured geometry representation, and structured 2D projections. These are synchronized projections of the same model version, not separate sources of truth.
 
@@ -218,4 +226,4 @@ Organization/project authorization is server-side. Raw media may be sensitive; a
 
 ## 16. Failure posture
 
-The platform must be explicit about insufficient evidence. Consequential workflows fail closed rather than fabricate. Partial reconstructions remain usable for visualization where policy permits but are not silently promoted to engineering-ready status. Connector or Codex failures never create false engineering confirmation.
+The platform must be explicit about insufficient evidence. Consequential workflows fail closed rather than fabricate. Partial reconstructions remain usable for visualization where policy permits but are not silently promoted to engineering-ready status. Connector, Codex or WorldSculpt failures never create false engineering confirmation.
