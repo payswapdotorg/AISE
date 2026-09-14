@@ -1,16 +1,26 @@
 package org.payswap.aise.app
 
 import android.app.Application
-import org.payswap.aise.core.capture.InMemoryLocalCaptureStore
-import org.payswap.aise.core.capture.LocalCaptureStore
+import android.hardware.Sensor
+import android.hardware.SensorManager
+import android.os.Build
+import java.io.File
+import java.time.Clock
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import org.payswap.aise.app.capture.PersistedDeviceIdentityProvider
 
 /**
- * Application entry point: creates the app-wide [LocalCaptureStore] at app
- * start, proving the :core module is wired into the shell.
+ * Application entry point: builds the app-wide composition root at app start
+ * and runs capture-session RECOVERY in the background before any UI reads
+ * the session state (AISE-005: an interrupted session is re-opened exactly
+ * once on process restart).
  *
- * AISE-002 uses the in-memory implementation. AISE-005 (Android capture
- * session) will swap in the on-device persistent implementation behind the
- * SAME interface — the rest of the app must not change.
+ * AISE-002 created the store here; AISE-005 swaps in the persistent
+ * file-backed implementation + the capture-session controller behind the
+ * same composition root shape.
  *
  * Architectural note (spec/architecture.md §4): the client is a mission
  * executor. The store is a persistence abstraction — it holds bytes and
@@ -19,20 +29,35 @@ import org.payswap.aise.core.capture.LocalCaptureStore
  */
 class AiseApplication : Application() {
 
+    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     lateinit var appContainer: AppContainer
         private set
 
     override fun onCreate() {
         super.onCreate()
-        appContainer = AppContainer(InMemoryLocalCaptureStore())
+        val root = File(filesDir, "aise")
+        val rotationSensor = (getSystemService(SENSOR_SERVICE) as? SensorManager)
+            ?.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+        appContainer = AppContainer(
+            rootDir = root,
+            clock = Clock.systemUTC(),
+            deviceIdentityProvider = PersistedDeviceIdentityProvider(
+                root = root,
+                platform = "android",
+                model = Build.MODEL ?: "unknown",
+                osVersion = Build.VERSION.RELEASE ?: "unknown",
+                appVersion = BuildConfig.VERSION_NAME,
+            ),
+            imuSensorAvailable = rotationSensor != null,
+        )
+        // Crash recovery: reopen interrupted sessions exactly once, ensure
+        // finalized sessions have their manifests. Pure local I/O — offline-first.
+        appScope.launch {
+            runCatching { appContainer.captureController.recoverOnStartup() }
+                .onFailure { t ->
+                    android.util.Log.w("AiseApplication", "capture recovery failed", t)
+                }
+        }
     }
 }
-
-/**
- * Tiny composition root for the foundation shell. Deliberately hand-rolled:
- * no DI framework is justified at this size, and a foundation item should
- * not introduce one.
- */
-class AppContainer(
-    val localCaptureStore: LocalCaptureStore,
-)

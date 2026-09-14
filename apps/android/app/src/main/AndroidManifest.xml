@@ -2,11 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
-      AISE-002 foundation: ZERO permissions by design.
-      No camera, no sensors, no network, no storage — the shell needs none of
-      them. Capture permissions (camera etc.) arrive with AISE-005/009 and
-      must be requested mission-scoped there, not blanket-declared here.
+      AISE-002 foundation shipped ZERO permissions by design. AISE-005 adds
+      the capture session layer and with it the CAMERA permission — requested
+      MISSION-SCOPED at runtime (the capture screen asks when the operator
+      starts using capture, it is never blanket-granted). Deliberately NOT
+      requested: location (optional per the work order; AISE-009 decides),
+      RECORD_AUDIO (video is visual evidence only — no microphone), network
+      (offline-first; sync is AISE-030 behind its own boundary).
     -->
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Capability-aware: camera-less devices can still install the app
+         (manual measurements arrive with AISE-009); capture is simply
+         unavailable — an honest capability fact, not an install barrier. -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:name=".AiseApplication"

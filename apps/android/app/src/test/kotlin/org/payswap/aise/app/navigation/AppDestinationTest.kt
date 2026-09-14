@@ -8,15 +8,15 @@ import org.junit.jupiter.api.Test
 
 /**
  * Navigation-state invariants of the shell (pure JVM, no Robolectric):
- * routes are unique and nav-safe, the graph is exactly the three placeholder
- * destinations, and the start destination is Home.
+ * routes are unique and nav-safe, the graph is exactly the four destinations
+ * (AISE-005 added CAPTURE), and the start destination is Home.
  */
 class AppDestinationTest {
 
     @Test
-    fun `the shell exposes exactly the three placeholder destinations`() {
+    fun `the shell exposes exactly the four destinations`() {
         assertEquals(
-            setOf(AppDestination.HOME, AppDestination.SETTINGS, AppDestination.ABOUT),
+            setOf(AppDestination.HOME, AppDestination.CAPTURE, AppDestination.SETTINGS, AppDestination.ABOUT),
             AppDestination.entries.toSet(),
         )
     }
@@ -46,7 +46,7 @@ class AppDestinationTest {
     @Test
     fun `the bottom bar lists all destinations in graph order`() {
         assertEquals(
-            listOf("home", "settings", "about"),
+            listOf("home", "capture", "settings", "about"),
             AppDestination.BOTTOM_BAR.map { it.route },
         )
     }
@@ -63,7 +63,7 @@ class AppDestinationTest {
         for (destination in AppDestination.entries) {
             assertEquals(destination, AppDestination.fromRoute(destination.route))
         }
-        assertNull(AppDestination.fromRoute("capture"))
+        assertNull(AppDestination.fromRoute("mission"))
         assertNull(AppDestination.fromRoute(""))
     }
 
