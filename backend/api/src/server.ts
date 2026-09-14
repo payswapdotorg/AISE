@@ -33,6 +33,11 @@
  *   GET  /v1/reality/projects/:id/versions/:versionId|latest -> full snapshot
  *   POST /v1/reality/projects/:id/changes -> apply change set -> new version
  *   GET  /v1/reality/projects/:id/nodes/:nodeId -> node history (AISE-016)
+ *   POST /v1/cases                          -> create engineering case (AISE-025)
+ *   GET  /v1/cases[/:id]                     -> case list / full case record
+ *   POST /v1/cases/:id/(observations|hypotheses|missing-evidence|review|resolve)
+ *   POST /v1/cases/:id/missing-evidence/:missingId/(collect|waive)
+ *                                            -> structured case lifecycle
  *
  * The capture routes are implemented by `capture/router.ts` over the
  * `capture/gateway.ts` policy engine and an injected `CaptureStore`; the
@@ -44,7 +49,9 @@
  * reconstruction routes by `reconstruction/router.ts` over the deterministic
  * `reconstruction/orchestrator.ts` lifecycle engine; the reality routes by
  * `reality/router.ts` over the canonical `reality/versioning.ts` append-only
- * engine and an injected (or lazily-constructed) `RealityStore`. This module
+ * engine and an injected (or lazily-constructed) `RealityStore`; the case
+ * routes by `cases/router.ts` over the `cases/service.ts` policy engine and
+ * an injected (or lazily-constructed) case store. This module
  * owns ONLY routing dispatch and the request/response envelope.
  *
  * Every response carries an `x-request-id` correlation header: the request's
@@ -86,6 +93,12 @@ import { createDefaultAiseProviders } from "./reconstruction/adapters";
 // engine and an injected store).
 import { handleRealityRequest, type RealityRouteOptions } from "./reality/router";
 import { FsRealityStore } from "./reality/store";
+// AISE-025 routing: Engineering Case surface — the structured
+// issue→observation/hypothesis/missing-evidence/review domain
+// (cases/router.ts over cases/service.ts and an injected store).
+import { handleCasesRequest, type CasesRouteOptions } from "./cases/router";
+import { CaseService } from "./cases/service";
+import { FsCaseStore } from "./cases/store";
 
 export const SERVICE_NAME = "aise-api";
 
@@ -131,6 +144,11 @@ export interface HandlerOptions {
   // lazily on the FIRST reality request — the graph.json/versions/ tree is
   // created per project on POST /v1/reality/projects.
   reality?: RealityRouteOptions;
+  // AISE-025 routing: injected Engineering Case surface. When omitted, a
+  // default CaseService over the FsCaseStore rooted at the configured data
+  // directory (AISE_DATA_DIR, default ./data) plus a UTC wall clock is
+  // constructed lazily on the FIRST case request (see casesRoutesOrDefault).
+  cases?: CasesRouteOptions;
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -168,6 +186,30 @@ function boqRoutesOrDefault(options: HandlerOptions): BoqRouteOptions {
     };
   }
   return defaultBoqRoutes;
+}
+
+// AISE-025 routing: memoized default Engineering Case routing (see
+// HandlerOptions.cases) — same lazy discipline as the BOQ wiring: resolved
+// only inside the /v1/cases path guard, so deployments without case traffic
+// never construct the store.
+let defaultCasesRoutes: CasesRouteOptions | null = null;
+
+function casesRoutesOrDefault(options: HandlerOptions): CasesRouteOptions {
+  if (options.cases !== undefined) {
+    return options.cases;
+  }
+  if (defaultCasesRoutes === null) {
+    const result = validateEnv(options.envSource());
+    const dataDir = result.ok ? result.config.dataDir : "./data";
+    defaultCasesRoutes = {
+      service: new CaseService({
+        store: new FsCaseStore(dataDir),
+        clock: (): string => new Date().toISOString(),
+      }),
+      logger: options.logger,
+    };
+  }
+  return defaultCasesRoutes;
 }
 
 async function route(
@@ -269,6 +311,22 @@ async function route(
     );
     if (realityResponse !== null) {
       return realityResponse;
+    }
+  }
+
+  // AISE-025 routing — delegates to the Engineering Case surface (structured
+  // issue → observations/hypotheses/missing-evidence/review, epistemically
+  // separated). The path guard keeps the lazily-constructed default service
+  // (FsCaseStore under the configured data dir) entirely off non-case requests.
+  if (url.pathname === "/v1/cases" || url.pathname.startsWith("/v1/cases/")) {
+    const casesResponse = await handleCasesRequest(
+      request,
+      url,
+      requestId,
+      casesRoutesOrDefault(options),
+    );
+    if (casesResponse !== null) {
+      return casesResponse;
     }
   }
 
