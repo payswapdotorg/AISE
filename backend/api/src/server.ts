@@ -38,6 +38,13 @@
  *   POST /v1/cases/:id/(observations|hypotheses|missing-evidence|review|resolve)
  *   POST /v1/cases/:id/missing-evidence/:missingId/(collect|waive)
  *                                            -> structured case lifecycle
+ *   POST /v1/interventions                   -> create scenario pinned to a reality
+ *                                            baseline version (AISE-026)
+ *   GET  /v1/interventions[/:id]             -> scenario list / full record
+ *   POST /v1/interventions/:id/steps         -> append step + next state layer
+ *   GET  /v1/interventions/:id/states/:index|latest -> materialized state
+ *   POST /v1/interventions/:id/approval-reference  -> record Case review ref
+ *   POST /v1/interventions/:id/status        -> governed status machine
  *
  * The capture routes are implemented by `capture/router.ts` over the
  * `capture/gateway.ts` policy engine and an injected `CaptureStore`; the
@@ -51,8 +58,12 @@
  * `reality/router.ts` over the canonical `reality/versioning.ts` append-only
  * engine and an injected (or lazily-constructed) `RealityStore`; the case
  * routes by `cases/router.ts` over the `cases/service.ts` policy engine and
- * an injected (or lazily-constructed) case store. This module
- * owns ONLY routing dispatch and the request/response envelope.
+ * an injected (or lazily-constructed) case store; the intervention routes
+ * by `intervention/router.ts` over the `intervention/service.ts`
+ * deterministic state engine, an injected (or lazily-constructed)
+ * intervention store and a READ-ONLY baseline resolver over the reality
+ * store. This module owns ONLY routing dispatch and the request/response
+ * envelope.
  *
  * Every response carries an `x-request-id` correlation header: the request's
  * own `x-request-id` when provided, otherwise a generated UUID. Every request
@@ -99,6 +110,20 @@ import { FsRealityStore } from "./reality/store";
 import { handleCasesRequest, type CasesRouteOptions } from "./cases/router";
 import { CaseService } from "./cases/service";
 import { FsCaseStore } from "./cases/store";
+// AISE-026 routing: Intervention Studio surface — proposed scenario/step/
+// state layers materialized deterministically from a PINNED reality
+// baseline version (intervention/router.ts over intervention/service.ts,
+// an injected store and a READ-ONLY baseline resolver). The baseline
+// resolver below adapts the reality store by calling its READ method
+// `getVersion` and NOTHING else: there is no write path from the
+// intervention module into observed reality (proposal isolation).
+import {
+  handleInterventionRequest,
+  type InterventionRouteOptions,
+} from "./intervention/router";
+import { InterventionService, type BaselineResolver } from "./intervention/service";
+import { FsInterventionStore } from "./intervention/store";
+import type { RealityStore } from "./reality/store";
 
 export const SERVICE_NAME = "aise-api";
 
@@ -149,6 +174,13 @@ export interface HandlerOptions {
   // directory (AISE_DATA_DIR, default ./data) plus a UTC wall clock is
   // constructed lazily on the FIRST case request (see casesRoutesOrDefault).
   cases?: CasesRouteOptions;
+  // AISE-026 routing: injected Intervention Studio surface. When omitted, a
+  // default InterventionService over the FsInterventionStore rooted at the
+  // configured data directory (AISE_DATA_DIR, default ./data), a UTC wall
+  // clock and a READ-ONLY baseline resolver over the FsRealityStore (same
+  // data dir; resolves ONLY the pinned baseline version id) is constructed
+  // lazily on the FIRST intervention request (see interventionRoutesOrDefault).
+  interventions?: InterventionRouteOptions;
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -210,6 +242,42 @@ function casesRoutesOrDefault(options: HandlerOptions): CasesRouteOptions {
     };
   }
   return defaultCasesRoutes;
+}
+
+// AISE-026 routing: memoized default Intervention Studio routing (see
+// HandlerOptions.interventions) — same lazy discipline as the case wiring:
+// resolved only inside the /v1/interventions path guard, so deployments
+// without intervention traffic never construct the store. PROPOSAL
+// ISOLATION: the default baseline resolver is READ-ONLY BY CONSTRUCTION —
+// it calls the reality store's read method `getVersion` for the PINNED
+// version id and nothing else; no code path from here can write reality.
+let defaultInterventionRoutes: InterventionRouteOptions | null = null;
+
+/** Read-only baseline resolution over a reality store (reads only). */
+function readOnlyBaselineResolver(store: RealityStore): BaselineResolver {
+  return {
+    resolveBaseline: (projectId: string, versionId: string) =>
+      store.getVersion(projectId, versionId),
+  };
+}
+
+function interventionRoutesOrDefault(options: HandlerOptions): InterventionRouteOptions {
+  if (options.interventions !== undefined) {
+    return options.interventions;
+  }
+  if (defaultInterventionRoutes === null) {
+    const result = validateEnv(options.envSource());
+    const dataDir = result.ok ? result.config.dataDir : "./data";
+    defaultInterventionRoutes = {
+      service: new InterventionService({
+        store: new FsInterventionStore(dataDir),
+        clock: (): string => new Date().toISOString(),
+        baselineResolver: readOnlyBaselineResolver(new FsRealityStore(dataDir)),
+      }),
+      logger: options.logger,
+    };
+  }
+  return defaultInterventionRoutes;
 }
 
 async function route(
@@ -327,6 +395,26 @@ async function route(
     );
     if (casesResponse !== null) {
       return casesResponse;
+    }
+  }
+
+  // AISE-026 routing — delegates to the Intervention Studio surface
+  // (proposed scenario states materialized deterministically from a PINNED
+  // reality baseline). The path guard keeps the lazily-constructed default
+  // service (FsInterventionStore + read-only baseline resolver under the
+  // configured data dir) entirely off non-intervention requests.
+  if (
+    url.pathname === "/v1/interventions" ||
+    url.pathname.startsWith("/v1/interventions/")
+  ) {
+    const interventionResponse = await handleInterventionRequest(
+      request,
+      url,
+      requestId,
+      interventionRoutesOrDefault(options),
+    );
+    if (interventionResponse !== null) {
+      return interventionResponse;
     }
   }
 
