@@ -4,12 +4,12 @@
   "artifact": "aise-development-state/program-state",
   "governingArchitecture": "2.2",
   "architectureState": "frozen",
-  "asOf": "2026-09-14T15:48:03Z",
+  "asOf": "2026-09-14T20:45:00Z",
   "execution": {
     "maxConcurrentWorkers": 3,
     "mergeGate": "architect",
     "selfMergeForbidden": true,
-    "currentWave": 13,
+    "currentWave": 14,
     "selectionRule": "activate only dependency-eligible items; prefer up to three disjoint items"
   },
   "workItems": [
@@ -295,16 +295,18 @@
     {
       "id": "AISE-027",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-021",
         "AISE-026"
-      ]
+      ],
+      "mergedSha": "a430bac4fc02403cad345b4a438d7f6eb27810a2",
+      "mergedAt": "2026-09-14T20:45:00Z"
     },
     {
       "id": "AISE-028",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-017",
         "AISE-026",
@@ -338,17 +340,19 @@
     {
       "id": "AISE-031",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-025",
         "AISE-026",
         "AISE-029"
-      ]
+      ],
+      "mergedSha": "32348508bfc42eab3ba70713b22bb93189878bbd",
+      "mergedAt": "2026-09-14T20:45:00Z"
     },
     {
       "id": "AISE-032",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-016",
         "AISE-019",
@@ -369,7 +373,7 @@
     {
       "id": "AISE-034",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-013",
         "AISE-015",
@@ -392,12 +396,14 @@
     {
       "id": "AISE-036",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-023",
         "AISE-024",
         "AISE-029"
-      ]
+      ],
+      "mergedSha": "4887904c01e96a4f8112bcec0ffc3e696cc91dfe",
+      "mergedAt": "2026-09-14T20:45:00Z"
     },
     {
       "id": "AISE-037",
@@ -504,7 +510,7 @@
     "AISE-003 merged @ c5dabfe37fdd (architect-verified evidence, CI green). Newly eligible: AISE-004, AISE-005. Activated: AISE-004, AISE-005.",
     "AISE-005 merged @ 482606400ca9 (architect-verified evidence, CI green). Newly eligible: AISE-006.",
     "AISE-005 merged @ 482606400ca9c5383d77037a7dacbcb23eefb522; AISE-006 activated early (deps 003+005 finalized; disjoint from in-flight 004; DAG-driven pipelining).",
-    "AISE-004 merged @ 42db5254d7e0 (Lead-verified evidence: verify PASS 137 tests; local-implementation mode \u2014 remote worker pipeline dormant, objective gates unchanged). Newly eligible: 007, 008, 011.",
+    "AISE-004 merged @ 42db5254d7e0 (Lead-verified evidence: verify PASS 137 tests; local-implementation mode — remote worker pipeline dormant, objective gates unchanged). Newly eligible: 007, 008, 011.",
     "AISE-006 merged @ 37ab1972077e (Lead-verified evidence: :core:test 216 tests incl. 67 new; 7 device-class fixtures + 20 mutation tests; committed-schema validation). Newly eligible: none beyond 007/008/011 (009 needs 007).",
     "Wave transition 2026-09-14: 004+006 finalized; 007, 008, 011 activated (three disjoint backend surfaces: missions planner, evidence service, BOQ ingestion).",
     "AISE-007 merged @ 56ee7db658e4 (Lead-verified: verify PASS, +54 tests; device-adapted plans with byte-identical assurance target; unknown-capability discipline; escalation path). Newly eligible: 009, 010.",
@@ -515,15 +521,16 @@
     "AISE-014 merged @ 58414d6db8ef (Lead-verified: verify PASS, +55 tests; interpretation records with uncertain as first-class; dictionaries versioned; source untouched; numbers never interpreted). Worker hit infra timeout on final report; Lead completed one type-annotation fix, all other work by worker.",
     "AISE-009 merged @ 8135e2099c0 (Lead-verified: :core:test 268 tests, +52 new; no-false-completion matrix 12 cases; offline journal rehydrate; reconciliation with explicit adoption). Newly eligible: 030.",
     "Wave transition 2026-09-14 #3: 009/010/014 finalized; 012, 030 activated (post-merge gates: verify PASS 403 tests + :core:test BUILD SUCCESSFUL).",
-    "AISE-012 merged @ 5c62b4a8b755 (Lead-verified: verify PASS 462 tests, +59 new; WorldSculpt adapter with license isolation + typed HTTP failure semantics + GENERATED_COMPLETION never upgraded; DepthLidarFusion second provider proving swappability/removal without data-model change; real inference not exercised in sandbox \u2014 honest limitation). Newly eligible: 013.",
+    "AISE-012 merged @ 5c62b4a8b755 (Lead-verified: verify PASS 462 tests, +59 new; WorldSculpt adapter with license isolation + typed HTTP failure semantics + GENERATED_COMPLETION never upgraded; DepthLidarFusion second provider proving swappability/removal without data-model change; real inference not exercised in sandbox — honest limitation). Newly eligible: 013.",
     "AISE-030 merged @ 6db8d8342a9b (Lead-verified: :core:test BUILD SUCCESSFUL; compatibility checker with UNKNOWN discipline, journaled offline queue + rehydrate, pure upload planner, compactor with rehydration-equivalence property, expanded device matrix; worker code complete, Lead committed after agent infra timeout). Newly eligible: none (035 needs 019+031).",
-    "Wave transition 2026-09-14 #4: 012/030 finalized; 013 activated (sole DAG-eligible item \u2014 serial critical path begins; post-merge gates verify PASS 462 tests + :core:test BUILD SUCCESSFUL).",
+    "Wave transition 2026-09-14 #4: 012/030 finalized; 013 activated (sole DAG-eligible item — serial critical path begins; post-merge gates verify PASS 462 tests + :core:test BUILD SUCCESSFUL).",
     "AISE-013 merged @ ba858922ce3c (Lead-verified: verify PASS 524 tests, +62 new; CRITICAL evidence: golden numerics, typed degeneracies, uncertainty-null discipline discrimination, transform validation with fixed issue order + mutations). Worker authored main sources; Lead authored tests after agent infra timeout. Newly eligible: 015.",
-    "AISE-015 merged @ 70bb44f25da0 (Lead-verified: verify PASS 601 tests, +77 new). Newly eligible: 016 (Reality Graph v2 \u2014 CRITICAL).",
-    "AISE-016 merged @ 8a74546b8d75 (Lead-verified: verify PASS 670 tests, +69 new; Reality Graph v2 canonical authority live: versioned append-only snapshots, typed units, mandatory provenance, epistemic downgrades refused). Newly eligible: 017, 018, 019, 020, 022 \u2014 activating 019/020/022 (max-3 wave unlocking 021/023/032/033/034; 017/018 follow next wave).",
+    "AISE-015 merged @ 70bb44f25da0 (Lead-verified: verify PASS 601 tests, +77 new). Newly eligible: 016 (Reality Graph v2 — CRITICAL).",
+    "AISE-016 merged @ 8a74546b8d75 (Lead-verified: verify PASS 670 tests, +69 new; Reality Graph v2 canonical authority live: versioned append-only snapshots, typed units, mandatory provenance, epistemic downgrades refused). Newly eligible: 017, 018, 019, 020, 022 — activating 019/020/022 (max-3 wave unlocking 021/023/032/033/034; 017/018 follow next wave).",
     "Correction: 019/020/022 now activated (status transition ready->activated recorded).",
-    "Wave 9 merged 2026-09-14: 019/022/020 finalized (main verify PASS 803 tests). Newly eligible pool: 017, 018, 021, 023, 032, 033, 034. Activated 021 (workspace \u2014 starts adoption track), 023 (verification \u2014 starts assurance chain), 017 (BOQ mapping \u2014 starts BOQ Lens track). 018/032/033/034 queued for subsequent waves.",
+    "Wave 9 merged 2026-09-14: 019/022/020 finalized (main verify PASS 803 tests). Newly eligible pool: 017, 018, 021, 023, 032, 033, 034. Activated 021 (workspace — starts adoption track), 023 (verification — starts assurance chain), 017 (BOQ mapping — starts BOQ Lens track). 018/032/033/034 queued for subsequent waves.",
     "Wave 10 merged 2026-09-14: 021/023/017 finalized (main verify PASS 980 tests). Newly eligible: 024 (017+021), 025 (016+008+023), 032/033/034 pool. Activated 024, 025, 033; 018/032/034 queued.",
-    "Wave 11 merged 2026-09-14: 025/033/024 finalized (main verify PASS 1180 tests). Newly eligible: 026, 029, 037 (+queued 018/032/034). Activated 026 (intervention state model \u2014 CRITICAL), 029 (reasoning gateway), 037 (universal incumbent integration)."
+    "Wave 11 merged 2026-09-14: 025/033/024 finalized (main verify PASS 1180 tests). Newly eligible: 026, 029, 037 (+queued 018/032/034). Activated 026 (intervention state model — CRITICAL), 029 (reasoning gateway), 037 (universal incumbent integration).",
+    "Wave 13 merged 2026-09-14: 027/031/036 finalized (main verify PASS 1811 tests = 1479 + 130 viewer + 82 execution + 120 identity; boundaries clean over 308 files). First wave delivered end-to-end by in-app replay workers (chat.z.ai agents-tab GLM-5.3 Full-Stack sessions, git-channel delivery: worker pushes work/aise-NNN, Lead re-verifies and merges --no-ff). 036 completed by replay worker from the deadline-interrupted WIP handoff a783b56 (Lead-committed) — worker fixed 5 typecheck + 5 lint errors and authored router.test.ts (+1346 lines, 24 router tests). Newly eligible: 028, 035, 038, 040 (+ long-held 018/032/034). Wave 14 activated: 028 (intervention quantities/cost impacts — impact module, server.ts block anchored after AISE-031), 032 (reality-vs-design comparison — comparison module, server.ts block anchored after AISE-036), 034 (MEP semantics foundation — mep module, pure library, no server.ts change). 018 remains ready-unactivated (no dependents); 035 deferred (SHARED ownership); 038/040 deferred to post-032/034 waves."
   ]
 }
