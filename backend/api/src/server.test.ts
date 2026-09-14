@@ -1,6 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import pkg from "../package.json" with { type: "json" };
 import { createLogger } from "./lib/log";
+import { createCaptureGateway } from "./capture/gateway";
+import { InMemoryCaptureStore } from "./capture/store";
+import { fixedClock } from "./capture/testkit";
 import { createRequestHandler, isUuid, type HandlerOptions } from "./server";
 import type { EnvRecord } from "./lib/config";
 
@@ -17,6 +20,10 @@ function handlerFor(env: EnvRecord): (request: Request) => Promise<Response> {
     envSource: () => env,
     version: pkg.version,
     logger: quietLogger,
+    capture: createCaptureGateway({
+      store: new InMemoryCaptureStore(),
+      clock: fixedClock,
+    }),
   };
   return createRequestHandler(options);
 }
@@ -82,6 +89,16 @@ describe("routing", () => {
     const response = await handlerFor(validEnv)(get("/nope"));
     expect(response.status).toBe(404);
     expect(await response.json()).toEqual({ ok: false, error: "not_found" });
+  });
+
+  test("serves capture routes through the mounted gateway", async () => {
+    // Wiring smoke test: the capture surface answers (a session that was
+    // never synced is 404, not the generic not_found envelope).
+    const response = await handlerFor(validEnv)(get("/v1/capture/sessions/never-synced"));
+    expect(response.status).toBe(404);
+    const body = (await response.json()) as { ok: boolean; error: string };
+    expect(body.error).toBe("session_not_found");
+    expect(response.headers.get("x-request-id")).toBeTruthy();
   });
 });
 

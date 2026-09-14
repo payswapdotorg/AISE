@@ -1,11 +1,17 @@
 /**
- * HTTP request handling for the AISE backend API skeleton.
+ * HTTP request handling for the AISE backend API.
  *
- * Contract (AISE-001): health/readiness plumbing ONLY — no product, domain
- * or authority logic. Endpoints:
+ * Contract (AISE-001 health/readiness plumbing; AISE-004 capture ingestion):
  *
- *   GET /healthz  -> 200 {"ok":true,"service":"aise-api","version":"<pkg version>"}
- *   GET /readyz   -> 200 when the environment (config) is valid, 503 otherwise
+ *   GET  /healthz  -> 200 {"ok":true,"service":"aise-api","version":"<pkg version>"}
+ *   GET  /readyz   -> 200 when the environment (config) is valid, 503 otherwise
+ *   POST /v1/capture/assets/:contentId  -> raw content-addressed asset upload
+ *   POST /v1/capture/sync               -> SyncBatch ingestion, SyncAck reply
+ *   GET  /v1/capture/sessions/:sessionId -> stored session projection
+ *
+ * The capture routes are implemented by `capture/router.ts` over the
+ * `capture/gateway.ts` policy engine and an injected `CaptureStore`. This
+ * module owns ONLY routing dispatch and the request/response envelope.
  *
  * Every response carries an `x-request-id` correlation header: the request's
  * own `x-request-id` when provided, otherwise a generated UUID. Every request
@@ -13,7 +19,10 @@
  */
 
 import { validateEnv, type EnvSource } from "./lib/config";
+import { jsonResponse, methodNotAllowed } from "./lib/http";
 import type { Logger } from "./lib/log";
+import { handleCaptureRequest } from "./capture/router";
+import type { CaptureGateway } from "./capture/gateway";
 
 export const SERVICE_NAME = "aise-api";
 
@@ -24,37 +33,14 @@ export interface HandlerOptions {
   version: string;
   /** Structured logger used for request/error events. */
   logger: Logger;
+  /** Capture ingestion gateway (AISE-004). */
+  capture: CaptureGateway;
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 export function isUuid(value: string): boolean {
   return UUID_PATTERN.test(value);
-}
-
-function jsonResponse(
-  status: number,
-  body: Record<string, unknown>,
-  requestId: string,
-  extraHeaders?: Record<string, string>,
-): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "x-request-id": requestId,
-      ...extraHeaders,
-    },
-  });
-}
-
-function methodNotAllowed(requestId: string): Response {
-  return jsonResponse(
-    405,
-    { ok: false, error: "method_not_allowed" },
-    requestId,
-    { allow: "GET" },
-  );
 }
 
 async function route(
@@ -65,7 +51,7 @@ async function route(
 ): Promise<Response> {
   if (url.pathname === "/healthz") {
     if (request.method !== "GET") {
-      return methodNotAllowed(requestId);
+      return methodNotAllowed(requestId, "GET");
     }
     return jsonResponse(
       200,
@@ -76,13 +62,21 @@ async function route(
 
   if (url.pathname === "/readyz") {
     if (request.method !== "GET") {
-      return methodNotAllowed(requestId);
+      return methodNotAllowed(requestId, "GET");
     }
     const result = validateEnv(options.envSource());
     if (result.ok) {
       return jsonResponse(200, { ok: true }, requestId);
     }
     return jsonResponse(503, { ok: false, issues: result.issues }, requestId);
+  }
+
+  const captureResponse = await handleCaptureRequest(request, url, requestId, {
+    gateway: options.capture,
+    logger: options.logger,
+  });
+  if (captureResponse !== null) {
+    return captureResponse;
   }
 
   return jsonResponse(404, { ok: false, error: "not_found" }, requestId);
