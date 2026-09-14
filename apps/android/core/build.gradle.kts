@@ -27,8 +27,18 @@ kotlin {
 
 // The module intentionally has ZERO third-party main dependencies.
 // The Kotlin stdlib is provided by the Kotlin Gradle plugin.
+//   AISE-005 addition (TEST SCOPE ONLY): com.networknt:json-schema-validator,
+//   used by SessionManifestExporterTest to validate manifest output against
+//   the COMMITTED AISE-003 .schema.json files (the AISE-005 work order
+//   explicitly sanctions a schema-validation library "vendored via gradle
+//   dep"). It appears on the TEST classpath only; the runtimeClasspath
+//   resolved by assertNoNetworkDependencies below still contains nothing
+//   beyond the Kotlin stdlib, so the frozen AISE-002 runtime invariant is
+//   fully preserved. NoNetworkDependencyTest's allowlist was extended
+//   deliberately for these TEST artifacts (see that file).
 dependencies {
     testImplementation(libs.junit.jupiter)
+    testImplementation(libs.json.schema.validator)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 

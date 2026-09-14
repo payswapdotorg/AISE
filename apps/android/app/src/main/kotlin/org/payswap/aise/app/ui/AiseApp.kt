@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -22,13 +23,15 @@ import androidx.navigation.compose.rememberNavController
 import org.payswap.aise.app.AppContainer
 import org.payswap.aise.app.navigation.AppDestination
 import org.payswap.aise.app.ui.screen.AboutScreen
+import org.payswap.aise.app.ui.screen.CaptureScreen
+import org.payswap.aise.app.ui.screen.CaptureViewModel
 import org.payswap.aise.app.ui.screen.HomeScreen
 import org.payswap.aise.app.ui.screen.SettingsScreen
 
 /**
- * Root composable of the AISE-002 shell: a navigation graph with the three
- * placeholder destinations (Home / Settings / About) wired to a bottom
- * navigation bar.
+ * Root composable of the AISE field client shell: a navigation graph with the
+ * destinations (Home / Capture / Settings / About) wired to a bottom
+ * navigation bar. AISE-005 added the capture destination.
  */
 @Composable
 fun AiseApp(container: AppContainer, modifier: Modifier = Modifier) {
@@ -68,6 +71,17 @@ fun AiseApp(container: AppContainer, modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(innerPadding),
                 )
             }
+            composable(AppDestination.CAPTURE.route) {
+                CaptureScreen(
+                    viewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+                        factory = CaptureViewModel.factory(
+                            container.captureController,
+                            container.captureEnvironment,
+                        ),
+                    ),
+                    modifier = Modifier.padding(innerPadding),
+                )
+            }
             composable(AppDestination.SETTINGS.route) {
                 SettingsScreen(modifier = Modifier.padding(innerPadding))
             }
@@ -80,6 +94,7 @@ fun AiseApp(container: AppContainer, modifier: Modifier = Modifier) {
 
 private fun AppDestination.icon(): ImageVector = when (this) {
     AppDestination.HOME -> Icons.Filled.Home
+    AppDestination.CAPTURE -> Icons.Filled.PhotoCamera
     AppDestination.SETTINGS -> Icons.Filled.Settings
     AppDestination.ABOUT -> Icons.Filled.Info
 }

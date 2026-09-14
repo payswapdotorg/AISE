@@ -75,15 +75,27 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
 
+    // AISE-005 capture runtime: coroutines (session controller concurrency)
+    // + CameraX (stills, video segments, preview).
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.video)
+    implementation(libs.androidx.camera.view)
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose) // non-deprecated LocalLifecycleOwner
 
     // Pure-JVM unit tests (no Robolectric, no emulator).
     testImplementation(libs.junit.jupiter)
+    testImplementation(libs.kotlinx.coroutines.test)
     testRuntimeOnly(libs.junit.platform.launcher)
 
     // Instrumented tests: declared in structure only. Running them requires

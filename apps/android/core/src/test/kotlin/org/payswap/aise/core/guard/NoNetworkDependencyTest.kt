@@ -105,6 +105,25 @@ class NoNetworkDependencyTest {
         "^junit-platform-launcher(-[0-9].*)?$",
         "^opentest4j(-[0-9].*)?$",
         "^apiguardian(-[0-9].*)?$",
+        // ------------------------------------------------------------------
+        // AISE-005 DELIBERATE ADDITION (test scope only):
+        // com.networknt:json-schema-validator (pinned 1.5.6) + its transitive
+        // Jackson parser and slf4j API. It validates the session manifest
+        // against the COMMITTED AISE-003 .schema.json files in
+        // SessionManifestExporterTest — the AISE-005 work order explicitly
+        // sanctions a schema-validation library "vendored via gradle dep".
+        // These artifacts are TEST dependencies: they appear on the TEST
+        // classpath only. The frozen runtime invariant is untouched — the
+        // Gradle `assertNoNetworkDependencies` task resolves the MAIN
+        // runtimeClasspath, which still contains nothing beyond the Kotlin
+        // stdlib, and NONE of these artifacts is a network/HTTP client (the
+        // denylist above still applies to them).
+        // ------------------------------------------------------------------
+        "^json-schema-validator(-[0-9].*)?$",
+        "^jackson-(core|databind|annotations|dataformat-yaml)(-[0-9].*)?$",
+        "^slf4j-api(-[0-9].*)?$",
+        "^snakeyaml(-[0-9].*)?$", // via jackson-dataformat-yaml (YAML schema support we never use)
+        "^itu(-[0-9].*)?$", // com.ethlo.time:itu via jackson-databind (time parsing, no I/O of its own)
     )
 
     @Test

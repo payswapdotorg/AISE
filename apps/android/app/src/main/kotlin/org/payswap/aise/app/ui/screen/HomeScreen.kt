@@ -17,9 +17,10 @@ import org.payswap.aise.app.BuildConfig
 import org.payswap.aise.core.capture.LocalCaptureStore
 
 /**
- * Home placeholder (AISE-002): app identity plus a diagnostics card proving
- * the :core in-memory capture store is live. The entry count is shown in
- * DEBUG builds only, per the work order. Capture UI arrives in AISE-005.
+ * Home (AISE-002 shell, AISE-005 update): app identity plus a diagnostics card
+ * reflecting the LOCAL capture store. Counts become non-zero as capture
+ * sessions append still assets (AISE-005); video segments stay session-dir
+ * only (documented in apps/android/README.md). Debug-only diagnostics.
  */
 @Composable
 fun HomeScreen(
@@ -54,8 +55,8 @@ fun HomeScreen(
             ) {
                 Text("Local capture store", style = MaterialTheme.typography.titleMedium)
                 Text(
-                    "In-memory implementation of the append-only persistence abstraction. " +
-                        "Offline-first; content-addressed; no server authority on the device.",
+                    "Persistent file-backed implementation of the append-only persistence " +
+                        "abstraction. Offline-first; content-addressed; no server authority on the device.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -69,8 +70,8 @@ fun HomeScreen(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
-                        "Debug build — store wiring diagnostics. Counts are 0 until capture " +
-                            "sessions exist (AISE-005).",
+                        "Debug build — store wiring diagnostics. Stills captured in Capture " +
+                            "sessions appear here; sync acknowledgement is AISE-030.",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.outline,
                     )
@@ -79,8 +80,8 @@ fun HomeScreen(
         }
 
         Text(
-            "Capture, guided missions and synchronization arrive in later work items " +
-                "(AISE-005 / AISE-009 / AISE-030).",
+            "Guided missions and synchronization arrive in later work items " +
+                "(AISE-009 / AISE-030).",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
