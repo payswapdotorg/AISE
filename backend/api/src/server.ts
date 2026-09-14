@@ -21,6 +21,9 @@
  *   POST /v1/evidence/derivations         -> record a derivation
  *   POST /v1/boq/imports                 -> BOQ source upload (AISE-011)
  *   GET  /v1/boq/imports[/:id[/source]]  -> BOQ import list/detail/source
+ *   POST|GET /v1/boq/imports/:id/normalization -> derived BOQ normalization
+ *                                        view (AISE-014) — explicit
+ *                                        interpretations, source untouched
  *   POST /v1/reconstruction/jobs         -> create reconstruction job (AISE-010)
  *   GET  /v1/reconstruction/jobs[/:id]   -> job list / full job record
  *   POST /v1/reconstruction/jobs/:id/run -> synchronous run-to-completion
@@ -56,6 +59,8 @@ import { handleEvidenceRequest } from "./evidence/router";
 import { createEvidenceService, type EvidenceService } from "./evidence/service";
 import { FsEvidenceStore } from "./evidence/store";
 import { handleBoqRequest, type BoqRouteOptions } from "./boq/router";
+import { NormalizationService } from "./boq/normalization/service";
+import { FsNormalizationStore } from "./boq/normalization/store";
 import { BoqService } from "./boq/service";
 import { FsBoqStore } from "./boq/store";
 import {
@@ -93,8 +98,9 @@ export interface HandlerOptions {
   // requires the capture STORE instance (owned by main.ts), so callers that
   // hold one inject a fully-configured service here instead.
   evidence?: EvidenceService;
-  /** BOQ ingestion routes (AISE-011); defaults to a file-system store
-   *  rooted at the live environment's dataDir when not injected. */
+  /** BOQ ingestion + derived normalization routes (AISE-011 + AISE-014);
+   *  defaults to file-system stores rooted at the live environment's
+   *  dataDir when not injected. */
   boq?: BoqRouteOptions;
   // AISE-010 routing: injected reconstruction orchestration surface. When
   // omitted, a default orchestrator over the FsJobStore + FsArtifactStore
@@ -123,12 +129,22 @@ function boqRoutesOrDefault(options: HandlerOptions): BoqRouteOptions {
   if (defaultBoqRoutes === null) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
+    const service = new BoqService({
+      store: new FsBoqStore(dataDir),
+      clock: () => new Date().toISOString(),
+    });
     defaultBoqRoutes = {
-      service: new BoqService({
-        store: new FsBoqStore(dataDir),
-        clock: () => new Date().toISOString(),
-      }),
+      service,
       logger: options.logger,
+      // AISE-014: derived normalization surface over the SAME data dir —
+      // content-addressed derived views under boq/normalizations/. The
+      // normalization service reads the parsed documents through the
+      // ingestion service (read-only); the source BOQ is never mutated.
+      normalization: new NormalizationService({
+        store: new FsNormalizationStore(dataDir),
+        clock: () => new Date().toISOString(),
+        boq: service,
+      }),
     };
   }
   return defaultBoqRoutes;
