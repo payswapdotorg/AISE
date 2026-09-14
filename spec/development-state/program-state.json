@@ -202,7 +202,7 @@
     {
       "id": "AISE-019",
       "owner": "ZAI",
-      "status": "ready",
+      "status": "activated",
       "dependencies": [
         "AISE-012",
         "AISE-013",
@@ -212,7 +212,7 @@
     {
       "id": "AISE-020",
       "owner": "ZAI",
-      "status": "ready",
+      "status": "activated",
       "dependencies": [
         "AISE-013",
         "AISE-016"
@@ -230,7 +230,7 @@
     {
       "id": "AISE-022",
       "owner": "ZAI",
-      "status": "ready",
+      "status": "activated",
       "dependencies": [
         "AISE-007",
         "AISE-008",
@@ -496,6 +496,7 @@
     "Wave transition 2026-09-14 #4: 012/030 finalized; 013 activated (sole DAG-eligible item — serial critical path begins; post-merge gates verify PASS 462 tests + :core:test BUILD SUCCESSFUL).",
     "AISE-013 merged @ ba858922ce3c (Lead-verified: verify PASS 524 tests, +62 new; CRITICAL evidence: golden numerics, typed degeneracies, uncertainty-null discipline discrimination, transform validation with fixed issue order + mutations). Worker authored main sources; Lead authored tests after agent infra timeout. Newly eligible: 015.",
     "AISE-015 merged @ 70bb44f25da0 (Lead-verified: verify PASS 601 tests, +77 new). Newly eligible: 016 (Reality Graph v2 — CRITICAL).",
-    "AISE-016 merged @ 8a74546b8d75 (Lead-verified: verify PASS 670 tests, +69 new; Reality Graph v2 canonical authority live: versioned append-only snapshots, typed units, mandatory provenance, epistemic downgrades refused). Newly eligible: 017, 018, 019, 020, 022 — activating 019/020/022 (max-3 wave unlocking 021/023/032/033/034; 017/018 follow next wave)."
+    "AISE-016 merged @ 8a74546b8d75 (Lead-verified: verify PASS 670 tests, +69 new; Reality Graph v2 canonical authority live: versioned append-only snapshots, typed units, mandatory provenance, epistemic downgrades refused). Newly eligible: 017, 018, 019, 020, 022 — activating 019/020/022 (max-3 wave unlocking 021/023/032/033/034; 017/018 follow next wave).",
+    "Correction: 019/020/022 now activated (status transition ready->activated recorded)."
   ]
 }
