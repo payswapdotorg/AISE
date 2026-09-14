@@ -45,6 +45,17 @@
  *   GET  /v1/interventions/:id/states/:index|latest -> materialized state
  *   POST /v1/interventions/:id/approval-reference  -> record Case review ref
  *   POST /v1/interventions/:id/status        -> governed status machine
+ *   POST /v1/executions                      -> record execution of an
+ *                                            APPROVED intervention scenario
+ *                                            state + execution evidence
+ *                                            (AISE-031)
+ *   GET  /v1/executions[/:id]                -> execution list / full record
+ *   POST /v1/executions/:id/outcomes         -> record OBSERVED post-work
+ *                                            outcome observation
+ *   GET  /v1/executions/lineage/:caseId      -> verified issue→outcome
+ *                                            lineage (every hop checked)
+ *   GET  /v1/executions/states/:scenarioId/:stateId -> derived PROPOSED|
+ *                                            EXECUTED state execution view
  *
  * The capture routes are implemented by `capture/router.ts` over the
  * `capture/gateway.ts` policy engine and an injected `CaptureStore`; the
@@ -124,6 +135,25 @@ import {
 import { InterventionService, type BaselineResolver } from "./intervention/service";
 import { FsInterventionStore } from "./intervention/store";
 import type { RealityStore } from "./reality/store";
+// AISE-031 routing: Execution/Outcome loop surface — post-work execution
+// records over APPROVED intervention scenarios, outcome observations and
+// the issue→outcome lineage query (execution/router.ts over
+// execution/service.ts, an injected store and three READ-ONLY reference
+// resolvers: intervention scenario context, case context and evidence
+// membership). The adapters below call the owning services'/store's READ
+// methods (`getScenario`, `getCase`, `getEvidenceRecord`) and NOTHING
+// else: there is no write path from the execution domain into the case,
+// intervention or evidence authorities, and the intervention module's own
+// records are never mutated by it (the PROPOSED→EXECUTED state transition
+// is recorded in the execution domain only).
+import { handleExecutionRequest, type ExecutionRouteOptions } from "./execution/router";
+import {
+  ExecutionService,
+  readOnlyCaseContextResolver,
+  readOnlyEvidenceMembershipResolver,
+  readOnlyInterventionContextResolver,
+} from "./execution/service";
+import { FsExecutionStore } from "./execution/store";
 
 export const SERVICE_NAME = "aise-api";
 
@@ -181,6 +211,13 @@ export interface HandlerOptions {
   // data dir; resolves ONLY the pinned baseline version id) is constructed
   // lazily on the FIRST intervention request (see interventionRoutesOrDefault).
   interventions?: InterventionRouteOptions;
+  // AISE-031 routing: injected Execution/Outcome surface. When omitted, a
+  // default ExecutionService over the FsExecutionStore rooted at the
+  // configured data directory (AISE_DATA_DIR, default ./data), a UTC wall
+  // clock and READ-ONLY resolvers over the DEFAULT intervention/case wiring
+  // and the FsEvidenceStore (same data dir) is constructed lazily on the
+  // FIRST execution request (see executionRoutesOrDefault).
+  executions?: ExecutionRouteOptions;
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -278,6 +315,59 @@ function interventionRoutesOrDefault(options: HandlerOptions): InterventionRoute
     };
   }
   return defaultInterventionRoutes;
+}
+
+// AISE-031 routing: memoized default Execution/Outcome routing (see
+// HandlerOptions.executions) — same lazy discipline as the case/intervention
+// wiring: resolved only inside the /v1/executions path guard, so deployments
+// without execution traffic never construct the store. The three reference
+// resolvers are READ-ONLY BY CONSTRUCTION and resolved over THIS handler's
+// configured data dir (never through a shared memoized sibling wiring, so
+// two handlers over different data dirs can never leak each other's
+// authorities): each adapts a PRIVATE service/store instance whose only
+// reachable member is the READ method the adapter calls — intervention
+// scenario context via `getScenario` (AISE-026 authority; the baseline
+// resolver handed to that instance is the same read-only `readOnlyBaselineResolver`
+// over this data dir, reusing the AISE-026 helper), case context via `getCase`
+// (AISE-025 authority) and evidence membership via the evidence store's
+// `getEvidenceRecord` READ method (evidence records are immutable write-once
+// files, so a read-only second instance is safe by the same argument as the
+// intervention baseline resolver). No code path from here can write the
+// intervention, case or evidence authorities — the resolver interfaces
+// expose exactly one READ method each and the instances behind them are
+// never exported.
+let defaultExecutionRoutes: ExecutionRouteOptions | null = null;
+
+function executionRoutesOrDefault(options: HandlerOptions): ExecutionRouteOptions {
+  if (options.executions !== undefined) {
+    return options.executions;
+  }
+  if (defaultExecutionRoutes === null) {
+    const result = validateEnv(options.envSource());
+    const dataDir = result.ok ? result.config.dataDir : "./data";
+    const wallClock = (): string => new Date().toISOString();
+    defaultExecutionRoutes = {
+      service: new ExecutionService({
+        store: new FsExecutionStore(dataDir),
+        clock: wallClock,
+        interventionContextResolver: readOnlyInterventionContextResolver(
+          new InterventionService({
+            store: new FsInterventionStore(dataDir),
+            clock: wallClock,
+            baselineResolver: readOnlyBaselineResolver(new FsRealityStore(dataDir)),
+          }),
+        ),
+        caseContextResolver: readOnlyCaseContextResolver(
+          new CaseService({ store: new FsCaseStore(dataDir), clock: wallClock }),
+        ),
+        evidenceMembershipResolver: readOnlyEvidenceMembershipResolver(
+          new FsEvidenceStore(dataDir),
+        ),
+      }),
+      logger: options.logger,
+    };
+  }
+  return defaultExecutionRoutes;
 }
 
 async function route(
@@ -415,6 +505,24 @@ async function route(
     );
     if (interventionResponse !== null) {
       return interventionResponse;
+    }
+  }
+
+  // AISE-031 routing — delegates to the Execution/Outcome surface
+  // (post-work execution records over APPROVED interventions, outcome
+  // observations and the verified issue→outcome lineage). The path guard
+  // keeps the lazily-constructed default service (FsExecutionStore + the
+  // three read-only reference resolvers under the configured data dir)
+  // entirely off non-execution requests.
+  if (url.pathname === "/v1/executions" || url.pathname.startsWith("/v1/executions/")) {
+    const executionResponse = await handleExecutionRequest(
+      request,
+      url,
+      requestId,
+      executionRoutesOrDefault(options),
+    );
+    if (executionResponse !== null) {
+      return executionResponse;
     }
   }
 
