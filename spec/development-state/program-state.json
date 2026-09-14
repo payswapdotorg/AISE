@@ -9,7 +9,7 @@
     "maxConcurrentWorkers": 3,
     "mergeGate": "architect",
     "selfMergeForbidden": true,
-    "currentWave": 6,
+    "currentWave": 7,
     "selectionRule": "activate only dependency-eligible items; prefer up to three disjoint items"
   },
   "workItems": [
@@ -142,10 +142,12 @@
     {
       "id": "AISE-013",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-012"
-      ]
+      ],
+      "mergedSha": "ba858922ce3c3d83ba86b0c9c3c936d693e74677",
+      "mergedAt": "2026-09-14T05:35:00Z"
     },
     {
       "id": "AISE-014",
@@ -160,7 +162,7 @@
     {
       "id": "AISE-015",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-012",
         "AISE-013"
@@ -487,6 +489,7 @@
     "Wave transition 2026-09-14 #3: 009/010/014 finalized; 012, 030 activated (post-merge gates: verify PASS 403 tests + :core:test BUILD SUCCESSFUL).",
     "AISE-012 merged @ 5c62b4a8b755 (Lead-verified: verify PASS 462 tests, +59 new; WorldSculpt adapter with license isolation + typed HTTP failure semantics + GENERATED_COMPLETION never upgraded; DepthLidarFusion second provider proving swappability/removal without data-model change; real inference not exercised in sandbox — honest limitation). Newly eligible: 013.",
     "AISE-030 merged @ 6db8d8342a9b (Lead-verified: :core:test BUILD SUCCESSFUL; compatibility checker with UNKNOWN discipline, journaled offline queue + rehydrate, pure upload planner, compactor with rehydration-equivalence property, expanded device matrix; worker code complete, Lead committed after agent infra timeout). Newly eligible: none (035 needs 019+031).",
-    "Wave transition 2026-09-14 #4: 012/030 finalized; 013 activated (sole DAG-eligible item — serial critical path begins; post-merge gates verify PASS 462 tests + :core:test BUILD SUCCESSFUL)."
+    "Wave transition 2026-09-14 #4: 012/030 finalized; 013 activated (sole DAG-eligible item — serial critical path begins; post-merge gates verify PASS 462 tests + :core:test BUILD SUCCESSFUL).",
+    "AISE-013 merged @ ba858922ce3c (Lead-verified: verify PASS 524 tests, +62 new; CRITICAL evidence: golden numerics, typed degeneracies, uncertainty-null discipline discrimination, transform validation with fixed issue order + mutations). Worker authored main sources; Lead authored tests after agent infra timeout. Newly eligible: 015."
   ]
 }
