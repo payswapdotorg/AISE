@@ -33,6 +33,29 @@
  *                                        (`normalization_not_found`; unknown
  *                                        imports answer `import_not_found`).
  *
+ *   POST /v1/boq/imports/:id/mappings  -> run the DERIVED deterministic
+ *                                        BOQ-to-reality matcher (AISE-017)
+ *                                        over the import's STORED normalized
+ *                                        view and a caller-supplied reality
+ *                                        graph snapshot ({ nodes }) and
+ *                                        persist the next append-only
+ *                                        mapping version. Requires a stored
+ *                                        normalization (else 409
+ *                                        `normalization_required`). NEITHER the
+ *                                        BOQ document nor the graph is ever
+ *                                        written; mismatch is reported, never
+ *                                        silently resolved. Body carries stats.
+ *   GET  /v1/boq/imports/:id/mappings  -> latest mapping version + stats
+ *                                        (404 `mapping_not_found` when none).
+ *   POST /v1/boq/imports/:id/mappings/manual -> apply ONE manual mapping
+ *                                        decision onto the latest version ->
+ *                                        NEW version (append-only; earlier
+ *                                        versions' bytes stay).
+ *   GET  /v1/boq/imports/:id/mappings/:version -> one explicit version
+ *                                        (v1 | 1 | v001 accepted; 400
+ *                                        `invalid_mapping_version` otherwise;
+ *                                        404 `mapping_version_not_found`).
+ *
  * HTTP STATUS MAPPING — the single place for this translation:
  *
  *   successful ingest               -> 200 (canonical-JSON import envelope)
@@ -45,6 +68,12 @@
  *   normalization of an un-parsed
  *   import (the PDF known limit)    -> 422 `normalization_unavailable` + `code`
  *   stored view missing (GET)       -> 404 `normalization_not_found`
+ *   mapping without a stored
+ *   normalization (POST mappings)   -> 409 `normalization_required`
+ *   bad mapping bodies              -> 400 (malformed_json | invalid_graph_snapshot |
+ *                                  invalid_manual_input | invalid_mapping_version)
+ *   unknown manual entryId          -> 422 `entry_not_found`
+ *   stored mapping missing (GET)    -> 404 (mapping_not_found | mapping_version_not_found)
  *
  * Sources stored but left unrecorded (parse failed) keep their bytes and
  * sidecar on disk — preservation is unconditional; visibility requires a
@@ -57,6 +86,14 @@ import { canonicalJsonStringify, contentIdSchema } from "@aise/shared-contracts"
 import { jsonResponse, jsonTextResponse, methodNotAllowed } from "../lib/http";
 import type { Logger } from "../lib/log";
 import { BoqError, BoqParseError, type BoqFormat } from "./model";
+import {
+  MappingError,
+  computeMappingStats,
+  parseGraphSnapshot,
+  parseManualMappingInput,
+} from "./mapping/model";
+import { MappingService, MappingServiceError } from "./mapping/service";
+import { InMemoryMappingStore } from "./mapping/store";
 import { NormalizationService, NormalizationServiceError } from "./normalization/service";
 import { InMemoryNormalizationStore } from "./normalization/store";
 import type { BoqService } from "./service";
@@ -74,6 +111,14 @@ export interface BoqRouteOptions {
    * persistence is the norm in deployments.
    */
   readonly normalization?: NormalizationService;
+  /**
+   * Derived BOQ-to-reality mapping surface (AISE-017). Optional: when
+   * absent, a fallback service over an IN-MEMORY mapping store, the same
+   * `service` and the normalization fallback is constructed lazily
+   * (memoized per options object) — explicit wiring injects the
+   * file-system store for persistent deployments.
+   */
+  readonly mapping?: MappingService;
 }
 
 const XLSX_MEDIA_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -111,6 +156,18 @@ function pathSegments(url: URL): string[] {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
 
+/** Read and JSON-parse a request body (malformed JSON -> { ok: false }). */
+async function readJsonBody(
+  request: Request,
+): Promise<{ ok: true; payload: unknown } | { ok: false }> {
+  const text = await request.text();
+  try {
+    return { ok: true, payload: JSON.parse(text) as unknown };
+  } catch {
+    return { ok: false };
+  }
+}
+
 // AISE-014: lazily-constructed default normalization service, memoized per
 // options object (never module-global, so handlers never share state).
 // Explicit construction wins; the fallback keeps derived views in memory
@@ -129,6 +186,30 @@ function normalizationOrDefault(options: BoqRouteOptions): NormalizationService 
       boq: options.service,
     });
     normalizationFallbacks.set(options, fallback);
+  }
+  return fallback;
+}
+
+// AISE-017: lazily-constructed default mapping service, memoized per options
+// object (same discipline as the AISE-014 fallback above — never
+// module-global, so handlers never share state). Explicit construction wins;
+// the fallback keeps mapping versions in memory only — persistent
+// deployments inject the FsMappingStore-backed service via options.mapping.
+const mappingFallbacks = new WeakMap<BoqRouteOptions, MappingService>();
+
+function mappingOrDefault(options: BoqRouteOptions): MappingService {
+  if (options.mapping !== undefined) {
+    return options.mapping;
+  }
+  let fallback = mappingFallbacks.get(options);
+  if (fallback === undefined) {
+    fallback = new MappingService({
+      store: new InMemoryMappingStore(),
+      clock: () => new Date().toISOString(),
+      normalization: normalizationOrDefault(options),
+      boq: options.service,
+    });
+    mappingFallbacks.set(options, fallback);
   }
   return fallback;
 }
@@ -335,6 +416,248 @@ export async function handleBoqRequest(
     }
     logger.info("boq_normalization_read", { requestId, importId });
     return jsonTextResponse(200, canonicalJsonStringify({ ok: true, normalization: view }), requestId);
+  }
+
+  /* /v1/boq/imports/:id/mappings — derived mapping surface (AISE-017) ---- */
+
+  if (segments.length === 5 && segments[2] === "imports" && segments[4] === "mappings") {
+    const importId = segments[3] ?? "";
+    if (!contentIdSchema.safeParse(importId).success) {
+      return jsonResponse(400, { ok: false, error: "invalid_import_id" }, requestId);
+    }
+    if (request.method !== "POST" && request.method !== "GET") {
+      return methodNotAllowed(requestId, "GET, POST");
+    }
+    const mapping = mappingOrDefault(options);
+
+    if (request.method === "POST") {
+      const imported = await service.getImport(importId);
+      if (imported === null) {
+        return jsonResponse(404, { ok: false, error: "import_not_found" }, requestId);
+      }
+      const body = await readJsonBody(request);
+      if (!body.ok) {
+        return jsonResponse(
+          400,
+          { ok: false, error: "malformed_json", detail: "request body is not valid JSON" },
+          requestId,
+        );
+      }
+      let snapshot;
+      try {
+        snapshot = parseGraphSnapshot(body.payload);
+      } catch (error) {
+        if (error instanceof MappingError) {
+          return jsonResponse(
+            400,
+            { ok: false, error: "invalid_graph_snapshot", detail: error.detail },
+            requestId,
+          );
+        }
+        throw error;
+      }
+      try {
+        const result = await mapping.runMatcher(importId, snapshot);
+        if (result === null) {
+          return jsonResponse(404, { ok: false, error: "import_not_found" }, requestId);
+        }
+        const stats = computeMappingStats(result);
+        logger.info("boq_mapping_computed", {
+          requestId,
+          importId,
+          version: result.version,
+          nodeCount: snapshot.nodes.length,
+          ...stats,
+        });
+        return jsonTextResponse(
+          200,
+          canonicalJsonStringify({ ok: true, mapping: result, stats }),
+          requestId,
+        );
+      } catch (error) {
+        if (error instanceof MappingServiceError) {
+          if (error.code === "normalization_required") {
+            logger.warn("boq_mapping_normalization_required", {
+              requestId,
+              importId,
+              detail: error.detail,
+            });
+            return jsonResponse(
+              409,
+              { ok: false, error: "normalization_required", detail: error.detail },
+              requestId,
+            );
+          }
+          logger.warn("boq_mapping_not_found", { requestId, importId, detail: error.detail });
+          return jsonResponse(
+            404,
+            { ok: false, error: "mapping_not_found", detail: error.detail },
+            requestId,
+          );
+        }
+        if (error instanceof BoqError) {
+          logger.error("boq_store_error", { requestId, part: error.part, detail: error.detail });
+          return jsonResponse(
+            500,
+            { ok: false, error: "boq_store_error", part: error.part, detail: error.detail },
+            requestId,
+          );
+        }
+        throw error;
+      }
+    }
+
+    // GET: the LATEST stored mapping version (precise 404s, mirroring the
+    // normalization GET discipline).
+    const imported = await service.getImport(importId);
+    if (imported === null) {
+      return jsonResponse(404, { ok: false, error: "import_not_found" }, requestId);
+    }
+    const result = await mapping.getLatest(importId);
+    if (result === null) {
+      return jsonResponse(404, { ok: false, error: "mapping_not_found" }, requestId);
+    }
+    logger.info("boq_mapping_read", { requestId, importId, version: result.version });
+    return jsonTextResponse(
+      200,
+      canonicalJsonStringify({ ok: true, mapping: result, stats: computeMappingStats(result) }),
+      requestId,
+    );
+  }
+
+  /* /v1/boq/imports/:id/mappings/manual | /:version (AISE-017) ---------- */
+
+  if (segments.length === 6 && segments[2] === "imports" && segments[4] === "mappings") {
+    const importId = segments[3] ?? "";
+    if (!contentIdSchema.safeParse(importId).success) {
+      return jsonResponse(400, { ok: false, error: "invalid_import_id" }, requestId);
+    }
+    const mapping = mappingOrDefault(options);
+    const tail = segments[5] ?? "";
+
+    if (tail === "manual") {
+      if (request.method !== "POST") {
+        return methodNotAllowed(requestId, "POST");
+      }
+      const imported = await service.getImport(importId);
+      if (imported === null) {
+        return jsonResponse(404, { ok: false, error: "import_not_found" }, requestId);
+      }
+      const body = await readJsonBody(request);
+      if (!body.ok) {
+        return jsonResponse(
+          400,
+          { ok: false, error: "malformed_json", detail: "request body is not valid JSON" },
+          requestId,
+        );
+      }
+      let manual;
+      try {
+        manual = parseManualMappingInput(body.payload);
+      } catch (error) {
+        if (error instanceof MappingError) {
+          return jsonResponse(
+            400,
+            { ok: false, error: "invalid_manual_input", detail: error.detail },
+            requestId,
+          );
+        }
+        throw error;
+      }
+      try {
+        const result = await mapping.applyManualMapping(importId, manual);
+        if (result === null) {
+          return jsonResponse(404, { ok: false, error: "import_not_found" }, requestId);
+        }
+        const stats = computeMappingStats(result);
+        logger.info("boq_mapping_manual_applied", {
+          requestId,
+          importId,
+          version: result.version,
+          entryId: manual.entryId,
+        });
+        return jsonTextResponse(
+          200,
+          canonicalJsonStringify({ ok: true, mapping: result, stats }),
+          requestId,
+        );
+      } catch (error) {
+        if (error instanceof MappingServiceError) {
+          logger.warn("boq_mapping_not_found", { requestId, importId, detail: error.detail });
+          return jsonResponse(
+            404,
+            { ok: false, error: "mapping_not_found", detail: error.detail },
+            requestId,
+          );
+        }
+        if (error instanceof MappingError) {
+          logger.warn("boq_mapping_entry_not_found", {
+            requestId,
+            importId,
+            entryId: manual.entryId,
+            detail: error.detail,
+          });
+          return jsonResponse(
+            422,
+            {
+              ok: false,
+              error: "entry_not_found",
+              entryId: manual.entryId,
+              detail: error.detail,
+            },
+            requestId,
+          );
+        }
+        if (error instanceof BoqError) {
+          logger.error("boq_store_error", { requestId, part: error.part, detail: error.detail });
+          return jsonResponse(
+            500,
+            { ok: false, error: "boq_store_error", part: error.part, detail: error.detail },
+            requestId,
+          );
+        }
+        throw error;
+      }
+    }
+
+    // :version — one explicit mapping version ("v1", "1", "v001" accepted).
+    if (request.method !== "GET") {
+      return methodNotAllowed(requestId, "GET");
+    }
+    const parsedVersion = /^(?:v)?([0-9]+)$/.exec(tail);
+    if (parsedVersion === null) {
+      return jsonResponse(
+        400,
+        { ok: false, error: "invalid_mapping_version", version: tail },
+        requestId,
+      );
+    }
+    const version = Number.parseInt(parsedVersion[1] ?? "0", 10);
+    if (version < 1) {
+      return jsonResponse(
+        400,
+        { ok: false, error: "invalid_mapping_version", version: tail },
+        requestId,
+      );
+    }
+    const imported = await service.getImport(importId);
+    if (imported === null) {
+      return jsonResponse(404, { ok: false, error: "import_not_found" }, requestId);
+    }
+    const result = await mapping.getVersion(importId, version);
+    if (result === null) {
+      return jsonResponse(
+        404,
+        { ok: false, error: "mapping_version_not_found", version: String(version) },
+        requestId,
+      );
+    }
+    logger.info("boq_mapping_version_read", { requestId, importId, version });
+    return jsonTextResponse(
+      200,
+      canonicalJsonStringify({ ok: true, mapping: result, stats: computeMappingStats(result) }),
+      requestId,
+    );
   }
 
   // A /v1/boq/... path with no matching route shape falls through to the
