@@ -4,7 +4,7 @@
   "artifact": "aise-development-state/program-state",
   "governingArchitecture": "2.2",
   "architectureState": "frozen",
-  "asOf": "2026-09-13T18:56:01Z",
+  "asOf": "2026-09-14T00:48:49Z",
   "execution": {
     "maxConcurrentWorkers": 3,
     "mergeGate": "architect",
@@ -54,16 +54,18 @@
     {
       "id": "AISE-005",
       "owner": "GEMINI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-002",
         "AISE-003"
-      ]
+      ],
+      "mergedSha": "482606400ca9c5383d77037a7dacbcb23eefb522",
+      "mergedAt": "2026-09-14T00:48:49Z"
     },
     {
       "id": "AISE-006",
       "owner": "GEMINI",
-      "status": "blocked",
+      "status": "ready",
       "dependencies": [
         "AISE-003",
         "AISE-005"
@@ -449,6 +451,7 @@
     "AISE-001 merged @ 608fb5c0c2eb (architect-verified evidence, CI green).",
     "AISE-002 merged @ d7486dd9841e (architect-verified evidence, CI green). Newly eligible: AISE-003. Activated: AISE-003.",
     "Wave 0 complete: repo/runtime foundation (608fb5c) + Android foundation (d7486dd). Worker completion reports delivered via staged tarball evidence; 001 chat report was capacity-queued, merge decided on objective evidence per development-protocol section 4.",
-    "AISE-003 merged @ c5dabfe37fdd (architect-verified evidence, CI green). Newly eligible: AISE-004, AISE-005. Activated: AISE-004, AISE-005."
+    "AISE-003 merged @ c5dabfe37fdd (architect-verified evidence, CI green). Newly eligible: AISE-004, AISE-005. Activated: AISE-004, AISE-005.",
+    "AISE-005 merged @ 482606400ca9 (architect-verified evidence, CI green). Newly eligible: AISE-006."
   ]
 }

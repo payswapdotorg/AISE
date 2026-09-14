@@ -2,6 +2,6 @@
 
 ## Current architecture handoff
 
-Merged and finalized: AISE-003 (shared contract foundation). Architecture 2.2 frozen; program state synchronized per development-protocol §8.
+Merged and finalized: AISE-005 (Android capture session). Architecture 2.2 frozen; program state synchronized per development-protocol §8.
 
-Activated for dispatch: AISE-004, AISE-005.
+Eligible (ready, awaiting Tech Lead activation): AISE-006.
