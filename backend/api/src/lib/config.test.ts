@@ -32,6 +32,7 @@ describe("config validation", () => {
     expect(config.host).toBe("127.0.0.1");
     expect(config.port).toBe(8080);
     expect(config.logLevel).toBe("info");
+    expect(config.dataDir).toBe("./data");
   });
 
   test("normalizes LOG_LEVEL case-insensitively", () => {
@@ -53,6 +54,24 @@ describe("config validation", () => {
     expect(validateEnv({ HOST: "" }).ok).toBe(false);
     expect(validateEnv({ LOG_LEVEL: "verbose" }).ok).toBe(false);
     expect(validateEnv({ LOG_LEVEL: "" }).ok).toBe(false);
+  });
+
+  test("AISE_DATA_DIR accepts a custom path verbatim and rejects junk", () => {
+    const custom = configOf(validateEnv({ AISE_DATA_DIR: "/var/lib/aise/capture" }));
+    expect(custom.dataDir).toBe("/var/lib/aise/capture");
+
+    expect(validateEnv({ AISE_DATA_DIR: "" }).ok).toBe(false);
+    expect(validateEnv({ AISE_DATA_DIR: "   " }).ok).toBe(false);
+
+    // Non-string junk can only arrive from a misbehaving env source; the
+    // parser defends without ever echoing the value.
+    const nonString = validateEnv({ AISE_DATA_DIR: 42 as unknown as string });
+    expect(nonString.ok).toBe(false);
+    if (!nonString.ok) {
+      expect(nonString.issues).toEqual([
+        "AISE_DATA_DIR: expected a non-empty directory path",
+      ]);
+    }
   });
 
   test("lists every invalid variable at once, without echoing values", () => {

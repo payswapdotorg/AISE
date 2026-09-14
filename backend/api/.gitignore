@@ -1,0 +1,4 @@
+# Capture ingestion gateway runtime state (AISE-004).
+# The default AISE_DATA_DIR ("./data") resolves against the process working
+# directory — typically this package root. Runtime data is never committed.
+data/

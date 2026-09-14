@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "AISE backend API service skeleton — health/readiness plumbing only, no product logic.",
+  "description": "AISE backend API — health/readiness plumbing plus the capture ingestion gateway (AISE-004): content-addressed asset intake and idempotent session sync.",
   "scripts": {
     "start": "bun run src/main.ts",
     "dev": "bun --watch run src/main.ts"
+  },
+  "dependencies": {
+    "@aise/shared-contracts": "workspace:*"
   }
 }
