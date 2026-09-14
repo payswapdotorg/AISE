@@ -23,8 +23,8 @@ WorldSculpt is integrated as an optional reconstruction engine, not adopted as t
 | 1 | 003 | shared contract foundation | MERGED (finalized 2026-09-13; 003 @ c5dabfe37fdd) |
 | 2 | 004, 005 | ingestion + capture session | MERGED (finalized 2026-09-14; 005 @ 4826064, 004 @ 42db525) |
 | 3 | 006, 007, 008 | device capability, mission planner, evidence | MERGED (finalized 2026-09-14; 006 @ 37ab197, 007 @ 56ee7db, 008 @ af01553) |
-| 4 | 009, 010, 011 | guided capture, reconstruction orchestration, BOQ ingest | 011 MERGED (finalized 2026-09-14 @ 17fbad1); 009, 010 in flight |
-| 5 | 012, 014, 030 | reconstruction adapters including WorldSculpt, BOQ normalization, mobile hardening | 014 activated early 2026-09-14 (dep 011 finalized; DAG-driven pipelining) |
+| 4 | 009, 010, 011 | guided capture, reconstruction orchestration, BOQ ingest | MERGED (finalized 2026-09-14; 011 @ 17fbad1, 010 @ 71d4482, 009 @ 8135e20) |
+| 5 | 012, 014, 030 | reconstruction adapters including WorldSculpt, BOQ normalization, mobile hardening | 014 MERGED (finalized 2026-09-14 @ 58414d6); 012, 030 in flight |
 | 6 | 013 | deterministic geometry/measurement + reconstruction validation |
 | 7 | 015 | architectural semantics |
 | 8 | 016 | Reality Graph v2 |
