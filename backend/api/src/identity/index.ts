@@ -1,0 +1,126 @@
+/**
+ * AISE-036 — Enterprise identity/permissions/audit public surface.
+ *
+ * Consumers (server.ts, future AISE-038 developer API / AISE-040 adoption
+ * shell / deployment authn wrappers) import from HERE only. The module is
+ * a domain library plus its HTTP adapter: model (types, vocabularies,
+ * typed errors, parsers, audit chain) + store (persistence + in-memory
+ * twin) + service (the policy engine: tenancy/roles/memberships/
+ * retention/audit/authorization) + selector (least-privilege AI context
+ * selection — a pure library over the AISE-029 GroundedContext TYPE,
+ * never a store reader) + router (transport).
+ *
+ * AUTHN BOUNDARY, restated at the surface: this module is the policy/
+ * permissions AUTHORITY. Request-level authentication belongs to
+ * deployment surfaces; every operation takes principal ids EXPLICITLY.
+ */
+
+export {
+  AUDIT_ACTIONS,
+  AUDIT_GENESIS_DIGEST,
+  AUDIT_OUTCOMES,
+  AUDIT_TARGET_KINDS,
+  AUTHORIZATION_REFUSAL_CODES,
+  DOMAIN_SURFACES,
+  GRANULARITY_RANK,
+  IDENTITY_ERROR_CODES,
+  MEMBERSHIP_STATES,
+  PERMISSIONS,
+  PERMISSION_GRANULARITIES,
+  RETENTION_EXPIRY_MODES,
+  auditEventIdOf,
+  auditSeedDigest,
+  describeScope,
+  describeTarget,
+  isPermission,
+  isAuditEventExpired,
+  parseAuthorizeInput,
+  parseCreateOrganizationInput,
+  parseCreateProjectInput,
+  parseCreateRoleInput,
+  parseEnforceRetentionInput,
+  parseGrantMembershipInput,
+  parseMembershipRecord,
+  parseOrganizationRecord,
+  parsePrincipalRecord,
+  parseProjectRecord,
+  parseRegisterPrincipalInput,
+  parseRetentionPolicyRecord,
+  parseRevokeMembershipInput,
+  parseRoleRecord,
+  parseScope,
+  parseSetRetentionPolicyInput,
+  parseTarget,
+  parseAuditEvent,
+  permissionGranularity,
+  permissionImplies,
+  permissionSurface,
+  retentionCutoff,
+  scopeCoversTarget,
+  sealAuditEvent,
+  sealAuditEvents,
+  validateMembershipId,
+  validateOrganizationId,
+  validatePrincipalId,
+  validateProjectId,
+  validateRoleId,
+  IdentityError,
+  type AuditAction,
+  type AuditEvent,
+  type AuditEventSeed,
+  type AuditOutcome,
+  type AuditRetentionRecord,
+  type AuditTargetKind,
+  type AuthorizationDecision,
+  type AuthorizationRefusal,
+  type AuthorizationRefusalCode,
+  type CreateOrganizationInput,
+  type CreateProjectInput,
+  type CreateRoleInput,
+  type DomainSurface,
+  type EnforceRetentionInput,
+  type FounderInput,
+  type GrantMembershipInput,
+  type IdentityErrorCode,
+  type MembershipRecord,
+  type MembershipScope,
+  type MembershipState,
+  type OrganizationRecord,
+  type Permission,
+  type PermissionGrant,
+  type PermissionGranularity,
+  type PermissionTarget,
+  type PrincipalRecord,
+  type ProjectRecord,
+  type RegisterPrincipalInput,
+  type RetentionExpiryMode,
+  type RetentionPolicyRecord,
+  type RevokeMembershipInput,
+  type RoleRecord,
+  type SetRetentionPolicyInput,
+} from "./model";
+export {
+  FsIdentityStore,
+  InMemoryIdentityStore,
+  type IdentityStore,
+} from "./store";
+export {
+  FOUNDER_ROLE_ID,
+  IdentityService,
+  type AuditEventView,
+  type IdentityServiceDeps,
+  type RetentionEnforcementReport,
+} from "./service";
+export {
+  CONTEXT_EXCLUSION_KINDS,
+  SELECTION_REFUSAL_CODES,
+  selectLeastPrivilegeContext,
+  type ContextExclusion,
+  type ContextExclusionKind,
+  type ContextSelection,
+  type PermissionResolver,
+  type RefusedSelection,
+  type SelectedContext,
+  type SelectionRefusalCode,
+} from "./selector";
+export { handleIdentityRequest, type IdentityRouteOptions } from "./router";

@@ -28,6 +28,19 @@
  *   GET  /v1/reconstruction/jobs[/:id]   -> job list / full job record
  *   POST /v1/reconstruction/jobs/:id/run -> synchronous run-to-completion
  *   GET  /v1/reconstruction/artifacts/:id -> candidate artifact + provenance
+ *   POST /v1/identity/principals         -> register a principal (AISE-036)
+ *   POST /v1/identity/organizations      -> create organization (+ founder
+ *                                            bootstrap grant)
+ *   POST /v1/identity/authorize          -> typed authorization decision
+ *                                            (allowed | distinct typed
+ *                                            refusal; audit-logged)
+ *   GET  /v1/identity/organizations/:id  -> org record / projects / roles /
+ *   POST /v1/identity/organizations/:id/(projects|roles|memberships|retention)
+ *   POST /v1/identity/organizations/:id/memberships/:membershipId/revoke
+ *   POST /v1/identity/organizations/:id/retention/enforce
+ *   GET  /v1/identity/organizations/:id/audit -> query the append-only
+ *                                            audit log (filters projectId,
+ *                                            actor; retention-annotated)
  *   POST /v1/reality/projects            -> create project graph (AISE-016)
  *   GET  /v1/reality/projects/:id        -> project header + version list
  *   GET  /v1/reality/projects/:id/versions/:versionId|latest -> full snapshot
@@ -110,6 +123,15 @@ import {
 import { FsArtifactStore, FsJobStore } from "./reconstruction/store";
 // AISE-012: default reconstruction engine adapters (WorldSculpt + depth/LiDAR fusion).
 import { createDefaultAiseProviders } from "./reconstruction/adapters";
+// AISE-036 routing: enterprise identity surface — the organization/project/
+// role/permission/retention/audit policy AUTHORITY (identity/router.ts over
+// identity/service.ts and an injected store). AUTHN BOUNDARY: this surface
+// takes acting principal ids EXPLICITLY (actor/requester); it is NOT an
+// HTTP authentication middleware — request-level authentication belongs
+// to deployment surfaces (documented in identity/).
+import { handleIdentityRequest, type IdentityRouteOptions } from "./identity/router";
+import { IdentityService } from "./identity/service";
+import { FsIdentityStore } from "./identity/store";
 // AISE-016 routing: Reality Graph v2 — the canonical engineering-model
 // authority surface (reality/router.ts over the deterministic versioning
 // engine and an injected store).
@@ -193,6 +215,12 @@ export interface HandlerOptions {
   // ACCESS_REQUIRED until a backend is configured). Real engine wiring
   // injects a fully-configured orchestrator (or providers) here.
   reconstruction?: ReconstructionRouteOptions;
+  // AISE-036 routing: injected enterprise identity surface. When omitted, a
+  // default IdentityService over the FsIdentityStore rooted at the
+  // configured data directory (AISE_DATA_DIR, default ./data) plus a UTC
+  // wall clock is constructed lazily on the FIRST identity request (see
+  // identityRoutesOrDefault).
+  identity?: IdentityRouteOptions;
   // AISE-016 routing: injected Reality Graph surface. When omitted, a default
   // wiring over the FsRealityStore rooted at the configured data directory
   // (AISE_DATA_DIR, default ./data) plus a UTC wall clock is constructed
@@ -224,6 +252,30 @@ const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
 
 export function isUuid(value: string): boolean {
   return UUID_PATTERN.test(value);
+}
+
+// AISE-036 routing: memoized default identity routing (see
+// HandlerOptions.identity) — same lazy discipline as the case wiring:
+// resolved only inside the /v1/identity path guard, so deployments without
+// identity traffic never construct the store.
+let defaultIdentityRoutes: IdentityRouteOptions | null = null;
+
+function identityRoutesOrDefault(options: HandlerOptions): IdentityRouteOptions {
+  if (options.identity !== undefined) {
+    return options.identity;
+  }
+  if (defaultIdentityRoutes === null) {
+    const result = validateEnv(options.envSource());
+    const dataDir = result.ok ? result.config.dataDir : "./data";
+    defaultIdentityRoutes = {
+      service: new IdentityService({
+        store: new FsIdentityStore(dataDir),
+        clock: (): string => new Date().toISOString(),
+      }),
+      logger: options.logger,
+    };
+  }
+  return defaultIdentityRoutes;
 }
 
 // AISE-011: memoized default BOQ routing (see HandlerOptions.boq).
@@ -454,6 +506,24 @@ async function route(
     );
     if (reconstructionResponse !== null) {
       return reconstructionResponse;
+    }
+  }
+
+  // AISE-036 routing — delegates to the enterprise identity surface
+  // (org/project/role/permission/retention/audit policy authority — the
+  // tenant-boundary and authorization-decision engine; acting principals
+  // arrive explicitly per the documented authn boundary). The path guard
+  // keeps the lazily-constructed default service (FsIdentityStore under
+  // the configured data dir) entirely off non-identity requests.
+  if (url.pathname === "/v1/identity" || url.pathname.startsWith("/v1/identity/")) {
+    const identityResponse = await handleIdentityRequest(
+      request,
+      url,
+      requestId,
+      identityRoutesOrDefault(options),
+    );
+    if (identityResponse !== null) {
+      return identityResponse;
     }
   }
 
