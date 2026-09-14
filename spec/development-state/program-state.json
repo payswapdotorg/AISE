@@ -9,7 +9,7 @@
     "maxConcurrentWorkers": 3,
     "mergeGate": "architect",
     "selfMergeForbidden": true,
-    "currentWave": 2,
+    "currentWave": 3,
     "selectionRule": "activate only dependency-eligible items; prefer up to three disjoint items"
   },
   "workItems": [
@@ -45,11 +45,13 @@
     {
       "id": "AISE-004",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-001",
         "AISE-003"
-      ]
+      ],
+      "mergedSha": "42db5254d7e0ea94d544282026576c5ebcb69600",
+      "mergedAt": "2026-09-14T02:38:00Z"
     },
     {
       "id": "AISE-005",
@@ -65,16 +67,18 @@
     {
       "id": "AISE-006",
       "owner": "GEMINI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-003",
         "AISE-005"
-      ]
+      ],
+      "mergedSha": "37ab1972077ed11fdd3c69512dda5abd7f901559",
+      "mergedAt": "2026-09-14T02:39:00Z"
     },
     {
       "id": "AISE-007",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-003",
         "AISE-004"
@@ -83,7 +87,7 @@
     {
       "id": "AISE-008",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-004"
       ]
@@ -109,7 +113,7 @@
     {
       "id": "AISE-011",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-004",
         "AISE-003"
@@ -453,6 +457,9 @@
     "Wave 0 complete: repo/runtime foundation (608fb5c) + Android foundation (d7486dd). Worker completion reports delivered via staged tarball evidence; 001 chat report was capacity-queued, merge decided on objective evidence per development-protocol section 4.",
     "AISE-003 merged @ c5dabfe37fdd (architect-verified evidence, CI green). Newly eligible: AISE-004, AISE-005. Activated: AISE-004, AISE-005.",
     "AISE-005 merged @ 482606400ca9 (architect-verified evidence, CI green). Newly eligible: AISE-006.",
-    "AISE-005 merged @ 482606400ca9c5383d77037a7dacbcb23eefb522; AISE-006 activated early (deps 003+005 finalized; disjoint from in-flight 004; DAG-driven pipelining)."
+    "AISE-005 merged @ 482606400ca9c5383d77037a7dacbcb23eefb522; AISE-006 activated early (deps 003+005 finalized; disjoint from in-flight 004; DAG-driven pipelining).",
+    "AISE-004 merged @ 42db5254d7e0 (Lead-verified evidence: verify PASS 137 tests; local-implementation mode — remote worker pipeline dormant, objective gates unchanged). Newly eligible: 007, 008, 011.",
+    "AISE-006 merged @ 37ab1972077e (Lead-verified evidence: :core:test 216 tests incl. 67 new; 7 device-class fixtures + 20 mutation tests; committed-schema validation). Newly eligible: none beyond 007/008/011 (009 needs 007).",
+    "Wave transition 2026-09-14: 004+006 finalized; 007, 008, 011 activated (three disjoint backend surfaces: missions planner, evidence service, BOQ ingestion)."
   ]
 }
