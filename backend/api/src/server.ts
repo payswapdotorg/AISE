@@ -72,6 +72,8 @@ import {
   type ReconstructionOrchestrator,
 } from "./reconstruction/orchestrator";
 import { FsArtifactStore, FsJobStore } from "./reconstruction/store";
+// AISE-012: default reconstruction engine adapters (WorldSculpt + depth/LiDAR fusion).
+import { createDefaultAiseProviders } from "./reconstruction/adapters";
 
 export const SERVICE_NAME = "aise-api";
 
@@ -105,11 +107,11 @@ export interface HandlerOptions {
   // AISE-010 routing: injected reconstruction orchestration surface. When
   // omitted, a default orchestrator over the FsJobStore + FsArtifactStore
   // rooted at the configured data directory (AISE_DATA_DIR, default ./data)
-  // is constructed lazily on the FIRST reconstruction request, with an EMPTY
-  // provider list: reconstruction is an explicit no-op without providers —
-  // every submitted job fails UNAVAILABLE with a remediation note until the
-  // AISE-012 engine adapters register providers. Real engine wiring injects
-  // a fully-configured orchestrator here.
+  // is constructed lazily on the FIRST reconstruction request. AISE-012: the
+  // default provider list now ships the engine adapters — depth/LiDAR fusion
+  // (deterministic in-process backend, READY) and WorldSculpt (registered but
+  // ACCESS_REQUIRED until a backend is configured). Real engine wiring
+  // injects a fully-configured orchestrator (or providers) here.
   reconstruction?: ReconstructionRouteOptions;
 }
 
@@ -275,8 +277,15 @@ export function createRequestHandler(
   // memoized per handler (see HandlerOptions.reconstruction). Mirrors the
   // evidence wiring: file-system stores over the configured data directory,
   // wall clock and random ids for production; tests inject fixed clock/ids.
-  // The provider list defaults to EMPTY — no engine adapters exist yet
-  // (AISE-012), so jobs fail UNAVAILABLE explicitly rather than pretending.
+  // AISE-012: the default providers are the shipped engine adapters —
+  // depth/LiDAR fusion first (deterministic backend, honestly READY: real
+  // local computation), then WorldSculpt (no backend configured in a default
+  // deployment — no endpoint, weights or credentials — so it is registered
+  // but honestly ACCESS_REQUIRED, never selectable until configured). No
+  // evidence-bytes reader is wired by default (source bytes live in the
+  // capture store owned by main.ts): depth jobs therefore fail explicitly
+  // INPUT_INCOMPATIBLE naming the evidence ids until a deployment injects a
+  // reader via createDefaultAiseProviders.
   let defaultReconstruction: ReconstructionRouteOptions | undefined;
   const reconstructionRoutes = (): ReconstructionRouteOptions => {
     if (options.reconstruction !== undefined) {
@@ -286,7 +295,8 @@ export function createRequestHandler(
       const result = validateEnv(options.envSource());
       const dataDir = result.ok ? result.config.dataDir : "./data";
       const orchestrator: ReconstructionOrchestrator = createReconstructionOrchestrator({
-        providers: [],
+        // AISE-012: default engine adapters (see createDefaultAiseProviders).
+        providers: createDefaultAiseProviders(),
         jobStore: new FsJobStore(dataDir),
         artifactStore: new FsArtifactStore(dataDir),
         clock: (): string => new Date().toISOString(),
