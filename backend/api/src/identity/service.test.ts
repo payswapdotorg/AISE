@@ -593,7 +593,12 @@ describe("identity service: TENANT ISOLATION + unauthorized-access discriminatio
     expect(projectDecision.allowed).toBe(false);
     if (!projectDecision.allowed) {
       expect(projectDecision.refusal.code).toBe("project_not_found");
-      expect(projectDecision.refusal.target.projectId).toBe("project-nowhere");
+      // narrowing guard: projectId exists only on the project-kind target
+      const { target } = projectDecision.refusal;
+      expect(target.kind).toBe("project");
+      if (target.kind === "project") {
+        expect(target.projectId).toBe("project-nowhere");
+      }
     }
   });
 
@@ -707,7 +712,10 @@ describe("identity service: TENANT ISOLATION + unauthorized-access discriminatio
       const membership = (await store.listMemberships(ORG_NORTH)).find(
         (entry) => entry.principalId === PRINCIPAL_CONTRACTOR,
       );
-      expect(decision.grant.membershipId).toBe(membership?.membershipId);
+      expect(membership).toBeDefined();
+      if (membership !== undefined) {
+        expect(decision.grant.membershipId).toBe(membership.membershipId);
+      }
       expect(decision.grant.roleId).toBe(ROLE_SURVEYOR);
       expect(decision.grant.permission).toBe("reasoning:read");
       expect(decision.grant.scope).toEqual({ kind: "project", projectId: PROJECT_ALPHA });
@@ -772,14 +780,19 @@ describe("identity service: TENANT ISOLATION + unauthorized-access discriminatio
     const decision = await service.authorize(PRINCIPAL_CONTRACTOR, "reasoning:read", ALPHA_TARGET);
     expect(decision.allowed).toBe(true);
     if (decision.allowed) {
-      expect(decision.grant.membershipId).toBe(ids[0]);
+      // explicit undefined check (noUncheckedIndexedAccess)
+      const [firstId] = ids;
+      expect(firstId).toBeDefined();
+      if (firstId !== undefined) {
+        expect(decision.grant.membershipId).toBe(firstId);
+      }
     }
   });
 });
 
 describe("identity service: audit append-only discipline", () => {
   test("the fixture world's audit log is a verifiable chain from the genesis digest", async () => {
-    const { service, store } = await world();
+    const { store } = await world();
     const log = await store.listAuditEvents(ORG_NORTH);
     expect(log).toHaveLength(9);
     expect(log[0]?.previousEventDigest).toBe(AUDIT_GENESIS_DIGEST);
@@ -793,7 +806,12 @@ describe("identity service: audit append-only discipline", () => {
       expect(event.eventId).toMatch(/^evt-[0-9a-f]{16}$/);
       ids.add(event.eventId);
       if (index > 0) {
-        expect(event.previousEventDigest).toBe(log[index - 1]?.eventDigest);
+        // explicit undefined check (noUncheckedIndexedAccess)
+        const predecessor = log[index - 1];
+        expect(predecessor).toBeDefined();
+        if (predecessor !== undefined) {
+          expect(event.previousEventDigest).toBe(predecessor.eventDigest);
+        }
       }
     }
     expect(ids.size).toBe(9); // content ids are unique per chain position
@@ -952,7 +970,7 @@ describe("identity service: retention policy honesty", () => {
   });
 
   test("PRUNE mode: expired events are removed AND recorded verbatim — never silent", async () => {
-    const { service, store } = await world();
+    const { store } = await world();
     const before = await store.listAuditEvents(ORG_NORTH);
     expect(before).toHaveLength(9);
     // policy + enforcement happen MONTHS later than the events
@@ -1000,7 +1018,7 @@ describe("identity service: retention policy honesty", () => {
   });
 
   test("PRUNE mode with survivors: retained events keep their bytes; the prune event chains onto the last survivor", async () => {
-    const { service, store } = await world();
+    const { store } = await world();
     // an authorization decision MONTHS LATER survives a 90-day window
     const later = serviceAt(store, () => FIXED_MONTHS_LATER);
     await later.setRetentionPolicy({
@@ -1032,7 +1050,7 @@ describe("identity service: retention policy honesty", () => {
   });
 
   test("FLAG mode: nothing is removed; flagged ids are recorded and reads mark them", async () => {
-    const { service, store } = await world();
+    const { store } = await world();
     const later = serviceAt(store, () => FIXED_MONTHS_LATER);
     await later.setRetentionPolicy({
       organizationId: ORG_NORTH,

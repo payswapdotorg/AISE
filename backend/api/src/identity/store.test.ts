@@ -13,12 +13,12 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { dirname, join } from "node:path";
 import { canonicalJsonStringify } from "@aise/shared-contracts";
 import { sha256Hex } from "../lib/hash";
-import { IdentityError } from "./model";
+import { IdentityError, type IdentityErrorCode } from "./model";
 import { FsIdentityStore, InMemoryIdentityStore } from "./store";
 import { buildFixtureWorld, fixedClock, withTempDir } from "./testkit";
 import type { IdentityStore } from "./store";
 
-async function expectCode(fn: () => Promise<unknown>, code: string): Promise<void> {
+async function expectCode(fn: () => Promise<unknown>, code: IdentityErrorCode): Promise<void> {
   try {
     await fn();
     expect.unreachable(`expected a typed ${code} rejection`);

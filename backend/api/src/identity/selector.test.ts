@@ -14,7 +14,6 @@ import { describe, expect, test } from "bun:test";
 import type { AuthorizationDecision, Permission } from "./model";
 import { selectLeastPrivilegeContext, SELECTION_REFUSAL_CODES } from "./selector";
 import { InMemoryIdentityStore } from "./store";
-import { IdentityService } from "./service";
 import {
   ORG_NORTH,
   ORG_SOUTH,
