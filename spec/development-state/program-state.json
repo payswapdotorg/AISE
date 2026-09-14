@@ -9,7 +9,7 @@
     "maxConcurrentWorkers": 3,
     "mergeGate": "architect",
     "selfMergeForbidden": true,
-    "currentWave": 3,
+    "currentWave": 4,
     "selectionRule": "activate only dependency-eligible items; prefer up to three disjoint items"
   },
   "workItems": [
@@ -78,24 +78,28 @@
     {
       "id": "AISE-007",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-003",
         "AISE-004"
-      ]
+      ],
+      "mergedSha": "56ee7db658e4848dd061b87d084ab1d5c72601a5",
+      "mergedAt": "2026-09-14T03:20:00Z"
     },
     {
       "id": "AISE-008",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-004"
-      ]
+      ],
+      "mergedSha": "af015530d0d1fa97998d4c9ebe152b2c54693b86",
+      "mergedAt": "2026-09-14T03:22:00Z"
     },
     {
       "id": "AISE-009",
       "owner": "GEMINI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-006",
         "AISE-007"
@@ -104,7 +108,7 @@
     {
       "id": "AISE-010",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-004",
         "AISE-007"
@@ -113,11 +117,13 @@
     {
       "id": "AISE-011",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-004",
         "AISE-003"
-      ]
+      ],
+      "mergedSha": "17fbad1ac2ecf9779ede82aa772f6975869311c5",
+      "mergedAt": "2026-09-14T03:24:00Z"
     },
     {
       "id": "AISE-012",
@@ -460,6 +466,10 @@
     "AISE-005 merged @ 482606400ca9c5383d77037a7dacbcb23eefb522; AISE-006 activated early (deps 003+005 finalized; disjoint from in-flight 004; DAG-driven pipelining).",
     "AISE-004 merged @ 42db5254d7e0 (Lead-verified evidence: verify PASS 137 tests; local-implementation mode — remote worker pipeline dormant, objective gates unchanged). Newly eligible: 007, 008, 011.",
     "AISE-006 merged @ 37ab1972077e (Lead-verified evidence: :core:test 216 tests incl. 67 new; 7 device-class fixtures + 20 mutation tests; committed-schema validation). Newly eligible: none beyond 007/008/011 (009 needs 007).",
-    "Wave transition 2026-09-14: 004+006 finalized; 007, 008, 011 activated (three disjoint backend surfaces: missions planner, evidence service, BOQ ingestion)."
+    "Wave transition 2026-09-14: 004+006 finalized; 007, 008, 011 activated (three disjoint backend surfaces: missions planner, evidence service, BOQ ingestion).",
+    "AISE-007 merged @ 56ee7db658e4 (Lead-verified: verify PASS, +54 tests; device-adapted plans with byte-identical assurance target; unknown-capability discipline; escalation path). Newly eligible: 009, 010.",
+    "AISE-008 merged @ af015530d0d1 (Lead-verified: verify PASS, +54 tests; content pinning, append-only invalidation, provenance closure, derivation-cycle rejection).",
+    "AISE-011 merged @ 17fbad1ac2ec (Lead-verified: verify PASS, +65 tests; zero-dep XLSX+CSV parsers, source-preserving model, structural-only section/total detection, PDF explicit unsupported_format). Newly eligible: 014.",
+    "Wave transition 2026-09-14 #2: 007/008/011 finalized; 009, 010, 014 activated (post-merge tree verify PASS 310 tests)."
   ]
 }

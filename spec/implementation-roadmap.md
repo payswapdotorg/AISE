@@ -22,9 +22,9 @@ WorldSculpt is integrated as an optional reconstruction engine, not adopted as t
 | 0 | 001, 002 | repository + Android foundation | MERGED (finalized 2026-09-13; 001 @ 608fb5c0c2eb, 002 @ d7486dd9841e) |
 | 1 | 003 | shared contract foundation | MERGED (finalized 2026-09-13; 003 @ c5dabfe37fdd) |
 | 2 | 004, 005 | ingestion + capture session | MERGED (finalized 2026-09-14; 005 @ 4826064, 004 @ 42db525) |
-| 3 | 006, 007, 008 | device capability, mission planner, evidence | 006 MERGED (finalized 2026-09-14 @ 37ab197); 007, 008 in flight |
-| 4 | 009, 010, 011 | guided capture, reconstruction orchestration, BOQ ingest | 011 activated early 2026-09-14 (deps 004+003 finalized; DAG-driven pipelining) |
-| 5 | 012, 014, 030 | reconstruction adapters including WorldSculpt, BOQ normalization, mobile hardening |
+| 3 | 006, 007, 008 | device capability, mission planner, evidence | MERGED (finalized 2026-09-14; 006 @ 37ab197, 007 @ 56ee7db, 008 @ af01553) |
+| 4 | 009, 010, 011 | guided capture, reconstruction orchestration, BOQ ingest | 011 MERGED (finalized 2026-09-14 @ 17fbad1); 009, 010 in flight |
+| 5 | 012, 014, 030 | reconstruction adapters including WorldSculpt, BOQ normalization, mobile hardening | 014 activated early 2026-09-14 (dep 011 finalized; DAG-driven pipelining) |
 | 6 | 013 | deterministic geometry/measurement + reconstruction validation |
 | 7 | 015 | architectural semantics |
 | 8 | 016 | Reality Graph v2 |
