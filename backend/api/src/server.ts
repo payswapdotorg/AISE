@@ -28,6 +28,11 @@
  *   GET  /v1/reconstruction/jobs[/:id]   -> job list / full job record
  *   POST /v1/reconstruction/jobs/:id/run -> synchronous run-to-completion
  *   GET  /v1/reconstruction/artifacts/:id -> candidate artifact + provenance
+ *   POST /v1/reality/projects            -> create project graph (AISE-016)
+ *   GET  /v1/reality/projects/:id        -> project header + version list
+ *   GET  /v1/reality/projects/:id/versions/:versionId|latest -> full snapshot
+ *   POST /v1/reality/projects/:id/changes -> apply change set -> new version
+ *   GET  /v1/reality/projects/:id/nodes/:nodeId -> node history (AISE-016)
  *
  * The capture routes are implemented by `capture/router.ts` over the
  * `capture/gateway.ts` policy engine and an injected `CaptureStore`; the
@@ -37,8 +42,10 @@
  * injected (or lazily-constructed) `EvidenceService`; the BOQ routes by
  * `boq/router.ts` over `boq/service.ts` and a file-system store; the
  * reconstruction routes by `reconstruction/router.ts` over the deterministic
- * `reconstruction/orchestrator.ts` lifecycle engine. This module owns ONLY
- * routing dispatch and the request/response envelope.
+ * `reconstruction/orchestrator.ts` lifecycle engine; the reality routes by
+ * `reality/router.ts` over the canonical `reality/versioning.ts` append-only
+ * engine and an injected (or lazily-constructed) `RealityStore`. This module
+ * owns ONLY routing dispatch and the request/response envelope.
  *
  * Every response carries an `x-request-id` correlation header: the request's
  * own `x-request-id` when provided, otherwise a generated UUID. Every request
@@ -74,6 +81,11 @@ import {
 import { FsArtifactStore, FsJobStore } from "./reconstruction/store";
 // AISE-012: default reconstruction engine adapters (WorldSculpt + depth/LiDAR fusion).
 import { createDefaultAiseProviders } from "./reconstruction/adapters";
+// AISE-016 routing: Reality Graph v2 — the canonical engineering-model
+// authority surface (reality/router.ts over the deterministic versioning
+// engine and an injected store).
+import { handleRealityRequest, type RealityRouteOptions } from "./reality/router";
+import { FsRealityStore } from "./reality/store";
 
 export const SERVICE_NAME = "aise-api";
 
@@ -113,6 +125,12 @@ export interface HandlerOptions {
   // ACCESS_REQUIRED until a backend is configured). Real engine wiring
   // injects a fully-configured orchestrator (or providers) here.
   reconstruction?: ReconstructionRouteOptions;
+  // AISE-016 routing: injected Reality Graph surface. When omitted, a default
+  // wiring over the FsRealityStore rooted at the configured data directory
+  // (AISE_DATA_DIR, default ./data) plus a UTC wall clock is constructed
+  // lazily on the FIRST reality request — the graph.json/versions/ tree is
+  // created per project on POST /v1/reality/projects.
+  reality?: RealityRouteOptions;
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -160,6 +178,7 @@ async function route(
   missions: () => MissionsRouteOptions,
   evidenceService: () => EvidenceService,
   reconstructionRoutes: () => ReconstructionRouteOptions,
+  realityRoutes: () => RealityRouteOptions,
 ): Promise<Response> {
   if (url.pathname === "/healthz") {
     if (request.method !== "GET") {
@@ -238,6 +257,21 @@ async function route(
     }
   }
 
+  // AISE-016 routing — delegates to the Reality Graph surface (the canonical
+  // engineering-model authority). The path guard keeps the lazily-constructed
+  // default store construction entirely off non-reality requests.
+  if (url.pathname === "/v1/reality" || url.pathname.startsWith("/v1/reality/")) {
+    const realityResponse = await handleRealityRequest(
+      request,
+      url,
+      requestId,
+      realityRoutes(),
+    );
+    if (realityResponse !== null) {
+      return realityResponse;
+    }
+  }
+
   return jsonResponse(404, { ok: false, error: "not_found" }, requestId);
 }
 
@@ -307,6 +341,28 @@ export function createRequestHandler(
     return defaultReconstruction;
   };
 
+  // AISE-016 routing: lazily-constructed default Reality Graph surface,
+  // memoized per handler (see HandlerOptions.reality). Mirrors the evidence
+  // wiring: FsRealityStore over the configured data directory (per-project
+  // reality/<sha256(projectId)>/ trees) plus a UTC wall clock; tests inject
+  // fixed clock/store for deterministic version bytes.
+  let defaultReality: RealityRouteOptions | undefined;
+  const realityRoutes = (): RealityRouteOptions => {
+    if (options.reality !== undefined) {
+      return options.reality;
+    }
+    if (defaultReality === undefined) {
+      const result = validateEnv(options.envSource());
+      const dataDir = result.ok ? result.config.dataDir : "./data";
+      defaultReality = {
+        store: new FsRealityStore(dataDir),
+        clock: (): string => new Date().toISOString(),
+        logger: options.logger,
+      };
+    }
+    return defaultReality;
+  };
+
   return async (request: Request): Promise<Response> => {
     const requestId = request.headers.get("x-request-id") ?? crypto.randomUUID();
     const url = new URL(request.url);
@@ -320,6 +376,7 @@ export function createRequestHandler(
         missions,
         evidenceService,
         reconstructionRoutes,
+        realityRoutes,
       );
     } catch (error) {
       options.logger.error("request handler error", {
