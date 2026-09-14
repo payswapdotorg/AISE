@@ -3,7 +3,7 @@
  *
  * Contract (AISE-001 health/readiness plumbing; AISE-004 capture ingestion;
  * AISE-007 mission planning; AISE-008 evidence/source service; AISE-011 BOQ
- * ingestion):
+ * ingestion; AISE-010 reconstruction orchestration):
  *
  *   GET  /healthz  -> 200 {"ok":true,"service":"aise-api","version":"<pkg version>"}
  *   GET  /readyz   -> 200 when the environment (config) is valid, 503 otherwise
@@ -21,6 +21,10 @@
  *   POST /v1/evidence/derivations         -> record a derivation
  *   POST /v1/boq/imports                 -> BOQ source upload (AISE-011)
  *   GET  /v1/boq/imports[/:id[/source]]  -> BOQ import list/detail/source
+ *   POST /v1/reconstruction/jobs         -> create reconstruction job (AISE-010)
+ *   GET  /v1/reconstruction/jobs[/:id]   -> job list / full job record
+ *   POST /v1/reconstruction/jobs/:id/run -> synchronous run-to-completion
+ *   GET  /v1/reconstruction/artifacts/:id -> candidate artifact + provenance
  *
  * The capture routes are implemented by `capture/router.ts` over the
  * `capture/gateway.ts` policy engine and an injected `CaptureStore`; the
@@ -28,8 +32,10 @@
  * `missions/planner.ts` policy engine and an injected `MissionStore`; the
  * evidence routes by `evidence/router.ts` over `evidence/service.ts` and an
  * injected (or lazily-constructed) `EvidenceService`; the BOQ routes by
- * `boq/router.ts` over `boq/service.ts` and a file-system store. This module
- * owns ONLY routing dispatch and the request/response envelope.
+ * `boq/router.ts` over `boq/service.ts` and a file-system store; the
+ * reconstruction routes by `reconstruction/router.ts` over the deterministic
+ * `reconstruction/orchestrator.ts` lifecycle engine. This module owns ONLY
+ * routing dispatch and the request/response envelope.
  *
  * Every response carries an `x-request-id` correlation header: the request's
  * own `x-request-id` when provided, otherwise a generated UUID. Every request
@@ -52,6 +58,15 @@ import { FsEvidenceStore } from "./evidence/store";
 import { handleBoqRequest, type BoqRouteOptions } from "./boq/router";
 import { BoqService } from "./boq/service";
 import { FsBoqStore } from "./boq/store";
+import {
+  handleReconstructionRequest,
+  type ReconstructionRouteOptions,
+} from "./reconstruction/router";
+import {
+  createReconstructionOrchestrator,
+  type ReconstructionOrchestrator,
+} from "./reconstruction/orchestrator";
+import { FsArtifactStore, FsJobStore } from "./reconstruction/store";
 
 export const SERVICE_NAME = "aise-api";
 
@@ -81,6 +96,15 @@ export interface HandlerOptions {
   /** BOQ ingestion routes (AISE-011); defaults to a file-system store
    *  rooted at the live environment's dataDir when not injected. */
   boq?: BoqRouteOptions;
+  // AISE-010 routing: injected reconstruction orchestration surface. When
+  // omitted, a default orchestrator over the FsJobStore + FsArtifactStore
+  // rooted at the configured data directory (AISE_DATA_DIR, default ./data)
+  // is constructed lazily on the FIRST reconstruction request, with an EMPTY
+  // provider list: reconstruction is an explicit no-op without providers —
+  // every submitted job fails UNAVAILABLE with a remediation note until the
+  // AISE-012 engine adapters register providers. Real engine wiring injects
+  // a fully-configured orchestrator here.
+  reconstruction?: ReconstructionRouteOptions;
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -117,6 +141,7 @@ async function route(
   options: HandlerOptions,
   missions: () => MissionsRouteOptions,
   evidenceService: () => EvidenceService,
+  reconstructionRoutes: () => ReconstructionRouteOptions,
 ): Promise<Response> {
   if (url.pathname === "/healthz") {
     if (request.method !== "GET") {
@@ -179,6 +204,22 @@ async function route(
     }
   }
 
+  // AISE-010 routing — delegates to the reconstruction orchestration surface.
+  // The path guard keeps the lazily-constructed default wiring (empty provider
+  // list — see HandlerOptions.reconstruction) entirely off non-reconstruction
+  // requests.
+  if (url.pathname === "/v1/reconstruction" || url.pathname.startsWith("/v1/reconstruction/")) {
+    const reconstructionResponse = await handleReconstructionRequest(
+      request,
+      url,
+      requestId,
+      reconstructionRoutes(),
+    );
+    if (reconstructionResponse !== null) {
+      return reconstructionResponse;
+    }
+  }
+
   return jsonResponse(404, { ok: false, error: "not_found" }, requestId);
 }
 
@@ -214,12 +255,46 @@ export function createRequestHandler(
     return defaultEvidence;
   };
 
+  // AISE-010 routing: lazily-constructed default reconstruction surface,
+  // memoized per handler (see HandlerOptions.reconstruction). Mirrors the
+  // evidence wiring: file-system stores over the configured data directory,
+  // wall clock and random ids for production; tests inject fixed clock/ids.
+  // The provider list defaults to EMPTY — no engine adapters exist yet
+  // (AISE-012), so jobs fail UNAVAILABLE explicitly rather than pretending.
+  let defaultReconstruction: ReconstructionRouteOptions | undefined;
+  const reconstructionRoutes = (): ReconstructionRouteOptions => {
+    if (options.reconstruction !== undefined) {
+      return options.reconstruction;
+    }
+    if (defaultReconstruction === undefined) {
+      const result = validateEnv(options.envSource());
+      const dataDir = result.ok ? result.config.dataDir : "./data";
+      const orchestrator: ReconstructionOrchestrator = createReconstructionOrchestrator({
+        providers: [],
+        jobStore: new FsJobStore(dataDir),
+        artifactStore: new FsArtifactStore(dataDir),
+        clock: (): string => new Date().toISOString(),
+        idFactory: (): string => crypto.randomUUID(),
+      });
+      defaultReconstruction = { orchestrator, logger: options.logger };
+    }
+    return defaultReconstruction;
+  };
+
   return async (request: Request): Promise<Response> => {
     const requestId = request.headers.get("x-request-id") ?? crypto.randomUUID();
     const url = new URL(request.url);
     let response: Response;
     try {
-      response = await route(request, url, requestId, options, missions, evidenceService);
+      response = await route(
+        request,
+        url,
+        requestId,
+        options,
+        missions,
+        evidenceService,
+        reconstructionRoutes,
+      );
     } catch (error) {
       options.logger.error("request handler error", {
         requestId,
