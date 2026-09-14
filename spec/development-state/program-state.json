@@ -9,7 +9,7 @@
     "maxConcurrentWorkers": 3,
     "mergeGate": "architect",
     "selfMergeForbidden": true,
-    "currentWave": 10,
+    "currentWave": 11,
     "selectionRule": "activate only dependency-eligible items; prefer up to three disjoint items"
   },
   "workItems": [
@@ -184,11 +184,13 @@
     {
       "id": "AISE-017",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-014",
         "AISE-016"
-      ]
+      ],
+      "mergedSha": "7df7b75aeec3eee3e42859884e22de1a2bf18914",
+      "mergedAt": "2026-09-14T10:10:00Z"
     },
     {
       "id": "AISE-018",
@@ -225,11 +227,13 @@
     {
       "id": "AISE-021",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-016",
         "AISE-020"
-      ]
+      ],
+      "mergedSha": "c700a202d7a2bdb70c9d10e25ceffa968598dac3",
+      "mergedAt": "2026-09-14T10:10:00Z"
     },
     {
       "id": "AISE-022",
@@ -246,16 +250,18 @@
     {
       "id": "AISE-023",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-016",
         "AISE-022"
-      ]
+      ],
+      "mergedSha": "cf1f887e3a8b4bb4c447737aeee6e53c37176467",
+      "mergedAt": "2026-09-14T10:10:00Z"
     },
     {
       "id": "AISE-024",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-017",
         "AISE-021"
@@ -264,7 +270,7 @@
     {
       "id": "AISE-025",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-016",
         "AISE-008",
@@ -344,7 +350,7 @@
     {
       "id": "AISE-033",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-016",
         "AISE-019"
@@ -504,6 +510,7 @@
     "AISE-015 merged @ 70bb44f25da0 (Lead-verified: verify PASS 601 tests, +77 new). Newly eligible: 016 (Reality Graph v2 — CRITICAL).",
     "AISE-016 merged @ 8a74546b8d75 (Lead-verified: verify PASS 670 tests, +69 new; Reality Graph v2 canonical authority live: versioned append-only snapshots, typed units, mandatory provenance, epistemic downgrades refused). Newly eligible: 017, 018, 019, 020, 022 — activating 019/020/022 (max-3 wave unlocking 021/023/032/033/034; 017/018 follow next wave).",
     "Correction: 019/020/022 now activated (status transition ready->activated recorded).",
-    "Wave 9 merged 2026-09-14: 019/022/020 finalized (main verify PASS 803 tests). Newly eligible pool: 017, 018, 021, 023, 032, 033, 034. Activated 021 (workspace — starts adoption track), 023 (verification — starts assurance chain), 017 (BOQ mapping — starts BOQ Lens track). 018/032/033/034 queued for subsequent waves."
+    "Wave 9 merged 2026-09-14: 019/022/020 finalized (main verify PASS 803 tests). Newly eligible pool: 017, 018, 021, 023, 032, 033, 034. Activated 021 (workspace — starts adoption track), 023 (verification — starts assurance chain), 017 (BOQ mapping — starts BOQ Lens track). 018/032/033/034 queued for subsequent waves.",
+    "Wave 10 merged 2026-09-14: 021/023/017 finalized (main verify PASS 980 tests). Newly eligible: 024 (017+021), 025 (016+008+023), 032/033/034 pool. Activated 024, 025, 033; 018/032/034 queued."
   ]
 }
