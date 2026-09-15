@@ -69,6 +69,12 @@
  *                                            lineage (every hop checked)
  *   GET  /v1/executions/states/:scenarioId/:stateId -> derived PROPOSED|
  *                                            EXECUTED state execution view
+ *   POST /v1/impacts                        -> compute + persist the
+ *                                            quantities/cost impact report
+ *                                            of a proposed scenario state
+ *                                            layer vs its baseline overlay,
+ *                                            mapped to BOQ items (AISE-028)
+ *   GET  /v1/impacts[/:id]                  -> impact list / full record
  *
  * The capture routes are implemented by `capture/router.ts` over the
  * `capture/gateway.ts` policy engine and an injected `CaptureStore`; the
@@ -176,6 +182,25 @@ import {
   readOnlyInterventionContextResolver,
 } from "./execution/service";
 import { FsExecutionStore } from "./execution/store";
+// AISE-028 routing: intervention quantities/cost impacts surface — the
+// DETERMINISTIC DERIVED PROJECTION of proposed state deltas (quantities,
+// typed units, propagated uncertainty, BOQ item mappings, explicit
+// caller-supplied pricing) over impact/router.ts, impact/service.ts and an
+// injected store + TWO read-only resolvers (intervention scenario
+// projection + BOQ mapping projection). The adapters below call the owning
+// services'/stores' READ methods (`getScenario`, `getLatest`, `getImport`)
+// and NOTHING else: there is no write path from the impact domain into the
+// intervention or BOQ authorities, and the authoritative records are never
+// mutated by it (impacts are derived projections, never authoritative).
+import { handleImpactRequest, type ImpactRouteOptions } from "./impact/router";
+import {
+  ImpactService,
+  readOnlyImpactBoqMappingResolver,
+  readOnlyImpactScenarioResolver,
+} from "./impact/service";
+import { FsImpactStore } from "./impact/store";
+import { MappingService } from "./boq/mapping/service";
+import { FsMappingStore } from "./boq/mapping/store";
 
 export const SERVICE_NAME = "aise-api";
 
@@ -246,6 +271,13 @@ export interface HandlerOptions {
   // and the FsEvidenceStore (same data dir) is constructed lazily on the
   // FIRST execution request (see executionRoutesOrDefault).
   executions?: ExecutionRouteOptions;
+  // AISE-028 routing: injected impact surface. When omitted, a default
+  // ImpactService over the FsImpactStore rooted at the configured data
+  // directory (AISE_DATA_DIR, default ./data), a UTC wall clock and
+  // READ-ONLY resolvers over PRIVATE intervention/mapping/BOQ service
+  // instances (same data dir) is constructed lazily on the FIRST impact
+  // request (see impactRoutesOrDefault).
+  impacts?: ImpactRouteOptions;
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -422,6 +454,64 @@ function executionRoutesOrDefault(options: HandlerOptions): ExecutionRouteOption
   return defaultExecutionRoutes;
 }
 
+// AISE-028 routing: memoized default impact routing (see
+// HandlerOptions.impacts) — same lazy discipline as the case/intervention/
+// execution wiring: resolved only inside the /v1/impacts path guard, so
+// deployments without impact traffic never construct the store. The two
+// reference resolvers are READ-ONLY BY CONSTRUCTION and resolved over THIS
+// handler's configured data dir through PRIVATE service instances (never
+// through a shared memoized sibling wiring — the AISE-031 leak rule — so
+// two handlers over different data dirs can never leak each other's
+// authorities): the intervention scenario projection adapts a PRIVATE
+// InterventionService whose baseline resolver is the same read-only
+// `readOnlyBaselineResolver` over this data dir (reusing the AISE-026
+// helper), and the BOQ mapping projection adapts a PRIVATE MappingService
+// plus a PRIVATE BoqService (the AISE-011/014/017 wiring shape of
+// boqRoutesOrDefault, constructed fresh here) — the adapter calls their
+// READ methods `getScenario`, `getLatest` and `getImport` and nothing else.
+// No code path from here can write the intervention or BOQ authorities.
+let defaultImpactRoutes: ImpactRouteOptions | null = null;
+
+function impactRoutesOrDefault(options: HandlerOptions): ImpactRouteOptions {
+  if (options.impacts !== undefined) {
+    return options.impacts;
+  }
+  if (defaultImpactRoutes === null) {
+    const result = validateEnv(options.envSource());
+    const dataDir = result.ok ? result.config.dataDir : "./data";
+    const wallClock = (): string => new Date().toISOString();
+    const boq = new BoqService({ store: new FsBoqStore(dataDir), clock: wallClock });
+    defaultImpactRoutes = {
+      service: new ImpactService({
+        store: new FsImpactStore(dataDir),
+        clock: wallClock,
+        scenarioResolver: readOnlyImpactScenarioResolver(
+          new InterventionService({
+            store: new FsInterventionStore(dataDir),
+            clock: wallClock,
+            baselineResolver: readOnlyBaselineResolver(new FsRealityStore(dataDir)),
+          }),
+        ),
+        mappingResolver: readOnlyImpactBoqMappingResolver(
+          new MappingService({
+            store: new FsMappingStore(dataDir),
+            clock: wallClock,
+            normalization: new NormalizationService({
+              store: new FsNormalizationStore(dataDir),
+              clock: wallClock,
+              boq,
+            }),
+            boq,
+          }),
+          boq,
+        ),
+      }),
+      logger: options.logger,
+    };
+  }
+  return defaultImpactRoutes;
+}
+
 async function route(
   request: Request,
   url: URL,
@@ -593,6 +683,25 @@ async function route(
     );
     if (executionResponse !== null) {
       return executionResponse;
+    }
+  }
+
+  // AISE-028 routing — delegates to the intervention quantities/cost
+  // impacts surface (the deterministic derived projection of proposed state
+  // deltas mapped to BOQ items: quantities with typed units and propagated
+  // uncertainty, honest omission codes, unmapped-delta honesty and explicit
+  // caller-supplied pricing). The path guard keeps the lazily-constructed
+  // default service (FsImpactStore + the two read-only reference resolvers
+  // under the configured data dir) entirely off non-impact requests.
+  if (url.pathname === "/v1/impacts" || url.pathname.startsWith("/v1/impacts/")) {
+    const impactResponse = await handleImpactRequest(
+      request,
+      url,
+      requestId,
+      impactRoutesOrDefault(options),
+    );
+    if (impactResponse !== null) {
+      return impactResponse;
     }
   }
 
