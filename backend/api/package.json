@@ -10,5 +10,8 @@
   },
   "dependencies": {
     "@aise/shared-contracts": "workspace:*"
+  },
+  "exports": {
+    "./runtime": "./src/runtime/index.ts"
   }
 }

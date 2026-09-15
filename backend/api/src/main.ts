@@ -1,5 +1,5 @@
 /**
- * AISE backend API entry point.
+ * AISE backend API entry point — the LOCAL adapter (Bun.serve).
  *
  * Startup contract (AISE-001, extended by AISE-004):
  * - load and validate configuration, failing fast (exit 1) with every
@@ -11,13 +11,26 @@
  *   Bun.serve;
  * - log lifecycle events through the structured logger only;
  * - shut down cleanly on SIGINT/SIGTERM.
+ *
+ * PROD-003 (the ONLY change to this file — every line documented): the
+ * handler is now constructed by the shared runtime factory
+ * (backend/api/src/runtime/entry.ts) instead of inline, so the local
+ * `bun run start` adapter and the Vercel catch-all function serve the
+ * IDENTICAL contract — the same createRequestHandler routing core, wrapped
+ * in the same runtime layer (CORS, /readyz provider statuses, the stable
+ * error envelope). The local adapter's OWN disciplines are preserved
+ * exactly: `loadConfigOrExit` still fails fast on an invalid environment
+ * (exit 1 with every issue), and `failFast: true` makes the factory throw
+ * RuntimeBootError when the capture store cannot be constructed — caught
+ * below and turned into the same exit(1) the previous
+ * `captureStoreOrExit` performed (that helper moved into the factory; its
+ * log line and exit code are unchanged).
  */
 
 import { ConfigError, loadConfig, type AppConfig } from "./lib/config";
 import { createLogger } from "./lib/log";
-import { createCaptureGateway } from "./capture/gateway";
-import { FsCaptureStore } from "./capture/store";
-import { createRequestHandler, SERVICE_NAME } from "./server";
+import { SERVICE_NAME } from "./server";
+import { createRuntimeHandler, RuntimeBootError } from "./runtime";
 import pkg from "../package.json" with { type: "json" };
 
 function loadConfigOrExit(): AppConfig {
@@ -33,33 +46,22 @@ function loadConfigOrExit(): AppConfig {
   }
 }
 
-function captureStoreOrExit(dataDir: string): FsCaptureStore {
-  try {
-    return new FsCaptureStore(dataDir);
-  } catch (error) {
-    const boot = createLogger("error");
-    boot.error("capture store initialization failed; refusing to start", {
-      dataDir,
-      error: error instanceof Error ? error.message : String(error),
-    });
-    process.exit(1);
-  }
-}
-
 function main(): void {
   const config = loadConfigOrExit();
   const logger = createLogger(config.logLevel);
-  const store = captureStoreOrExit(config.dataDir);
 
-  const handler = createRequestHandler({
-    envSource: () => process.env,
-    version: pkg.version,
-    logger,
-    capture: createCaptureGateway({
-      store,
-      clock: () => new Date().toISOString(),
-    }),
-  });
+  // PROD-003: shared runtime factory — see the module header. `failFast`
+  // preserves this adapter's exit(1) discipline on capture-store failure.
+  let handler: (request: Request) => Promise<Response>;
+  try {
+    handler = createRuntimeHandler({ failFast: true, logger });
+  } catch (error) {
+    const issues = error instanceof RuntimeBootError
+      ? [...error.issues]
+      : [error instanceof Error ? error.message : String(error)];
+    logger.error("runtime construction failed; refusing to start", { issues });
+    process.exit(1);
+  }
 
   const server = Bun.serve({
     hostname: config.host,
