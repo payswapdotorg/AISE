@@ -10,6 +10,38 @@ The product is designed around one principle:
 
 AISE therefore does not pretend that every phone can produce the same quality of reconstruction. A higher-capability device may require less operator effort. A lower-capability device may require more guided capture, reference objects, manual measurements, additional evidence, or escalation to a better instrument/device. The system must never silently lower the assurance requirement because the device is weak.
 
+## Current status
+
+**Implementation campaign: complete — 41/41 governed v2 Work Items finalized.**
+
+The implementation layer is now complete, but the repository is in a **post-implementation productization phase**. Product readiness is intentionally a separate gate: a complete architecture/code campaign is not the same thing as a publicly deployable, installable and user-friendly product.
+
+At the current baseline, do **not** claim that AISE is publicly deployed or product-ready. The productization program is governed by:
+
+- `docs/productization-roadmap.md`
+- `docs/productization-work-orders.md`
+- `docs/PRODUCTION-READINESS-GATE.md`
+- `docs/free-tier-deployment.md`
+- `docs/INSTALL.md`
+- `docs/productization-state.json`
+- `docs/TECH-LEAD-HANDOFF.md`
+
+Only `PROD-015` may change the productization declaration to PRODUCT-READY, and only after objective evidence proves all three product promises: installable, free-tier deployed, and user-friendly.
+
+## Product promises
+
+### 1. Installable
+
+A fresh developer should be able to clone the repository, install dependencies with the checked-in lockfile, run the deterministic verification gate, start the product locally, and follow the demo flow using only repository documentation.
+
+### 2. Free-tier deployable
+
+The default evaluator deployment targets Vercel Hobby, Neon Free, Cloudflare R2 Standard and Upstash Redis Free, with Apify Free as an optional acquisition/import connector. See `docs/free-tier-deployment.md`. Heavy reconstruction/GPU providers remain optional and are not required for the baseline demo journey.
+
+### 3. User-friendly interface
+
+The public product must present a coherent primary web experience for Projects, SiteTwin/Evidence, BOQ Lens, Engineering Case and Intervention Studio, with clear navigation, helpful empty/error states and a guided end-to-end journey.
+
 ## Product surfaces
 
 ### BOQ Lens
@@ -80,9 +112,11 @@ OUTCOME LEARNING
 
 ## Development governance
 
-The repository is the sole implementation truth. A fresh Tech Lead must be able to read `AGENTS.md`, the architecture, requirements, work-item DAG, work orders and machine state and dispatch three workers without chat history.
+The repository is the sole implementation truth. A fresh Tech Lead must be able to read `AGENTS.md`, the architecture, requirements, work-item DAG, work orders and machine state and dispatch workers without chat history.
 
-See `spec/governance/architecture-change-record-002.md`, `docs/codex-integration-strategy.md`, `docs/adoption-sensitivity-analysis.md`, and `docs/TECH-LEAD-HANDOFF.md` for the locked integration, adoption and orchestration strategy.
+The historical implementation roadmap remains in `spec/`. Productization uses the separate `PROD-*` work system under `docs/` so the completed 41-item implementation campaign is not confused with deployment/product readiness.
+
+See `spec/governance/architecture-change-record-002.md`, `docs/codex-integration-strategy.md`, `docs/adoption-sensitivity-analysis.md`, and `docs/reconstruction-engine-contract.md` for the locked integration/adoption/provider strategy.
 
 ## Architecture provenance
 
