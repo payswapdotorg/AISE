@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schemaVersion", "campaign", "governingArchitecture", "implementationCampaign", "productization", "execution", "workItems"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "campaign": {"const": "AISE-productization"},
+    "governingArchitecture": {"const": "2.2"},
+    "implementationCampaign": {"type": "object"},
+    "productization": {"type": "object"},
+    "execution": {"type": "object"},
+    "workItems": {"type": "array"}
+  }
+}
