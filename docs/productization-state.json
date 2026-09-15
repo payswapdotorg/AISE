@@ -1,0 +1,44 @@
+{
+  "$schema": "./productization-state.schema.json",
+  "schemaVersion": 1,
+  "campaign": "AISE-productization",
+  "governingArchitecture": "2.2",
+  "implementationCampaign": {
+    "status": "complete",
+    "workItemsFinalized": 41,
+    "workItemsTotal": 41,
+    "commit": "b9b031a85016ac50caba6cd66990707f7815b179"
+  },
+  "productization": {
+    "status": "not_ready",
+    "installable": "unknown",
+    "freeTierDeployed": "no",
+    "userFriendlyInterface": "no",
+    "publicUrl": null,
+    "vercelDeploymentId": null,
+    "lastVerifiedCommit": null,
+    "finalGate": "docs/PRODUCTION-READINESS-GATE.md"
+  },
+  "execution": {
+    "maxConcurrentWorkers": 3,
+    "mergeGate": "tech-lead/architect",
+    "selectionRule": "dispatch only dependency-eligible productization items; recompute after every accepted merge"
+  },
+  "workItems": [
+    {"id":"PROD-001","status":"planned","dependencies":[]},
+    {"id":"PROD-002","status":"planned","dependencies":["PROD-001"]},
+    {"id":"PROD-003","status":"planned","dependencies":["PROD-001"]},
+    {"id":"PROD-004","status":"planned","dependencies":["PROD-003"]},
+    {"id":"PROD-005","status":"planned","dependencies":["PROD-003"]},
+    {"id":"PROD-006","status":"planned","dependencies":["PROD-003"]},
+    {"id":"PROD-007","status":"planned","dependencies":["PROD-003"]},
+    {"id":"PROD-008","status":"planned","dependencies":["PROD-003"]},
+    {"id":"PROD-009","status":"planned","dependencies":["PROD-003","AISE-012"]},
+    {"id":"PROD-010","status":"planned","dependencies":["PROD-002","PROD-004","PROD-005","PROD-006","PROD-007","PROD-009"]},
+    {"id":"PROD-011","status":"planned","dependencies":["PROD-010"]},
+    {"id":"PROD-012","status":"planned","dependencies":["PROD-011"]},
+    {"id":"PROD-013","status":"planned","dependencies":["PROD-011"]},
+    {"id":"PROD-014","status":"planned","dependencies":["PROD-011","PROD-012","PROD-013"]},
+    {"id":"PROD-015","status":"planned","dependencies":["PROD-014"]}
+  ]
+}
