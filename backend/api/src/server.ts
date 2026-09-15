@@ -41,6 +41,14 @@
  *   GET  /v1/identity/organizations/:id/audit -> query the append-only
  *                                            audit log (filters projectId,
  *                                            actor; retention-annotated)
+ *   POST /v1/comparisons                -> run one reality-vs-design
+ *                                            comparison (AISE-032): a pinned
+ *                                            Reality Graph version vs an
+ *                                            imported design reference;
+ *                                            evidence-linked discrepancies,
+ *                                            uncertainty-aware statuses
+ *   GET  /v1/comparisons[/:id]          -> comparison list / full derived
+ *                                            record (neither source altered)
  *   POST /v1/reality/projects            -> create project graph (AISE-016)
  *   GET  /v1/reality/projects/:id        -> project header + version list
  *   GET  /v1/reality/projects/:id/versions/:versionId|latest -> full snapshot
@@ -138,6 +146,29 @@ import { createDefaultAiseProviders } from "./reconstruction/adapters";
 import { handleIdentityRequest, type IdentityRouteOptions } from "./identity/router";
 import { IdentityService } from "./identity/service";
 import { FsIdentityStore } from "./identity/store";
+// AISE-032 routing: reality-vs-design comparison surface — the DERIVED
+// comparison authority comparing captured authoritative reality (the
+// Reality Graph, consumed READ-ONLY through an injected resolver) with
+// imported design references (ExternalReference source-of-record
+// identity carried VERBATIM), producing evidence-linked discrepancies
+// and uncertainty-aware statuses (comparison/router.ts over
+// comparison/service.ts, an injected store and TWO READ-ONLY reference
+// resolvers: reality version resolution and evidence membership). The
+// adapters below call the owning stores'/services' READ methods
+// (`getVersion`, `getEvidenceRecord`) and NOTHING else: there is no write
+// path from the comparison domain into the reality or evidence
+// authorities, and neither compared source is ever altered (the
+// comparison record is a derived, append-only projection).
+import { handleComparisonRequest, type ComparisonRouteOptions } from "./comparison/router";
+import {
+  ComparisonService,
+  // Aliased: the AISE-031 execution block already imports the
+  // evidence-membership adapter under its own name; this module's adapter
+  // is a DISTINCT read-only seam over the same evidence READ method.
+  readOnlyEvidenceMembershipResolver as readOnlyComparisonEvidenceMembershipResolver,
+  readOnlyRealityVersionResolver,
+} from "./comparison/service";
+import { FsComparisonStore } from "./comparison/store";
 // AISE-016 routing: Reality Graph v2 — the canonical engineering-model
 // authority surface (reality/router.ts over the deterministic versioning
 // engine and an injected store).
@@ -246,6 +277,13 @@ export interface HandlerOptions {
   // wall clock is constructed lazily on the FIRST identity request (see
   // identityRoutesOrDefault).
   identity?: IdentityRouteOptions;
+  // AISE-032 routing: injected reality-vs-design comparison surface. When
+  // omitted, a default ComparisonService over the FsComparisonStore rooted
+  // at the configured data directory (AISE_DATA_DIR, default ./data), a UTC
+  // wall clock and READ-ONLY resolvers over the FsRealityStore and the
+  // FsEvidenceStore (same data dir) is constructed lazily on the FIRST
+  // comparison request (see comparisonRoutesOrDefault).
+  comparison?: ComparisonRouteOptions;
   // AISE-016 routing: injected Reality Graph surface. When omitted, a default
   // wiring over the FsRealityStore rooted at the configured data directory
   // (AISE_DATA_DIR, default ./data) plus a UTC wall clock is constructed
@@ -308,6 +346,47 @@ function identityRoutesOrDefault(options: HandlerOptions): IdentityRouteOptions 
     };
   }
   return defaultIdentityRoutes;
+}
+
+// AISE-032 routing: memoized default reality-vs-design comparison routing
+// (see HandlerOptions.comparison) — same lazy discipline as the identity
+// wiring: resolved only inside the /v1/comparisons path guard, so
+// deployments without comparison traffic never construct the store. The
+// two reference resolvers are READ-ONLY BY CONSTRUCTION and resolved over
+// THIS handler's configured data dir (never through a shared memoized
+// sibling wiring, so two handlers over different data dirs can never leak
+// each other's authorities — the AISE-031 leak fix pattern): each adapts a
+// PRIVATE store instance whose only reachable member is the READ method
+// the adapter calls — reality version resolution via the FsRealityStore's
+// `getVersion` (AISE-016 authority; the pinned version snapshot is
+// consumed as immutable input, never mutated) and evidence membership via
+// the FsEvidenceStore's `getEvidenceRecord` READ method (evidence records
+// are immutable write-once files, so a read-only second instance is safe).
+// No code path from here can write the reality or evidence authorities —
+// the resolver interfaces expose exactly one READ method each and the
+// instances behind them are never exported.
+let defaultComparisonRoutes: ComparisonRouteOptions | null = null;
+
+function comparisonRoutesOrDefault(options: HandlerOptions): ComparisonRouteOptions {
+  if (options.comparison !== undefined) {
+    return options.comparison;
+  }
+  if (defaultComparisonRoutes === null) {
+    const result = validateEnv(options.envSource());
+    const dataDir = result.ok ? result.config.dataDir : "./data";
+    defaultComparisonRoutes = {
+      service: new ComparisonService({
+        store: new FsComparisonStore(dataDir),
+        clock: (): string => new Date().toISOString(),
+        realityVersionResolver: readOnlyRealityVersionResolver(new FsRealityStore(dataDir)),
+        evidenceMembershipResolver: readOnlyComparisonEvidenceMembershipResolver(
+          new FsEvidenceStore(dataDir),
+        ),
+      }),
+      logger: options.logger,
+    };
+  }
+  return defaultComparisonRoutes;
 }
 
 // AISE-011: memoized default BOQ routing (see HandlerOptions.boq).
@@ -614,6 +693,25 @@ async function route(
     );
     if (identityResponse !== null) {
       return identityResponse;
+    }
+  }
+
+  // AISE-032 routing — delegates to the reality-vs-design comparison
+  // surface (the derived comparison authority: pinned reality version vs
+  // imported design reference, evidence-linked discrepancies,
+  // uncertainty-aware statuses; neither source is ever altered). The path
+  // guard keeps the lazily-constructed default service (FsComparisonStore
+  // + the two read-only reference resolvers under the configured data dir)
+  // entirely off non-comparison requests.
+  if (url.pathname === "/v1/comparisons" || url.pathname.startsWith("/v1/comparisons/")) {
+    const comparisonResponse = await handleComparisonRequest(
+      request,
+      url,
+      requestId,
+      comparisonRoutesOrDefault(options),
+    );
+    if (comparisonResponse !== null) {
+      return comparisonResponse;
     }
   }
 
