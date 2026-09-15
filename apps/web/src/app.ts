@@ -1,19 +1,20 @@
 /**
- * AISE web workspace app surface.
+ * AISE product web shell — public surface.
  *
- * The foundation label (AISE-001) is kept verbatim for the bootstrap shell;
- * the browser ENGINEERING WORKSPACE (AISE-021) lives in `./workspace` and the
- * BOQ LENS workspace (AISE-024) lives in `./boqlens`; both are re-exported
- * here as the app's public surface. Rendering is deterministic server-side
- * HTML/SVG strings — no browser APIs, no client state, no fetches (see the
- * no-browser-authority invariants in workspace/model.ts and
- * boqlens/model.ts).
+ * The browser product (PROD-002) is the React application in `./app/`
+ * (mounted by `./main.tsx`). The frozen server-side rendering libraries —
+ * the AISE-021 engineering workspace, the AISE-024 BOQ Lens, the AISE-027
+ * intervention viewer and the AISE-040 adoption shell — remain re-exported
+ * here as the app's library surface; the product application CONSUMES them
+ * and adds presentation only (no browser-side engineering authority).
  */
 
 export * from "./workspace/index";
 export * from "./boqlens/index";
+export { App } from "./app/App";
+export { parseHash, formatRoute } from "./app/router";
 
-export const PAGE_LABEL = "AISE web workspace — foundation";
+export const PAGE_LABEL = "AISE — AI Site Engineer product shell";
 
 export function pageLabel(): string {
   return PAGE_LABEL;
