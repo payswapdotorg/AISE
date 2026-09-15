@@ -11,7 +11,7 @@
   },
   "productization": {
     "status": "not_ready",
-    "installable": "partial",
+    "installable": "partial-plus",
     "freeTierDeployed": "no",
     "userFriendlyInterface": "partial",
     "publicUrl": null,
@@ -52,42 +52,48 @@
     },
     {
       "id": "PROD-004",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "PROD-003"
-      ]
+      ],
+      "mergedSha": "4978fd9",
+      "mergedAt": "2026-09-15T16:50:00Z"
     },
     {
       "id": "PROD-005",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "PROD-003"
-      ]
+      ],
+      "mergedSha": "61d919f",
+      "mergedAt": "2026-09-15T17:35:00Z"
     },
     {
       "id": "PROD-006",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "PROD-003"
-      ]
+      ],
+      "mergedSha": "694e6c8",
+      "mergedAt": "2026-09-15T17:20:00Z"
     },
     {
       "id": "PROD-007",
-      "status": "planned",
+      "status": "activated",
       "dependencies": [
         "PROD-003"
       ]
     },
     {
       "id": "PROD-008",
-      "status": "planned",
+      "status": "activated",
       "dependencies": [
         "PROD-003"
       ]
     },
     {
       "id": "PROD-009",
-      "status": "planned",
+      "status": "activated",
       "dependencies": [
         "PROD-003",
         "AISE-012"
