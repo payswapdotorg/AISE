@@ -14,7 +14,9 @@ Do not reopen the 41-item implementation DAG unless an architecture defect or pr
 
 ## Current truth
 
-Current `main`: `b9b031a85016ac50caba6cd66990707f7815b179`.
+Current `main` at handoff: `3519b4a684a034cbe07ead5ee664e0fab8654ef6`.
+
+The completed v2 implementation campaign culminated at `b9b031a85016ac50caba6cd66990707f7815b179`.
 
 Architecture: **2.2 frozen**.
 
