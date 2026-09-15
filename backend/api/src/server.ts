@@ -49,6 +49,24 @@
  *                                            uncertainty-aware statuses
  *   GET  /v1/comparisons[/:id]          -> comparison list / full derived
  *                                            record (neither source altered)
+ *   POST /v1/gaps                       -> run one adaptive evidence-gap
+ *                                            analysis (AISE-018): a pinned
+ *                                            Reality Graph version + the
+ *                                            governing assurance profile +
+ *                                            the evidence graph state →
+ *                                            derived evidence gaps and
+ *                                            RANKED next-observation
+ *                                            candidates (task impact,
+ *                                            expected uncertainty
+ *                                            reduction, operator effort,
+ *                                            recoverability); the
+ *                                            readiness authority's report
+ *                                            is consumed verbatim and
+ *                                            never mutated
+ *   GET  /v1/gaps[/:id]                 -> analysis list / full derived
+ *                                            record (append-only; the
+ *                                            readiness report carried as
+ *                                            consumed context)
  *   POST /v1/reality/projects            -> create project graph (AISE-016)
  *   GET  /v1/reality/projects/:id        -> project header + version list
  *   GET  /v1/reality/projects/:id/versions/:versionId|latest -> full snapshot
@@ -169,6 +187,30 @@ import {
   readOnlyRealityVersionResolver,
 } from "./comparison/service";
 import { FsComparisonStore } from "./comparison/store";
+// AISE-018 routing: adaptive evidence-gap engine surface — the DERIVED
+// gap-analysis authority computing evidence gaps and ranked
+// next-observation candidates (gaps/router.ts over gaps/service.ts, an
+// injected store, the SINGLE readiness authority's own evaluateReadiness
+// evaluator injected as a function, and THREE READ-ONLY reference
+// resolvers: assurance profile resolution, reality version resolution,
+// evidence graph state). The adapters below call the owning
+// authorities' READ methods (`getAssuranceProfile` from the shipped
+// code-defined profiles, `getVersion`, `listEvidenceRecords`/
+// `getInvalidation`/`listLinks`) and NOTHING else: there is no write path
+// from the gap domain into the assurance, reality or evidence
+// authorities, and the readiness authority's records are never mutated
+// (the analysis record is a derived, append-only projection that carries
+// the consumed ReadinessReport verbatim — never a ReadinessAssessment).
+import { handleGapsRequest, type GapsRouteOptions } from "./gaps/router";
+import {
+  GapAnalysisService,
+  readOnlyAssuranceProfileResolver,
+  readOnlyEvidenceGraphResolver as readOnlyGapsEvidenceGraphResolver,
+  readOnlyGapRealityVersionResolver,
+} from "./gaps/service";
+import { FsGapAnalysisStore } from "./gaps/store";
+import { getAssuranceProfile } from "./assurance/profiles";
+import { evaluateReadiness } from "./assurance/evaluate";
 // AISE-016 routing: Reality Graph v2 — the canonical engineering-model
 // authority surface (reality/router.ts over the deterministic versioning
 // engine and an injected store).
@@ -284,6 +326,16 @@ export interface HandlerOptions {
   // FsEvidenceStore (same data dir) is constructed lazily on the FIRST
   // comparison request (see comparisonRoutesOrDefault).
   comparison?: ComparisonRouteOptions;
+  // AISE-018 routing: injected adaptive evidence-gap surface. When
+  // omitted, a default GapAnalysisService over the FsGapAnalysisStore
+  // rooted at the configured data directory (AISE_DATA_DIR, default
+  // ./data), a UTC wall clock, the REAL readiness authority's
+  // evaluateReadiness (injected as the single authority — never
+  // re-implemented) and READ-ONLY resolvers over the shipped assurance
+  // profiles, the FsRealityStore and the FsEvidenceStore (same data dir)
+  // is constructed lazily on the FIRST gaps request (see
+  // gapsRoutesOrDefault).
+  gaps?: GapsRouteOptions;
   // AISE-016 routing: injected Reality Graph surface. When omitted, a default
   // wiring over the FsRealityStore rooted at the configured data directory
   // (AISE_DATA_DIR, default ./data) plus a UTC wall clock is constructed
@@ -387,6 +439,52 @@ function comparisonRoutesOrDefault(options: HandlerOptions): ComparisonRouteOpti
     };
   }
   return defaultComparisonRoutes;
+}
+
+// AISE-018 routing: memoized default adaptive evidence-gap routing (see
+// HandlerOptions.gaps) — same lazy discipline as the comparison wiring:
+// resolved only inside the /v1/gaps path guard, so deployments without
+// gap-analysis traffic never construct the store. The three reference
+// resolvers are READ-ONLY BY CONSTRUCTION and resolved over THIS
+// handler's configured data dir (never through a shared memoized sibling
+// wiring, so two handlers over different data dirs can never leak each
+// other's authorities — the AISE-031 leak fix pattern): the assurance
+// profile resolver adapts the shipped code-defined profiles' READ method
+// `getAssuranceProfile` (the readiness authority's documents; the REAL
+// evaluateReadiness evaluator is injected as the single readiness
+// authority — the gap engine never re-implements readiness), the reality
+// version resolver adapts the FsRealityStore's `getVersion` READ method
+// (AISE-016 authority; the pinned version snapshot is consumed as
+// immutable input, never mutated), and the evidence graph resolver adapts
+// the FsEvidenceStore's READ methods (evidence records are immutable
+// write-once files, so a read-only second instance is safe). No code path
+// from here can write the assurance, reality or evidence authorities —
+// the resolver interfaces expose exactly one READ method each and the
+// instances behind them are never exported.
+let defaultGapsRoutes: GapsRouteOptions | null = null;
+
+function gapsRoutesOrDefault(options: HandlerOptions): GapsRouteOptions {
+  if (options.gaps !== undefined) {
+    return options.gaps;
+  }
+  if (defaultGapsRoutes === null) {
+    const result = validateEnv(options.envSource());
+    const dataDir = result.ok ? result.config.dataDir : "./data";
+    defaultGapsRoutes = {
+      service: new GapAnalysisService({
+        store: new FsGapAnalysisStore(dataDir),
+        clock: (): string => new Date().toISOString(),
+        assuranceProfileResolver: readOnlyAssuranceProfileResolver({
+          getAssuranceProfile,
+        }),
+        readinessEvaluator: evaluateReadiness,
+        realityVersionResolver: readOnlyGapRealityVersionResolver(new FsRealityStore(dataDir)),
+        evidenceGraphResolver: readOnlyGapsEvidenceGraphResolver(new FsEvidenceStore(dataDir)),
+      }),
+      logger: options.logger,
+    };
+  }
+  return defaultGapsRoutes;
 }
 
 // AISE-011: memoized default BOQ routing (see HandlerOptions.boq).
@@ -712,6 +810,27 @@ async function route(
     );
     if (comparisonResponse !== null) {
       return comparisonResponse;
+    }
+  }
+
+  // AISE-018 routing — delegates to the adaptive evidence-gap surface
+  // (the derived gap-analysis authority: evidence gaps computed from the
+  // pinned reality version, the evidence graph state and the governing
+  // assurance profile; ranked next-observation candidates by task impact,
+  // expected uncertainty reduction, operator effort and recoverability;
+  // the readiness authority's report consumed verbatim, never mutated).
+  // The path guard keeps the lazily-constructed default service
+  // (FsGapAnalysisStore + the three read-only reference resolvers under
+  // the configured data dir) entirely off non-gaps requests.
+  if (url.pathname === "/v1/gaps" || url.pathname.startsWith("/v1/gaps/")) {
+    const gapsResponse = await handleGapsRequest(
+      request,
+      url,
+      requestId,
+      gapsRoutesOrDefault(options),
+    );
+    if (gapsResponse !== null) {
+      return gapsResponse;
     }
   }
 
