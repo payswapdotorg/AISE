@@ -4,12 +4,12 @@
   "artifact": "aise-development-state/program-state",
   "governingArchitecture": "2.2",
   "architectureState": "frozen",
-  "asOf": "2026-09-14T20:45:00Z",
+  "asOf": "2026-09-15T01:40:00Z",
   "execution": {
     "maxConcurrentWorkers": 3,
     "mergeGate": "architect",
     "selfMergeForbidden": true,
-    "currentWave": 14,
+    "currentWave": 15,
     "selectionRule": "activate only dependency-eligible items; prefer up to three disjoint items"
   },
   "workItems": [
@@ -195,7 +195,7 @@
     {
       "id": "AISE-018",
       "owner": "ZAI",
-      "status": "ready",
+      "status": "activated",
       "dependencies": [
         "AISE-008",
         "AISE-016"
@@ -306,12 +306,14 @@
     {
       "id": "AISE-028",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-017",
         "AISE-026",
         "AISE-027"
-      ]
+      ],
+      "mergedSha": "8e8c0b7160a8f8b45eb95330ba69a09ca1e8ff62",
+      "mergedAt": "2026-09-15T01:40:00Z"
     },
     {
       "id": "AISE-029",
@@ -352,12 +354,14 @@
     {
       "id": "AISE-032",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-016",
         "AISE-019",
         "AISE-020"
-      ]
+      ],
+      "mergedSha": "a7cee92bd4590fe03b4e6e566960b218c8b5d55e",
+      "mergedAt": "2026-09-15T01:40:00Z"
     },
     {
       "id": "AISE-033",
@@ -373,13 +377,15 @@
     {
       "id": "AISE-034",
       "owner": "ZAI",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "AISE-013",
         "AISE-015",
         "AISE-016",
         "AISE-019"
-      ]
+      ],
+      "mergedSha": "52508efac5391dd2ee33a13fb6b59dd80d4888e9",
+      "mergedAt": "2026-09-15T01:40:00Z"
     },
     {
       "id": "AISE-035",
@@ -421,7 +427,7 @@
     {
       "id": "AISE-038",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-024",
         "AISE-027",
@@ -450,7 +456,7 @@
     {
       "id": "AISE-040",
       "owner": "ZAI",
-      "status": "blocked",
+      "status": "activated",
       "dependencies": [
         "AISE-024",
         "AISE-036",
@@ -531,6 +537,7 @@
     "Wave 9 merged 2026-09-14: 019/022/020 finalized (main verify PASS 803 tests). Newly eligible pool: 017, 018, 021, 023, 032, 033, 034. Activated 021 (workspace — starts adoption track), 023 (verification — starts assurance chain), 017 (BOQ mapping — starts BOQ Lens track). 018/032/033/034 queued for subsequent waves.",
     "Wave 10 merged 2026-09-14: 021/023/017 finalized (main verify PASS 980 tests). Newly eligible: 024 (017+021), 025 (016+008+023), 032/033/034 pool. Activated 024, 025, 033; 018/032/034 queued.",
     "Wave 11 merged 2026-09-14: 025/033/024 finalized (main verify PASS 1180 tests). Newly eligible: 026, 029, 037 (+queued 018/032/034). Activated 026 (intervention state model — CRITICAL), 029 (reasoning gateway), 037 (universal incumbent integration).",
-    "Wave 13 merged 2026-09-14: 027/031/036 finalized (main verify PASS 1811 tests = 1479 + 130 viewer + 82 execution + 120 identity; boundaries clean over 308 files). First wave delivered end-to-end by in-app replay workers (chat.z.ai agents-tab GLM-5.3 Full-Stack sessions, git-channel delivery: worker pushes work/aise-NNN, Lead re-verifies and merges --no-ff). 036 completed by replay worker from the deadline-interrupted WIP handoff a783b56 (Lead-committed) — worker fixed 5 typecheck + 5 lint errors and authored router.test.ts (+1346 lines, 24 router tests). Newly eligible: 028, 035, 038, 040 (+ long-held 018/032/034). Wave 14 activated: 028 (intervention quantities/cost impacts — impact module, server.ts block anchored after AISE-031), 032 (reality-vs-design comparison — comparison module, server.ts block anchored after AISE-036), 034 (MEP semantics foundation — mep module, pure library, no server.ts change). 018 remains ready-unactivated (no dependents); 035 deferred (SHARED ownership); 038/040 deferred to post-032/034 waves."
+    "Wave 13 merged 2026-09-14: 027/031/036 finalized (main verify PASS 1811 tests = 1479 + 130 viewer + 82 execution + 120 identity; boundaries clean over 308 files). First wave delivered end-to-end by in-app replay workers (chat.z.ai agents-tab GLM-5.3 Full-Stack sessions, git-channel delivery: worker pushes work/aise-NNN, Lead re-verifies and merges --no-ff). 036 completed by replay worker from the deadline-interrupted WIP handoff a783b56 (Lead-committed) — worker fixed 5 typecheck + 5 lint errors and authored router.test.ts (+1346 lines, 24 router tests). Newly eligible: 028, 035, 038, 040 (+ long-held 018/032/034). Wave 14 activated: 028 (intervention quantities/cost impacts — impact module, server.ts block anchored after AISE-031), 032 (reality-vs-design comparison — comparison module, server.ts block anchored after AISE-036), 034 (MEP semantics foundation — mep module, pure library, no server.ts change). 018 remains ready-unactivated (no dependents); 035 deferred (SHARED ownership); 038/040 deferred to post-032/034 waves.",
+    "Wave 14 merged 2026-09-15: 028/032/034 finalized (main verify PASS 2065 tests = 1811 + 78 impact + 88 comparison + 88 mep; boundaries clean over 337 files). Entire wave delivered by in-app replay workers through the worst capacity/rate-limit siege (~3h): every send fought through (never wait), rate-limit-swallowed phantom sends auto-voided and re-landed, stuck pollers restarted, all three deliveries verified independently by the Lead before merge (gate numbers EXACT three-for-three). Newly eligible: 035 (SHARED dogfood), 038 (developer API/SDK), 040 (adoption shell). Wave 15 activated: 018 (adaptive evidence-gap engine — gaps module, server.ts block anchored after AISE-032), 038 (developer API/SDK — sdk contract module over existing authorities, scopes via the AISE-036 frozen permission registry, server.ts block anchored after AISE-028), 040 (primary-interface adoption shell — apps/web/src/shell pure frontend library consuming existing routes, no server.ts change). 035 held for wave 16 (SHARED ZAI+GEMINI ownership; dogfoods best after 038/040 exist)."
   ]
 }
