@@ -11,7 +11,7 @@
   },
   "productization": {
     "status": "not_ready",
-    "installable": "unknown",
+    "installable": "partial",
     "freeTierDeployed": "no",
     "userFriendlyInterface": "no",
     "publicUrl": null,
@@ -27,19 +27,21 @@
   "workItems": [
     {
       "id": "PROD-001",
-      "status": "activated",
-      "dependencies": []
+      "status": "finalized",
+      "dependencies": [],
+      "mergedSha": "9a32a936a1acc4b975708bb931b30d092693fd28",
+      "mergedAt": "2026-09-15T10:05:00Z"
     },
     {
       "id": "PROD-002",
-      "status": "planned",
+      "status": "activated",
       "dependencies": [
         "PROD-001"
       ]
     },
     {
       "id": "PROD-003",
-      "status": "planned",
+      "status": "activated",
       "dependencies": [
         "PROD-001"
       ]
