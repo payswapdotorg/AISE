@@ -171,13 +171,18 @@ describe("auth DISABLED — the pipeline is byte-identical to the pre-auth contr
     }
   });
 
-  test("/readyz keeps the exact pre-auth shape: no auth key, providers only", async () => {
+  test("/readyz keeps the pre-auth auth-silence: no auth key (artifacts is PROD-006's orthogonal key)", async () => {
     const { handler } = runtimeWorld(baseEnv({ AISE_AUTH: "0" }));
     const response = await handler(get("/readyz"));
     expect(response.status).toBe(200);
-    expect(await bodyOf(response)).toEqual({
+    const body = await bodyOf(response);
+    expect(body).toEqual({
       ok: true,
       providers: { worldsculpt: "disabled" },
+      // PROD-006 (merged after PROD-004): the artifact backend status is
+      // always reported — orthogonal to the auth layer. The auth contract
+      // this test pins is the ABSENCE of the `auth` key when disabled.
+      artifacts: { backend: "local-fs", status: "available" },
     });
   });
 

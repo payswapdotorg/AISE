@@ -42,7 +42,8 @@ export type EnvFormat =
   | "auth-toggle"
   | "auth-mode"
   | "ttl-seconds"
-  | "identifier";
+  | "identifier"
+  | "bytes-cap";
 
 /** Anything that can be read like process.env. */
 export type EnvRecord = Record<string, string | undefined>;
@@ -74,6 +75,17 @@ export interface EnvVarRule {
     readonly variable: string;
     readonly enabledValues: readonly string[];
   };
+  /**
+   * PROD-006: optional GROUP membership (all-or-nothing presence check).
+   * When ANY member of the group carries a value, every member with
+   * `groupRequired: true` must also carry one — a half-configured group is a
+   * deterministic error naming the missing members, never a silent partial
+   * activation (the runtime wiring degrades loudly: /v1/artifacts answers
+   * 503 while the group is half-set).
+   */
+  readonly optionalGroup?: string;
+  /** True when this member MUST be present once its optionalGroup is active. */
+  readonly groupRequired?: boolean;
 }
 
 /**
@@ -173,6 +185,75 @@ export const ENV_RULES: readonly EnvVarRule[] = [
     defaults: { dev: "demo-evaluator", start: "demo-evaluator" },
     requiredIn: [],
   },
+  // PROD-006: the Cloudflare R2 artifact storage group (optional, all-or-
+  // nothing). Absent → the honest local-fs development twin serves
+  // /v1/artifacts (readiness says so); complete → durable R2 blob storage
+  // over the S3-compatible API with the hand-rolled SigV4 signer. Values are
+  // NEVER echoed (the account id and bucket name are infrastructure
+  // identifiers, not operator-facing configuration).
+  {
+    name: "R2_ACCOUNT_ID",
+    description: "Cloudflare R2 account id (durable artifact storage — optional group)",
+    consumer: "backend/api artifacts (PROD-006 R2 adapter)",
+    format: "secret",
+    defaults: { dev: "", start: "" },
+    requiredIn: [],
+    optionalProvider: true,
+    optionalGroup: "r2",
+    groupRequired: true,
+  },
+  {
+    name: "R2_BUCKET",
+    description: "Cloudflare R2 bucket name for artifact blobs (optional group)",
+    consumer: "backend/api artifacts (PROD-006 R2 adapter)",
+    format: "secret",
+    defaults: { dev: "", start: "" },
+    requiredIn: [],
+    optionalProvider: true,
+    optionalGroup: "r2",
+    groupRequired: true,
+  },
+  {
+    name: "R2_ACCESS_KEY_ID",
+    description: "Cloudflare R2 S3-compatible access key id (optional group)",
+    consumer: "backend/api artifacts (PROD-006 SigV4 signer)",
+    format: "secret",
+    defaults: { dev: "", start: "" },
+    requiredIn: [],
+    optionalProvider: true,
+    optionalGroup: "r2",
+    groupRequired: true,
+  },
+  {
+    name: "R2_SECRET_ACCESS_KEY",
+    description: "Cloudflare R2 S3-compatible secret access key (optional group)",
+    consumer: "backend/api artifacts (PROD-006 SigV4 signer)",
+    format: "secret",
+    defaults: { dev: "", start: "" },
+    requiredIn: [],
+    optionalProvider: true,
+    optionalGroup: "r2",
+    groupRequired: true,
+  },
+  {
+    name: "R2_PUBLIC_ENDPOINT",
+    description: "Optional explicit R2 endpoint URL override (defaults to the account URL)",
+    consumer: "backend/api artifacts (PROD-006 R2 adapter)",
+    format: "secret",
+    defaults: { dev: "", start: "" },
+    requiredIn: [],
+    optionalProvider: true,
+    optionalGroup: "r2",
+    groupRequired: false,
+  },
+  {
+    name: "AISE_ARTIFACT_MAX_BYTES",
+    description: "Artifact upload size cap in bytes (large uploads are bounded and rejected, never truncated)",
+    consumer: "backend/api artifacts (PROD-006 limits)",
+    format: "bytes-cap",
+    defaults: { dev: "26214400", start: "26214400" },
+    requiredIn: [],
+  },
 ] as const;
 
 const LOG_LEVELS: readonly string[] = ["debug", "info", "warn", "error"];
@@ -192,6 +273,7 @@ const FORMAT_EXPECTATIONS: Readonly<Record<EnvFormat, string>> = {
   "auth-mode": "expected required|demo-open",
   "ttl-seconds": "expected an integer between 60 and 2592000 (seconds)",
   identifier: "expected a non-empty value (1..256 characters)",
+  "bytes-cap": "expected an integer number of bytes between 1 and 1073741824",
 };
 
 export function formatExpectation(format: EnvFormat): string {
@@ -235,6 +317,13 @@ export function isFormatValid(format: EnvFormat, value: string): boolean {
     case "identifier": {
       const trimmed = value.trim();
       return trimmed.length >= 1 && trimmed.length <= 256;
+    }
+    case "bytes-cap": {
+      if (!/^\d+$/.test(value)) {
+        return false;
+      }
+      const cap = Number.parseInt(value, 10);
+      return cap >= 1 && cap <= 1024 * 1024 * 1024;
     }
   }
 }
@@ -291,6 +380,40 @@ export function evaluateEnv(env: EnvRecord, mode: ValidationMode): EnvReport {
   const checks: EnvCheck[] = [];
   const issues: string[] = [];
 
+  // PROD-006: optional-group presence state (all-or-nothing). A group is
+  // ACTIVE when any member carries a non-empty value; an active group with
+  // missing `groupRequired` members produces one precise issue per missing
+  // member (variable names only — never values).
+  const activeGroups = new Set<string>();
+  const missingGroupMembers = new Map<string, readonly string[]>();
+  const groupMembers = new Map<string, readonly EnvVarRule[]>();
+  for (const rule of ENV_RULES) {
+    if (rule.optionalGroup === undefined) {
+      continue;
+    }
+    const members = groupMembers.get(rule.optionalGroup) ?? [];
+    groupMembers.set(rule.optionalGroup, [...members, rule]);
+  }
+  for (const [group, members] of groupMembers) {
+    const anySet = members.some(
+      (member) => env[member.name] !== undefined && env[member.name]?.trim() !== "",
+    );
+    if (!anySet) {
+      continue;
+    }
+    activeGroups.add(group);
+    const missing = members
+      .filter(
+        (member) =>
+          member.groupRequired === true &&
+          (env[member.name] === undefined || env[member.name]?.trim() === ""),
+      )
+      .map((member) => member.name);
+    if (missing.length > 0) {
+      missingGroupMembers.set(group, missing);
+    }
+  }
+
   for (const rule of ENV_RULES) {
     const value = env[rule.name];
     if (value === undefined) {
@@ -298,6 +421,19 @@ export function evaluateEnv(env: EnvRecord, mode: ValidationMode): EnvReport {
         const issue = `${rule.name}: ${MISSING_REQUIRED_DETAIL[mode]}`;
         issues.push(issue);
         checks.push({ name: rule.name, status: "missing", detail: issue });
+        continue;
+      }
+      if (rule.optionalGroup !== undefined) {
+        if (activeGroups.has(rule.optionalGroup) && rule.groupRequired === true) {
+          const group = missingGroupMembers.get(rule.optionalGroup) ?? [];
+          const issue =
+            `${rule.name}: required when the ${rule.optionalGroup} group is active — ` +
+            `set all of ${group.join(", ")} or none (a half-configured group serves 503s, never a silent fallback)`;
+          issues.push(issue);
+          checks.push({ name: rule.name, status: "missing", detail: issue });
+          continue;
+        }
+        checks.push({ name: rule.name, status: "disabled-optional", detail: "disabled (optional)" });
         continue;
       }
       if (rule.optionalProvider === true) {
@@ -337,7 +473,11 @@ export function evaluateEnv(env: EnvRecord, mode: ValidationMode): EnvReport {
     }
 
     if (rule.optionalProvider === true) {
-      checks.push({ name: rule.name, status: "enabled-optional", detail: "enabled (optional provider)" });
+      const detail =
+        rule.optionalGroup !== undefined
+          ? `enabled (optional group '${rule.optionalGroup}')`
+          : "enabled (optional provider)";
+      checks.push({ name: rule.name, status: "enabled-optional", detail });
       continue;
     }
     // Non-secret values are echoed so the operator sees the effective config;

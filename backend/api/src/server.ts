@@ -284,6 +284,25 @@ import {
 } from "./adoption/service";
 import { FsAdoptionStore } from "./adoption/store";
 import { createAdapterRegistry } from "./integrations/registry";
+// PROD-006 routing: R2 artifact storage surface — content-addressed blob
+// storage for BOQs, images, videos, captures and derived artifacts
+// (artifacts/router.ts over artifacts/service.ts, an injected
+// content-addressed blob storage port, an injected metadata store, the
+// upload limits and the ArtifactAccessPredicate PORT). The artifact store
+// is NEVER an evidence authority: metadata links evidence/derivation ids
+// BY REFERENCE (shapes validated, existence verified nowhere on this
+// surface), and the id IS the sha-256 of the bytes (the capture
+// content-addressing discipline — declared ids are never trusted from the
+// wire because there is nothing to declare). The default predicate
+// (allowAllArtifactAccess) is the open local-dev posture of every other
+// pre-auth /v1 surface; PROD-010 wires the real principal/tenant
+// predicate into this port.
+import { handleArtifactsRequest, type ArtifactsRouteOptions } from "./artifacts/router";
+import { allowAllArtifactAccess } from "./artifacts/access";
+import { ArtifactService } from "./artifacts/service";
+import { maxBytesOrDefault } from "./artifacts/policy";
+import { FsArtifactStorage } from "./artifacts/fs-storage";
+import { FsArtifactMetadataStore } from "./artifacts/store";
 // AISE-016 routing: Reality Graph v2 — the canonical engineering-model
 // authority surface (reality/router.ts over the deterministic versioning
 // engine and an injected store).
@@ -433,6 +452,17 @@ export interface HandlerOptions {
   // adapterId reference as uncovered) until a deployment injects a
   // registry-backed service here.
   adoption?: AdoptionRouteOptions;
+  // PROD-006 routing: injected R2 artifact storage surface. When omitted, a
+  // default ArtifactService over the FsArtifactStorage blob twin + the
+  // FsArtifactMetadataStore rooted at the configured data directory
+  // (AISE_DATA_DIR, default ./data), the AISE_ARTIFACT_MAX_BYTES upload cap
+  // (default 25 MiB), a UTC wall clock and the open local-dev access
+  // predicate is constructed lazily on the FIRST artifacts request (see
+  // artifactsRoutesOrDefault). Durable R2-backed storage is wired by the
+  // runtime entrypoint when the R2_* env group is present (runtime/entry.ts)
+  // — the server default is honestly local-fs, and /readyz plus
+  // /v1/artifacts/status always report which backend is actually serving.
+  artifacts?: ArtifactsRouteOptions;
   // AISE-016 routing: injected Reality Graph surface. When omitted, a default
   // wiring over the FsRealityStore rooted at the configured data directory
   // (AISE_DATA_DIR, default ./data) plus a UTC wall clock is constructed
@@ -626,6 +656,46 @@ function adoptionRoutesOrDefault(options: HandlerOptions): AdoptionRouteOptions 
     };
   }
   return defaultAdoptionRoutes;
+}
+
+// PROD-006 routing: memoized default artifact storage routing (see
+// HandlerOptions.artifacts) — same lazy discipline as the gaps wiring:
+// resolved only inside the /v1/artifacts path guard, so deployments without
+// artifact traffic never construct the stores. The default is the LOCAL-FS
+// TWIN (FsArtifactStorage + FsArtifactMetadataStore under the configured
+// data dir): durable artifacts REQUIRE the R2_* env group, which the runtime
+// entrypoint wires by injecting its own options here (R2 adapter over the
+// hand-rolled SigV4 signer); /readyz and /v1/artifacts/status always say
+// which backend is actually serving. No limits or access policy live in
+// this wiring: the service enforces the env-derived upload cap before any
+// storage call, and the predicate port (allowAllArtifactAccess — the open
+// local-dev default of every other pre-auth /v1 surface) is the single
+// access seam PROD-010 will wire to the authenticated principal context.
+let defaultArtifactsRoutes: ArtifactsRouteOptions | null = null;
+
+function artifactsRoutesOrDefault(options: HandlerOptions): ArtifactsRouteOptions {
+  if (options.artifacts !== undefined) {
+    return options.artifacts;
+  }
+  if (defaultArtifactsRoutes === null) {
+    const result = validateEnv(options.envSource());
+    const dataDir = result.ok ? result.config.dataDir : "./data";
+    defaultArtifactsRoutes = {
+      service: new ArtifactService({
+        storage: new FsArtifactStorage(dataDir),
+        metadata: new FsArtifactMetadataStore(dataDir),
+        // The raw env value (never echoed): unset → the 25 MiB default;
+        // malformed → the default (the workspace env gate reports it).
+        limits: {
+          maxBytes: maxBytesOrDefault(options.envSource()["AISE_ARTIFACT_MAX_BYTES"]),
+        },
+        clock: (): string => new Date().toISOString(),
+      }),
+      logger: options.logger,
+      accessPredicate: allowAllArtifactAccess,
+    };
+  }
+  return defaultArtifactsRoutes;
 }
 
 // AISE-011: memoized default BOQ routing (see HandlerOptions.boq).
@@ -1014,6 +1084,28 @@ async function route(
     );
     if (adoptionResponse !== null) {
       return adoptionResponse;
+    }
+  }
+
+  // PROD-006 routing — delegates to the R2 artifact storage surface (the
+  // content-addressed blob + metadata store for BOQs, images, videos,
+  // captures and derived artifacts: upload limits enforced BEFORE any
+  // storage call, provenance links BY REFERENCE only, the
+  // ArtifactAccessPredicate port gating every list/get/delete, retention
+  // classes stored ON the record and enumerated — never auto-deleted — and
+  // typed quota/availability failures). The path guard keeps the
+  // lazily-constructed default service (the Fs twin under the configured
+  // data dir; the runtime entrypoint injects the R2-backed wiring when the
+  // R2_* env group is present) entirely off non-artifacts requests.
+  if (url.pathname === "/v1/artifacts" || url.pathname.startsWith("/v1/artifacts/")) {
+    const artifactsResponse = await handleArtifactsRequest(
+      request,
+      url,
+      requestId,
+      artifactsRoutesOrDefault(options),
+    );
+    if (artifactsResponse !== null) {
+      return artifactsResponse;
     }
   }
 

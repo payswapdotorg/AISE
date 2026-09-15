@@ -119,6 +119,9 @@ describe("GET /readyz — config validity + provider statuses", () => {
     expect(await response.json()).toEqual({
       ok: true,
       providers: { worldsculpt: "disabled" },
+      // PROD-006: which artifact backend is actually serving (no R2 group →
+      // the honest local-fs twin).
+      artifacts: { backend: "local-fs", status: "available" },
     });
   });
 
@@ -138,6 +141,7 @@ describe("GET /readyz — config validity + provider statuses", () => {
     expect(await response.json()).toEqual({
       ok: true,
       providers: { worldsculpt: "unavailable" },
+      artifacts: { backend: "local-fs", status: "available" },
     });
   });
 

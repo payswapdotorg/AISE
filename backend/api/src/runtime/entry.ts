@@ -57,7 +57,22 @@ import { IdentityService } from "../identity/service";
 import { createRequestHandler, SERVICE_NAME } from "../server";
 import { createCorsLayer } from "./cors";
 import { errorResponse, translateErrorResponse } from "./errors";
-import { evaluateOptionalProviders } from "./readiness";
+import { evaluateOptionalProviders, type ProviderStatus } from "./readiness";
+// PROD-006 (additive): the R2 artifact storage wiring — the R2_* env group
+// decides the blob backend (see the wiring block below), and the /readyz
+// augmentation reports which backend is actually serving (statuses only,
+// never credentials).
+import { allowAllArtifactAccess } from "../artifacts/access";
+import { R2ArtifactStorage, resolveR2StorageConfig } from "../artifacts/r2";
+import { ArtifactService, ArtifactServiceError } from "../artifacts/service";
+import { maxBytesOrDefault } from "../artifacts/policy";
+import { FsArtifactStorage } from "../artifacts/fs-storage";
+import { FsArtifactMetadataStore, type ArtifactMetadataStore } from "../artifacts/store";
+import {
+  UnavailableArtifactStorage,
+  type ArtifactStorage,
+} from "../artifacts/storage";
+import type { ArtifactsRouteOptions } from "../artifacts/router";
 import pkg from "../../package.json" with { type: "json" };
 
 export interface RuntimeHandlerOptions {
@@ -135,6 +150,69 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 /**
+ * A metadata store that fails every operation with the stable 503 envelope
+ * code. Used ONLY as the degraded artifacts wiring when the R2 group is
+ * half-configured or the Fs twin cannot be constructed: artifact routes
+ * then fail loudly and honestly per request (the same discipline as
+ * UnavailableCaptureStore above — never a silent fallback to a vanishing
+ * location, never a pretend-empty store).
+ */
+class UnavailableArtifactMetadataStore implements ArtifactMetadataStore {
+  constructor(private readonly reason: string) {}
+
+  private fail(): never {
+    throw new ArtifactServiceError("storage_unavailable", this.reason);
+  }
+
+  putRecord(): Promise<never> {
+    this.fail();
+  }
+
+  getRecord(): Promise<never> {
+    this.fail();
+  }
+
+  listRecords(): Promise<never> {
+    this.fail();
+  }
+
+  tombstoneRecord(): Promise<never> {
+    this.fail();
+  }
+
+  recordsReferencing(): Promise<never> {
+    this.fail();
+  }
+
+  listAllRecords(): Promise<never> {
+    this.fail();
+  }
+}
+
+/**
+ * PROD-006: the artifact storage backend actually serving /v1/artifacts,
+ * derived from the SAME env record /readyz re-checks on every call
+ * (statuses only — never credentials, never endpoint URLs).
+ */
+interface ArtifactReadinessStatus {
+  readonly backend: "r2" | "local-fs";
+  readonly status: ProviderStatus;
+}
+
+function artifactsReadiness(env: EnvRecord): ArtifactReadinessStatus {
+  const resolution = resolveR2StorageConfig(env);
+  if (resolution.status === "complete") {
+    return { backend: "r2", status: "available" };
+  }
+  if (resolution.status === "partial") {
+    // The operator asked for R2 but the group is half-configured: the
+    // wiring fails loudly (503 per request) — never a silent local fallback.
+    return { backend: "r2", status: "unavailable" };
+  }
+  return { backend: "local-fs", status: "available" };
+}
+
+/**
  * Augment the core's /readyz answer with per-optional-provider statuses.
  * The core's own config-validity logic is reused verbatim (its response is
  * the input) — this seam only ADDS the providers map:
@@ -171,6 +249,11 @@ async function augmentReadiness(
     return response;
   }
   const providers = evaluateOptionalProviders(env);
+  // PROD-006 (additive): which artifact backend is actually serving —
+  // `artifacts: {backend: "local-fs"|"r2", status}` beside the providers
+  // map (statuses only; the local-fs answer is the honest "durable
+  // artifacts require the R2 env group in deployment").
+  const artifacts = artifactsReadiness(env);
   const authUnavailable = auth !== null && auth.status === "unavailable";
   if (
     (response.status === 200 || authUnavailable) &&
@@ -192,12 +275,18 @@ async function augmentReadiness(
           issues,
           providers,
           auth,
+          artifacts,
         }),
         { status: 503, statusText: "Service Unavailable", headers: response.headers },
       );
     }
     return new Response(
-      JSON.stringify({ ...body, providers, ...(auth === null ? {} : { auth }) }),
+      JSON.stringify({
+        ...body,
+        providers,
+        artifacts,
+        ...(auth === null ? {} : { auth }),
+      }),
       {
         status: response.status,
         statusText: response.statusText,
@@ -226,6 +315,7 @@ async function augmentReadiness(
         issues,
         providers,
         ...(auth === null ? {} : { auth }),
+        artifacts,
       }),
       { status: response.status, statusText: response.statusText, headers: response.headers },
     );
@@ -370,6 +460,96 @@ export function createRuntimeHandler(
       authReadiness = { status: "unavailable", issues };
     }
   }
+  // PROD-006 (additive): artifact storage wiring. The R2_* env group
+  // decides the blob backend:
+  //   complete → the R2 adapter over the hand-rolled SigV4 signer
+  //              (construction performs NO I/O — no cold-start blocking);
+  //   absent   → the honest LOCAL-FS TWIN under the same data dir as every
+  //              other Fs store (durable artifacts REQUIRE the R2 group in
+  //              deployment — /readyz and /v1/artifacts/status always say
+  //              which backend is serving);
+  //   partial  → the LOUD unavailable wiring (the operator asked for R2 but
+  //              it cannot be constructed — artifact operations fail 503
+  //              with the stable envelope instead of silently degrading to
+  //              a non-durable local fallback).
+  // Metadata rows always live in the Fs metadata store under the data dir
+  // (the Pg twin lands with PROD-005 — a documented limitation: on a
+  // serverless redeploy the ROWS are tmp-fs-ephemeral even when the BLOBS
+  // are durable in R2).
+  const r2Resolution = resolveR2StorageConfig(envSource());
+  const artifactMaxBytes = maxBytesOrDefault(envSource()["AISE_ARTIFACT_MAX_BYTES"]);
+  let artifacts: ArtifactsRouteOptions;
+  if (r2Resolution.status === "partial") {
+    const reason =
+      "the R2_* environment group is partially configured (missing: " +
+      r2Resolution.missing.join(", ") +
+      ") — set the complete group for durable R2 artifact storage or unset it " +
+      "entirely for the local-fs development fallback";
+    if (options.failFast === true) {
+      throw new RuntimeBootError([`artifact storage initialization failed: ${reason}`]);
+    }
+    logger.error("artifact storage initialization failed; serving degraded artifact routes", {
+      missing: r2Resolution.missing,
+    });
+    artifacts = {
+      service: new ArtifactService({
+        storage: new UnavailableArtifactStorage(reason),
+        metadata: new UnavailableArtifactMetadataStore(reason),
+        limits: { maxBytes: artifactMaxBytes },
+        clock: (): string => new Date().toISOString(),
+      }),
+      logger,
+      accessPredicate: allowAllArtifactAccess,
+    };
+  } else {
+    try {
+      // Both constructors fail fast on an unwritable data dir (the
+      // FsCaptureStore discipline) — INSIDE this try, so a degraded
+      // serverless boot stays honest instead of throwing out of the
+      // handler construction.
+      const storage: ArtifactStorage =
+        r2Resolution.status === "complete"
+          ? new R2ArtifactStorage(r2Resolution.config)
+          : new FsArtifactStorage(dataDir);
+      artifacts = {
+        service: new ArtifactService({
+          storage,
+          metadata: new FsArtifactMetadataStore(dataDir),
+          limits: { maxBytes: artifactMaxBytes },
+          clock: (): string => new Date().toISOString(),
+        }),
+        logger,
+        accessPredicate: allowAllArtifactAccess,
+      };
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      if (options.failFast === true) {
+        throw new RuntimeBootError([
+          `artifact metadata store initialization failed under data dir '${dataDir}': ${reason}`,
+        ]);
+      }
+      // Serverless boot honesty: serve degraded — artifact routes fail
+      // loudly per request with the reason; /healthz and /readyz stay honest.
+      logger.error("artifact metadata store initialization failed; serving degraded artifact routes", {
+        dataDir,
+        error: reason,
+      });
+      artifacts = {
+        service: new ArtifactService({
+          storage: new UnavailableArtifactStorage(
+            `the configured data directory '${dataDir}' is not writable — set AISE_DATA_DIR to a writable directory (serverless functions: /tmp is the only writable path)`,
+          ),
+          metadata: new UnavailableArtifactMetadataStore(
+            `the configured data directory '${dataDir}' is not writable — set AISE_DATA_DIR to a writable directory (serverless functions: /tmp is the only writable path)`,
+          ),
+          limits: { maxBytes: artifactMaxBytes },
+          clock: (): string => new Date().toISOString(),
+        }),
+        logger,
+        accessPredicate: allowAllArtifactAccess,
+      };
+    }
+  }
 
   const core = createRequestHandler({
     envSource,
@@ -379,6 +559,7 @@ export function createRuntimeHandler(
     // PROD-004: the shared identity service (only when auth built it —
     // additive; the core's lazy default wiring is untouched otherwise).
     ...(identityRoutes === undefined ? {} : { identity: identityRoutes }),
+    artifacts,
   });
 
   // The CORS allowlist is resolved once at construction (a cold-start
