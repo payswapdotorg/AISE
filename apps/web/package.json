@@ -3,13 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "AISE web workspace — foundation placeholder. No product UI (that is AISE-021).",
+  "description": "AISE product web shell — dashboard, projects, SiteTwin/evidence, BOQ Lens, engineering case, intervention studio and settings over the frozen apps/web libraries.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "vite": "^8.3.0"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   }
 }
