@@ -11,6 +11,7 @@ describe("declared schema", () => {
     expect(ENV_RULES.map((rule) => rule.name).sort()).toEqual([
       "AISE_DATA_DIR",
       "AISE_WEB_PORT",
+      "DATABASE_URL",
       "HOST",
       "LOG_LEVEL",
       "PORT",
@@ -25,10 +26,10 @@ describe("declared schema", () => {
     ).toEqual(["AISE_DATA_DIR"]);
   });
 
-  test("only WORLDSCULPT_API_KEY is an optional provider credential", () => {
+  test("only WORLDSCULPT_API_KEY and DATABASE_URL are optional provider credentials", () => {
     expect(
       ENV_RULES.filter((rule) => rule.optionalProvider === true).map((rule) => rule.name),
-    ).toEqual(["WORLDSCULPT_API_KEY"]);
+    ).toEqual(["WORLDSCULPT_API_KEY", "DATABASE_URL"]);
   });
 });
 
@@ -63,6 +64,16 @@ describe("isFormatValid", () => {
     expect(isFormatValid("path", "  ")).toBe(false);
     expect(isFormatValid("secret", "some-token")).toBe(true);
     expect(isFormatValid("secret", "")).toBe(false);
+  });
+
+  test("postgres-url accepts postgres:// and postgresql:// URLs with a host, rejects everything else", () => {
+    expect(isFormatValid("postgres-url", "postgres://user:pass@host.example/db?sslmode=require")).toBe(true);
+    expect(isFormatValid("postgres-url", "postgresql://neon.db/neondb")).toBe(true);
+    expect(isFormatValid("postgres-url", "postgres://localhost:5432/aise")).toBe(true);
+    expect(isFormatValid("postgres-url", "mysql://user@host/db")).toBe(false);
+    expect(isFormatValid("postgres-url", "postgres://")).toBe(false);
+    expect(isFormatValid("postgres-url", "not a url")).toBe(false);
+    expect(isFormatValid("postgres-url", "")).toBe(false);
   });
 });
 
@@ -140,6 +151,33 @@ describe("evaluateEnv", () => {
     expect(report.checks.find((check) => check.name === "WORLDSCULPT_API_KEY")?.status).toBe(
       "invalid",
     );
+  });
+
+  test("DATABASE_URL: missing is disabled (optional) = Fs persistence mode", () => {
+    const report = evaluateEnv({}, "dev");
+    const check = report.checks.find((c) => c.name === "DATABASE_URL");
+    expect(check?.status).toBe("disabled-optional");
+    expect(check?.detail).toBe("disabled (optional)");
+    expect(report.ok).toBe(true);
+  });
+
+  test("DATABASE_URL: a valid URL is enabled (optional) and never echoed in detail", () => {
+    const url = "postgres://user:secret-password@ep-example-pooler.example.neon.tech/neondb?sslmode=require";
+    const report = evaluateEnv({ DATABASE_URL: url }, "dev");
+    const check = report.checks.find((c) => c.name === "DATABASE_URL");
+    expect(check?.status).toBe("enabled-optional");
+    expect(check?.detail).not.toContain(url);
+    expect(check?.detail).not.toContain("secret-password");
+    expect(report.ok).toBe(true);
+  });
+
+  test("DATABASE_URL: a non-postgres scheme is a deterministic failure that never echoes the value", () => {
+    const report = evaluateEnv({ DATABASE_URL: "mysql://user:leaked@host/db" }, "dev");
+    expect(report.ok).toBe(false);
+    expect(report.issues).toEqual([
+      "DATABASE_URL: expected a postgres:// or postgresql:// connection URL with a host",
+    ]);
+    expect(report.issues[0]).not.toContain("leaked");
   });
 
   test("a well-formed environment passes in both modes and echoes non-secret values only", () => {

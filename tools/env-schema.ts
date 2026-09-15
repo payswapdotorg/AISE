@@ -33,7 +33,7 @@ export type ValidationMode = "dev" | "start";
 
 export const VALIDATION_MODES: readonly ValidationMode[] = ["dev", "start"] as const;
 
-export type EnvFormat = "port" | "host" | "log-level" | "path" | "secret";
+export type EnvFormat = "port" | "host" | "log-level" | "path" | "secret" | "postgres-url";
 
 /** Anything that can be read like process.env. */
 export type EnvRecord = Record<string, string | undefined>;
@@ -111,6 +111,19 @@ export const ENV_RULES: readonly EnvVarRule[] = [
     requiredIn: [],
     optionalProvider: true,
   },
+  {
+    name: "DATABASE_URL",
+    description:
+      "Postgres (Neon) connection URL — PRESENCE SWITCHES the API's six wired " +
+      "domain stores (capture, missions, evidence, boq, gaps, cases) from the " +
+      "local file-system stores to Postgres persistence (PROD-005); unset = " +
+      "exactly today's Fs behavior",
+    consumer: "backend/api pg persistence family (PROD-005)",
+    format: "postgres-url",
+    defaults: { dev: "", start: "" },
+    requiredIn: [],
+    optionalProvider: true,
+  },
 ] as const;
 
 const LOG_LEVELS: readonly string[] = ["debug", "info", "warn", "error"];
@@ -121,6 +134,7 @@ const FORMAT_EXPECTATIONS: Readonly<Record<EnvFormat, string>> = {
   "log-level": "expected one of debug|info|warn|error",
   path: "expected a non-empty directory path",
   secret: "expected a non-empty value",
+  "postgres-url": "expected a postgres:// or postgresql:// connection URL with a host",
 };
 
 export function formatExpectation(format: EnvFormat): string {
@@ -150,6 +164,17 @@ export function isFormatValid(format: EnvFormat, value: string): boolean {
       return value.trim() !== "";
     case "secret":
       return value.trim() !== "";
+    case "postgres-url": {
+      // Same scheme/host contract the API's own pg connection authority
+      // enforces (backend/api/src/pg/connection.ts); never inspects or
+      // echoes the credentials.
+      try {
+        const url = new URL(value);
+        return (url.protocol === "postgres:" || url.protocol === "postgresql:") && url.host !== "";
+      } catch {
+        return false;
+      }
+    }
   }
 }
 
