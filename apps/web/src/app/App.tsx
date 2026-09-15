@@ -8,14 +8,27 @@
  * never demo data behind a "checking" badge: the mode is resolved before
  * any surface loads, and every surface's resource key includes the mode so
  * a mode change re-loads honestly.
+ *
+ * PROD-004 (additive): when the API is available the app ALSO probes the
+ * session (`/v1/auth/whoami`). When the deployment's auth layer is active
+ * and no session exists, the web GATE renders (sign-in form + "Enter demo")
+ * BEFORE the shell instead of the surfaces; a signed-in session renders the
+ * shell with the user menu; a deployment without the auth layer (whoami
+ * 404) renders exactly the pre-auth app. ANY surface 401 re-arms the gate
+ * (the session died mid-flight). When the API is unavailable the app keeps
+ * its honest demo-dataset behavior — the gate never blocks the offline
+ * fallback.
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import type { ReactNode } from "react";
 import { probeApi, type ApiStatus } from "./api";
+import { enterDemoSession, probeAuth, signInPrincipal, signOutSession } from "./api";
 import { AppEnvironmentContext, type AppEnvironment } from "./environment";
 import { AppShell, useHashRoute } from "./AppShell";
+import { AuthGate, UserMenu, type GateActions } from "./AuthGate";
 import { formatRoute, routeKey, type Route } from "./router";
+import { gateAdmitsSurfaces, gateReducer, initialGateState } from "./gate";
 import { LoadingPanel } from "./components";
 import { Dashboard } from "./surfaces/Dashboard";
 import { Projects } from "./surfaces/Projects";
@@ -35,6 +48,7 @@ export function App(): ReactNode {
   const [apiStatus, setApiStatus] = useState<ApiStatus | null>(null);
   const [probeAttempt, setProbeAttempt] = useState(1);
   const [principalId, setPrincipalId] = useState("user-alice");
+  const [gate, dispatch] = useReducer(gateReducer, undefined, initialGateState);
 
   useEffect(() => {
     let cancelled = false;
@@ -53,22 +67,123 @@ export function App(): ReactNode {
     setProbeAttempt((attempt) => attempt + 1);
   }, []);
 
+  // PROD-004: probe the session ONLY when the API is available (an
+  // unavailable API keeps the honest demo-dataset fallback — no gate).
+  // The reducer ignores late answers after a retry (deterministic machine).
+  const apiAvailable = apiStatus !== null && apiStatus.mode === "available";
+  useEffect(() => {
+    if (!apiAvailable || gate.status !== "probing") {
+      return;
+    }
+    let cancelled = false;
+    void probeAuth(browserFetch).then((probe) => {
+      if (!cancelled) {
+        dispatch({ type: "probe-settled", probe });
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [apiAvailable, gate.status]);
+
+  // The environment's transport: the browser fetch WRAPPED so any surface
+  // 401 re-arms the gate (the auth-aware seam — api.ts's isUnauthorized is
+  // the typed signal; here it is wired to the state machine). The request
+  // runs ONCE; only the response is observed.
+  const gatedFetch = useCallback(
+    (input: string, init?: RequestInit): Promise<Response> => {
+      return browserFetch(input, init).then((response) => {
+        if (response.status === 401) {
+          dispatch({ type: "unauthorized" });
+        }
+        return response;
+      });
+    },
+    [],
+  );
+
   const environment = useMemo<AppEnvironment>(
-    () => ({ apiStatus, fetchImpl: browserFetch, principalId }),
-    [apiStatus, principalId],
+    () => ({ apiStatus, fetchImpl: apiAvailable ? gatedFetch : browserFetch, principalId }),
+    [apiStatus, apiAvailable, principalId, gatedFetch],
   );
 
   const route = useHashRoute();
 
+  // The gate's intents (async results land as typed events — the components
+  // stay pure projections).
+  const gateActions = useMemo<GateActions>(
+    () => ({
+      onSignIn: (id: string) => {
+        dispatch({ type: "sign-in-submitted" });
+        void signInPrincipal(browserFetch, id).then((result) => {
+          dispatch(
+            result.ok
+              ? { type: "action-succeeded", principal: result.principal }
+              : { type: "action-failed", failure: result.failure },
+          );
+        });
+      },
+      onEnterDemo: () => {
+        dispatch({ type: "demo-submitted" });
+        void enterDemoSession(browserFetch).then((result) => {
+          dispatch(
+            result.ok
+              ? { type: "action-succeeded", principal: result.principal }
+              : { type: "action-failed", failure: result.failure },
+          );
+        });
+      },
+      onRetry: () => {
+        dispatch({ type: "retry-probe" });
+      },
+    }),
+    [],
+  );
+
+  const signOut = useCallback(() => {
+    dispatch({ type: "sign-out-submitted" });
+    void signOutSession(browserFetch).then((result) => {
+      dispatch(
+        result.ok
+          ? { type: "action-succeeded", principal: null }
+          : { type: "action-failed", failure: result.failure },
+      );
+    });
+  }, []);
+
+  // The gate renders INSTEAD of the shell only when the auth layer is
+  // active and blocking (signed-out / probe-error). Every other state is
+  // the additive pass-through.
+  const gateBlocks = apiAvailable && !gateAdmitsSurfaces(gate);
+  const userMenu =
+    gate.status === "signed-in" && gate.principal !== null ? (
+      <UserMenu
+        principal={gate.principal}
+        signingOut={gate.submitting === "sign-out"}
+        onSignOut={signOut}
+      />
+    ) : null;
+
   return (
     <AppEnvironmentContext.Provider value={environment}>
-      <AppShell route={route} apiStatus={apiStatus}>
-        {apiStatus === null ? (
-          <LoadingPanel label="Checking the API on this origin…" />
-        ) : (
-          <RoutedSurface route={route} principalId={principalId} onPrincipalChange={setPrincipalId} onReprobe={reprobe} />
-        )}
-      </AppShell>
+      {gateBlocks ? (
+        <AuthGate state={gate} actions={gateActions} />
+      ) : (
+        <AppShell route={route} apiStatus={apiStatus} userMenu={userMenu}>
+          {apiStatus === null ? (
+            <LoadingPanel label="Checking the API on this origin…" />
+          ) : apiAvailable && gate.status === "probing" ? (
+            <LoadingPanel label="Checking your session on this origin…" />
+          ) : (
+            <RoutedSurface
+              route={route}
+              principalId={principalId}
+              onPrincipalChange={setPrincipalId}
+              onReprobe={reprobe}
+            />
+          )}
+        </AppShell>
+      )}
     </AppEnvironmentContext.Provider>
   );
 }

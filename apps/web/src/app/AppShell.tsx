@@ -95,10 +95,13 @@ function ApiChip({ status }: { readonly status: ApiStatus | null }): ReactNode {
 export function AppShell({
   route,
   apiStatus,
+  userMenu,
   children,
 }: {
   readonly route: Route;
   readonly apiStatus: ApiStatus | null;
+  /** PROD-004 (additive): the signed-in user menu; absent = pre-auth chrome. */
+  readonly userMenu?: ReactNode;
   readonly children: ReactNode;
 }): ReactNode {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -122,6 +125,7 @@ export function AppShell({
             <span className="brand-tag">AI Site Engineer — product shell</span>
           </a>
           <span className="header-spacer" />
+          {userMenu === undefined ? null : userMenu}
           <ApiChip status={apiStatus} />
           <button
             type="button"

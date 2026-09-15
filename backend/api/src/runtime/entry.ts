@@ -44,6 +44,16 @@ import { resolveDataDir, validateEnv, type EnvRecord, type EnvSource } from "../
 import { createLogger, type Logger } from "../lib/log";
 import { createCaptureGateway, type CaptureGateway } from "../capture/gateway";
 import { FsCaptureStore, type CaptureStore } from "../capture/store";
+import {
+  createAuthLayer,
+  createDegradedAuthLayer,
+  FsSessionStore,
+  parseAuthConfig,
+  type AuthLayer,
+  type AuthReadinessStatus,
+} from "../auth";
+import { FsIdentityStore } from "../identity/store";
+import { IdentityService } from "../identity/service";
 import { createRequestHandler, SERVICE_NAME } from "../server";
 import { createCorsLayer } from "./cors";
 import { errorResponse, translateErrorResponse } from "./errors";
@@ -134,8 +144,20 @@ function isRecord(value: unknown): value is Record<string, unknown> {
  *
  * Any other /readyz response shape (e.g. the core's 405 for non-GET) passes
  * through unchanged and is handled by the generic error envelope.
+ *
+ * PROD-004 (additive): when the auth layer is in play (enabled — or enabled
+ * but unbuildable), the answer ALSO carries an `auth` status object
+ * ({status:"enabled"|"unavailable", mode?, issues?} — names and expectations
+ * only, never values). When auth is DISABLED the answer is byte-identical
+ * to the pre-auth contract (the additive discipline). An enabled-but-broken
+ * auth layer is a real not-ready condition: the 200 becomes the documented
+ * 503 envelope with the auth issues merged in.
  */
-async function augmentReadiness(response: Response, env: EnvRecord): Promise<Response> {
+async function augmentReadiness(
+  response: Response,
+  env: EnvRecord,
+  auth: AuthReadinessStatus | null,
+): Promise<Response> {
   const contentType = response.headers.get("content-type") ?? "";
   if (!contentType.includes("application/json")) {
     return response;
@@ -149,12 +171,39 @@ async function augmentReadiness(response: Response, env: EnvRecord): Promise<Res
     return response;
   }
   const providers = evaluateOptionalProviders(env);
-  if (response.status === 200 && isRecord(body) && body["ok"] === true) {
-    return new Response(JSON.stringify({ ...body, providers }), {
-      status: response.status,
-      statusText: response.statusText,
-      headers: response.headers,
-    });
+  const authUnavailable = auth !== null && auth.status === "unavailable";
+  if (
+    (response.status === 200 || authUnavailable) &&
+    isRecord(body) &&
+    body["ok"] === true
+  ) {
+    if (authUnavailable) {
+      // Enabled but unbuildable: the service cannot serve /v1 honestly —
+      // readiness flips to the documented 503 envelope with every issue.
+      const requestId = response.headers.get("x-request-id");
+      const issues = [...(auth?.issues ?? [])];
+      return new Response(
+        JSON.stringify({
+          error: {
+            code: "not_ready",
+            message: "Service configuration is not ready.",
+            ...(requestId === null ? {} : { requestId }),
+          },
+          issues,
+          providers,
+          auth,
+        }),
+        { status: 503, statusText: "Service Unavailable", headers: response.headers },
+      );
+    }
+    return new Response(
+      JSON.stringify({ ...body, providers, ...(auth === null ? {} : { auth }) }),
+      {
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers,
+      },
+    );
   }
   if (
     response.status === 503 &&
@@ -163,6 +212,10 @@ async function augmentReadiness(response: Response, env: EnvRecord): Promise<Res
     Array.isArray(body["issues"])
   ) {
     const requestId = response.headers.get("x-request-id");
+    const issues = [
+      ...(body["issues"] as unknown[]).map((issue) => String(issue)),
+      ...(authUnavailable ? (auth?.issues ?? []) : []),
+    ];
     return new Response(
       JSON.stringify({
         error: {
@@ -170,8 +223,9 @@ async function augmentReadiness(response: Response, env: EnvRecord): Promise<Res
           message: "Service configuration is not ready.",
           ...(requestId === null ? {} : { requestId }),
         },
-        issues: body["issues"],
+        issues,
         providers,
+        ...(auth === null ? {} : { auth }),
       }),
       { status: response.status, statusText: response.statusText, headers: response.headers },
     );
@@ -231,11 +285,100 @@ export function createRuntimeHandler(
     });
   }
 
+  // PROD-004 (additive — the auth/tenant-safety layer). Built ONLY when
+  // AISE_AUTH=1|true; unset/0/false leaves this block completely inert and
+  // the pipeline byte-identical to the pre-auth contract. The layer wraps
+  // THE CORE (never server.ts): it owns /v1/auth/** and enforces sessions
+  // + the typed tenant predicate on every other /v1 request. The identity
+  // service is constructed EAGERLY and shared with the core (the
+  // `identity` handler option — the core's own injection seam, no changes
+  // to its lazy default when auth is off) so the tenancy registry has ONE
+  // instance per process, per the identity store's single-writer
+  // assumption. Fail-closed boot honesty, mirroring the capture store:
+  // an enabled-but-unbuildable layer (missing AUTH_SECRET, unwritable
+  // session dir) refuses to boot under failFast (RuntimeBootError) and
+  // otherwise serves the honest degraded mode (every /v1 request 503 with
+  // the issues; /healthz and /readyz stay honest).
+  const authConfigResult = parseAuthConfig(envSource());
+  let auth: AuthLayer | null = null;
+  let authReadiness: AuthReadinessStatus | null = null;
+  let identityRoutes:
+    | { readonly service: IdentityService; readonly logger: Logger }
+    | undefined;
+  const authWanted =
+    (!authConfigResult.ok) ||
+    (authConfigResult.ok && authConfigResult.config.enabled);
+  if (authWanted) {
+    const issues = authConfigResult.ok ? [] : [...authConfigResult.issues];
+    if (authConfigResult.ok) {
+      try {
+        const identityStore = new FsIdentityStore(dataDir);
+        const identityService = new IdentityService({
+          store: identityStore,
+          clock: (): string => new Date().toISOString(),
+        });
+        const sessionStore = new FsSessionStore(dataDir, logger);
+        auth = createAuthLayer({
+          config: authConfigResult.config,
+          store: sessionStore,
+          directory: identityStore,
+          identity: identityService,
+          clock: (): string => new Date().toISOString(),
+          logger,
+        });
+        identityRoutes = { service: identityService, logger };
+        authReadiness = { status: "enabled", mode: authConfigResult.config.mode };
+        // The deterministic boot housekeeping (never blocks construction —
+        // the sweep and the demo bootstrap are fast, and failures here are
+        // logged, never silent):
+        void auth
+          .sweep()
+          .then((report) => {
+            if (report.removedSessionIds.length > 0) {
+              logger.info("boot session sweep removed expired sessions", {
+                considered: report.considered,
+                removed: report.removedSessionIds.length,
+              });
+            }
+          })
+          .catch((error: unknown) => {
+            logger.error("boot session sweep failed", {
+              error: error instanceof Error ? error.message : String(error),
+            });
+          });
+        void auth
+          .ensureDemo()
+          .catch((error: unknown) => {
+            logger.error("demo tenant bootstrap failed", {
+              error: error instanceof Error ? error.message : String(error),
+            });
+          });
+      } catch (error) {
+        const reason = error instanceof Error ? error.message : String(error);
+        issues.push(`auth session store initialization failed: ${reason}`);
+      }
+    }
+    if (auth === null) {
+      if (options.failFast === true) {
+        throw new RuntimeBootError(issues.length > 0 ? issues : ["auth layer failed to build"]);
+      }
+      logger.error("auth layer enabled but unbuildable; serving degraded /v1", { issues });
+      auth = createDegradedAuthLayer({
+        code: authConfigResult.ok ? "auth_store_unavailable" : "auth_not_configured",
+        issues,
+      });
+      authReadiness = { status: "unavailable", issues };
+    }
+  }
+
   const core = createRequestHandler({
     envSource,
     version,
     logger,
     capture,
+    // PROD-004: the shared identity service (only when auth built it —
+    // additive; the core's lazy default wiring is untouched otherwise).
+    ...(identityRoutes === undefined ? {} : { identity: identityRoutes }),
   });
 
   // The CORS allowlist is resolved once at construction (a cold-start
@@ -252,9 +395,19 @@ export function createRuntimeHandler(
       if (preflight !== null) {
         return preflight;
       }
-      let response = await core(request);
+      // PROD-004: the auth layer sits between CORS and the core (preflights
+      // never authenticate; /healthz and /readyz pass through untouched).
+      let forwarded = request;
+      if (auth !== null) {
+        const outcome = await auth.handle(request, requestId);
+        if (outcome.kind === "response") {
+          return cors.decorate(request, outcome.response);
+        }
+        forwarded = outcome.request;
+      }
+      let response = await core(forwarded);
       if (new URL(request.url).pathname === "/readyz") {
-        response = await augmentReadiness(response, envSource());
+        response = await augmentReadiness(response, envSource(), authReadiness);
       }
       response = await translateErrorResponse(response);
       return cors.decorate(request, response);

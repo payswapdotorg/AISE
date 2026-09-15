@@ -33,7 +33,16 @@ export type ValidationMode = "dev" | "start";
 
 export const VALIDATION_MODES: readonly ValidationMode[] = ["dev", "start"] as const;
 
-export type EnvFormat = "port" | "host" | "log-level" | "path" | "secret";
+export type EnvFormat =
+  | "port"
+  | "host"
+  | "log-level"
+  | "path"
+  | "secret"
+  | "auth-toggle"
+  | "auth-mode"
+  | "ttl-seconds"
+  | "identifier";
 
 /** Anything that can be read like process.env. */
 export type EnvRecord = Record<string, string | undefined>;
@@ -53,6 +62,18 @@ export interface EnvVarRule {
    * `disabled (optional)`. Present-but-empty IS an error (malformed).
    */
   readonly optionalProvider?: boolean;
+  /**
+   * PROD-004: the variable is required only when another toggle variable is
+   * ENABLED (e.g. AUTH_SECRET is required when AISE_AUTH=1|true). While the
+   * toggle is unset or disabled, a missing value is a documented default —
+   * never an error. Mirrors the backend auth layer's own fail-closed config
+   * semantics (backend/api/src/auth/config.ts — three validation surfaces,
+   * one documented rule).
+   */
+  readonly requiredWhen?: {
+    readonly variable: string;
+    readonly enabledValues: readonly string[];
+  };
 }
 
 /**
@@ -111,9 +132,55 @@ export const ENV_RULES: readonly EnvVarRule[] = [
     requiredIn: [],
     optionalProvider: true,
   },
+  {
+    name: "AISE_AUTH",
+    description: "Enable the auth/tenant-safety layer (1|true; 0|false/unset = disabled, zero behavior change)",
+    consumer: "backend/api auth layer (PROD-004 contract)",
+    format: "auth-toggle",
+    defaults: { dev: "unset (auth layer disabled)", start: "unset (auth layer disabled)" },
+    requiredIn: [],
+  },
+  {
+    name: "AUTH_SECRET",
+    description: "HMAC key for session tokens — REQUIRED when AISE_AUTH=1, never committed, never echoed",
+    consumer: "backend/api auth layer (PROD-004 contract)",
+    format: "secret",
+    defaults: { dev: "", start: "" },
+    requiredIn: [],
+    requiredWhen: { variable: "AISE_AUTH", enabledValues: ["1", "true"] },
+  },
+  {
+    name: "AISE_AUTH_MODE",
+    description: "Auth mode: required (every /v1 request needs a session) | demo-open (anonymous demo-tenant reads)",
+    consumer: "backend/api auth layer (PROD-004 contract)",
+    format: "auth-mode",
+    defaults: { dev: "demo-open", start: "demo-open" },
+    requiredIn: [],
+  },
+  {
+    name: "AISE_SESSION_TTL_SECONDS",
+    description: "Session lifetime in seconds (60..2592000; default 604800 = 7 days)",
+    consumer: "backend/api auth layer (PROD-004 contract)",
+    format: "ttl-seconds",
+    defaults: { dev: "604800", start: "604800" },
+    requiredIn: [],
+  },
+  {
+    name: "AISE_DEMO_PRINCIPAL",
+    description: "The deterministic demo principal id the 'Enter demo' path mints a session for",
+    consumer: "backend/api auth layer (PROD-004 contract)",
+    format: "identifier",
+    defaults: { dev: "demo-evaluator", start: "demo-evaluator" },
+    requiredIn: [],
+  },
 ] as const;
 
 const LOG_LEVELS: readonly string[] = ["debug", "info", "warn", "error"];
+
+const AUTH_MODE_VALUES: readonly string[] = ["required", "demo-open"];
+const AUTH_TOGGLE_VALUES: readonly string[] = ["1", "true", "0", "false"];
+const MIN_SESSION_TTL_SECONDS = 60;
+const MAX_SESSION_TTL_SECONDS = 2_592_000;
 
 const FORMAT_EXPECTATIONS: Readonly<Record<EnvFormat, string>> = {
   port: "expected an integer between 1 and 65535",
@@ -121,6 +188,10 @@ const FORMAT_EXPECTATIONS: Readonly<Record<EnvFormat, string>> = {
   "log-level": "expected one of debug|info|warn|error",
   path: "expected a non-empty directory path",
   secret: "expected a non-empty value",
+  "auth-toggle": "expected 1|true|0|false",
+  "auth-mode": "expected required|demo-open",
+  "ttl-seconds": "expected an integer between 60 and 2592000 (seconds)",
+  identifier: "expected a non-empty value (1..256 characters)",
 };
 
 export function formatExpectation(format: EnvFormat): string {
@@ -150,7 +221,33 @@ export function isFormatValid(format: EnvFormat, value: string): boolean {
       return value.trim() !== "";
     case "secret":
       return value.trim() !== "";
+    case "auth-toggle":
+      return AUTH_TOGGLE_VALUES.includes(value.trim().toLowerCase());
+    case "auth-mode":
+      return AUTH_MODE_VALUES.includes(value.trim().toLowerCase());
+    case "ttl-seconds": {
+      if (!/^\d+$/.test(value.trim())) {
+        return false;
+      }
+      const ttl = Number.parseInt(value.trim(), 10);
+      return ttl >= MIN_SESSION_TTL_SECONDS && ttl <= MAX_SESSION_TTL_SECONDS;
+    }
+    case "identifier": {
+      const trimmed = value.trim();
+      return trimmed.length >= 1 && trimmed.length <= 256;
+    }
   }
+}
+
+/** True when a toggle variable is set to one of its enabled values (PROD-004). */
+function isToggleEnabled(
+  env: EnvRecord,
+  toggle: { readonly variable: string; readonly enabledValues: readonly string[] },
+): boolean {
+  const value = env[toggle.variable];
+  return (
+    value !== undefined && toggle.enabledValues.includes(value.trim().toLowerCase())
+  );
 }
 
 export type CheckStatus =
@@ -207,6 +304,23 @@ export function evaluateEnv(env: EnvRecord, mode: ValidationMode): EnvReport {
         checks.push({ name: rule.name, status: "disabled-optional", detail: "disabled (optional)" });
         continue;
       }
+      if (rule.requiredWhen !== undefined && isToggleEnabled(env, rule.requiredWhen)) {
+        // PROD-004 required-when-enabled semantics: enabling the auth layer
+        // makes its secret REQUIRED — a deterministic failure naming the
+        // variable and the expectation, never the value.
+        const issue = `${rule.name}: required when ${rule.requiredWhen.variable}=1 — set it to a long random string (see docs/INSTALL.md §Auth)`;
+        issues.push(issue);
+        checks.push({ name: rule.name, status: "missing", detail: issue });
+        continue;
+      }
+      if (rule.requiredWhen !== undefined) {
+        checks.push({
+          name: rule.name,
+          status: "ok-default",
+          detail: `not required while ${rule.requiredWhen.variable} is unset or disabled`,
+        });
+        continue;
+      }
       checks.push({
         name: rule.name,
         status: "ok-default",
@@ -227,8 +341,12 @@ export function evaluateEnv(env: EnvRecord, mode: ValidationMode): EnvReport {
       continue;
     }
     // Non-secret values are echoed so the operator sees the effective config;
-    // secrets never are.
-    checks.push({ name: rule.name, status: "ok", detail: value });
+    // secrets never are (a set secret reports "set", nothing more).
+    checks.push({
+      name: rule.name,
+      status: "ok",
+      detail: rule.format === "secret" ? "set (value hidden)" : value,
+    });
   }
 
   return { mode, checks, issues, ok: issues.length === 0 };

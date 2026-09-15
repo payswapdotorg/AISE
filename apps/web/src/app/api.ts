@@ -863,3 +863,164 @@ export async function loadComparisonsLive(
     };
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* PROD-004 — the auth endpoints (same-origin /v1/auth/**)             */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The client-visible session principal: DISPLAY-ONLY vocabulary. The server
+ * never sends anything beyond the display name, the role label and the
+ * session kind (no membership map, no permission grants, no token material
+ * — those are server-side session state).
+ */
+export interface SessionPrincipal {
+  readonly displayName: string;
+  readonly roleLabel: string;
+  readonly kind: "user" | "demo";
+}
+
+/** Structural check for a /v1/auth/** principal payload. */
+export function validateSessionPrincipal(value: unknown): SessionPrincipal {
+  const defects: string[] = [];
+  if (!isRecord(value)) {
+    throw new Error("session principal must be a JSON object");
+  }
+  requireString(value.displayName, "displayName", defects);
+  requireString(value.roleLabel, "roleLabel", defects);
+  if (value.kind !== "user" && value.kind !== "demo") {
+    defects.push("kind must be 'user' or 'demo'");
+  }
+  if (defects.length > 0) {
+    throw new Error(`session principal is not structurally valid: ${defects.join("; ")}`);
+  }
+  return value as unknown as SessionPrincipal;
+}
+
+/** True when a typed failure is an HTTP 401 (the gate re-appears). */
+export function isUnauthorized(failure: ApiFailure): boolean {
+  return failure.kind === "http" && failure.status === 401;
+}
+
+/**
+ * The outcome of the app's session probe (`GET /v1/auth/whoami`):
+ *
+ *  - `signed-in`  — a valid session answered with its display principal;
+ *  - `signed-out` — 401: the auth layer is ACTIVE but no session is present
+ *    (the gate must render);
+ *  - `inactive`   — 404: this deployment runs WITHOUT the auth layer (the
+ *    pre-auth contract) — the app renders exactly as before, no gate;
+ *  - `error`      — anything else (network/5xx/invalid shape): the probe
+ *    could not establish the auth mode; the gate renders its error state
+ *    with an explicit retry (never a silent bypass).
+ */
+export type AuthProbe =
+  | { readonly kind: "signed-in"; readonly principal: SessionPrincipal }
+  | { readonly kind: "signed-out" }
+  | { readonly kind: "inactive" }
+  | { readonly kind: "error"; readonly failure: ApiFailure };
+
+/** The app's session probe (never throws). */
+export async function probeAuth(fetchImpl: FetchLike): Promise<AuthProbe> {
+  const endpoint = "/v1/auth/whoami";
+  const result = await fetchJson(fetchImpl, endpoint);
+  if (result.ok) {
+    const payload = result.value as Record<string, unknown>;
+    if (!isRecord(payload) || payload.ok !== true) {
+      return {
+        kind: "error",
+        failure: { kind: "invalid", detail: `${endpoint} did not return the expected envelope` },
+      };
+    }
+    try {
+      return { kind: "signed-in", principal: validateSessionPrincipal(payload.principal) };
+    } catch (error) {
+      return {
+        kind: "error",
+        failure: {
+          kind: "invalid",
+          detail: error instanceof Error ? error.message : "principal payload failed validation",
+        },
+      };
+    }
+  }
+  if (result.failure.kind === "http") {
+    if (result.failure.status === 401) {
+      return { kind: "signed-out" };
+    }
+    if (result.failure.status === 404) {
+      return { kind: "inactive" };
+    }
+  }
+  return { kind: "error", failure: result.failure };
+}
+
+/** Extract a validated principal from a successful auth-endpoint envelope. */
+function principalOf(result: JsonResult, endpoint: string):
+  | { ok: true; principal: SessionPrincipal }
+  | { ok: false; failure: ApiFailure } {
+  if (!result.ok) {
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  if (!isRecord(payload) || payload.ok !== true) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: `${endpoint} did not return the expected { ok: true, … } envelope`,
+      },
+    };
+  }
+  try {
+    return { ok: true, principal: validateSessionPrincipal(payload.principal) };
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: error instanceof Error ? error.message : "principal payload failed validation",
+      },
+    };
+  }
+}
+
+/**
+ * Sign in as a REGISTERED principal (passwordless local mode — the identity
+ * model carries no credentials and the auth layer refuses to invent a second
+ * authority; see docs/INSTALL.md §Auth). `POST /v1/auth/sessions` sets the
+ * httpOnly session cookie server-side; this client only reports the outcome.
+ */
+export async function signInPrincipal(
+  fetchImpl: FetchLike,
+  principalId: string,
+): Promise<{ ok: true; principal: SessionPrincipal } | { ok: false; failure: ApiFailure }> {
+  const endpoint = "/v1/auth/sessions";
+  const result = await fetchJson(fetchImpl, endpoint, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ principalId }),
+  });
+  return principalOf(result, endpoint);
+}
+
+/** "Enter demo": mint the controlled, contained demo session. */
+export async function enterDemoSession(
+  fetchImpl: FetchLike,
+): Promise<{ ok: true; principal: SessionPrincipal } | { ok: false; failure: ApiFailure }> {
+  const endpoint = "/v1/auth/demo";
+  const result = await fetchJson(fetchImpl, endpoint, { method: "POST" });
+  return principalOf(result, endpoint);
+}
+
+/** Log out: delete the server-side session and clear the cookie. */
+export async function signOutSession(
+  fetchImpl: FetchLike,
+): Promise<{ ok: true } | { ok: false; failure: ApiFailure }> {
+  const endpoint = "/v1/auth/sessions/current";
+  const result = await fetchJson(fetchImpl, endpoint, { method: "DELETE" });
+  if (result.ok) {
+    return { ok: true };
+  }
+  return { ok: false, failure: result.failure };
+}

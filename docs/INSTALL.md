@@ -7,7 +7,7 @@ has been executed and verified against a fresh checkout of this repository.
 
 For the productization governance context see `docs/productization-roadmap.md`;
 for what is deliberately NOT included at this stage see
-[§11 What is NOT included](#11-what-is-not-included) below.
+[§12 What is NOT included](#12-what-is-not-included) below.
 
 ## Contents
 
@@ -15,14 +15,15 @@ for what is deliberately NOT included at this stage see
 2. [What you are installing](#2-what-you-are-installing)
 3. [Install from a clean checkout](#3-install-from-a-clean-checkout)
 4. [Environment configuration](#4-environment-configuration)
-5. [Daily development — `bun run dev`](#5-daily-development--bun-run-dev)
-6. [Production-like local start — `bun run start`](#6-production-like-local-start--bun-run-start)
-7. [Smoke verification — `bun run smoke`](#7-smoke-verification--bun-run-smoke)
-8. [The verification gate — `bun run verify`](#8-the-verification-gate--bun-run-verify)
-9. [Ports and URLs reference](#9-ports-and-urls-reference)
-10. [Troubleshooting](#10-troubleshooting)
-11. [What is NOT included](#11-what-is-not-included)
-12. [Android workspace (optional, not part of the install)](#12-android-workspace-optional-not-part-of-the-install)
+5. [Auth, sessions and the demo path](#5-auth-sessions-and-the-demo-path)
+6. [Daily development — `bun run dev`](#6-daily-development--bun-run-dev)
+7. [Production-like local start — `bun run start`](#7-production-like-local-start--bun-run-start)
+8. [Smoke verification — `bun run smoke`](#8-smoke-verification--bun-run-smoke)
+9. [The verification gate — `bun run verify`](#9-the-verification-gate--bun-run-verify)
+10. [Ports and URLs reference](#10-ports-and-urls-reference)
+11. [Troubleshooting](#11-troubleshooting)
+12. [What is NOT included](#12-what-is-not-included)
+13. [Android workspace (optional, not part of the install)](#13-android-workspace-optional-not-part-of-the-install)
 
 ## 1. Prerequisites
 
@@ -53,7 +54,7 @@ Two directories are deliberately NOT part of the Bun workspace install:
   and it participates in nothing at this stage.
 - `apps/android` is a Gradle project owned by the Gemini side. It has no
   `package.json`, is not installed by `bun install`, and nothing in the web
-  product depends on it. See [§12](#12-android-workspace-optional-not-part-of-the-install).
+  product depends on it. See [§13](#13-android-workspace-optional-not-part-of-the-install).
 
 ## 3. Install from a clean checkout
 
@@ -114,11 +115,16 @@ is `backend/api/src/lib/config.ts`):
 | `AISE_DATA_DIR` | `./data` | **required** | backend/api | Capture-store root. In root scripts, relative paths resolve against the repository root. |
 | `AISE_WEB_PORT` | `5173` | `4173` | apps/web | Web port: Vite dev server in `dev`, `vite preview` in `start`. |
 | `WORLDSCULPT_API_KEY` | unset | unset | backend/api (optional provider) | Optional reconstruction provider credential. Unset = provider cleanly disabled. |
+| `AISE_AUTH` | unset | unset | backend/api (PROD-004) | `1` \| `true` enables the auth/tenant-safety layer; unset or `0` \| `false` = disabled (zero behavior change). See [§5](#5-auth-sessions-and-the-demo-path). |
+| `AUTH_SECRET` | unused | unused | backend/api (PROD-004) | HMAC key for session tokens. **Required when `AISE_AUTH=1`** (never required while auth is disabled). Never committed, never echoed. |
+| `AISE_AUTH_MODE` | `demo-open` | `demo-open` | backend/api (PROD-004) | `required` \| `demo-open`: whether anonymous demo-tenant READS are allowed (writes always need a session). |
+| `AISE_SESSION_TTL_SECONDS` | `604800` | `604800` | backend/api (PROD-004) | Session lifetime in seconds (60–2592000; default 7 days). |
+| `AISE_DEMO_PRINCIPAL` | `demo-evaluator` | `demo-evaluator` | backend/api (PROD-004) | The deterministic principal id the "Enter demo" path mints a session for. |
 
 Additional variables for future productization items (Neon, R2, Upstash,
 Apify) are listed as commented placeholders in `.env.example` — they are NOT
 consumed by the current runtime (see
-[§11](#11-what-is-not-included)).
+[§12](#12-what-is-not-included)).
 
 ### Deterministic failure examples
 
@@ -134,7 +140,12 @@ AISE environment validation (mode: dev)
   LOG_LEVEL            ok                  default: info
   AISE_DATA_DIR        ok                  default: ./data
   AISE_WEB_PORT        ok                  default: 5173
-  WORLDSCULPT_API_KEY   disabled (optional)
+  WORLDSCULPT_API_KEY  disabled (optional)
+  AISE_AUTH            ok                  default: unset (auth layer disabled)
+  AUTH_SECRET          ok                  not required while AISE_AUTH is unset or disabled
+  AISE_AUTH_MODE       ok                  default: demo-open
+  AISE_SESSION_TTL_SECONDS ok              default: 604800
+  AISE_DEMO_PRINCIPAL  ok                  default: demo-evaluator
 ENV: PASS
 ```
 
@@ -161,7 +172,158 @@ $ PORT=banana bun run check:env
 ENV: FAIL
 ```
 
-## 5. Daily development — `bun run dev`
+## 5. Auth, sessions and the demo path
+
+The auth/tenant-safety layer (PROD-004) is a request-authentication and
+tenancy-scoping layer at the runtime seam. It is **off by default**: with
+`AISE_AUTH` unset (or `0`/`false`) the API serves exactly the pre-auth
+contract — every route, every shape, byte-identical. Deployments should
+enable it (the [free-tier deployment policy](free-tier-deployment.md) calls
+for an AISE-owned application-layer auth).
+
+### Enabling auth locally
+
+Add to your root `.env`:
+
+```bash
+AISE_AUTH=1
+AUTH_SECRET=<a long random string>
+# optional:
+# AISE_AUTH_MODE=demo-open        # or: required
+# AISE_SESSION_TTL_SECONDS=604800 # 60..2592000
+# AISE_DEMO_PRINCIPAL=demo-evaluator
+```
+
+Generate a secret with, for example:
+
+```bash
+bun -e 'console.log(require("node:crypto").randomBytes(32).toString("hex"))'
+```
+
+`bun run check:env` fails deterministically when `AISE_AUTH=1` is set
+without an `AUTH_SECRET` (the API likewise refuses to enable the layer —
+fail-closed, never a silent insecure fallback key). `/healthz` stays
+liveness-only and unauthenticated; `/readyz` reports the auth layer as
+`{"status":"enabled","mode":"…"}` (names only — the secret is never echoed
+in any response, issue or log).
+
+### What the layer does
+
+- **Sessions are server-side secrets.** Sign-in mints an opaque
+  `v1.<session-id>.<expiry>.<hmac-sha256>` token that carries ONLY a session
+  id and an expiry (no claims, no principal data). The HMAC key is
+  `AUTH_SECRET` (node:crypto); the token is delivered as an `HttpOnly`,
+  `SameSite=Strict` cookie (`aise_session`) and is also accepted as
+  `Authorization: Bearer <token>` for CLI use. Everything else — the
+  principal, the session kind, the expiry — lives in the server-side session
+  store (one JSON file per session under `<dataDir>/auth/sessions/`).
+- **Every `/v1/**` request is authenticated and tenant-scoped** (except the
+  auth endpoints themselves). The tenancy comes from the frozen identity
+  library's registry (AISE-036): a project or organization id in the path
+  (`/v1/reality/projects/:id/**`, `/v1/identity/organizations/:id/**`) or a
+  top-level `projectId`/`organizationId` in a JSON mutation body. Requests
+  whose tenant the caller does not belong to are refused with
+  `403 cross_tenant` in the documented error envelope.
+- **Logout and expiry.** `DELETE /v1/auth/sessions/current` deletes the
+  server-side session and clears the cookie; expired tokens fail `401
+  session_expired`; cleanup is deterministic (on-access deletion plus a sweep
+  on boot).
+
+### The authorization matrix
+
+| Caller | GET demo-tenant project | GET other tenant | POST/PUT/PATCH/DELETE anywhere | `/healthz`, `/readyz` |
+|---|---|---|---|---|
+| anonymous, `demo-open` (default) | 200 | 401 | 401 | 200 (unauthenticated) |
+| anonymous, `required` | 401 | 401 | 401 | 200 (unauthenticated) |
+| signed-in member of the tenant | 200 | 403 `cross_tenant` | 200 (within own tenant) | 200 |
+| demo session | 200 (demo tenant only) | 403 `cross_tenant` | 200 (demo tenant only) | 200 |
+
+Malformed ids fail `400`; unregistered projects/organizations fail `403`
+(fail-closed: an unregistered id belongs to no tenant, so nobody may address
+it through the seam). One operational consequence, by design: CREATION acts
+that name a not-yet-registered organization/project id (`POST
+/v1/identity/organizations`, `POST /v1/identity/organizations/:id/projects`)
+are refused `403` while auth is enabled — the tenant registry is managed
+with auth disabled (see "Creating a signed-in user locally" below).
+
+### The demo path ("Enter demo")
+
+The web shell's **Enter demo** button (and `POST /v1/auth/demo` for CLI
+callers) mints a session for ONE fixed principal (`AISE_DEMO_PRINCIPAL`,
+default `demo-evaluator`) inside ONE fixed tenant — the demo organization
+`org-northwind`, which owns the demo world's projects (`proj-riverside-refit`,
+`project-zurich-hq`). The containment is STRUCTURAL, not a blocklist: the
+demo principal's only membership is in the demo organization, so the tenant
+predicate refuses every other tenant with `403 cross_tenant` by the same
+rule as for everyone else. The demo tenant is real identity-library state
+(bootstrapped idempotently on boot through the library's own acts), and
+anonymous evaluators can additionally READ demo-tenant content in the
+default `demo-open` mode without any session — writes always require one.
+
+### Creating a signed-in user locally
+
+Local mode is passwordless BY DESIGN: the identity model carries no
+credentials and the auth layer refuses to invent a second authority (no
+password store). "Signing in" = minting a session for a REGISTERED
+principal.
+
+One rule to know first: the tenant predicate is fail-closed on ids that are
+not yet in the registry, and a CREATION act names the id it is about to
+create — so organizations and projects are created while auth is DISABLED
+(the registry is deployment-time state), and auth is enabled afterwards:
+
+```bash
+# STEP 1 — with AISE_AUTH unset (or 0): register the principal + tenant
+curl -sS -X POST http://127.0.0.1:8080/v1/identity/principals \
+  -H 'content-type: application/json' \
+  -d '{"principalId":"user-alice","displayName":"Alice (local)"}'
+curl -sS -X POST http://127.0.0.1:8080/v1/identity/organizations \
+  -H 'content-type: application/json' \
+  -d '{"organizationId":"org-alice","name":"Alice Co","founder":{"principalId":"user-alice","permissions":["identity:admin","identity:write"]}}'
+curl -sS -X POST http://127.0.0.1:8080/v1/identity/organizations/org-alice/projects \
+  -H 'content-type: application/json' \
+  -d '{"projectId":"proj-alice-1","name":"First project","actor":"user-alice"}'
+
+# STEP 2 — enable auth (AISE_AUTH=1 + AUTH_SECRET in .env), restart, then:
+
+# 3. sign in (sets the aise_session cookie in a browser; use -c/-b for curl)
+curl -sS -c /tmp/aise-cookies.txt -X POST http://127.0.0.1:8080/v1/auth/sessions \
+  -H 'content-type: application/json' \
+  -d '{"principalId":"user-alice"}'
+
+# 4. act as the signed-in principal (guarded identity reads need ?requester=)
+curl -sS -b /tmp/aise-cookies.txt \
+  'http://127.0.0.1:8080/v1/identity/organizations/org-alice/projects?requester=user-alice'
+```
+
+Two shapes matter in STEP 1 (both are the frozen identity library's own
+boundary contract): a `founder` carries a non-empty `permissions` array from
+the frozen permission registry (`identity:admin, identity:write` is the
+minimal pair for tenant administration; `[...PERMISSIONS]`-style full grants
+are what the demo tenant uses), and project creation names its `actor` —
+the principal whose org-scoped `identity:write` permission the act checks.
+
+With auth already enabled you can still REGISTER additional principals
+through any session (principal registration carries no tenant scope — e.g.
+the demo session may do it), but organization/project creation answers
+`403 unregistered_organization` / `403 unregistered_project` for everyone:
+by design nobody may address a not-yet-existing tenant through the seam.
+
+The auth endpoints are:
+
+| Endpoint | Method | Purpose |
+|---|---|---|
+| `/v1/auth/whoami` | GET | Display-only principal info (name, role label, demo flag). |
+| `/v1/auth/sessions` | POST | Sign in as a registered principal (`{principalId}`). |
+| `/v1/auth/demo` | POST | Enter the controlled demo path. |
+| `/v1/auth/sessions/current` | DELETE | Log out (deletes the server-side session). |
+
+In the web shell the gate appears automatically once the deployment's auth
+layer is active and no session exists (sign-in form + Enter demo); a
+signed-in session shows the user menu; a deployment without the auth layer
+renders exactly the pre-auth app.
+
+## 6. Daily development — `bun run dev`
 
 ```bash
 bun run dev
@@ -192,7 +354,7 @@ non-zero. If the web port (or API port) is already taken, startup fails
 deterministically with a precise message (`strictPort` — Vite never silently
 hops to the next free port).
 
-## 6. Production-like local start — `bun run start`
+## 7. Production-like local start — `bun run start`
 
 ```bash
 bun run build     # builds the web bundle → apps/web/dist
@@ -213,14 +375,15 @@ bun run start
 
 Honesty note: `vite preview` is Vite's local server for the production build
 — a production-LIKE local approximation, not a hardened internet-facing
-server, and the API has no CORS/auth hardening yet (PROD-003/PROD-004). The
-real public deployment is PROD-011.
+server. CORS hardening landed with PROD-003 and the auth/tenant-safety layer
+with PROD-004 (`AISE_AUTH=1`, [§5](#5-auth-sessions-and-the-demo-path) —
+still opt-in locally). The real public deployment is PROD-011.
 
 The backend API has no separate build step: it executes its TypeScript
 sources directly through Bun (`bun run src/main.ts`), which is the documented
 runtime contract — `bun run build` therefore produces only the web bundle.
 
-## 7. Smoke verification — `bun run smoke`
+## 8. Smoke verification — `bun run smoke`
 
 ```bash
 bun run smoke
@@ -248,7 +411,7 @@ A real end-to-end runtime check, deterministic and self-cleaning:
 The scratch port (8787) is deliberately not the API default (8080), so
 `bun run smoke` can run alongside `bun run dev` / `bun run start`.
 
-## 8. The verification gate — `bun run verify`
+## 9. The verification gate — `bun run verify`
 
 ```bash
 bun run verify
@@ -265,7 +428,7 @@ release candidate.
 
 Single steps: `bun run typecheck`, `bun run lint`, `bun run test`.
 
-## 9. Ports and URLs reference
+## 10. Ports and URLs reference
 
 | Port | Used by | Default | Override | Notes |
 |---|---|---|---|---|
@@ -277,7 +440,7 @@ Single steps: `bun run typecheck`, `bun run lint`, `bun run test`.
 All four can be in use simultaneously; none of the commands above requires
 any URL configuration in the browser — the web servers proxy API routes.
 
-## 10. Troubleshooting
+## 11. Troubleshooting
 
 **`bun install --frozen-lockfile` fails with a lockfile mismatch.**
 Something changed a `package.json` without regenerating `bun.lock`. Do not
@@ -288,7 +451,9 @@ both together.
 **`ENV: FAIL` from `check:env` / `dev` / `start`.**
 The message names the exact variable and what it expected (never your
 value). For `start`, `AISE_DATA_DIR` must be set explicitly in the root
-`.env` — see [§4](#4-environment-configuration).
+`.env` — see [§4](#4-environment-configuration). `AUTH_SECRET: required
+when AISE_AUTH=1` means exactly that — either set a secret or disable auth
+(see [§5](#5-auth-sessions-and-the-demo-path)).
 
 **`dev`/`start` fails with a port-in-use error (e.g. `Port 5173 is already in use`).**
 Another process holds the port (`strictPort` turned Vite's silent
@@ -313,7 +478,7 @@ workspace directory — prefer the root scripts for a stable location.
 **Vite/TypeScript confusion after pulling new workspaces.**
 Re-run `bun install --frozen-lockfile`; the lockfile is the contract.
 
-## 11. What is NOT included
+## 12. What is NOT included
 
 Honest scope of the current baseline — none of the following is included,
 and none of it is claimed:
@@ -322,8 +487,11 @@ and none of it is claimed:
   placeholder (`apps/web/src/main.ts` sets a text label). The real product
   shell is PROD-002.
 - **A hardened public API.** The API runs locally with health/readiness and
-  the wired domain routes; CORS, auth, tenants and the deployed contract are
-  PROD-003/PROD-004.
+  the wired domain routes; the stable runtime contract and CORS landed with
+  PROD-003, and auth/tenant safety with PROD-004 (`AISE_AUTH=1`, opt-in
+  locally — see [§5](#5-auth-sessions-and-the-demo-path)). What remains is
+  the public deployment itself (PROD-011) and durable server-side stores
+  (sessions are file-system backed today; the Postgres twin is PROD-005).
 - **External persistence/providers.** No Neon Postgres (PROD-005), no
   Cloudflare R2 (PROD-006), no Upstash Redis (PROD-007), no Apify connector
   (PROD-008), and no paid/GPU reconstruction providers (PROD-009). The
@@ -333,10 +501,10 @@ and none of it is claimed:
   provider is disabled.
 - **A public deployment.** There is no public URL yet (PROD-011).
 - **`vite preview` is not a production server.** `bun run start` is a local,
-  production-LIKE approximation (see [§6](#6-production-like-local-start--bun-run-start)).
+  production-LIKE approximation (see [§7](#7-production-like-local-start--bun-run-start)).
 - **Android.** See below.
 
-## 12. Android workspace (optional, not part of the install)
+## 13. Android workspace (optional, not part of the install)
 
 `apps/android` is a Gradle project owned by the Gemini worker side. It:
 
