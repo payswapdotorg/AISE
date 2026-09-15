@@ -25,20 +25,116 @@
     "selectionRule": "dispatch only dependency-eligible productization items; recompute after every accepted merge"
   },
   "workItems": [
-    {"id":"PROD-001","status":"planned","dependencies":[]},
-    {"id":"PROD-002","status":"planned","dependencies":["PROD-001"]},
-    {"id":"PROD-003","status":"planned","dependencies":["PROD-001"]},
-    {"id":"PROD-004","status":"planned","dependencies":["PROD-003"]},
-    {"id":"PROD-005","status":"planned","dependencies":["PROD-003"]},
-    {"id":"PROD-006","status":"planned","dependencies":["PROD-003"]},
-    {"id":"PROD-007","status":"planned","dependencies":["PROD-003"]},
-    {"id":"PROD-008","status":"planned","dependencies":["PROD-003"]},
-    {"id":"PROD-009","status":"planned","dependencies":["PROD-003","AISE-012"]},
-    {"id":"PROD-010","status":"planned","dependencies":["PROD-002","PROD-004","PROD-005","PROD-006","PROD-007","PROD-009"]},
-    {"id":"PROD-011","status":"planned","dependencies":["PROD-010"]},
-    {"id":"PROD-012","status":"planned","dependencies":["PROD-011"]},
-    {"id":"PROD-013","status":"planned","dependencies":["PROD-011"]},
-    {"id":"PROD-014","status":"planned","dependencies":["PROD-011","PROD-012","PROD-013"]},
-    {"id":"PROD-015","status":"planned","dependencies":["PROD-014"]}
+    {
+      "id": "PROD-001",
+      "status": "activated",
+      "dependencies": []
+    },
+    {
+      "id": "PROD-002",
+      "status": "planned",
+      "dependencies": [
+        "PROD-001"
+      ]
+    },
+    {
+      "id": "PROD-003",
+      "status": "planned",
+      "dependencies": [
+        "PROD-001"
+      ]
+    },
+    {
+      "id": "PROD-004",
+      "status": "planned",
+      "dependencies": [
+        "PROD-003"
+      ]
+    },
+    {
+      "id": "PROD-005",
+      "status": "planned",
+      "dependencies": [
+        "PROD-003"
+      ]
+    },
+    {
+      "id": "PROD-006",
+      "status": "planned",
+      "dependencies": [
+        "PROD-003"
+      ]
+    },
+    {
+      "id": "PROD-007",
+      "status": "planned",
+      "dependencies": [
+        "PROD-003"
+      ]
+    },
+    {
+      "id": "PROD-008",
+      "status": "planned",
+      "dependencies": [
+        "PROD-003"
+      ]
+    },
+    {
+      "id": "PROD-009",
+      "status": "planned",
+      "dependencies": [
+        "PROD-003",
+        "AISE-012"
+      ]
+    },
+    {
+      "id": "PROD-010",
+      "status": "planned",
+      "dependencies": [
+        "PROD-002",
+        "PROD-004",
+        "PROD-005",
+        "PROD-006",
+        "PROD-007",
+        "PROD-009"
+      ]
+    },
+    {
+      "id": "PROD-011",
+      "status": "planned",
+      "dependencies": [
+        "PROD-010"
+      ]
+    },
+    {
+      "id": "PROD-012",
+      "status": "planned",
+      "dependencies": [
+        "PROD-011"
+      ]
+    },
+    {
+      "id": "PROD-013",
+      "status": "planned",
+      "dependencies": [
+        "PROD-011"
+      ]
+    },
+    {
+      "id": "PROD-014",
+      "status": "planned",
+      "dependencies": [
+        "PROD-011",
+        "PROD-012",
+        "PROD-013"
+      ]
+    },
+    {
+      "id": "PROD-015",
+      "status": "planned",
+      "dependencies": [
+        "PROD-014"
+      ]
+    }
   ]
 }
