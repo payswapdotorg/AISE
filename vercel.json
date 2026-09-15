@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "bun install",
+  "buildCommand": "bun run build",
+  "outputDirectory": "apps/web/dist",
+  "rewrites": [
+    { "source": "/healthz", "destination": "/api/healthz" },
+    { "source": "/readyz", "destination": "/api/readyz" },
+    { "source": "/v1/:path*", "destination": "/api/v1/:path*" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ]
+}
