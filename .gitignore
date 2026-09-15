@@ -7,6 +7,10 @@ build/
 *.tsbuildinfo
 .vite/
 
+# Runtime data — default AISE_DATA_DIR location for the root scripts
+# (see docs/INSTALL.md; PROD-001)
+data/
+
 # Environment — real env files are never committed; only .env.example is.
 .env
 .env.*

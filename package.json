@@ -13,7 +13,12 @@
     "verify": "bun tools/verify.ts",
     "typecheck": "bun tools/verify.ts typecheck",
     "lint": "bun tools/verify.ts lint",
-    "test": "bun test"
+    "test": "bun test",
+    "check:env": "bun tools/validate-env.ts",
+    "dev": "bun tools/dev.ts",
+    "build": "bun tools/build.ts",
+    "start": "bun tools/start.ts",
+    "smoke": "bun tools/smoke.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

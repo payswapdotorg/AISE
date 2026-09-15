@@ -1,88 +1,352 @@
-# AISE Installation and Evaluation
+# AISE Installation and Local Runtime Guide
 
-## Status
+This is the authoritative guide for installing and running the AISE workspace
+locally, from a clean checkout to a production-like local start. It is owned
+by PROD-001 (runtime / installability audit). Every command documented here
+has been executed and verified against a fresh checkout of this repository.
 
-The v2 implementation campaign is complete, but productization is still governed by `docs/productization-roadmap.md`. This document becomes the authoritative evaluator guide once PROD-014 is finalized; until then it is the target contract for the Tech Lead.
+For the productization governance context see `docs/productization-roadmap.md`;
+for what is deliberately NOT included at this stage see
+[§11 What is NOT included](#11-what-is-not-included) below.
 
-## Local installation
+## Contents
 
-From a clean checkout:
+1. [Prerequisites](#1-prerequisites)
+2. [What you are installing](#2-what-you-are-installing)
+3. [Install from a clean checkout](#3-install-from-a-clean-checkout)
+4. [Environment configuration](#4-environment-configuration)
+5. [Daily development — `bun run dev`](#5-daily-development--bun-run-dev)
+6. [Production-like local start — `bun run start`](#6-production-like-local-start--bun-run-start)
+7. [Smoke verification — `bun run smoke`](#7-smoke-verification--bun-run-smoke)
+8. [The verification gate — `bun run verify`](#8-the-verification-gate--bun-run-verify)
+9. [Ports and URLs reference](#9-ports-and-urls-reference)
+10. [Troubleshooting](#10-troubleshooting)
+11. [What is NOT included](#11-what-is-not-included)
+12. [Android workspace (optional, not part of the install)](#12-android-workspace-optional-not-part-of-the-install)
+
+## 1. Prerequisites
+
+| Requirement | Version | Notes |
+|---|---|---|
+| Bun | ≥ 1.2 | The single runtime/toolchain: package install, test runner, TypeScript execution, the API server. Node.js is NOT required. |
+| git | any recent | to clone the repository |
+
+Nothing else is needed for the local runtime: no Docker, no database, no
+external provider accounts. Check your Bun version with `bun --version`.
+
+## 2. What you are installing
+
+The repository is a Bun monorepo. `bun install` installs exactly these
+workspaces (the four entries recorded in `bun.lock`):
+
+| Workspace | Package | What it is |
+|---|---|---|
+| `apps/web` | `@aise/web` | Web client (Vite). Currently a foundation placeholder — the product UI is PROD-002. |
+| `backend/api` | `@aise/api` | Backend HTTP API (Bun). Health/readiness plumbing plus the 28 wired domain modules under `/v1/**`. |
+| `packages/shared-contracts` | `@aise/shared-contracts` | Cross-platform wire contracts, consumed by the API. |
+| repository root | `aise` | Root scripts and the deterministic verify gate. |
+
+Two directories are deliberately NOT part of the Bun workspace install:
+
+- `packages/engineering-model` is an empty placeholder (`.gitkeep` only, no
+  `package.json`) — it is not a workspace, Bun ignores it during install,
+  and it participates in nothing at this stage.
+- `apps/android` is a Gradle project owned by the Gemini side. It has no
+  `package.json`, is not installed by `bun install`, and nothing in the web
+  product depends on it. See [§12](#12-android-workspace-optional-not-part-of-the-install).
+
+## 3. Install from a clean checkout
 
 ```bash
+git clone https://github.com/payswapdotorg/AISE.git
+cd AISE
 bun install --frozen-lockfile
 bun run verify
 ```
 
-The productized repository must expose:
+- `bun install --frozen-lockfile` installs the ~240 packages recorded in the
+  checked-in `bun.lock` — reproducibly, without resolving anything new. The
+  lockfile records the full workspace graph including the
+  `@aise/api → @aise/shared-contracts` workspace dependency.
+- `bun run verify` is the deterministic quality gate (typecheck, lint, test,
+  workspace-boundary scan) and must end with `VERIFY: PASS`.
+
+That is the entire install. To then see the local application runtime:
+
+```bash
+bun run dev        # development runtime (see §5)
+```
+
+## 4. Environment configuration
+
+The canonical place for local environment configuration is a `.env` file at
+the **repository root**. Bun automatically loads it when you run any root
+script. Start from the template:
+
+```bash
+cp .env.example .env
+```
+
+Real credentials never belong in Git — `.gitignore` already excludes `.env`
+and `.env.*` (only `.env.example` files are tracked). Workspace-local
+`.env.example` files also exist in `apps/web/` and `backend/api/` for running
+those workspaces DIRECTLY (their `.env` resolves against the workspace
+directory); the root scripts always use the root `.env`.
+
+Validate your environment at any time:
+
+```bash
+bun run check:env              # development mode
+bun tools/validate-env.ts --mode start   # production-like mode
+```
+
+### Environment reference
+
+These are the variables the current runtime actually consumes (the declared
+schema lives in `tools/env-schema.ts`; the backend API's own loader of record
+is `backend/api/src/lib/config.ts`):
+
+| Variable | Default (dev) | Default (start) | Consumed by | Meaning |
+|---|---|---|---|---|
+| `HOST` | `127.0.0.1` | `127.0.0.1` | backend/api | API bind hostname or IP. |
+| `PORT` | `8080` | `8080` | backend/api, apps/web proxy | API HTTP port (integer 1–65535). |
+| `LOG_LEVEL` | `info` | `info` | backend/api | `debug` \| `info` \| `warn` \| `error`. |
+| `AISE_DATA_DIR` | `./data` | **required** | backend/api | Capture-store root. In root scripts, relative paths resolve against the repository root. |
+| `AISE_WEB_PORT` | `5173` | `4173` | apps/web | Web port: Vite dev server in `dev`, `vite preview` in `start`. |
+| `WORLDSCULPT_API_KEY` | unset | unset | backend/api (optional provider) | Optional reconstruction provider credential. Unset = provider cleanly disabled. |
+
+Additional variables for future productization items (Neon, R2, Upstash,
+Apify) are listed as commented placeholders in `.env.example` — they are NOT
+consumed by the current runtime (see
+[§11](#11-what-is-not-included)).
+
+### Deterministic failure examples
+
+The validator fails loudly and precisely — it never guesses, never silently
+falls back on a malformed value, and never treats a missing OPTIONAL provider
+credential as an error:
+
+```text
+$ bun run check:env
+AISE environment validation (mode: dev)
+  HOST                 ok                  default: 127.0.0.1
+  PORT                 ok                  default: 8080
+  LOG_LEVEL            ok                  default: info
+  AISE_DATA_DIR        ok                  default: ./data
+  AISE_WEB_PORT        ok                  default: 5173
+  WORLDSCULPT_API_KEY   disabled (optional)
+ENV: PASS
+```
+
+Missing required variable in production-like mode (`bun run start` refuses to
+rely on the silent `./data` default):
+
+```text
+$ bun tools/validate-env.ts --mode start
+AISE environment validation (mode: start)
+  ...
+  AISE_DATA_DIR        MISSING             AISE_DATA_DIR: required for production-like start (mode 'start') — set it in the repository root .env file (see docs/INSTALL.md)
+  ...
+ENV: FAIL
+```
+
+Malformed value (present-but-empty counts as misconfiguration, mirroring the
+API's own config discipline):
+
+```text
+$ PORT=banana bun run check:env
+  ...
+  PORT                 INVALID             PORT: expected an integer between 1 and 65535
+  ...
+ENV: FAIL
+```
+
+## 5. Daily development — `bun run dev`
 
 ```bash
 bun run dev
 ```
 
-for the full local application, with any required API/background services either started automatically or through one additional documented command.
+One command, one Ctrl-C teardown. It:
 
-## Environment
+1. validates the environment (dev mode) — a broken environment never starts a
+   half-running runtime;
+2. starts the web dev server (Vite, `apps/web`) and the backend API
+   (`bun --watch`, `backend/api`) concurrently;
+3. passes an explicit `AISE_DATA_DIR` resolved against the repository root —
+   capture data lands in `<repo>/data` (or wherever you point it), never in a
+   cwd-dependent location;
+4. forwards SIGINT/SIGTERM to both children and waits for a clean stop —
+   press Ctrl-C once and both stop.
 
-Copy every relevant `.env.example` into the documented local location. No real credential belongs in Git.
+While it runs:
 
-The productized configuration must fail fast on malformed required values and must clearly identify optional providers as disabled rather than treating missing optional credentials as a broken installation.
+- the web dev server listens on `http://localhost:5173` (override: `AISE_WEB_PORT`);
+- the API listens on `http://127.0.0.1:8080` (override: `PORT`, `HOST`);
+- the web dev server PROXIES `/healthz`, `/readyz` and `/v1/**` to the API
+  port, so the browser needs zero configuration — the app can call
+  same-origin paths (`/v1/...`, `/healthz`) and Vite forwards them to the API.
 
-## Demo bootstrap
+If either process dies, the other is torn down and `bun run dev` exits
+non-zero. If the web port (or API port) is already taken, startup fails
+deterministically with a precise message (`strictPort` — Vite never silently
+hops to the next free port).
 
-A new evaluator must be able to create a deterministic demo project containing:
+## 6. Production-like local start — `bun run start`
 
-- a representative BOQ;
-- sample evidence/capture assets;
-- a small synchronized 2D/3D representation;
-- an Engineering Case;
-- at least two intervention states;
-- an example post-work outcome.
-
-The bootstrap must not require WorldSculpt, World Labs Atlas, Magic Leap Atlas, a GPU, Apify or a paid model provider.
-
-## Public evaluation
-
-The production URL is published in the root `README.md` only after `docs/PRODUCTION-READINESS-GATE.md` passes all mandatory gates.
-
-The evaluator journey is:
-
-```text
-Open URL
-  → sign in / demo access
-  → open demo project
-  → inspect BOQ Lens
-  → inspect SiteTwin / evidence
-  → inspect Engineering Case
-  → step through Intervention Studio
-  → inspect outcome comparison
+```bash
+bun run build     # builds the web bundle → apps/web/dist
+bun run start
 ```
 
-## Verification
+`bun run start` is the production-LIKE local runtime:
 
-At every release candidate:
+1. validates the environment in start mode — `AISE_DATA_DIR` is REQUIRED
+   (a production-like start refuses to write to an implicit default
+   location; set it in the root `.env`);
+2. requires the built web assets (`apps/web/dist/index.html`) — a missing
+   build is a deterministic failure telling you to run `bun run build`;
+3. starts the backend API (`bun run start` in backend/api) and serves
+   `apps/web/dist` through `vite preview` on `http://localhost:4173`
+   (override: `AISE_WEB_PORT`), with the same API proxy as development;
+4. one Ctrl-C tears both down.
+
+Honesty note: `vite preview` is Vite's local server for the production build
+— a production-LIKE local approximation, not a hardened internet-facing
+server, and the API has no CORS/auth hardening yet (PROD-003/PROD-004). The
+real public deployment is PROD-011.
+
+The backend API has no separate build step: it executes its TypeScript
+sources directly through Bun (`bun run src/main.ts`), which is the documented
+runtime contract — `bun run build` therefore produces only the web bundle.
+
+## 7. Smoke verification — `bun run smoke`
+
+```bash
+bun run smoke
+```
+
+A real end-to-end runtime check, deterministic and self-cleaning:
+
+1. pre-flight: the fixed scratch port **8787** must be free — if another
+   process already listens there, the smoke fails immediately rather than
+   measuring a foreign server;
+2. creates a scratch data directory under the OS temp dir (never your real
+   data directory);
+3. starts the REAL backend API process on `127.0.0.1:8787` with the scratch
+   data dir (no fixtures, no in-process shortcuts);
+4. waits for it to become healthy, then asserts the live HTTP contract:
+   `GET /healthz` → 200 `{ok:true, service:"aise-api", version:string}` and
+   `GET /readyz` → 200 `{ok:true}`;
+5. always cleans up: SIGTERM to the API (SIGKILL after a 5 s grace period)
+   and removal of the scratch data directory — both printed as proof;
+6. identity proof: after the API process stops, the scratch port must be
+   dark — if anything still answers there, the smoke FAILS rather than risk
+   reporting a false positive;
+7. prints `SMOKE: PASS` / `SMOKE: FAIL` and exits 0/1 accordingly.
+
+The scratch port (8787) is deliberately not the API default (8080), so
+`bun run smoke` can run alongside `bun run dev` / `bun run start`.
+
+## 8. The verification gate — `bun run verify`
 
 ```bash
 bun run verify
 ```
 
-and then run the browser acceptance suite against the exact deployed URL.
+The single deterministic quality gate: typecheck (per-workspace `tsc
+--noEmit`) → lint (ESLint over the repo) → test (`bun test`) →
+workspace-boundary scan. It stops at the first failing step, exits non-zero
+on failure, and always ends with `VERIFY: PASS` or `VERIFY: FAIL`. No
+network access, no timestamps or randomness in assertion outputs — the same
+tree plus the same command produces the same outcome. Run it from a clean
+install as shown in [§3](#3-install-from-a-clean-checkout), and at every
+release candidate.
 
-The browser suite must test the product, not fixture render functions in isolation.
+Single steps: `bun run typecheck`, `bun run lint`, `bun run test`.
 
-## Common failure modes
+## 9. Ports and URLs reference
 
-### No public deployment
+| Port | Used by | Default | Override | Notes |
+|---|---|---|---|---|
+| 5173 | Web dev server (`bun run dev`) | Vite default | `AISE_WEB_PORT` | `strictPort` — fails deterministically when taken. |
+| 4173 | Web preview (`bun run start`) | Vite preview default | `AISE_WEB_PORT` | Serves `apps/web/dist`; same API proxy as dev. |
+| 8080 | Backend API (dev and start) | API default | `PORT` | `HOST` defaults to `127.0.0.1`. |
+| 8787 | Smoke scratch port (`bun run smoke`) | fixed | — (edit `tools/smoke.ts`) | Deliberately distinct from 8080 so smoke can run alongside dev/start. |
 
-Do not claim SaaS readiness. Deploy the web product through the repository-connected Vercel Hobby project and record the deployment identifier.
+All four can be in use simultaneously; none of the commands above requires
+any URL configuration in the browser — the web servers proxy API routes.
 
-### Empty or placeholder web page
+## 10. Troubleshooting
 
-Do not claim UI readiness. The default route must render the actual product shell and provide a discoverable path into the golden journey.
+**`bun install --frozen-lockfile` fails with a lockfile mismatch.**
+Something changed a `package.json` without regenerating `bun.lock`. Do not
+hand-edit the lockfile: restore consistency (`git status` on
+`package.json`/`bun.lock`), then regenerate once with `bun install` and commit
+both together.
 
-### Missing provider credentials
+**`ENV: FAIL` from `check:env` / `dev` / `start`.**
+The message names the exact variable and what it expected (never your
+value). For `start`, `AISE_DATA_DIR` must be set explicitly in the root
+`.env` — see [§4](#4-environment-configuration).
 
-Optional providers must show a useful disabled/unavailable state. The core demo must continue to operate.
+**`dev`/`start` fails with a port-in-use error (e.g. `Port 5173 is already in use`).**
+Another process holds the port (`strictPort` turned Vite's silent
+port-hopping into a deterministic failure — that is intentional). Either stop
+the other process or set `AISE_WEB_PORT` (web) / `PORT` (API) in your root
+`.env`.
 
-### Free-tier exhaustion
+**`start: apps/web/dist/index.html not found`.**
+Run `bun run build` first — the production-like start never implicitly
+rebuilds.
 
-The product must stop or degrade safely at quota boundaries. Never silently provision a paid plan.
+**`smoke` fails with `port 8787 is already in use`.**
+Another server holds the scratch port (often a leftover API from a crashed
+earlier run — `ps aux | grep src/main.ts`). Stop it and re-run.
+
+**Where does my data live?**
+Root scripts resolve `AISE_DATA_DIR` against the repository root: default
+`<repo>/data` in dev (gitignored), your explicit path in start. Direct
+workspace runs (`cd backend/api && bun run dev`) resolve `./data` against the
+workspace directory — prefer the root scripts for a stable location.
+
+**Vite/TypeScript confusion after pulling new workspaces.**
+Re-run `bun install --frozen-lockfile`; the lockfile is the contract.
+
+## 11. What is NOT included
+
+Honest scope of the current baseline — none of the following is included,
+and none of it is claimed:
+
+- **A product web UI.** The browser entrypoint is still the foundation
+  placeholder (`apps/web/src/main.ts` sets a text label). The real product
+  shell is PROD-002.
+- **A hardened public API.** The API runs locally with health/readiness and
+  the wired domain routes; CORS, auth, tenants and the deployed contract are
+  PROD-003/PROD-004.
+- **External persistence/providers.** No Neon Postgres (PROD-005), no
+  Cloudflare R2 (PROD-006), no Upstash Redis (PROD-007), no Apify connector
+  (PROD-008), and no paid/GPU reconstruction providers (PROD-009). The
+  corresponding variables in `.env.example` are inert placeholders — the
+  current runtime does not read them. `WORLDSCULPT_API_KEY` is read by the
+  optional provider adapter and is never required: unset simply means the
+  provider is disabled.
+- **A public deployment.** There is no public URL yet (PROD-011).
+- **`vite preview` is not a production server.** `bun run start` is a local,
+  production-LIKE approximation (see [§6](#6-production-like-local-start--bun-run-start)).
+- **Android.** See below.
+
+## 12. Android workspace (optional, not part of the install)
+
+`apps/android` is a Gradle project owned by the Gemini worker side. It:
+
+- is NOT part of the Bun workspace — `bun install` never touches it, and no
+  web-product dependency flows to or from it;
+- requires the Android/Gradle toolchain (Android SDK, Gradle) to build,
+  entirely optionally: `cd apps/android && ./gradlew assembleDebug` (adjust
+  to the project's wrapper; consult that workspace's own files);
+- shares code with the platform only through the generated JSON Schemas in
+  `packages/shared-contracts` (see `bun run --cwd packages/shared-contracts
+  gen:schemas`), never through the Bun install graph.
+
+Nothing in this guide requires, builds or configures Android.
