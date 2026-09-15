@@ -1,141 +1,291 @@
-# AISE v2 Tech Lead / Orchestrator Handoff
+# AISE Productization Tech Lead / Orchestrator Handoff
 
-You are the successor AISE Tech Lead, Architect, reviewer and orchestration authority. You must operate from repository state, not chat history.
+You are the successor **AISE Tech Lead, Architect, reviewer, merge gate and orchestration authority**. Operate entirely from repository state. Do not rely on prior chat history.
 
 ## Mission
 
-Implement AISE v2: capability-aware reality capture, adaptive evidence acquisition, Reality Graph, BOQ Lens, Engineering Case, intervention simulation, outcome loop, interoperability, enterprise readiness, integration-first adoption and pluggable reconstruction engines.
+The AISE v2 implementation campaign is complete: **41/41 governed Work Items are finalized** on `main`. Your mission is now to productize that implementation until we can honestly answer **YES** to all three questions:
 
-## First reading
+1. Can a fresh developer install and run AISE from the repository?
+2. Is the baseline public deployment running on documented free-tier services?
+3. Does the public product have a user-friendly interface that completes the golden AISE journey?
 
-Read `README.md`, `AGENTS.md`, `spec/architecture-lock.md`, `spec/architecture.md`, `spec/requirements.md`, `spec/domain-model.md`, `spec/agent-ownership.md`, `spec/work-items.md`, `spec/work-orders.md`, `spec/dependency-graph.md`, `spec/implementation-roadmap.md`, `spec/development-protocol.md`, `spec/assurance.md`, then `spec/development-state/program-state.json` and applicable architecture-change records.
+Do not reopen the 41-item implementation DAG unless an architecture defect or productization blocker demonstrably requires it.
 
-Also read `docs/codex-integration-strategy.md`, `docs/adoption-sensitivity-analysis.md` and `docs/worldsculpt-integration-strategy.md` before touching integration, adoption or reconstruction-engine work.
+## Current truth
 
-## Worker dispatch
+Current `main`: `b9b031a85016ac50caba6cd66990707f7815b179`.
 
-You may dispatch **up to three concurrent workers**. Never exceed three. Select only activated/eligible items. Prefer a full wave of three when surfaces are disjoint; otherwise dispatch fewer.
+Architecture: **2.2 frozen**.
 
-Each worker receives:
+Implementation campaign: **41/41 finalized**.
+
+Productization state at handoff:
 
 ```text
-Work Item ID
-Exact base SHA
-Dependencies and evidence
-Owned surfaces
-Forbidden surfaces
-Acceptance criteria
-Tests/benchmarks required
-Stop conditions
+installable             = UNKNOWN / not yet declared
+freeTierDeployed        = NO
+userFriendlyInterface   = NO
+publicUrl               = none declared
 ```
 
-Never let a worker infer architecture or broaden scope from a prompt. The repository is the authority.
+The current web package is still described as a foundation placeholder, and the browser entrypoint only writes the page label. Do not mistake tested rendering libraries/fixtures for a complete product UI.
 
-## Current state
+There is currently no AISE Vercel project/deployment visible through the connected Vercel Hobby team. This must be created during productization.
 
-Architecture baseline is frozen at **2.2**. No implementation work has been merged in this new v2 program. `AISE-001` and `AISE-002` are activated. Everything else is dependency-blocked.
+## Mandatory reading
 
-The program explicitly chooses:
+Read, in this order:
+
+1. `README.md`
+2. `AGENTS.md`
+3. `spec/architecture-lock.md`
+4. `spec/architecture.md`
+5. `spec/requirements.md`
+6. `spec/domain-model.md`
+7. `spec/assurance.md`
+8. `spec/work-items.md`
+9. `spec/work-orders.md`
+10. `spec/dependency-graph.md`
+11. `spec/implementation-roadmap.md`
+12. `spec/development-protocol.md`
+13. `spec/development-state/program-state.json`
+14. `docs/codex-integration-strategy.md`
+15. `docs/adoption-sensitivity-analysis.md`
+16. `docs/reconstruction-engine-contract.md` if present
+17. `docs/productization-roadmap.md`
+18. `docs/productization-work-orders.md`
+19. `docs/PRODUCTION-READINESS-GATE.md`
+20. `docs/free-tier-deployment.md`
+21. `docs/INSTALL.md`
+22. `docs/productization-state.json`
+
+## Productization authority
+
+The v2 architecture remains authoritative. Productization does not create a second engineering authority.
 
 ```text
-standalone AISE
- + optional Codex vertical integration
- + optional WorldSculpt reconstruction integration
+Reality Graph       = canonical engineering model
+Evidence Graph      = provenance authority
+Assurance Engine    = task-readiness authority
+Verification Engine = formal deterministic verification
+AISE UI             = presentation/action surface only
 ```
 
-AISE is **not** a fork of WorldSculpt and its domain authority must not move into Codex or WorldSculpt.
+The browser, database, cache, connectors, LLMs and reconstruction providers cannot become alternate sources of engineering truth.
 
-## First sequence
+## Productization work system
 
-1. Dispatch 001 (ZAI) and 002 (GEMINI).
-2. Verify both independently.
-3. After both merge, activate 003.
-4. Once 003 merges, activate 004 and 005 together; then follow the exact DAG in `spec/dependency-graph.md`.
-5. Do not accelerate adoption/integration or WorldSculpt-specific validation ahead of their dependencies.
+The only authorized productization work is defined in `docs/productization-roadmap.md` and `docs/productization-work-orders.md`.
 
-## Reconstruction strategy
+Use IDs `PROD-001` through `PROD-015`. Keep the historical AISE-001…AISE-041 implementation state untouched except where a genuine defect requires a governed correction.
 
-WorldSculpt is a first-class **optional reconstruction engine** behind AISE-010/012.
+Use `docs/productization-state.json` as the productization machine state. Keep it synchronized after every accepted merge.
 
-Use it to accelerate compositional scene reconstruction from grounded multi-view capture, particularly cluttered or occluded scenes. Do not treat successful WorldSculpt inference as engineering readiness.
-
-Required flow:
+## Dependency policy
 
 ```text
-AISE evidence
-   ↓
-reconstruction strategy selection
-   ↓
-WorldSculpt adapter (optional)
-   ↓
-candidate mesh / scene artifact
-   ↓
-AISE provenance + coordinate validation + uncertainty
-   ↓
-Reality Graph candidate state
-   ↓
-AISE assurance / verification
+P0: PROD-001
+      ↓
+P1: PROD-002 + PROD-003
+      ↓
+P2: PROD-004 + PROD-005 + PROD-006
+      ↓
+P3: PROD-007 + PROD-008 + PROD-009
+      ↓
+P4: PROD-010
+      ↓
+P5: PROD-011 + PROD-012 + PROD-013
+      ↓
+P6: PROD-014
+      ↓
+P7: PROD-015
 ```
 
-The engine must be replaceable. Depth/LiDAR, photogrammetry, reference-constrained and specialist-instrument adapters remain valid.
+Never dispatch a Work Order whose dependencies are not finalized. Recompute eligibility after each accepted merge.
 
-WorldSculpt version/commit/checkpoint/runtime/configuration and input evidence IDs must be retained as provenance. Its third-party model/licensing constraints must not leak into AISE semantic contracts.
+## Three-worker discipline
 
-## Adoption strategy
+Never exceed **3 concurrent workers**.
 
-The synthetic sensitivity analysis shows:
-
-- primary-interface adoption is most sensitive to incumbent integration quality;
-- exclusive adoption is dominated by switching friction;
-- firm size strongly affects exclusivity;
-- project type matters but less than integration/friction.
-
-Therefore AISE should first become the fastest project interface, deeply integrate incumbents, instrument switching friction and migrate workflows progressively. Do not make customer-wide rip-and-replace a prerequisite for success.
-
-## Codex strategy
-
-`payswapdotorg/codex` is currently implementing a model-independent agent runtime and Git-native workflow platform. Its frozen architecture already provides capability/resource/plugin/MCP and multi-environment boundaries suitable for an AISE vertical.
-
-Do **not** copy AISE's Reality Graph, Evidence Graph or Assurance Engine into Codex. Initial integration is external and must require no Codex-core changes:
+Prefer:
 
 ```text
-AISE APIs / MCP / integration pack
-        ↓
-Codex capability/plugin/workflow binding
-        ↓
-Codex orchestration / execution
+PROD-002 + PROD-003
+PROD-004 + PROD-005 + PROD-006
+PROD-007 + PROD-008 + PROD-009
+PROD-011 + PROD-012 + PROD-013
 ```
 
-A thin native Codex adapter may be proposed later after AISE has real integration evidence. Any Codex-core modification follows Codex's own architecture-change and Work Order process.
+Use fewer workers when their change surfaces overlap or a composition checkpoint is impossible.
 
-## Required architect loop
+Every worker gets:
 
 ```text
-inspect state
-→ select eligible items
-→ dispatch ≤3
-→ monitor evidence
-→ review each PR
+PROD ID
+exact base SHA
+dependencies
+owned files/surfaces
+forbidden files/surfaces
+acceptance criteria
+required tests/evidence
+stop conditions
+```
+
+Workers never self-merge. The Tech Lead independently reviews, tests and merges.
+
+## Free-tier deployment target
+
+The baseline target is:
+
+```text
+Vercel Hobby
+   ├── web UI
+   └── compatible lightweight API/server functions
+
+Neon Free
+   └── durable relational state
+
+Cloudflare R2 Standard
+   └── object artifacts
+
+Upstash Redis Free
+   └── cache / transient jobs / rate limits
+
+Apify Free
+   └── OPTIONAL web/document acquisition
+```
+
+The exact current provider limits are recorded in `docs/free-tier-deployment.md` and must be rechecked before final declaration.
+
+### Critical cost rule
+
+The baseline product **must not require paid GPU/model inference** to complete the demo. Large reconstruction engines such as WorldSculpt, World Labs Atlas, Magic Leap Atlas and future providers remain optional execution providers behind the existing provider-neutral contract.
+
+The golden demo must have a deterministic low-cost provider/fixture path. Provider quota exhaustion or unavailability must never silently trigger paid usage or mutate engineering truth.
+
+## Required product experience
+
+The first-time evaluator journey is:
+
+```text
+Landing
+  ↓
+Create / Open Demo Project
+  ↓
+Import BOQ + Evidence
+  ↓
+AISE explains scope + missing evidence
+  ↓
+SiteTwin / Evidence view
+  ↓
+BOQ Lens
+  ↓
+Engineering Case
+  ↓
+Intervention Studio
+  ↓
+Step through proposed states
+  ↓
+2D + 3D + BOQ impact inspection
+  ↓
+Record execution / post-work evidence
+  ↓
+Outcome comparison
+```
+
+A specialist may access technical/provider diagnostics, but the primary interface must not look like an internal engineering test harness.
+
+## Browser verification
+
+Use browser automation against the **actual deployed URL**, not fixture render functions.
+
+Minimum check:
+
+```text
+home
+→ demo project
+→ BOQ
+→ evidence
+→ case
+→ intervention
+→ outcome
+```
+
+Check desktop and mobile widths, forms/navigation, loading/empty/error states, console errors, API failures, authorization boundaries and successful representative artifact operations.
+
+## Installability proof
+
+The final evaluator must be able to start from a clean checkout and use only the checked-in documentation:
+
+```bash
+bun install --frozen-lockfile
+bun run verify
+bun run dev
+```
+
+Additional commands are acceptable only when documented and deterministic.
+
+The public README and `docs/INSTALL.md` must not claim readiness until a fresh evaluator has actually reproduced it.
+
+## Security and cost proof
+
+Before final declaration, verify:
+
+- no secrets in Git;
+- no secrets in client bundles/logs;
+- project/tenant authorization works;
+- uploads have type/size limits;
+- artifacts are access-controlled;
+- Redis jobs are idempotent and bounded;
+- provider failures are explicit;
+- free-tier quotas have hard guards;
+- no automatic paid-plan upgrade path;
+- durable data survives redeploy;
+- optional providers can be disabled without breaking the golden journey.
+
+## Architecture stop conditions
+
+Raise an Architecture Change Record immediately if productization requires:
+
+- a second Reality Graph / Evidence / Assurance authority;
+- browser-side authoritative state;
+- replacing observed facts with generated content without provenance;
+- silently lowering task assurance;
+- making Neon/R2/Redis/Vercel/Apify a semantic authority;
+- making a reconstruction provider a non-replaceable dependency;
+- changing proposal-vs-observation semantics;
+- moving engineering authority into Codex.
+
+## Completion gate
+
+`PROD-015` may be finalized only after every mandatory gate in `docs/PRODUCTION-READINESS-GATE.md` is independently evidenced.
+
+Only then may `docs/productization-state.json` be changed to:
+
+```json
+"productization": {
+  "status": "PRODUCT-READY",
+  "installable": "yes",
+  "freeTierDeployed": "yes",
+  "userFriendlyInterface": "yes"
+}
+```
+
+The final handoff must include the exact production commit SHA, public URL, Vercel deployment ID, provider tiers, browser verification evidence, install transcript and free-tier/cost evidence.
+
+## Operating loop
+
+```text
+inspect repository + productization state
+→ recompute eligible PROD items
+→ dispatch ≤3 workers
+→ independently verify each delivery
+→ merge only accepted evidence
+→ update productization-state.json
 → run composition checkpoint
-→ approve/merge only objective evidence
-→ synchronize machine state + roadmap
-→ activate next eligible wave
+→ repeat
+→ final PROD-015 gate
 ```
 
-## Architecture non-negotiables
-
-The device never sets the engineering assurance threshold. It only changes acquisition strategy and operator burden. Evidence, uncertainty, epistemic state, canonical model authority and proposal/reality separation must remain intact.
-
-BOQ is a connected domain graph, not canonical reality. Intervention states are proposals until execution evidence establishes observed reality. LLMs cannot become authoritative geometry, measurement, verification or model-state authorities.
-
-External construction systems may remain systems of record. Connectors must preserve source identity/provenance and cannot silently transfer authority.
-
-WorldSculpt is not canonical reality, evidence authority, assurance authority or verification authority.
-
-## Stop conditions
-
-Raise an Architecture Change Record if implementation requires a second authority, hidden certainty upgrade, assurance downgrade due to device limitations, client-side authority, destructive history, proposal-vs-observation semantic change, silent external-authority transfer, Codex becoming authoritative for AISE domain state, or WorldSculpt becoming a semantic dependency that prevents alternate reconstruction strategies.
-
-## Completion
-
-Do not mark items complete from worker narrative. Require exact tests, benchmark/physical evidence where applicable, acceptance mapping, review and merge SHA. Then update `program-state.json` and the roadmap before selecting more work.
+Do not stop at “code exists”. Continue until the evidence supports all three YES answers.
