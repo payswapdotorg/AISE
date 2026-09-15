@@ -38,7 +38,7 @@
       "dependencies": [
         "PROD-001"
       ],
-      "mergedSha": "9262181",
+      "mergedSha": "9262181dc884d0299184da1d33f89cd930db2f6d",
       "mergedAt": "2026-09-15T11:25:00Z"
     },
     {
@@ -47,7 +47,7 @@
       "dependencies": [
         "PROD-001"
       ],
-      "mergedSha": "4543d1b5",
+      "mergedSha": "4543d1b524102976ccceb446fef15f9a29dc005c",
       "mergedAt": "2026-09-15T11:25:00Z"
     },
     {
