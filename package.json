@@ -18,7 +18,9 @@
     "dev": "bun tools/dev.ts",
     "build": "bun tools/build.ts",
     "start": "bun tools/start.ts",
-    "smoke": "bun tools/smoke.ts"
+    "smoke": "bun tools/smoke.ts",
+    "db:migrate": "bun tools/db-migrate.ts",
+    "db:seed": "bun tools/db-seed.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

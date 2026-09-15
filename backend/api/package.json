@@ -9,7 +9,8 @@
     "dev": "bun --watch run src/main.ts"
   },
   "dependencies": {
-    "@aise/shared-contracts": "workspace:*"
+    "@aise/shared-contracts": "workspace:*",
+    "postgres": "3.4.5"
   },
   "exports": {
     "./runtime": "./src/runtime/index.ts"

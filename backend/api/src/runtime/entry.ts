@@ -55,6 +55,9 @@ import {
 import { FsIdentityStore } from "../identity/store";
 import { IdentityService } from "../identity/service";
 import { createRequestHandler, SERVICE_NAME } from "../server";
+import { bootPgPersistence, type PgBootResult } from "../pg/runtime";
+import type { PgExecutor } from "../pg/executor";
+import type { MigrationOutcome } from "../pg/migrate";
 import { createCorsLayer } from "./cors";
 import { errorResponse, translateErrorResponse } from "./errors";
 import { evaluateOptionalProviders, type ProviderStatus } from "./readiness";
@@ -88,6 +91,13 @@ export interface RuntimeHandlerOptions {
    * exit(1) discipline; a RuntimeBootError is thrown instead.
    */
   readonly failFast?: boolean;
+  /**
+   * PROD-005 test seam: the migration runner used when DATABASE_URL selects
+   * Pg persistence. Production leaves it unset (the real `runMigrations`
+   * against the pooled executor); the offline runtime-selection tests inject
+   * a fake to observe the cold-start call without any database.
+   */
+  readonly pgMigrate?: (executor: PgExecutor) => Promise<MigrationOutcome>;
 }
 
 /** Typed construction failure for the fail-fast adapter (main.ts). */
@@ -347,32 +357,52 @@ export function createRuntimeHandler(
   // the function can boot and report the issue through /readyz.
   const dataDir = firstConfig.ok ? firstConfig.config.dataDir : resolveDataDir(envSource());
 
+  // PROD-005 persistence selection: DATABASE_URL present → the Pg store
+  // family + a bounded cold-start migration run (see pg/runtime.ts);
+  // unset → EXACTLY the file-system behavior below. A present-but-invalid
+  // DATABASE_URL is a hard construction failure in BOTH adapters (it would
+  // silently persist to the wrong place otherwise) — the message never
+  // carries the value.
+  const pgBoot: PgBootResult = bootPgPersistence({
+    env: envSource(),
+    logger,
+    dataDir,
+    ...(options.pgMigrate === undefined ? {} : { migrate: options.pgMigrate }),
+  });
+
   let capture: CaptureGateway;
-  try {
-    const store = new FsCaptureStore(dataDir);
-    capture = createCaptureGateway({
-      store,
-      clock: (): string => new Date().toISOString(),
-    });
-  } catch (error) {
-    const reason = error instanceof Error ? error.message : String(error);
-    if (options.failFast === true) {
-      throw new RuntimeBootError([
-        `capture store initialization failed under data dir '${dataDir}': ${reason}`,
-      ]);
+  if (pgBoot.mode === "pg") {
+    // Pg mode: the capture gateway over the Pg twin replaces the Fs block —
+    // the migration `ready` gate below orders every request behind the
+    // cold-start schema run before any store operation can execute.
+    capture = pgBoot.family.capture;
+  } else {
+    try {
+      const store = new FsCaptureStore(dataDir);
+      capture = createCaptureGateway({
+        store,
+        clock: (): string => new Date().toISOString(),
+      });
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      if (options.failFast === true) {
+        throw new RuntimeBootError([
+          `capture store initialization failed under data dir '${dataDir}': ${reason}`,
+        ]);
+      }
+      // Serverless boot honesty: serve degraded — capture routes fail loudly
+      // per request with the reason; /healthz and /readyz stay honest.
+      logger.error("capture store initialization failed; serving degraded capture routes", {
+        dataDir,
+        error: reason,
+      });
+      capture = createCaptureGateway({
+        store: new UnavailableCaptureStore(
+          `the configured data directory '${dataDir}' is not writable — set AISE_DATA_DIR to a writable directory (serverless functions: /tmp is the only writable path)`,
+        ),
+        clock: (): string => new Date().toISOString(),
+      });
     }
-    // Serverless boot honesty: serve degraded — capture routes fail loudly
-    // per request with the reason; /healthz and /readyz stay honest.
-    logger.error("capture store initialization failed; serving degraded capture routes", {
-      dataDir,
-      error: reason,
-    });
-    capture = createCaptureGateway({
-      store: new UnavailableCaptureStore(
-        `the configured data directory '${dataDir}' is not writable — set AISE_DATA_DIR to a writable directory (serverless functions: /tmp is the only writable path)`,
-      ),
-      clock: (): string => new Date().toISOString(),
-    });
   }
 
   // PROD-004 (additive — the auth/tenant-safety layer). Built ONLY when
@@ -560,6 +590,19 @@ export function createRuntimeHandler(
     // additive; the core's lazy default wiring is untouched otherwise).
     ...(identityRoutes === undefined ? {} : { identity: identityRoutes }),
     artifacts,
+    // Pg mode: the five lazily-defaulted route surfaces become the Pg twins
+    // (explicit construction wins — that IS the injection seam); Fs mode
+    // leaves every field unset so the server's lazy defaults are EXACTLY
+    // today's behavior.
+    ...(pgBoot.mode === "pg"
+      ? {
+          missions: pgBoot.family.missions,
+          evidence: pgBoot.family.evidence,
+          boq: pgBoot.family.boq,
+          gaps: pgBoot.family.gaps,
+          cases: pgBoot.family.cases,
+        }
+      : {}),
   });
 
   // The CORS allowlist is resolved once at construction (a cold-start
@@ -585,6 +628,12 @@ export function createRuntimeHandler(
           return cors.decorate(request, outcome.response);
         }
         forwarded = outcome.request;
+      }
+      // Pg mode: order every request behind the bounded cold-start
+      // migration run (never rejects — failures are logged as status, then
+      // store operations fail loudly per request; see pg/runtime.ts).
+      if (pgBoot.mode === "pg") {
+        await pgBoot.ready;
       }
       let response = await core(forwarded);
       if (new URL(request.url).pathname === "/readyz") {

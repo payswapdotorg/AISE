@@ -43,7 +43,8 @@ export type EnvFormat =
   | "auth-mode"
   | "ttl-seconds"
   | "identifier"
-  | "bytes-cap";
+  | "bytes-cap"
+  | "postgres-url";
 
 /** Anything that can be read like process.env. */
 export type EnvRecord = Record<string, string | undefined>;
@@ -254,6 +255,19 @@ export const ENV_RULES: readonly EnvVarRule[] = [
     defaults: { dev: "26214400", start: "26214400" },
     requiredIn: [],
   },
+  {
+    name: "DATABASE_URL",
+    description:
+      "Postgres (Neon) connection URL — PRESENCE SWITCHES the API's six wired " +
+      "domain stores (capture, missions, evidence, boq, gaps, cases) from the " +
+      "local file-system stores to Postgres persistence (PROD-005); unset = " +
+      "exactly today's Fs behavior",
+    consumer: "backend/api pg persistence family (PROD-005)",
+    format: "postgres-url",
+    defaults: { dev: "", start: "" },
+    requiredIn: [],
+    optionalProvider: true,
+  },
 ] as const;
 
 const LOG_LEVELS: readonly string[] = ["debug", "info", "warn", "error"];
@@ -274,6 +288,7 @@ const FORMAT_EXPECTATIONS: Readonly<Record<EnvFormat, string>> = {
   "ttl-seconds": "expected an integer between 60 and 2592000 (seconds)",
   identifier: "expected a non-empty value (1..256 characters)",
   "bytes-cap": "expected an integer number of bytes between 1 and 1073741824",
+  "postgres-url": "expected a postgres:// or postgresql:// connection URL with a host",
 };
 
 export function formatExpectation(format: EnvFormat): string {
@@ -324,6 +339,17 @@ export function isFormatValid(format: EnvFormat, value: string): boolean {
       }
       const cap = Number.parseInt(value, 10);
       return cap >= 1 && cap <= 1024 * 1024 * 1024;
+    }
+    case "postgres-url": {
+      // Same scheme/host contract the API's own pg connection authority
+      // enforces (backend/api/src/pg/connection.ts); never inspects or
+      // echoes the credentials.
+      try {
+        const url = new URL(value);
+        return (url.protocol === "postgres:" || url.protocol === "postgresql:") && url.host !== "";
+      } catch {
+        return false;
+      }
     }
   }
 }

@@ -31,6 +31,9 @@ for what is deliberately NOT included at this stage see
 11. [Artifact storage (`/v1/artifacts`)](#11-artifact-storage-v1artifacts)
 12. [What is NOT included](#12-what-is-not-included)
 13. [Android workspace (optional, not part of the install)](#13-android-workspace-optional-not-part-of-the-install)
+11. [What is NOT included](#11-what-is-not-included)
+12. [Android workspace (optional, not part of the install)](#12-android-workspace-optional-not-part-of-the-install)
+13. [Persistence — Neon Postgres (optional)](#13-persistence--neon-postgres-optional)
 
 ## 1. Prerequisites
 
@@ -138,6 +141,12 @@ Additional variables for future productization items (Neon, Upstash,
 Apify) are listed as commented placeholders in `.env.example` — they are NOT
 consumed by the current runtime (see
 [§12](#12-what-is-not-included)).
+Of the future productization variables, `DATABASE_URL` IS consumed since
+PROD-005 — its presence switches the API to Neon Postgres persistence (see
+[§13](#13-persistence--neon-postgres-optional)). The remaining ones
+(Cloudflare R2, Upstash, Apify) are listed as commented placeholders in
+`.env.example` — they are NOT consumed by the current runtime (see
+[§11](#11-what-is-not-included)).
 
 ### Deterministic failure examples
 
@@ -569,6 +578,12 @@ and none of it is claimed:
 - **External persistence/providers.** No Neon Postgres (PROD-005), no
   Upstash Redis (PROD-007), no Apify connector
   (PROD-008), and no paid/GPU reconstruction providers (PROD-009). The
+  the wired domain routes; CORS, auth, tenants and the deployed contract are
+  PROD-003/PROD-004.
+- **External providers.** Neon Postgres persistence IS included (PROD-005,
+  see [§13](#13-persistence--neon-postgres-optional)). Still not included:
+  Cloudflare R2 (PROD-006), Upstash Redis (PROD-007), the Apify connector
+  (PROD-008), and paid/GPU reconstruction providers (PROD-009). The
   corresponding variables in `.env.example` are inert placeholders — the
   current runtime does not read them. `WORLDSCULPT_API_KEY` is read by the
   optional provider adapter and is never required: unset simply means the
@@ -594,3 +609,74 @@ and none of it is claimed:
   gen:schemas`), never through the Bun install graph.
 
 Nothing in this guide requires, builds or configures Android.
+
+## 13. Persistence — Neon Postgres (optional)
+
+**You do not need a database to run or develop AISE.** With `DATABASE_URL`
+unset, the API persists everything to the local file system under
+`AISE_DATA_DIR` (the default local mode; all store contracts, tests and the
+verify gate run that way — the gate is green without any database).
+
+### Presence is the switch
+
+`DATABASE_URL` is the single persistence selector:
+
+| `DATABASE_URL` | Mode | What persists where |
+|---|---|---|
+| unset | **FS (local)** | JSON/JSONL stores under `AISE_DATA_DIR` — exactly the pre-Neon behavior. |
+| set | **Neon Postgres** | The wired domain stores (capture, missions, evidence, boq, gaps, cases) persist to Postgres over ONE pooled TLS connection per cold start. |
+
+A present-but-INVALID `DATABASE_URL` (wrong scheme, no host) is a
+deterministic startup failure — the API refuses to persist to the wrong
+place silently. The connection string is a secret: it lives in the
+environment only, is never logged, and every error message is swept through
+the redaction helpers (`backend/api/src/pg/connection.ts`).
+
+### Neon setup
+
+1. Create a free project at [neon.tech](https://neon.tech) (see
+   `docs/free-tier-deployment.md` for the free-tier implications).
+2. Copy the **pooled** connection string — the host containing `-pooler`
+   (serverless functions must use the pooled endpoint, not the direct one)
+   and keep `sslmode=require`:
+   ```bash
+   DATABASE_URL='postgres://USER:PASSWORD@HOST-pooler.REGION.aws.neon.tech/DBNAME?sslmode=require'
+   ```
+3. Put it in your root `.env` (never in Git).
+
+### Migrations and the demo seed
+
+```bash
+bun run db:migrate   # apply pending schema migrations (ordered, idempotent)
+bun run db:seed      # migrate, then seed the idempotent demo records
+```
+
+- Both scripts are **offline-safe**: without `DATABASE_URL` they exit 1 with
+  an actionable message and touch nothing.
+- Migrations are ordered, versioned SQL files
+  (`backend/api/src/pg/migrations/`) with a `schema_migrations` bookkeeping
+  table: running twice applies nothing the second time; a failed file rolls
+  back wholesale; an already-applied file edited on disk is refused loudly.
+- On cold start with `DATABASE_URL` set, the API also applies pending
+  migrations (bounded, advisory-locked) — you normally never run
+  `db:migrate` by hand except to catch up before a deploy.
+- The demo seed writes one deterministic sample per core namespace
+  (evidence, case, mission), each keyed by a content-hash marker
+  (`seed_markers`): re-running changes nothing, and it NEVER overwrites
+  existing records — an id already taken by real data is kept as-is.
+
+### Redeploys do not erase durable state
+
+State lives in Neon, not in the compute. Migrations only ADD (no
+destructive DDL ever runs automatically), so redeploying the application
+touches only compute — your data survives every redeploy, and a scale-to-zero
+wake-up reconnects lazily over the pooled endpoint.
+
+### Honest limitation
+
+The reality store (read-only ground-truth references) still reads from
+`AISE_DATA_DIR` even in Neon mode; twinning it is future work. Everything
+the golden journey writes — capture sessions/batches/assets, missions,
+evidence (records, invalidations, links, derivations), boq
+(sources/documents/normalizations), cases, gap analyses — persists to
+Postgres.
