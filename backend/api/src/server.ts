@@ -83,6 +83,16 @@
  *                                            layer vs its baseline overlay,
  *                                            mapped to BOQ items (AISE-028)
  *   GET  /v1/impacts[/:id]                  -> impact list / full record
+ *   GET  /v1/sdk                          -> AISE-038 developer API discovery
+ *                                            document: the versioned contract
+ *                                            surface (six work-order domains'
+ *                                            stable operations, scopes,
+ *                                            idempotency classes, error-code
+ *                                            registries, honest out-of-scope
+ *                                            disclosure), apiVersion-stamped
+ *   GET  /v1/sdk/contract                 -> the full machine-readable AISE-038
+ *                                            contract (operation registry +
+ *                                            additions-only version registry)
  *
  * The capture routes are implemented by `capture/router.ts` over the
  * `capture/gateway.ts` policy engine and an injected `CaptureStore`; the
@@ -232,6 +242,17 @@ import {
 import { FsImpactStore } from "./impact/store";
 import { MappingService } from "./boq/mapping/service";
 import { FsMappingStore } from "./boq/mapping/store";
+// AISE-038 routing: developer API/SDK contract surface — the DESCRIPTION
+// layer over the EXISTING route authorities (sdk/router.ts over
+// sdk/model.ts + sdk/discovery.ts). The SDK REGISTERS and DESCRIBES the
+// six work-order domains' stable /v1 routes (capture, reality, BOQ, case,
+// intervention, rendering projections) with typed scopes drawn verbatim
+// from the AISE-036 identity permission registry, documented idempotency
+// classes and error-code registries, plus typed client builders. It is a
+// CONTRACT, never a second authority: it re-implements no domain logic,
+// creates no second canonical model and bypasses no domain router — the
+// described routes keep answering through their owning modules above.
+import { handleSdkRequest, type SdkRouteOptions } from "./sdk/router";
 
 export const SERVICE_NAME = "aise-api";
 
@@ -316,6 +337,13 @@ export interface HandlerOptions {
   // instances (same data dir) is constructed lazily on the FIRST impact
   // request (see impactRoutesOrDefault).
   impacts?: ImpactRouteOptions;
+  // AISE-038 routing: injected developer API/SDK contract surface. When
+  // omitted, a default wiring over the module-level SDK_CONTRACT (the
+  // frozen, load-time-validated registry) plus this handler's logger is
+  // constructed lazily on the FIRST /v1/sdk request (see
+  // sdkRoutesOrDefault). The SDK owns no stores — it is a pure contract
+  // layer over the domain routes.
+  sdk?: SdkRouteOptions;
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -591,6 +619,24 @@ function impactRoutesOrDefault(options: HandlerOptions): ImpactRouteOptions {
   return defaultImpactRoutes;
 }
 
+// AISE-038 routing: memoized default developer API/SDK routing (see
+// HandlerOptions.sdk) — same lazy discipline as the impact wiring:
+// resolved only inside the /v1/sdk path guard, so deployments without
+// SDK traffic never touch it. The default wiring owns NO stores: the
+// SDK is a pure contract layer (the frozen SDK_CONTRACT registry plus
+// this handler's logger); explicit wiring wins, as everywhere else.
+let defaultSdkRoutes: SdkRouteOptions | null = null;
+
+function sdkRoutesOrDefault(options: HandlerOptions): SdkRouteOptions {
+  if (options.sdk !== undefined) {
+    return options.sdk;
+  }
+  if (defaultSdkRoutes === null) {
+    defaultSdkRoutes = { logger: options.logger };
+  }
+  return defaultSdkRoutes;
+}
+
 async function route(
   request: Request,
   url: URL,
@@ -800,6 +846,24 @@ async function route(
     );
     if (impactResponse !== null) {
       return impactResponse;
+    }
+  }
+
+  // AISE-038 routing — delegates to the developer API/SDK contract surface
+  // (the DESCRIPTION layer over the six work-order domains' existing /v1
+  // routes: the versioned discovery document and the machine-readable
+  // operation/version registries, apiVersion-stamped; never a second
+  // authority). The path guard keeps the lazily-constructed default
+  // wiring entirely off non-sdk requests.
+  if (url.pathname === "/v1/sdk" || url.pathname.startsWith("/v1/sdk/")) {
+    const sdkResponse = await handleSdkRequest(
+      request,
+      url,
+      requestId,
+      sdkRoutesOrDefault(options),
+    );
+    if (sdkResponse !== null) {
+      return sdkResponse;
     }
   }
 
