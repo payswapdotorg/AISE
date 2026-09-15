@@ -1,5 +1,24 @@
 # AI Site Engineer (AISE)
 
+## Quickstart
+
+Requires only Bun ≥ 1.2 (no Node, no Docker, no external services):
+
+```bash
+git clone https://github.com/payswapdotorg/AISE.git
+cd AISE
+bun install --frozen-lockfile
+bun run verify     # deterministic gate — must end VERIFY: PASS
+bun run dev        # web (http://localhost:5173) + API (http://127.0.0.1:8080), one Ctrl-C teardown
+```
+
+Other root commands: `bun run check:env` (environment validation),
+`bun run build` + `bun run start` (production-like local start — requires
+`AISE_DATA_DIR`, see docs), `bun run smoke` (end-to-end runtime smoke check
+on a scratch port). The authoritative guide — environment reference, ports,
+troubleshooting, and what is deliberately NOT included at this stage — is
+[`docs/INSTALL.md`](docs/INSTALL.md).
+
 ## v2 Architecture Baseline — Capability-Aware Construction Reality Intelligence
 
 AISE is a cross-platform construction reality intelligence platform. It turns field evidence, documents, BOQs, drawings, specifications, measurements and device sensing into a versioned, evidence-linked engineering representation that people and AI can inspect, reason over, verify and use to plan interventions.
