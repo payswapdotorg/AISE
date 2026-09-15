@@ -67,6 +67,50 @@
  *                                            record (append-only; the
  *                                            readiness report carried as
  *                                            consumed context)
+ *   POST /v1/adoption/workflows         -> inventory one incumbent
+ *                                            workflow (AISE-041): typed
+ *                                            per-step attributes (systems
+ *                                            of record BY ID, resources,
+ *                                            user roles, manual re-entry,
+ *                                            approvals, irreversibility,
+ *                                            training burden, latency,
+ *                                            rollback, contractual
+ *                                            constraints — each a known
+ *                                            value or the explicit UNKNOWN
+ *                                            marker); the profiler NEVER
+ *                                            migrates anything
+ *   GET  /v1/adoption/workflows[/:id]    -> inventory list / full record
+ *   POST /v1/adoption/workflows/:id/steps -> append one step (never removed)
+ *   POST /v1/adoption/workflows/:id/assessments -> run the switching-friction
+ *                                            profiler: integration
+ *                                            readiness + switching
+ *                                            friction (explicit weights,
+ *                                            inspectable components,
+ *                                            UNKNOWN-honest null
+ *                                            composites) + ranked
+ *                                            replacement-opportunity steps
+ *   GET  /v1/adoption/assessments[/:id] -> assessment list / full derived
+ *                                            record (write-once)
+ *   POST /v1/adoption/candidates         -> propose a migration candidate
+ *                                            (governed lifecycle, state
+ *                                            `proposed`)
+ *   GET  /v1/adoption/candidates[/:id]   -> candidate list / full record
+ *   POST /v1/adoption/candidates/:id/rollback-plans[/:planId/retire]
+ *                                        -> record / retire rollback plans
+ *                                            (retiring before operational
+ *                                            acceptance is a typed refusal)
+ *   POST /v1/adoption/candidates/:id/(equivalence|acceptance)
+ *                                        -> record semantic-equivalence
+ *                                            evidence and operational
+ *                                            acceptance (the `replaced`
+ *                                            prerequisites)
+ *   POST /v1/adoption/candidates/:id/(advance|rollback)
+ *                                        -> the governed state machine:
+ *                                            progressive one-step advances,
+ *                                            `replaced` ONLY with
+ *                                            equivalence + acceptance +
+ *                                            active rollback plan; the
+ *                                            recorded reverse transition
  *   POST /v1/reality/projects            -> create project graph (AISE-016)
  *   GET  /v1/reality/projects/:id        -> project header + version list
  *   GET  /v1/reality/projects/:id/versions/:versionId|latest -> full snapshot
@@ -221,6 +265,25 @@ import {
 import { FsGapAnalysisStore } from "./gaps/store";
 import { getAssuranceProfile } from "./assurance/profiles";
 import { evaluateReadiness } from "./assurance/evaluate";
+// AISE-041 routing: workflow migration and switching-friction profiler
+// surface — the adoption module (adoption/router.ts over
+// adoption/service.ts, an injected store, a clock and ONE READ-ONLY
+// adapter-descriptor resolver over the integrations adapter registry).
+// The profiler is INVENTORY + SCORING, never migration itself: incumbent
+// systems of record are referenced BY ID only (the resolver exposes
+// exactly one READ method — there is no register/sync/write path from
+// the adoption domain into the integrations authority, and the registry
+// is never mutated by an assessment; resolved descriptors are carried
+// verbatim as consumed context). The migration state machine never
+// declares a step replaced without semantic equivalence, operational
+// acceptance and an active rollback plan.
+import { handleAdoptionRequest, type AdoptionRouteOptions } from "./adoption/router";
+import {
+  AdoptionService,
+  readOnlyAdapterDescriptorResolver,
+} from "./adoption/service";
+import { FsAdoptionStore } from "./adoption/store";
+import { createAdapterRegistry } from "./integrations/registry";
 // AISE-016 routing: Reality Graph v2 — the canonical engineering-model
 // authority surface (reality/router.ts over the deterministic versioning
 // engine and an injected store).
@@ -357,6 +420,19 @@ export interface HandlerOptions {
   // is constructed lazily on the FIRST gaps request (see
   // gapsRoutesOrDefault).
   gaps?: GapsRouteOptions;
+  // AISE-041 routing: injected adoption (workflow migration and
+  // switching-friction profiler) surface. When omitted, a default
+  // AdoptionService over the FsAdoptionStore rooted at the configured
+  // data directory (AISE_DATA_DIR, default ./data), a UTC wall clock and
+  // a READ-ONLY adapter-descriptor resolver over a FRESH, EMPTY integrations
+  // adapter registry is constructed lazily on the FIRST adoption request
+  // (see adoptionRoutesOrDefault) — the AISE-037 registry is a pure
+  // in-memory library with no persistent default deployment yet (its HTTP
+  // wiring was deliberately deferred), so the default wiring honestly
+  // resolves zero registered adapters (connector coverage counts every
+  // adapterId reference as uncovered) until a deployment injects a
+  // registry-backed service here.
+  adoption?: AdoptionRouteOptions;
   // AISE-016 routing: injected Reality Graph surface. When omitted, a default
   // wiring over the FsRealityStore rooted at the configured data directory
   // (AISE_DATA_DIR, default ./data) plus a UTC wall clock is constructed
@@ -513,6 +589,43 @@ function gapsRoutesOrDefault(options: HandlerOptions): GapsRouteOptions {
     };
   }
   return defaultGapsRoutes;
+}
+
+// AISE-041 routing: memoized default adoption (workflow migration and
+// switching-friction profiler) routing (see HandlerOptions.adoption) —
+// same lazy discipline as the gaps wiring: resolved only inside the
+// /v1/adoption path guard, so deployments without adoption traffic never
+// construct the store. The default wiring resolves THIS handler's OWN env
+// data dir (validateEnv(options.envSource()) — never a module-level
+// memoized sibling wiring, so two handlers over different data dirs can
+// never leak each other's records) and its adapter-descriptor resolver
+// adapts a FRESH, EMPTY integrations adapter registry's READ method
+// `lookup` and NOTHING else (the AISE-037 registry is a pure in-memory
+// library with no persistent default deployment yet — its HTTP wiring
+// was deliberately deferred — so the default resolver honestly resolves
+// zero registered adapters until a deployment injects a registry-backed
+// service). There is no register/sync/write path from here into the
+// integrations authority, and the profiler itself NEVER migrates
+// anything: it inventories, scores and tracks governed candidates only.
+let defaultAdoptionRoutes: AdoptionRouteOptions | null = null;
+
+function adoptionRoutesOrDefault(options: HandlerOptions): AdoptionRouteOptions {
+  if (options.adoption !== undefined) {
+    return options.adoption;
+  }
+  if (defaultAdoptionRoutes === null) {
+    const result = validateEnv(options.envSource());
+    const dataDir = result.ok ? result.config.dataDir : "./data";
+    defaultAdoptionRoutes = {
+      service: new AdoptionService({
+        store: new FsAdoptionStore(dataDir),
+        clock: (): string => new Date().toISOString(),
+        adapterDescriptorResolver: readOnlyAdapterDescriptorResolver(createAdapterRegistry()),
+      }),
+      logger: options.logger,
+    };
+  }
+  return defaultAdoptionRoutes;
 }
 
 // AISE-011: memoized default BOQ routing (see HandlerOptions.boq).
@@ -877,6 +990,30 @@ async function route(
     );
     if (gapsResponse !== null) {
       return gapsResponse;
+    }
+  }
+
+  // AISE-041 routing — delegates to the adoption surface (the workflow
+  // migration and switching-friction profiler: incumbent-workflow
+  // inventory with typed per-step attributes, integration-readiness and
+  // switching-friction scoring with explicit weights and UNKNOWN-honest
+  // null composites, ranked replacement-opportunity steps, and the
+  // governed migration-candidate state machine — `replaced` only with
+  // semantic equivalence + operational acceptance + an active rollback
+  // plan; the profiler NEVER migrates anything and never writes an
+  // incumbent system). The path guard keeps the lazily-constructed
+  // default service (FsAdoptionStore + the read-only empty-registry
+  // adapter resolver under the configured data dir) entirely off
+  // non-adoption requests.
+  if (url.pathname === "/v1/adoption" || url.pathname.startsWith("/v1/adoption/")) {
+    const adoptionResponse = await handleAdoptionRequest(
+      request,
+      url,
+      requestId,
+      adoptionRoutesOrDefault(options),
+    );
+    if (adoptionResponse !== null) {
+      return adoptionResponse;
     }
   }
 
