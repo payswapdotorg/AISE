@@ -44,6 +44,7 @@ export type EnvFormat =
   | "ttl-seconds"
   | "identifier"
   | "bytes-cap"
+  | "count"
   | "postgres-url";
 
 /** Anything that can be read like process.env. */
@@ -268,6 +269,61 @@ export const ENV_RULES: readonly EnvVarRule[] = [
     requiredIn: [],
     optionalProvider: true,
   },
+  // PROD-007: the Upstash Redis transient-state group (optional,
+  // all-or-nothing — the R2 discipline). Absent → the redis family's env
+  // factory serves the EXPLICIT in-memory mode (readiness says so);
+  // complete → Upstash REST primitives over the global fetch with TTL/
+  // idempotency discipline and outage degradation to the memory twin.
+  // Values are NEVER echoed (the REST URL and token are infrastructure
+  // credentials, not operator-facing configuration).
+  {
+    name: "AISE_REDIS_REST_URL",
+    description: "Upstash Redis REST URL (transient-state cache/rate-limit/jobs — optional group)",
+    consumer: "backend/api redis family (PROD-007 upstash adapter)",
+    format: "secret",
+    defaults: { dev: "", start: "" },
+    requiredIn: [],
+    optionalProvider: true,
+    optionalGroup: "redis",
+    groupRequired: true,
+  },
+  {
+    name: "AISE_REDIS_REST_TOKEN",
+    description: "Upstash Redis REST token (optional group; set with AISE_REDIS_REST_URL)",
+    consumer: "backend/api redis family (PROD-007 upstash adapter)",
+    format: "secret",
+    defaults: { dev: "", start: "" },
+    requiredIn: [],
+    optionalProvider: true,
+    optionalGroup: "redis",
+    groupRequired: true,
+  },
+  // PROD-007 tuning: documented defaults consumed by the redis env
+  // factory (backend/api/src/redis/index.ts mirrors them exactly).
+  {
+    name: "AISE_REDIS_CACHE_TTL_SECONDS",
+    description: "Default cache-aside TTL in seconds (60..2592000; default 300)",
+    consumer: "backend/api redis family (PROD-007 cache helpers)",
+    format: "ttl-seconds",
+    defaults: { dev: "300", start: "300" },
+    requiredIn: [],
+  },
+  {
+    name: "AISE_REDIS_RATELIMIT_WINDOW_SECONDS",
+    description: "Rate-limit fixed-window length in seconds (60..2592000; default 60)",
+    consumer: "backend/api redis family (PROD-007 limiter)",
+    format: "ttl-seconds",
+    defaults: { dev: "60", start: "60" },
+    requiredIn: [],
+  },
+  {
+    name: "AISE_REDIS_RATELIMIT_MAX",
+    description: "Rate-limit max requests per window per identifier (1..100000; default 100)",
+    consumer: "backend/api redis family (PROD-007 limiter)",
+    format: "count",
+    defaults: { dev: "100", start: "100" },
+    requiredIn: [],
+  },
 ] as const;
 
 const LOG_LEVELS: readonly string[] = ["debug", "info", "warn", "error"];
@@ -288,6 +344,7 @@ const FORMAT_EXPECTATIONS: Readonly<Record<EnvFormat, string>> = {
   "ttl-seconds": "expected an integer between 60 and 2592000 (seconds)",
   identifier: "expected a non-empty value (1..256 characters)",
   "bytes-cap": "expected an integer number of bytes between 1 and 1073741824",
+  count: "expected an integer between 1 and 100000",
   "postgres-url": "expected a postgres:// or postgresql:// connection URL with a host",
 };
 
@@ -339,6 +396,13 @@ export function isFormatValid(format: EnvFormat, value: string): boolean {
       }
       const cap = Number.parseInt(value, 10);
       return cap >= 1 && cap <= 1024 * 1024 * 1024;
+    }
+    case "count": {
+      if (!/^\d+$/.test(value)) {
+        return false;
+      }
+      const count = Number.parseInt(value, 10);
+      return count >= 1 && count <= 100_000;
     }
     case "postgres-url": {
       // Same scheme/host contract the API's own pg connection authority

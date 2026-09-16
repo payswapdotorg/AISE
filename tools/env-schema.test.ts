@@ -14,6 +14,11 @@ describe("declared schema", () => {
       "AISE_AUTH_MODE",
       "AISE_DATA_DIR",
       "AISE_DEMO_PRINCIPAL",
+      "AISE_REDIS_CACHE_TTL_SECONDS",
+      "AISE_REDIS_RATELIMIT_MAX",
+      "AISE_REDIS_RATELIMIT_WINDOW_SECONDS",
+      "AISE_REDIS_REST_TOKEN",
+      "AISE_REDIS_REST_URL",
       "AISE_SESSION_TTL_SECONDS",
       "AISE_WEB_PORT",
       "AUTH_SECRET",
@@ -37,7 +42,7 @@ describe("declared schema", () => {
     ).toEqual(["AISE_DATA_DIR"]);
   });
 
-  test("optional provider credentials are WORLDSCULPT, the R2 artifact group, and DATABASE_URL (PROD-005)", () => {
+  test("optional provider credentials are WORLDSCULPT, the R2 artifact group, DATABASE_URL and the redis group (PROD-007)", () => {
     expect(
       ENV_RULES.filter((rule) => rule.optionalProvider === true).map((rule) => rule.name),
     ).toEqual([
@@ -48,10 +53,12 @@ describe("declared schema", () => {
       "R2_SECRET_ACCESS_KEY",
       "R2_PUBLIC_ENDPOINT",
       "DATABASE_URL",
+      "AISE_REDIS_REST_URL",
+      "AISE_REDIS_REST_TOKEN",
     ]);
   });
 
-  test("the R2_* group is the only optional group: all-or-nothing required members", () => {
+  test("optional groups (r2, redis): all-or-nothing required members", () => {
     const groups = new Map<string, readonly string[]>();
     for (const rule of ENV_RULES) {
       if (rule.optionalGroup === undefined) {
@@ -59,7 +66,7 @@ describe("declared schema", () => {
       }
       groups.set(rule.optionalGroup, [...(groups.get(rule.optionalGroup) ?? []), rule.name]);
     }
-    expect([...groups.keys()]).toEqual(["r2"]);
+    expect([...groups.keys()]).toEqual(["r2", "redis"]);
     expect(groups.get("r2")).toEqual([
       "R2_ACCOUNT_ID",
       "R2_BUCKET",
@@ -72,6 +79,12 @@ describe("declared schema", () => {
         (rule) => rule.name,
       ),
     ).toEqual(["R2_ACCOUNT_ID", "R2_BUCKET", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY"]);
+    expect(groups.get("redis")).toEqual(["AISE_REDIS_REST_URL", "AISE_REDIS_REST_TOKEN"]);
+    expect(
+      ENV_RULES.filter((rule) => rule.optionalGroup === "redis" && rule.groupRequired === true).map(
+        (rule) => rule.name,
+      ),
+    ).toEqual(["AISE_REDIS_REST_URL", "AISE_REDIS_REST_TOKEN"]);
   });
 
   test("PROD-004: only AUTH_SECRET is required-when-enabled (by the AISE_AUTH toggle)", () => {
@@ -462,6 +475,85 @@ describe("PROD-006 R2 artifact storage group", () => {
     expect(malformed.ok).toBe(false);
     expect(malformed.issues).toEqual([
       "AISE_ARTIFACT_MAX_BYTES: expected an integer number of bytes between 1 and 1073741824",
+    ]);
+  });
+});
+
+describe("PROD-007 redis transient-state group", () => {
+  const COMPLETE_REDIS: EnvRecord = {
+    AISE_REDIS_REST_URL: "https://redis-test.example.upstash.io",
+    AISE_REDIS_REST_TOKEN: "redis-rest-token-value",
+  };
+
+  test("unset group reports both members disabled (optional) and the tuning defaults — never an error", () => {
+    const report = evaluateEnv({}, "dev");
+    expect(report.ok).toBe(true);
+    for (const name of ["AISE_REDIS_REST_URL", "AISE_REDIS_REST_TOKEN"]) {
+      const check = report.checks.find((entry) => entry.name === name);
+      expect(check?.status).toBe("disabled-optional");
+      expect(check?.detail).toBe("disabled (optional)");
+    }
+    const byName = new Map(report.checks.map((check) => [check.name, check]));
+    expect(byName.get("AISE_REDIS_CACHE_TTL_SECONDS")?.status).toBe("ok-default");
+    expect(byName.get("AISE_REDIS_CACHE_TTL_SECONDS")?.detail).toBe("default: 300");
+    expect(byName.get("AISE_REDIS_RATELIMIT_WINDOW_SECONDS")?.detail).toBe("default: 60");
+    expect(byName.get("AISE_REDIS_RATELIMIT_MAX")?.detail).toBe("default: 100");
+  });
+
+  test("complete group passes and never echoes the URL or token", () => {
+    const report = evaluateEnv({ AISE_DATA_DIR: "/var/lib/aise", ...COMPLETE_REDIS }, "start");
+    expect(report.ok).toBe(true);
+    for (const name of Object.keys(COMPLETE_REDIS)) {
+      const check = report.checks.find((entry) => entry.name === name);
+      expect(check?.status).toBe("enabled-optional");
+      expect(check?.detail).toBe("enabled (optional group 'redis')");
+      expect(check?.detail).not.toContain(COMPLETE_REDIS[name] ?? "");
+    }
+  });
+
+  test("half-configured group fails with one precise issue naming the missing member (never the value)", () => {
+    const report = evaluateEnv({ AISE_REDIS_REST_URL: "https://redis-test.example.upstash.io" }, "dev");
+    expect(report.ok).toBe(false);
+    expect(report.issues).toHaveLength(1);
+    expect(report.issues[0]).toContain("AISE_REDIS_REST_TOKEN");
+    expect(report.issues[0]).toContain("required when the redis group is active");
+    expect(report.issues[0]).not.toContain("redis-test");
+    expect(report.checks.find((entry) => entry.name === "AISE_REDIS_REST_TOKEN")?.status).toBe(
+      "missing",
+    );
+  });
+
+  test("present-but-empty group members are malformed, not unset", () => {
+    const report = evaluateEnv({ AISE_REDIS_REST_TOKEN: "" }, "dev");
+    expect(report.ok).toBe(false);
+    expect(report.issues).toEqual(["AISE_REDIS_REST_TOKEN: expected a non-empty value"]);
+  });
+
+  test("tuning variables accept in-range integers and reject malformed values precisely", () => {
+    const ok = evaluateEnv(
+      {
+        AISE_REDIS_CACHE_TTL_SECONDS: "600",
+        AISE_REDIS_RATELIMIT_WINDOW_SECONDS: "120",
+        AISE_REDIS_RATELIMIT_MAX: "500",
+      },
+      "dev",
+    );
+    expect(ok.ok).toBe(true);
+    expect(ok.checks.find((check) => check.name === "AISE_REDIS_RATELIMIT_MAX")?.detail).toBe("500");
+
+    const malformed = evaluateEnv(
+      {
+        AISE_REDIS_CACHE_TTL_SECONDS: "59",
+        AISE_REDIS_RATELIMIT_WINDOW_SECONDS: "banana",
+        AISE_REDIS_RATELIMIT_MAX: "0",
+      },
+      "dev",
+    );
+    expect(malformed.ok).toBe(false);
+    expect(malformed.issues).toEqual([
+      "AISE_REDIS_CACHE_TTL_SECONDS: expected an integer between 60 and 2592000 (seconds)",
+      "AISE_REDIS_RATELIMIT_WINDOW_SECONDS: expected an integer between 60 and 2592000 (seconds)",
+      "AISE_REDIS_RATELIMIT_MAX: expected an integer between 1 and 100000",
     ]);
   });
 });
