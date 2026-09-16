@@ -305,3 +305,201 @@ describe("method discipline and coexistence with capture routes", () => {
     });
   });
 });
+
+/* ---------------- PROD-010: GET /v1/boq/imports/:id/lens ---------------- */
+
+/** Encode a JSON request body as bytes (the `post` helper takes Uint8Array). */
+function jsonText(value: unknown): Uint8Array {
+  return text(JSON.stringify(value));
+}
+
+/** A small deterministic GHS finishes BOQ (3 item rows; header + TOTAL row). */
+const LENS_CSV =
+  "Description,Unit,Qty,Rate (GHS),Amount (GHS)\n" +
+  "Plaster to internal walls,m2,220,12.5,2750\n" +
+  "Painting to walls and ceilings,m2,220,8,1760\n" +
+  "Vinyl floor tiling to floors,m2,60,45,2700\n" +
+  "TOTAL,,,480,,7210\n";
+
+/** A tiny reality snapshot the matcher can ground the three rows against. */
+const LENS_SNAPSHOT = {
+  nodes: [
+    {
+      nodeId: "node-wall-gf",
+      kind: "element",
+      properties: [{ key: "semantic.kind", value: "wall" }],
+      spacePath: ["Demo Site", "Building 1", "Ground Floor"],
+      nodeVersionId: "v001",
+    },
+    {
+      nodeId: "node-ceiling-gf",
+      kind: "element",
+      properties: [{ key: "semantic.kind", value: "ceiling" }],
+      spacePath: ["Demo Site", "Building 1", "Ground Floor"],
+      nodeVersionId: "v001",
+    },
+    {
+      nodeId: "node-floor-gf",
+      kind: "element",
+      properties: [{ key: "semantic.kind", value: "floor" }],
+      spacePath: ["Demo Site", "Building 1", "Ground Floor"],
+      nodeVersionId: "v001",
+    },
+  ],
+};
+
+interface LensItemShape {
+  itemId: string;
+  rowNumber: number;
+  originalText: string;
+  descriptionCellRef: string | null;
+  unitCellRef: string | null;
+  unitText: string | null;
+  currency: string;
+  quantity: { cellRef: string | null; value: number } | null;
+  rate: { cellRef: string | null; value: number } | null;
+  amount: { cellRef: string | null; value: number } | null;
+  interpretation?: {
+    description: { conceptCode?: string; originalText: string } | null;
+    unit: { unitCode?: string; originalText: string } | null;
+  };
+  mapping?: { entryId: string; status: string; targets: { nodeId: string }[] };
+}
+
+interface LensShape {
+  importId: string;
+  sourceName: string;
+  dictionaryVersion: string | null;
+  mappingVersion: number | null;
+  sourceCellRefs: string[];
+  items: LensItemShape[];
+}
+
+async function importLensCsv(
+  handler: (request: Request) => Promise<Response>,
+): Promise<string> {
+  const response = await handler(
+    post("/v1/boq/imports", text(LENS_CSV), { "content-type": CSV_MEDIA_TYPE }),
+  );
+  expect(response.status).toBe(200);
+  const parsed = (await body(response)) as { import: { importId: string } };
+  return parsed.import.importId;
+}
+
+describe("GET /v1/boq/imports/:id/lens — the joined lens input (PROD-010)", () => {
+  test("happy path: verbatim rows + stored interpretation + latest mapping joined", async () => {
+    await withTempDir(async (root) => {
+      const handler = handlerWith(root);
+      const importId = await importLensCsv(handler);
+      // The derived view + one mapping version through the REAL routes.
+      expect(
+        (await handler(post(`/v1/boq/imports/${importId}/normalization`, text(""), {
+          "content-type": "application/json",
+        }))).status,
+      ).toBe(200);
+      const mapped = await handler(
+        post(`/v1/boq/imports/${importId}/mappings`, jsonText(LENS_SNAPSHOT), {
+          "content-type": "application/json",
+        }),
+      );
+      expect(mapped.status).toBe(200);
+      expect(((await body(mapped)) as { mapping: { version: number } }).mapping.version).toBe(1);
+
+      const response = await handler(get(`/v1/boq/imports/${importId}/lens`));
+      expect(response.status).toBe(200);
+      expect(response.headers.get("content-type")).toContain("application/json");
+      const parsed = (await body(response)) as { ok: boolean; lens: LensShape };
+      expect(parsed.ok).toBe(true);
+      const lens = parsed.lens;
+      expect(lens.importId).toBe(importId);
+      expect(lens.sourceName).toBe("boq-import.csv");
+      expect(lens.dictionaryVersion).toBe("1.0.0");
+      expect(lens.mappingVersion).toBe(1);
+      // The provenance-resolution universe: every non-empty source cell.
+      for (const ref of ["csv!A1", "csv!E1", "csv!A2", "csv!E4", "csv!A5"]) {
+        expect(lens.sourceCellRefs).toContain(ref);
+      }
+      expect(lens.items.length).toBe(3);
+
+      const first = lens.items[0]!;
+      expect(first.rowNumber).toBe(2);
+      expect(first.originalText).toBe("Plaster to internal walls");
+      expect(first.descriptionCellRef).toBe("csv!A2");
+      expect(first.unitCellRef).toBe("csv!B2");
+      expect(first.unitText).toBe("m2");
+      expect(first.currency).toBe("GHS");
+      expect(first.quantity).toEqual({ cellRef: "csv!C2", value: 220 });
+      expect(first.rate).toEqual({ cellRef: "csv!D2", value: 12.5 });
+      expect(first.amount).toEqual({ cellRef: "csv!E2", value: 2750 });
+      // The stored interpretation (AISE-014) joined verbatim.
+      expect(first.interpretation?.description?.conceptCode).toBe("PLASTERING");
+      expect(first.interpretation?.unit?.unitCode).toBe("m2");
+      // The latest mapping entry (AISE-017) joined by the shared row identity.
+      expect(first.mapping?.entryId).toBe(first.itemId);
+      expect(first.mapping?.status).toBe("mapped");
+      expect(first.mapping?.targets.length).toBeGreaterThan(0);
+      expect(["node-wall-gf", "node-ceiling-gf"]).toContain(first.mapping?.targets[0]?.nodeId ?? "");
+      expect(lens.items.map((item) => item.itemId)).toEqual([
+        lens.items[0]!.itemId,
+        lens.items[1]!.itemId,
+        lens.items[2]!.itemId,
+      ]);
+      expect(new Set(lens.items.map((item) => item.itemId)).size).toBe(3);
+    });
+  });
+
+  test("unknown import -> 404 import_not_found (honest nothing)", async () => {
+    await withTempDir(async (root) => {
+      const handler = handlerWith(root);
+      const response = await handler(get(`/v1/boq/imports/${sha256Hex("no-such-import")}/lens`));
+      expect(response.status).toBe(404);
+      expect(((await body(response)) as { error: string }).error).toBe("import_not_found");
+    });
+  });
+
+  test("import without a stored normalization -> 409 normalization_required (nothing fabricated)", async () => {
+    await withTempDir(async (root) => {
+      const handler = handlerWith(root);
+      const importId = await importLensCsv(handler);
+      const response = await handler(get(`/v1/boq/imports/${importId}/lens`));
+      expect(response.status).toBe(409);
+      const parsed = (await body(response)) as { error: string; detail: string };
+      expect(parsed.error).toBe("normalization_required");
+      expect(parsed.detail).toContain("normalization");
+    });
+  });
+
+  test("no stored mapping -> the honest EMPTY JOIN (200, mappingVersion null, no mapping members)", async () => {
+    await withTempDir(async (root) => {
+      const handler = handlerWith(root);
+      const importId = await importLensCsv(handler);
+      expect(
+        (await handler(post(`/v1/boq/imports/${importId}/normalization`, text(""), {
+          "content-type": "application/json",
+        }))).status,
+      ).toBe(200);
+      const response = await handler(get(`/v1/boq/imports/${importId}/lens`));
+      expect(response.status).toBe(200);
+      const parsed = (await body(response)) as { lens: LensShape };
+      expect(parsed.lens.mappingVersion).toBe(null);
+      expect(parsed.lens.items.length).toBe(3);
+      for (const item of parsed.lens.items) {
+        expect(item.mapping).toBeUndefined();
+        // The interpretation join is INDEPENDENT of the mapping join.
+        expect(item.interpretation?.description?.originalText).toBe(item.originalText);
+      }
+    });
+  });
+
+  test("wrong method on the lens route -> 405 with allow GET", async () => {
+    await withTempDir(async (root) => {
+      const handler = handlerWith(root);
+      const importId = await importLensCsv(handler);
+      const response = await handler(
+        post(`/v1/boq/imports/${importId}/lens`, text(""), { "content-type": "application/json" }),
+      );
+      expect(response.status).toBe(405);
+      expect(response.headers.get("allow")).toBe("GET");
+    });
+  });
+});

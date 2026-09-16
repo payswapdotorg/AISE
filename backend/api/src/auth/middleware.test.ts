@@ -25,6 +25,7 @@ import {
   decideUnscopedAccess,
   extractBodyScope,
   extractPathScope,
+  isIdentityCreateProjectAct,
   readSessionCookie,
   readSessionToken,
   type AuthLayer,
@@ -904,5 +905,139 @@ describe("the boot sweep (deterministic expiry cleanup)", () => {
     expect(report.removedSessionIds.length).toBe(1);
     const again = await world.layer.sweep();
     expect(again).toEqual({ considered: 0, removedSessionIds: [] });
+  });
+});
+
+/* ---------------- PROD-010: the create-project carve-out ---------------- */
+
+describe("the identity create-project carve-out (POST /v1/identity/organizations/:orgId/projects)", () => {
+  const CREATE_BODY = {
+    projectId: "proj-carve-out-proof",
+    name: "Carve-out proof",
+    actor: DEMO_PRINCIPAL,
+  };
+  const CREATE_BODY_TEXT = JSON.stringify(CREATE_BODY);
+
+  test("member create passes with the body forwarded VERBATIM (the payload's projectId is the NEW project, not a tenant)", async () => {
+    const world = await authWorld();
+    const cookie = await sessionCookie(world, "demo");
+    const outcome = await world.layer.handle(
+      post(`/v1/identity/organizations/${DEMO_ORGANIZATION_ID}/projects`, CREATE_BODY, withCookie(cookie)),
+      "req-carve-1",
+    );
+    expect(outcome.kind).toBe("pass");
+    if (outcome.kind !== "pass") {
+      throw new Error("unreachable");
+    }
+    expect(outcome.request.method).toBe("POST");
+    expect(new URL(outcome.request.url).pathname).toBe(
+      `/v1/identity/organizations/${DEMO_ORGANIZATION_ID}/projects`,
+    );
+    // The core must see the same bytes — body rebuilt verbatim.
+    expect(await outcome.request.text()).toBe(CREATE_BODY_TEXT);
+  });
+
+  test("anonymous create is still 401 (writes always need a session)", async () => {
+    const world = await authWorld();
+    const outcome = await world.layer.handle(
+      post(`/v1/identity/organizations/${DEMO_ORGANIZATION_ID}/projects`, CREATE_BODY),
+      "req-carve-2",
+    );
+    expect(outcome.kind).toBe("response");
+    if (outcome.kind !== "response") {
+      throw new Error("unreachable");
+    }
+    expect(outcome.response.status).toBe(401);
+    expect(await bodyOf(outcome.response)).toContain("authentication_required");
+  });
+
+  test("unregistered org in the path is still 403 unregistered_organization", async () => {
+    const world = await authWorld();
+    const cookie = await sessionCookie(world, "demo");
+    const outcome = await world.layer.handle(
+      post("/v1/identity/organizations/org-ghost/projects", CREATE_BODY, withCookie(cookie)),
+      "req-carve-3",
+    );
+    expect(outcome.kind).toBe("response");
+    if (outcome.kind !== "response") {
+      throw new Error("unreachable");
+    }
+    expect(outcome.response.status).toBe(403);
+    expect(await bodyOf(outcome.response)).toContain("unregistered_organization");
+  });
+
+  test("foreign (registered) org in the path is still 403 cross_tenant", async () => {
+    const world = await authWorld();
+    const cookie = await sessionCookie(world, "demo");
+    const outcome = await world.layer.handle(
+      post(`/v1/identity/organizations/${FOREIGN_ORG}/projects`, CREATE_BODY, withCookie(cookie)),
+      "req-carve-4",
+    );
+    expect(outcome.kind).toBe("response");
+    if (outcome.kind !== "response") {
+      throw new Error("unreachable");
+    }
+    expect(outcome.response.status).toBe(403);
+    expect(await bodyOf(outcome.response)).toContain("cross_tenant");
+  });
+
+  test("the carve-out is scoped: path-A-body-B refusals elsewhere are untouched (cross_tenant + unregistered_project)", async () => {
+    const world = await authWorld();
+    const cookie = await sessionCookie(world, "demo");
+    // Path addresses the DEMO project while the body names Mallory's
+    // REGISTERED project -> cross_tenant (body scope still enforced).
+    const cross = await world.layer.handle(
+      post(`/v1/reality/projects/${DEMO_PROJECT_IDS[0]}/layers`, { projectId: FOREIGN_PROJECT }, withCookie(cookie)),
+      "req-carve-5a",
+    );
+    expect(cross.kind).toBe("response");
+    if (cross.kind !== "response") {
+      throw new Error("unreachable");
+    }
+    expect(cross.response.status).toBe(403);
+    expect(await bodyOf(cross.response)).toContain("cross_tenant");
+    // Path addresses the demo project while the body names an UNREGISTERED
+    // project -> unregistered_project (the fail-closed creation rule the
+    // carve-out deliberately does NOT extend to other routes).
+    const unregistered = await world.layer.handle(
+      post(`/v1/reality/projects/${DEMO_PROJECT_IDS[0]}/layers`, { projectId: "proj-not-registered" }, withCookie(cookie)),
+      "req-carve-5b",
+    );
+    expect(unregistered.kind).toBe("response");
+    if (unregistered.kind !== "response") {
+      throw new Error("unreachable");
+    }
+    expect(unregistered.response.status).toBe(403);
+    expect(await bodyOf(unregistered.response)).toContain("unregistered_project");
+  });
+
+  test("isIdentityCreateProjectAct route-shape matrix (EXACT act, trailing-slash equivalent, everything else false)", async () => {
+    const yes = [
+      "/v1/identity/organizations/org-northwind/projects",
+      "/v1/identity/organizations/org-northwind/projects/",
+      "//v1/identity/organizations/org-northwind/projects//",
+    ];
+    for (const path of yes) {
+      expect(isIdentityCreateProjectAct("POST", path)).toBe(true);
+      expect(isIdentityCreateProjectAct("post", path)).toBe(true);
+    }
+    const no = [
+      "/v1/identity/organizations/org-northwind/projects/extra",
+      "/v1/identity/organizations/org-northwind/roles",
+      "/v1/identity/organizations",
+      "/v1/identity/organizations/org-northwind",
+      "/v1/identity/principals",
+      "/v1/reality/projects/proj-x/layers",
+      "/v1/cases",
+      "/identity/organizations/org-northwind/projects",
+      "/v1/identity/organizations//projects",
+    ];
+    for (const path of no) {
+      expect(isIdentityCreateProjectAct("POST", path)).toBe(false);
+    }
+    // Wrong verbs on the exact path never match.
+    for (const method of ["GET", "PUT", "PATCH", "DELETE"]) {
+      expect(isIdentityCreateProjectAct(method, "/v1/identity/organizations/org-northwind/projects")).toBe(false);
+    }
   });
 });

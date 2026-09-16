@@ -56,6 +56,22 @@
  *                                        `invalid_mapping_version` otherwise;
  *                                        404 `mapping_version_not_found`).
  *
+ *   GET  /v1/boq/imports/:id/lens       -> PROD-010: the JOINED lens input
+ *                                        the frozen BOQ Lens workspace
+ *                                        consumes — verbatim item rows +
+ *                                        their stored interpretation
+ *                                        (AISE-014) + the LATEST mapping
+ *                                        entries (AISE-017) — assembled by
+ *                                        `assembleBoqLensInput` (pure join,
+ *                                        nothing re-derived). 404
+ *                                        `import_not_found`; 409
+ *                                        `normalization_required` when no
+ *                                        stored view exists (nothing
+ *                                        fabricated); a missing mapping is
+ *                                        the honest EMPTY JOIN (200,
+ *                                        `mappingVersion: null`, items
+ *                                        carry no mapping member).
+ *
  * HTTP STATUS MAPPING — the single place for this translation:
  *
  *   successful ingest               -> 200 (canonical-JSON import envelope)
@@ -96,7 +112,7 @@ import { MappingService, MappingServiceError } from "./mapping/service";
 import { InMemoryMappingStore } from "./mapping/store";
 import { NormalizationService, NormalizationServiceError } from "./normalization/service";
 import { InMemoryNormalizationStore } from "./normalization/store";
-import type { BoqService } from "./service";
+import { assembleBoqLensInput, type BoqService } from "./service";
 
 export interface BoqRouteOptions {
   /** BOQ ingestion service (policy engine over an injected store). */
@@ -658,6 +674,48 @@ export async function handleBoqRequest(
       canonicalJsonStringify({ ok: true, mapping: result, stats: computeMappingStats(result) }),
       requestId,
     );
+  }
+
+  /* /v1/boq/imports/:id/lens — the joined lens input (PROD-010) --------- */
+
+  if (segments.length === 5 && segments[2] === "imports" && segments[4] === "lens") {
+    const importId = segments[3] ?? "";
+    if (!contentIdSchema.safeParse(importId).success) {
+      return jsonResponse(400, { ok: false, error: "invalid_import_id" }, requestId);
+    }
+    if (request.method !== "GET") {
+      return methodNotAllowed(requestId, "GET");
+    }
+    const imported = await service.getImport(importId);
+    if (imported === null) {
+      return jsonResponse(404, { ok: false, error: "import_not_found" }, requestId);
+    }
+    // Honesty first: no stored derived view -> nothing to join against (the
+    // lens NEVER fabricates an interpretation) -> 409 normalization_required.
+    const view = await normalizationOrDefault(options).getNormalization(importId);
+    if (view === null) {
+      return jsonResponse(
+        409,
+        {
+          ok: false,
+          error: "normalization_required",
+          detail: `import '${importId}' has no stored normalized view — run POST /v1/boq/imports/:id/normalization first`,
+        },
+        requestId,
+      );
+    }
+    // A missing mapping is NOT an error: the honest empty join (items carry
+    // no mapping member, mappingVersion null) — the lens renders mapping
+    // coverage as explicitly absent, never guessed.
+    const mapping = await mappingOrDefault(options).getLatest(importId);
+    const lens = assembleBoqLensInput({ imported, view, mapping });
+    logger.info("boq_lens_read", {
+      requestId,
+      importId,
+      items: lens.items.length,
+      mappingVersion: lens.mappingVersion,
+    });
+    return jsonTextResponse(200, canonicalJsonStringify({ ok: true, lens }), requestId);
   }
 
   // A /v1/boq/... path with no matching route shape falls through to the

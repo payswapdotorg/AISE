@@ -33,9 +33,15 @@ import {
   type BoqFormat,
   type BoqImport,
   type BoqRecord,
+  type BoqCell,
+  type BoqRow,
+  type BoqSheet,
   BoqParseError,
   PDF_UNSUPPORTED_REASON,
 } from "./model";
+import { entryIdOf } from "./mapping/matcher";
+import type { BoqMapping, MappingEntry } from "./mapping/model";
+import type { NormalizedBoqView, ItemInterpretation } from "./normalization/types";
 import { parseXlsx } from "./xlsx";
 import type { BoqStore } from "./store";
 
@@ -147,4 +153,235 @@ export class BoqService {
     }
     return { bytes, mediaType: record.source.mediaType };
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* PROD-010 — the BOQ Lens joined view (GET /v1/boq/imports/:id/lens)  */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The joined lens input the frozen BOQ Lens workspace consumes
+ * (apps/web/src/boqlens model.ts — a STRUCTURAL MIRROR defined here on the
+ * server side; a serialized `BoqLensInputView` satisfies the web types
+ * as-is). Everything is READ-ONLY DISPLAY DATA assembled from three
+ * untouched sources: the verbatim imported document (AISE-011), its stored
+ * derived interpretation (AISE-014) and the latest stored mapping version
+ * (AISE-017). NOTHING here writes, re-parses or re-interprets a source.
+ */
+export interface BoqLensNumericCell {
+  readonly cellRef: string | null;
+  readonly value: number;
+}
+
+export interface BoqLensItemView {
+  readonly itemId: string;
+  readonly rowNumber: number;
+  readonly sectionTitle: string | null;
+  readonly originalText: string;
+  readonly descriptionCellRef: string | null;
+  readonly unitCellRef: string | null;
+  readonly unitText: string | null;
+  readonly currency: string;
+  readonly quantity: BoqLensNumericCell | null;
+  readonly rate: BoqLensNumericCell | null;
+  readonly amount: BoqLensNumericCell | null;
+  readonly interpretation?: ItemInterpretation;
+  readonly mapping?: MappingEntry;
+}
+
+export interface BoqLensInputView {
+  readonly importId: string;
+  readonly sourceName: string;
+  readonly dictionaryVersion: string | null;
+  readonly mappingVersion: number | null;
+  readonly sourceCellRefs: readonly string[];
+  readonly items: readonly BoqLensItemView[];
+}
+
+/**
+ * ISO 4217 "no currency" — the honest per-row currency when the source
+ * states none in its rate/amount headers. NEVER a guessed real currency.
+ */
+export const BOQ_LENS_NO_CURRENCY = "XXX";
+
+/** Header label patterns that anchor the numeric column roles (structural). */
+const QUANTITY_HEADER_PATTERN = /\b(?:qty|quantity)\b/i;
+const RATE_HEADER_PATTERN = /\b(?:rate|price)\b/i;
+const AMOUNT_HEADER_PATTERN = /\b(?:amount|total)\b/i;
+/** A parenthesized ISO-4217-style token in a rate/amount header, e.g. "Rate (GHS)". */
+const CURRENCY_HEADER_PATTERN = /\(([A-Z]{3})\)/;
+/**
+ * Strict decimal text for the CSV string-cell case: optional sign, digits,
+ * optional single fractional part — NO thousands separators, NO currency
+ * symbols, NO exponent. Anything else stays null (no interpretation).
+ */
+const STRICT_DECIMAL_PATTERN = /^[+-]?\d+(?:\.\d+)?$/;
+
+/** The numeric value of a cell when it is unambiguously numeric, else null. */
+function numericValueOf(cell: BoqCell | null): number | null {
+  if (cell === null || cell.type === "empty" || cell.raw === "") {
+    return null;
+  }
+  if (typeof cell.value === "number" && Number.isFinite(cell.value)) {
+    return cell.value;
+  }
+  if (typeof cell.value === "string" && STRICT_DECIMAL_PATTERN.test(cell.value.trim())) {
+    return Number(cell.value.trim());
+  }
+  return null;
+}
+
+/** Sheet-qualified source ref, e.g. "Finishes!B4" (the pipeline's convention). */
+function lensSourceRef(sheet: string, cell: BoqCell): string {
+  return `${sheet}!${cell.ref}`;
+}
+
+/** One section's detected numeric roles (structural, evidence = header text). */
+interface NumericRoles {
+  readonly quantityColumn: string | null;
+  readonly rateColumn: string | null;
+  readonly amountColumn: string | null;
+  readonly currency: string;
+}
+
+function detectNumericRoles(sheet: BoqSheet, headerRowNumber: number, headerRefs: readonly string[]): NumericRoles {
+  const headerRow: BoqRow | undefined = sheet.rows.find((row) => row.rowNumber === headerRowNumber);
+  let quantityColumn: string | null = null;
+  let rateColumn: string | null = null;
+  let amountColumn: string | null = null;
+  let currency: string | null = null;
+  if (headerRow !== undefined) {
+    for (const ref of headerRefs) {
+      const cell = headerRow.cells.find((candidate) => candidate.ref === ref);
+      if (cell === undefined || typeof cell.value !== "string" || cell.value === "") {
+        continue;
+      }
+      if (quantityColumn === null && QUANTITY_HEADER_PATTERN.test(cell.value)) {
+        quantityColumn = cell.column;
+      }
+      if (rateColumn === null && RATE_HEADER_PATTERN.test(cell.value)) {
+        rateColumn = cell.column;
+        currency ??= CURRENCY_HEADER_PATTERN.exec(cell.value)?.[1] ?? null;
+      }
+      if (amountColumn === null && AMOUNT_HEADER_PATTERN.test(cell.value)) {
+        amountColumn = cell.column;
+        currency ??= CURRENCY_HEADER_PATTERN.exec(cell.value)?.[1] ?? null;
+      }
+    }
+  }
+  return {
+    quantityColumn,
+    rateColumn,
+    amountColumn,
+    // Honest absence: "XXX" is the ISO 4217 no-currency code, never a guess.
+    currency: currency ?? BOQ_LENS_NO_CURRENCY,
+  };
+}
+
+/** The (sheet, row) -> numeric-roles index over every detected section. */
+function numericRolesByRow(doc: NonNullable<BoqImport["parse"]["document"]>): Map<string, NumericRoles> {
+  const index = new Map<string, NumericRoles>();
+  for (const sheet of doc.sheets) {
+    for (const section of sheet.sections) {
+      const roles = detectNumericRoles(sheet, section.detection.headerRowNumber, section.headerCells);
+      for (const rowNumber of section.itemRows) {
+        index.set(`${sheet.name}|${rowNumber}`, roles);
+      }
+    }
+  }
+  return index;
+}
+
+/** The sheet name an item interpretation's anchor source ref points into. */
+function sheetOfItem(item: ItemInterpretation): string {
+  const anchor = item.description?.sourceRefs[0] ?? item.unit?.sourceRefs[0] ?? "";
+  return anchor.includes("!") ? (anchor.split("!")[0] ?? "") : "";
+}
+
+/**
+ * Assemble the joined lens input (PROD-010). PURE: reads the passed import
+ * envelope, derived view and latest mapping; writes nothing; deterministic
+ * (no clock, no randomness — the mapping's own recordedAt rides along
+ * verbatim inside its entries). The router owns existence/409 decisions;
+ * this function only joins.
+ */
+export function assembleBoqLensInput(input: {
+  readonly imported: BoqImport;
+  readonly view: NormalizedBoqView;
+  readonly mapping: BoqMapping | null;
+}): BoqLensInputView {
+  const { imported, view, mapping } = input;
+  const doc = imported.parse.document;
+
+  // The provenance-resolution universe: every non-empty source cell in the
+  // document, sheet-qualified, in document order (R8: every cited ref must
+  // be a member or the lens health check reports fabricated provenance).
+  const sourceCellRefs: string[] = [];
+  const rowsBySheet = new Map<string, Map<number, BoqRow>>();
+  if (doc !== undefined) {
+    for (const sheet of doc.sheets) {
+      const rowsByNumber = new Map<number, BoqRow>();
+      for (const row of sheet.rows) {
+        rowsByNumber.set(row.rowNumber, row);
+        for (const cell of row.cells) {
+          if (cell.type !== "empty" && cell.raw !== "") {
+            sourceCellRefs.push(lensSourceRef(sheet.name, cell));
+          }
+        }
+      }
+      rowsBySheet.set(sheet.name, rowsByNumber);
+    }
+  }
+  const numericRoles = doc === undefined ? new Map<string, NumericRoles>() : numericRolesByRow(doc);
+  const entriesByItem = new Map<string, MappingEntry>();
+  if (mapping !== null) {
+    for (const entry of mapping.entries) {
+      entriesByItem.set(entry.entryId, entry);
+    }
+  }
+
+  const items: BoqLensItemView[] = [];
+  for (const item of view.perItem) {
+    const sheetName = sheetOfItem(item);
+    const row = rowsBySheet.get(sheetName)?.get(item.rowNumber);
+    const roles = numericRoles.get(`${sheetName}|${item.rowNumber}`);
+    const numericFor = (column: string | null): BoqLensNumericCell | null => {
+      if (row === undefined || column === null || roles === undefined) {
+        return null;
+      }
+      const cell = row.cells.find((candidate) => candidate.column === column) ?? null;
+      const value = numericValueOf(cell);
+      return value === null
+        ? null
+        : { cellRef: cell === null ? null : lensSourceRef(sheetName, cell), value };
+    };
+    const itemId = entryIdOf(item);
+    const entry = entriesByItem.get(itemId);
+    items.push({
+      itemId,
+      rowNumber: item.rowNumber,
+      sectionTitle: item.sectionTitle,
+      originalText: item.description?.originalText ?? item.unit?.originalText ?? "",
+      descriptionCellRef: item.description?.sourceRefs[0] ?? null,
+      unitCellRef: item.unit?.sourceRefs[0] ?? null,
+      unitText: item.unit?.originalText ?? null,
+      currency: roles?.currency ?? BOQ_LENS_NO_CURRENCY,
+      quantity: numericFor(roles?.quantityColumn ?? null),
+      rate: numericFor(roles?.rateColumn ?? null),
+      amount: numericFor(roles?.amountColumn ?? null),
+      interpretation: item,
+      ...(entry === undefined ? {} : { mapping: entry }),
+    });
+  }
+
+  return {
+    importId: imported.importId,
+    // Honest derived label (the import envelope carries no filename — the
+    // format and content address ARE the recorded source facts).
+    sourceName: `boq-import.${imported.format}`,
+    dictionaryVersion: view.dictionaryVersion,
+    mappingVersion: mapping === null ? null : mapping.version,
+    sourceCellRefs,
+    items,
+  };
 }

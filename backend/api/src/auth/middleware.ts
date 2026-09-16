@@ -203,6 +203,31 @@ function isWriteVerb(method: string): boolean {
 }
 
 /**
+ * PROD-010 (auth-seam carve-out): does this request address EXACTLY the
+ * identity router's create-project act — POST /v1/identity/organizations/
+ * :orgId/projects (router-consistent segmentation; a trailing slash is the
+ * same route)? When true, the enforcement loop below skips ONLY the BODY
+ * scope: the create payload's top-level `projectId` names the NEW project
+ * being registered, not an addressed tenant (the path's organization is the
+ * tenant, and it stays fully checked; anonymous 401 and the cross-tenant
+ * path-A-body-B property on every OTHER route stay enforced). Pure
+ * predicate — no parsing, no I/O; exported for the route-shape matrix.
+ */
+export function isIdentityCreateProjectAct(method: string, path: string): boolean {
+  if (method.toUpperCase() !== "POST") {
+    return false;
+  }
+  const segments = path.split("/").filter((segment) => segment !== "");
+  return (
+    segments.length === 5 &&
+    segments[0] === "v1" &&
+    segments[1] === "identity" &&
+    segments[2] === "organizations" &&
+    segments[4] === "projects"
+  );
+}
+
+/**
  * The top-level `projectId`/`organizationId` of a JSON mutation body — the
  * generic, domain-agnostic scope signal (cases, interventions, missions,
  * comparisons… carry their project in the body). Only TOP-LEVEL string
@@ -558,11 +583,18 @@ export function createAuthLayer(deps: AuthLayerDeps): AuthLayer {
       // The path scope (the documented tenant-addressed route shapes).
       const pathScope = extractPathScope(path);
 
+      // PROD-010 carve-out: on the identity create-project act the body's
+      // top-level projectId is the NEW project being registered, not an
+      // addressed tenant — the BODY scope is skipped (the path's
+      // organization tenant check above/below is untouched, and every other
+      // route keeps the full path+body property).
+      const method = request.method.toUpperCase();
+      const createProjectAct = isIdentityCreateProjectAct(method, path);
+
       // The body scope: writes with a JSON body that names a project or an
       // organization top-level. The body is read once and REBUILT VERBATIM
       // into the forwarded request (the core must see the same bytes).
       let forwarded = request;
-      const method = request.method.toUpperCase();
       const contentType = request.headers.get("content-type") ?? "";
       let bodyScope: TenantScope | null = null;
       if (isWriteVerb(method) && contentType.includes("application/json")) {
@@ -593,8 +625,11 @@ export function createAuthLayer(deps: AuthLayerDeps): AuthLayer {
 
       // …and the typed tenant predicate over every addressed scope (path
       // AND body must both pass — a mutation whose path addresses project A
-      // while its body names project B is refused if EITHER crosses).
-      for (const scope of [pathScope, bodyScope]) {
+      // while its body names project B is refused if EITHER crosses). The
+      // create-project carve-out above removes ONLY the body scope on that
+      // one route shape; the body itself is still rebuilt verbatim either
+      // way (the core sees the same bytes).
+      for (const scope of [pathScope, createProjectAct ? null : bodyScope]) {
         if (scope === null) {
           continue;
         }
