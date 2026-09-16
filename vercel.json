@@ -5,9 +5,10 @@
   "buildCommand": "bun run build",
   "outputDirectory": "apps/web/dist",
   "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/[...path]?...path=:path*" },
     { "source": "/healthz", "destination": "/api/healthz" },
     { "source": "/readyz", "destination": "/api/readyz" },
-    { "source": "/v1/:path*", "destination": "/api/v1/:path*" },
+    { "source": "/v1/:path*", "destination": "/api/[...path]?...path=v1/:path*" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }

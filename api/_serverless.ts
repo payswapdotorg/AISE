@@ -3,7 +3,7 @@
  * (PROD-003; deployment made real by PROD-011).
  *
  * Vercel Hobby caps serverless functions per project, so the deployable
- * shape is a single optional catch-all that delegates EVERY method+path to
+ * shape is a single catch-all that delegates EVERY method+path to
  * the API's shared runtime pipeline — no per-route functions. The pipeline
  * (backend/api/src/runtime/entry.ts) wraps the routing core
  * (backend/api/src/server.ts `createRequestHandler`) with the production
@@ -13,12 +13,15 @@
  *
  * DEPLOYMENT SHAPE (PROD-011): this file is NOT itself the deployed entry —
  * `bun run build` (tools/build.ts) esbuild-bundles it to
- * `api/[[...path]].mjs`, a self-contained ESM bundle for the Node.js
+ * `api/[...path].mjs`, a self-contained ESM bundle for the Node.js
  * runtime. The repository's TypeScript uses Bun-style extensionless
  * imports, which @vercel/node's type-checker rejects; a pre-bundled .mjs
  * needs no tracing, no TS check and no node_modules at runtime. This source
- * file lives at `api/serverless.ts` — NOT a Vercel route pattern — so only
- * the emitted `.mjs` becomes a function.
+ * file lives at `api/_serverless.ts` — the leading underscore is Vercel's
+ * zero-config EXCLUSION convention (files under api/ starting with `_` are
+ * never picked up as functions), so only the emitted `.mjs` becomes a
+ * function. (A plain `api/serverless.ts` WAS picked up as a second,
+ * broken, traced function — observed in a real deployment's build output.)
  *
  * Public paths (vercel.json rewrites) — the web app (PROD-002) calls these
  * same-origin, exactly as it does against the local API:
