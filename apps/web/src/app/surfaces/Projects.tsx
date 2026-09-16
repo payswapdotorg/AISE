@@ -70,7 +70,7 @@ function readStoredOrganizationId(): string | null {
 }
 
 /** Persist the last-used organization id (best-effort; never throws). */
-function storeOrganizationId(organizationId: string): void {
+export function storeOrganizationId(organizationId: string): void {
   try {
     if (typeof sessionStorage !== "undefined" && organizationId.trim().length > 0) {
       sessionStorage.setItem(ORG_STORAGE_KEY, organizationId.trim());

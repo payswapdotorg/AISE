@@ -121,7 +121,18 @@ import {
 import { ProjectSurfaceNav } from "../components";
 import { formatRoute } from "../router";
 import { plural, shortId } from "../format";
-import { defaultOrganizationId } from "./Projects";
+import { defaultOrganizationId, storeOrganizationId } from "./Projects";
+
+/**
+ * The session org context for panels that do not collect an org field:
+ * the last-used organization of this session (the Projects/scenario
+ * panels store it on use), the demo tenant's org in demo mode. The
+ * authorization target is a UI-honesty gate — the SERVER enforces the
+ * real tenant scopes on every write.
+ */
+function sessionOrganizationId(demo: boolean): string {
+  return defaultOrganizationId(demo);
+}
 
 /** What the Intervention Studio renders once loaded. */
 export interface InterventionData {
@@ -1001,6 +1012,10 @@ export function NewScenarioPanel({
     });
     setSubmitting(false);
     if (result.ok) {
+      // Remember the org this scenario was recorded under — the downstream
+      // panels (append/approval/execution/outcome/comparison) ask their
+      // authorization questions against the session org context.
+      storeOrganizationId(organizationId);
       setOutcome({
         kind: "created",
         detail: `Scenario ${result.record.scenarioId} recorded over baseline ${result.record.baselineVersionId} (status ${result.record.status}).`,
@@ -1010,7 +1025,7 @@ export function NewScenarioPanel({
     } else {
       setOutcome({ kind: "failed", detail: describeApiFailure(result.failure) });
     }
-  }, [baseline, defects.length, fetchImpl, mode, onCreated, projectId, scenarioId, submitting, title]);
+  }, [baseline, defects.length, fetchImpl, mode, onCreated, organizationId, projectId, scenarioId, submitting, title]);
 
   return (
     <CreateRecordPanel
@@ -1146,7 +1161,7 @@ export function AppendStepPanel({
       bindingId: "intervention:append-step",
       returnTo: { module: "reality", projectId: scenario.projectId },
       principalId,
-      target: { kind: "organization", organizationId: scenario.projectId },
+      target: { kind: "organization", organizationId: sessionOrganizationId(false) },
     }).then((resolved) => {
       if (!cancelled) {
         setOffer(resolved);
@@ -1365,7 +1380,7 @@ export function ApprovalPanel({
       bindingId: "intervention:scenario-approval",
       returnTo: { module: "reality", projectId: scenario.projectId },
       principalId,
-      target: { kind: "organization", organizationId: scenario.projectId },
+      target: { kind: "organization", organizationId: sessionOrganizationId(false) },
     }).then((resolved) => {
       if (!cancelled) {
         setOffer(resolved);
@@ -1847,7 +1862,7 @@ export function RecordExecutionPanel({
       bindingId: "intervention:record-execution",
       returnTo: { module: "case", projectId: scenario.projectId, caseId },
       principalId,
-      target: { kind: "organization", organizationId: scenario.projectId },
+      target: { kind: "organization", organizationId: sessionOrganizationId(false) },
     }).then((resolved) => {
       if (!cancelled) {
         setOffer(resolved);
@@ -2064,7 +2079,7 @@ export function RecordOutcomePanel({
       bindingId: "intervention:record-outcome",
       returnTo: { module: "case", projectId: execution.scenarioId, caseId: execution.caseId },
       principalId,
-      target: { kind: "organization", organizationId: execution.caseId },
+      target: { kind: "organization", organizationId: sessionOrganizationId(false) },
     }).then((resolved) => {
       if (!cancelled) {
         setOffer(resolved);
@@ -2309,7 +2324,7 @@ export function RunComparisonPanel({
       bindingId: "boq:run-comparison",
       returnTo: { module: "reality", projectId },
       principalId,
-      target: { kind: "organization", organizationId: projectId },
+      target: { kind: "organization", organizationId: sessionOrganizationId(false) },
     }).then((resolved) => {
       if (!cancelled) {
         setOffer(resolved);
