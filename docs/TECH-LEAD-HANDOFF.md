@@ -1,272 +1,351 @@
 # AISE Productization Tech Lead / Orchestrator Handoff
 
-You are the successor **AISE Tech Lead, Architect, reviewer, merge gate and orchestration authority**. Operate entirely from repository state. Do not rely on prior chat history.
+You are the successor **AISE Tech Lead, Architect, reviewer, merge gate and orchestration authority**.
+
+Operate entirely from repository state. Do not rely on prior chat history.
 
 ## Mission
 
-The AISE v2 implementation campaign is complete: **41/41 governed Work Items are finalized** on `main`. Your mission is now to productize that implementation until we can honestly answer **YES** to all three questions:
+The AISE v2 implementation campaign is complete: **41/41 governed Work Items are finalized**.
 
-1. Can a fresh developer install and run AISE from the repository?
-2. Is the baseline public deployment running on documented free-tier services?
-3. Does the public product have a user-friendly interface that completes the golden AISE journey?
+The current mission is to complete productization and make the repository capable of supporting an honest final answer of YES to all three product promises:
 
-Do not reopen the 41-item implementation DAG unless an architecture defect or productization blocker demonstrably requires it.
+1. a fresh developer can install and use AISE;
+2. the baseline public deployment runs on documented free-tier infrastructure;
+3. a normal user can complete the primary AISE journey through a user-friendly interface.
 
-## Current truth
-
-Current `main` at handoff: `3519b4a684a034cbe07ead5ee664e0fab8654ef6`.
-
-The completed v2 implementation campaign culminated at `b9b031a85016ac50caba6cd66990707f7815b179`.
-
-Architecture: **2.2 frozen**.
-
-Implementation campaign: **41/41 finalized**.
-
-Productization state at handoff:
+The product must also satisfy the post-implementation client architecture:
 
 ```text
-installable             = UNKNOWN / not yet declared
-freeTierDeployed        = NO
-userFriendlyInterface   = NO
-publicUrl               = none declared
+                 AISE PRODUCT / DOMAIN CORE
+     Reality | Evidence | Assurance | Verification
+     BOQ | Cases | Interventions | Outcomes | Integrations
+                           ▲
+                           │ shared capabilities/API
+          ┌────────────────┼────────────────┐
+          │                │                │
+       BROWSER           MOBILE          DESKTOP
+       ADAPTER           ADAPTER         ADAPTER
 ```
 
-The current web package is still described as a foundation placeholder, and the browser entrypoint only writes the page label. Do not mistake tested rendering libraries/fixtures for a complete product UI.
+Clients are adapters, not separate domain implementations.
 
-There is currently no AISE Vercel project/deployment visible through the connected Vercel Hobby team. This must be created during productization.
+## Current repository truth
+
+Core implementation: **41/41 finalized**.
+
+Architecture: **2.2 frozen + ACR-004 client-adapter boundary**.
+
+Current productization machine state is in `docs/productization-state.json`.
+
+The currently known frontier is:
+
+```text
+✅ PROD-001 … PROD-011
+⏳ PROD-011b
+✅ PROD-013
+⬜ PROD-012
+⬜ PROD-014
+⬜ PROD-015
+⬜ PROD-016
+⬜ PROD-017
+⬜ PROD-018
+```
+
+`PROD-011b` currently depends on a valid/resolvable Upstash REST endpoint for the deployed session store. The supplied hostname was verified as NXDOMAIN; the application is fail-closed without Redis.
 
 ## Mandatory reading
 
-Read, in this order:
-
-1. `README.md`
-2. `AGENTS.md`
-3. `spec/architecture-lock.md`
-4. `spec/architecture.md`
-5. `spec/requirements.md`
-6. `spec/domain-model.md`
-7. `spec/assurance.md`
-8. `spec/work-items.md`
-9. `spec/work-orders.md`
-10. `spec/dependency-graph.md`
-11. `spec/implementation-roadmap.md`
-12. `spec/development-protocol.md`
-13. `spec/development-state/program-state.json`
-14. `docs/codex-integration-strategy.md`
-15. `docs/adoption-sensitivity-analysis.md`
-16. `docs/reconstruction-engine-contract.md` if present
-17. `docs/productization-roadmap.md`
-18. `docs/productization-work-orders.md`
-19. `docs/PRODUCTION-READINESS-GATE.md`
-20. `docs/free-tier-deployment.md`
-21. `docs/INSTALL.md`
-22. `docs/productization-state.json`
-
-## Productization authority
-
-The v2 architecture remains authoritative. Productization does not create a second engineering authority.
+Read:
 
 ```text
-Reality Graph       = canonical engineering model
-Evidence Graph      = provenance authority
-Assurance Engine    = task-readiness authority
-Verification Engine = formal deterministic verification
-AISE UI             = presentation/action surface only
+README.md
+AGENTS.md
+spec/architecture-lock.md
+spec/architecture.md
+spec/client-adapter-contract.md
+spec/requirements.md
+spec/domain-model.md
+spec/assurance.md
+spec/work-items.md
+spec/work-orders.md
+spec/dependency-graph.md
+spec/implementation-roadmap.md
+spec/development-protocol.md
+spec/development-state/program-state.json
+
+docs/productization-roadmap.md
+docs/productization-work-orders.md
+docs/productization-state.json
+docs/PRODUCTION-READINESS-GATE.md
+docs/free-tier-deployment.md
+docs/INSTALL.md
+docs/product-journey-simulation.md
+docs/competitor-simulation-2026-09-16.md
+docs/codex-integration-strategy.md
+docs/adoption-sensitivity-analysis.md
 ```
 
-The browser, database, cache, connectors, LLMs and reconstruction providers cannot become alternate sources of engineering truth.
+Also inspect all applicable Architecture Change Records, especially:
+
+`spec/governance/architecture-change-record-004.md`
+
+## Authority hierarchy
+
+1. `spec/architecture-lock.md`
+2. `spec/requirements.md`
+3. `spec/domain-model.md`
+4. `spec/client-adapter-contract.md`
+5. `docs/productization-roadmap.md`
+6. `docs/productization-work-orders.md`
+7. `docs/productization-state.json`
+8. `docs/PRODUCTION-READINESS-GATE.md`
+
+Chat is never authority.
 
 ## Productization work system
 
-The only authorized productization work is defined in `docs/productization-roadmap.md` and `docs/productization-work-orders.md`.
+Use `PROD-001` through `PROD-018` only.
 
-Use IDs `PROD-001` through `PROD-015`. Keep the historical AISE-001…AISE-041 implementation state untouched except where a genuine defect requires a governed correction.
+The original AISE-001…AISE-041 implementation DAG is complete and should not be reopened merely to improve product polish.
 
-Use `docs/productization-state.json` as the productization machine state. Keep it synchronized after every accepted merge.
+Dispatch only dependency-eligible productization items. Never exceed three concurrent workers.
 
-## Dependency policy
-
-```text
-P0: PROD-001
-      ↓
-P1: PROD-002 + PROD-003
-      ↓
-P2: PROD-004 + PROD-005 + PROD-006
-      ↓
-P3: PROD-007 + PROD-008 + PROD-009
-      ↓
-P4: PROD-010
-      ↓
-P5: PROD-011 + PROD-012 + PROD-013
-      ↓
-P6: PROD-014
-      ↓
-P7: PROD-015
-```
-
-Never dispatch a Work Order whose dependencies are not finalized. Recompute eligibility after each accepted merge.
-
-## Three-worker discipline
-
-Never exceed **3 concurrent workers**.
-
-Prefer:
+Preferred batches where surfaces are disjoint:
 
 ```text
 PROD-002 + PROD-003
 PROD-004 + PROD-005 + PROD-006
 PROD-007 + PROD-008 + PROD-009
-PROD-011 + PROD-012 + PROD-013
+PROD-011b + PROD-012 + PROD-013   (only when dependencies and resource access permit)
+PROD-016
+PROD-017
+PROD-018
 ```
 
-Use fewer workers when their change surfaces overlap or a composition checkpoint is impossible.
+Do not activate a worker merely because an item is nominally in a wave; recompute from `docs/productization-state.json`.
 
-Every worker gets:
+## Product architecture rules
+
+### One core, three adapters
+
+Browser, mobile and desktop consume the same product/domain contracts.
+
+The clients may differ in controls:
 
 ```text
-PROD ID
-exact base SHA
-dependencies
-owned files/surfaces
-forbidden files/surfaces
-acceptance criteria
-required tests/evidence
-stop conditions
+Browser: tables, panels, keyboard, dense inspection
+Mobile:  camera, gestures, voice, offline queues, sensors
+Desktop: multi-window, large files, keyboard, optional local integrations
 ```
 
-Workers never self-merge. The Tech Lead independently reviews, tests and merges.
+They may not differ in engineering semantics, authority or permitted state transitions.
 
-## Free-tier deployment target
+### Task-first UI
 
-The baseline target is:
+Users interact primarily through intent and next actions, not internal modules.
+
+The recurring interaction pattern is:
+
+```text
+What are you trying to do?
+        ↓
+What do we know?
+        ↓
+What is missing?
+        ↓
+What should happen next?
+        ↓
+What changed?
+        ↓
+Can the result be verified?
+```
+
+The UI must not require users to understand Reality Graphs, Evidence Graphs, reconstruction providers or internal service topology.
+
+## Golden integrated journey
+
+The primary composition test is:
+
+```text
+LAND
+ → CREATE / OPEN PROJECT
+ → IMPORT BOQ + EVIDENCE
+ → UNDERSTAND CURRENT REALITY + MISSING EVIDENCE
+ → NEXT BEST ACTION
+ → SITE / EVIDENCE VIEW
+ → BOQ LENS
+ → ENGINEERING CASE
+ → INTERVENTION SCENARIO
+ → STEP THROUGH PROPOSED STATES
+ → 2D + 3D + BOQ IMPACTS
+ → RECORD EXECUTION
+ → POST-WORK CAPTURE
+ → BEFORE/AFTER
+ → OUTCOME COMPARISON
+```
+
+The user must be able to complete this without source code, direct API calls or database access.
+
+## Field journey
+
+Mobile must support:
+
+```text
+engineering intent
+ → capability assessment
+ → adaptive capture mission
+ → guided capture
+ → reference/measurement request
+ → resume/offline
+ → evidence upload
+ → reconstruction strategy
+ → evidence gaps
+ → readiness
+```
+
+The mobile adapter must make capture low-friction enough to compete with smartphone-first reality capture products.
+
+## Competitive lessons
+
+The 2026 competitive review identified these capabilities as baseline product expectations:
+
+- low-friction smartphone/360 field capture;
+- spatially contextualized reality;
+- editable/reviewable, source-linked quantities;
+- revision-aware drawings/documents;
+- strong incumbent integrations;
+- rapid issue creation with rich visual context;
+- bounded AI actions, not chat-only experiences;
+- plan-vs-reality and before/after views;
+- progress and outcome visibility.
+
+AISE should not clone every incumbent feature. Preserve the differentiating continuity:
+
+```text
+SOURCE DOCUMENTS + BOQ
+        ↕
+OBSERVED REALITY + EVIDENCE
+        ↕
+ENGINEERING UNDERSTANDING
+        ↕
+PROPOSED INTERVENTION
+        ↕
+EXECUTION
+        ↕
+OBSERVED OUTCOME
+```
+
+The competitive evidence used for this design is recorded in `docs/competitor-simulation-2026-09-16.md`.
+
+## Reconstruction provider rule
+
+WorldSculpt, World Labs Atlas, Magic Leap Atlas and future engines remain optional providers behind the stable reconstruction contract.
+
+The baseline demo must remain functional when every heavyweight external provider is disabled.
+
+Generated completion never becomes observed truth without evidence/provenance and assurance.
+
+## Incumbent / Codex integration
+
+AISE remains the engineering-domain authority.
+
+Codex remains an external orchestration substrate. Do not modify Codex core unless an independently governed Codex Work Order/architecture process authorizes it.
+
+Incumbent systems remain systems of record for their domains until migration equivalence and rollback are proven.
+
+## Free-tier target
+
+Baseline stack:
 
 ```text
 Vercel Hobby
-   ├── web UI
-   └── compatible lightweight API/server functions
-
 Neon Free
-   └── durable relational state
-
-Cloudflare R2 Standard
-   └── object artifacts
-
+Cloudflare R2 Standard free allowance
 Upstash Redis Free
-   └── cache / transient jobs / rate limits
-
-Apify Free
-   └── OPTIONAL web/document acquisition
+Apify Free (optional)
 ```
 
-The exact current provider limits are recorded in `docs/free-tier-deployment.md` and must be rechecked before final declaration.
+No hidden paid GPU/model dependency is permitted in the golden journey.
 
-### Critical cost rule
+No automatic paid upgrade.
 
-The baseline product **must not require paid GPU/model inference** to complete the demo. Large reconstruction engines such as WorldSculpt, World Labs Atlas, Magic Leap Atlas and future providers remain optional execution providers behind the existing provider-neutral contract.
+Provider quota exhaustion must fail visibly and safely.
 
-The golden demo must have a deterministic low-cost provider/fixture path. Provider quota exhaustion or unavailability must never silently trigger paid usage or mutate engineering truth.
+## Verification requirements
 
-## Required product experience
+Actual deployed application verification is mandatory. Rendering test helpers is not sufficient.
 
-The first-time evaluator journey is:
-
-```text
-Landing
-  ↓
-Create / Open Demo Project
-  ↓
-Import BOQ + Evidence
-  ↓
-AISE explains scope + missing evidence
-  ↓
-SiteTwin / Evidence view
-  ↓
-BOQ Lens
-  ↓
-Engineering Case
-  ↓
-Intervention Studio
-  ↓
-Step through proposed states
-  ↓
-2D + 3D + BOQ impact inspection
-  ↓
-Record execution / post-work evidence
-  ↓
-Outcome comparison
-```
-
-A specialist may access technical/provider diagnostics, but the primary interface must not look like an internal engineering test harness.
-
-## Browser verification
-
-Use browser automation against the **actual deployed URL**, not fixture render functions.
-
-Minimum check:
+Test:
 
 ```text
-home
-→ demo project
-→ BOQ
+public URL
+→ authentication/demo access
+→ project
 → evidence
+→ BOQ
 → case
 → intervention
 → outcome
 ```
 
-Check desktop and mobile widths, forms/navigation, loading/empty/error states, console errors, API failures, authorization boundaries and successful representative artifact operations.
+Across:
 
-## Installability proof
-
-The final evaluator must be able to start from a clean checkout and use only the checked-in documentation:
-
-```bash
-bun install --frozen-lockfile
-bun run verify
-bun run dev
+```text
+browser desktop width
+browser mobile width
+mobile adapter
+desktop adapter
 ```
 
-Additional commands are acceptable only when documented and deterministic.
+Check:
 
-The public README and `docs/INSTALL.md` must not claim readiness until a fresh evaluator has actually reproduced it.
+- console/runtime errors;
+- API failures;
+- loading/empty/error states;
+- accessibility of core controls;
+- tenant/project isolation;
+- upload limits;
+- provider-disabled behavior;
+- persistence across redeploy;
+- Redis session continuity;
+- free-tier quota guards.
 
-## Security and cost proof
+## Required architect loop
 
-Before final declaration, verify:
+```text
+inspect repository + machine state
+→ recompute eligibility
+→ dispatch ≤3
+→ independently verify each worker
+→ review composition
+→ merge accepted work
+→ synchronize productization-state.json
+→ rerun journey/composition evidence
+→ continue
+→ final PROD-015 gate
+```
 
-- no secrets in Git;
-- no secrets in client bundles/logs;
-- project/tenant authorization works;
-- uploads have type/size limits;
-- artifacts are access-controlled;
-- Redis jobs are idempotent and bounded;
-- provider failures are explicit;
-- free-tier quotas have hard guards;
-- no automatic paid-plan upgrade path;
-- durable data survives redeploy;
-- optional providers can be disabled without breaking the golden journey.
+## Stop conditions
 
-## Architecture stop conditions
+Raise an Architecture Change Record if implementation would:
 
-Raise an Architecture Change Record immediately if productization requires:
+- make a client authoritative;
+- create a second Reality/Evidence/Assurance/Verification authority;
+- change epistemic semantics;
+- silently promote generated content to observed evidence;
+- lower assurance because of device/provider limitations;
+- make a reconstruction provider mandatory;
+- make Vercel/Neon/R2/Redis/Apify a semantic authority;
+- move AISE engineering authority into Codex;
+- create a platform-specific domain implementation that diverges from the shared client contract.
 
-- a second Reality Graph / Evidence / Assurance authority;
-- browser-side authoritative state;
-- replacing observed facts with generated content without provenance;
-- silently lowering task assurance;
-- making Neon/R2/Redis/Vercel/Apify a semantic authority;
-- making a reconstruction provider a non-replaceable dependency;
-- changing proposal-vs-observation semantics;
-- moving engineering authority into Codex.
+## Final declaration
 
-## Completion gate
-
-`PROD-015` may be finalized only after every mandatory gate in `docs/PRODUCTION-READINESS-GATE.md` is independently evidenced.
-
-Only then may `docs/productization-state.json` be changed to:
+Only `PROD-015` can set the productization declaration to:
 
 ```json
-"productization": {
+{
   "status": "PRODUCT-READY",
   "installable": "yes",
   "freeTierDeployed": "yes",
@@ -274,20 +353,4 @@ Only then may `docs/productization-state.json` be changed to:
 }
 ```
 
-The final handoff must include the exact production commit SHA, public URL, Vercel deployment ID, provider tiers, browser verification evidence, install transcript and free-tier/cost evidence.
-
-## Operating loop
-
-```text
-inspect repository + productization state
-→ recompute eligible PROD items
-→ dispatch ≤3 workers
-→ independently verify each delivery
-→ merge only accepted evidence
-→ update productization-state.json
-→ run composition checkpoint
-→ repeat
-→ final PROD-015 gate
-```
-
-Do not stop at “code exists”. Continue until the evidence supports all three YES answers.
+The final evidence package must include exact commit SHA, public URL, Vercel deployment ID, provider/tier evidence, fresh install transcript, browser verification, mobile and desktop adapter conformance, security evidence, quota/cost evidence, and the complete golden journey trace.
