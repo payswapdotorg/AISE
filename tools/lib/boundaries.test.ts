@@ -1,7 +1,11 @@
 import { describe, expect, test } from "bun:test";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   evaluateBoundaries,
   parseImports,
+  scanTree,
   zoneOf,
   type SourceFile,
 } from "./boundaries";
@@ -99,5 +103,41 @@ describe("evaluateBoundaries", () => {
       "backend/api/src/main.ts",
       "tools/verify.ts",
     ]);
+  });
+});
+
+describe("scanTree", () => {
+  test("skips tool-output directories (.vercel, node_modules, dist, build, .cache, .git) and non-source extensions", () => {
+    const root = mkdtempSync(join(tmpdir(), "aise-boundaries-"));
+    try {
+      mkdirSync(join(root, "tools", "lib"), { recursive: true });
+      writeFileSync(join(root, "tools", "lib", "kept.ts"), "export {};\n");
+
+      // The real-world regression: `vercel build` output under .vercel/ contains
+      // copied workspace sources whose relative imports look like root -> root
+      // violations to the zone rules. The scanner must never descend into it.
+      const vercelFunction = join(root, ".vercel", "output", "functions", "api");
+      mkdirSync(vercelFunction, { recursive: true });
+      writeFileSync(
+        join(vercelFunction, "serverless.mjs"),
+        "import { x } from './chunk.js';\n",
+      );
+
+      for (const skipped of ["node_modules", "dist", "build", ".cache", ".git"]) {
+        mkdirSync(join(root, skipped), { recursive: true });
+        writeFileSync(join(root, skipped, "hidden.ts"), "export {};\n");
+      }
+
+      // Non-scanned extensions are ignored even in scanned directories.
+      writeFileSync(join(root, "tools", "lib", "notes.md"), "import './x';\n");
+      writeFileSync(join(root, "tools", "lib", "data.json"), "{}\n");
+
+      const files = scanTree(root);
+      expect(files.map((scanned) => scanned.path)).toEqual([
+        "tools/lib/kept.ts",
+      ]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });

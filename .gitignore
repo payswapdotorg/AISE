@@ -24,4 +24,4 @@ data/
 # (the project link is machine-local; secrets pulled by `vercel pull` are
 # never committed; the serverless bundle is a build artifact)
 .vercel/
-api/[[...path]].mjs
+api/\[\[...path\]\].mjs

@@ -52,7 +52,14 @@ const ALLOWED_TARGETS: Record<Zone, readonly Zone[]> = {
 
 const SCANNED_EXTENSIONS = [".ts", ".tsx", ".js", ".mjs", ".cjs"];
 
-const SKIPPED_DIRECTORIES = new Set([".git", "node_modules", "dist", "build", ".cache"]);
+const SKIPPED_DIRECTORIES = new Set([
+  ".git",
+  "node_modules",
+  "dist",
+  "build",
+  ".cache",
+  ".vercel",
+]);
 
 function toPosix(path: string): string {
   return path.split(sep).join("/");
