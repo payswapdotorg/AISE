@@ -58,6 +58,33 @@ import { createRequestHandler, SERVICE_NAME } from "../server";
 import { bootPgPersistence, type PgBootResult } from "../pg/runtime";
 import type { PgExecutor } from "../pg/executor";
 import type { MigrationOutcome } from "../pg/migrate";
+// PROD-010 (additive): the free reconstruction path — the runtime composes
+// the orchestrator over the same Fs stores/clock/ids as the core's lazy
+// default, with the PROD-009 deterministic demo provider registered AFTER
+// the shipped engine adapters, and exposes the PROD-009 execution gateway
+// over the same provider list as the read-only `handler.executionGateway`
+// composition seam (a composition seam, NOT a route).
+import { createReconstructionOrchestrator } from "../reconstruction/orchestrator";
+import { FsArtifactStore, FsJobStore } from "../reconstruction/store";
+import { createDefaultAiseProviders } from "../reconstruction/adapters";
+import { DemoReconstructionProvider } from "../reconstruction/adapters/demo/adapter";
+import {
+  createExecutionGateway,
+  FsExecutionStore,
+  type ExecutionGateway,
+} from "../reconstruction/gateway";
+import type { ReconstructionRouteOptions } from "../reconstruction/router";
+// PROD-010 (additive): the BOQ surface's shared Fs instances (routes + the
+// demo seed use ONE service family over the same data dir) and the demo
+// seed's deterministic fixture + reality snapshot.
+import { BoqService } from "../boq/service";
+import { FsBoqStore } from "../boq/store";
+import { NormalizationService } from "../boq/normalization/service";
+import { FsNormalizationStore } from "../boq/normalization/store";
+import { MappingService } from "../boq/mapping/service";
+import { FsMappingStore } from "../boq/mapping/store";
+import type { BoqRouteOptions } from "../boq/router";
+import type { GraphSnapshot } from "../boq/mapping/model";
 import { createCorsLayer } from "./cors";
 import { errorResponse, translateErrorResponse } from "./errors";
 import { evaluateOptionalProviders, type ProviderStatus } from "./readiness";
@@ -106,6 +133,139 @@ export class RuntimeBootError extends Error {
     super(["Runtime construction failed:"].concat(issues.map((i) => `  - ${i}`)).join("\n"));
     this.name = "RuntimeBootError";
   }
+}
+
+/**
+ * The composed runtime handler (PROD-010): the SAME callable request
+ * pipeline as before (both deployment adapters keep calling it directly),
+ * PLUS the read-only composition seams the product needs:
+ *
+ *  - `executionGateway` — the PROD-009 provider execution gateway composed
+ *    over the runtime's reconstruction provider list (demo provider last).
+ *    NULL when the reconstruction wiring fell back to the core's lazy
+ *    default on a store-construction failure (degraded boot honesty — the
+ *    gateway is a seam over OUR composition, never a fabricated surface
+ *    over state we do not own). This is a composition seam, NOT a route:
+ *    no HTTP surface is fabricated for it here.
+ *  - `demoSeed` — the boot-time demo BOQ seed's completion promise (never
+ *    rejects; failures are logged typed). NULL when no demo bootstrap will
+ *    run (auth off or unbuildable). Awaits give tests and operators a
+ *    deterministic sync point (the deployed golden journey's data).
+ */
+export interface RuntimeHandler {
+  (request: Request): Promise<Response>;
+  readonly executionGateway: ExecutionGateway | null;
+  readonly demoSeed: Promise<void> | null;
+}
+
+/**
+ * PROD-010 — the deterministic demo BOQ fixture (a small ground-floor
+ * finishes bill with three item rows, GHS-stated numbers). Byte-constant:
+ * the import identity is the sha-256 of these bytes, so the seed is
+ * idempotent by construction (identical bytes -> identical importId).
+ */
+const DEMO_BOQ_CSV =
+  "Description,Unit,Qty,Rate (GHS),Amount (GHS)\n" +
+  "Plaster to internal walls,m2,220,12.5,2750\n" +
+  "Painting to walls and ceilings,m2,220,8,1760\n" +
+  "Vinyl floor tiling to floors,m2,60,45,2700\n" +
+  "TOTAL,,,480,,7210\n";
+
+/**
+ * PROD-010 — the demo seed's deterministic reality-graph snapshot (three
+ * ground-floor elements the matcher can ground the fixture rows against;
+ * ids are the seed's own, never a real project's).
+ */
+const DEMO_BOQ_GRAPH_SNAPSHOT: GraphSnapshot = {
+  nodes: [
+    {
+      nodeId: "demo-boq-wall-gf",
+      kind: "element",
+      properties: [{ key: "semantic.kind", value: "wall" }],
+      spacePath: ["Demo Site", "Building 1", "Ground Floor"],
+    },
+    {
+      nodeId: "demo-boq-ceiling-gf",
+      kind: "element",
+      properties: [{ key: "semantic.kind", value: "ceiling" }],
+      spacePath: ["Demo Site", "Building 1", "Ground Floor"],
+    },
+    {
+      nodeId: "demo-boq-floor-gf",
+      kind: "element",
+      properties: [{ key: "semantic.kind", value: "floor" }],
+      spacePath: ["Demo Site", "Building 1", "Ground Floor"],
+    },
+  ],
+};
+
+/**
+ * Seed the demo BOQ import through the REAL service path (the same
+ * services the routes use — never a direct store write):
+ *   1. import the CSV fixture (idempotent: content-addressed importId);
+ *   2. run the derived normalization (idempotent: write-once store);
+ *   3. run the deterministic matcher ONCE (the append-only mapping store
+ *      would otherwise mint v002, v003… on every boot — so the seed maps
+ *      ONLY when no mapping version exists yet).
+ * Pg mode (DATABASE_URL set): the import + normalization legs run through
+ * the REAL Pg-backed services, but the mapping service has NO Pg twin —
+ * the mapping leg is left UNWIRED, HONESTLY: `mapInPgMode === false` skips
+ * it with the typed log line below. Never a silent degrade to a private
+ * Fs store that the routes would not read.
+ */
+async function seedDemoBoqImport(input: {
+  readonly boq: BoqRouteOptions;
+  readonly mapping: MappingService | null;
+  readonly logger: Logger;
+}): Promise<void> {
+  const { boq, mapping, logger } = input;
+  const bytes = new TextEncoder().encode(DEMO_BOQ_CSV);
+  const imported = await boq.service.importSource(bytes, "text/csv", "csv");
+  logger.info("demo_boq_seed_imported", {
+    importId: imported.importId,
+    format: imported.format,
+    parseStatus: imported.parse.status,
+  });
+  const view = await boq.normalization?.normalizeImport(imported.importId);
+  if (view === null || view === undefined) {
+    logger.error("demo_boq_seed_failed", {
+      importId: imported.importId,
+      reason: "the demo BOQ import could not be normalized",
+    });
+    return;
+  }
+  logger.info("demo_boq_seed_normalized", {
+    importId: imported.importId,
+    dictionaryVersion: view.dictionaryVersion,
+    totalItems: view.stats.totalItems,
+  });
+  if (mapping === null) {
+    // Pg mode honesty: the mapping service has no Pg twin — unwired, never
+    // silently degraded (the routes keep the documented in-memory fallback).
+    logger.warn("demo_boq_seed_mapping_unwired", {
+      importId: imported.importId,
+      detail:
+        "DATABASE_URL is set: the demo BOQ seed runs the import + normalization " +
+        "legs through the Pg-backed services, but the mapping service has no Pg " +
+        "twin — the mapping leg is deliberately NOT run (never a silent degrade " +
+        "to a private store the routes would not read)",
+    });
+    return;
+  }
+  const latest = await mapping.getLatest(imported.importId);
+  if (latest !== null) {
+    logger.info("demo_boq_seed_mapping_present", {
+      importId: imported.importId,
+      version: latest.version,
+    });
+    return;
+  }
+  const mappingRecord = await mapping.runMatcher(imported.importId, DEMO_BOQ_GRAPH_SNAPSHOT);
+  logger.info("demo_boq_seed_mapped", {
+    importId: imported.importId,
+    version: mappingRecord?.version ?? null,
+    entries: mappingRecord?.entries.length ?? 0,
+  });
 }
 
 /**
@@ -344,7 +504,7 @@ async function augmentReadiness(
  */
 export function createRuntimeHandler(
   options: RuntimeHandlerOptions = {},
-): (request: Request) => Promise<Response> {
+): RuntimeHandler {
   const envSource: EnvSource = options.envSource ?? (() => process.env);
   const version = options.version ?? pkg.version;
   const firstConfig = validateEnv(envSource());
@@ -405,6 +565,102 @@ export function createRuntimeHandler(
     }
   }
 
+  // PROD-010 (additive — the free reconstruction path). The runtime composes
+  // the reconstruction orchestrator over the SAME Fs stores/clock/ids as the
+  // core's lazy default (see server.ts reconstructionRoutesOrDefault), with
+  // ONE composition difference: the PROD-009 deterministic demo provider is
+  // registered AFTER the shipped engine adapters (default ON — the free
+  // path, zero external services; the engines keep their declared priority,
+  // so any request an engine can serve never reaches the demo provider), and
+  // passes it via the core's EXISTING reconstruction injection seam. The
+  // PROD-009 execution gateway is composed over the SAME provider list (its
+  // descriptors drive the neutral not-READY pre-check) with the gateway's
+  // own Fs execution store, and is exposed as the read-only
+  // `handler.executionGateway` composition seam (NOT a route). A
+  // store-construction failure degrades to the core's lazy default — loudly.
+  let reconstruction: ReconstructionRouteOptions | undefined;
+  let executionGateway: ExecutionGateway | null = null;
+  try {
+    const providers = [...createDefaultAiseProviders(), new DemoReconstructionProvider()];
+    const orchestrator = createReconstructionOrchestrator({
+      providers,
+      jobStore: new FsJobStore(dataDir),
+      artifactStore: new FsArtifactStore(dataDir),
+      clock: (): string => new Date().toISOString(),
+      idFactory: (): string => crypto.randomUUID(),
+    });
+    reconstruction = { orchestrator, logger };
+    executionGateway = createExecutionGateway({
+      providers,
+      store: new FsExecutionStore(dataDir),
+      clock: (): string => new Date().toISOString(),
+      idFactory: (): string => crypto.randomUUID(),
+      logger,
+    });
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    if (options.failFast === true) {
+      throw new RuntimeBootError([
+        `reconstruction store initialization failed under data dir '${dataDir}': ${reason}`,
+      ]);
+    }
+    // Serverless boot honesty: serve with the core's lazy default wiring
+    // (per-request behavior unchanged) and NO execution gateway seam — the
+    // gateway is a seam over THIS composition, never fabricated over state
+    // the runtime does not own.
+    logger.error(
+      "reconstruction store initialization failed; falling back to the core's lazy default (execution gateway seam unavailable)",
+      { dataDir, error: reason },
+    );
+  }
+
+  // PROD-010 (additive — the BOQ surface's shared service instances). The
+  // optional normalization + mapping services are constructed ONCE (Fs-backed,
+  // same data dir) and shared by BOTH the boq route options AND the demo
+  // seed below, so an HTTP import and the seeded import land in the SAME
+  // stores (one service family per process — never two views of the data).
+  // Pg mode: the Pg family's boq options (service + Pg-backed normalization)
+  // win; the mapping service has NO Pg twin and is deliberately left
+  // UNWIRED in that mode (the routes keep their documented in-memory
+  // fallback; the seed logs the typed skip line — never a silent degrade).
+  let boq: BoqRouteOptions | undefined;
+  let sharedMapping: MappingService | null = null;
+  if (pgBoot.mode === "pg") {
+    boq = pgBoot.family.boq;
+  } else {
+    try {
+      const service = new BoqService({
+        store: new FsBoqStore(dataDir),
+        clock: (): string => new Date().toISOString(),
+      });
+      const normalization = new NormalizationService({
+        store: new FsNormalizationStore(dataDir),
+        clock: (): string => new Date().toISOString(),
+        boq: service,
+      });
+      sharedMapping = new MappingService({
+        store: new FsMappingStore(dataDir),
+        clock: (): string => new Date().toISOString(),
+        normalization,
+        boq: service,
+      });
+      boq = { service, logger, normalization, mapping: sharedMapping };
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      if (options.failFast === true) {
+        throw new RuntimeBootError([
+          `boq store initialization failed under data dir '${dataDir}': ${reason}`,
+        ]);
+      }
+      // Serverless boot honesty: leave the core's lazy default wiring (the
+      // same unwritable dir fails loudly per request there) and skip the seed.
+      logger.error("boq store initialization failed; serving the core's lazy default boq wiring (demo BOQ seed skipped)", {
+        dataDir,
+        error: reason,
+      });
+    }
+  }
+
   // PROD-004 (additive — the auth/tenant-safety layer). Built ONLY when
   // AISE_AUTH=1|true; unset/0/false leaves this block completely inert and
   // the pipeline byte-identical to the pre-auth contract. The layer wraps
@@ -425,6 +681,9 @@ export function createRuntimeHandler(
   let identityRoutes:
     | { readonly service: IdentityService; readonly logger: Logger }
     | undefined;
+  // PROD-010: the demo BOQ seed's completion promise (null unless the real
+  // auth layer + demo bootstrap will run — the seed rides that bootstrap).
+  let demoSeed: Promise<void> | null = null;
   const authWanted =
     (!authConfigResult.ok) ||
     (authConfigResult.ok && authConfigResult.config.enabled);
@@ -473,6 +732,35 @@ export function createRuntimeHandler(
               error: error instanceof Error ? error.message : String(error),
             });
           });
+        // PROD-010: when the demo bootstrap runs, ALSO seed the demo BOQ
+        // import (the deployed golden journey's data) through the SAME
+        // service family the routes use. Awaited nowhere at boot (never
+        // blocks construction); `handler.demoSeed` exposes the promise as a
+        // deterministic sync point and it NEVER rejects (failures inside
+        // are logged typed).
+        demoSeed = auth.ensureDemo().then(
+          async () => {
+            try {
+              if (pgBoot.mode === "pg") {
+                // Order the seed behind the bounded cold-start migration run
+                // (the same gate every Pg request passes).
+                await pgBoot.ready;
+              }
+              if (boq !== undefined) {
+                await seedDemoBoqImport({ boq, mapping: sharedMapping, logger });
+              }
+            } catch (error) {
+              logger.error("demo_boq_seed_failed", {
+                error: error instanceof Error ? error.message : String(error),
+              });
+            }
+          },
+          (error: unknown) => {
+            logger.error("demo BOQ seed skipped: the demo tenant bootstrap failed", {
+              error: error instanceof Error ? error.message : String(error),
+            });
+          },
+        );
       } catch (error) {
         const reason = error instanceof Error ? error.message : String(error);
         issues.push(`auth session store initialization failed: ${reason}`);
@@ -590,6 +878,12 @@ export function createRuntimeHandler(
     // additive; the core's lazy default wiring is untouched otherwise).
     ...(identityRoutes === undefined ? {} : { identity: identityRoutes }),
     artifacts,
+    // PROD-010: the free reconstruction path (only when the wiring above
+    // could be constructed — the degraded boot leaves the core's lazy
+    // default in place) and the shared BOQ service family (Fs mode; Pg mode
+    // uses the Pg family's options).
+    ...(reconstruction === undefined ? {} : { reconstruction }),
+    ...(boq === undefined ? {} : { boq }),
     // Pg mode: the five lazily-defaulted route surfaces become the Pg twins
     // (explicit construction wins — that IS the injection seam); Fs mode
     // leaves every field unset so the server's lazy defaults are EXACTLY
@@ -612,7 +906,7 @@ export function createRuntimeHandler(
     firstConfig.ok ? firstConfig.config.corsOrigins : resolveCorsFallback(envSource()),
   );
 
-  return async (request: Request): Promise<Response> => {
+  const pipeline = async (request: Request): Promise<Response> => {
     const requestId = request.headers.get("x-request-id") ?? crypto.randomUUID();
     try {
       const preflight = cors.handlePreflight(request);
@@ -659,6 +953,23 @@ export function createRuntimeHandler(
       );
     }
   };
+
+  // PROD-010: compose the callable pipeline with its READ-ONLY seams (the
+  // properties are non-writable — a composition seam, not mutable state).
+  const handler = pipeline as RuntimeHandler;
+  Object.defineProperty(handler, "executionGateway", {
+    value: executionGateway,
+    enumerable: true,
+    writable: false,
+    configurable: false,
+  });
+  Object.defineProperty(handler, "demoSeed", {
+    value: demoSeed,
+    enumerable: true,
+    writable: false,
+    configurable: false,
+  });
+  return handler;
 }
 
 /**

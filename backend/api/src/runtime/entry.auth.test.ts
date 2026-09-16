@@ -348,10 +348,14 @@ describe("auth ENABLED — the layer comes alive at the runtime seam", () => {
     );
   });
 
-  test("registry CREATION acts are fail-closed under auth (an unregistered id belongs to no tenant)", async () => {
+  test("registry CREATION acts: project creation is the carve-out route (200 + verbatim project); org creation stays fail-closed", async () => {
     const { handler } = runtimeWorld(baseEnv({ AISE_AUTH: "1", AUTH_SECRET }));
     const cookie = await awaitDemoBootstrap(handler);
-    // Creating a project (its body names the not-yet-registered project id):
+    // PROD-010 (pre-approved update — was the OLD defect's 403): creating a
+    // project inside the demo tenant is the auth-seam carve-out route — the
+    // create payload's projectId names the NEW project being registered, not
+    // an addressed tenant — so the act now passes end-to-end through the
+    // REAL runtime pipeline and the core registers the project verbatim.
     const project = await handler(
       post(
         `/v1/identity/organizations/${DEMO_ORG}/projects`,
@@ -359,11 +363,27 @@ describe("auth ENABLED — the layer comes alive at the runtime seam", () => {
         { cookie },
       ),
     );
-    expect(project.status).toBe(403);
-    expect(((await bodyOf(project))["error"] as Record<string, unknown>)["code"]).toBe(
-      "unregistered_project",
+    expect(project.status).toBe(200);
+    const projectBody = await bodyOf(project);
+    expect(projectBody["ok"]).toBe(true);
+    expect(projectBody["project"]).toMatchObject({
+      organizationId: DEMO_ORG,
+      projectId: "proj-entry-proof",
+      name: "Entry proof",
+    });
+    // The registered project is immediately readable through the same seam.
+    const listed = await handler(
+      get(`/v1/identity/organizations/${DEMO_ORG}/projects?requester=${DEMO_PRINCIPAL}`, {
+        cookie,
+      }),
     );
-    // Creating an organization (its body names the not-yet-registered org id):
+    expect(listed.status).toBe(200);
+    const listedIds = ((await bodyOf(listed))["projects"] as Array<Record<string, unknown>>).map(
+      (entry) => entry["projectId"],
+    );
+    expect(listedIds).toContain("proj-entry-proof");
+    // Creating an organization (its body names the not-yet-registered org id)
+    // is UNCHANGED: still fail-closed 403 unregistered_organization.
     const organization = await handler(
       post(
         "/v1/identity/organizations",

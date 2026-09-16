@@ -256,8 +256,13 @@ function viewVersions(normalizedView: unknown): { dictionaryVersion?: string; no
   };
 }
 
-/** Deterministic entry id: sheet (from the anchor source ref) + row number. */
-function entryIdOf(item: ItemInterpretation): string {
+/**
+ * Deterministic entry id: sheet (from the anchor source ref) + row number.
+ * PROD-010 (additive export): the BOQ Lens joined view (boq/service.ts)
+ * derives its stable per-row `itemId` with the SAME formula, so a lens item
+ * and its mapping entry share one identity by construction.
+ */
+export function entryIdOf(item: ItemInterpretation): string {
   const anchor = item.description?.sourceRefs[0] ?? item.unit?.sourceRefs[0] ?? "";
   const sheet = anchor.includes("!") ? (anchor.split("!")[0] ?? "") : "";
   return sha256Hex(`${sheet}|${item.rowNumber}`);
