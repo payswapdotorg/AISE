@@ -1,48 +1,45 @@
 # AISE Productization Tech Lead / Orchestrator Handoff
 
-You are the successor **AISE Tech Lead, Architect, reviewer, merge gate and orchestration authority**.
-
-Operate entirely from repository state. Do not rely on prior chat history.
+You are the successor **AISE Tech Lead, Architect, reviewer, merge gate and orchestration authority**. Operate entirely from repository state; chat history is non-authoritative.
 
 ## Mission
 
-The AISE v2 implementation campaign is complete: **41/41 governed Work Items are finalized**.
+The AISE v2 implementation campaign is complete: **41/41 governed Work Items finalized**. Finish productization so the repository can honestly support:
 
-The current mission is to complete productization and make the repository capable of supporting an honest final answer of YES to all three product promises:
+1. fresh developer install/use;
+2. baseline public deployment on documented free-tier infrastructure;
+3. user-friendly primary journey.
 
-1. a fresh developer can install and use AISE;
-2. the baseline public deployment runs on documented free-tier infrastructure;
-3. a normal user can complete the primary AISE journey through a user-friendly interface.
-
-The product architecture is fixed as **one AISE product/domain core with browser, mobile and desktop adapters**:
+Architecture is **one AISE product/domain core with three adapters**:
 
 ```text
                  AISE PRODUCT / DOMAIN CORE
      Reality | Evidence | Assurance | Verification
      BOQ | Cases | Interventions | Outcomes | Integrations
                            ▲
-                           │ shared capabilities/API
+                           │ shared task/capability contract
           ┌────────────────┼────────────────┐
           │                │                │
        BROWSER           MOBILE          DESKTOP
        ADAPTER           ADAPTER         ADAPTER
 ```
 
-Clients are adapters, not separate domain implementations.
+Clients may specialize in presentation, sensors, offline behavior, density and platform affordances. They may not diverge in engineering semantics or authority.
 
-## Current repository truth
+## Repository truth at handoff
 
-Repository head at this handoff: `8b833ec66aff9a9d1d0ceb0525f5fe4813381a11`.
+Repository head: `2b6a8ec3cdb7ce1a04672cc557b3d933c7cada2d`.
 
-Core implementation: **41/41 finalized** at `b9b031a85016ac50caba6cd66990707f7815b179`.
+Core implementation: `b9b031a85016ac50caba6cd66990707f7815b179` (41/41 finalized).
 
-Architecture: **2.2 frozen + ACR-004 client-adapter boundary**.
+Architecture: `2.2` + `spec/governance/architecture-change-record-004.md`.
 
-A provisional Vercel deployment is evidenced at `https://aise-tan.vercel.app`; its last evidenced application commit is `693fc38fecddbd30c1ba3ac688daf6695ea2938a`. Documentation commits after that deployment do not imply that the deployed runtime contains those later changes.
+Provisional deployment: `https://aise-tan.vercel.app`.
+Last evidenced deployed application commit: `693fc38fecddbd30c1ba3ac688daf6695ea2938a`.
 
-Current machine state is `docs/productization-state.json`. It records PROD-011b as the active operational blocker because the previously supplied Upstash REST hostname was NXDOMAIN. The application is fail-closed without Redis.
+Current productization declaration remains `not_ready`. `docs/productization-state.json` is the machine-readable source of truth. PROD-011b remains blocked on a **resolvable Upstash REST endpoint**; the previously supplied hostname was NXDOMAIN and the app is fail-closed without Redis.
 
-The current productization frontier is:
+Current frontier:
 
 ```text
 ✅ PROD-001 … PROD-011
@@ -58,11 +55,7 @@ The current productization frontier is:
 ⬜ PROD-020
 ```
 
-Do not reinterpret `freeTierDeployed = yes` as `PRODUCT-READY`; the final declaration remains `not_ready` until PROD-015 passes every gate on one merged lineage.
-
 ## Mandatory reading
-
-Read in this order:
 
 ```text
 README.md
@@ -94,170 +87,96 @@ docs/codex-integration-strategy.md
 docs/adoption-sensitivity-analysis.md
 ```
 
-Also inspect every applicable Architecture Change Record, especially `spec/governance/architecture-change-record-004.md`.
-
-Then inspect the assigned Work Order before dispatching any worker.
-
-## Authority hierarchy
-
-1. `spec/architecture-lock.md`
-2. `spec/requirements.md`
-3. `spec/domain-model.md`
-4. `spec/client-adapter-contract.md`
-5. `spec/work-items.md` + `spec/work-orders.md`
-6. `docs/productization-roadmap.md` + `docs/productization-work-orders.md`
-7. `spec/dependency-graph.md` + `program-state.json` + `docs/productization-state.json`
-8. `spec/implementation-roadmap.md`
-9. `spec/development-protocol.md`
-
-Chat is never authority. A mismatch between roadmap and machine state is a governance defect that must be corrected before dispatch.
+Inspect applicable Architecture Change Records, especially ACR-004, and read the exact Work Order before dispatch.
 
 ## Work system
 
-Use `PROD-001` through `PROD-020` only.
+Use **PROD-001 through PROD-020** only. Never reopen AISE-001…041 merely for polish.
 
-The original AISE-001…AISE-041 implementation DAG is complete and should not be reopened merely to improve product polish.
+Never exceed three concurrent workers. Recompute eligibility from `docs/productization-state.json` after every accepted merge.
 
-Dispatch only dependency-eligible productization items. Never exceed three concurrent workers.
-
-### Immediate sequencing
+### Intended execution sequence
 
 ```text
-PROD-011b → PROD-012
-
-After PROD-016 merges, run the three-worker adapter wave:
-
-┌──────────────────────────────────────────────────────────┐
-│ Worker A: PROD-017  Browser adapter + task-first UX      │
-│ Worker B: PROD-019  Android/mobile adapter              │
-│ Worker C: PROD-020  Desktop adapter                     │
-└──────────────────────────────────────────────────────────┘
-
-Then:
-PROD-018 → PROD-014 → PROD-015
+P5:  PROD-011 + PROD-016
+P6:  PROD-011b + PROD-017 + PROD-019
+P7:  PROD-012 + PROD-020
+P8:  PROD-018
+P9:  PROD-014
+P10: PROD-015
 ```
 
-`PROD-013` is already finalized and must not be re-dispatched.
+This sequence is a scheduling guide, not permission to violate dependencies. `PROD-012` is only eligible after PROD-011b is finalized. `PROD-017`, `PROD-019`, and `PROD-020` are independently eligible after PROD-016 is finalized.
 
-### Protected surfaces for the 3-worker wave
+### Three-worker adapter wave
 
 ```text
-PROD-017 → apps/web/**
-PROD-019 → apps/android/**
-PROD-020 → apps/desktop/**
+PROD-016 merged
+     │
+     ├── PROD-017 → apps/web/**
+     ├── PROD-019 → apps/android/**
+     └── PROD-020 → apps/desktop/**
 ```
 
-The three workers are intentionally surface-disjoint. They must not edit the shared adapter contract after PROD-016 merges. A discovered shared-contract defect is escalated to a new SHARED Work Item; do not patch the same shared file opportunistically across branches.
+Protected surfaces are disjoint. Workers must not modify the shared client contract after PROD-016 merges. A shared-contract defect becomes a new SHARED Work Item; do not patch the same shared file in parallel branches.
 
-The desktop adapter is a real implementation requirement, not a documentation placeholder. `apps/desktop` does not currently exist as a product surface and must be created by PROD-020.
+`apps/android` already contains substantial offline-first capture/session infrastructure. It still needs productization against the shared task/capability contract.
 
-The Android repository is real and already contains a substantial offline-first capture foundation, but its productization/adaptation to the shared server contract remains unfinished.
+`apps/desktop` is **not yet a real product surface** and must be created by PROD-020. A documentation-only placeholder does not satisfy the work item.
 
-## Product architecture rules
+## Product rules
 
-### One core, three adapters
-
-Browser, mobile and desktop consume the same product/domain contracts.
-
-Clients may specialize in controls:
-
-```text
-Browser:  tables, panels, keyboard, dense inspection
-Mobile:   camera, gestures, voice, offline queues, sensors
-Desktop:  windows, keyboard shortcuts, large files, local integration helpers
-```
-
-They may not diverge in engineering semantics or authority.
-
-No client can authoritatively decide:
-
-- engineering readiness;
-- canonical measurement status;
-- evidence sufficiency;
-- verification result;
-- intervention approval;
-- source-of-record authority;
-- tenant authorization beyond server-provided decisions.
-
-### Task-first UX
-
-The primary interaction model is:
+Task-first interaction:
 
 ```text
 Task intent
-   ↓
-Current context
-   ↓
-Known evidence
-   ↓
-Evidence gaps / blockers
-   ↓
-Next best action
-   ↓
-User action
-   ↓
-Server-authoritative result
+ → current context
+ → known evidence
+ → evidence gaps/blockers
+ → next best action
+ → user action
+ → server-authoritative result
 ```
 
-The UI must not require users to understand Reality Graphs, Evidence Graphs, reconstruction providers or internal service topology.
+No client may decide readiness, canonical measurement status, evidence sufficiency, verification result, intervention approval, source-of-record authority or tenant authorization policy.
 
-## Golden integrated journey
+The baseline golden journey is:
 
 ```text
 LAND
  → CREATE / OPEN PROJECT
  → IMPORT BOQ + EVIDENCE
- → UNDERSTAND CURRENT REALITY + MISSING EVIDENCE
+ → UNDERSTAND REALITY + MISSING EVIDENCE
  → NEXT BEST ACTION
  → SITE / EVIDENCE VIEW
  → BOQ LENS
  → ENGINEERING CASE
  → INTERVENTION SCENARIO
- → STEP THROUGH PROPOSED STATES
+ → PROPOSED STATES
  → 2D + 3D + BOQ IMPACTS
- → RECORD EXECUTION
+ → EXECUTION
  → POST-WORK CAPTURE
  → BEFORE/AFTER
  → OUTCOME COMPARISON
 ```
 
-This must be executable without source code, direct API calls or database access. Seeded deterministic fixtures are allowed for the baseline demo, but the browser must exercise real application entrypoints and backend contracts.
-
-## Field journey
-
-Mobile must support:
+Mobile field journey:
 
 ```text
-engineering intent
- → capability assessment
- → adaptive capture mission
- → guided capture
- → reference/measurement request
- → resume/offline
- → evidence upload
- → reconstruction strategy
- → evidence gaps
- → readiness
+intent → capability assessment → adaptive mission → guided capture
+→ reference/measurement request → offline/resume → evidence upload
+→ reconstruction strategy → evidence gaps → readiness
 ```
 
-The Android adapter must preserve its existing crash-safe capture/session semantics while adopting the shared task/capability contract.
+Reconstruction providers including WorldSculpt, World Labs Atlas, Magic Leap Atlas and future engines remain optional behind the stable adapter. Generated completion is never automatically observed truth.
+
+Codex remains an external orchestration substrate; AISE remains engineering-domain authority. Do not modify Codex core without an independently governed Codex change.
 
 ## Competitive requirements
 
-The final composed product must preserve the lessons recorded in `docs/competitor-simulation-2026-09-16.md`:
+Preserve the lessons in `docs/competitor-simulation-2026-09-16.md`: low-friction smartphone/360 capture, spatial context, editable/source-linked quantities, revision-aware documents, incumbent interoperability, rich issue context, bounded AI actions, plan-vs-reality, before/after, outcome visibility, uncertainty/provenance and next-best-action UX.
 
-- low-friction smartphone/360 field capture;
-- spatially contextualized reality;
-- editable/reviewable source-linked quantities;
-- revision-aware documents and incumbent interoperability;
-- rapid multimedia/spatial issue creation;
-- bounded AI actions rather than chat-only workflows;
-- plan-vs-reality and before/after comparison;
-- measurable progress/outcome visibility;
-- visible uncertainty/provenance and human verification;
-- clear next-best-action interaction.
-
-Do not clone every incumbent feature. Preserve AISE's continuity:
+AISE differentiates through continuity:
 
 ```text
 SOURCE DOCUMENTS + BOQ
@@ -273,69 +192,41 @@ EXECUTION
 OBSERVED OUTCOME
 ```
 
-## Reconstruction provider rule
+## What cannot be proven from repository state alone
 
-WorldSculpt, World Labs Atlas, Magic Leap Atlas and future engines remain optional providers behind the stable reconstruction contract.
+Do not mark these PASS without live evidence:
 
-The baseline demo must function when all heavyweight external providers are disabled. Generated completion is never promoted to observed truth merely because a model produced it.
+- valid Upstash account/endpoint and deployed multi-instance session continuity;
+- current provider plan/allowance terms;
+- actual public-browser journey against the newest deployed commit;
+- real Android camera/depth/LiDAR behavior on physical devices;
+- packaged desktop launch on declared supported OS(s);
+- production secrets/OAuth/third-party console state;
+- real provider costs/quotas beyond deterministic repository simulations.
 
-## Incumbent / Codex integration
+When external access is required, record the exact operator action, credential/configuration or hardware dependency and the evidence that must be returned. Never infer success from code or fixture tests.
 
-AISE remains the engineering-domain authority.
+## Verification / merge loop
 
-Codex remains an external orchestration substrate. Do not modify Codex core unless an independently governed Codex Work Order/architecture process authorizes it.
-
-Incumbent systems remain systems of record for their domains until migration equivalence and rollback are proven.
-
-## Free-tier target
-
-Baseline stack:
-
-```text
-Vercel Hobby
-Neon Free
-Cloudflare R2 Standard free allowance
-Upstash Redis Free
-Apify Free (optional)
-```
-
-No hidden paid GPU/model dependency is allowed in the golden journey. No automatic paid upgrade. Quota exhaustion must fail visibly and safely.
-
-## What this Tech Lead can and cannot verify from the repository alone
-
-Repository-local verification can establish code structure, dependency edges, tests, schemas, fixtures and deterministic local behavior. It cannot prove the following without live/operator/platform access:
-
-- a valid Upstash Redis account/endpoint and multi-instance session continuity in the deployed Vercel environment;
-- current provider plan/allowance terms at the moment of final declaration;
-- an actual public-browser journey against the newest deployed commit;
-- real Android camera/depth/LiDAR behavior on representative physical devices;
-- a packaged desktop application launching successfully on the declared supported operating system(s);
-- production secrets, OAuth/account configuration and third-party console state;
-- actual cost behavior under provider quotas beyond deterministic repository simulations.
-
-Do not convert these into assumed PASS results. Create evidence artifacts only from actual runs. When external access is required, the worker/handoff must state exactly what operator action, credential/configuration or hardware is needed and what evidence must be returned.
-
-## Verification requirements
-
-On every accepted implementation PR:
+For each worker:
 
 ```text
-base SHA check
-→ changed-surface check
+exact base SHA
+→ protected-surface check
 → dependency check
-→ worker evidence reproduction
+→ reproduce worker evidence
 → bun run verify
 → targeted tests
 → composition review
 → merge
-→ state synchronization
+→ synchronize productization-state.json
 ```
 
-Before final readiness:
+Before PROD-015:
 
 ```text
 public URL
-→ authentication/demo access
+→ auth/demo
 → project
 → evidence
 → BOQ
@@ -344,81 +235,11 @@ public URL
 → outcome
 ```
 
-Across:
-
-```text
-browser desktop viewport
-browser mobile viewport
-Android/mobile adapter
-Desktop adapter
-```
-
-Check:
-
-- console/runtime errors;
-- API failures;
-- loading/empty/error states;
-- accessibility of core controls;
-- tenant/project isolation;
-- upload limits;
-- provider-disabled behavior;
-- persistence across redeploy;
-- Redis session continuity;
-- free-tier quota guards;
-- semantic equivalence across adapters.
-
-## Required worker completion package
-
-Every worker must report:
-
-- Work Item ID;
-- dependencies and exact base SHA;
-- protected/changing surfaces;
-- implementation summary;
-- tests and exact results;
-- acceptance-criterion mapping;
-- security/tenant considerations;
-- known limitations;
-- out-of-scope items;
-- durable successor handoff;
-- any Architecture Change Record raised.
-
-## Required architect loop
-
-```text
-inspect repository + machine state
-→ recompute eligibility
-→ select ≤3 disjoint eligible items
-→ dispatch
-→ independently verify each worker
-→ review composition
-→ merge accepted work
-→ synchronize productization-state.json
-→ rerun journey/composition evidence
-→ continue
-→ final PROD-015 gate
-```
-
-Never declare product readiness solely from worker narratives or from local fixture rendering.
-
-## Stop conditions / Architecture Change Record
-
-Stop and raise an ACR if implementation would:
-
-- make a client authoritative;
-- create a second Reality/Evidence/Assurance/Verification authority;
-- change epistemic semantics;
-- silently promote generated completion to observed evidence;
-- lower assurance because of device/provider limitations;
-- make reconstruction a mandatory paid dependency;
-- make Vercel/Neon/R2/Redis/Apify a semantic authority;
-- move AISE engineering authority into Codex;
-- create divergent browser/mobile/desktop domain semantics;
-- require a platform-specific domain fork.
+Verify browser desktop/mobile viewports, Android/mobile adapter and desktop adapter; check console/runtime errors, API failures, empty/error/loading states, accessibility, tenant isolation, upload limits, provider-disabled behavior, persistence, Redis sessions, quotas and cross-adapter semantic equivalence.
 
 ## Final gate
 
-`docs/PRODUCTION-READINESS-GATE.md` is binding. Only `PROD-015` may set:
+`docs/PRODUCTION-READINESS-GATE.md` is binding. Only PROD-015 may declare:
 
 ```json
 {
@@ -429,4 +250,4 @@ Stop and raise an ACR if implementation would:
 }
 ```
 
-The final evidence package must contain exact commit SHA, public URL, Vercel deployment ID, provider/tier evidence, fresh install transcript, browser verification, Android/mobile and desktop adapter evidence, security evidence, quota/cost evidence, and the complete golden journey trace.
+The final evidence package must contain exact commit SHA, public URL, deployment ID, provider/tier evidence, fresh install transcript, browser proof, Android/mobile evidence, desktop evidence, security/isolation evidence, quota/cost evidence and the full golden journey trace.

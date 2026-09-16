@@ -4,40 +4,11 @@
   "campaign": "AISE-productization",
   "governingArchitecture": "2.2",
   "architectureChangeRecord": "spec/governance/architecture-change-record-004.md",
-  "repositoryHead": "461b239837d4ed78f225064f270d530559e6fe13",
-  "lastReconciledAt": "2026-09-16T15:45:00Z",
-  "implementationCampaign": {
-    "status": "complete",
-    "workItemsFinalized": 41,
-    "workItemsTotal": 41,
-    "commit": "b9b031a85016ac50caba6cd66990707f7815b179"
-  },
-  "productization": {
-    "status": "not_ready",
-    "installable": "partial-plus",
-    "freeTierDeployed": "yes",
-    "deploymentStatus": "provisional-deployment; current-head-reverification-pending",
-    "userFriendlyInterface": "partial",
-    "publicUrl": "https://aise-tan.vercel.app",
-    "vercelDeploymentId": "aise-o1fwbz24b-ekonplacidegmailcoms-projects.vercel.app",
-    "deployedApplicationCommit": "693fc38fecddbd30c1ba3ac688daf6695ea2938a",
-    "lastVerifiedCommit": "693fc38",
-    "finalGate": "docs/PRODUCTION-READINESS-GATE.md"
-  },
-  "execution": {
-    "maxConcurrentWorkers": 3,
-    "mergeGate": "tech-lead/architect",
-    "selectionRule": "dispatch only dependency-eligible productization items; recompute after every accepted merge",
-    "threeWorkerAdapterWave": {
-      "requires": ["PROD-016"],
-      "items": ["PROD-017", "PROD-019", "PROD-020"],
-      "protectedSurfaces": {
-        "PROD-017": "apps/web/**",
-        "PROD-019": "apps/android/**",
-        "PROD-020": "apps/desktop/**"
-      }
-    }
-  },
+  "repositoryHead": "2b6a8ec3cdb7ce1a04672cc557b3d933c7cada2d",
+  "lastReconciledAt": "2026-09-16T15:50:00Z",
+  "implementationCampaign": {"status":"complete","workItemsFinalized":41,"workItemsTotal":41,"commit":"b9b031a85016ac50caba6cd66990707f7815b179"},
+  "productization": {"status":"not_ready","installable":"partial-plus","freeTierDeployed":"yes","deploymentStatus":"provisional-deployment; current-head-reverification-pending","userFriendlyInterface":"partial","publicUrl":"https://aise-tan.vercel.app","vercelDeploymentId":"aise-o1fwbz24b-ekonplacidegmailcoms-projects.vercel.app","deployedApplicationCommit":"693fc38fecddbd30c1ba3ac688daf6695ea2938a","lastVerifiedCommit":"693fc38","finalGate":"docs/PRODUCTION-READINESS-GATE.md"},
+  "execution": {"maxConcurrentWorkers":3,"mergeGate":"tech-lead/architect","selectionRule":"dispatch only dependency-eligible productization items; recompute after every accepted merge","threeWorkerAdapterWave":{"requires":["PROD-016"],"items":["PROD-017","PROD-019","PROD-020"],"protectedSurfaces":{"PROD-017":"apps/web/**","PROD-019":"apps/android/**","PROD-020":"apps/desktop/**"}}},
   "workItems": [
     {"id":"PROD-001","status":"finalized","dependencies":[],"mergedSha":"9a32a936a1acc4b975708bb931b30d092693fd28","mergedAt":"2026-09-15T10:05:00Z"},
     {"id":"PROD-002","status":"finalized","dependencies":["PROD-001"],"mergedSha":"9262181dc884d0299184da1d33f89cd930db2f6d","mergedAt":"2026-09-15T11:25:00Z"},
@@ -61,10 +32,5 @@
     {"id":"PROD-019","status":"planned","dependencies":["PROD-016"]},
     {"id":"PROD-020","status":"planned","dependencies":["PROD-016"]}
   ],
-  "simulation": {
-    "journeyArtifact": "docs/product-journey-simulation.md",
-    "competitiveArtifact": "docs/competitor-simulation-2026-09-16.md",
-    "adapterContract": "spec/client-adapter-contract.md",
-    "status": "design-simulation-complete; adapter implementation-verification-pending"
-  }
+  "simulation": {"journeyArtifact":"docs/product-journey-simulation.md","competitiveArtifact":"docs/competitor-simulation-2026-09-16.md","adapterContract":"spec/client-adapter-contract.md","status":"design-simulation-complete; adapter implementation-verification-pending"}
 }
