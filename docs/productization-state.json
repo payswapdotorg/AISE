@@ -12,11 +12,11 @@
   "productization": {
     "status": "not_ready",
     "installable": "partial-plus",
-    "freeTierDeployed": "no",
+    "freeTierDeployed": "yes",
     "userFriendlyInterface": "partial",
-    "publicUrl": null,
-    "vercelDeploymentId": null,
-    "lastVerifiedCommit": null,
+    "publicUrl": "https://aise-tan.vercel.app",
+    "vercelDeploymentId": "aise-fntrdkbhj-ekonplacidegmailcoms-projects.vercel.app",
+    "lastVerifiedCommit": "28fb1f8",
     "finalGate": "docs/PRODUCTION-READINESS-GATE.md"
   },
   "execution": {
@@ -121,17 +121,27 @@
     },
     {
       "id": "PROD-011",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "PROD-010"
       ],
-      "activatedAt": "2026-09-16T08:00:00Z"
+      "mergedSha": "28fb1f8",
+      "finalizedAt": "2026-09-16T09:30:00Z"
+    },
+    {
+      "id": "PROD-011b",
+      "status": "activated",
+      "dependencies": [
+        "PROD-011"
+      ],
+      "activatedAt": "2026-09-16T09:30:00Z"
     },
     {
       "id": "PROD-012",
       "status": "planned",
       "dependencies": [
-        "PROD-011"
+        "PROD-011",
+        "PROD-011b"
       ]
     },
     {

@@ -55,7 +55,7 @@ A fresh developer should be able to clone the repository, install dependencies w
 
 ### 2. Free-tier deployable
 
-The default evaluator deployment targets Vercel Hobby, Neon Free, Cloudflare R2 Standard and Upstash Redis Free, with Apify Free as an optional acquisition/import connector. See `docs/free-tier-deployment.md`. Heavy reconstruction/GPU providers remain optional and are not required for the baseline demo journey.
+The default evaluator deployment targets Vercel Hobby, Neon Free, Cloudflare R2 Standard and Upstash Redis Free, with Apify Free as an optional acquisition/import connector. See `docs/free-tier-deployment.md` for the provider landscape and `docs/DEPLOYMENT.md` for the executed deployment guide (with `tools/deploy-vercel.md` as the operator runbook). Heavy reconstruction/GPU providers remain optional and are not required for the baseline demo journey.
 
 ### 3. User-friendly interface
 

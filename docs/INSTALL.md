@@ -403,7 +403,16 @@ still opt-in locally). The real public deployment is PROD-011.
 
 The backend API has no separate build step: it executes its TypeScript
 sources directly through Bun (`bun run src/main.ts`), which is the documented
-runtime contract — `bun run build` therefore produces only the web bundle.
+runtime contract — `bun run build` therefore produces the web bundle AND the
+pre-bundled Vercel function (`api/[...path].mjs`).
+
+### The real public deployment
+
+Deploying to a public HTTPS URL on the Vercel Hobby (free) plan is documented
+end-to-end in [`docs/DEPLOYMENT.md`](DEPLOYMENT.md) with the operator runbook
+at [`tools/deploy-vercel.md`](../tools/deploy-vercel.md) — both written from
+real deployments of this repository, including the troubleshooting table for
+every failure the real deployments surfaced.
 
 ## 8. Smoke verification — `bun run smoke`
 

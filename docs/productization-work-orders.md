@@ -236,10 +236,44 @@ Create a repository-connected Vercel Hobby project with deterministic build sett
 
 Vercel deployment ID + URL + build logs + public smoke result.
 
+## PROD-011b — Deployed-session stability (Upstash-backed session store)
+
+**Owner:** ZAI
+**Depends on:** PROD-011
+
+**Scope**
+
+The real deployment (PROD-011 evidence) proved Vercel routes requests across
+warm instances without session affinity, while the frozen PROD-004 composition
+keeps sessions in the per-instance Fs store — so the deployed demo can lose its
+session mid-journey (observed: `session_invalid` on a new connection while the
+minting connection still answered 200). Externalize the session store onto the
+PROD-007 Upstash primitives: a `SessionStore` twin over `RedisClientPort`
+(REST, TTL'd keys, the PROD-007 outage-degradation discipline), env-gated —
+`AISE_REDIS_URL` + `AISE_REDIS_TOKEN` present → Redis-backed sessions; absent
+→ the Fs twin, unchanged. No auth-semantics change: same cookie, same TTL
+contract, same sweep behavior; a store twin, not a redesign.
+
+**Acceptance**
+
+- with the Upstash env set, a session minted on one request is honored on any
+  instance (the deployed golden journey no longer loses its session across
+  connection/instance boundaries);
+- without the Upstash env, behavior is identical to today (Fs store);
+- a Redis outage degrades honestly per the PROD-007 discipline (loud, typed,
+  never silent corruption);
+- the deployed demo journey is re-walked end-to-end on the public URL as
+  evidence.
+
+**Evidence**
+
+Store-twin tests + composition seam tests + the re-walked deployed-URL journey
+transcript.
+
 ## PROD-012 — Browser verification and accessibility
 
 **Owner:** GEMINI
-**Depends on:** PROD-011
+**Depends on:** PROD-011, PROD-011b
 
 **Scope**
 

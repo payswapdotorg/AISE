@@ -1,0 +1,40 @@
+Vercel CLI 59.19.0 (Node.js 24.19.0)
+Fetching deployment "aise-fntrdkbhj-ekonplacidegmailcoms-projects.vercel.app" in ekonplacidegmailcoms-projects
+2026-09-16T09:09:05.976Z  Running build in Washington, D.C., USA (East) – iad1
+2026-09-16T09:09:05.977Z  Build machine configuration: 2 cores, 8 GB
+2026-09-16T09:09:06.024Z  Retrieving list of deployment files...
+2026-09-16T09:09:06.436Z  Downloading 852 deployment files...
+2026-09-16T09:09:08.580Z  Restored build cache from previous deployment (7eyGixN5CaQxMNycFRDhH3N7MAAm)
+2026-09-16T09:09:09.157Z  Running "vercel build"
+2026-09-16T09:09:09.180Z  Vercel CLI 59.16.0
+2026-09-16T09:09:10.084Z  Running "install" command: `bun install`...
+2026-09-16T09:09:10.168Z  bun install v1.3.14 (0d9b296a)
+2026-09-16T09:09:10.293Z  
+2026-09-16T09:09:10.293Z  Checked 135 installs across 181 packages (no changes) [132.00ms]
+2026-09-16T09:09:10.477Z  $ bun tools/build.ts
+2026-09-16T09:09:10.563Z  build: apps/web (vite build)
+2026-09-16T09:09:10.568Z  $ vite build
+2026-09-16T09:09:11.372Z  vite v8.3.0 building client environment for production...
+2026-09-16T09:09:11.388Z  transforming...
+2026-09-16T09:09:11.601Z  ✓ 74 modules transformed.
+2026-09-16T09:09:11.713Z  rendering chunks...
+2026-09-16T09:09:11.816Z  computing gzip size...
+2026-09-16T09:09:11.827Z  dist/index.html                   0.76 kB │ gzip:   0.43 kB
+2026-09-16T09:09:11.827Z  dist/assets/index-BQ1feWI_.css   14.50 kB │ gzip:   3.63 kB
+2026-09-16T09:09:11.828Z  dist/assets/index-BPifJt4z.js   469.05 kB │ gzip: 129.26 kB
+2026-09-16T09:09:11.828Z  
+2026-09-16T09:09:11.829Z  ✓ built in 455ms
+2026-09-16T09:09:11.847Z  build: api/[...path].mjs (esbuild bundle of api/_serverless.ts)
+2026-09-16T09:09:12.052Z  BUILD: PASS (apps/web/dist/index.html, api/[...path].mjs)
+2026-09-16T09:09:12.087Z  Installing dependencies...
+2026-09-16T09:09:12.096Z  bun install v1.3.14 (0d9b296a)
+2026-09-16T09:09:12.100Z  
+2026-09-16T09:09:12.101Z  Checked 135 installs across 181 packages (no changes) [7.00ms]
+2026-09-16T09:09:16.516Z  Build Completed in /vercel/output [6s]
+2026-09-16T09:09:16.568Z  Deploying outputs...
+2026-09-16T09:09:22.315Z  Deployment completed
+2026-09-16T09:09:22.321Z  Creating build cache...
+2026-09-16T09:09:30.746Z  Created build cache: 8s
+2026-09-16T09:09:30.746Z  Uploading build cache [38.78 MB]
+2026-09-16T09:09:31.242Z  Build cache uploaded: 496.000ms
+status	● Ready

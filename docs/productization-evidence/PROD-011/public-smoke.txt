@@ -1,0 +1,27 @@
+# PROD-011 public smoke — https://aise-tan.vercel.app (production alias)
+# captured 2026-09-16T09:23:02Z, deployment aise-fntrdkbhj (commit 28fb1f8)
+
+=== GET /healthz ===
+{"ok":true,"service":"aise-api","version":"0.1.0"}
+HTTP 200 in 0.274650s
+
+=== GET /readyz ===
+{"ok":true,"providers":{"worldsculpt":"disabled"},"artifacts":{"backend":"local-fs","status":"available"},"auth":{"status":"enabled","mode":"demo-open"}}
+HTTP 200 in 0.254758s
+
+=== GET /v1/gaps ===
+{"ok":true,"analyses":[]}
+HTTP 200 in 0.290756s
+
+=== GET /api/healthz ===
+{"ok":true,"service":"aise-api","version":"0.1.0"}
+HTTP 200 in 0.243936s
+
+=== GET /api/v1/gaps ===
+{"ok":true,"analyses":[]}
+HTTP 200 in 0.344668s
+
+=== GET / (SPA root) ===
+HTTP 200 in 0.034143s, 768 bytes (text/html)
+=== GET /demo (client route fallback) ===
+HTTP 200 in 0.038622s, 768 bytes (SPA index.html)
