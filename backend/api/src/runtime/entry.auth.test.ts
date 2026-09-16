@@ -183,6 +183,22 @@ describe("auth DISABLED — the pipeline is byte-identical to the pre-auth contr
       // always reported — orthogonal to the auth layer. The auth contract
       // this test pins is the ABSENCE of the `auth` key when disabled.
       artifacts: { backend: "local-fs", status: "available" },
+      // PROD-013: the cost-guards view is likewise orthogonal to the auth
+      // layer (the quota ledger + guard tuning always report — additive,
+      // like the artifacts key; only `auth` is auth-gated).
+      cost: {
+        ledger: "memory",
+        windowId: expect.stringMatching(/^\d{4}-\d{2}$/),
+        thresholdPercent: 80,
+        meters: [
+          { resource: "redis_commands", metered: false, used: 0, cap: 400_000, remaining: 400_000, remainingPercent: 100, status: "ok" },
+          { resource: "r2_storage_bytes", metered: false, used: 0, cap: 8_589_934_592, remaining: 8_589_934_592, remainingPercent: 100, status: "ok" },
+          { resource: "r2_objects", metered: false, used: 0, cap: 100_000, remaining: 100_000, remainingPercent: 100, status: "ok" },
+        ],
+        rateLimit: { windowSeconds: 60, maxPerPrincipal: 60, maxGlobal: 600 },
+        maxUploadBytes: 10_485_760,
+        status: "ok",
+      },
     });
   });
 

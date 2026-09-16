@@ -122,6 +122,23 @@ describe("GET /readyz — config validity + provider statuses", () => {
       // PROD-006: which artifact backend is actually serving (no R2 group →
       // the honest local-fs twin).
       artifacts: { backend: "local-fs", status: "available" },
+      // PROD-013: the cost-guards section is ALWAYS additive on /readyz
+      // (like the artifacts key) — the zero-config memory ledger, fresh
+      // counters, and the documented conservative defaults. windowId is
+      // the current UTC month (the window the numbers belong to).
+      cost: {
+        ledger: "memory",
+        windowId: expect.stringMatching(/^\d{4}-\d{2}$/),
+        thresholdPercent: 80,
+        meters: [
+          { resource: "redis_commands", metered: false, used: 0, cap: 400_000, remaining: 400_000, remainingPercent: 100, status: "ok" },
+          { resource: "r2_storage_bytes", metered: false, used: 0, cap: 8_589_934_592, remaining: 8_589_934_592, remainingPercent: 100, status: "ok" },
+          { resource: "r2_objects", metered: false, used: 0, cap: 100_000, remaining: 100_000, remainingPercent: 100, status: "ok" },
+        ],
+        rateLimit: { windowSeconds: 60, maxPerPrincipal: 60, maxGlobal: 600 },
+        maxUploadBytes: 10_485_760,
+        status: "ok",
+      },
     });
   });
 
@@ -138,10 +155,23 @@ describe("GET /readyz — config validity + provider statuses", () => {
     const { handler } = handlerFor(baseEnv({ WORLDSCULPT_API_KEY: "" }));
     const response = await handler(get("/readyz"));
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({
-      ok: true,
-      providers: { worldsculpt: "unavailable" },
-      artifacts: { backend: "local-fs", status: "available" },
+    const body = (await response.json()) as Record<string, unknown>;
+    expect(body["providers"]).toEqual({ worldsculpt: "unavailable" });
+    expect(body["artifacts"]).toEqual({ backend: "local-fs", status: "available" });
+    // PROD-013: the cost section is orthogonal to provider credentials —
+    // the same fresh zero-config ledger view as the valid-config test.
+    expect(body["cost"]).toEqual({
+      ledger: "memory",
+      windowId: expect.stringMatching(/^\d{4}-\d{2}$/),
+      thresholdPercent: 80,
+      meters: [
+        { resource: "redis_commands", metered: false, used: 0, cap: 400_000, remaining: 400_000, remainingPercent: 100, status: "ok" },
+        { resource: "r2_storage_bytes", metered: false, used: 0, cap: 8_589_934_592, remaining: 8_589_934_592, remainingPercent: 100, status: "ok" },
+        { resource: "r2_objects", metered: false, used: 0, cap: 100_000, remaining: 100_000, remainingPercent: 100, status: "ok" },
+      ],
+      rateLimit: { windowSeconds: 60, maxPerPrincipal: 60, maxGlobal: 600 },
+      maxUploadBytes: 10_485_760,
+      status: "ok",
     });
   });
 

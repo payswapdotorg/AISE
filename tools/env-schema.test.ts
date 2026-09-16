@@ -14,6 +14,14 @@ describe("declared schema", () => {
       "AISE_AUTH_MODE",
       "AISE_DATA_DIR",
       "AISE_DEMO_PRINCIPAL",
+      "AISE_MAX_UPLOAD_BYTES",
+      "AISE_QUOTA_R2_BYTES",
+      "AISE_QUOTA_R2_OBJECTS",
+      "AISE_QUOTA_REDIS_COMMANDS",
+      "AISE_QUOTA_THRESHOLD_PERCENT",
+      "AISE_RATELIMIT_GLOBAL_MAX",
+      "AISE_RATELIMIT_MAX",
+      "AISE_RATELIMIT_WINDOW_SECONDS",
       "AISE_REDIS_CACHE_TTL_SECONDS",
       "AISE_REDIS_RATELIMIT_MAX",
       "AISE_REDIS_RATELIMIT_WINDOW_SECONDS",
@@ -555,5 +563,129 @@ describe("PROD-007 redis transient-state group", () => {
       "AISE_REDIS_RATELIMIT_WINDOW_SECONDS: expected an integer between 60 and 2592000 (seconds)",
       "AISE_REDIS_RATELIMIT_MAX: expected an integer between 1 and 100000",
     ]);
+  });
+});
+
+describe("PROD-013 cost-guard variables (all optional, conservative defaults)", () => {
+  test("every cost knob is optional in BOTH modes — the zero-config discipline", () => {
+    const costVars = ENV_RULES.filter((rule) =>
+      [
+        "AISE_QUOTA_REDIS_COMMANDS",
+        "AISE_QUOTA_R2_BYTES",
+        "AISE_QUOTA_R2_OBJECTS",
+        "AISE_QUOTA_THRESHOLD_PERCENT",
+        "AISE_RATELIMIT_WINDOW_SECONDS",
+        "AISE_RATELIMIT_MAX",
+        "AISE_RATELIMIT_GLOBAL_MAX",
+        "AISE_MAX_UPLOAD_BYTES",
+      ].includes(rule.name),
+    );
+    expect(costVars).toHaveLength(8);
+    for (const rule of costVars) {
+      expect(rule.requiredIn).toEqual([]);
+      expect(rule.optionalProvider).toBeUndefined();
+      expect(rule.optionalGroup).toBeUndefined();
+      expect(rule.requiredWhen).toBeUndefined();
+    }
+    // Nothing is newly required anywhere: the start-mode requirement set
+    // is still exactly AISE_DATA_DIR.
+    expect(
+      ENV_RULES.filter((rule) => rule.requiredIn.includes("start")).map((rule) => rule.name),
+    ).toEqual(["AISE_DATA_DIR"]);
+  });
+
+  test("unset knobs report the documented conservative defaults", () => {
+    const report = evaluateEnv({}, "dev");
+    expect(report.ok).toBe(true);
+    const byName = new Map(report.checks.map((check) => [check.name, check]));
+    expect(byName.get("AISE_QUOTA_REDIS_COMMANDS")?.status).toBe("ok-default");
+    expect(byName.get("AISE_QUOTA_REDIS_COMMANDS")?.detail).toBe("default: 400000");
+    expect(byName.get("AISE_QUOTA_R2_BYTES")?.detail).toBe("default: 8589934592");
+    expect(byName.get("AISE_QUOTA_R2_OBJECTS")?.detail).toBe("default: 100000");
+    expect(byName.get("AISE_QUOTA_THRESHOLD_PERCENT")?.detail).toBe("default: 80");
+    expect(byName.get("AISE_RATELIMIT_WINDOW_SECONDS")?.detail).toBe("default: 60");
+    expect(byName.get("AISE_RATELIMIT_MAX")?.detail).toBe("default: 60");
+    expect(byName.get("AISE_RATELIMIT_GLOBAL_MAX")?.detail).toBe("default: 600");
+    expect(byName.get("AISE_MAX_UPLOAD_BYTES")?.detail).toBe("default: 10485760");
+  });
+
+  test("valid values pass and are echoed (budget numbers, not secrets)", () => {
+    const report = evaluateEnv(
+      {
+        AISE_QUOTA_REDIS_COMMANDS: "500000",
+        AISE_QUOTA_R2_BYTES: "1099511627776",
+        AISE_QUOTA_R2_OBJECTS: "100000000",
+        AISE_QUOTA_THRESHOLD_PERCENT: "100",
+        AISE_RATELIMIT_WINDOW_SECONDS: "1",
+        AISE_RATELIMIT_MAX: "100000",
+        AISE_RATELIMIT_GLOBAL_MAX: "25",
+        AISE_MAX_UPLOAD_BYTES: "1073741824",
+      },
+      "dev",
+    );
+    expect(report.ok).toBe(true);
+    expect(report.issues).toEqual([]);
+    // Sub-minute windows are VALID burst protection (the guard's own
+    // parser accepts 1 — unlike the ttl-seconds format's 60 floor).
+    expect(
+      report.checks.find((check) => check.name === "AISE_RATELIMIT_WINDOW_SECONDS")?.detail,
+    ).toBe("1");
+  });
+
+  test("malformed or out-of-range values fail precisely, never echoing the value", () => {
+    const report = evaluateEnv(
+      {
+        AISE_QUOTA_REDIS_COMMANDS: "100000001",
+        AISE_QUOTA_R2_BYTES: "1099511627777",
+        AISE_QUOTA_R2_OBJECTS: "0",
+        AISE_QUOTA_THRESHOLD_PERCENT: "101",
+        AISE_RATELIMIT_WINDOW_SECONDS: "2592001",
+        AISE_RATELIMIT_MAX: "100001",
+        AISE_RATELIMIT_GLOBAL_MAX: "banana",
+        AISE_MAX_UPLOAD_BYTES: "10MB",
+      },
+      "dev",
+    );
+    expect(report.ok).toBe(false);
+    expect(report.issues).toEqual([
+      "AISE_QUOTA_REDIS_COMMANDS: expected an integer between 1 and 100000000",
+      "AISE_QUOTA_R2_BYTES: expected an integer number of bytes between 1 and 1099511627776",
+      "AISE_QUOTA_R2_OBJECTS: expected an integer between 1 and 100000000",
+      "AISE_QUOTA_THRESHOLD_PERCENT: expected an integer between 1 and 100",
+      "AISE_RATELIMIT_WINDOW_SECONDS: expected an integer between 1 and 2592000 (seconds)",
+      "AISE_RATELIMIT_MAX: expected an integer between 1 and 100000",
+      "AISE_RATELIMIT_GLOBAL_MAX: expected an integer between 1 and 100000",
+      "AISE_MAX_UPLOAD_BYTES: expected an integer number of bytes between 1 and 1073741824",
+    ]);
+    for (const issue of report.issues) {
+      expect(issue).not.toContain("banana");
+      expect(issue).not.toContain("10MB");
+    }
+  });
+
+  test("the knob formats mirror the cost family's own parser ceilings", () => {
+    // quota-count: 1..100,000,000 (cost/quotas.ts CAP_CEILINGS for
+    // redis_commands and r2_objects).
+    expect(isFormatValid("quota-count", "1")).toBe(true);
+    expect(isFormatValid("quota-count", "100000000")).toBe(true);
+    expect(isFormatValid("quota-count", "100000001")).toBe(false);
+    expect(isFormatValid("quota-count", "0")).toBe(false);
+    // quota-bytes-cap: 1..1 TiB (the r2_storage_bytes ceiling).
+    expect(isFormatValid("quota-bytes-cap", "8589934592")).toBe(true);
+    expect(isFormatValid("quota-bytes-cap", "1099511627776")).toBe(true);
+    expect(isFormatValid("quota-bytes-cap", "1099511627777")).toBe(false);
+    // percent: 1..100 (the threshold band).
+    expect(isFormatValid("percent", "80")).toBe(true);
+    expect(isFormatValid("percent", "100")).toBe(true);
+    expect(isFormatValid("percent", "0")).toBe(false);
+    expect(isFormatValid("percent", "101")).toBe(false);
+    // window-seconds: 1..2,592,000 (cost/guards.ts WINDOW_MAX_SECONDS —
+    // sub-minute windows valid, unlike ttl-seconds).
+    expect(isFormatValid("window-seconds", "1")).toBe(true);
+    expect(isFormatValid("window-seconds", "2592000")).toBe(true);
+    expect(isFormatValid("window-seconds", "2592001")).toBe(false);
+    // Whitespace tolerance mirrors the parsers' trim discipline.
+    expect(isFormatValid("quota-count", " 42 ")).toBe(true);
+    expect(isFormatValid("window-seconds", "soon")).toBe(false);
   });
 });

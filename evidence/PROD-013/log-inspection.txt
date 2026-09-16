@@ -1,0 +1,52 @@
+# PROD-013 evidence — log inspection (names, never values)
+# Generated 2026-09-16 by evidence/PROD-013/log-inspection.sh (this file's generator is checked in beside it)
+
+## Method
+The cost + composition-seam test suites were run with ALL output captured (stdout+stderr).
+The suites configure FAKE secret fixtures (an RFC-2606 .invalid URL and DO-NOT-LEAK tokens —
+grep-able by construction). The captured output is then scanned for those VALUES.
+A leak would be a match outside the test-source path echo; the discipline is: zero matches.
+
+## The fake fixtures under test (from the test sources)
+- entry-cost.test.ts:77        FAKE_REDIS_TOKEN  = aise-cost-seam-test-token-DO-NOT-LEAK
+- entry-session-redis.test.ts:56 UNREACHABLE_REDIS_URL = https://aise-session-seam-test.invalid
+- entry-session-redis.test.ts:57 FAKE_REDIS_TOKEN  = aise-session-seam-test-token-DO-NOT-LEAK
+
+## Step 1 — run the suites, capture everything
+$ bun test backend/api/src/cost backend/api/src/runtime/entry-cost.test.ts backend/api/src/runtime/entry-session-redis.test.ts
+  (81 tests across 5 files — 0 fail; full tail:)
+ 81 pass
+ 0 fail
+ 581 expect() calls
+Ran 81 tests across 5 files. [358.00ms]
+
+## Step 2 — scan the captured output for the fake VALUES
+$ rg -c 'aise-cost-seam-test-token-DO-NOT-LEAK' <capture>
+0 matches (exit 1 — value absent)
+$ rg -c 'aise-session-seam-test-token-DO-NOT-LEAK' <capture>
+0 matches (exit 1 — value absent)
+$ rg -c 'aise-session-seam-test.invalid' <capture>
+0 matches (exit 1 — value absent)
+$ rg -c 'aise-cost-seam-test.invalid' <capture>
+0 matches (exit 1 — value absent)
+
+## Step 3 — where the structured lines actually live
+The bun-test process output carries no log lines by design (the suites capture
+logs via injected writers and assert on them — see the secret-leak tests in
+both seam files, which are the PRIMARY discipline proof). The LIVE structured
+lines are in quota-simulation.txt (a real run with the real stdout logger).
+
+## Step 4 — the names that DO appear in the real-logger run
+$ rg -o 'AISE_[A-Z_]+' quota-simulation.txt | sort | uniq -c
+ 2 AISE_QUOTA_
+ 1 AISE_REDIS_REST_URL
+ 1 AISE_REDIS_REST_TOKEN
+
+## Verdict
+ZERO matches for every fake secret VALUE in the captured test output (step 2).
+The live structured run (quota-simulation.txt) emits the env NAMES
+(AISE_QUOTA_REDIS_COMMANDS, AISE_QUOTA_R2_BYTES, AISE_REDIS_REST_URL,
+AISE_REDIS_REST_TOKEN …) in message/detail fields — never any value.
+The tests' internal captures are asserted by the two dedicated
+secret-leak-discipline tests (entry-cost.test.ts, entry-session-redis.test.ts).
+The discipline holds on all three fronts.

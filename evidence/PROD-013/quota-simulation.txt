@@ -1,0 +1,36 @@
+{"level":"info","timestamp":"2026-09-16T14:23:16.623Z","message":"cost_guards_mode","ledger":"memory","meteredRedis":false,"detail":"no upstash pair configured — per-instance quota counters and per-instance rate-limit windows (honest scope; set AISE_REDIS_REST_URL + AISE_REDIS_REST_TOKEN for shared counters)"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","step":"\n=== boot: the mode log (memory twin — no Upstash pair configured) ==="}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","step":"\n=== consume redis_commands 1..7 (below the 80% warn band of cap 10) ==="}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","step":"  consume #1: ok"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","step":"  consume #2: ok"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","step":"  consume #3: ok"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","step":"  consume #4: ok"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","step":"  consume #5: ok"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","step":"  consume #6: ok"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","step":"  consume #7: ok"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","readiness":{"resource":"redis_commands","metered":false,"used":7,"cap":10,"remaining":3,"remainingPercent":30,"status":"ok"}}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","step":"\n=== consume redis_commands #8 (crosses 80% — the ONE threshold warn fires) ==="}
+{"level":"warn","timestamp":"2026-09-16T14:23:16.629Z","message":"quota_redis_commands_threshold","resource":"redis_commands","used":8,"cap":10,"remainingPercent":20,"windowId":"2026-09","ledger":"memory"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","step":"  consume #8: threshold"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","readiness":{"resource":"redis_commands","metered":false,"used":8,"cap":10,"remaining":2,"remainingPercent":20,"status":"threshold"}}
+{"level":"info","timestamp":"2026-09-16T14:23:16.629Z","message":"quota-simulation","step":"\n=== consume redis_commands #9 (inside the band — warn does NOT repeat) ==="}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","step":"  consume #9: threshold"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","step":"\n=== consume redis_commands #10 (would reach the cap: the typed refusal) ==="}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","step":"  consume #10: {\"ok\":true,\"resource\":\"redis_commands\",\"used\":10,\"cap\":10,\"remaining\":0,\"remainingPercent\":0,\"status\":\"exhausted\"}"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","readiness":{"resource":"redis_commands","metered":false,"used":10,"cap":10,"remaining":0,"remainingPercent":0,"status":"exhausted"}}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","aggregateStatus":"exhausted"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","step":"\n=== the refusal is stable (a further consume is refused again, counter counts attempts) ==="}
+{"level":"warn","timestamp":"2026-09-16T14:23:16.630Z","message":"quota_redis_commands_exhausted","resource":"redis_commands","used":11,"cap":10,"windowId":"2026-09","ledger":"memory"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","step":"  consume #11: {\"ok\":false,\"refusal\":{\"code\":\"quota_exhausted\",\"resource\":\"redis_commands\",\"used\":11,\"cap\":10,\"detail\":\"quota 'redis_commands' is exhausted: used 11 of the configured cap 10 (AISE_QUOTA_* — conservative free-tier default, overridable) — the operation is REFUSED to protect the free-tier budget; it is never auto-upgraded\"}}"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","step":"\n=== the bytes meter (r2_storage_bytes cap 1000): a 900-byte upload passes, the next 200-byte upload is refused ==="}
+{"level":"warn","timestamp":"2026-09-16T14:23:16.630Z","message":"quota_r2_storage_bytes_threshold","resource":"r2_storage_bytes","used":900,"cap":1000,"remainingPercent":10,"windowId":"2026-09","ledger":"memory"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","step":"  900 bytes: threshold"}
+{"level":"warn","timestamp":"2026-09-16T14:23:16.630Z","message":"quota_r2_storage_bytes_exhausted","resource":"r2_storage_bytes","used":900,"cap":1000,"windowId":"2026-09","ledger":"memory"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","step":"  +200 bytes: {\"ok\":false,\"refusal\":{\"code\":\"quota_exhausted\",\"resource\":\"r2_storage_bytes\",\"used\":900,\"cap\":1000,\"detail\":\"quota 'r2_storage_bytes' is exhausted: used 900 of the configured cap 1000 (AISE_QUOTA_* — conservative free-tier default, overridable) — the operation is REFUSED to protect the free-tier budget; it is never auto-upgraded\"}}"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","readiness":{"resource":"r2_storage_bytes","metered":false,"used":900,"cap":1000,"remaining":100,"remainingPercent":10,"status":"threshold"}}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","step":"\n=== the honest metered flags (no Upstash pair, no R2 group configured) ==="}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","step":"  redis_commands: metered=false status=exhausted"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","step":"  r2_storage_bytes: metered=false status=threshold"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","step":"  r2_objects: metered=false status=ok"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","ledger":"memory","window":"2026-09"}
+{"level":"info","timestamp":"2026-09-16T14:23:16.630Z","message":"quota-simulation","aggregateStatus":"exhausted"}

@@ -57,7 +57,6 @@ import {
 // session-store twin over the PROD-007 Redis port, selected at the session-
 // store composition point below when the Upstash env group is complete.
 import { RedisSessionStore } from "../auth/store-redis";
-import { UpstashRedisClient } from "../redis/client-upstash";
 import { FsIdentityStore } from "../identity/store";
 import { IdentityService } from "../identity/service";
 import { createRequestHandler, SERVICE_NAME } from "../server";
@@ -94,6 +93,17 @@ import type { GraphSnapshot } from "../boq/mapping/model";
 import { createCorsLayer } from "./cors";
 import { errorResponse, translateErrorResponse } from "./errors";
 import { evaluateOptionalProviders, type ProviderStatus } from "./readiness";
+// PROD-013 (additive — the cost guards): the quota ledger + metered
+// clients + the expensive-route guard + the upload cap, booted from the
+// SAME env record /readyz re-checks (the redis family's env-factory
+// discipline — pure construction, no I/O at boot). See cost/index.ts.
+import {
+  bootCostGuards,
+  enforceUploadCap,
+  MeteredArtifactStorage,
+  type CostBoot,
+  type CostReadiness,
+} from "../cost";
 // PROD-006 (additive): the R2 artifact storage wiring — the R2_* env group
 // decides the blob backend (see the wiring block below), and the /readyz
 // augmentation reports which backend is actually serving (statuses only,
@@ -406,11 +416,22 @@ function artifactsReadiness(env: EnvRecord): ArtifactReadinessStatus {
  * to the pre-auth contract (the additive discipline). An enabled-but-broken
  * auth layer is a real not-ready condition: the 200 becomes the documented
  * 503 envelope with the auth issues merged in.
+ *
+ * PROD-013 (additive): the answer ALSO carries a `cost` section — the
+ * quota-ledger view (mode + window + one meter per resource with
+ * usage/cap/remaining percent + the per-field status) and the guard
+ * tuning. Per-field honesty: a meter at cap reports `exhausted` in its own
+ * status AND in the cost-level aggregate; the TOP-LEVEL `ok` (config
+ * validity) is deliberately untouched — a quota cap degrades an optional
+ * dimension, it does not invalidate the configuration (docs/COST-GUARDS.md
+ * documents the decision). The projection is pure (no I/O on the readiness
+ * path — the redis twin serves its cached last-consume view).
  */
 async function augmentReadiness(
   response: Response,
   env: EnvRecord,
   auth: AuthReadinessStatus | null,
+  cost: CostReadiness | null,
 ): Promise<Response> {
   const contentType = response.headers.get("content-type") ?? "";
   if (!contentType.includes("application/json")) {
@@ -452,6 +473,7 @@ async function augmentReadiness(
           providers,
           auth,
           artifacts,
+          ...(cost === null ? {} : { cost }),
         }),
         { status: 503, statusText: "Service Unavailable", headers: response.headers },
       );
@@ -462,6 +484,7 @@ async function augmentReadiness(
         providers,
         artifacts,
         ...(auth === null ? {} : { auth }),
+        ...(cost === null ? {} : { cost }),
       }),
       {
         status: response.status,
@@ -492,6 +515,7 @@ async function augmentReadiness(
         providers,
         ...(auth === null ? {} : { auth }),
         artifacts,
+        ...(cost === null ? {} : { cost }),
       }),
       { status: response.status, statusText: response.statusText, headers: response.headers },
     );
@@ -522,6 +546,19 @@ export function createRuntimeHandler(
   // serverless); a MISCONFIGURED value still resolves to the mode default so
   // the function can boot and report the issue through /readyz.
   const dataDir = firstConfig.ok ? firstConfig.config.dataDir : resolveDataDir(envSource());
+
+  // PROD-013 (additive — the cost guards). Pure construction, no I/O: the
+  // quota ledger (memory twin, or the shared-window Redis twin when the
+  // PROD-007 Upstash pair is configured), the METERED Upstash client that
+  // every redis command of this process flows through (counted + capped),
+  // the expensive-route guard (PROD-007's consumeRateLimit, wired here
+  // after being unwired since PROD-007) and the upload cap. The epoch-ms
+  // clock matches the redis family's composition-root wall-clock seam.
+  const costBoot: CostBoot = bootCostGuards({
+    env: envSource(),
+    logger,
+    clock: (): number => Date.now(),
+  });
 
   // PROD-005 persistence selection: DATABASE_URL present → the Pg store
   // family + a bounded cold-start migration run (see pg/runtime.ts);
@@ -720,12 +757,20 @@ export function createRuntimeHandler(
         // every Redis failure is a structured warn and the request fails
         // closed as unauthenticated. The epoch-ms clock matches the redis
         // family's composition-root wall-clock seam (`() => Date.now()`).
+        //
+        // PROD-013: the client is now the METERED Upstash client from the
+        // cost boot (non-null exactly when the env pair is complete — the
+        // same gate this seam has always branched on), so every session
+        // REST command is counted against `redis_commands` and refused at
+        // the hard cap (the store's fail-closed handling then answers 401
+        // with the typed warn — the documented degradation, never silent).
         const redisRestUrl = envSource()["AISE_REDIS_REST_URL"]?.trim() ?? "";
         const redisRestToken = envSource()["AISE_REDIS_REST_TOKEN"]?.trim() ?? "";
+        const meteredRedis = costBoot.meteredRedis;
         let sessionStore: SessionStore;
-        if (redisRestUrl !== "" && redisRestToken !== "") {
+        if (redisRestUrl !== "" && redisRestToken !== "" && meteredRedis !== null) {
           sessionStore = new RedisSessionStore(
-            new UpstashRedisClient({ url: redisRestUrl, token: redisRestToken }),
+            meteredRedis,
             logger,
             (): number => Date.now(),
           );
@@ -873,9 +918,21 @@ export function createRuntimeHandler(
       // FsCaptureStore discipline) — INSIDE this try, so a degraded
       // serverless boot stays honest instead of throwing out of the
       // handler construction.
+      //
+      // PROD-013: in R2 mode the blob backend is wrapped by the METERED
+      // storage (cost/quotas.ts) — every artifact upload counts its bytes
+      // against `r2_storage_bytes` and one object against `r2_objects`
+      // BEFORE the PUT dispatches, and a capped upload fails with the typed
+      // `quota_exceeded` ArtifactStorageError (→ the stable 503 envelope;
+      // the metadata row is never written for a refused blob). The local-fs
+      // twin is deliberately UNMETERED — it bills nobody.
       const storage: ArtifactStorage =
         r2Resolution.status === "complete"
-          ? new R2ArtifactStorage(r2Resolution.config)
+          ? new MeteredArtifactStorage({
+              inner: new R2ArtifactStorage(r2Resolution.config),
+              ledger: costBoot.ledger,
+              logger,
+            })
           : new FsArtifactStorage(dataDir);
       artifacts = {
         service: new ArtifactService({
@@ -971,6 +1028,26 @@ export function createRuntimeHandler(
         }
         forwarded = outcome.request;
       }
+      // PROD-013: the cost guards sit between auth and the core (the same
+      // layering discipline). FIRST the expensive-route rate limiter — a
+      // flood is counted and refused before any body is read — THEN the
+      // upload cap (content-length precheck + incremental stream read, so
+      // an over-cap body costs at most cap+1 buffered bytes). Non-matching
+      // routes pass through UNTOUCHED (the same Request object, zero
+      // overhead): the zero-config byte-identical discipline.
+      const guarded = await costBoot.guard.handle(forwarded, requestId);
+      if (guarded.kind === "response") {
+        return cors.decorate(request, guarded.response);
+      }
+      const capped = await enforceUploadCap(
+        guarded.request,
+        costBoot.maxUploadBytes,
+        requestId,
+      );
+      if (capped.kind === "response") {
+        return cors.decorate(request, capped.response);
+      }
+      forwarded = capped.request;
       // Pg mode: order every request behind the bounded cold-start
       // migration run (never rejects — failures are logged as status, then
       // store operations fail loudly per request; see pg/runtime.ts).
@@ -979,7 +1056,7 @@ export function createRuntimeHandler(
       }
       let response = await core(forwarded);
       if (new URL(request.url).pathname === "/readyz") {
-        response = await augmentReadiness(response, envSource(), authReadiness);
+        response = await augmentReadiness(response, envSource(), authReadiness, costBoot.readiness());
       }
       response = await translateErrorResponse(response);
       return cors.decorate(request, response);

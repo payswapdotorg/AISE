@@ -1,0 +1,45 @@
+# PROD-013 evidence — the provider failure drill
+# Generated 2026-09-16. The drill = the failure-path suites, run together, output captured verbatim below.
+
+## The three failure classes and what proves each
+
+1. UPSTASH UNREACHABLE (optional provider outage):
+   - redis/outage.test.ts — the PROD-007 outage wrapper: degrade to the memory twin,
+     loud chronological events, probe/recovery discipline.
+   - runtime/entry-session-redis.test.ts — the PROD-011b fail-closed session seam against an
+     RFC-2606 .invalid endpoint (mint 200, whoami 401, typed warns — never silent corruption).
+   - runtime/entry-cost.test.ts — the cost seam's redis mode ALSO fail-closes against the
+     unreachable endpoint (see the pass line quoted in the transcript header below).
+
+2. R2 STORAGE ERRORING (optional provider outage):
+   - artifacts/artifacts.test.ts — a blob store whose every operation fails with a TYPED error
+     (unavailable | quota_exceeded | auth_failed → 503-class codes); authoritative Fs/Pg state
+     is never corrupted by a storage failure (the artifacts layer degrades, the domain stores
+     are untouched — the composition is PROD-006's, unchanged here).
+
+3. QUOTA EXHAUSTED MID-OPERATION:
+   - runtime/entry-cost.test.ts 'quota exhaustion through the FULL pipeline' — a minted session
+     drives a metered resource to its cap, then the request is refused with the typed
+     quota_exhausted envelope + ONE structured warn, and /readyz reports it additively;
+     a refused upload stores nothing (the bytes meter is all-or-nothing — see
+     quota-simulation.txt).
+
+## The drill run (verbatim tail + counts)
+
+$ bun test backend/api/src/redis/outage.test.ts backend/api/src/artifacts/artifacts.test.ts backend/api/src/runtime/entry-cost.test.ts backend/api/src/runtime/entry-session-redis.test.ts
+ 47 pass
+ 0 fail
+ 427 expect() calls
+Ran 47 tests across 4 files. [439.00ms]
+
+(pass) count in the captured transcript:
+47
+
+## Acceptance mapping
+- 'optional provider outages do not corrupt authoritative state' — classes 1 and 2 above: every
+  failure is typed + loud; the domain/session state either fail-closes (sessions) or degrades
+  to the documented twin (cache/ledger) — no path writes partial/corrupt state.
+- 'quota exhaustion is visible' — class 3 + the /readyz cost section (additive, honest aggregate).
+- 'no auto-upgrade behavior' — the typed refusal detail names the discipline verbatim:
+  'the operation is REFUSED to protect the free-tier budget; it is never auto-upgraded'
+  (quota-simulation.txt, the consume:11 line).
