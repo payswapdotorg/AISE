@@ -26,9 +26,9 @@ Architecture is **one AISE product/domain core with three adapters**:
 
 Clients may specialize in presentation, sensors, offline behavior, density and platform affordances. They may not diverge in engineering semantics or authority.
 
-## Repository truth at handoff
+## Repository reconciliation
 
-Repository head: `2b6a8ec3cdb7ce1a04672cc557b3d933c7cada2d`.
+The handoff was prepared against main commit `bb8fccbdf084c8ee1c1c900ff34253fc2d470402`. **Always read the current main tip first** and then reconcile against `docs/productization-state.json`; do not assume the recorded commit is still HEAD.
 
 Core implementation: `b9b031a85016ac50caba6cd66990707f7815b179` (41/41 finalized).
 
@@ -37,7 +37,7 @@ Architecture: `2.2` + `spec/governance/architecture-change-record-004.md`.
 Provisional deployment: `https://aise-tan.vercel.app`.
 Last evidenced deployed application commit: `693fc38fecddbd30c1ba3ac688daf6695ea2938a`.
 
-Current productization declaration remains `not_ready`. `docs/productization-state.json` is the machine-readable source of truth. PROD-011b remains blocked on a **resolvable Upstash REST endpoint**; the previously supplied hostname was NXDOMAIN and the app is fail-closed without Redis.
+Current productization declaration remains `not_ready`. PROD-011b remains blocked on a **resolvable Upstash REST endpoint**; the previously supplied hostname was NXDOMAIN and the app is fail-closed without Redis.
 
 Current frontier:
 
@@ -54,6 +54,8 @@ Current frontier:
 ⬜ PROD-019
 ⬜ PROD-020
 ```
+
+`freeTierDeployed = yes` means a provisional deployment has been evidenced; it does **not** mean PRODUCT-READY.
 
 ## Mandatory reading
 
@@ -87,15 +89,15 @@ docs/codex-integration-strategy.md
 docs/adoption-sensitivity-analysis.md
 ```
 
-Inspect applicable Architecture Change Records, especially ACR-004, and read the exact Work Order before dispatch.
+Inspect applicable Architecture Change Records, especially ACR-004, and read the exact assigned Work Order before dispatch.
 
-## Work system
+## Execution model
 
 Use **PROD-001 through PROD-020** only. Never reopen AISE-001…041 merely for polish.
 
 Never exceed three concurrent workers. Recompute eligibility from `docs/productization-state.json` after every accepted merge.
 
-### Intended execution sequence
+Preferred scheduling:
 
 ```text
 P5:  PROD-011 + PROD-016
@@ -106,23 +108,21 @@ P9:  PROD-014
 P10: PROD-015
 ```
 
-This sequence is a scheduling guide, not permission to violate dependencies. `PROD-012` is only eligible after PROD-011b is finalized. `PROD-017`, `PROD-019`, and `PROD-020` are independently eligible after PROD-016 is finalized.
+This is a scheduling guide, not permission to violate dependencies. `PROD-012` is eligible only after PROD-011b is finalized. `PROD-017`, `PROD-019`, and `PROD-020` are independently eligible after PROD-016 is finalized.
 
-### Three-worker adapter wave
+### Adapter work ownership
 
 ```text
-PROD-016 merged
-     │
-     ├── PROD-017 → apps/web/**
-     ├── PROD-019 → apps/android/**
-     └── PROD-020 → apps/desktop/**
+PROD-017 → apps/web/**
+PROD-019 → apps/android/**
+PROD-020 → apps/desktop/**
 ```
 
-Protected surfaces are disjoint. Workers must not modify the shared client contract after PROD-016 merges. A shared-contract defect becomes a new SHARED Work Item; do not patch the same shared file in parallel branches.
+These are deliberately surface-disjoint so three workers can operate concurrently after PROD-016. They must not edit the shared adapter contract after PROD-016 merges. A discovered shared-contract defect becomes a new SHARED Work Item.
 
-`apps/android` already contains substantial offline-first capture/session infrastructure. It still needs productization against the shared task/capability contract.
+`apps/android` already contains substantial offline-first capture/session infrastructure; it still needs productization against the shared server contract.
 
-`apps/desktop` is **not yet a real product surface** and must be created by PROD-020. A documentation-only placeholder does not satisfy the work item.
+`apps/desktop` is not currently a complete product surface and must be created by PROD-020. A documentation-only placeholder does not satisfy the work item.
 
 ## Product rules
 
@@ -140,7 +140,7 @@ Task intent
 
 No client may decide readiness, canonical measurement status, evidence sufficiency, verification result, intervention approval, source-of-record authority or tenant authorization policy.
 
-The baseline golden journey is:
+Golden journey:
 
 ```text
 LAND
@@ -160,7 +160,7 @@ LAND
  → OUTCOME COMPARISON
 ```
 
-Mobile field journey:
+Field journey:
 
 ```text
 intent → capability assessment → adaptive mission → guided capture
@@ -168,7 +168,7 @@ intent → capability assessment → adaptive mission → guided capture
 → reconstruction strategy → evidence gaps → readiness
 ```
 
-Reconstruction providers including WorldSculpt, World Labs Atlas, Magic Leap Atlas and future engines remain optional behind the stable adapter. Generated completion is never automatically observed truth.
+Reconstruction providers including WorldSculpt, World Labs Atlas, Magic Leap Atlas and future engines remain optional behind the stable reconstruction contract. Generated completion is never automatically observed truth.
 
 Codex remains an external orchestration substrate; AISE remains engineering-domain authority. Do not modify Codex core without an independently governed Codex change.
 
@@ -192,23 +192,21 @@ EXECUTION
 OBSERVED OUTCOME
 ```
 
-## What cannot be proven from repository state alone
+## External verification limits
 
-Do not mark these PASS without live evidence:
+Repository-local verification can establish code structure, dependency edges, tests, schemas and deterministic local behavior. It cannot prove, without live/operator/platform access:
 
-- valid Upstash account/endpoint and deployed multi-instance session continuity;
+- a valid Upstash account/endpoint and deployed multi-instance session continuity;
 - current provider plan/allowance terms;
-- actual public-browser journey against the newest deployed commit;
-- real Android camera/depth/LiDAR behavior on physical devices;
+- actual public-browser behavior of the newest deployment;
+- real Android camera/depth/LiDAR behavior on representative physical devices;
 - packaged desktop launch on declared supported OS(s);
 - production secrets/OAuth/third-party console state;
-- real provider costs/quotas beyond deterministic repository simulations.
+- real provider costs/quotas beyond deterministic simulations.
 
-When external access is required, record the exact operator action, credential/configuration or hardware dependency and the evidence that must be returned. Never infer success from code or fixture tests.
+Never mark such evidence PASS from code inspection. Record exact operator/hardware/configuration prerequisites and expected returned evidence in the worker completion package.
 
 ## Verification / merge loop
-
-For each worker:
 
 ```text
 exact base SHA
@@ -220,6 +218,7 @@ exact base SHA
 → composition review
 → merge
 → synchronize productization-state.json
+→ rerun relevant journey evidence
 ```
 
 Before PROD-015:
@@ -235,7 +234,7 @@ public URL
 → outcome
 ```
 
-Verify browser desktop/mobile viewports, Android/mobile adapter and desktop adapter; check console/runtime errors, API failures, empty/error/loading states, accessibility, tenant isolation, upload limits, provider-disabled behavior, persistence, Redis sessions, quotas and cross-adapter semantic equivalence.
+Verify browser desktop/mobile viewports, Android/mobile adapter and desktop adapter; check console/runtime errors, API failures, loading/empty/error states, accessibility, tenant isolation, upload limits, provider-disabled behavior, persistence, Redis sessions, quotas and cross-adapter semantic equivalence.
 
 ## Final gate
 
@@ -250,4 +249,4 @@ Verify browser desktop/mobile viewports, Android/mobile adapter and desktop adap
 }
 ```
 
-The final evidence package must contain exact commit SHA, public URL, deployment ID, provider/tier evidence, fresh install transcript, browser proof, Android/mobile evidence, desktop evidence, security/isolation evidence, quota/cost evidence and the full golden journey trace.
+The final evidence package must contain exact final commit SHA, public URL, deployment ID, provider/tier evidence, fresh install transcript, browser proof, Android/mobile evidence, desktop evidence, security/isolation evidence, quota/cost evidence and the full golden journey trace.
