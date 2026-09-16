@@ -5,7 +5,9 @@
   "properties": {
     "schemaVersion": {"const": 1},
     "campaign": {"const": "AISE-productization"},
-    "governingArchitecture": {"const": "2.2"},
+    "governingArchitecture": {"type":"string","pattern":"^2\\.2( \\+ ACR-[0-9]{3})*$"},
+    "architectureChangeRecords": {"type":"array","items":{"type":"string"}},
+    "technologySubstitutionContract": {"type":"string"},
     "implementationCampaign": {"type": "object"},
     "productization": {"type": "object"},
     "execution": {"type": "object"},
