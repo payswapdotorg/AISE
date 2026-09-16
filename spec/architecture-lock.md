@@ -1,8 +1,8 @@
 # AISE v2 Architecture Lock
 
-**Version:** 2.2
+**Version:** 2.2 + client-adapter boundary
 **Status:** FROZEN BASELINE
-**Change records:** `spec/governance/architecture-change-record-002.md`, `spec/governance/architecture-change-record-003.md`
+**Change records:** `spec/governance/architecture-change-record-002.md`, `spec/governance/architecture-change-record-003.md`, `spec/governance/architecture-change-record-004.md`
 
 These invariants cannot be changed by implementation workers. Changes require an Architecture Change Record approved by the Architect/Tech Lead.
 
@@ -15,8 +15,18 @@ These invariants cannot be changed by implementation workers. Changes require an
 5. BOQ Graph is a domain representation, never a second reality authority.
 6. Intervention states are proposals until supported by post-execution evidence.
 7. LLMs and agents are non-authoritative.
-8. UI state, mobile state and exported files are not canonical authorities.
+8. UI state, mobile state, desktop state and exported files are not canonical authorities.
 9. External construction systems of record may remain authoritative for their own domains; AISE stores explicit references, mappings and synchronization provenance.
+
+## Client-adapter boundary
+
+- Desktop, mobile and browser clients are adapters over one AISE product/domain core.
+- Clients share the same semantic task/capability contracts and may differ only in presentation and platform-specific interaction.
+- Mobile may own camera, depth, LiDAR and sensor APIs plus bounded offline queues, but cannot own canonical engineering state.
+- Browser may optimize project-wide inspection, collaboration and analysis, but cannot create a browser-only authority.
+- Desktop may be a richer installed shell or wrapper over the same application contracts; it must not fork domain logic.
+- New client surfaces must not require a parallel Reality Graph, Evidence Graph, Assurance Engine, Verification Engine or BOQ authority.
+- Platform-specific UI state is ephemeral/presentational and never evidence of authorization, measurement, readiness or truth.
 
 ## Truth and uncertainty
 
@@ -91,4 +101,4 @@ These invariants cannot be changed by implementation workers. Changes require an
 
 ## Critical assurance
 
-Any change touching measurement, reconstruction/provider integration, model semantics, evidence, readiness, engineering rules, BOQ quantity mapping, intervention simulation, external-source mapping or migration equivalence is CRITICAL and requires the applicable benchmark, negative/discrimination and physical evidence.
+Any change touching measurement, reconstruction/provider integration, model semantics, evidence, readiness, engineering rules, BOQ quantity mapping, intervention simulation, external-source mapping, client adapter semantics or migration equivalence is CRITICAL and requires the applicable benchmark, negative/discrimination and physical evidence.
