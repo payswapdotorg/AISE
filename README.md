@@ -33,9 +33,7 @@ AISE therefore does not pretend that every phone can produce the same quality of
 
 **Implementation campaign: complete — 41/41 governed v2 Work Items finalized.**
 
-The implementation layer is now complete, but the repository is in a **post-implementation productization phase**. Product readiness is intentionally a separate gate: a complete architecture/code campaign is not the same thing as a publicly deployable, installable and user-friendly product.
-
-A provisional free-tier deployment has been evidenced at [`https://aise-tan.vercel.app`](https://aise-tan.vercel.app), but **AISE is not yet product-ready**. The latest evidenced deployed application commit is recorded in `docs/productization-state.json`; repository documentation commits after that deployment do not imply that the deployed runtime has those later changes.
+The implementation layer is complete, but the repository is in a **post-implementation productization phase**. A provisional free-tier deployment has been evidenced at [`https://aise-tan.vercel.app`](https://aise-tan.vercel.app), but AISE is **not yet product-ready**. The latest evidenced deployed application commit is recorded in `docs/productization-state.json`; later repository changes do not imply that the public deployment contains those changes.
 
 The productization program is governed by:
 
@@ -47,7 +45,7 @@ The productization program is governed by:
 - `docs/productization-state.json`
 - `docs/TECH-LEAD-HANDOFF.md`
 
-Only `PROD-015` may change the productization declaration to PRODUCT-READY, and only after objective evidence proves all three product promises: installable, free-tier deployed, and user-friendly.
+Only `PROD-015` may change the productization declaration to PRODUCT-READY.
 
 ## Product promises
 
@@ -57,11 +55,11 @@ A fresh developer should be able to clone the repository, install dependencies w
 
 ### 2. Free-tier deployable
 
-The default evaluator deployment targets Vercel Hobby, Neon Free, Cloudflare R2 Standard and Upstash Redis Free, with Apify Free as an optional acquisition/import connector. See `docs/free-tier-deployment.md` for the provider landscape and `docs/DEPLOYMENT.md` for the executed deployment guide (with `tools/deploy-vercel.md` as the operator runbook). Heavy reconstruction/GPU providers remain optional and are not required for the baseline demo journey.
+The default evaluator deployment targets Vercel Hobby, Neon Free, Cloudflare R2 Standard and Upstash Redis Free, with Apify Free as an optional acquisition/import connector. Heavy reconstruction/GPU providers remain optional and are not required for the baseline demo journey.
 
 ### 3. User-friendly interface
 
-The public product must present a coherent primary web experience for Projects, SiteTwin/Evidence, BOQ Lens, Engineering Case and Intervention Studio, with clear navigation, helpful empty/error states and a guided end-to-end journey.
+The public product must present a coherent primary web experience for Projects, SiteTwin/Evidence, BOQ Lens, Engineering Case and Intervention Studio, plus the interactive engineering-solution workflow, with clear navigation and useful empty/error states.
 
 ## Client architecture — one core, three adapters
 
@@ -70,7 +68,7 @@ Browser, mobile and desktop are **adapters over the same AISE product/domain cor
 ```text
                  AISE PRODUCT / DOMAIN CORE
    Reality | Evidence | Assurance | Verification | BOQ
-   Cases | Interventions | Outcomes | Integrations
+   Cases | Interventions | Outcomes | Solution Graph
                            ▲
                            │ shared capability/task contract
           ┌────────────────┼────────────────┐
@@ -79,11 +77,7 @@ Browser, mobile and desktop are **adapters over the same AISE product/domain cor
        ADAPTER           ADAPTER         ADAPTER
 ```
 
-- Browser is optimized for project-wide inspection, collaboration, BOQ/reality analysis and review.
-- Mobile is optimized for field capture, guided missions, sensors, offline queues and rapid evidence submission. The current mobile implementation is the Android client under `apps/android`.
-- Desktop is optimized for high-density review, large-file workflows, multi-window use and optional local integration affordances. The desktop adapter remains a productization work item and is not yet declared complete.
-
-No client may own engineering readiness, canonical measurement authority, evidence sufficiency, verification, intervention approval, source-of-record authority or tenant authorization policy.
+No client may own engineering readiness, canonical measurement authority, evidence sufficiency, verification, intervention approval, source-of-record authority or solution validation authority.
 
 ## Product surfaces
 
@@ -97,16 +91,55 @@ Creates a structured virtual representation of physical spaces and buildings fro
 Turns a site problem into a structured case: observations, measurements, material/condition information, uncertainty, evidence gaps, possible causes, engineering rules and review status.
 
 ### Intervention Studio
-Represents proposed interventions as a sequence of model states. Each state can be viewed in 3D, 2D and BOQ views. A user can step through layer 1, layer 2, layer 3 and so on, inspect evidence and quantity/cost effects, and separate proposed changes from authoritative reality.
+Represents proposed interventions as a sequence of model states. Each state can be viewed in 3D, 2D and BOQ views. A user can step through layers, inspect evidence and quantity/cost effects, and separate proposed changes from authoritative reality.
+
+### Interactive Engineering Solution
+This is a second first-class workflow for building problems. The user opens/reconstructs the current building and then constructs a proposed solution directly in an interactive environment or by natural-language commands to the integrated agent.
+
+```text
+CURRENT BUILDING REALITY
+        ↓
+ENGINEERING PROBLEM / INTENT
+        ↓
+INTERACTIVE SOLUTION
+        ↓
+DIRECT MANIPULATION / AGENT COMMANDS
+        ↓
+OPERATION 1 → PROPOSED STATE 1
+OPERATION 2 → PROPOSED STATE 2
+        ↓
+VALIDATE
+        ↓
+GENERATE SOLUTION BOQ
+        ↓
+BOQ LINE ↔ SOLUTION STEP / GEOMETRY
+```
+
+The environment is intended to feel as immediate and intuitive as a game while remaining a constrained engineering system: every consequential action becomes a typed engineering operation, deterministic geometry/quantity/validation services remain authoritative, and the proposal never overwrites observed reality.
+
+Example commands include:
+
+```text
+Excavate a pit 1.5 m deep, 2 m wide and 3 m long.
+Apply 30 mm plaster to the affected wall faces.
+Lay blocks up to 1 m high along this wall.
+```
+
+The integrated agent interprets such requests, asks for missing information and invokes deterministic operations. It does not invent dimensions/materials or bypass validation.
+
+A solution-generated BOQ is a versioned derived projection. Clicking a BOQ line should take the user to the contributing solution step/geometry; selecting a step should reveal the BOQ lines it creates or changes.
+
+**Phase 1 scope: buildings only.** The operation contract is intentionally extensible to future civil works, MEP, industrial equipment, electronics and integrated circuits.
 
 ### Outcome Loop
+
 After work is performed, AISE captures the changed condition and outcome. This creates a trace from observed problem → diagnosis → proposed intervention → executed work → post-work evidence → observed outcome.
 
 ## Integration-first adoption
 
 AISE is designed to become the primary engineering interface without demanding a rip-and-replace migration. Existing BIM, BOQ, CAD, project-management, ERP, procurement and document systems can remain systems of record while AISE exposes their context and authorized actions through connectors. Workflow migration is incremental, reversible and evidence-backed.
 
-AISE can also be plugged into `payswapdotorg/codex` as a vertical: Codex supplies agent/workflow orchestration while AISE remains authoritative for engineering reality, evidence, assurance and BOQ semantics. The initial integration is external and requires no Codex-core modification.
+AISE can also be plugged into `payswapdotorg/codex` as a vertical: Codex supplies agent/workflow orchestration while AISE remains authoritative for engineering reality, evidence, assurance, verification and BOQ semantics. The initial integration is external and requires no Codex-core modification.
 
 ## Canonical lifecycle
 
@@ -137,7 +170,9 @@ HUMAN REVIEW / AUTHORIZATION
         ↓
 AUTHORITATIVE REALITY MODEL
         ↓
-REASONING / BOQ INTELLIGENCE / INTERVENTION SIMULATION
+REASONING / BOQ INTELLIGENCE
+        ↓
+INTERACTIVE SOLUTION / INTERVENTION SIMULATION
         ↓
 EXECUTION + RECAPTURE
         ↓
@@ -150,17 +185,15 @@ OUTCOME LEARNING
 - **Evidence Graph:** only provenance/source authority.
 - **Assurance Engine:** only model/task-readiness authority.
 - **Verification Engine:** only formal deterministic verification authority.
+- **Solution Graph:** canonical only for a proposed solution's operation/state history; never canonical physical reality.
+- **BOQ Graph:** derived domain representation; source BOQs remain authoritative for their own scope.
 - **Workflow/Domain services:** propose and orchestrate; they do not become alternate sources of truth.
-- **LLMs:** advisory reasoning participants. They may interpret, retrieve, rank, explain and propose; they do not become authoritative geometry, measurement, compliance or model-state authorities.
+- **LLMs:** advisory reasoning participants. They may interpret, retrieve, rank, explain and propose typed operations; they do not become authoritative geometry, measurement, compliance or model-state authorities.
 
 ## Development governance
 
 The repository is the sole implementation truth. A fresh Tech Lead must be able to read `AGENTS.md`, the architecture, requirements, work-item DAG, work orders and machine state and dispatch workers without chat history.
 
-The historical implementation roadmap remains in `spec/`. Productization uses the separate `PROD-*` work system under `docs/` so the completed 41-item implementation campaign is not confused with deployment/product readiness.
+The historical implementation roadmap remains in `spec/`. Productization uses the separate `PROD-*` work system under `docs/` so the completed 41-item implementation campaign is not confused with product readiness.
 
-See `spec/governance/architecture-change-record-002.md`, `docs/codex-integration-strategy.md`, `docs/adoption-sensitivity-analysis.md`, and `docs/reconstruction-engine-contract.md` for the locked integration/adoption/provider strategy.
-
-## Architecture provenance
-
-This v2 baseline was derived from an audit of the earlier `pectoraux/AISE` v1 architecture. v2 makes capability-aware acquisition, adaptive evidence collection, BOQ intelligence, intervention state simulation and incumbent-first adoption first-class.
+See `spec/governance/architecture-change-record-002.md`, `spec/governance/architecture-change-record-004.md`, `spec/governance/architecture-change-record-005.md`, `docs/codex-integration-strategy.md`, `docs/adoption-sensitivity-analysis.md`, and `docs/interactive-engineering-solution-workflow.md` for the current architecture and product strategy.
