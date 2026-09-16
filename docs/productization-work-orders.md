@@ -4,350 +4,124 @@ These Work Orders are subordinate to `spec/architecture-lock.md`, `spec/requirem
 
 Each Work Order is one branch/PR. A worker must not self-merge. The Tech Lead must independently reproduce the required evidence.
 
-## PROD-001 — Runtime / installability audit
+## Existing productization work orders
 
-**Owner:** ZAI
-**Depends on:** none
+The previously defined `PROD-001` through `PROD-015` remain authoritative. Their complete scopes and acceptance criteria remain unchanged except where the dependency sequencing below is superseded by the new adapter/UX hardening items.
 
-**Scope**
+- `PROD-011b` closes the deployed-session stability gap discovered after the Vercel deployment by moving the session store onto the existing Redis port when configured.
+- `PROD-012` verifies the actual deployed browser experience.
+- `PROD-013` establishes cost/quota/failure safety.
+- `PROD-014` is final evaluator documentation.
+- `PROD-015` is the only final product-readiness declaration gate.
 
-Turn the existing Bun monorepo into a documented, reproducible application workspace. Establish explicit root scripts for install, dev, build, production-like local start and smoke verification. Resolve any workspace/package drift revealed by a clean install.
-
-**Acceptance**
-
-- clean checkout installs with `bun install --frozen-lockfile`;
-- root build/dev commands are explicit;
-- all required workspaces participate correctly;
-- configuration validation has a deterministic failure mode;
-- `bun run verify` passes from clean install;
-- install instructions can be followed without source archaeology.
-
-**Evidence**
-
-Fresh-checkout transcript + final SHA + verify output.
-
-## PROD-002 — Product web shell
-
-**Owner:** ZAI
-**Depends on:** PROD-001
-
-**Scope**
-
-Replace the placeholder browser entrypoint with a production-quality web application shell covering Dashboard, Projects, SiteTwin/Evidence, BOQ Lens, Engineering Case, Intervention Studio and Settings/Integrations.
-
-**Acceptance**
-
-- browser entrypoint renders actual UI rather than `textContent` placeholder output;
-- all primary surfaces are reachable through clear navigation;
-- loading, empty, unavailable and error states exist;
-- responsive desktop/mobile layouts are usable;
-- UI does not claim authority for engineering facts.
-
-**Evidence**
-
-Browser screenshots/recording at representative desktop and mobile widths + route smoke tests.
-
-## PROD-003 — Production API entrypoint
-
-**Owner:** ZAI
-**Depends on:** PROD-001
-
-**Scope**
-
-Expose the domain capabilities required by the web app through a deployable HTTP contract with `/health` and `/readiness` and safe CORS/configuration behavior.
-
-**Acceptance**
-
-- web client can call the deployed API;
-- health endpoint proves liveness without secrets;
-- readiness reports provider availability without secrets;
-- error responses are stable and documented;
-- local and hosted URL configuration is explicit.
-
-**Evidence**
-
-HTTP smoke transcript + contract tests + deployment-compatible build.
-
-## PROD-004 — Auth and tenant safety
-
-**Owner:** ZAI
-**Depends on:** PROD-003
-
-**Scope**
-
-Implement account/session behavior and project/tenant authorization without introducing a second domain authority. Provide a deterministic demo access path for evaluators.
-
-**Acceptance**
-
-- user can sign in or enter the controlled demo path;
-- unauthorized project access is denied;
-- tenant/project isolation tests pass;
-- session secrets are server-side only;
-- demo data cannot mutate another user's/project's authoritative state.
-
-**Evidence**
-
-Positive/negative auth tests + authorization matrix + browser login/demo flow.
-
-## PROD-005 — Neon persistence
-
-**Owner:** ZAI
-**Depends on:** PROD-003
-
-**Scope**
-
-Connect the domain persistence layer to Neon Postgres and add deterministic migrations/bootstrap/seed paths.
-
-**Acceptance**
-
-- schema can be created from zero;
-- migrations are ordered and repeatable;
-- demo seed is idempotent;
-- redeploy does not erase durable domain state;
-- database credentials never enter browser bundles or logs.
-
-**Evidence**
-
-Fresh database migration transcript + persistence round trip + schema/version evidence.
-
-## PROD-006 — R2 artifact storage
-
-**Owner:** ZAI
-**Depends on:** PROD-003
-
-**Scope**
-
-Store BOQs, images, videos and derived artifacts in Cloudflare R2 with controlled access, upload limits, metadata and retention policy.
-
-**Acceptance**
-
-- upload/download/delete lifecycle works;
-- artifact metadata links to AISE evidence/provenance identifiers;
-- access checks prevent cross-project reads;
-- size/type limits are enforced;
-- quota/availability failure is explicit.
-
-**Evidence**
-
-Artifact round-trip test + authorization test + R2 configuration evidence.
-
-## PROD-007 — Upstash Redis primitives
-
-**Owner:** ZAI
-**Depends on:** PROD-003
-
-**Scope**
-
-Use Redis only for transient state, cache, rate limiting and bounded async jobs. Add idempotency and TTL discipline.
-
-**Acceptance**
-
-- queue/job operations are retry-safe;
-- cache invalidation does not corrupt canonical state;
-- rate limiting is bounded;
-- TTLs are explicit;
-- Redis outage degrades safely where possible.
-
-**Evidence**
-
-Job retry/idempotency tests + rate-limit tests + outage behavior.
-
-## PROD-008 — Apify optional acquisition connector
-
-**Owner:** ZAI
-**Depends on:** PROD-003
-
-**Scope**
-
-Wrap optional Apify acquisition/import behind the existing connector boundary. No Apify dependency may become necessary for the golden demo.
-
-**Acceptance**
-
-- connector can be enabled/disabled via configuration;
-- provider credentials never reach the client;
-- free-plan/quota exhaustion is handled explicitly;
-- imported artifacts retain provenance and source identity;
-- product works with Apify disabled.
-
-**Evidence**
-
-Enabled import test + disabled-state test + quota/error simulation.
-
-## PROD-009 — Provider execution gateway and free/demo fallback
-
-**Owner:** ZAI
-**Depends on:** PROD-003, AISE-012
-
-**Scope**
-
-Connect the existing reconstruction-engine registry to a hosted execution boundary without moving provider authority into the application. Add a deterministic demo provider/fixture path that runs without paid GPU/model APIs.
-
-Providers such as WorldSculpt, World Labs Atlas, Magic Leap Atlas and future engines remain replaceable providers behind the existing contract.
-
-**Acceptance**
-
-- provider registry remains provider-neutral;
-- external provider identity/version/checkpoint/config/evidence provenance is preserved;
-- provider failure cannot lower assurance;
-- demo path works without paid reconstruction compute;
-- unavailable provider state is explicit and non-destructive;
-- no provider-specific semantic dependency leaks into the Reality Graph.
-
-**Evidence**
-
-Provider contract tests + demo execution + disabled-provider test + provenance inspection.
-
-## PROD-010 — Golden end-to-end product journey
+## PROD-016 — Shared client adapter contract and conformance
 
 **Owner:** SHARED
-**Depends on:** PROD-002, PROD-004, PROD-005, PROD-006, PROD-007, PROD-009
+**Depends on:** PROD-003
+
+**Purpose**
+
+Enforce ACR-004. Browser, mobile and desktop are adapters over one AISE product/domain core rather than separate implementations.
 
 **Scope**
 
-Wire the core user journey from project creation through BOQ/evidence understanding, Engineering Case, Intervention Studio and outcome comparison.
+- implement or formalize the shared contract in `spec/client-adapter-contract.md`;
+- expose platform-neutral task/capability/domain result shapes;
+- add conformance fixtures/tests for browser, mobile and desktop;
+- identify and remove duplicate client-side domain semantics found during audit;
+- ensure authorization, epistemic state, evidence provenance, uncertainty and proposal/reality semantics are server/domain-owned;
+- define adapter capability negotiation for screen, input, sensor and offline differences.
 
 **Acceptance**
 
-A first-time evaluator can complete the journey without source code, API tooling or direct database access. Every screen presents actionable next steps and preserves observed/proposed distinctions.
+- all three adapters can represent the core task contract;
+- no adapter owns canonical engineering state;
+- equivalent server actions yield equivalent semantic results;
+- client-specific UI differences do not alter engineering truth or authority;
+- conformance tests pass from the same repository state.
 
 **Evidence**
 
-Full browser recording + backend request trace + final state inspection.
+Adapter conformance matrix + automated tests + representative browser/mobile/desktop traces.
 
-## PROD-011 — Vercel deployment
-
-**Owner:** ZAI
-**Depends on:** PROD-010
-
-**Scope**
-
-Create a repository-connected Vercel Hobby project with deterministic build settings and environment wiring for the public web application and compatible light API routes/functions.
-
-**Acceptance**
-
-- public HTTPS URL resolves;
-- production build succeeds from Git;
-- environment secrets are configured outside Git;
-- preview and production configuration are documented;
-- health/readiness endpoint is reachable;
-- deployment can be repeated from repository state.
-
-**Evidence**
-
-Vercel deployment ID + URL + build logs + public smoke result.
-
-## PROD-011b — Deployed-session stability (Upstash-backed session store)
-
-**Owner:** ZAI
-**Depends on:** PROD-011
-
-**Scope**
-
-The real deployment (PROD-011 evidence) proved Vercel routes requests across
-warm instances without session affinity, while the frozen PROD-004 composition
-keeps sessions in the per-instance Fs store — so the deployed demo can lose its
-session mid-journey (observed: `session_invalid` on a new connection while the
-minting connection still answered 200). Externalize the session store onto the
-PROD-007 Upstash primitives: a `SessionStore` twin over `RedisClientPort`
-(REST, TTL'd keys, the PROD-007 outage-degradation discipline), env-gated —
-`AISE_REDIS_REST_URL` + `AISE_REDIS_REST_TOKEN` present → Redis-backed sessions; absent
-→ the Fs twin, unchanged. No auth-semantics change: same cookie, same TTL
-contract, same sweep behavior; a store twin, not a redesign.
-
-**Acceptance**
-
-- with the Upstash env set, a session minted on one request is honored on any
-  instance (the deployed golden journey no longer loses its session across
-  connection/instance boundaries);
-- without the Upstash env, behavior is identical to today (Fs store);
-- a Redis outage degrades honestly per the PROD-007 discipline (loud, typed,
-  never silent corruption);
-- the deployed demo journey is re-walked end-to-end on the public URL as
-  evidence.
-
-**Evidence**
-
-Store-twin tests + composition seam tests + the re-walked deployed-URL journey
-transcript.
-
-## PROD-012 — Browser verification and accessibility
-
-**Owner:** GEMINI
-**Depends on:** PROD-011, PROD-011b
-
-**Scope**
-
-Run automated browser verification and correct critical UX defects. Test desktop and mobile viewport behavior, route navigation, form controls, errors and console cleanliness.
-
-**Acceptance**
-
-- golden journey passes on deployed URL;
-- no blocking console errors;
-- key controls are keyboard reachable;
-- mobile viewport does not hide critical controls;
-- inaccessible/empty/error states are understandable.
-
-**Evidence**
-
-Browser verification transcript and screenshots/recording on final deployment.
-
-## PROD-013 — Cost guards / operational safety
-
-**Owner:** ZAI
-**Depends on:** PROD-011
-
-**Scope**
-
-Instrument free-tier quotas, hard caps, provider state, failure handling, upload limits, logs and alerts sufficient to ensure the demo does not silently create paid usage.
-
-**Acceptance**
-
-- no auto-upgrade behavior;
-- quota exhaustion is visible;
-- optional provider outages do not corrupt authoritative state;
-- logs contain no secrets;
-- expensive operations are bounded and observable.
-
-**Evidence**
-
-Quota simulation + log inspection + provider failure drill + configuration review.
-
-## PROD-014 — Evaluator documentation
+## PROD-017 — Task-first next-best-action and cross-adapter journey parity
 
 **Owner:** SHARED
-**Depends on:** PROD-011, PROD-012, PROD-013
+**Depends on:** PROD-010, PROD-016
+
+**Purpose**
+
+Turn the implemented modules into one understandable product centered on user intent and the next useful action.
 
 **Scope**
 
-Finalize `README.md`, `docs/INSTALL.md`, provider setup and public evaluation instructions. Remove stale claims and make the product self-describing.
+- make the primary UI task-first rather than architecture-first;
+- introduce a visible `Next Best Action` pattern driven by evidence gaps/readiness and workflow state;
+- improve first-run, loading, empty, error and unavailable states;
+- ensure the complete golden journey can be executed without knowledge of AISE internals;
+- verify semantic parity of the journey across browser, mobile and desktop adapters;
+- preserve direct auditability from every consequential quantity/claim to source evidence, geometry and revision.
 
 **Acceptance**
 
-A fresh evaluator can follow the documentation from zero to public product usage without prior chat context.
+- a first-time evaluator can identify what to do next on every primary screen;
+- field operators receive precise capture actions rather than generic “capture more” prompts;
+- BOQ explanations, issues and intervention states remain inspectable and traceable;
+- before/after comparison is one first-class action;
+- the same project state and permitted action semantics are visible through every adapter.
 
 **Evidence**
 
-Fresh-evaluator replay using only checked-in documentation.
+Full golden-journey replay + usability/task trace + adapter parity report + provenance spot checks.
 
-## PROD-015 — Final declaration
+## PROD-018 — Competitive-parity and differentiation hardening
 
 **Owner:** SHARED
-**Depends on:** PROD-014
+**Depends on:** PROD-017
 
-**Scope**
+**Purpose**
 
-Independently review all Gates A–G in `docs/PRODUCTION-READINESS-GATE.md` and publish the final productization state.
+Close product gaps revealed by the 2026 competitor simulation without cloning incumbents or weakening AISE's architectural boundary.
+
+**Required capability set**
+
+1. Smartphone/field capture must be low-friction, resumable and offline-capable.
+2. Reality must be spatially contextualized to the project.
+3. Quantities must be editable/reviewable and source-linked.
+4. Drawings/documents must be revision-aware and interoperable with incumbents.
+5. Issues must carry rich visual/spatial context and actionable next steps.
+6. AI actions must be bounded and inspectable, not chat-only.
+7. Plan-vs-reality and before/after must be easy to access.
+8. Intervention simulation must connect geometry, cost and execution.
+9. Post-work evidence and outcome comparison must be a first-class workflow.
+10. Uncertainty, provenance and human verification must remain visible at consequential boundaries.
 
 **Acceptance**
 
-- all mandatory gates PASS;
-- public URL exists;
-- install guide works;
-- free-tier provider evidence is current;
-- golden browser journey passes;
-- no unresolved P0/P1 product blockers;
-- `docs/productization-state.json` says `PRODUCT-READY` only after evidence is attached.
+- competitive simulation in `docs/competitor-simulation-2026-09-16.md` is re-run against the final product;
+- every identified required capability is either implemented or has an explicit governed exception;
+- AISE's differentiated continuity from evidence through outcome remains visible;
+- no feature introduces a second authority or provider lock-in.
 
 **Evidence**
 
-Signed-off readiness record, exact commit SHA, deployment ID, URL, verification transcript and provider tier evidence.
+Competitive journey matrix + implementation-to-capability traceability + final golden journey replay.
+
+## Cross-item composition rule
+
+`PROD-011b`, `PROD-012`, `PROD-016`, `PROD-017` and `PROD-018` are product-critical. A failure in any one prevents `PROD-014` and therefore `PROD-015` from being finalized.
+
+The final product must compose as:
+
+```text
+same AISE domain state
+        ↓
+shared task/capability contract
+        ↓
+┌────────────┬────────────┬────────────┐
+│ browser    │ mobile     │ desktop    │
+│ adapter    │ adapter    │ adapter    │
+└────────────┴────────────┴────────────┘
+        ↓
+same engineering semantics
+```
