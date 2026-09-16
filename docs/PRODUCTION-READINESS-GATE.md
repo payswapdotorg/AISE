@@ -142,9 +142,26 @@ The interactive solution workflow is product-ready only when:
 - a representative physically grounded building scenario passes the applicable benchmark;
 - unsupported/high-risk/underspecified operations fail closed with useful next actions.
 
+## Gate I — Technology substitution / provider resilience
+
+AISE is not product-ready unless the implementation remains replaceable at the technology boundaries defined by `spec/technology-substitution-contract.md`.
+
+PASS requires, for each Layer 1, Layer 2 and Layer 3 where a swappable provider/technology is used:
+
+- a stable AISE contract boundary exists;
+- provider-specific types do not become canonical domain state;
+- provider identity/version/configuration/input identity remain in provenance;
+- at least one replacement or dual-provider drill demonstrates semantic/provenance compatibility;
+- failure/unsupported behavior remains explicit;
+- dependent-layer regression passes;
+- historical records remain interpretable without the replaced provider;
+- replacement does not lower assurance thresholds or bypass verification.
+
+The evidence must identify which technologies were compared and which results are empirical versus deterministic test results. No provider swap is accepted solely on visual similarity or model confidence.
+
 ## Final declaration
 
-Only when Gates A–H are PASS may the Tech Lead set:
+Only when Gates A–I are PASS may the Tech Lead set:
 
 ```text
 productization.status = "PRODUCT-READY"
