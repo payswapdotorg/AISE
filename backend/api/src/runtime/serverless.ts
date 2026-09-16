@@ -44,7 +44,15 @@ export function stripApiMountPrefix(pathname: string): string {
 
 /** Remap a request onto the public (unmounted) path, preserving everything else. */
 export function remapRequestPath(request: Request): Request {
-  const url = new URL(request.url);
+  // Vercel's Node runtime hands the default-exported web handler a Request
+  // whose `url` can be RELATIVE — the raw server `req.url` (path + query,
+  // with the catch-all segment carried as a `[...path]` query parameter).
+  // A relative string is not a parseable URL, so it is anchored on a
+  // placeholder origin first: the origin is never routed on (only pathname
+  // and search reach the routing core), and the rebuilt Request carries a
+  // well-formed absolute URL either way.
+  const raw = request.url;
+  const url = raw.startsWith("/") ? new URL(`https://aise-serverless.local${raw}`) : new URL(raw);
   const remapped = `${url.origin}${stripApiMountPrefix(url.pathname)}${url.search}`;
   if (remapped === request.url) {
     return request;
