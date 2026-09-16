@@ -8,27 +8,38 @@ AISE is implemented by replaceable coding workers under an independent Tech Lead
 2. `AGENTS.md`
 3. `spec/architecture-lock.md`
 4. `spec/architecture.md`
-5. `spec/requirements.md`
-6. `spec/domain-model.md`
-7. `spec/agent-ownership.md`
-8. `spec/work-items.md`
-9. `spec/work-orders.md`
-10. `spec/dependency-graph.md`
-11. `spec/implementation-roadmap.md`
-12. `spec/development-protocol.md`
-13. `spec/assurance.md`
-14. `spec/development-state/program-state.json`
-15. the Work Order for the assigned item
+5. `spec/client-adapter-contract.md`
+6. `spec/requirements.md`
+7. `spec/domain-model.md`
+8. `spec/agent-ownership.md`
+9. `spec/work-items.md`
+10. `spec/work-orders.md`
+11. `spec/dependency-graph.md`
+12. `spec/implementation-roadmap.md`
+13. `spec/development-protocol.md`
+14. `spec/assurance.md`
+15. `spec/development-state/program-state.json`
+16. `docs/productization-roadmap.md`
+17. `docs/productization-work-orders.md`
+18. `docs/productization-state.json`
+19. `docs/PRODUCTION-READINESS-GATE.md`
+20. `docs/free-tier-deployment.md`
+21. `docs/INSTALL.md`
+22. `docs/product-journey-simulation.md`
+23. `docs/competitor-simulation-2026-09-16.md`
+24. the Work Order for the assigned item
 
 ## Authority hierarchy
 
 1. `spec/architecture-lock.md` — immutable v2 architectural invariants
 2. `spec/requirements.md` — product and quality requirements
 3. `spec/domain-model.md` — canonical domain semantics
-4. `spec/work-items.md` + matching `spec/work-orders.md` — scope and acceptance
-5. `spec/dependency-graph.md` + `program-state.json` — eligibility
-6. `spec/implementation-roadmap.md` — human sequence/progress view
-7. `spec/development-protocol.md` — execution/governance
+4. `spec/client-adapter-contract.md` — shared cross-platform product contract
+5. `spec/work-items.md` + matching `spec/work-orders.md` — core implementation scope and acceptance
+6. `docs/productization-roadmap.md` + `docs/productization-work-orders.md` — productization scope and acceptance
+7. `spec/dependency-graph.md` + `program-state.json` + `docs/productization-state.json` — eligibility and machine state
+8. `spec/implementation-roadmap.md` — human sequence/progress view
+9. `spec/development-protocol.md` — execution/governance
 
 A mismatch between roadmap and machine state is a governed-state failure.
 
@@ -46,6 +57,22 @@ A mismatch between roadmap and machine state is a governed-state failure.
 - Proposed intervention states must remain distinct from observed/confirmed reality.
 - Critical measurement/model/evidence changes require benchmark, physical and mutation/discrimination evidence as specified by the Work Order.
 - Workers may not self-approve or self-merge governed Work Items.
+
+## Client-adapter rule
+
+Browser, mobile and desktop are adapters over one AISE product/domain core.
+
+Clients may specialize in controls, sensors, offline behavior, density and platform affordances, but may not diverge in engineering semantics or authority.
+
+The following can never be decided authoritatively by a client:
+
+- engineering readiness;
+- canonical measurement status;
+- evidence sufficiency;
+- verification result;
+- intervention approval;
+- source-of-record authority;
+- tenant authorization beyond server-provided decisions.
 
 ## Three-worker operating model
 
@@ -84,6 +111,7 @@ Stop and raise an Architecture Change Record when implementation would require:
 - making UI/client state authoritative;
 - treating a BOQ, BIM model, CAD file or vendor platform as canonical;
 - removing uncertainty/provenance requirements;
+- creating divergent browser/mobile/desktop domain semantics;
 - changing ownership or merge authority.
 
 ## Required worker completion package
@@ -107,6 +135,16 @@ Every worker must report:
 
 A field capture is not complete because the operator walked around or because a visual mesh exists. A capture is complete only for a declared task when the Assurance Engine says the required evidence/uncertainty budget has been satisfied or an authorized human explicitly accepts the residual limitations under policy.
 
+## Productization rule
+
+The 41-item implementation campaign is complete. Productization remains governed by `docs/productization-roadmap.md` and `docs/productization-state.json`.
+
+Do not declare the product ready because code exists. Final readiness requires the independent evidence gate in `docs/PRODUCTION-READINESS-GATE.md`.
+
+The baseline golden journey must not require paid GPU inference. Heavy reconstruction engines are optional providers.
+
 ## Fresh-agent rule
 
 A newly spawned worker must be able to identify exactly one authorized Work Item and exactly what evidence is required for acceptance from the repository alone.
+
+A newly spawned Tech Lead must be able to identify the current productization frontier, adapter contract and final readiness gate without chat history.
