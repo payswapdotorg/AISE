@@ -49,10 +49,15 @@ PASS requires a coherent primary web experience with:
 - 2D/3D/evidence synchronized viewing where supported by available data;
 - case review with evidence and uncertainty visible;
 - intervention step/layer navigation;
+- interactive solution workspace for supported building workflows;
+- direct manipulation and agent-command paths resolving to the same typed engineering operations;
+- validation and solution-BOQ actions with explicit results;
+- BOQ line ↔ solution step/geometry navigation;
 - explicit observed vs proposed state distinction;
 - visible loading, empty, failure and unavailable-provider states;
 - mobile-responsive layout;
 - keyboard-accessible controls and reasonable screen-reader semantics;
+- accessible non-3D fallback for core solution inspection;
 - no architecture/debug panels in the primary journey unless intentionally exposed as a specialist view.
 
 A page that merely renders deterministic fixture HTML is not sufficient by itself. The browser must exercise the real application entrypoints and backend contracts.
@@ -65,7 +70,10 @@ The product must never claim more certainty than its evidence supports.
 - Generated completion is visibly distinguished from observed evidence.
 - Device limitations produce additional capture requirements rather than a silent assurance downgrade.
 - BOQ remains a connected scope/cost source, not canonical physical reality.
-- Proposed intervention states never overwrite observed reality.
+- Solution-generated BOQs remain derived projections of validated Solution Graph versions and never overwrite source BOQs.
+- Proposed intervention/solution states never overwrite observed reality.
+- Every consequential operation has typed parameters, provenance and version context.
+- Agents/LLMs cannot bypass deterministic validation or fabricate engineering inputs.
 - Provider failures are explicit.
 
 ## Gate E — Operational safety
@@ -79,14 +87,17 @@ PASS requires:
 - no secret or credential leakage to logs/browser payloads;
 - provider timeouts and retries are bounded;
 - background jobs survive retries without duplicated durable side effects;
-- disabled optional providers do not break the product.
+- disabled optional providers do not break the product;
+- solution operations are replay-safe and do not create duplicate durable side effects on retry.
 
 ## Gate F — Browser proof
 
-The Tech Lead must run browser automation against the final deployed URL and record:
+The Tech Lead must run browser automation against the final deployed URL and record both journeys:
 
 ```text
 HOME → DEMO PROJECT → BOQ → EVIDENCE → CASE → INTERVENTION → OUTCOME
+
+CURRENT BUILDING → PROBLEM → INTERACTIVE SOLUTION → VALIDATE → SOLUTION BOQ → BOQ LINE → SOLUTION STEP
 ```
 
 The test must confirm:
@@ -97,7 +108,11 @@ The test must confirm:
 - API calls return expected status classes;
 - a representative upload/import path works;
 - navigation state remains coherent;
-- desktop and mobile viewport smoke checks pass.
+- desktop and mobile viewport smoke checks pass;
+- direct manipulation creates typed operations;
+- agent commands create semantically equivalent operations;
+- validation results are visible and tied to a solution version;
+- generated BOQ lines navigate to contributing steps/geometry.
 
 ## Gate G — Cost/availability truth
 
@@ -110,9 +125,26 @@ Every external provider must have:
 - clear operator documentation for replacing/rotating credentials;
 - a replacement or disabled path where the provider is optional.
 
+## Gate H — Interactive engineering-solution proof
+
+The interactive solution workflow is product-ready only when:
+
+- a current-state building fixture can be opened/reconstructed;
+- a supported engineering problem can be expressed without developer terminology;
+- direct manipulation and natural-language agent commands resolve to typed operations;
+- operations produce reproducible proposed states;
+- the user can inspect the solution layer-by-layer;
+- validation is deterministic and explicit;
+- solution BOQ generation is tied to the exact validated solution version;
+- every generated BOQ line traces to operation/geometry provenance;
+- BOQ-to-step and step-to-BOQ navigation both work;
+- saving/revising the solution cannot mutate authoritative observed reality;
+- a representative physically grounded building scenario passes the applicable benchmark;
+- unsupported/high-risk/underspecified operations fail closed with useful next actions.
+
 ## Final declaration
 
-Only when Gates A–G are PASS may the Tech Lead set:
+Only when Gates A–H are PASS may the Tech Lead set:
 
 ```text
 productization.status = "PRODUCT-READY"
