@@ -2,11 +2,11 @@
 
 ## Purpose
 
-The v2 implementation campaign is complete: 41/41 governed Work Items are finalized. The remaining gap is productization: turning the implemented domain and service capabilities into a product that a new user can install, reach on the public web, and use through friendly platform adapters.
+The v2 implementation campaign is complete: 41/41 governed Work Items are finalized. The remaining program is productization plus the interactive engineering-solution workflow: turning the implemented domain and service capabilities into a product that a new user can install, reach on the public web, and use through friendly platform adapters, then extending intervention planning into an intuitive virtual construction/repair workspace that can generate an auditable BOQ.
 
 This roadmap is intentionally separate from `spec/work-items.md`. The 41 AISE work items remain historical implementation scope. Productization work is governed here so completion of the implementation campaign is not confused with SaaS readiness.
 
-The repository records the post-implementation architecture correction that **browser, mobile and desktop are adapters over one shared AISE product/domain core**. No client becomes a second product authority.
+The repository records the post-implementation architecture correction that **browser, mobile and desktop are adapters over one shared AISE product/domain core** and ACR-005's **interactive engineering solution workflow**. No client becomes a second product or engineering authority.
 
 ## Three product promises
 
@@ -41,7 +41,13 @@ Heavy reconstruction/GPU providers are optional accelerators. They must never be
 | PROD-019 | PROD-016 | Android mobile adapter productization and field-journey integration | Android uses shared task/capability semantics, supports guided field capture/offline-resume, and passes mobile conformance |
 | PROD-020 | PROD-016 | Desktop adapter productization | Runnable desktop shell consumes the shared contract, supports high-density review, and passes desktop conformance |
 | PROD-018 | PROD-012, PROD-017, PROD-019, PROD-020 | Competitive-parity and differentiation hardening across the composed product | Competitive benchmark is re-run; required capabilities are implemented or explicitly governed as exceptions |
-| PROD-014 | PROD-011b, PROD-012, PROD-013, PROD-016, PROD-017, PROD-018, PROD-019, PROD-020 | Install/release documentation and one-command demo bootstrap | Fresh evaluator follows docs and reaches the working product without repository archaeology |
+| PROD-021 | AISE-026, AISE-027, AISE-028, PROD-016 | Interactive Solution Graph and typed EngineeringOperation contract for building solutions | Versioned operation/state/BOQ-link contract passes deterministic and authority tests |
+| PROD-022 | PROD-021 | Deterministic interactive solution engine and building operation subset | Identical inputs reproduce identical proposed states/quantities; invalid operations fail closed |
+| PROD-023 | PROD-021 | Natural-language engineering operation compiler and agent interaction loop | Representative building commands resolve to typed operations or explicit clarification/unsupported states |
+| PROD-024 | PROD-017, PROD-022, PROD-023 | Interactive building solution environment with direct manipulation + agent | User can create/step/revise a building solution without learning AISE internals |
+| PROD-025 | PROD-021, PROD-022 | Validate → solution BOQ generation → bidirectional BOQ/step traceability | Validated solution produces a versioned BOQ whose lines navigate to solution steps/geometry and back |
+| PROD-026 | PROD-024, PROD-025, PROD-018 | Interactive solution end-to-end composition and building benchmark | Complete workflow passes seeded and representative building validation with provenance/equivalence evidence |
+| PROD-014 | PROD-011b, PROD-012, PROD-013, PROD-016, PROD-017, PROD-018, PROD-019, PROD-020, PROD-026 | Install/release documentation and one-command demo bootstrap | Fresh evaluator follows docs and reaches the working product without repository archaeology |
 | PROD-015 | PROD-014 | Final product-readiness evidence package and declaration gate | All three product promises are objectively evidenced; no unresolved P0/P1 blockers |
 
 ## Execution waves
@@ -65,35 +71,67 @@ Wave P4
 Wave P5
   PROD-011   PROD-016
 
-Wave P6 — three workers
-  PROD-011b   PROD-017   PROD-019
+Wave P6 — deployed verification + adapter composition prerequisites
+  PROD-011b
+  PROD-012 is held until PROD-011b finalizes
 
-Wave P7
-  PROD-012   PROD-020
+Wave P7 — three-worker adapter wave
+  PROD-017   PROD-019   PROD-020
 
 Wave P8
   PROD-018
 
-Wave P9
+Wave P9 — interactive solution contract
+  PROD-021
+
+Wave P10 — three-worker engineering-solution wave
+  PROD-022   PROD-023   PROD-025
+
+Wave P11
+  PROD-024
+
+Wave P12
+  PROD-026
+
+Wave P13
+  PROD-012   (if not already finalized)
   PROD-014
 
-Wave P10
+Wave P14
   PROD-015
 ```
 
 The Tech Lead may reduce concurrency whenever shared surfaces, provider setup, migration safety or verification capacity make three workers unsafe. Never exceed three concurrent workers.
 
-`PROD-012` must not be treated as parallel with `PROD-011b`; it becomes eligible only after the deployed-session dependency is finalized. `PROD-017`, `PROD-019` and `PROD-020` are independently eligible once `PROD-016` is finalized, so the Tech Lead may choose the exact wave boundary if earlier capacity becomes available.
+`PROD-011b` blocks deployed-session-dependent browser verification. `PROD-012` therefore cannot run as though the session issue is solved merely because a provisional deployment exists.
 
-### Concurrency contract
+`PROD-017`, `PROD-019`, and `PROD-020` are independently eligible after `PROD-016` and have disjoint protected surfaces.
 
-The three adapter work streams are intentionally partitioned by protected surface:
+`PROD-022`, `PROD-023`, and `PROD-025` are independently eligible after `PROD-021` and are intentionally separated into engine, agent compiler, and solution-BOQ surfaces so the Tech Lead can use all three worker slots concurrently.
 
-- `PROD-017` owns browser UI/task-first experience and browser adapter conformance.
-- `PROD-019` owns `apps/android` and mobile adapter integration/conformance.
-- `PROD-020` owns `apps/desktop` and desktop adapter integration/conformance.
+### Concurrency contracts
 
-All three depend on the merged `PROD-016` contract. They must not modify the same adapter-specific files. Shared contract changes after `PROD-016` are forbidden unless a new governed shared Work Item is created and the affected workers are paused/rebased.
+Adapter wave:
+
+```text
+PROD-016 merged
+     │
+     ├── PROD-017 → apps/web/**
+     ├── PROD-019 → apps/android/**
+     └── PROD-020 → apps/desktop/**
+```
+
+Interactive-solution wave:
+
+```text
+PROD-021 merged
+     │
+     ├── PROD-022 → solution execution/validation engine
+     ├── PROD-023 → reasoning/agent compiler
+     └── PROD-025 → solution BOQ derivation/tracing
+```
+
+The three workers in each wave must not edit each other's protected surfaces or the frozen shared contract. A shared semantic defect becomes a new SHARED Work Item; it is not patched independently in parallel branches.
 
 ## Golden product journey
 
@@ -123,7 +161,37 @@ RECORD EXECUTION / POST-WORK EVIDENCE
 COMPARE OUTCOME
 ```
 
-The demo journey must work with seeded fixtures so an evaluator does not need a physical phone, GPU, external reconstruction subscription or third-party enterprise system to understand the product.
+## New interactive engineering-solution journey
+
+This is a second first-class workflow, not a replacement for the existing one:
+
+```text
+RECONSTRUCT / OPEN CURRENT BUILDING
+        ↓
+DESCRIBE ENGINEERING PROBLEM / INTENT
+        ↓
+ENTER INTERACTIVE SOLUTION
+        ↓
+DIRECT MANIPULATION OR AGENT COMMAND
+        ↓
+OPERATION 1 → STATE 1
+        ↓
+OPERATION 2 → STATE 2
+        ↓
+... layer-by-layer ...
+        ↓
+VALIDATE
+        ↓
+GENERATE SOLUTION BOQ
+        ↓
+CLICK BOQ LINE → JUMP TO CONTRIBUTING STEP/GEOMETRY
+        ↓
+REVIEW / EXPLAIN / REVISE
+```
+
+The environment should feel game-like in interaction quality while remaining an engineering operation system with deterministic semantics, provenance and validation. It is not a free-form simulation whose geometry is treated as truth.
+
+Phase 1 supports buildings only. The operation model is intentionally extensible to future civil works, MEP, industrial equipment, electronics and integrated circuits.
 
 ## Main journey matrix
 
@@ -153,6 +221,13 @@ issue → observations → measurements → material/condition → uncertainty
 ```text
 authoritative reality → proposal state 1 → proposal state 2 → final proposal
 → synchronized 2D/3D/BOQ inspection → approval/rejection
+```
+
+### Interactive solution
+
+```text
+current building reality → typed operations → proposed states
+→ deterministic validation → solution BOQ → BOQ ↔ operation navigation
 ```
 
 ### Outcome
@@ -212,7 +287,9 @@ Productization must explicitly preserve these capabilities learned from the 2026
 - human verification and visible uncertainty;
 - a clear next-best-action interaction model.
 
-AISE should differentiate through the continuity of evidence → engineering understanding → intervention → execution → outcome, rather than by attempting to clone every incumbent feature.
+The interactive solution workflow adds another benchmark: users must be able to move from a known building problem to an understandable, stepwise, validated proposed solution and then to the BOQ that explains that solution.
+
+AISE should differentiate through the continuity of evidence → engineering understanding → intervention/solution → execution → outcome, rather than by attempting to clone every incumbent feature.
 
 ## Definition of done
 
@@ -231,6 +308,10 @@ AISE should differentiate through the continuity of evidence → engineering und
 - full golden user-journey browser recording;
 - representative Android/mobile capture journey evidence;
 - desktop adapter build and smoke evidence;
+- interactive solution building journey recording;
+- deterministic solution replay and validation evidence;
+- generated solution BOQ with bidirectional step/line trace evidence;
+- representative physical/building benchmark evidence;
 - responsive/accessibility evidence;
 - next-best-action/task-first UX evidence;
 - competitive benchmark evidence;
