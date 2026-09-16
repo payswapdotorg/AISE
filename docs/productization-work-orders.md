@@ -186,6 +186,193 @@ Close product gaps revealed by the 2026 competitor simulation without cloning in
 
 Competitive journey matrix + capability traceability + final golden journey replay + cross-adapter semantic equivalence checks.
 
+## PROD-021 — Interactive solution graph and engineering operation contract
+
+**Owner:** SHARED
+**Depends on:** AISE-026, AISE-027, AISE-028, PROD-016
+**Architecture:** ACR-005
+**Protected surfaces:** `packages/*` solution contracts/fixtures, relevant server/domain contracts, `spec/*` only as explicitly assigned.
+
+**Purpose**
+
+Create the stable, domain-extensible contract for the new interactive engineering solution workflow without implementing a platform-specific editor or agent.
+
+**Scope**
+
+- define versioned `Solution`, `SolutionVersion`, `EngineeringOperation`, `ProposedState`, `OperationDependency`, `OperationTarget`, `OperationEffect`, `SolutionValidationSnapshot` and solution-to-BOQ trace objects;
+- define typed operation intents with explicit units, spatial targets, parameters and provenance;
+- define lifecycle/version/branch semantics for draft, validated, superseded and abandoned proposals;
+- define operation capability negotiation and unsupported-operation states;
+- define bidirectional solution-step ↔ generated-BOQ-line identity contracts;
+- create deterministic fixtures for initial building operations.
+
+**Explicit non-scope**
+
+No 3D editor, no agent implementation, no direct mutation of authoritative reality, no payment/cost-provider integration, and no support for non-building verticals in the first implementation.
+
+**Acceptance**
+
+- same operation intent can be produced by direct manipulation or an agent;
+- every operation has deterministic identity, parameters, units, target, provenance and version context;
+- proposed state remains separate from observed reality;
+- contract is extensible beyond buildings without encoding building-specific authority semantics into clients;
+- BOQ trace objects are bidirectional and version-pinned.
+
+**Evidence**
+
+Schemas + fixtures + serialization tests + authority/negative tests + operation/BOQ traceability fixtures.
+
+## PROD-022 — Deterministic interactive solution engine
+
+**Owner:** CORE
+**Depends on:** PROD-021
+**Protected surfaces:** `packages/*solution-engine*`, server solution execution/validation code, deterministic geometry tests.
+
+**Purpose**
+
+Implement the server/domain engine that applies typed engineering operations to a proposed solution and produces reproducible proposed states.
+
+**Scope**
+
+- implement operation application and state-delta computation;
+- implement deterministic geometry/topology/quantity calculations for the initial building operation subset;
+- support undo/revision via new solution versions rather than destructive mutation;
+- produce explicit unsupported/invalid/needs-input states;
+- expose deterministic tool endpoints for validate, step, inspect and derived quantities;
+- preserve provenance and version lineage for every state transition.
+
+**Acceptance**
+
+- identical inputs/operation sequences reproduce identical proposed states and quantities;
+- authoritative Reality Graph is never mutated;
+- invalid or ambiguous operations fail closed;
+- operation effects and quantities are traceable to their parameters and source state;
+- deterministic tests and negative/discrimination tests pass.
+
+**Evidence**
+
+Engine fixtures + deterministic replay + mutation protection + negative/discrimination suite + building operation quantity tests.
+
+## PROD-023 — Agent engineering-operation compiler and interaction loop
+
+**Owner:** AI/REASONING
+**Depends on:** PROD-021
+**Protected surfaces:** reasoning/agent integration code and solution-command tests; no shared contract edits after PROD-021.
+
+**Purpose**
+
+Let a competent real-world problem solver interact with the virtual solution through natural language while keeping engineering execution deterministic and inspectable.
+
+**Scope**
+
+- parse natural-language requests into typed `EngineeringOperationIntent` objects;
+- ask targeted clarification questions for missing dimensions, materials, locations, sequencing or constraints;
+- show the proposed operation before execution where ambiguity or material consequences exist;
+- call deterministic solution/validation tools rather than generating geometry directly;
+- support navigation, explanation, inspection and BOQ-step lookup commands;
+- preserve agent/user attribution and the exact normalized command that was executed.
+
+**Explicit non-scope**
+
+The agent must not declare reality, readiness, validation success, engineering approval or cost authority. It must not write raw geometry or bypass the solution engine.
+
+**Acceptance**
+
+Representative building commands such as excavation dimensions, plaster thickness, block-wall height and material/layer changes compile into typed operations or explicit clarification/unsupported states. Equivalent commands from different phrasings resolve to equivalent semantic operations where unambiguous.
+
+**Evidence**
+
+Command corpus + parser/tool trace + ambiguity/clarification tests + refusal/unsafe-operation tests + semantic-equivalence tests.
+
+## PROD-024 — Building interactive solution adapter / game-like environment
+
+**Owner:** WEB/3D
+**Depends on:** PROD-017, PROD-022, PROD-023
+**Protected surface:** solution-specific browser UI under `apps/web/**`; may not alter generic adapter contract.
+
+**Purpose**
+
+Deliver the intuitive interactive environment in which the user can inspect the reconstructed building, manipulate proposed work, step layer-by-layer and see the engineering consequences.
+
+**Scope**
+
+- interactive 3D/2D navigation around the current/proposed building;
+- direct manipulation controls mapped to typed solution operations;
+- timeline/step navigation through operation states;
+- isolate/inspect affected geometry and operation details;
+- embedded agent interaction for the same operation system;
+- clear observed vs proposed visual state distinction;
+- responsive synchronization between geometry, operation list and selected BOQ lines once available;
+- accessible non-3D fallback for core operation inspection.
+
+**Acceptance**
+
+A user who understands the real-world task can create or modify a building solution without learning AISE internals; every manipulation resolves to the same deterministic operation semantics used by the agent; proposed reality cannot overwrite authoritative reality.
+
+**Evidence**
+
+Browser interactive-solution recording + operation trace + adapter-conformance result + accessibility/fallback trace + mutation-protection evidence.
+
+## PROD-025 — Validate → solution BOQ generation → bidirectional traceability
+
+**Owner:** QS/CORE
+**Depends on:** PROD-021, PROD-022
+**Protected surfaces:** solution BOQ derivation code, BOQ trace schemas/tests, solution/BOQ service tests.
+
+**Purpose**
+
+Turn a validated interactive solution into an auditable BOQ and make the BOQ an explorable explanation of the virtual construction/repair process.
+
+**Scope**
+
+- compute solution quantities from deterministic operation/state deltas;
+- group operations into meaningful building BOQ lines with units, materials/activities and calculation methods;
+- attach validation snapshot and solution/version identity;
+- preserve uncertainty and unresolved assumptions;
+- implement BOQ-line → operation/geometry navigation and operation → BOQ-line reverse navigation;
+- preserve the distinction between source BOQ and solution-generated BOQ.
+
+**Acceptance**
+
+Clicking `Validate` on a supported solution yields a validation snapshot. Clicking `Generate BOQ` creates a versioned derived BOQ from that snapshot. Every line can navigate to the corresponding solution step/geometry and every operation can reveal its affected/generated BOQ lines.
+
+**Evidence**
+
+Building fixture BOQ + calculation trace + validation snapshot + bidirectional navigation trace + source-vs-generated BOQ non-overwrite tests.
+
+## PROD-026 — Interactive solution end-to-end composition and building benchmark
+
+**Owner:** SHARED
+**Depends on:** PROD-024, PROD-025, PROD-018
+
+**Purpose**
+
+Compose and independently verify the complete new workflow as a first-class AISE product workflow.
+
+**Required journey**
+
+```text
+reconstruct/open current building reality
+ → select engineering problem
+ → create interactive solution
+ → manipulate directly and/or use agent commands
+ → step through proposed layers/states
+ → validate
+ → generate solution BOQ
+ → click BOQ line
+ → jump to corresponding solution step/geometry
+ → inspect and understand solution
+ → save/revise solution without altering observed reality
+```
+
+**Acceptance**
+
+The full journey works on a seeded building fixture and on at least one representative physically grounded building scenario. All consequential quantities have provenance, the agent and direct manipulation produce equivalent operations, validation is deterministic, and no proposed state leaks into authoritative reality.
+
+**Evidence**
+
+Complete recording + request/operation trace + deterministic replay + physical/building benchmark + semantic agent/direct-manipulation equivalence + provenance audit.
+
 ## Cross-item composition and branch-safety rules
 
 The adapter wave is deliberately partitioned:
@@ -198,6 +385,22 @@ PROD-016 merged
      └── PROD-020  → apps/desktop/**
 ```
 
-These three workers may run concurrently because their protected implementation surfaces are disjoint. They must not modify shared contract files after PROD-016 merges. A discovered shared-contract defect pauses the affected worker and is escalated to the Tech Lead as a new shared work item rather than patched opportunistically across branches.
+These three workers may run concurrently because their protected implementation surfaces are disjoint. They must not modify shared contract files after PROD-016 merges. A discovered shared-contract defect is escalated to the Tech Lead as a new shared work item.
 
-`PROD-018` composes the three adapters and deployed browser evidence only after the adapter wave is merged. `PROD-014` and `PROD-015` remain final evaluator/gate work and may not be used to hide unresolved implementation gaps.
+The interactive-solution wave is similarly partitioned:
+
+```text
+PROD-021 merged
+     │
+     ├── PROD-022 → solution engine
+     ├── PROD-023 → agent compiler
+     └── PROD-025 → solution BOQ derivation
+             │
+             └── PROD-024 after 022 + 023
+                         │
+                         └── PROD-026 composition
+```
+
+`PROD-022`, `PROD-023` and `PROD-025` are intentionally separable after the shared operation contract. They may run concurrently when the Tech Lead verifies that their protected surfaces remain disjoint. `PROD-024` is serialized after the engine/compiler seam is stable because it composes both interaction modes. `PROD-026` is the final workflow benchmark.
+
+No worker may add a building operation directly to client code; new operations belong in the shared operation contract/engine and then become available to every adapter through the same semantics.
