@@ -48,6 +48,37 @@ export function App(): ReactNode {
   const [apiStatus, setApiStatus] = useState<ApiStatus | null>(null);
   const [probeAttempt, setProbeAttempt] = useState(1);
   const [principalId, setPrincipalId] = useState("user-alice");
+
+  // PROD-010: the ACTING PRINCIPAL the session was minted for. The whoami
+  // probe is display-only by design (AISE-036), so the app REMEMBERS the id
+  // it authenticated with — typed at sign-in, the documented demo default
+  // ("demo-evaluator") on Enter-demo — session-scoped so a reload keeps it
+  // while the session lives. The SERVER stays the authority: a mismatched
+  // or expired session surfaces as the honest typed 401/403 (never a
+  // silently-wrong identity).
+  const [sessionPrincipalId, setSessionPrincipalId] = useState<string | null>(() => {
+    try {
+      return sessionStorage.getItem("aise.acting-principal");
+    } catch {
+      return null;
+    }
+  });
+  const rememberActingPrincipal = useCallback((id: string) => {
+    setSessionPrincipalId(id);
+    try {
+      sessionStorage.setItem("aise.acting-principal", id);
+    } catch {
+      // storage unavailable — the in-memory state stands for this page
+    }
+  }, []);
+  const forgetActingPrincipal = useCallback(() => {
+    setSessionPrincipalId(null);
+    try {
+      sessionStorage.removeItem("aise.acting-principal");
+    } catch {
+      // storage unavailable — the in-memory state is already cleared
+    }
+  }, []);
   const [gate, dispatch] = useReducer(gateReducer, undefined, initialGateState);
 
   useEffect(() => {
@@ -102,9 +133,15 @@ export function App(): ReactNode {
     [],
   );
 
+  // PROD-010: the ACTING PRINCIPAL follows the authenticated session —
+  // the remembered session principal when one exists; the demo default
+  // (user-alice, the Settings selection) stands only when there is no
+  // session (demo mode / auth-inactive).
+  const actingPrincipalId = sessionPrincipalId ?? principalId;
+
   const environment = useMemo<AppEnvironment>(
-    () => ({ apiStatus, fetchImpl: apiAvailable ? gatedFetch : browserFetch, principalId }),
-    [apiStatus, apiAvailable, principalId, gatedFetch],
+    () => ({ apiStatus, fetchImpl: apiAvailable ? gatedFetch : browserFetch, principalId: actingPrincipalId }),
+    [apiStatus, apiAvailable, actingPrincipalId, gatedFetch],
   );
 
   const route = useHashRoute();
@@ -116,6 +153,9 @@ export function App(): ReactNode {
       onSignIn: (id: string) => {
         dispatch({ type: "sign-in-submitted" });
         void signInPrincipal(browserFetch, id).then((result) => {
+          if (result.ok) {
+            rememberActingPrincipal(id);
+          }
           dispatch(
             result.ok
               ? { type: "action-succeeded", principal: result.principal }
@@ -126,6 +166,12 @@ export function App(): ReactNode {
       onEnterDemo: () => {
         dispatch({ type: "demo-submitted" });
         void enterDemoSession(browserFetch).then((result) => {
+          // The documented demo principal (the server's AISE_DEMO_PRINCIPAL
+          // default — a deployment overriding it gets the honest typed 403
+          // on guarded reads, never a silently-wrong identity).
+          if (result.ok) {
+            rememberActingPrincipal("demo-evaluator");
+          }
           dispatch(
             result.ok
               ? { type: "action-succeeded", principal: result.principal }
@@ -137,19 +183,22 @@ export function App(): ReactNode {
         dispatch({ type: "retry-probe" });
       },
     }),
-    [],
+    [rememberActingPrincipal],
   );
 
   const signOut = useCallback(() => {
     dispatch({ type: "sign-out-submitted" });
     void signOutSession(browserFetch).then((result) => {
+      if (result.ok) {
+        forgetActingPrincipal();
+      }
       dispatch(
         result.ok
           ? { type: "action-succeeded", principal: null }
           : { type: "action-failed", failure: result.failure },
       );
     });
-  }, []);
+  }, [forgetActingPrincipal]);
 
   // The gate renders INSTEAD of the shell only when the auth layer is
   // active and blocking (signed-out / probe-error). Every other state is
@@ -177,7 +226,7 @@ export function App(): ReactNode {
           ) : (
             <RoutedSurface
               route={route}
-              principalId={principalId}
+              principalId={actingPrincipalId}
               onPrincipalChange={setPrincipalId}
               onReprobe={reprobe}
             />
@@ -219,6 +268,7 @@ function RoutedSurface({
           key={routeKey(route)}
           projectId={route.projectId}
           layer={route.query.layer ?? 0}
+          scenarioId={route.query.scenario}
         />
       );
     case "settings":

@@ -11,28 +11,48 @@
  * scenario is a review decision, not an observed reality.
  */
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useResource, type ResourceOutcome } from "../resource";
 import { isDemoMode, useAppEnvironment } from "../environment";
 import {
+  createCaseLive,
+  createLiveAuthorizationPort,
   describeApiFailure,
   loadCaseDetailLive,
   loadCaseSummariesLive,
+  loadEvidenceIndexLive,
+  loadRealityLive,
   type CaseDetailRecord,
   type CaseSummaryRecord,
 } from "../api";
-import { demoCase, demoEvidenceList, demoScenario } from "../demo";
+import { demoCase, demoEvidenceList, demoScenario, demoReality } from "../demo";
+import {
+  createCaseRequestBody,
+  createRecordAction,
+  idListFromField,
+  resolveCreateActionOffer,
+  validateNewCaseDraft,
+  type CreateActionOffer,
+  type NewCaseDraft,
+} from "../create-forms";
+import { evidenceOptionsFromDemo, evidenceOptionsFromLive, toggleEvidenceId } from "../evidence-picker";
+import { defaultOrganizationId } from "./Projects";
 import type { CasePaneView, EvidencePaneView, SourceRef } from "../../shell";
 import type { ViewerScenario } from "../../viewer";
 import {
   Card,
+  CreateField,
+  CreateRecordPanel,
   DataBadge,
   EmptyState,
   EpistemicBadge,
+  EvidencePicker,
   Instant,
   ResourceView,
   SourceNote,
+  type CreatePanelOutcome,
+  type EvidencePickerStatus,
 } from "../components";
 import { ProjectSurfaceNav } from "../components";
 import { formatRoute } from "../router";
@@ -127,6 +147,18 @@ export function EngineeringCase({ projectId }: { readonly projectId: string }): 
         loadingLabel="Loading the engineering case…"
         onRetry={reload}
         render={(data) => <CaseBody data={data} />}
+      />
+      <NewCasePanel
+        projectId={projectId}
+        mode={isDemoMode(environment) || environment.apiStatus === null ? "demo" : "api"}
+        principalId={environment.principalId}
+        fetchImpl={environment.fetchImpl}
+        authorization={
+          isDemoMode(environment) || environment.apiStatus === null
+            ? undefined
+            : createLiveAuthorizationPort(environment.fetchImpl)
+        }
+        onCreated={reload}
       />
     </>
   );
@@ -393,7 +425,12 @@ function CaseLive({ data }: { readonly data: CaseData }): ReactNode {
         {live.cases.length === 0 ? (
           <EmptyState
             title="No engineering cases recorded in this deployment"
-            guidance="Cases are recorded through the AISE API (POST /v1/cases). Once the first case exists it appears here with its observations, hypotheses and declared missing evidence."
+            guidance="Cases are opened when a discrepancy needs engineering judgement — observations, hypotheses and declared missing evidence recorded on the case. The first case can be created right here."
+            action={
+              <a className="button" href="#create-case">
+                Create the first case
+              </a>
+            }
           />
         ) : (
           <div className="table-wrap">
@@ -520,5 +557,291 @@ function CaseDetailRecordView({ record }: { readonly record: CaseDetailRecord })
         </ul>
       )}
     </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* PROD-010 — the brokered create-case panel                            */
+/* ------------------------------------------------------------------ */
+
+/** The node picker's honest data states (the latest reality version). */
+type NodeLinkState =
+  | { readonly kind: "loading" }
+  | { readonly kind: "failed"; readonly message: string }
+  | { readonly kind: "none" }
+  | {
+      readonly kind: "ready";
+      readonly versionId: string;
+      readonly options: readonly { readonly nodeId: string; readonly kind: string }[];
+    };
+
+/**
+ * The brokered create-case panel (case:write — POST /v1/cases): org, case,
+ * title, summary, node links (picker over the LATEST reality version's own
+ * nodes) and evidence links (the EvidencePicker). `projectId` is the auth
+ * body scope; `summary`/`createdBy` ride the wire unpersisted (the cases
+ * core parse carries them — documented honestly). Success reloads the
+ * deployment's case list so the new case appears.
+ */
+export function NewCasePanel({
+  projectId,
+  mode,
+  principalId,
+  fetchImpl,
+  authorization,
+  onCreated,
+}: {
+  readonly projectId: string;
+  readonly mode: "demo" | "api";
+  readonly principalId: string;
+  readonly fetchImpl: (input: string, init?: RequestInit) => Promise<Response>;
+  readonly authorization?: Parameters<typeof resolveCreateActionOffer>[0]["authorization"];
+  readonly onCreated: () => void;
+}): ReactNode {
+  const [organizationId, setOrganizationId] = useState(() => defaultOrganizationId(mode === "demo"));
+  const [caseId, setCaseId] = useState("");
+  const [title, setTitle] = useState("");
+  const [summary, setSummary] = useState("");
+  const [nodeIdsField, setNodeIdsField] = useState("");
+  const [evidenceField, setEvidenceField] = useState("");
+  const [captureField, setCaptureField] = useState("");
+  const [nodes, setNodes] = useState<NodeLinkState>({ kind: "loading" });
+  const [evidenceStatus, setEvidenceStatus] = useState<EvidencePickerStatus>({ kind: "loading" });
+  const [offer, setOffer] = useState<CreateActionOffer | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [outcome, setOutcome] = useState<CreatePanelOutcome | null>(null);
+
+  // The node-link picker reads the project's LATEST reality version (its
+  // own nodes — record fields only); the demo dataset uses its own reality.
+  useEffect(() => {
+    if (mode !== "api") {
+      const view = demoReality(projectId);
+      setNodes(
+        view === null
+          ? { kind: "none" }
+          : {
+              kind: "ready",
+              versionId: view.versionId,
+              options: view.nodes.map((node) => ({ nodeId: node.nodeId, kind: node.kind })),
+            },
+      );
+      return;
+    }
+    let cancelled = false;
+    setNodes({ kind: "loading" });
+    void loadRealityLive(fetchImpl, projectId).then((result) => {
+      if (cancelled) {
+        return;
+      }
+      if (!result.ok) {
+        setNodes({ kind: "failed", message: describeApiFailure(result.failure) });
+        return;
+      }
+      setNodes(
+        result.view === null
+          ? { kind: "none" }
+          : {
+              kind: "ready",
+              versionId: result.view.versionId,
+              options: result.view.nodes.map((node) => ({ nodeId: node.nodeId, kind: node.kind })),
+            },
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [mode, fetchImpl, projectId]);
+
+  // The evidence picker reads the register (live) or the demo dataset's OWN
+  // evidence records — invalidated records are never pickable.
+  useEffect(() => {
+    if (mode !== "api") {
+      setEvidenceStatus({ kind: "ready", options: evidenceOptionsFromDemo(demoEvidenceList(projectId)) });
+      return;
+    }
+    let cancelled = false;
+    setEvidenceStatus({ kind: "loading" });
+    void loadEvidenceIndexLive(fetchImpl).then((result) => {
+      if (cancelled) {
+        return;
+      }
+      if (!result.ok) {
+        setEvidenceStatus({ kind: "failed", message: describeApiFailure(result.failure) });
+        return;
+      }
+      setEvidenceStatus({ kind: "ready", options: evidenceOptionsFromLive(result.items) });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [mode, fetchImpl, projectId]);
+
+  const draft: NewCaseDraft = {
+    caseId,
+    projectId,
+    title,
+    ...(summary.trim() === "" ? {} : { summary }),
+    createdBy: principalId,
+    nodeIds: idListFromField(nodeIdsField),
+    evidenceIds: idListFromField(evidenceField),
+    captureSessionIds: idListFromField(captureField),
+  };
+  const defects = validateNewCaseDraft(draft);
+  const askable = mode === "api" && caseId.trim() !== "" && organizationId.trim() !== "";
+
+  useEffect(() => {
+    if (!askable) {
+      setOffer(null);
+      return;
+    }
+    let cancelled = false;
+    void resolveCreateActionOffer({
+      authorization,
+      descriptor: createRecordAction({
+        actionId: "create-case",
+        label: "Create engineering case",
+        permission: "case:write",
+        sourceModule: "case",
+      }),
+      bindingId: "case:create-case",
+      returnTo: { module: "case", projectId, caseId },
+      principalId,
+      target: { kind: "project", organizationId, projectId },
+    }).then((resolved) => {
+      if (!cancelled) {
+        setOffer(resolved);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [askable, authorization, caseId, organizationId, principalId, projectId]);
+
+  const submit = useCallback(async () => {
+    if (mode !== "api" || defects.length > 0 || submitting) {
+      return;
+    }
+    setSubmitting(true);
+    const result = await createCaseLive(fetchImpl, createCaseRequestBody(draft));
+    setSubmitting(false);
+    if (result.ok) {
+      setOutcome({
+        kind: "created",
+        detail: `Case ${result.record.caseId} recorded with ${String(result.record.observations.length)} observations and ${String(result.record.hypotheses.length)} hypotheses.`,
+        endpoint: result.endpoint,
+      });
+      onCreated();
+    } else {
+      setOutcome({ kind: "failed", detail: describeApiFailure(result.failure) });
+    }
+  }, [defects.length, draft, fetchImpl, mode, onCreated, submitting]);
+
+  const selectedNodeIds = idListFromField(nodeIdsField);
+  return (
+    <CreateRecordPanel
+      id="create-case"
+      title="Create an engineering case"
+      intro="Cases are recorded through POST /v1/cases (a BODY-scoped auth namespace — the payload's projectId is the new record's project). The panel is offered only when the broker answers an explicit case:write ALLOWED. summary and createdBy ride the wire unpersisted (the cases core parse carries them)."
+      offer={offer}
+      mode={mode}
+      draftValid={defects.length === 0}
+      defects={defects}
+      submitting={submitting}
+      outcome={outcome}
+      onSubmit={() => {
+        void submit();
+      }}
+      submitLabel="Create case"
+    >
+      <CreateField
+        label="Organization id"
+        value={organizationId}
+        onChange={setOrganizationId}
+        hint="Prefilled from the acting context (the demo org in demo mode; the last-used org of this session otherwise) — hand-entry stays."
+      />
+      <CreateField label="Case id" value={caseId} onChange={setCaseId} hint="The case's own id (1..256 characters)." />
+      <CreateField label="Title" value={title} onChange={setTitle} mono={false} />
+      <CreateField
+        label="Summary (optional)"
+        value={summary}
+        onChange={setSummary}
+        multiline
+        mono={false}
+        hint="Rides the wire unpersisted in this API build — recorded honestly as wire-carried context."
+      />
+      <CreateField
+        label="Linked node ids (comma-separated)"
+        value={nodeIdsField}
+        onChange={setNodeIdsField}
+        hint="Links to reality nodes; the picker below toggles entries in this field."
+      />
+      {nodes.kind === "loading" ? (
+        <p className="state-guidance" data-picker-state="loading">
+          Loading the latest reality version's nodes…
+        </p>
+      ) : nodes.kind === "failed" ? (
+        <p className="state-guidance" data-picker-state="failed">
+          The latest reality version could not be loaded: {nodes.message} — hand-entry stays available.
+        </p>
+      ) : nodes.kind === "none" ? (
+        <p className="state-guidance" data-picker-state="none">
+          No reality version is recorded for this project — no nodes to link yet (hand-entry stays available).
+        </p>
+      ) : (
+        <fieldset className="picker" data-picker="node-link">
+          <legend>
+            Reality nodes (latest version <span className="mono">{nodes.versionId}</span>)
+          </legend>
+          <ul className="notes-list">
+            {nodes.options.map((node) => {
+              const checked = selectedNodeIds.includes(node.nodeId);
+              return (
+                <li key={node.nodeId}>
+                  <label className="picker-entry">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => {
+                        const next = checked
+                          ? selectedNodeIds.filter((id) => id !== node.nodeId)
+                          : [...selectedNodeIds, node.nodeId];
+                        setNodeIdsField(next.join(", "));
+                      }}
+                    />{" "}
+                    <span className="mono">{node.nodeId}</span>
+                    <span className="picker-caption"> — {node.kind}</span>
+                  </label>
+                </li>
+              );
+            })}
+          </ul>
+        </fieldset>
+      )}
+      <CreateField
+        label="Linked evidence ids (comma-separated, 64-hex content addresses)"
+        value={evidenceField}
+        onChange={setEvidenceField}
+        hint="REQUIRED non-empty for a useful case link; the picker below toggles entries in this field."
+      />
+      <EvidencePicker
+        status={evidenceStatus}
+        value={evidenceField}
+        onToggle={(evidenceId) => {
+          setEvidenceField(toggleEvidenceId(evidenceField, evidenceId));
+        }}
+      />
+      <CreateField
+        label="Linked capture session ids (optional, comma-separated)"
+        value={captureField}
+        onChange={setCaptureField}
+      />
+      {outcome !== null && outcome.kind === "created" ? (
+        <div className="toolbar">
+          <a className="button" href={formatRoute({ name: "case", projectId })}>
+            Open the case surface
+          </a>
+        </div>
+      ) : null}
+    </CreateRecordPanel>
   );
 }

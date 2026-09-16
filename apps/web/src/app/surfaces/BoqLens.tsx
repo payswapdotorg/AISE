@@ -21,6 +21,7 @@ import { useCallback, useState } from "react";
 import type { ReactNode } from "react";
 import { useResource, type ResourceOutcome } from "../resource";
 import { isDemoMode, useAppEnvironment } from "../environment";
+import { describeApiFailure, loadBoqImportsLive, loadBoqLensLive } from "../api";
 import { demoLensInput } from "../demo";
 import type { BoqLensInput, BoqLensItem } from "../../boqlens";
 import {
@@ -40,7 +41,6 @@ import {
   DerivedTag,
   EmptyState,
   ResourceView,
-  UnavailableState,
 } from "../components";
 import { ProjectSurfaceNav } from "../components";
 import { formatRoute } from "../router";
@@ -67,15 +67,28 @@ export function BoqLensSurface({ projectId }: { readonly projectId: string }): R
         data: { mode: "demo", projectId, lens: demoLensInput(projectId) },
       };
     }
+    // Live mode: the joined lens input over the deployment's BOQ imports
+    // (GET /v1/boq/imports is deployment-wide — the same honest discipline
+    // as the case summaries; the first import in the service's own order is
+    // opened and NAMED, never guessed silently).
+    const imports = await loadBoqImportsLive(environment.fetchImpl);
+    if (!imports.ok) {
+      return { kind: "error", message: describeApiFailure(imports.failure) };
+    }
+    const first = imports.imports[0] ?? null;
+    if (first === null) {
+      return { kind: "ready", data: { mode: "api", projectId, lens: null } };
+    }
+    const lens = await loadBoqLensLive(environment.fetchImpl, first.importId);
+    if (!lens.ok) {
+      return { kind: "error", message: describeApiFailure(lens.failure) };
+    }
     return {
       kind: "ready",
       data: {
         mode: "api",
         projectId,
-        // The lens input (verbatim rows + interpretation + mapping join) has
-        // no readable assembly endpoint in this build — honestly unavailable,
-        // never faked from partial records.
-        lens: null,
+        lens: lens.record as unknown as BoqLensInput,
       },
     };
   }, [environment, projectId]);
@@ -145,9 +158,9 @@ export function BoqLensBody({
             }
           />
         ) : (
-          <UnavailableState
-            reason="the lens input is a server-side assembly of the import record, its derived normalization view (AISE-014) and its mapping entries (AISE-017); this build wires no readable same-origin endpoint that emits the joined input"
-            impact="cost scope, mapping coverage, grounded explanations and claim traceability are unavailable against the live API — the demo dataset (API unavailable) exercises the full lens"
+          <EmptyState
+            title="No BOQ import recorded on this deployment"
+            guidance="The lens renders one imported BOQ document (its verbatim rows, the derived normalization view and the mapping join — GET /v1/boq/imports/:id/lens). This deployment carries no imports yet; once one is ingested its lens renders here."
           />
         )}
       </Card>
