@@ -17,10 +17,12 @@
  * (typed rejection, mirroring the shell library's address discipline).
  */
 
-/** The optional query of the intervention route (the viewed layer). */
+/** The optional query of the intervention route (the viewed layer + scenario). */
 export interface InterventionQuery {
   /** The materialized state layer to view (non-negative integer). */
   readonly layer?: number;
+  /** The deep-linked scenario id (percent-encoded verbatim in the query). */
+  readonly scenario?: string;
 }
 
 /** Every route the product shell can address (the seven surfaces + meta). */
@@ -200,7 +202,12 @@ function rejectQuery(query: string | null, hash: string, fallback: Route): Route
   return { name: "not-found", hash };
 }
 
-/** Parse the intervention route's `layer` query parameter (typed rejection). */
+/**
+ * Parse the intervention route's query parameters (`layer`, `scenario`) —
+ * the `?layer=` precedent: percent-encoded verbatim ids, typed rejections
+ * for unknown keys, blank/malformed values, and ANY parse order. The
+ * canonical formatting order is `layer` first, then `scenario`.
+ */
 function parseInterventionQuery(
   query: string | null,
   projectId: string,
@@ -210,6 +217,7 @@ function parseInterventionQuery(
     return { name: "intervention", projectId, query: {} };
   }
   let layer: number | undefined;
+  let scenario: string | undefined;
   if (query !== "") {
     for (const pair of query.split("&")) {
       const equals = pair.indexOf("=");
@@ -218,23 +226,33 @@ function parseInterventionQuery(
       }
       const key = pair.slice(0, equals);
       const value = pair.slice(equals + 1);
-      if (key !== "layer") {
+      if (key === "layer") {
+        if (!/^\d+$/.test(value)) {
+          return { name: "not-found", hash };
+        }
+        const parsed = Number.parseInt(value, 10);
+        if (!Number.isSafeInteger(parsed) || parsed < 0) {
+          return { name: "not-found", hash };
+        }
+        layer = parsed;
+      } else if (key === "scenario") {
+        const decoded = decodeSegment(value);
+        if (decoded === null || decoded.trim().length === 0) {
+          return { name: "not-found", hash };
+        }
+        scenario = decoded;
+      } else {
         return { name: "not-found", hash };
       }
-      if (!/^\d+$/.test(value)) {
-        return { name: "not-found", hash };
-      }
-      const parsed = Number.parseInt(value, 10);
-      if (!Number.isSafeInteger(parsed) || parsed < 0) {
-        return { name: "not-found", hash };
-      }
-      layer = parsed;
     }
   }
   return {
     name: "intervention",
     projectId,
-    query: layer === undefined ? {} : { layer },
+    query: {
+      ...(layer === undefined ? {} : { layer }),
+      ...(scenario === undefined ? {} : { scenario }),
+    },
   };
 }
 
@@ -259,9 +277,14 @@ export function formatRoute(route: Route): string {
       return `#/projects/${encodeURIComponent(route.projectId)}/case`;
     case "intervention": {
       const base = `#/projects/${encodeURIComponent(route.projectId)}/intervention`;
-      return route.query.layer === undefined
-        ? base
-        : `${base}?layer=${String(route.query.layer)}`;
+      const params: string[] = [];
+      if (route.query.layer !== undefined) {
+        params.push(`layer=${String(route.query.layer)}`);
+      }
+      if (route.query.scenario !== undefined) {
+        params.push(`scenario=${encodeURIComponent(route.query.scenario)}`);
+      }
+      return params.length === 0 ? base : `${base}?${params.join("&")}`;
     }
     case "settings":
       return "#/settings";
