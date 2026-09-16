@@ -35,7 +35,9 @@ AISE therefore does not pretend that every phone can produce the same quality of
 
 The implementation layer is now complete, but the repository is in a **post-implementation productization phase**. Product readiness is intentionally a separate gate: a complete architecture/code campaign is not the same thing as a publicly deployable, installable and user-friendly product.
 
-At the current baseline, do **not** claim that AISE is publicly deployed or product-ready. The productization program is governed by:
+A provisional free-tier deployment has been evidenced at [`https://aise-tan.vercel.app`](https://aise-tan.vercel.app), but **AISE is not yet product-ready**. The latest evidenced deployed application commit is recorded in `docs/productization-state.json`; repository documentation commits after that deployment do not imply that the deployed runtime has those later changes.
+
+The productization program is governed by:
 
 - `docs/productization-roadmap.md`
 - `docs/productization-work-orders.md`
@@ -60,6 +62,28 @@ The default evaluator deployment targets Vercel Hobby, Neon Free, Cloudflare R2 
 ### 3. User-friendly interface
 
 The public product must present a coherent primary web experience for Projects, SiteTwin/Evidence, BOQ Lens, Engineering Case and Intervention Studio, with clear navigation, helpful empty/error states and a guided end-to-end journey.
+
+## Client architecture — one core, three adapters
+
+Browser, mobile and desktop are **adapters over the same AISE product/domain core**. They consume the same semantic task/capability contracts and may differ only in platform-specific presentation and interaction affordances.
+
+```text
+                 AISE PRODUCT / DOMAIN CORE
+   Reality | Evidence | Assurance | Verification | BOQ
+   Cases | Interventions | Outcomes | Integrations
+                           ▲
+                           │ shared capability/task contract
+          ┌────────────────┼────────────────┐
+          │                │                │
+       BROWSER           MOBILE          DESKTOP
+       ADAPTER           ADAPTER         ADAPTER
+```
+
+- Browser is optimized for project-wide inspection, collaboration, BOQ/reality analysis and review.
+- Mobile is optimized for field capture, guided missions, sensors, offline queues and rapid evidence submission. The current mobile implementation is the Android client under `apps/android`.
+- Desktop is optimized for high-density review, large-file workflows, multi-window use and optional local integration affordances. The desktop adapter remains a productization work item and is not yet declared complete.
+
+No client may own engineering readiness, canonical measurement authority, evidence sufficiency, verification, intervention approval, source-of-record authority or tenant authorization policy.
 
 ## Product surfaces
 

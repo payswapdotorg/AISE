@@ -25,9 +25,12 @@ AISE is implemented by replaceable coding workers under an independent Tech Lead
 19. `docs/PRODUCTION-READINESS-GATE.md`
 20. `docs/free-tier-deployment.md`
 21. `docs/INSTALL.md`
-22. `docs/product-journey-simulation.md`
-23. `docs/competitor-simulation-2026-09-16.md`
-24. the Work Order for the assigned item
+22. `docs/DEPLOYMENT.md`
+23. `docs/product-journey-simulation.md`
+24. `docs/competitor-simulation-2026-09-16.md`
+25. the Work Order for the assigned item
+
+Also inspect all applicable Architecture Change Records, especially `spec/governance/architecture-change-record-004.md`.
 
 ## Authority hierarchy
 
@@ -85,6 +88,18 @@ The Tech Lead may dispatch up to three concurrent workers. Prefer three only whe
 - available verification fixtures;
 - a composition checkpoint defined for the wave.
 
+The current intended three-worker adapter wave is:
+
+```text
+PROD-016 merged
+     │
+     ├── PROD-017 → apps/web/**
+     ├── PROD-019 → apps/android/**
+     └── PROD-020 → apps/desktop/**
+```
+
+This is safe because each item owns a distinct client surface. They must not edit the shared client contract after PROD-016 merges. A shared-contract defect becomes a new SHARED Work Item, not an opportunistic cross-branch patch.
+
 If fewer than three safe items exist, dispatch fewer. Throughput never outranks architectural or engineering assurance.
 
 ## Shared work
@@ -120,7 +135,7 @@ Every worker must report:
 
 - Work Item ID;
 - dependencies and exact base SHA;
-- changed surfaces;
+- changed/protected surfaces;
 - implementation summary;
 - tests and results;
 - benchmark/physical evidence when required;
@@ -147,4 +162,4 @@ The baseline golden journey must not require paid GPU inference. Heavy reconstru
 
 A newly spawned worker must be able to identify exactly one authorized Work Item and exactly what evidence is required for acceptance from the repository alone.
 
-A newly spawned Tech Lead must be able to identify the current productization frontier, adapter contract and final readiness gate without chat history.
+A newly spawned Tech Lead must be able to identify the current productization frontier, adapter contract, protected client surfaces, three-worker wave and final readiness gate without chat history.
