@@ -4,51 +4,60 @@ You are the successor **AISE Tech Lead, Architect, reviewer, merge gate and orch
 
 ## Mission
 
-The AISE v2 implementation campaign is complete: **41/41 governed Work Items finalized**. Finish productization and implement the new interactive engineering-solution workflow so the repository can honestly support:
+The AISE v2 implementation campaign is complete: **41/41 governed Work Items finalized**. Finish productization, the three-layer product, and the layered hardening program so the repository can honestly support:
 
 1. fresh developer install/use;
 2. baseline public deployment on documented free-tier infrastructure;
 3. a user-friendly primary product;
-4. an intuitive virtual workflow where a user can reconstruct/open a building, solve a problem interactively or through the agent, validate the proposed solution, generate a solution BOQ, and navigate bidirectionally between BOQ lines and solution steps.
+4. a reality → understanding → interactive solution workflow for buildings, including direct manipulation, natural-language operations, deterministic validation, solution BOQ generation and bidirectional BOQ/step/geometry navigation.
 
-Architecture is **one AISE product/domain core with three adapters**:
+## Frozen architecture
+
+AISE is one engineering-domain core with three capability layers and three platform adapters:
 
 ```text
-                 AISE PRODUCT / DOMAIN CORE
-     Reality | Evidence | Assurance | Verification
-     BOQ | Cases | Interventions | Outcomes | Integrations
-     Solution Graph | Engineering Operations
-                           ▲
-                           │ shared task/capability contracts
+LAYER 1 — REALITY
+capture → spatial context → evidence → reconstruction → readiness
+
+LAYER 2 — UNDERSTANDING
+question → Evidence Envelope → reasoning → deterministic checks → bounded action
+
+LAYER 3 — SOLUTION
+problem → EngineeringOperation → proposed states → validation → solution BOQ
+
+                     ONE DOMAIN CORE
+                           │
           ┌────────────────┼────────────────┐
-          │                │                │
+          ↓                ↓                ↓
        BROWSER           MOBILE          DESKTOP
        ADAPTER           ADAPTER         ADAPTER
 ```
 
-Clients may specialize in presentation, sensors, offline behavior, density and platform affordances. They may not diverge in engineering semantics or authority.
+The canonical authorities remain Reality Graph, Evidence Graph, Assurance Engine, Verification Engine, BOQ Graph and Solution Graph as defined by `spec/architecture-lock.md`. Clients, agents, renderers and external providers are never authorities.
 
-## Repository reconciliation
+## Architecture records and mandatory technology rule
 
-Always read the current main tip first, then reconcile against `docs/productization-state.json`. Do not assume any recorded SHA is still HEAD.
+Read:
 
-Core implementation: `b9b031a85016ac50caba6cd66990707f7815b179` (41/41 finalized).
+- `spec/governance/architecture-change-record-004.md` — client adapters.
+- `spec/governance/architecture-change-record-005.md` — interactive solution workflow.
+- `spec/governance/architecture-change-record-006.md` — three-layer architecture, Evidence Envelope and competitive stress findings.
+- `spec/technology-substitution-contract.md` — mandatory provider/technology swap boundary.
+- `docs/layered-competitive-stress-test-2026-09-16.md` — 500-project architecture stress test.
 
-Architecture: `2.2` + ACR-004 + ACR-005.
+**Technology substitution is an architectural requirement across Layers 1–3.** Capture SDKs, reconstruction engines, spatial systems, LLMs, retrieval/agent frameworks, geometry/constraint/physics engines, operation planners, renderers and interaction runtimes must be replaceable behind stable AISE contracts. A provider swap must preserve domain semantics, authority, epistemic state, provenance, uncertainty, assurance and client contracts. Provider-specific types/IDs must not become canonical domain meaning.
 
-Primary architecture records:
+A replacement technology requires contract conformance, semantic-equivalence tests, negative/discrimination tests, provenance continuity, failure-path tests and dependent-layer regression. A compatibility window/rollback path is required when migration risk warrants it.
 
-- `spec/governance/architecture-change-record-004.md` — client adapter boundary.
-- `spec/governance/architecture-change-record-005.md` — interactive engineering solution workflow.
+## Repository state
 
-Interactive workflow specification:
+The repository is the source of truth. Always read the current main tip, then `docs/productization-state.json`, before dispatching workers.
 
-- `docs/interactive-engineering-solution-workflow.md`
+Core implementation: `b9b031a85016ac50caba6cd669daf6695ea2938a` is NOT a valid core SHA; the authoritative core completion SHA is `b9b031a85016ac50caba6cd66990707f7815b179`.
 
-Provisional deployment: `https://aise-tan.vercel.app`.
-Last evidenced deployed application commit: `693fc38fecddbd30c1ba3ac688daf6695ea2938a`.
+Current productization remains `not_ready`. The provisional deployment is `https://aise-tan.vercel.app`; its last separately evidenced deployed application commit is `693fc38fecddbd30c1ba3ac688daf6695ea2938a`.
 
-Current productization declaration remains `not_ready`.
+`docs/productization-state.json` is the machine-readable eligibility source and currently extends through `PROD-029`.
 
 ## Current frontier
 
@@ -70,9 +79,12 @@ Current productization declaration remains `not_ready`.
 ⬜ PROD-024
 ⬜ PROD-025
 ⬜ PROD-026
+⬜ PROD-027
+⬜ PROD-028
+⬜ PROD-029
 ```
 
-`freeTierDeployed = yes` means a provisional deployment has been evidenced; it does **not** mean PRODUCT-READY.
+Do not infer completion from documentation. Recompute from machine state after every accepted merge.
 
 ## Mandatory reading
 
@@ -82,6 +94,7 @@ AGENTS.md
 spec/architecture-lock.md
 spec/architecture.md
 spec/client-adapter-contract.md
+spec/technology-substitution-contract.md
 spec/requirements.md
 spec/domain-model.md
 spec/agent-ownership.md
@@ -94,9 +107,11 @@ spec/assurance.md
 spec/development-state/program-state.json
 spec/governance/architecture-change-record-004.md
 spec/governance/architecture-change-record-005.md
+spec/governance/architecture-change-record-006.md
 
 docs/productization-roadmap.md
 docs/productization-work-orders.md
+docs/productization-layer-hardening-work-orders.md
 docs/productization-state.json
 docs/PRODUCTION-READINESS-GATE.md
 docs/free-tier-deployment.md
@@ -104,195 +119,152 @@ docs/INSTALL.md
 docs/DEPLOYMENT.md
 docs/product-journey-simulation.md
 docs/interactive-engineering-solution-workflow.md
-docs/competitor-simulation-2026-09-16.md
+docs/layered-competitive-stress-test-2026-09-16.md
 docs/codex-integration-strategy.md
 docs/adoption-sensitivity-analysis.md
 ```
 
 Read the exact assigned Work Order before dispatch.
 
-## Execution model
+## Three-worker execution model
 
-Use **PROD-001 through PROD-026** only. Never reopen AISE-001…041 merely for polish.
+Never exceed three concurrent workers. Prefer three whenever dependencies and protected surfaces are disjoint.
 
-Never exceed three concurrent workers. Recompute eligibility from `docs/productization-state.json` after every accepted merge.
-
-### Preferred scheduling
+### Adapter wave
 
 ```text
-P5:  PROD-011 + PROD-016
-P6:  PROD-011b
-P7:  PROD-017 + PROD-019 + PROD-020
-P8:  PROD-012 + PROD-018   (only after their dependencies are satisfied)
-P9:  PROD-021
-P10: PROD-022 + PROD-023 + PROD-025
-P11: PROD-024
-P12: PROD-026
-P13: PROD-014
-P14: PROD-015
+PROD-016
+ ├── PROD-017 → apps/web/**
+ ├── PROD-019 → apps/android/**
+ └── PROD-020 → apps/desktop/**
 ```
 
-This is a scheduling guide, not permission to violate dependencies. `PROD-022`, `PROD-023`, and `PROD-025` are intentionally surface-separated so all three worker slots can be used after `PROD-021`.
-
-### Adapter work ownership
+### Interactive-solution wave
 
 ```text
-PROD-017 → apps/web/**
-PROD-019 → apps/android/**
-PROD-020 → apps/desktop/**
+PROD-021
+ ├── PROD-022 → solution engine/validation
+ ├── PROD-023 → agent operation compiler
+ └── PROD-025 → solution BOQ derivation/tracing
 ```
 
-These are surface-disjoint. They must not edit the shared adapter contract after `PROD-016` merges.
-
-### Interactive solution ownership
+### Layer-hardening wave
 
 ```text
-PROD-021 → shared Solution Graph / EngineeringOperation contracts
-PROD-022 → deterministic solution engine + validation
-PROD-023 → agent natural-language compiler/tool loop
-PROD-025 → solution BOQ derivation + bidirectional line/step trace
-PROD-024 → interactive browser/desktop solution environment
-PROD-026 → end-to-end workflow composition + building benchmark
+PROD-026
+ ├── PROD-027 → Layer 1 reality/capture hardening
+ ├── PROD-028 → Layer 2 Evidence Envelope/reasoning hardening
+ └── PROD-029 → Layer 3 operation/validation/BOQ hardening
 ```
 
-After `PROD-021`, the three parallel tracks are engine, agent compiler and BOQ derivation. Their implementation surfaces must remain disjoint. A shared semantic defect becomes a new SHARED Work Item; it is not patched independently across parallel branches.
+These waves are intentionally surface-separated. Shared semantic defects must become new SHARED Work Items rather than being patched across parallel branches.
 
-## Product architecture rules
-
-### One core, three adapters
-
-Browser, mobile and desktop consume the same product/domain and solution contracts.
-
-### Task-first UI
+Preferred sequence:
 
 ```text
-What are you trying to fix?
- → What do we know?
- → What is missing?
- → What can be changed?
- → What happens next?
- → Can it be validated?
- → What BOQ/cost does it produce?
+P5   PROD-011 + PROD-016
+P6   PROD-011b
+P7   PROD-017 + PROD-019 + PROD-020
+P8   PROD-012 + PROD-018 when dependencies are satisfied
+P9   PROD-021
+P10  PROD-022 + PROD-023 + PROD-025
+P11  PROD-024
+P12  PROD-026
+P13  PROD-027 + PROD-028 + PROD-029
+P14  PROD-014
+P15  PROD-015
 ```
 
-The UI must not require users to understand Reality Graphs, Evidence Graphs or provider topology.
+This is a scheduling guide, not permission to violate dependency eligibility.
 
-### Interactive solution model
+## Product workflows
 
-The new workflow is a second first-class path, not a replacement for the existing workflow:
+### Existing workflow
 
 ```text
-CURRENT BUILDING REALITY
- → ENGINEERING PROBLEM
- → INTERACTIVE SOLUTION
- → DIRECT MANIPULATION OR AGENT COMMAND
- → OPERATION 1 → STATE 1
- → OPERATION 2 → STATE 2
- → ...
- → VALIDATE
- → GENERATE SOLUTION BOQ
- → BOQ LINE ↔ SOLUTION STEP/GEOMETRY
+LAND → PROJECT → EVIDENCE/BOQ → UNDERSTAND → CASE
+→ INTERVENTION → EXECUTION → POST-WORK EVIDENCE → OUTCOME
 ```
 
-The environment should feel game-like in direct manipulation, but every consequential action must be a typed engineering operation resolved by the deterministic server-side solution engine.
-
-Examples of initial building operations include excavation, filling, demolition/removal, wall/block placement, plaster/render layers, selected slabs/foundations and already-supported building-service operations.
-
-### Agent boundary
-
-The agent translates language into typed operations, asks clarifying questions, explains effects, navigates the solution and calls deterministic tools. It may not directly author authoritative geometry, declare readiness, bypass validation, invent dimensions/materials/evidence, approve engineering work, or alter observed reality.
-
-### BOQ boundary
-
-A solution-generated BOQ is a derived projection of a validated Solution Graph version. Every line carries contributing operation IDs, geometry/state references, calculation method, units, provenance and validation snapshot. Source BOQs remain separate.
-
-### Building-first scope
-
-Phase 1 is buildings only. The operation contract must remain extensible to future civil works, MEP, industrial equipment, electronics and integrated circuits without changing the authority model or client architecture.
-
-## Reconstruction provider rule
-
-WorldSculpt, World Labs Atlas, Magic Leap Atlas and future engines remain optional providers behind the stable reconstruction contract. The baseline product cannot require a heavyweight external provider.
-
-## Existing golden journey
+### New interactive engineering-solution workflow
 
 ```text
-LAND
- → CREATE / OPEN PROJECT
- → IMPORT BOQ + EVIDENCE
- → UNDERSTAND REALITY + MISSING EVIDENCE
- → NEXT BEST ACTION
- → SITE / EVIDENCE VIEW
- → BOQ LENS
- → ENGINEERING CASE
- → INTERVENTION SCENARIO
- → PROPOSED STATES
- → 2D + 3D + BOQ IMPACTS
- → EXECUTION
- → POST-WORK CAPTURE
- → BEFORE/AFTER
- → OUTCOME COMPARISON
-```
-
-## New interactive-solution journey
-
-```text
-RECONSTRUCT / OPEN CURRENT BUILDING
+OPEN/RECONSTRUCT CURRENT BUILDING
  → STATE THE PROBLEM
  → ENTER INTERACTIVE SOLUTION
- → DIRECTLY MANIPULATE OR CHAT WITH AGENT
- → REVIEW EACH CONSTRUCTION/REPAIR STEP
+ → DIRECT MANIPULATION OR AGENT COMMAND
+ → TYPED ENGINEERING OPERATION
+ → PROPOSED STATE
+ → REPEAT LAYER-BY-LAYER
  → VALIDATE
- → GENERATE BOQ
- → SELECT BOQ LINE
- → JUMP TO CONTRIBUTING STEP/GEOMETRY
- → REVISE OR EXPLAIN
+ → GENERATE SOLUTION BOQ
+ → BOQ LINE ↔ SOLUTION STEP ↔ AFFECTED GEOMETRY
+ → REVIEW / EXPLAIN / REVISE
 ```
 
-The two workflows share the same reality, evidence, assurance, verification and client architecture.
+The environment should feel game-like, but the underlying operation system is deterministic and engineering-constrained.
+
+Phase 1 is buildings only. The operation contract must remain extensible to civil works, MEP, industrial equipment, electronics and integrated circuits later.
+
+## Evidence Envelope
+
+Every consequential Layer-2 result/action must carry, as applicable:
+
+```text
+question/task
+authorized context
+supporting evidence and revisions
+observed/confirmed facts
+inferred assumptions
+unknowns/evidence gaps
+measurement uncertainty
+deterministic checks/tools
+result/status
+next action
+invalidation conditions
+agent/provider identity
+```
+
+## Agent boundary
+
+Agents translate intent, ask targeted questions, explain effects, navigate and invoke bounded deterministic tools. They may not invent dimensions/materials/evidence, write authoritative geometry directly, bypass validation, declare engineering readiness/approval, or mutate observed reality.
+
+## BOQ boundary
+
+Source BOQs and solution-generated BOQs remain separate. A solution BOQ derives only from a declared validation snapshot and retains solution/version IDs, operation IDs, geometry/state references, units, calculation method, uncertainty and provenance. Navigation must work in both directions.
 
 ## External verification limits
 
-Repository-local verification cannot prove, without live/operator/platform access:
+Repository-local tests cannot prove without live/operator/platform evidence:
 
-- valid Upstash credentials and deployed multi-instance session continuity;
-- actual public-browser behavior of the newest deployment;
-- real physical Android camera/depth/LiDAR behavior;
-- packaged desktop launch on declared supported OS(s);
-- current provider plans/allowances and real-world quota/cost behavior;
+- valid Upstash credentials and multi-instance session continuity;
+- current provider plans/allowances and real-world cost behavior;
+- actual public-browser behavior of the latest deployment;
+- physical Android capture/sensor behavior;
+- packaged desktop launch on supported OS(s);
 - physical building benchmark performance.
 
 Never mark these PASS from code inspection alone.
 
-## Verification / merge loop
+## Final verification loop
 
 ```text
-exact base SHA
-→ protected-surface check
-→ dependency check
-→ reproduce worker evidence
-→ bun run verify
-→ targeted tests
-→ composition review
+read current main + machine state
+→ recompute eligibility
+→ dispatch ≤3
+→ verify protected surfaces
+→ independently reproduce worker evidence
+→ bun run verify + targeted tests
+→ review composition
 → merge
-→ synchronize productization-state.json
-→ rerun relevant journey evidence
+→ update machine state
+→ rerun affected journey
 ```
 
-For the new workflow, add:
+For technology substitution, additionally run provider swap/dual-provider evidence in each applicable layer and confirm semantic/provenance equivalence.
 
-```text
-solution operation replay
-→ deterministic validation replay
-→ agent/direct-manipulation semantic equivalence
-→ solution BOQ calculation replay
-→ BOQ line ↔ operation navigation
-→ observed-reality mutation protection
-→ representative physical/building benchmark
-```
+## Final readiness gate
 
-## Final gate
+`docs/PRODUCTION-READINESS-GATE.md` is binding. Only `PROD-015` may declare `PRODUCT-READY`.
 
-`docs/PRODUCTION-READINESS-GATE.md` is binding. Only `PROD-015` may declare PRODUCT-READY.
-
-The final evidence package now additionally requires the complete interactive-solution building journey, deterministic solution replay, validation proof, generated BOQ traceability, agent/direct-manipulation semantic equivalence and representative building benchmark evidence.
+Final evidence must include both product journeys, all three adapter conformance, the interactive-solution building benchmark, Evidence Envelope/agent safety evidence, technology-substitution evidence for Layers 1–3, security/tenant evidence, quota/cost evidence, exact final SHA and environment/configuration fingerprint.
