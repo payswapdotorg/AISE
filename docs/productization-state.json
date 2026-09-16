@@ -107,7 +107,7 @@
     },
     {
       "id": "PROD-010",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "PROD-002",
         "PROD-004",
@@ -115,14 +115,17 @@
         "PROD-006",
         "PROD-007",
         "PROD-009"
-      ]
+      ],
+      "mergedSha": "b69b50e",
+      "finalizedAt": "2026-09-16T08:00:00Z"
     },
     {
       "id": "PROD-011",
-      "status": "planned",
+      "status": "activated",
       "dependencies": [
         "PROD-010"
-      ]
+      ],
+      "activatedAt": "2026-09-16T08:00:00Z"
     },
     {
       "id": "PROD-012",
