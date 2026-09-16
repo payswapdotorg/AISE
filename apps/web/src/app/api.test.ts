@@ -218,10 +218,10 @@ describe("PROD-002 API seam", () => {
   });
 
   describe("projects adapter", () => {
-    test("lists identity project records", async () => {
+    test("lists identity project records (requester-guarded read)", async () => {
       const result = await loadProjectsLive(
         stubFetch({
-          "/v1/identity/organizations/org-northwind/projects": {
+          "/v1/identity/organizations/org-northwind/projects?requester=user-alice": {
             body: {
               ok: true,
               projects: [
@@ -236,6 +236,7 @@ describe("PROD-002 API seam", () => {
           },
         }),
         "org-northwind",
+        "user-alice",
       );
       expect(result.ok).toBe(true);
       if (result.ok) {
@@ -246,11 +247,12 @@ describe("PROD-002 API seam", () => {
     test("an invalid project record is rejected with the defect named", async () => {
       const result = await loadProjectsLive(
         stubFetch({
-          "/v1/identity/organizations/o/projects": {
+          "/v1/identity/organizations/o/projects?requester=user-alice": {
             body: { ok: true, projects: [{ projectId: "p1" }] },
           },
         }),
         "o",
+        "user-alice",
       );
       expect(result.ok).toBe(false);
       if (!result.ok) {
@@ -396,5 +398,720 @@ describe("PROD-002 API seam", () => {
         expect(result.failure.detail).toContain("observations");
       }
     });
+  });
+});
+
+/* ------------------------------------------------------------------ */
+/* PROD-010 — the typed 4xx envelope + the live write-path adapters     */
+/* ------------------------------------------------------------------ */
+
+import {
+  appendStepLive,
+  createCaseLive,
+  createLiveAuthorizationPort,
+  createProjectLive,
+  createScenarioLive,
+  loadCaseLineageLive,
+  loadComparisonLive,
+  loadEvidenceIndexLive,
+  loadLatestRealityVersionLive,
+  recordApprovalReferenceLive,
+  recordExecutionLive,
+  recordOutcomeLive,
+  runComparisonLive,
+  transitionScenarioStatusLive,
+} from "./api";
+
+/** A fetch stub that RECORDS every call (for exact POST body assertions). */
+function recordingFetch(
+  status: number,
+  body: unknown,
+): { readonly calls: { readonly input: string; readonly init?: RequestInit }[]; readonly fetchImpl: FetchLike } {
+  const calls: { input: string; init?: RequestInit }[] = [];
+  const fetchImpl: FetchLike = async (input, init) => {
+    calls.push({ input, init });
+    return new Response(JSON.stringify(body), {
+      status,
+      headers: { "content-type": "application/json" },
+    });
+  };
+  return { calls, fetchImpl };
+}
+
+const HEX64 = "a".repeat(64);
+const projectAnswer = {
+  ok: true,
+  project: {
+    projectId: "p1",
+    organizationId: "org-northwind",
+    name: "Riverside",
+    createdAt: "2026-01-01T00:00:00.000Z",
+  },
+};
+const caseAnswer = {
+  ok: true,
+  case: {
+    caseId: "case-007",
+    title: "Wall mismatch",
+    status: "open",
+    observations: [],
+    hypotheses: [],
+    missingEvidence: [],
+  },
+};
+const stepAnswer = {
+  ok: true,
+  step: { stepId: "step-001", stepIndex: 1, kind: "property_change", targetNodeId: "wall-north" },
+  state: { stateId: HEX64, stateIndex: 1, nodes: [] },
+};
+const executionAnswer = {
+  ok: true,
+  execution: {
+    executionRecordId: "exec-001",
+    caseId: "case-007",
+    scenarioId: "scenario-office-refit",
+    stateId: HEX64,
+    executedStepIds: ["step-001"],
+    evidenceIds: [HEX64],
+    captureSessionIds: [],
+    executedAt: "2026-03-02T09:00:00.000Z",
+    recordedAt: "2026-03-02T09:05:00.000Z",
+    stateTransition: { fromStatus: "PROPOSED", toStatus: "EXECUTED", evidenceIds: [HEX64] },
+    outcomes: [],
+  },
+};
+const outcomeAnswer = {
+  ok: true,
+  outcome: {
+    outcomeId: "outcome-001",
+    executionRecordId: "exec-001",
+    caseId: "case-007",
+    statement: "The wall was rebuilt to spec.",
+    epistemicStatus: "OBSERVED",
+    evidenceIds: [HEX64],
+  },
+};
+const comparisonAnswer = {
+  ok: true,
+  comparison: {
+    comparisonId: "comp-001",
+    realityRef: { projectId: "p1", versionId: "v002" },
+    stats: { totalEntries: 3, discrepancies: 1 },
+    inputDigest: "b".repeat(64),
+    computedAt: "2026-03-02T10:00:00.000Z",
+  },
+};
+const lineageAnswer = {
+  ok: true,
+  lineage: {
+    caseId: "case-007",
+    executions: [
+      {
+        executionRecordId: "exec-001",
+        executedAt: "2026-03-02T09:00:00.000Z",
+        executedStepIds: ["step-001"],
+        executionEvidenceIds: [HEX64],
+        outcomes: [
+          { outcomeId: "outcome-001", statement: "Rebuilt to spec.", epistemicStatus: "OBSERVED" },
+        ],
+      },
+    ],
+  },
+};
+
+describe("PROD-010 typed 4xx envelope", () => {
+  test("a typed envelope surfaces code/reason/issues as ADDITIVE fields", async () => {
+    const result = await fetchJson(
+      stubFetch({
+        "/x": {
+          status: 422,
+          body: { ok: false, error: "unknown_node_ref", detail: "node nope does not exist" },
+        },
+      }),
+      "/x",
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok && result.failure.kind === "http") {
+      expect(result.failure.status).toBe(422);
+      expect(result.failure.detail).toBe("/x answered HTTP 422");
+      expect(result.failure.code).toBe("unknown_node_ref");
+      expect(result.failure.reason).toBe("node nope does not exist");
+    }
+  });
+
+  test("issues ride bounded with a truncation marker", async () => {
+    const result = await fetchJson(
+      stubFetch({
+        "/x": {
+          status: 400,
+          body: {
+            ok: false,
+            error: "schema_invalid",
+            detail: "request body does not satisfy the Evidence wire contract",
+            issues: [
+              { path: "contentId", code: "invalid_string" },
+              { path: "byteSize", code: "invalid_type" },
+            ],
+          },
+        },
+      }),
+      "/x",
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok && result.failure.kind === "http") {
+      expect(result.failure.issues).toEqual([
+        "contentId: invalid_string",
+        "byteSize: invalid_type",
+      ]);
+      expect(describeApiFailure(result.failure)).toBe(
+        "/x answered HTTP 400 — schema_invalid: request body does not satisfy the Evidence wire contract" +
+          " [issues: contentId: invalid_string; byteSize: invalid_type]",
+      );
+    }
+  });
+
+  test("more than five issues are truncated with an explicit marker", async () => {
+    const result = await fetchJson(
+      stubFetch({
+        "/x": {
+          status: 400,
+          body: {
+            ok: false,
+            error: "schema_invalid",
+            detail: "bad",
+            issues: [1, 2, 3, 4, 5, 6, 7].map((n) => `issue-${String(n)}`),
+          },
+        },
+      }),
+      "/x",
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok && result.failure.kind === "http") {
+      expect(result.failure.issues).toHaveLength(6);
+      expect(result.failure.issues?.[5]).toBe("… (+2 more)");
+    }
+  });
+
+  test("malformed/HTML bodies keep the exact generic detail (no code guessed)", async () => {
+    const html: FetchLike = async () =>
+      new Response("<html>proxy error</html>", { status: 502 });
+    const result = await fetchJson(html, "/x");
+    expect(result.ok).toBe(false);
+    if (!result.ok && result.failure.kind === "http") {
+      expect(result.failure.detail).toBe("/x answered HTTP 502");
+      expect(result.failure.code).toBeUndefined();
+      expect(result.failure.reason).toBeUndefined();
+      expect(describeApiFailure(result.failure)).toBe("/x answered HTTP 502");
+    }
+  });
+
+  test("a 2xx response is unchanged by the envelope work", async () => {
+    const result = await fetchJson(stubFetch({ "/x": { body: { ok: true, hello: 1 } } }), "/x");
+    expect(result).toEqual({ ok: true, value: { ok: true, hello: 1 } });
+  });
+});
+
+describe("PROD-010 write-path adapters (exact wire contracts)", () => {
+  test("createProjectLive posts the identity router's exact body", async () => {
+    const { calls, fetchImpl } = recordingFetch(200, projectAnswer);
+    const result = await createProjectLive(fetchImpl, "org-northwind", {
+      projectId: "p1",
+      name: "Riverside",
+      actor: "user-alice",
+    });
+    expect(result.ok).toBe(true);
+    expect(calls[0]?.input).toBe("/v1/identity/organizations/org-northwind/projects");
+    expect(calls[0]?.init?.method).toBe("POST");
+    expect(JSON.parse(String(calls[0]?.init?.body))).toEqual({
+      projectId: "p1",
+      name: "Riverside",
+      actor: "user-alice",
+    });
+  });
+
+  test("createProjectLive percent-encodes the org id and surfaces typed 4xxs", async () => {
+    const { calls, fetchImpl } = recordingFetch(422, {
+      ok: false,
+      error: "cross_tenant",
+      detail: "the actor is not a member of this organization",
+    });
+    const result = await createProjectLive(fetchImpl, "org/with space", {
+      projectId: "p1",
+      name: "X",
+      actor: "user-alice",
+    });
+    expect(result.ok).toBe(false);
+    expect(calls[0]?.input).toBe("/v1/identity/organizations/org%2Fwith%20space/projects");
+    if (!result.ok && result.failure.kind === "http") {
+      expect(result.failure.code).toBe("cross_tenant");
+    }
+  });
+
+  test("createLiveAuthorizationPort relays the question verbatim; decision is 200 data", async () => {
+    const { calls, fetchImpl } = recordingFetch(200, {
+      ok: true,
+      decision: {
+        allowed: true,
+        grant: {
+          membershipId: "mem-1",
+          roleId: "org-founder",
+          permission: "identity:write",
+          scope: { kind: "organization" },
+        },
+      },
+    });
+    const port = createLiveAuthorizationPort(fetchImpl);
+    const decision = await port.decide({
+      principalId: "user-alice",
+      permission: "identity:write",
+      target: { kind: "organization", organizationId: "org-northwind" },
+    });
+    expect(calls[0]?.input).toBe("/v1/identity/authorize");
+    expect(JSON.parse(String(calls[0]?.init?.body))).toEqual({
+      principalId: "user-alice",
+      permission: "identity:write",
+      target: { kind: "organization", organizationId: "org-northwind" },
+    });
+    expect(decision.allowed).toBe(true);
+  });
+
+  test("createLiveAuthorizationPort THROWS on transport failure (never guesses)", async () => {
+    const port = createLiveAuthorizationPort(stubFetch({ "/v1/identity/authorize": "throw" }));
+    await expect(
+      port.decide({
+        principalId: "user-alice",
+        permission: "identity:write",
+        target: { kind: "organization", organizationId: "org-northwind" },
+      }),
+    ).rejects.toThrow("network failure");
+  });
+
+  test("loadProjectsLive surfaces the typed 422 requester_required", async () => {
+    const result = await loadProjectsLive(
+      stubFetch({
+        "/v1/identity/organizations/o/projects?requester=user-alice": {
+          status: 422,
+          body: {
+            ok: false,
+            error: "requester_required",
+            detail: "guarded reads require a `requester` query parameter",
+          },
+        },
+      }),
+      "o",
+      "user-alice",
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok && result.failure.kind === "http") {
+      expect(result.failure.status).toBe(422);
+      expect(result.failure.code).toBe("requester_required");
+    }
+  });
+
+  test("createScenarioLive posts the intervention router's exact body", async () => {
+    const { calls, fetchImpl } = recordingFetch(200, scenarioResponse());
+    const result = await createScenarioLive(fetchImpl, {
+      scenarioId: "scenario-office-refit",
+      projectId: "project-zurich-hq",
+      title: "Office refit",
+      baselineVersionId: "v002",
+    });
+    expect(result.ok).toBe(true);
+    expect(calls[0]?.input).toBe("/v1/interventions");
+    expect(JSON.parse(String(calls[0]?.init?.body))).toEqual({
+      scenarioId: "scenario-office-refit",
+      projectId: "project-zurich-hq",
+      title: "Office refit",
+      baselineVersionId: "v002",
+    });
+  });
+
+  test("appendStepLive posts the flat body on a percent-encoded :id/steps path", async () => {
+    const { calls, fetchImpl } = recordingFetch(200, stepAnswer);
+    const result = await appendStepLive(fetchImpl, "scenario/one", {
+      kind: "property_change",
+      targetNodeId: "wall-north",
+      property: { key: "thickness", value: 240, unit: "mm" },
+      provenance: { evidenceIds: [HEX64] },
+    });
+    expect(result.ok).toBe(true);
+    expect(calls[0]?.input).toBe("/v1/interventions/scenario%2Fone/steps");
+    expect(JSON.parse(String(calls[0]?.init?.body))).toEqual({
+      kind: "property_change",
+      targetNodeId: "wall-north",
+      property: { key: "thickness", value: 240, unit: "mm" },
+      provenance: { evidenceIds: [HEX64] },
+    });
+    if (result.ok) {
+      expect(result.record.step.stepId).toBe("step-001");
+      expect(result.record.state.stateId).toBe(HEX64);
+    }
+  });
+
+  test("appendStepLive surfaces typed 422s (unknown_node_ref / missing_provenance)", async () => {
+    for (const code of ["unknown_node_ref", "missing_provenance", "numeric_value_without_unit"]) {
+      const result = await appendStepLive(
+        stubFetch({
+          "/v1/interventions/s/steps": {
+            status: 422,
+            body: { ok: false, error: code, detail: `typed: ${code}` },
+          },
+        }),
+        "s",
+        {
+          kind: "note",
+          targetNodeId: "wall-north",
+          text: "note",
+          provenance: { evidenceIds: [HEX64] },
+        },
+      );
+      expect(result.ok).toBe(false);
+      if (!result.ok && result.failure.kind === "http") {
+        expect(result.failure.code).toBe(code);
+      }
+    }
+  });
+
+  test("createCaseLive posts the probe-verified body (projectId = auth body scope)", async () => {
+    const { calls, fetchImpl } = recordingFetch(200, caseAnswer);
+    const result = await createCaseLive(fetchImpl, {
+      caseId: "case-007",
+      projectId: "p1",
+      title: "Wall mismatch",
+      summary: "The wall differs from the design.",
+      createdBy: "user-alice",
+      links: { nodeIds: ["wall-north"], evidenceIds: [HEX64], captureSessionIds: [] },
+    });
+    expect(result.ok).toBe(true);
+    expect(calls[0]?.input).toBe("/v1/cases");
+    expect(JSON.parse(String(calls[0]?.init?.body))).toEqual({
+      caseId: "case-007",
+      projectId: "p1",
+      title: "Wall mismatch",
+      summary: "The wall differs from the design.",
+      createdBy: "user-alice",
+      links: { nodeIds: ["wall-north"], evidenceIds: [HEX64], captureSessionIds: [] },
+    });
+  });
+
+  test("createCaseLive surfaces the typed 422 case_exists", async () => {
+    const result = await createCaseLive(
+      stubFetch({
+        "/v1/cases": {
+          status: 422,
+          body: { ok: false, error: "case_exists", detail: "case case-007 already exists" },
+        },
+      }),
+      {
+        caseId: "case-007",
+        projectId: "p1",
+        title: "Wall mismatch",
+        links: { nodeIds: [], evidenceIds: [], captureSessionIds: [] },
+      },
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok && result.failure.kind === "http") {
+      expect(result.failure.code).toBe("case_exists");
+    }
+  });
+
+  test("loadEvidenceIndexLive validates the register's pairs", async () => {
+    const result = await loadEvidenceIndexLive(
+      stubFetch({
+        "/v1/evidence": {
+          body: {
+            ok: true,
+            evidence: [
+              {
+                evidence: {
+                  contentId: HEX64,
+                  acquisitionMethod: "STILL_IMAGERY",
+                  mediaType: "image/jpeg",
+                  byteSize: 1024,
+                  capturedAt: "2026-01-01T00:00:00.000Z",
+                },
+                invalidation: null,
+              },
+            ],
+          },
+        },
+      }),
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.items[0]?.evidence.contentId).toBe(HEX64);
+      expect(result.items[0]?.invalidation).toBe(null);
+    }
+  });
+
+  test("loadEvidenceIndexLive rejects a malformed entry (never coerced)", async () => {
+    const result = await loadEvidenceIndexLive(
+      stubFetch({
+        "/v1/evidence": { body: { ok: true, evidence: [{ evidence: { contentId: "nope" } }] } },
+      }),
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.failure.kind).toBe("invalid");
+    }
+  });
+
+  test("loadLatestRealityVersionLive answers version:null on 404 (honest empty)", async () => {
+    const result = await loadLatestRealityVersionLive(
+      stubFetch({
+        "/v1/reality/projects/p1/versions/latest": { status: 404, body: { ok: false } },
+      }),
+      "p1",
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.version).toBe(null);
+    }
+  });
+
+  test("loadLatestRealityVersionLive validates the version record", async () => {
+    const result = await loadLatestRealityVersionLive(
+      stubFetch({
+        "/v1/reality/projects/p1/versions/latest": {
+          body: {
+            ok: true,
+            version: {
+              versionId: "v002",
+              createdAt: "2026-01-01T00:00:00.000Z",
+              nodes: [{ nodeId: "wall-north", kind: "wall", epistemicStatus: "OBSERVED" }],
+            },
+          },
+        },
+      }),
+      "p1",
+    );
+    expect(result.ok).toBe(true);
+    if (result.ok && result.version !== null) {
+      expect(result.version.versionId).toBe("v002");
+      expect(result.version.nodeCount).toBe(1);
+    }
+  });
+
+  test("recordApprovalReferenceLive posts { caseId, reviewDecision, reviewedAt }", async () => {
+    const { calls, fetchImpl } = recordingFetch(200, scenarioResponse());
+    const result = await recordApprovalReferenceLive(fetchImpl, "scenario-office-refit", {
+      caseId: "case-007",
+      reviewDecision: "approved",
+      reviewedAt: "2026-03-01T12:00:00.000Z",
+    });
+    expect(result.ok).toBe(true);
+    expect(calls[0]?.input).toBe("/v1/interventions/scenario-office-refit/approval-reference");
+    expect(JSON.parse(String(calls[0]?.init?.body))).toEqual({
+      caseId: "case-007",
+      reviewDecision: "approved",
+      reviewedAt: "2026-03-01T12:00:00.000Z",
+    });
+  });
+
+  test("approval-reference 422s (approval_reference_exists) are typed", async () => {
+    const result = await recordApprovalReferenceLive(
+      stubFetch({
+        "/v1/interventions/s/approval-reference": {
+          status: 422,
+          body: { ok: false, error: "approval_reference_exists", detail: "already recorded" },
+        },
+      }),
+      "s",
+      { caseId: "case-007", reviewDecision: "approved", reviewedAt: "2026-03-01T12:00:00.000Z" },
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok && result.failure.kind === "http") {
+      expect(result.failure.code).toBe("approval_reference_exists");
+    }
+  });
+
+  test("transitionScenarioStatusLive posts { status } and answers { scenario }", async () => {
+    const { calls, fetchImpl } = recordingFetch(200, scenarioResponse());
+    const result = await transitionScenarioStatusLive(fetchImpl, "scenario-office-refit", {
+      status: "under_review",
+    });
+    expect(result.ok).toBe(true);
+    expect(calls[0]?.input).toBe("/v1/interventions/scenario-office-refit/status");
+    expect(JSON.parse(String(calls[0]?.init?.body))).toEqual({ status: "under_review" });
+  });
+
+  test("status 422s (invalid_status_transition / approval_reference_required) are typed", async () => {
+    for (const code of ["invalid_status_transition", "approval_reference_required", "scenario_terminal"]) {
+      const result = await transitionScenarioStatusLive(
+        stubFetch({
+          "/v1/interventions/s/status": {
+            status: 422,
+            body: { ok: false, error: code, detail: `typed: ${code}` },
+          },
+        }),
+        "s",
+        { status: "approved" },
+      );
+      expect(result.ok).toBe(false);
+      if (!result.ok && result.failure.kind === "http") {
+        expect(result.failure.code).toBe(code);
+      }
+    }
+  });
+
+  test("recordExecutionLive posts the exact body; captureSessionIds omitted when absent", async () => {
+    const { calls, fetchImpl } = recordingFetch(200, executionAnswer);
+    const result = await recordExecutionLive(fetchImpl, {
+      executionRecordId: "exec-001",
+      caseId: "case-007",
+      scenarioId: "scenario-office-refit",
+      stateId: HEX64,
+      executedStepIds: ["step-001"],
+      evidenceIds: [HEX64],
+      executedAt: "2026-03-02T09:00:00.000Z",
+      actor: "user-alice",
+    });
+    expect(result.ok).toBe(true);
+    expect(calls[0]?.input).toBe("/v1/executions");
+    const body = JSON.parse(String(calls[0]?.init?.body)) as Record<string, unknown>;
+    expect(body).toEqual({
+      executionRecordId: "exec-001",
+      caseId: "case-007",
+      scenarioId: "scenario-office-refit",
+      stateId: HEX64,
+      executedStepIds: ["step-001"],
+      evidenceIds: [HEX64],
+      executedAt: "2026-03-02T09:00:00.000Z",
+      actor: "user-alice",
+    });
+    expect("captureSessionIds" in body).toBe(false);
+    if (result.ok) {
+      expect(result.record.stateTransition.toStatus).toBe("EXECUTED");
+    }
+  });
+
+  test("recordOutcomeLive posts the exact body on the percent-encoded path", async () => {
+    const { calls, fetchImpl } = recordingFetch(200, outcomeAnswer);
+    const result = await recordOutcomeLive(fetchImpl, "exec/001", {
+      caseId: "case-007",
+      statement: "The wall was rebuilt to spec.",
+      evidenceIds: [HEX64],
+      observedAt: "2026-03-03T09:00:00.000Z",
+      actor: "user-alice",
+    });
+    expect(result.ok).toBe(true);
+    expect(calls[0]?.input).toBe("/v1/executions/exec%2F001/outcomes");
+    expect(JSON.parse(String(calls[0]?.init?.body))).toEqual({
+      caseId: "case-007",
+      statement: "The wall was rebuilt to spec.",
+      evidenceIds: [HEX64],
+      observedAt: "2026-03-03T09:00:00.000Z",
+      actor: "user-alice",
+    });
+  });
+
+  test("outcome 422s (outcome_case_mismatch / outcome_without_evidence) are typed", async () => {
+    for (const code of ["outcome_case_mismatch", "outcome_without_evidence", "unknown_step_ref"]) {
+      const result = await recordOutcomeLive(
+        stubFetch({
+          "/v1/executions/e/outcomes": {
+            status: 422,
+            body: { ok: false, error: code, detail: `typed: ${code}` },
+          },
+        }),
+        "e",
+        { caseId: "case-007", statement: "s", evidenceIds: [HEX64] },
+      );
+      expect(result.ok).toBe(false);
+      if (!result.ok && result.failure.kind === "http") {
+        expect(result.failure.code).toBe(code);
+      }
+    }
+  });
+
+  test("runComparisonLive posts the exact nested body (optionals omitted when absent)", async () => {
+    const { calls, fetchImpl } = recordingFetch(200, comparisonAnswer);
+    const result = await runComparisonLive(fetchImpl, {
+      comparisonId: "comp-001",
+      realityRef: { projectId: "p1", versionId: "v002" },
+      designReference: {
+        sourceOfRecord: {
+          systemClass: "arch-cad",
+          systemInstanceId: "arch-cad-prod-01",
+          sourceRecordId: "IFC-MODEL-0042",
+          revision: "C3",
+          retrievedAt: "2026-03-01T08:00:00.000Z",
+        },
+        items: [
+          {
+            designItemId: "item-1",
+            targetNodeId: "wall-north",
+            label: "North wall",
+            properties: [{ key: "thickness", value: 240, unit: "mm" }],
+          },
+        ],
+      },
+    });
+    expect(result.ok).toBe(true);
+    expect(calls[0]?.input).toBe("/v1/comparisons");
+    const body = JSON.parse(String(calls[0]?.init?.body)) as Record<string, unknown>;
+    expect(body).toEqual({
+      comparisonId: "comp-001",
+      realityRef: { projectId: "p1", versionId: "v002" },
+      designReference: {
+        sourceOfRecord: {
+          systemClass: "arch-cad",
+          systemInstanceId: "arch-cad-prod-01",
+          sourceRecordId: "IFC-MODEL-0042",
+          revision: "C3",
+          retrievedAt: "2026-03-01T08:00:00.000Z",
+        },
+        items: [
+          {
+            designItemId: "item-1",
+            targetNodeId: "wall-north",
+            label: "North wall",
+            properties: [{ key: "thickness", value: 240, unit: "mm" }],
+          },
+        ],
+      },
+    });
+    expect("tolerances" in body).toBe(false);
+    expect("coverage" in body).toBe(false);
+  });
+
+  test("loadComparisonLive + loadCaseLineageLive validate their records", async () => {
+    const comparison = await loadComparisonLive(
+      stubFetch({ "/v1/comparisons/comp-001": { body: comparisonAnswer } }),
+      "comp-001",
+    );
+    expect(comparison.ok).toBe(true);
+    if (comparison.ok) {
+      expect(comparison.record.stats.discrepancies).toBe(1);
+    }
+    const lineage = await loadCaseLineageLive(
+      stubFetch({ "/v1/executions/lineage/case-007": { body: lineageAnswer } }),
+      "case-007",
+    );
+    expect(lineage.ok).toBe(true);
+    if (lineage.ok) {
+      expect(lineage.record.executions[0]?.outcomes[0]?.epistemicStatus).toBe("OBSERVED");
+    }
+  });
+
+  test("lineage typed refusals surface verbatim", async () => {
+    const result = await loadCaseLineageLive(
+      stubFetch({
+        "/v1/executions/lineage/case-007": {
+          status: 422,
+          body: {
+            ok: false,
+            error: "lineage_missing_outcome",
+            detail: "execution exec-001 has no recorded outcome",
+          },
+        },
+      }),
+      "case-007",
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok && result.failure.kind === "http") {
+      expect(result.failure.code).toBe("lineage_missing_outcome");
+      expect(describeApiFailure(result.failure)).toContain("lineage_missing_outcome");
+    }
   });
 });

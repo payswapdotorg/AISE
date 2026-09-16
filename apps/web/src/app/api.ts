@@ -25,7 +25,7 @@
  * the caller's concern (AbortController is passed through untouched).
  */
 
-import type { RealityPaneView } from "../shell";
+import type { RealityPaneView, ShellAuthorizationDecision, ShellAuthorizationPort } from "../shell";
 import { scenarioReadRequest, type ViewerScenario } from "../viewer";
 
 /* ------------------------------------------------------------------ */
@@ -104,8 +104,108 @@ export async function probeApi(fetchImpl: FetchLike): Promise<ApiStatus> {
 /** Why a `fetchJson` failed (rendered verbatim in error states). */
 export type ApiFailure =
   | { readonly kind: "network"; readonly detail: string }
-  | { readonly kind: "http"; readonly status: number; readonly detail: string }
+  | {
+      readonly kind: "http";
+      readonly status: number;
+      readonly detail: string;
+      /** The typed 4xx/5xx envelope's `error` code, when the body was one. */
+      readonly code?: string;
+      /** The typed envelope's `detail` (the server's human reason). */
+      readonly reason?: string;
+      /** Bounded issue summaries from the envelope (with a truncation marker). */
+      readonly issues?: readonly string[];
+    }
   | { readonly kind: "invalid"; readonly detail: string };
+
+/* Bounded text (an explicit truncation marker, never a silent cut). */
+const CODE_BOUND = 128;
+const REASON_BOUND = 500;
+const ISSUE_BOUND = 200;
+const ISSUES_MAX = 5;
+
+function boundedText(value: string, bound: number): string {
+  return value.length <= bound ? value : `${value.slice(0, bound)}… [truncated]`;
+}
+
+/** Summarize one envelope issue entry deterministically (no values). */
+function issueText(entry: unknown): string {
+  if (
+    typeof entry === "object" &&
+    entry !== null &&
+    !Array.isArray(entry) &&
+    typeof (entry as Record<string, unknown>).path === "string" &&
+    typeof (entry as Record<string, unknown>).code === "string"
+  ) {
+    const record = entry as Record<string, unknown>;
+    return `${record.path as string}: ${record.code as string}`;
+  }
+  if (typeof entry === "string") {
+    return entry;
+  }
+  try {
+    return boundedText(JSON.stringify(entry) ?? String(entry), ISSUE_BOUND);
+  } catch {
+    return "unrenderable issue";
+  }
+}
+
+/**
+ * The typed HTTP failure for a non-OK response: the base detail stays the
+ * exact generic text (`<path> answered HTTP <status>`); when the body parses
+ * ONCE into the backend's typed envelope `{ ok:false, error, detail, issues? }`,
+ * its code/reason/issues surface as ADDITIVE optional fields (bounded, with
+ * an explicit truncation marker). Malformed/HTML bodies keep the generic
+ * detail and gain nothing — never a guess.
+ */
+async function httpFailure(path: string, response: Response): Promise<ApiFailure> {
+  const failure: {
+    kind: "http";
+    status: number;
+    detail: string;
+    code?: string;
+    reason?: string;
+    issues?: string[];
+  } = {
+    kind: "http",
+    status: response.status,
+    detail: `${path} answered HTTP ${String(response.status)}`,
+  };
+  let text: string;
+  try {
+    text = await response.text();
+  } catch {
+    return failure; // unreadable body — the generic detail stands
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text) as unknown;
+  } catch {
+    return failure; // malformed/HTML body — the generic detail stands
+  }
+  if (
+    typeof parsed !== "object" ||
+    parsed === null ||
+    Array.isArray(parsed) ||
+    (parsed as Record<string, unknown>).ok !== false
+  ) {
+    return failure; // not the typed envelope — never coerced
+  }
+  const envelope = parsed as Record<string, unknown>;
+  if (typeof envelope.error === "string" && envelope.error.length > 0) {
+    failure.code = boundedText(envelope.error, CODE_BOUND);
+  }
+  if (typeof envelope.detail === "string" && envelope.detail.length > 0) {
+    failure.reason = boundedText(envelope.detail, REASON_BOUND);
+  }
+  if (Array.isArray(envelope.issues)) {
+    const issues = envelope.issues.map(issueText);
+    failure.issues =
+      issues.length <= ISSUES_MAX
+        ? issues
+        : [...issues.slice(0, ISSUES_MAX), `… (+${String(issues.length - ISSUES_MAX)} more)`];
+  }
+  return failure;
+}
 
 /** The never-throwing fetch result. */
 export type JsonResult =
@@ -133,11 +233,7 @@ export async function fetchJson(
   if (!response.ok) {
     return {
       ok: false,
-      failure: {
-        kind: "http",
-        status: response.status,
-        detail: `${path} answered HTTP ${String(response.status)}`,
-      },
+      failure: await httpFailure(path, response),
     };
   }
   let value: unknown;
@@ -363,16 +459,22 @@ export async function loadScenarioIndexLive(
 
 /**
  * Load an organization's project list LIVE
- * (`GET /v1/identity/organizations/:orgId/projects`, same-origin).
+ * (`GET /v1/identity/organizations/:orgId/projects?requester=<principalId>`,
+ * same-origin). The identity router's guarded reads REQUIRE the requester
+ * query parameter (the acting principal); both path and requester are
+ * percent-encoded. A missing requester is a typed 422 `requester_required`.
  */
 export async function loadProjectsLive(
   fetchImpl: FetchLike,
   organizationId: string,
+  requester: string,
 ): Promise<
   | { ok: true; projects: readonly LiveRecord<ProjectRecord>[] }
   | { ok: false; failure: ApiFailure }
 > {
-  const endpoint = `/v1/identity/organizations/${encodeURIComponent(organizationId)}/projects`;
+  const endpoint = `/v1/identity/organizations/${encodeURIComponent(
+    organizationId,
+  )}/projects?requester=${encodeURIComponent(requester)}`;
   const result = envelopePayload(await fetchJson(fetchImpl, endpoint), endpoint);
   if (!result.ok) {
     return result;
@@ -406,8 +508,19 @@ export function describeApiFailure(failure: ApiFailure): string {
   switch (failure.kind) {
     case "network":
       return `network failure — ${failure.detail}`;
-    case "http":
-      return failure.detail;
+    case "http": {
+      if (failure.code === undefined) {
+        return failure.detail;
+      }
+      let text = `${failure.detail} — ${failure.code}`;
+      if (failure.reason !== undefined) {
+        text += `: ${failure.reason}`;
+      }
+      if (failure.issues !== undefined && failure.issues.length > 0) {
+        text += ` [issues: ${failure.issues.join("; ")}]`;
+      }
+      return text;
+    }
     case "invalid":
       return `unexpected response — ${failure.detail}`;
   }
@@ -1023,4 +1136,683 @@ export async function signOutSession(
     return { ok: true };
   }
   return { ok: false, failure: result.failure };
+}
+
+/* ------------------------------------------------------------------ */
+/* PROD-010 — the live WRITE-path adapters (exact backend contracts)   */
+/* ------------------------------------------------------------------ */
+
+import type {
+  AppendStepRequestBody,
+  CreateCaseRequestBody,
+} from "./create-forms";
+import type {
+  RecordExecutionRequestBody,
+  RecordOutcomeRequestBody,
+  RunComparisonRequestBody,
+} from "./outcome-forms";
+/** POST one JSON body same-origin (the shared write transport). */
+async function postJson(
+  fetchImpl: FetchLike,
+  path: string,
+  body: unknown,
+): Promise<JsonResult> {
+  return fetchJson(fetchImpl, path, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
+
+/** The outcome of a write adapter: the created record, or a typed failure. */
+export type WriteOutcome<T> =
+  | { readonly ok: true; readonly record: T; readonly endpoint: string }
+  | { readonly ok: false; readonly failure: ApiFailure };
+
+/** Extract + validate a `{ ok: true, <field> }` payload field. */
+function payloadField<T>(
+  result: JsonResult,
+  endpoint: string,
+  field: string,
+  validate: (value: unknown) => T,
+): WriteOutcome<T> {
+  if (!result.ok) {
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  if (!isRecord(payload) || payload.ok !== true) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: `${endpoint} did not return the expected { ok: true, … } envelope`,
+      },
+    };
+  }
+  try {
+    return { ok: true, record: validate(payload[field]), endpoint };
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: error instanceof Error ? error.message : "response failed validation",
+      },
+    };
+  }
+}
+
+/**
+ * Create one project LIVE — `POST /v1/identity/organizations/:orgId/projects`
+ * with the identity router's EXACT body `{ projectId, name, actor }` (actor =
+ * the acting principal per the identity contract). The answer `{ project }`
+ * is structurally validated before use.
+ */
+export async function createProjectLive(
+  fetchImpl: FetchLike,
+  organizationId: string,
+  body: { readonly projectId: string; readonly name: string; readonly actor: string },
+): Promise<WriteOutcome<ProjectRecord>> {
+  const endpoint = `/v1/identity/organizations/${encodeURIComponent(organizationId)}/projects`;
+  return payloadField(
+    await postJson(fetchImpl, endpoint, {
+      projectId: body.projectId,
+      name: body.name,
+      actor: body.actor,
+    }),
+    endpoint,
+    "project",
+    validateProjectRecord,
+  );
+}
+
+/**
+ * The LIVE authorization port: relays `POST /v1/identity/authorize` with the
+ * request VERBATIM (`{ principalId, permission, target }`) to the shell's
+ * `ShellAuthorizationPort` seam. The decision (allowed OR refused) is 200
+ * DATA — never an error; transport/validation failures THROW (the broker
+ * propagates wiring failures, never guesses a decision).
+ */
+export function createLiveAuthorizationPort(fetchImpl: FetchLike): ShellAuthorizationPort {
+  const endpoint = "/v1/identity/authorize";
+  return {
+    decide: async (request): Promise<ShellAuthorizationDecision> => {
+      const result = await postJson(fetchImpl, endpoint, request);
+      if (!result.ok) {
+        throw new Error(describeApiFailure(result.failure));
+      }
+      const payload = result.value as Record<string, unknown>;
+      if (!isRecord(payload) || payload.ok !== true || !isRecord(payload.decision)) {
+        throw new Error(`${endpoint} did not return the expected { ok: true, decision } envelope`);
+      }
+      // The AISE-040 broker re-validates the decision shape; the port relays
+      // it verbatim (the identity module stays the authority).
+      return payload.decision as unknown as ShellAuthorizationDecision;
+    },
+  };
+}
+
+/**
+ * Create one intervention scenario LIVE — `POST /v1/interventions` with the
+ * router's EXACT body `{ scenarioId, projectId, title, baselineVersionId }`
+ * (the baseline is a reality `vNNN` sequence id, pinned server-side).
+ */
+export async function createScenarioLive(
+  fetchImpl: FetchLike,
+  body: {
+    readonly scenarioId: string;
+    readonly projectId: string;
+    readonly title: string;
+    readonly baselineVersionId: string;
+  },
+): Promise<WriteOutcome<ViewerScenario>> {
+  const endpoint = "/v1/interventions";
+  return payloadField(
+    await postJson(fetchImpl, endpoint, {
+      scenarioId: body.scenarioId,
+      projectId: body.projectId,
+      title: body.title,
+      baselineVersionId: body.baselineVersionId,
+    }),
+    endpoint,
+    "scenario",
+    validateScenarioRecord,
+  );
+}
+
+/** The materialized step answer of `POST /v1/interventions/:id/steps`. */
+export interface AppendStepAnswer {
+  readonly step: {
+    readonly stepId: string;
+    readonly stepIndex: number;
+    readonly kind: string;
+    readonly targetNodeId: string;
+  };
+  readonly state: {
+    readonly stateId: string;
+    readonly stateIndex: number;
+  };
+}
+
+function validateAppendStepAnswer(value: unknown): AppendStepAnswer {
+  const defects: string[] = [];
+  if (!isRecord(value)) {
+    throw new Error("append-step answer must be a JSON object");
+  }
+  const step = value.step;
+  const state = value.state;
+  if (!isRecord(step)) {
+    defects.push("step must be an object");
+  } else {
+    requireString(step.stepId, "step.stepId", defects);
+    if (typeof step.stepIndex !== "number" || !Number.isInteger(step.stepIndex)) {
+      defects.push("step.stepIndex must be an integer");
+    }
+    requireString(step.kind, "step.kind", defects);
+    requireString(step.targetNodeId, "step.targetNodeId", defects);
+  }
+  if (!isRecord(state)) {
+    defects.push("state must be an object");
+  } else {
+    requireString(state.stateId, "state.stateId", defects);
+    if (typeof state.stateIndex !== "number" || !Number.isInteger(state.stateIndex)) {
+      defects.push("state.stateIndex must be an integer");
+    }
+  }
+  if (defects.length > 0) {
+    throw new Error(`append-step answer is not structurally valid: ${defects.join("; ")}`);
+  }
+  return value as unknown as AppendStepAnswer;
+}
+
+/**
+ * Append one step LIVE — `POST /v1/interventions/:id/steps` (the scenario id
+ * is percent-encoded in the path) with the FLAT wire body carrying the five
+ * per-kind required fields + typed-unit properties. The router's `{ step,
+ * state }` answer is structurally validated; typed 422s (`unknown_node_ref`,
+ * `missing_provenance`, `numeric_value_without_unit`, …) surface as typed
+ * failures via the envelope.
+ */
+export async function appendStepLive(
+  fetchImpl: FetchLike,
+  scenarioId: string,
+  body: AppendStepRequestBody,
+): Promise<WriteOutcome<AppendStepAnswer>> {
+  const endpoint = `/v1/interventions/${encodeURIComponent(scenarioId)}/steps`;
+  const result = envelopePayload(await postJson(fetchImpl, endpoint, body), endpoint);
+  if (!result.ok) {
+    return result;
+  }
+  try {
+    return {
+      ok: true,
+      record: validateAppendStepAnswer(result.value),
+      endpoint,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: error instanceof Error ? error.message : "append-step answer failed validation",
+      },
+    };
+  }
+}
+
+/**
+ * Create one engineering case LIVE — `POST /v1/cases` with the probe-verified
+ * wire body `{ caseId, projectId, title, summary, createdBy, links }`
+ * (`projectId` is the auth body scope — POST /v1/cases is BODY-scoped; the
+ * cases core parse carries summary/createdBy on the wire unpersisted).
+ */
+export async function createCaseLive(
+  fetchImpl: FetchLike,
+  body: CreateCaseRequestBody,
+): Promise<WriteOutcome<CaseDetailRecord>> {
+  const endpoint = "/v1/cases";
+  return payloadField(
+    await postJson(fetchImpl, endpoint, body),
+    endpoint,
+    "case",
+    validateCaseDetail,
+  );
+}
+
+/** One register entry: the verbatim evidence record + invalidation state. */
+export interface EvidenceIndexItem {
+  readonly evidence: {
+    readonly contentId: string;
+    readonly acquisitionMethod: string;
+    readonly mediaType: string;
+    readonly byteSize: number;
+    readonly capturedAt: string;
+  };
+  readonly invalidation: { readonly reason: string; readonly invalidatedAt: string } | null;
+}
+
+function validateEvidenceIndexItem(value: unknown): EvidenceIndexItem {
+  const defects: string[] = [];
+  if (!isRecord(value)) {
+    throw new Error("evidence index entry must be a JSON object");
+  }
+  const evidence = value.evidence;
+  if (!isRecord(evidence)) {
+    defects.push("evidence must be an object");
+  } else {
+    requireString(evidence.contentId, "evidence.contentId", defects);
+    requireString(evidence.acquisitionMethod, "evidence.acquisitionMethod", defects);
+    requireString(evidence.mediaType, "evidence.mediaType", defects);
+    if (typeof evidence.byteSize !== "number" || !Number.isInteger(evidence.byteSize)) {
+      defects.push("evidence.byteSize must be an integer");
+    }
+    requireString(evidence.capturedAt, "evidence.capturedAt", defects);
+  }
+  const invalidation = value.invalidation;
+  if (invalidation !== null && !isRecord(invalidation)) {
+    defects.push("invalidation must be an object or null");
+  }
+  if (defects.length > 0) {
+    throw new Error(`evidence index entry is not structurally valid: ${defects.join("; ")}`);
+  }
+  return value as unknown as EvidenceIndexItem;
+}
+
+/**
+ * Load the evidence register LIVE — `GET /v1/evidence` (invalidated records
+ * are EXCLUDED by the backend's default query, mirroring the register's own
+ * read discipline).
+ */
+export async function loadEvidenceIndexLive(
+  fetchImpl: FetchLike,
+): Promise<
+  | { readonly ok: true; readonly items: readonly EvidenceIndexItem[]; readonly endpoint: string }
+  | { readonly ok: false; readonly failure: ApiFailure }
+> {
+  const endpoint = "/v1/evidence";
+  const result = envelopePayload(await fetchJson(fetchImpl, endpoint), endpoint);
+  if (!result.ok) {
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  if (!Array.isArray(payload.evidence)) {
+    return {
+      ok: false,
+      failure: { kind: "invalid", detail: `${endpoint} did not return an evidence array` },
+    };
+  }
+  try {
+    return {
+      ok: true,
+      items: payload.evidence.map(validateEvidenceIndexItem),
+      endpoint,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: error instanceof Error ? error.message : "evidence index failed validation",
+      },
+    };
+  }
+}
+
+/** The latest-reality-version projection (what the baseline picker needs). */
+export interface LatestRealityVersion {
+  readonly versionId: string;
+  readonly createdAt: string;
+  readonly nodeCount: number;
+}
+
+/**
+ * Load the project's LATEST reality version LIVE —
+ * `GET /v1/reality/projects/:id/versions/latest`. A 404 is an HONEST EMPTY
+ * result (`version: null` — no snapshot recorded yet), never an error.
+ */
+export async function loadLatestRealityVersionLive(
+  fetchImpl: FetchLike,
+  projectId: string,
+): Promise<
+  | { readonly ok: true; readonly version: LatestRealityVersion | null; readonly endpoint: string }
+  | { readonly ok: false; readonly failure: ApiFailure }
+> {
+  const endpoint = `/v1/reality/projects/${encodeURIComponent(projectId)}/versions/latest`;
+  const result = envelopePayload(await fetchJson(fetchImpl, endpoint), endpoint);
+  if (!result.ok) {
+    if (result.failure.kind === "http" && result.failure.status === 404) {
+      return { ok: true, version: null, endpoint };
+    }
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  try {
+    const version = validateGraphVersion(payload.version);
+    return {
+      ok: true,
+      version: {
+        versionId: version.versionId,
+        createdAt: version.createdAt,
+        nodeCount: version.nodes.length,
+      },
+      endpoint,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: error instanceof Error ? error.message : "reality version failed validation",
+      },
+    };
+  }
+}
+
+/**
+ * Record one approval reference LIVE —
+ * `POST /v1/interventions/:id/approval-reference` with the EXACT body
+ * `{ caseId, reviewDecision, reviewedAt }` (a Case-domain review reference,
+ * recorded VERBATIM). Answers `{ scenario }`.
+ */
+export async function recordApprovalReferenceLive(
+  fetchImpl: FetchLike,
+  scenarioId: string,
+  body: {
+    readonly caseId: string;
+    readonly reviewDecision: string;
+    readonly reviewedAt: string;
+  },
+): Promise<WriteOutcome<ViewerScenario>> {
+  const endpoint = `/v1/interventions/${encodeURIComponent(scenarioId)}/approval-reference`;
+  return payloadField(
+    await postJson(fetchImpl, endpoint, {
+      caseId: body.caseId,
+      reviewDecision: body.reviewDecision,
+      reviewedAt: body.reviewedAt,
+    }),
+    endpoint,
+    "scenario",
+    validateScenarioRecord,
+  );
+}
+
+/**
+ * Transition a scenario's status LIVE — `POST /v1/interventions/:id/status`
+ * with the EXACT body `{ status }` (the governed transition table is the
+ * backend's authority; illegal edges are typed 422 `invalid_status_transition`).
+ * Answers `{ scenario }`.
+ */
+export async function transitionScenarioStatusLive(
+  fetchImpl: FetchLike,
+  scenarioId: string,
+  body: { readonly status: string },
+): Promise<WriteOutcome<ViewerScenario>> {
+  const endpoint = `/v1/interventions/${encodeURIComponent(scenarioId)}/status`;
+  return payloadField(
+    await postJson(fetchImpl, endpoint, { status: body.status }),
+    endpoint,
+    "scenario",
+    validateScenarioRecord,
+  );
+}
+
+/** The full execution record (verbatim subset the surface renders). */
+export interface ExecutionDetailRecord {
+  readonly executionRecordId: string;
+  readonly caseId: string;
+  readonly scenarioId: string;
+  readonly stateId: string;
+  readonly executedStepIds: readonly string[];
+  readonly evidenceIds: readonly string[];
+  readonly captureSessionIds: readonly string[];
+  readonly executedAt: string;
+  readonly recordedAt: string;
+  readonly stateTransition: {
+    readonly fromStatus: string;
+    readonly toStatus: string;
+    readonly evidenceIds: readonly string[];
+  };
+  readonly outcomes: readonly {
+    readonly outcomeId: string;
+    readonly statement: string;
+    readonly epistemicStatus: string;
+  }[];
+}
+
+function validateExecutionDetail(value: unknown): ExecutionDetailRecord {
+  const defects: string[] = [];
+  if (!isRecord(value)) {
+    throw new Error("execution record must be a JSON object");
+  }
+  for (const field of ["executionRecordId", "caseId", "scenarioId", "stateId"] as const) {
+    requireString(value[field], field, defects);
+  }
+  for (const field of ["executedStepIds", "evidenceIds", "captureSessionIds"] as const) {
+    if (!Array.isArray(value[field])) {
+      defects.push(`${field} must be an array`);
+    }
+  }
+  requireString(value.executedAt, "executedAt", defects);
+  requireString(value.recordedAt, "recordedAt", defects);
+  const transition = value.stateTransition;
+  if (!isRecord(transition)) {
+    defects.push("stateTransition must be an object");
+  } else {
+    requireString(transition.fromStatus, "stateTransition.fromStatus", defects);
+    requireString(transition.toStatus, "stateTransition.toStatus", defects);
+    if (!Array.isArray(transition.evidenceIds)) {
+      defects.push("stateTransition.evidenceIds must be an array");
+    }
+  }
+  if (!Array.isArray(value.outcomes)) {
+    defects.push("outcomes must be an array");
+  }
+  if (defects.length > 0) {
+    throw new Error(`execution record is not structurally valid: ${defects.join("; ")}`);
+  }
+  return value as unknown as ExecutionDetailRecord;
+}
+
+/**
+ * Record one execution LIVE — `POST /v1/executions` with the router's EXACT
+ * body (optional `captureSessionIds` OMITTED when absent; `actor` rides the
+ * wire unparsed per the probe contract). The full-record answer (with the
+ * PROPOSED→EXECUTED state transition + outcomes) is validated.
+ */
+export async function recordExecutionLive(
+  fetchImpl: FetchLike,
+  body: RecordExecutionRequestBody,
+): Promise<WriteOutcome<ExecutionDetailRecord>> {
+  const endpoint = "/v1/executions";
+  return payloadField(
+    await postJson(fetchImpl, endpoint, body),
+    endpoint,
+    "execution",
+    validateExecutionDetail,
+  );
+}
+
+/** One recorded OBSERVED outcome (verbatim subset the surface renders). */
+export interface OutcomeDetailRecord {
+  readonly outcomeId: string;
+  readonly executionRecordId: string;
+  readonly caseId: string;
+  readonly statement: string;
+  readonly epistemicStatus: string;
+  readonly evidenceIds: readonly string[];
+}
+
+function validateOutcomeDetail(value: unknown): OutcomeDetailRecord {
+  const defects: string[] = [];
+  if (!isRecord(value)) {
+    throw new Error("outcome record must be a JSON object");
+  }
+  for (const field of [
+    "outcomeId",
+    "executionRecordId",
+    "caseId",
+    "statement",
+    "epistemicStatus",
+  ] as const) {
+    requireString(value[field], field, defects);
+  }
+  if (!Array.isArray(value.evidenceIds)) {
+    defects.push("evidenceIds must be an array");
+  }
+  if (defects.length > 0) {
+    throw new Error(`outcome record is not structurally valid: ${defects.join("; ")}`);
+  }
+  return value as unknown as OutcomeDetailRecord;
+}
+
+/**
+ * Record one OBSERVED post-work outcome LIVE —
+ * `POST /v1/executions/:id/outcomes` with the EXACT body (optional
+ * `captureSessionIds`/`measurementRefs` omitted when absent; `observedAt` +
+ * `actor` ride the wire unparsed per the probe contract).
+ */
+export async function recordOutcomeLive(
+  fetchImpl: FetchLike,
+  executionRecordId: string,
+  body: RecordOutcomeRequestBody,
+): Promise<WriteOutcome<OutcomeDetailRecord>> {
+  const endpoint = `/v1/executions/${encodeURIComponent(executionRecordId)}/outcomes`;
+  return payloadField(
+    await postJson(fetchImpl, endpoint, body),
+    endpoint,
+    "outcome",
+    validateOutcomeDetail,
+  );
+}
+
+/** The full comparison record (verbatim subset the surface renders). */
+export interface ComparisonDetailRecord {
+  readonly comparisonId: string;
+  readonly realityRef: { readonly projectId: string; readonly versionId: string };
+  readonly stats: { readonly totalEntries: number; readonly discrepancies: number };
+  readonly inputDigest: string;
+  readonly computedAt: string;
+}
+
+function validateComparisonDetail(value: unknown): ComparisonDetailRecord {
+  const defects: string[] = [];
+  if (!isRecord(value)) {
+    throw new Error("comparison record must be a JSON object");
+  }
+  requireString(value.comparisonId, "comparisonId", defects);
+  const realityRef = value.realityRef;
+  if (!isRecord(realityRef)) {
+    defects.push("realityRef must be an object");
+  } else {
+    requireString(realityRef.projectId, "realityRef.projectId", defects);
+    requireString(realityRef.versionId, "realityRef.versionId", defects);
+  }
+  const stats = value.stats;
+  if (!isRecord(stats)) {
+    defects.push("stats must be an object");
+  } else {
+    if (typeof stats.totalEntries !== "number" || !Number.isInteger(stats.totalEntries)) {
+      defects.push("stats.totalEntries must be an integer");
+    }
+    if (typeof stats.discrepancies !== "number" || !Number.isInteger(stats.discrepancies)) {
+      defects.push("stats.discrepancies must be an integer");
+    }
+  }
+  requireString(value.inputDigest, "inputDigest", defects);
+  requireString(value.computedAt, "computedAt", defects);
+  if (defects.length > 0) {
+    throw new Error(`comparison record is not structurally valid: ${defects.join("; ")}`);
+  }
+  return value as unknown as ComparisonDetailRecord;
+}
+
+/**
+ * Run one reality-vs-design comparison LIVE — `POST /v1/comparisons` with the
+ * EXACT nested body (`designReference.sourceOfRecord` five required fields +
+ * `items[].properties` REQUIRED possibly empty; optional `tolerances` /
+ * `coverage` OMITTED when absent). The full record (stats + inputDigest) is
+ * validated.
+ */
+export async function runComparisonLive(
+  fetchImpl: FetchLike,
+  body: RunComparisonRequestBody,
+): Promise<WriteOutcome<ComparisonDetailRecord>> {
+  const endpoint = "/v1/comparisons";
+  return payloadField(
+    await postJson(fetchImpl, endpoint, body),
+    endpoint,
+    "comparison",
+    validateComparisonDetail,
+  );
+}
+
+/** Load one full comparison record LIVE — `GET /v1/comparisons/:id`. */
+export async function loadComparisonLive(
+  fetchImpl: FetchLike,
+  comparisonId: string,
+): Promise<WriteOutcome<ComparisonDetailRecord>> {
+  const endpoint = `/v1/comparisons/${encodeURIComponent(comparisonId)}`;
+  return payloadField(
+    await fetchJson(fetchImpl, endpoint),
+    endpoint,
+    "comparison",
+    validateComparisonDetail,
+  );
+}
+
+/** The verified issue→outcome lineage (verbatim subset the surface renders). */
+export interface CaseLineageRecord {
+  readonly caseId: string;
+  readonly executions: readonly {
+    readonly executionRecordId: string;
+    readonly executedAt: string;
+    readonly executedStepIds: readonly string[];
+    readonly executionEvidenceIds: readonly string[];
+    readonly outcomes: readonly {
+      readonly outcomeId: string;
+      readonly statement: string;
+      readonly epistemicStatus: string;
+    }[];
+  }[];
+}
+
+function validateCaseLineage(value: unknown): CaseLineageRecord {
+  const defects: string[] = [];
+  if (!isRecord(value)) {
+    throw new Error("case lineage must be a JSON object");
+  }
+  requireString(value.caseId, "caseId", defects);
+  if (!Array.isArray(value.executions)) {
+    defects.push("executions must be an array");
+  } else {
+    for (const execution of value.executions) {
+      if (!isRecord(execution) || typeof execution.executionRecordId !== "string") {
+        defects.push("every lineage execution must carry an executionRecordId");
+        break;
+      }
+    }
+  }
+  if (defects.length > 0) {
+    throw new Error(`case lineage is not structurally valid: ${defects.join("; ")}`);
+  }
+  return value as unknown as CaseLineageRecord;
+}
+
+/**
+ * Load the verified issue→outcome lineage LIVE —
+ * `GET /v1/executions/lineage/:caseId` (the case id percent-encoded). A
+ * missing execution/outcome link is a TYPED refusal surfaced by the backend
+ * (`lineage_missing_execution` / `lineage_missing_outcome`), never coerced.
+ */
+export async function loadCaseLineageLive(
+  fetchImpl: FetchLike,
+  caseId: string,
+): Promise<WriteOutcome<CaseLineageRecord>> {
+  const endpoint = `/v1/executions/lineage/${encodeURIComponent(caseId)}`;
+  return payloadField(
+    await fetchJson(fetchImpl, endpoint),
+    endpoint,
+    "lineage",
+    validateCaseLineage,
+  );
 }
