@@ -250,7 +250,7 @@ session mid-journey (observed: `session_invalid` on a new connection while the
 minting connection still answered 200). Externalize the session store onto the
 PROD-007 Upstash primitives: a `SessionStore` twin over `RedisClientPort`
 (REST, TTL'd keys, the PROD-007 outage-degradation discipline), env-gated —
-`AISE_REDIS_URL` + `AISE_REDIS_TOKEN` present → Redis-backed sessions; absent
+`AISE_REDIS_REST_URL` + `AISE_REDIS_REST_TOKEN` present → Redis-backed sessions; absent
 → the Fs twin, unchanged. No auth-semantics change: same cookie, same TTL
 contract, same sweep behavior; a store twin, not a redesign.
 

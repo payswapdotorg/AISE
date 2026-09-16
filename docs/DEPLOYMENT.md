@@ -115,6 +115,13 @@ warm instances without session affinity, so:
   Without the pair, sessions stay per-instance Fs (re-enter the demo to
   continue after a loss).
 
+  Before wiring the pair, verify the URL actually resolves (`nslookup
+  <host>.upstash.io` or a browser visit) — the first operator-supplied URL
+  (meet-ewe-145933.upstash.io) was NXDOMAIN in public DNS (deleted database or
+  mis-copied value) and would have failed every request. Copy the exact
+  `UPSTASH_REDIS_REST_URL` from the database's REST API section in the Upstash
+  console, and the current token with the console's copy button.
+
 The runtime degrades loudly, never silently: unwritable data dirs, invalid
 config and refused connections are typed errors in the response and the logs.
 
