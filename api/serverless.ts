@@ -35,10 +35,18 @@
  * consumes @aise/shared-contracts.
  *
  * Web-standard handler shape `(request: Request) => Promise<Response>` —
- * the default export of the emitted bundle. No Vercel SDK dependency is
+ * Vercel's Functions API consumes it through a `fetch` export (a DEFAULT
+ * export is treated as the legacy `(req, res) => void` Node signature whose
+ * return value is ignored — the first real deployment proved that). The
+ * export uses the `{ handler as fetch }` form deliberately: it exports the
+ * value under the name `fetch` WITHOUT introducing a module-scope `fetch`
+ * binding that would shadow the global `fetch` the bundled backend code
+ * calls (Upstash REST, R2, provider HTTP). No Vercel SDK dependency is
  * required (the function is runtime-neutral web glue).
  */
 
 import { createServerlessHandler } from "@aise/api/runtime";
 
-export default createServerlessHandler();
+const handler = createServerlessHandler();
+
+export { handler as fetch };
