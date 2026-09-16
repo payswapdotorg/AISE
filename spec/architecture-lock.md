@@ -1,8 +1,8 @@
 # AISE v2 Architecture Lock
 
-**Version:** 2.2 + client-adapter boundary
+**Version:** 2.2 + client-adapter boundary + interactive solution workflow
 **Status:** FROZEN BASELINE
-**Change records:** `spec/governance/architecture-change-record-002.md`, `spec/governance/architecture-change-record-003.md`, `spec/governance/architecture-change-record-004.md`
+**Change records:** `spec/governance/architecture-change-record-002.md`, `spec/governance/architecture-change-record-003.md`, `spec/governance/architecture-change-record-004.md`, `spec/governance/architecture-change-record-005.md`
 
 These invariants cannot be changed by implementation workers. Changes require an Architecture Change Record approved by the Architect/Tech Lead.
 
@@ -14,9 +14,10 @@ These invariants cannot be changed by implementation workers. Changes require an
 4. Verification Engine is the only formal deterministic verification authority.
 5. BOQ Graph is a domain representation, never a second reality authority.
 6. Intervention states are proposals until supported by post-execution evidence.
-7. LLMs and agents are non-authoritative.
-8. UI state, mobile state, desktop state and exported files are not canonical authorities.
-9. External construction systems of record may remain authoritative for their own domains; AISE stores explicit references, mappings and synchronization provenance.
+7. Solution Graph is canonical only for a proposed solution's operation/state history; it is never observed reality.
+8. LLMs and agents are non-authoritative planners, translators, explainers and tool users.
+9. UI state, mobile state, desktop state and exported files are not canonical authorities.
+10. External construction systems of record may remain authoritative for their own domains; AISE stores explicit references, mappings and synchronization provenance.
 
 ## Client-adapter boundary
 
@@ -25,7 +26,7 @@ These invariants cannot be changed by implementation workers. Changes require an
 - Mobile may own camera, depth, LiDAR and sensor APIs plus bounded offline queues, but cannot own canonical engineering state.
 - Browser may optimize project-wide inspection, collaboration and analysis, but cannot create a browser-only authority.
 - Desktop may be a richer installed shell or wrapper over the same application contracts; it must not fork domain logic.
-- New client surfaces must not require a parallel Reality Graph, Evidence Graph, Assurance Engine, Verification Engine or BOQ authority.
+- New client surfaces must not require a parallel Reality Graph, Evidence Graph, Assurance Engine, Verification Engine, BOQ authority or Solution Graph authority.
 - Platform-specific UI state is ephemeral/presentational and never evidence of authorization, measurement, readiness or truth.
 
 ## Truth and uncertainty
@@ -81,6 +82,18 @@ These invariants cannot be changed by implementation workers. Changes require an
 - BOQ quantities/costs retain source identity and revision history.
 - BOQ-to-reality mappings carry provenance and uncertainty/confidence.
 - The platform can report mismatch without silently changing either source.
+- A solution-generated BOQ is a separate derived projection tied to a validated Solution Graph version and never overwrites a source BOQ.
+
+## Interactive solution workflow
+
+- A Solution Graph records proposed engineering operations and resulting proposed states.
+- Every consequential operation is typed, parameterized, spatially anchored and reproducible from versioned inputs.
+- Direct manipulation and agent-generated commands resolve to the same operation contract.
+- The integrated agent may translate intent and invoke deterministic tools but cannot bypass validation or declare engineering truth.
+- `Validate` is server-side and deterministic for supported checks; invalid/unknown/review-required operations remain explicit.
+- A solution BOQ may be generated only from a declared validation snapshot of a solution version.
+- Generated BOQ lines retain bidirectional links to contributing solution operation(s), geometry/state references and calculation provenance.
+- The initial supported operation library is buildings-only; the operation contract must remain extensible to later domains.
 
 ## Incumbent integration and adoption
 
@@ -101,4 +114,4 @@ These invariants cannot be changed by implementation workers. Changes require an
 
 ## Critical assurance
 
-Any change touching measurement, reconstruction/provider integration, model semantics, evidence, readiness, engineering rules, BOQ quantity mapping, intervention simulation, external-source mapping, client adapter semantics or migration equivalence is CRITICAL and requires the applicable benchmark, negative/discrimination and physical evidence.
+Any change touching measurement, reconstruction/provider integration, model semantics, evidence, readiness, engineering rules, BOQ quantity mapping, intervention simulation, external-source mapping, client adapter semantics, migration equivalence, Solution Graph semantics or operation execution is CRITICAL and requires the applicable benchmark, negative/discrimination and physical evidence.
