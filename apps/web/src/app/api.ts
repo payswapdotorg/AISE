@@ -1816,3 +1816,150 @@ export async function loadCaseLineageLive(
     validateCaseLineage,
   );
 }
+
+/* ------------------------------------------------------------------ */
+/* BOQ Lens adapters (PROD-010 round 2 — the joined lens input)        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * One BOQ import summary (`GET /v1/boq/imports` answers a deployment-wide
+ * list ordered by importId — the imports carry no project attribution in
+ * this API build, the same honest discipline as the case summaries).
+ */
+export interface BoqImportSummaryRecord {
+  readonly importId: string;
+  readonly format: string;
+  readonly byteSize: number;
+  readonly parseStatus: string;
+}
+
+/**
+ * Load the BOQ import list LIVE (`GET /v1/boq/imports`, same-origin). The
+ * listing is deployment-wide and ordered by the service's own order — the
+ * CALLER names which import it opens; this adapter never guesses one.
+ */
+export async function loadBoqImportsLive(
+  fetchImpl: FetchLike,
+): Promise<
+  | { readonly ok: true; readonly imports: readonly BoqImportSummaryRecord[]; readonly endpoint: string }
+  | { readonly ok: false; readonly failure: ApiFailure }
+> {
+  const endpoint = "/v1/boq/imports";
+  const result = envelopePayload(await fetchJson(fetchImpl, endpoint), endpoint);
+  if (!result.ok) {
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  if (!Array.isArray(payload.imports)) {
+    return {
+      ok: false,
+      failure: { kind: "invalid", detail: `${endpoint} did not return an imports array` },
+    };
+  }
+  const imports: BoqImportSummaryRecord[] = [];
+  for (const entry of payload.imports) {
+    if (!isRecord(entry)) {
+      return {
+        ok: false,
+        failure: { kind: "invalid", detail: `${endpoint} returned a non-object import entry` },
+      };
+    }
+    const source = entry.source;
+    const parse = entry.parse;
+    const importIdOk = typeof entry.importId === "string" && entry.importId.length > 0;
+    const formatOk = typeof entry.format === "string" && entry.format.length > 0;
+    const byteSizeOk =
+      isRecord(source) && typeof source.byteSize === "number" && Number.isInteger(source.byteSize);
+    const parseOk = isRecord(parse) && typeof parse.status === "string" && parse.status.length > 0;
+    if (!importIdOk || !formatOk || !byteSizeOk || !parseOk) {
+      return {
+        ok: false,
+        failure: {
+          kind: "invalid",
+          detail: `${endpoint} returned a structurally invalid import entry`,
+        },
+      };
+    }
+    imports.push({
+      importId: entry.importId as string,
+      format: entry.format as string,
+      byteSize: (source as Record<string, unknown>).byteSize as number,
+      parseStatus: (parse as Record<string, unknown>).status as string,
+    });
+  }
+  return { ok: true, imports, endpoint };
+}
+
+/**
+ * The joined lens input the lens route answers — a STRUCTURAL MIRROR of the
+ * boqlens library's `BoqLensInput` (same discipline as that module's own
+ * backend mirrors: a real backend record satisfies the shape as-is). The
+ * api-level validation pins the load-bearing scalars; the surface renders
+ * the items through the frozen library's own pure functions.
+ */
+export interface BoqLensLiveRecord {
+  readonly importId: string;
+  readonly sourceName: string;
+  readonly dictionaryVersion: string | null;
+  readonly mappingVersion: number | null;
+  readonly sourceCellRefs: readonly string[];
+  readonly items: readonly unknown[];
+}
+
+/**
+ * Load the JOINED lens input LIVE — `GET /v1/boq/imports/:id/lens`
+ * (PROD-010's joined endpoint: import record + derived normalization view +
+ * mapping entries, assembled server-side). A 409 `normalization_required`
+ * and a 404 `import_not_found` surface as typed failures, never coerced.
+ */
+export async function loadBoqLensLive(
+  fetchImpl: FetchLike,
+  importId: string,
+): Promise<WriteOutcome<BoqLensLiveRecord>> {
+  const endpoint = `/v1/boq/imports/${encodeURIComponent(importId)}/lens`;
+  const result = envelopePayload(await fetchJson(fetchImpl, endpoint), endpoint);
+  if (!result.ok) {
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  if (!isRecord(payload) || !isRecord(payload.lens)) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: `${endpoint} did not return the expected { ok: true, lens } envelope`,
+      },
+    };
+  }
+  const lens = payload.lens as Record<string, unknown>;
+  const defects: string[] = [];
+  if (typeof lens.importId !== "string" || lens.importId.length === 0) {
+    defects.push("lens.importId must be a non-empty string");
+  }
+  if (typeof lens.sourceName !== "string") {
+    defects.push("lens.sourceName must be a string");
+  }
+  if (lens.dictionaryVersion !== null && typeof lens.dictionaryVersion !== "string") {
+    defects.push("lens.dictionaryVersion must be a string or null");
+  }
+  if (lens.mappingVersion !== null && typeof lens.mappingVersion !== "number") {
+    defects.push("lens.mappingVersion must be a number or null");
+  }
+  if (!Array.isArray(lens.sourceCellRefs)) {
+    defects.push("lens.sourceCellRefs must be an array");
+  }
+  if (!Array.isArray(lens.items)) {
+    defects.push("lens.items must be an array");
+  }
+  if (defects.length > 0) {
+    return {
+      ok: false,
+      failure: { kind: "invalid", detail: `lens record is not structurally valid: ${defects.join("; ")}` },
+    };
+  }
+  return {
+    ok: true,
+    record: payload.lens as unknown as BoqLensLiveRecord,
+    endpoint,
+  };
+}
