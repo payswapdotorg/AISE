@@ -147,10 +147,12 @@
     },
     {
       "id": "PROD-013",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-011"
-      ]
+      ],
+      "mergedSha": "624e7a4",
+      "evidence": "evidence/PROD-013/ (quota-simulation, log-inspection, provider-failure-drill, configuration-review) + docs/COST-GUARDS.md; VERIFY 3489/0 (baseline 3408/0); free-tier numbers live-verified 2026-09-16"
     },
     {
       "id": "PROD-014",
