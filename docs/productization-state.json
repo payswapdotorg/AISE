@@ -130,11 +130,12 @@
     },
     {
       "id": "PROD-011b",
-      "status": "activated",
+      "status": "in_flight",
       "dependencies": [
         "PROD-011"
       ],
-      "activatedAt": "2026-09-16T09:30:00Z"
+      "mergedSha": "b242e10",
+      "blockedOn": "operator: AISE_REDIS_REST_URL (the Upstash REST endpoint URL; the token is held) — required for the Redis-backed deployed-journey acceptance leg. Code merged, deployed and verified fail-closed; Fs behavior byte-identical without the pair (deployment aise-64muksf6t)."
     },
     {
       "id": "PROD-012",

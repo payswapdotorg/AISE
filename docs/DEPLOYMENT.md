@@ -107,9 +107,13 @@ warm instances without session affinity, so:
   instance — the app honestly returns to the auth gate; **Enter demo** again to
   continue (one click);
 - for a stable deployed experience, set `DATABASE_URL` (Neon Free) — the
-  Pg-backed domain stores then hold the durable state. Sessions remain
-  per-instance Fs in the current composition; externalizing them onto the
-  Upstash primitives is tracked as PROD-011b.
+  Pg-backed domain stores then hold the durable state. For stable SESSIONS
+  across instances, set the PROD-007 Upstash pair `AISE_REDIS_REST_URL` +
+  `AISE_REDIS_REST_TOKEN` (PROD-011b): sessions then live in Redis —
+  TTL-bounded per record, honored on ANY instance, failing closed (401, with
+  typed `redis_session_store_*` warns in the logs) if Redis is unreachable.
+  Without the pair, sessions stay per-instance Fs (re-enter the demo to
+  continue after a loss).
 
 The runtime degrades loudly, never silently: unwritable data dirs, invalid
 config and refused connections are typed errors in the response and the logs.
