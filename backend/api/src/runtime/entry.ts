@@ -51,7 +51,13 @@ import {
   parseAuthConfig,
   type AuthLayer,
   type AuthReadinessStatus,
+  type SessionStore,
 } from "../auth";
+// PROD-011b (additive — the deployed-session stability seam): the Redis
+// session-store twin over the PROD-007 Redis port, selected at the session-
+// store composition point below when the Upstash env group is complete.
+import { RedisSessionStore } from "../auth/store-redis";
+import { UpstashRedisClient } from "../redis/client-upstash";
 import { FsIdentityStore } from "../identity/store";
 import { IdentityService } from "../identity/service";
 import { createRequestHandler, SERVICE_NAME } from "../server";
@@ -696,7 +702,49 @@ export function createRuntimeHandler(
           store: identityStore,
           clock: (): string => new Date().toISOString(),
         });
-        const sessionStore = new FsSessionStore(dataDir, logger);
+        // PROD-011b (additive — the env-gated session-store seam). The
+        // deployed-journey root cause: Vercel routes across warm instances
+        // WITHOUT session affinity, so the per-instance Fs store loses a
+        // session mid-journey (observed: session_invalid from a new
+        // connection while the minting connection still answered 200). When
+        // the PROD-007 Upstash group is COMPLETE (AISE_REDIS_REST_URL +
+        // AISE_REDIS_REST_TOKEN both present), sessions live in Redis —
+        // TTL-bounded by each record's own expiresAt, honoring a session on
+        // ANY instance; Redis is the TRANSIENT-state store per the frozen
+        // architecture, and sessions are exactly transient state. Either
+        // variable absent → the Fs twin, byte-identical to today. NO outage
+        // wrapper here, deliberately: the memory fallback would re-create
+        // this defect in degraded scope (per-instance sessions that vanish
+        // on recovery, with nothing logged); the store's own typed-failure
+        // handling IS the outage discipline for this fail-closed surface —
+        // every Redis failure is a structured warn and the request fails
+        // closed as unauthenticated. The epoch-ms clock matches the redis
+        // family's composition-root wall-clock seam (`() => Date.now()`).
+        const redisRestUrl = envSource()["AISE_REDIS_REST_URL"]?.trim() ?? "";
+        const redisRestToken = envSource()["AISE_REDIS_REST_TOKEN"]?.trim() ?? "";
+        let sessionStore: SessionStore;
+        if (redisRestUrl !== "" && redisRestToken !== "") {
+          sessionStore = new RedisSessionStore(
+            new UpstashRedisClient({ url: redisRestUrl, token: redisRestToken }),
+            logger,
+            (): number => Date.now(),
+          );
+          logger.info("auth_session_store_mode", { mode: "redis" });
+        } else {
+          if (redisRestUrl !== "" || redisRestToken !== "") {
+            // Half-configured group: the seam refuses to guess (the same
+            // discipline as the redis family's env factory — the workspace
+            // env gate is the validator of record); sessions stay on the Fs
+            // twin and the operator sees WHY, loudly (names, never values).
+            logger.warn("auth_session_store_redis_group_half_configured", {
+              detail:
+                "AISE_REDIS_REST_URL and AISE_REDIS_REST_TOKEN must be set together — " +
+                "serving sessions from the per-instance fs store",
+            });
+          }
+          sessionStore = new FsSessionStore(dataDir, logger);
+          logger.info("auth_session_store_mode", { mode: "fs" });
+        }
         auth = createAuthLayer({
           config: authConfigResult.config,
           store: sessionStore,
