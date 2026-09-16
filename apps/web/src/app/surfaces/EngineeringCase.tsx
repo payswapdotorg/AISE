@@ -53,6 +53,7 @@ import {
   SourceNote,
   type CreatePanelOutcome,
   type EvidencePickerStatus,
+  inPageAnchorOnClick,
 } from "../components";
 import { ProjectSurfaceNav } from "../components";
 import { formatRoute } from "../router";
@@ -427,7 +428,7 @@ function CaseLive({ data }: { readonly data: CaseData }): ReactNode {
             title="No engineering cases recorded in this deployment"
             guidance="Cases are opened when a discrepancy needs engineering judgement — observations, hypotheses and declared missing evidence recorded on the case. The first case can be created right here."
             action={
-              <a className="button" href="#create-case">
+              <a className="button" href="#create-case" onClick={inPageAnchorOnClick}>
                 Create the first case
               </a>
             }

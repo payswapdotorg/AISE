@@ -37,6 +37,7 @@ import {
   DataBadge,
   EmptyState,
   ResourceView,
+  inPageAnchorOnClick,
   type CreatePanelOutcome,
 } from "../components";
 
@@ -195,7 +196,7 @@ export function ProjectsBody({
                 : "This organization's registry is empty. The first project can be created right here — the panel below offers the identity API's create-project act through the authorization broker."
             }
             action={
-              <a className="button" href="#create-project">
+              <a className="button" href="#create-project" onClick={inPageAnchorOnClick}>
                 Create your first project
               </a>
             }

@@ -24,10 +24,28 @@
  *    strings and delegates click events to their `data-node-id` anchors.
  */
 
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import type { SourceRef } from "../shell";
 import type { ResourceState } from "./resource";
 import { formatInstant } from "./format";
+
+/**
+ * An IN-PAGE scroll anchor's click handler. The app routes by `location.hash`
+ * (the hash IS the route), so a bare `href="#some-id"` link would NAVIGATE
+ * THE ROUTE away — every in-page anchor must preventDefault and scroll
+ * instead. Usage: `onClick={inPageAnchorOnClick}` (compose after it for
+ * state side effects).
+ */
+export function inPageAnchorOnClick(event: MouseEvent<HTMLAnchorElement>): void {
+  event.preventDefault();
+  const href = event.currentTarget.getAttribute("href");
+  if (href !== null && href.startsWith("#") && href.length > 1) {
+    const target = document.getElementById(href.slice(1));
+    if (target !== null) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+}
 import { PROJECT_SURFACES, formatRoute, projectSurfaceRoute } from "./router";
 import type { CreateActionOffer, CreateActionOfferState } from "./create-forms";
 import { evidenceIdsFromField } from "./evidence-picker";

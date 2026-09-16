@@ -117,6 +117,7 @@ import {
   type BaselinePickerState,
   type CreatePanelOutcome,
   type EvidencePickerStatus,
+  inPageAnchorOnClick,
 } from "../components";
 import { ProjectSurfaceNav } from "../components";
 import { formatRoute } from "../router";
@@ -371,7 +372,7 @@ export function StudioBody({
               title="No intervention scenario recorded for this project"
               guidance="A scenario is an ordered set of recorded steps over a pinned baseline version; its proposed states are materialized per layer. The first scenario can be created right here — the panel below offers the intervention API's create act through the authorization broker."
               action={
-                <a className="button" href="#create-scenario">
+                <a className="button" href="#create-scenario" onClick={inPageAnchorOnClick}>
                   Create the first scenario
                 </a>
               }
@@ -560,7 +561,7 @@ function ScenarioView({
               proposed layer.
             </p>
             <div className="state-action">
-              <a className="button" href="#append-step">
+              <a className="button" href="#append-step" onClick={inPageAnchorOnClick}>
                 Append the first step
               </a>
             </div>
@@ -1604,7 +1605,7 @@ function OutcomeLoopCard({
                 title="No executions recorded for this scenario"
                 guidance="Record the execution of the viewed layer against the scenario's approved state — the panel below prefills the scenario and state from the layer you are viewing."
                 action={
-                  <a className="button" href="#record-execution">
+                  <a className="button" href="#record-execution" onClick={inPageAnchorOnClick}>
                     Record the first execution
                   </a>
                 }
@@ -1639,7 +1640,7 @@ function OutcomeLoopCard({
                           <Instant iso={execution.executedAt} />
                         </td>
                         <td>
-                          <a href="#record-outcome" onClick={() => { setOutcomeExecutionId(execution.executionRecordId); }}>
+                          <a href="#record-outcome" onClick={(event) => { inPageAnchorOnClick(event); setOutcomeExecutionId(execution.executionRecordId); }}>
                             Record outcome
                           </a>
                         </td>
@@ -1654,7 +1655,7 @@ function OutcomeLoopCard({
                 title="No comparisons recorded for this project"
                 guidance="Run a reality-vs-design comparison against the pinned reality version — the panel below assembles the exact nested contract."
                 action={
-                  <a className="button" href="#run-comparison">
+                  <a className="button" href="#run-comparison" onClick={inPageAnchorOnClick}>
                     Run the first comparison
                   </a>
                 }
@@ -1688,7 +1689,8 @@ function OutcomeLoopCard({
                         <td>
                           <a
                             href="#comparison-record"
-                            onClick={() => {
+                            onClick={(event) => {
+                              inPageAnchorOnClick(event);
                               setViewedComparison({ comparisonId: comparison.comparisonId, record: null, failure: null });
                               void loadComparisonLive(environment.fetchImpl, comparison.comparisonId).then((result) => {
                                 setViewedComparison(
@@ -1914,7 +1916,7 @@ export function RecordExecutionPanel({
             <strong>scenario_not_approved:</strong> this scenario&apos;s status is{" "}
             {scenario.status} — recording an execution before approval is possible on the wire,
             but the governed journey approves first.{" "}
-            <a href="#scenario-approval">Open the approval panel</a>.
+            <a href="#scenario-approval" onClick={inPageAnchorOnClick}>Open the approval panel</a>.
           </p>
         </div>
       ) : null}
