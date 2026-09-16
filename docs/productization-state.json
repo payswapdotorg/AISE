@@ -79,29 +79,35 @@
     },
     {
       "id": "PROD-007",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "PROD-003"
-      ]
+      ],
+      "mergedSha": "889301e",
+      "mergedAt": "2026-09-16T03:10:00Z"
     },
     {
       "id": "PROD-008",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "PROD-003"
-      ]
+      ],
+      "mergedSha": "d3cc623",
+      "mergedAt": "2026-09-16T03:10:00Z"
     },
     {
       "id": "PROD-009",
-      "status": "activated",
+      "status": "finalized",
       "dependencies": [
         "PROD-003",
         "AISE-012"
-      ]
+      ],
+      "mergedSha": "f00558a",
+      "mergedAt": "2026-09-16T03:10:00Z"
     },
     {
       "id": "PROD-010",
-      "status": "planned",
+      "status": "activated",
       "dependencies": [
         "PROD-002",
         "PROD-004",
