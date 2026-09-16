@@ -65,11 +65,11 @@ Wave P4
 Wave P5
   PROD-011   PROD-016
 
-Wave P6
-  PROD-011b   PROD-012
+Wave P6 — three workers
+  PROD-011b   PROD-017   PROD-019
 
-Wave P7 — three-worker adapter wave
-  PROD-017   PROD-019   PROD-020
+Wave P7
+  PROD-012   PROD-020
 
 Wave P8
   PROD-018
@@ -83,9 +83,11 @@ Wave P10
 
 The Tech Lead may reduce concurrency whenever shared surfaces, provider setup, migration safety or verification capacity make three workers unsafe. Never exceed three concurrent workers.
 
+`PROD-012` must not be treated as parallel with `PROD-011b`; it becomes eligible only after the deployed-session dependency is finalized. `PROD-017`, `PROD-019` and `PROD-020` are independently eligible once `PROD-016` is finalized, so the Tech Lead may choose the exact wave boundary if earlier capacity becomes available.
+
 ### Concurrency contract
 
-The three-worker adapter wave is intentionally partitioned by protected surface:
+The three adapter work streams are intentionally partitioned by protected surface:
 
 - `PROD-017` owns browser UI/task-first experience and browser adapter conformance.
 - `PROD-019` owns `apps/android` and mobile adapter integration/conformance.
