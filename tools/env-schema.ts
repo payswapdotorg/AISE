@@ -45,7 +45,14 @@ export type EnvFormat =
   | "identifier"
   | "bytes-cap"
   | "count"
-  | "postgres-url";
+  | "postgres-url"
+  // PROD-013 (cost guards) — the quota/rate-limit/upload knob formats.
+  // Each mirrors its consumer's own parser EXACTLY (backend/api/src/cost/):
+  // the ceilings are the code's ceilings, never re-invented here.
+  | "quota-count"
+  | "quota-bytes-cap"
+  | "percent"
+  | "window-seconds";
 
 /** Anything that can be read like process.env. */
 export type EnvRecord = Record<string, string | undefined>;
@@ -324,6 +331,105 @@ export const ENV_RULES: readonly EnvVarRule[] = [
     defaults: { dev: "100", start: "100" },
     requiredIn: [],
   },
+  // PROD-013 (cost guards / operational safety): the free-tier budget
+  // knobs. ALL of them are OPTIONAL with conservative documented defaults
+  // — the zero-config discipline: absence = defaults, and every existing
+  // flow is unchanged (no 429s under normal use, no new requirements in
+  // any mode). Each rule mirrors its consumer's own parser EXACTLY
+  // (backend/api/src/cost/{quotas,guards,uploads}.ts — same ceilings, same
+  // fallbacks); this schema is the pre-flight validator of record, the
+  // cost family's parsers are the runtime authority. None of these are
+  // secrets — they are budget numbers — but their issue strings still
+  // never echo a submitted value.
+  {
+    name: "AISE_QUOTA_REDIS_COMMANDS",
+    description:
+      "Hard monthly cap on metered Upstash REST commands (1..100000000; " +
+      "default 400000 = 80% of the Upstash free tier's 500K/month — at the " +
+      "cap the metered client refuses further commands, never auto-upgrades)",
+    consumer: "backend/api cost family (PROD-013 quota ledger)",
+    format: "quota-count",
+    defaults: { dev: "400000", start: "400000" },
+    requiredIn: [],
+  },
+  {
+    name: "AISE_QUOTA_R2_BYTES",
+    description:
+      "Hard monthly cap on metered R2 artifact storage bytes " +
+      "(1..1099511627776; default 8589934592 = 80% of R2's 10 GB-month " +
+      "free storage — a refused upload stores nothing)",
+    consumer: "backend/api cost family (PROD-013 quota ledger)",
+    format: "quota-bytes-cap",
+    defaults: { dev: "8589934592", start: "8589934592" },
+    requiredIn: [],
+  },
+  {
+    name: "AISE_QUOTA_R2_OBJECTS",
+    description:
+      "Operational-hygiene cap on artifact object count (1..100000000; " +
+      "default 100000 — R2 publishes no object-count cap on the free tier; " +
+      "this bound is conservative and overridable, documented as hygiene)",
+    consumer: "backend/api cost family (PROD-013 quota ledger)",
+    format: "quota-count",
+    defaults: { dev: "100000", start: "100000" },
+    requiredIn: [],
+  },
+  {
+    name: "AISE_QUOTA_THRESHOLD_PERCENT",
+    description:
+      "Quota warn-band start as a percent of each cap (1..100; default 80 — " +
+      "crossing it logs ONE structured quota_<resource>_threshold warn)",
+    consumer: "backend/api cost family (PROD-013 quota ledger)",
+    format: "percent",
+    defaults: { dev: "80", start: "80" },
+    requiredIn: [],
+  },
+  {
+    name: "AISE_RATELIMIT_WINDOW_SECONDS",
+    description:
+      "Expensive-route rate-limit fixed-window length in seconds " +
+      "(1..2592000; default 60 — sub-minute windows are valid burst " +
+      "protection). DISTINCT from the PROD-007 family's " +
+      "AISE_REDIS_RATELIMIT_WINDOW_SECONDS (that pair tunes the unwired " +
+      "redis-family limiter; this one tunes the wired request guard)",
+    consumer: "backend/api cost family (PROD-013 route guard)",
+    format: "window-seconds",
+    defaults: { dev: "60", start: "60" },
+    requiredIn: [],
+  },
+  {
+    name: "AISE_RATELIMIT_MAX",
+    description:
+      "Expensive-route requests per window per principal (1..100000; " +
+      "default 60 — the documented golden journey never sees a 429). " +
+      "DISTINCT from the PROD-007 family's AISE_REDIS_RATELIMIT_MAX",
+    consumer: "backend/api cost family (PROD-013 route guard)",
+    format: "count",
+    defaults: { dev: "60", start: "60" },
+    requiredIn: [],
+  },
+  {
+    name: "AISE_RATELIMIT_GLOBAL_MAX",
+    description:
+      "Expensive-route requests per window per instance globally " +
+      "(1..100000; default 600 — either bound refusing answers the typed 429)",
+    consumer: "backend/api cost family (PROD-013 route guard)",
+    format: "count",
+    defaults: { dev: "600", start: "600" },
+    requiredIn: [],
+  },
+  {
+    name: "AISE_MAX_UPLOAD_BYTES",
+    description:
+      "Upload cap in bytes over the previously-uncapped ingestion routes " +
+      "(capture assets/sync, BOQ import; 1..1073741824; default 10485760 " +
+      "= 10 MiB — over-cap uploads get the typed 413 BEFORE buffering). " +
+      "The artifacts route keeps its OWN AISE_ARTIFACT_MAX_BYTES cap",
+    consumer: "backend/api cost family (PROD-013 upload cap)",
+    format: "bytes-cap",
+    defaults: { dev: "10485760", start: "10485760" },
+    requiredIn: [],
+  },
 ] as const;
 
 const LOG_LEVELS: readonly string[] = ["debug", "info", "warn", "error"];
@@ -346,6 +452,11 @@ const FORMAT_EXPECTATIONS: Readonly<Record<EnvFormat, string>> = {
   "bytes-cap": "expected an integer number of bytes between 1 and 1073741824",
   count: "expected an integer between 1 and 100000",
   "postgres-url": "expected a postgres:// or postgresql:// connection URL with a host",
+  // PROD-013 — mirrors the cost family's own parser ceilings exactly.
+  "quota-count": "expected an integer between 1 and 100000000",
+  "quota-bytes-cap": "expected an integer number of bytes between 1 and 1099511627776",
+  percent: "expected an integer between 1 and 100",
+  "window-seconds": "expected an integer between 1 and 2592000 (seconds)",
 };
 
 export function formatExpectation(format: EnvFormat): string {
@@ -414,6 +525,38 @@ export function isFormatValid(format: EnvFormat, value: string): boolean {
       } catch {
         return false;
       }
+    }
+    // PROD-013 — the cost-family knob formats. Each mirrors its consumer's
+    // own parser exactly (cost/quotas.ts CAP_CEILINGS, cost/guards.ts
+    // WINDOW_MAX_SECONDS/MAX_CEILING, cost/uploads.ts
+    // MAX_UPLOAD_BYTES_CEILING); whitespace is tolerated the same way.
+    case "quota-count": {
+      if (!/^\d+$/.test(value.trim())) {
+        return false;
+      }
+      const count = Number.parseInt(value.trim(), 10);
+      return count >= 1 && count <= 100_000_000;
+    }
+    case "quota-bytes-cap": {
+      if (!/^\d+$/.test(value.trim())) {
+        return false;
+      }
+      const cap = Number.parseInt(value.trim(), 10);
+      return cap >= 1 && cap <= 1_099_511_627_776;
+    }
+    case "percent": {
+      if (!/^\d+$/.test(value.trim())) {
+        return false;
+      }
+      const percent = Number.parseInt(value.trim(), 10);
+      return percent >= 1 && percent <= 100;
+    }
+    case "window-seconds": {
+      if (!/^\d+$/.test(value.trim())) {
+        return false;
+      }
+      const seconds = Number.parseInt(value.trim(), 10);
+      return seconds >= 1 && seconds <= 2_592_000;
     }
   }
 }
