@@ -22,6 +22,7 @@ data/
 
 # Vercel — local project link + pulled settings + local build output
 # (the project link is machine-local; secrets pulled by `vercel pull` are
-# never committed; the serverless bundle is a build artifact)
+# never committed). NOTE: api/[...path].mjs IS committed — it is the
+# deploy beacon Vercel's zero-config/functions scan needs PRE-build; every
+# build regenerates it deterministically (tools/build.ts).
 .vercel/
-api/\[...path\].mjs
