@@ -6,11 +6,16 @@
  * over the GLOBAL `fetch` — ZERO new npm dependencies (the work order's
  * hard constraint; no upstash-redis client package).
  *
- *  - PROTOCOL: `POST <url>` with a JSON array body (a single command, or
- *    an array of arrays for a pipelined batch) and the
- *    `Authorization: Bearer <token>` header. `increment` uses a
- *    two-command pipeline (`INCR` + `EXPIRE NX`) so a created counter
- *    ALWAYS carries its window TTL atomically within one round trip.
+ *  - PROTOCOL: `POST <url>` with a flat JSON array body (one command)
+ *    and the `Authorization: Bearer <token>` header. The response is the
+ *    Upstash REST envelope — `{"result": <value>}` on success,
+ *    `{"error": "<message>"}` on failure — unwrapped at the single
+ *    choke point in `request()` so every command wrapper sees the bare
+ *    value. Pipelined batches (nested arrays) are NOT used: the live
+ *    free-tier endpoint (upstash_version 1.18.1, verified 2026-09-20)
+ *    rejects the nested-array form with HTTP 400 ("unsupported arg
+ *    type"), so `increment` issues its `INCR` + `EXPIRE NX` as two flat
+ *    round trips.
  *  - TYPED FAILURES, NEVER RAW THROWS: transport errors, HTTP statuses
  *    and malformed responses all map to `RedisFailure` data
  *    (`unavailable` / `auth_failed` / `quota_exceeded` /
@@ -151,38 +156,41 @@ export class UpstashRedisClient implements RedisClientPort {
     if (invalid !== null) {
       return { ok: false, failure: invalid };
     }
-    // One pipelined round trip: INCR creates/counts; EXPIRE NX sets the
-    // TTL only when the key has none — a created counter is ALWAYS
-    // window-bounded, an existing counter KEEPS its original TTL.
-    const result = await this.request([
-      ["INCR", key],
-      ["EXPIRE", key, ttlSeconds, "NX"],
-    ]);
-    if (!result.ok) {
-      return result;
+    // Two flat commands, not a pipeline: the live free-tier endpoint
+    // (upstash_version 1.18.1, verified 2026-09-20) rejects the
+    // nested-array batch form with HTTP 400 ("unsupported arg type"),
+    // so INCR and EXPIRE NX are issued as separate flat commands.
+    // INCR creates/counts; EXPIRE NX sets the TTL only when the key has
+    // none — a created counter is ALWAYS window-bounded, an existing
+    // counter KEEPS its original TTL (the original pipeline semantics,
+    // now in two round trips).
+    const incr = await this.request(["INCR", key]);
+    if (!incr.ok) {
+      return incr;
     }
-    if (!Array.isArray(result.value) || result.value.length !== 2) {
-      return {
-        ok: false,
-        failure: redisFailure("protocol_error", "redis rest INCR/EXPIRE pipeline returned an unexpected shape"),
-      };
-    }
-    const count = asNonNegativeInteger(result.value[0]);
+    const count = asNonNegativeInteger(incr.value);
     if (count === null) {
       return {
         ok: false,
         failure: redisFailure("protocol_error", "redis rest INCR returned a non-integer value"),
       };
     }
+    const expire = await this.request(["EXPIRE", key, ttlSeconds, "NX"]);
+    if (!expire.ok) {
+      // The count was already spent server-side but the window bound
+      // could not be set — surface the failure honestly; never silently
+      // coerce a possibly-unbounded counter into a success.
+      return expire;
+    }
     return { ok: true, value: count };
   }
 
   /**
    * Issue one REST call. The wire shape is deterministic per command:
-   * JSON body, bearer token header, no other state. Failures map to
+   * flat JSON body, bearer token header, no other state. Failures map to
    * typed data — this method NEVER throws (transport errors included).
    */
-  private async request(command: RedisCommand | readonly RedisCommand[]): Promise<
+  private async request(command: RedisCommand): Promise<
     { readonly ok: true; readonly value: unknown } | { readonly ok: false; readonly failure: ReturnType<typeof redisFailure> }
   > {
     if (this.url === "" || this.token === "") {
@@ -234,9 +242,18 @@ export class UpstashRedisClient implements RedisClientPort {
       };
     }
     if (response.status !== 200) {
+      // The documented failure envelope {"error": "..."} (e.g. HTTP 400
+      // for an unsupported command) contributes a bounded, single-line,
+      // server-authored excerpt — the status signature stays primary.
+      const excerpt = await errorEnvelopeExcerpt(response);
       return {
         ok: false,
-        failure: redisFailure("protocol_error", `redis rest unexpected HTTP ${response.status}`),
+        failure: redisFailure(
+          "protocol_error",
+          excerpt === null
+            ? `redis rest unexpected HTTP ${response.status}`
+            : `redis rest error response (HTTP ${response.status}, ${excerpt})`,
+        ),
       };
     }
 
@@ -249,8 +266,55 @@ export class UpstashRedisClient implements RedisClientPort {
         failure: redisFailure("protocol_error", "redis rest response was not valid JSON"),
       };
     }
-    return { ok: true, value: body };
+    // The Upstash REST envelope, verified live 2026-09-20 against the
+    // deployed free-tier endpoint (upstash_version 1.18.1): success →
+    // {"result": <value>} (including {"result": null} for absent keys);
+    // failure → {"error": "<server message>"} with a non-200 status.
+    // The envelope is unwrapped HERE — the single choke point — so every
+    // command wrapper sees the bare value. A body that is NOT the
+    // envelope is a protocol error: passing a bare value through whole
+    // is the exact deployed-walk defect this guard exists for (every GET
+    // answered "non-string value" and every SET "did not answer OK"
+    // while the server-side effects still executed).
+    if (isRecordShape(body) && "result" in body) {
+      return { ok: true, value: body.result };
+    }
+    if (isRecordShape(body) && "error" in body) {
+      return {
+        ok: false,
+        failure: redisFailure("protocol_error", `redis rest error response (${boundedExcerpt(body.error)})`),
+      };
+    }
+    return {
+      ok: false,
+      failure: redisFailure("protocol_error", "redis rest response was not the {result|error} envelope"),
+    };
   }
+}
+
+/** A plain object shape test (the envelope carriers). */
+function isRecordShape(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/** A bounded, single-line excerpt of a server-authored error string. */
+function boundedExcerpt(value: unknown): string {
+  const text = typeof value === "string" ? value : (JSON.stringify(value) ?? "unknown error");
+  const flat = text.replace(/\s+/g, " ").trim();
+  return flat.length <= 160 ? flat : `${flat.slice(0, 160)}…`;
+}
+
+/** Read the {"error": "..."} envelope off a non-200 response, if present. */
+async function errorEnvelopeExcerpt(response: Response): Promise<string | null> {
+  try {
+    const body = (await response.json()) as unknown;
+    if (isRecordShape(body) && "error" in body) {
+      return boundedExcerpt(body.error);
+    }
+  } catch {
+    // Not JSON (or already consumed) — the status-only message answers.
+  }
+  return null;
 }
 
 /** Runtime key validation (the builders guarantee it; the port enforces it). */

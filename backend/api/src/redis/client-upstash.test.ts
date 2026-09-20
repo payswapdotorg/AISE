@@ -6,6 +6,16 @@
  * are inert strings), full determinism. The exact request bodies are
  * asserted byte-for-byte — the twin-fidelity contract with
  * client-memory.ts.
+ *
+ * FIXTURE FIDELITY (the 2026-09-20 deployed-walk lesson): every success
+ * fixture uses the REAL Upstash REST response envelope —
+ * `{"result": <value>}` (including `{"result": null}` for absent keys),
+ * `{"error": "<message>"}` with a non-200 status — captured live against
+ * the deployed free-tier endpoint (upstash_version 1.18.1). The original
+ * fixtures answered with BARE values, so the client was built and green
+ * against an imagined wire while every real command failed parsing
+ * (writes still executed server-side; reads answered fail-closed). The
+ * envelope is asserted here so that defect class can never regress.
  */
 
 import { describe, expect, test } from "bun:test";
@@ -47,6 +57,16 @@ function jsonResponse(status: number, body: unknown): Response {
   });
 }
 
+/** A success envelope — the real Upstash REST 200 body shape. */
+function okResponse(result: unknown): Response {
+  return jsonResponse(200, { result });
+}
+
+/** A failure envelope — the real Upstash REST error body shape. */
+function errorResponse(status: number, message: string): Response {
+  return jsonResponse(status, { error: message });
+}
+
 function makeClient(handler: (url: string, init: RequestInit) => Promise<Response>): {
   client: UpstashRedisClient;
   stub: FetchStub;
@@ -59,8 +79,8 @@ function makeClient(handler: (url: string, init: RequestInit) => Promise<Respons
 }
 
 describe("wire contract (deterministic requests over the global-fetch seam)", () => {
-  test("set issues one POST with the bearer token and the exact SET/EX body", async () => {
-    const { client, stub } = makeClient(async () => jsonResponse(200, "OK"));
+  test("set issues one POST with the bearer token and the exact SET/EX body, unwrapping {result:\"OK\"}", async () => {
+    const { client, stub } = makeClient(async () => okResponse("OK"));
     const result = await client.set("aise:v1:cache:t:p:name", "value", 300);
     expect(result).toEqual({ ok: true, value: true });
     expect(stub.requests).toHaveLength(1);
@@ -76,45 +96,134 @@ describe("wire contract (deterministic requests over the global-fetch seam)", ()
     ]);
   });
 
-  test("get issues GET and maps null / string results", async () => {
-    const { client } = makeClient(async (_url, init) => {
+  test("get issues a FLAT GET and maps {result:null} / {result:string}", async () => {
+    const { client, stub } = makeClient(async (_url, init) => {
       const command = JSON.parse(String(init.body)) as string[];
-      return jsonResponse(200, command[1] === "missing" ? null : "cached-value");
+      return okResponse(command[1] === "missing" ? null : "cached-value");
     });
     expect(await client.get("present")).toEqual({ ok: true, value: "cached-value" });
     expect(await client.get("missing")).toEqual({ ok: true, value: null });
+    // Flat command form — the live free-tier endpoint rejects nested
+    // arrays ("unsupported arg type"), so GET is never pipelined.
+    expect(JSON.parse(stub.lastBody)).toEqual(["GET", "missing"]);
   });
 
-  test("delete maps DEL 0/1 to booleans", async () => {
+  test("delete maps {result:0/1} to booleans", async () => {
     const { client } = makeClient(async (_url, init) => {
       const command = JSON.parse(String(init.body)) as string[];
-      return jsonResponse(200, command[1] === "gone" ? 0 : 1);
+      return okResponse(command[1] === "gone" ? 0 : 1);
     });
     expect(await client.delete("here")).toEqual({ ok: true, value: true });
     expect(await client.delete("gone")).toEqual({ ok: true, value: false });
   });
 
-  test("expire maps EXPIRE 0/1 to booleans", async () => {
-    const { client } = makeClient(async () => jsonResponse(200, 1));
+  test("expire maps {result:0/1} to booleans", async () => {
+    const { client } = makeClient(async () => okResponse(1));
     expect(await client.expire("k", 60)).toEqual({ ok: true, value: true });
   });
 
-  test("increment pipelines INCR + EXPIRE NX in ONE round trip and maps the array", async () => {
-    const { client, stub } = makeClient(async () => jsonResponse(200, [7, 1]));
+  test("increment issues INCR then EXPIRE NX as TWO flat round trips (no pipeline)", async () => {
+    const { client, stub } = makeClient(async (_url, init) => {
+      const command = JSON.parse(String(init.body)) as string[];
+      return okResponse(command[0] === "INCR" ? 7 : 1);
+    });
     const result = await client.increment("aise:v1:rl:api:tenant:42", 60);
     expect(result).toEqual({ ok: true, value: 7 });
-    expect(JSON.parse(stub.lastBody)).toEqual([
-      ["INCR", "aise:v1:rl:api:tenant:42"],
-      ["EXPIRE", "aise:v1:rl:api:tenant:42", 60, "NX"],
+    expect(stub.requests).toHaveLength(2);
+    expect(JSON.parse(String(stub.requests[0]?.init.body))).toEqual([
+      "INCR",
+      "aise:v1:rl:api:tenant:42",
+    ]);
+    expect(JSON.parse(String(stub.requests[1]?.init.body))).toEqual([
+      "EXPIRE",
+      "aise:v1:rl:api:tenant:42",
+      60,
+      "NX",
     ]);
   });
 
+  test("increment surfaces a failed EXPIRE leg honestly (count spent, window unbounded)", async () => {
+    const { client, stub } = makeClient(async (_url, init) => {
+      const command = JSON.parse(String(init.body)) as string[];
+      if (command[0] === "INCR") {
+        return okResponse(3);
+      }
+      return errorResponse(500, "boom");
+    });
+    const result = await client.increment("k", 60);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.failure.kind).toBe("unavailable");
+    }
+    expect(stub.requests).toHaveLength(2);
+  });
+
   test("identical inputs issue byte-identical requests (twin-fidelity determinism)", async () => {
-    const { client, stub } = makeClient(async () => jsonResponse(200, "OK"));
+    const { client, stub } = makeClient(async () => okResponse("OK"));
     await client.set("same", "bytes", 60);
     await client.set("same", "bytes", 60);
     const bodies = stub.requests.map((request) => String(request.init.body));
     expect(bodies[0]).toBe(bodies[1]);
+  });
+});
+
+describe("the Upstash response envelope (verified live 2026-09-20, upstash_version 1.18.1)", () => {
+  test("a 200 body that is NOT the {result|error} envelope maps to protocol_error — the deployed-walk regression pin", async () => {
+    // Before the envelope fix, the client passed the parsed body through
+    // whole: every GET answered "non-string value" and every SET "did
+    // not answer OK" against the real endpoint while the server-side
+    // effects still executed. A bare body must now be a protocol error.
+    const { client } = makeClient(async () => jsonResponse(200, "OK"));
+    const result = await client.get("k");
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.failure.kind).toBe("protocol_error");
+      expect(result.failure.detail).toContain("envelope");
+    }
+  });
+
+  test("a 200 error-envelope body maps to protocol_error with a bounded excerpt", async () => {
+    const { client } = makeClient(async () =>
+      jsonResponse(200, { error: "ERR something server-side went wrong" }),
+    );
+    const result = await client.set("k", "v", 60);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.failure.kind).toBe("protocol_error");
+      expect(result.failure.detail).toContain("ERR something server-side went wrong");
+    }
+  });
+
+  test("a non-200 error envelope contributes a bounded single-line excerpt to the failure detail", async () => {
+    const { client } = makeClient(async () =>
+      errorResponse(400, "ERR Command is not available: 'NOTACOMMAND'. See https://upstash.com/docs"),
+    );
+    const result = await client.delete("k");
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.failure.kind).toBe("protocol_error");
+      expect(result.failure.detail).toContain("HTTP 400");
+      expect(result.failure.detail).toContain("NOTACOMMAND");
+    }
+  });
+
+  test("a GET whose result is a JSON number (not a string) maps to protocol_error", async () => {
+    const { client } = makeClient(async () => okResponse(17));
+    const result = await client.get("k");
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.failure.kind).toBe("protocol_error");
+    }
+  });
+
+  test("an INCR whose result is a non-integer maps to protocol_error", async () => {
+    const { client } = makeClient(async () => okResponse("not-a-number"));
+    const result = await client.increment("k", 60);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.failure.kind).toBe("protocol_error");
+      expect(result.failure.detail).toContain("INCR");
+    }
   });
 });
 
@@ -134,7 +243,7 @@ describe("typed failure mapping (never a raw throw)", () => {
   });
 
   test("HTTP 401/403 map to auth_failed", async () => {
-    const { client } = makeClient(async () => jsonResponse(401, { error: "unauthorized" }));
+    const { client } = makeClient(async () => errorResponse(401, "unauthorized"));
     const result = await client.set("k", "v", 60);
     expect(result.ok).toBe(false);
     if (!result.ok) {
@@ -153,21 +262,12 @@ describe("typed failure mapping (never a raw throw)", () => {
   });
 
   test("HTTP 5xx maps to unavailable", async () => {
-    const { client } = makeClient(async () => jsonResponse(503, { error: "unavailable" }));
+    const { client } = makeClient(async () => errorResponse(503, "unavailable"));
     const result = await client.get("k");
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.failure.kind).toBe("unavailable");
       expect(result.failure.detail).toContain("HTTP 503");
-    }
-  });
-
-  test("unexpected HTTP 4xx maps to protocol_error", async () => {
-    const { client } = makeClient(async () => jsonResponse(400, { error: "bad command" }));
-    const result = await client.delete("k");
-    expect(result.ok).toBe(false);
-    if (!result.ok) {
-      expect(result.failure.kind).toBe("protocol_error");
     }
   });
 
@@ -181,27 +281,8 @@ describe("typed failure mapping (never a raw throw)", () => {
     }
   });
 
-  test("a GET returning a non-string maps to protocol_error", async () => {
-    const { client } = makeClient(async () => jsonResponse(200, 17));
-    const result = await client.get("k");
-    expect(result.ok).toBe(false);
-    if (!result.ok) {
-      expect(result.failure.kind).toBe("protocol_error");
-    }
-  });
-
-  test("an INCR pipeline response of the wrong shape maps to protocol_error", async () => {
-    const { client } = makeClient(async () => jsonResponse(200, "5"));
-    const result = await client.increment("k", 60);
-    expect(result.ok).toBe(false);
-    if (!result.ok) {
-      expect(result.failure.kind).toBe("protocol_error");
-      expect(result.failure.detail).toContain("unexpected shape");
-    }
-  });
-
   test("an empty URL or token fails closed as auth_failed without any request", async () => {
-    const stub = new FetchStub(async () => jsonResponse(200, "OK"));
+    const stub = new FetchStub(async () => okResponse("OK"));
     const client = new UpstashRedisClient({ url: "  ", token: TEST_TOKEN, fetchImpl: stub.fetchImpl });
     const result = await client.get("k");
     expect(result.ok).toBe(false);
@@ -215,7 +296,7 @@ describe("typed failure mapping (never a raw throw)", () => {
 
 describe("explicit-TTL enforcement before any request is issued", () => {
   test("set/increment/expire reject non-positive TTLs locally (no wire call)", async () => {
-    const stub = new FetchStub(async () => jsonResponse(200, "OK"));
+    const stub = new FetchStub(async () => okResponse("OK"));
     const client = new UpstashRedisClient({ url: TEST_URL, token: TEST_TOKEN, fetchImpl: stub.fetchImpl });
     for (const bad of [0, -5, 1.5]) {
       expect((await client.set("k", "v", bad)).ok).toBe(false);

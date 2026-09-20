@@ -68,7 +68,7 @@ describe("createRedisFromEnv mode matrix", () => {
       {
         clock: clock.now,
         fetchImpl: (async () =>
-          new Response(JSON.stringify("OK"), {
+          new Response(JSON.stringify({ result: "OK" }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
           })) as unknown as typeof fetch,
