@@ -1,0 +1,74 @@
+PROD-011b — deployed session-stability walk (acceptance leg 1)
+==============================================================
+Run 2026-09-20T20:00-20:04Z by the Lead, against the PRODUCTION
+deployment aise-tan.vercel.app = dpl_35T9rEJpH2BEyKCU5xUgReU1ghfv
+(commit eb953b2, built through the standard server-side gitSource flow,
+lambdaRuntimeStats {"nodejs":1}), with the production env pair
+AISE_REDIS_REST_URL / AISE_REDIS_REST_TOKEN wired (Vercel project env,
+target production) to the live Upstash free-tier database
+(polished-yeti-167554.upstash.io, upstash_version 1.18.1).
+
+Every request below is a FRESH connection (curl, no connection reuse) —
+no session affinity: Vercel routes each request to any warm instance.
+
+----------------------------------------------------------------------
+1. MINT (POST /v1/auth/demo)
+----------------------------------------------------------------------
+$ curl -X POST https://aise-tan.vercel.app/v1/auth/demo
+{"ok":true,"principal":{"displayName":"Demo Evaluator","roleLabel":"Founder","kind":"demo"}}
+[HTTP 200]  Set-Cookie: aise_session=v1.sess-078548431b664d89793e2bdfce868c33...;
+            Path=/; HttpOnly; SameSite=Strict; Max-Age=604800; Secure
+
+----------------------------------------------------------------------
+2. WHOAMI STABILITY BURST — 20 requests, 20 different fresh connections
+----------------------------------------------------------------------
+20 x HTTP 200, 0 failures. Sample body:
+{"ok":true,"principal":{"displayName":"Demo Evaluator","roleLabel":"Founder","kind":"demo"}}
+
+Instance-spread spot-check (x-vercel-id, an earlier identical burst on
+the same deployment shape): 8/8 x 200 across 8 DISTINCT serving
+instances — 9cgfw, wj2xm, 5msbr, 8wjs9, jxs2m, 79c7v, fqrmt, fp252 —
+the sessions are honored on ANY instance, which is the acceptance
+property (the pre-fix defect: every cross-instance whoami 401
+"session_invalid").
+
+----------------------------------------------------------------------
+3. UPSTASH GROUND TRUTH (read directly via REST, not through the app)
+----------------------------------------------------------------------
+GET aise:auth:session:sess-078548431b664d89793e2bdfce868c33
+  -> canonical record: {"createdAt":"2026-09-20T19:57:46.687Z",
+     "expiresAt":"2026-09-27T19:57:46.687Z","kind":"demo",
+     "principalId":"demo-evaluator","sessionId":"sess-0785..."}   [exists]
+GET aise:auth:session-index
+  -> ["sess-078548431b664d89793e2bdfce868c33"]                    [maintained]
+TTL session: 604787s   TTL index: 604786s   (the 7-day window,
+  data-derived from each record's own expiresAt — no invented defaults)
+
+----------------------------------------------------------------------
+4. METER HONESTY (/readyz cost section, same deployment)
+----------------------------------------------------------------------
+ledger: "redis"   window: "2026-09"
+redis_commands used: 24 / 400000 (status ok)
+  The count is EXACT for the walk: 1 boot probe + 3 mint ops
+  (SET session + GET index + SET index) + 20 whoami GETs = 24.
+  The shared ledger key aise:v1:quota:redis_commands:2026-09 exists in
+  the same Redis DB (visible in KEYS) — the metered increment now lands
+  cross-instance (pre-fix it never persisted: the pipeline form was
+  rejected by the endpoint AND the envelope was misparsed).
+
+----------------------------------------------------------------------
+5. LOGOUT LIFECYCLE (DELETE /v1/auth/sessions/current)
+----------------------------------------------------------------------
+logout            -> {"ok":true} [HTTP 200]
+whoami after      -> 401 {"code":"session_invalid","message":"The session
+                      is no longer known."}   [fail-closed, as designed]
+Upstash EXISTS aise:auth:session:sess-0785... -> 0   [server-side record
+  deleted; the index pruned to [] in the same walk]
+
+----------------------------------------------------------------------
+VERDICT
+----------------------------------------------------------------------
+Mint -> cross-instance whoami x20 -> Upstash record+index+TTL -> metered
+ledger -> logout deletion: ALL PASS on the deployed production URL.
+The deployed session store is Redis-backed, TTL-bounded, and stable
+across instances. Acceptance leg 1 MET.

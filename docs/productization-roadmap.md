@@ -72,8 +72,8 @@ Wave P5
   PROD-011   PROD-016
 
 Wave P6 — deployed verification + adapter composition prerequisites
-  PROD-011b
-  PROD-012 is held until PROD-011b finalizes
+  PROD-011b  (FINALIZED 2026-09-20 — deployed session-stability walk passed on production)
+  PROD-012  (unblocked by PROD-011b finalization)
 
 Wave P7 — three-worker adapter wave
   PROD-017   PROD-019   PROD-020
@@ -103,7 +103,7 @@ Wave P14
 
 The Tech Lead may reduce concurrency whenever shared surfaces, provider setup, migration safety or verification capacity make three workers unsafe. Never exceed three concurrent workers.
 
-`PROD-011b` blocks deployed-session-dependent browser verification. `PROD-012` therefore cannot run as though the session issue is solved merely because a provisional deployment exists.
+`PROD-011b` is FINALIZED (2026-09-20): multi-instance session continuity is proven on the deployed URL (evidence/PROD-011B/). `PROD-012` (deployed-browser verification) is unblocked and may run against the Redis-backed production deployment.
 
 `PROD-017`, `PROD-019`, and `PROD-020` are independently eligible after `PROD-016` and have disjoint protected surfaces.
 

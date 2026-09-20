@@ -1,0 +1,104 @@
+PROD-011b — root-cause forensics (what the deployed walk exposed)
+==================================================================
+Captured 2026-09-20 by the Lead. Two production defects were exposed by
+the FIRST live contact between the PROD-007 Upstash client and a real
+Upstash endpoint — both were invisible to the 3408-test green gate
+because the test fixtures encoded an imagined wire protocol.
+
+======================================================================
+DEFECT 1 — the Upstash REST response envelope was never unwrapped
+======================================================================
+Symptom on the deployed walk (pre-fix, commit 693fc38 + env pair):
+  mint          -> 200 + cookie (the SET executed server-side)
+  whoami x20    -> 401 x20 {"code":"session_invalid"} (fail-closed)
+  Upstash KEYS  -> the session record PRESENT with correct bytes and
+                   a correct 7-day TTL (createdAt matched the mint to
+                   the millisecond)
+  session-index -> ABSENT (put() aborted after the misparsed SET)
+  quota ledger  -> ABSENT (the INCR never landed)
+
+Root cause: UpstashRedisClient.request() returned the PARSED RESPONSE
+BODY whole. The real Upstash REST wire answers with an envelope:
+  success: {"result": <value>}    (including {"result": null})
+  failure: {"error": "<message>"} with a non-200 status
+The command wrappers compared against BARE values:
+  get():  typeof value === "string" -> false (it is the envelope
+          object) -> protocol_error "non-string value" -> store.get()
+          null -> 401 fail-closed on EVERY read
+  set():  result.value === "OK" -> false ({result:"OK"} !== "OK") ->
+          protocol_error "did not answer OK" — while the HTTP request
+          had ALREADY executed, so the write landed anyway
+That asymmetry (writes land but report failure; reads fail-closed) is
+exactly what the walk observed.
+
+Why the gate was green: client-upstash.test.ts fixtures answered with
+BARE values ("cached-value", "OK", 7, [7,1]) — the client was built
+against its own mocks. Mock-fidelity defect: no fixture ever asserted
+the real envelope. (store-redis.test.ts tests the store against an
+injected client DOUBLE, so it inherited the same blindness.)
+
+Fix (d6691da): unwrap {"result":...} at the single choke point
+request(); a body that is NOT the {result|error} envelope is a
+protocol_error — the regression pin (a bare value must never pass
+through whole again). Non-200 responses contribute a bounded,
+single-line excerpt of the {"error":...} envelope. All fixtures now
+mirror the live-verified wire (envelope bodies), pinned by new tests.
+
+======================================================================
+DEFECT 1b — the pipelined batch form is rejected by the live endpoint
+======================================================================
+The client's increment() sent [["INCR",k],["EXPIRE",k,ttl,"NX"]] (the
+documented Upstash pipeline form). The live free-tier endpoint
+(upstash_version 1.18.1) answers HTTP 400 {"error":"ERR unsupported
+arg type: \"[\": json.Delim"} — REJECTED. Every metered increment
+failed (which is why the quota ledger key never existed pre-fix).
+
+Fix (d6691da): increment() issues INCR and EXPIRE NX as TWO flat round
+trips (same window semantics: a created counter always gets its TTL, an
+existing counter keeps its original TTL). A failed EXPIRE leg surfaces
+honestly instead of coercing a possibly-unbounded counter to success.
+Live-verified flat forms: INCR, EXPIRE NX, SET ... EX, GET, DEL, TTL,
+PING all answer {"result":...}.
+
+======================================================================
+DEFECT 2 — the deploy shape depended on build-cache luck
+======================================================================
+When the fixed code was deployed, the rebuild produced a STATIC-ONLY
+deployment (lambdaRuntimeStats: null): /api/**, /v1/**, /healthz,
+/readyz all 404'd. Forensics:
+
+  - api/[...path].mjs (the ONE catch-all function) is a build artifact
+    emitted by tools/build.ts DURING buildCommand, and was GITIGNORED.
+  - Vercel's zero-config/functions scan needs the file to exist in the
+    PRE-build tree. The Sept-16 deployments only worked because the
+    restored build cache pre-seeded the generated file into the scanned
+    tree (verified: "Restored build cache from previous deployment"
+    chains on the working builds).
+  - Differential proof: the SAME commit 693fc38 that deployed WITH a
+    lambda on Sept 16 deployed with ZERO lambdas via today's cold-cache
+    gitSource flow; a local `vercel build` with a cold cache reproduces
+    the functionless output.
+  - Attempted pin of the runtime ("functions": {"api/[...path].mjs":
+    {"runtime": "@vercel/node@13.0.0"}}) works for the local prebuilt
+    flow but the server-side build (CLI 59.23.2, bundled builder
+    13.0.1 / build-utils 14.10.1) fails to install the pin (npm
+    ERESOLVE) — version-coupled, rejected.
+
+Fix (05a9fa3 + eb953b2): COMMIT api/[...path].mjs as a deploy beacon —
+the scan always sees it; every build regenerates it deterministically
+from tracked sources (esbuild, banner-pinned), so the deployed function
+always comes from the post-build regeneration, never from possibly-
+stale committed bytes. No version pin, no builder install, works in
+every deploy flow. Verified: server-side gitSource production deploy of
+eb953b2 -> READY with lambdaRuntimeStats {"nodejs":1}; the standard
+deploy path is repaired for the campaign.
+
+======================================================================
+POST-FIX STATE (all live-verified 2026-09-20)
+======================================================================
+  - healthz 200; readyz: ledger "redis", meters counting exactly
+  - mint 200 -> whoami 20/20 x 200 cross-instance (8 distinct serving
+    instances spot-checked) -> Upstash record + index + 7-day TTLs
+  - shared quota ledger key present in the same Redis DB
+  - logout 200 -> whoami 401 fail-closed -> record deleted, index []
+  - stale broken-era session keys cleaned from the DB

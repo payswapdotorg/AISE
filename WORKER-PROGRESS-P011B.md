@@ -60,3 +60,29 @@ diff: clean. Owned surface: the four files above only.
   `AISE_REDIS_REST_URL` — the operator holds only the REST token; the Lead
   deployed without the pair (Fs behavior, byte-identical — acceptance leg 2
   proven on the deployment) and recorded the URL as the operator blocker.
+
+## Lead completion addendum — 2026-09-20 (the deployed acceptance leg)
+
+The operator delivered a live Upstash endpoint (polished-yeti-167554);
+the env pair was wired to the Vercel production environment and the
+deployed session-stability walk run. The walk EXPOSED two production
+defects invisible to the mocked gate, which the Lead fixed and then
+re-proved:
+
+1. The PROD-007 Upstash client never unwrapped the REST response
+   envelope ({"result":...}/{"error":"..."}) — writes executed
+   server-side but reported failure; every read fail-closed 401. The
+   pipelined INCR/EXPIRE batch form is also rejected by the live
+   endpoint. Fixed at d6691da (+ live-wire fixtures; envelope pinned
+   by regression tests).
+2. The deploy shape depended on build-cache luck (the gitignored
+   catch-all bundle exists only post-build; Vercel's scan needs it
+   pre-build). The bundle is now a COMMITTED deploy beacon
+   (05a9fa3+eb953b2); the standard server-side deploy path is verified
+   end-to-end (production dpl_35T9rEJpH2BEyKCU5xUgReU1ghfv).
+
+Post-fix walk (production): mint 200 -> 20/20 cross-instance whoami
+200 (8 distinct serving instances spot-checked) -> Upstash record +
+index + data-derived 7-day TTLs -> exact meter math (24 commands) ->
+logout 200 / whoami 401 / record deleted. Acceptance leg 1 MET;
+PROD-011b finalized (state.json; evidence in evidence/PROD-011B/).
