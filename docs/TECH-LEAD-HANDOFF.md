@@ -112,6 +112,7 @@ spec/governance/architecture-change-record-006.md
 docs/productization-roadmap.md
 docs/productization-work-orders.md
 docs/productization-layer-hardening-work-orders.md
+docs/huggingface-hardening-execution-plan.md
 docs/productization-state.json
 docs/PRODUCTION-READINESS-GATE.md
 docs/free-tier-deployment.md
@@ -162,18 +163,21 @@ These waves are intentionally surface-separated. Shared semantic defects must be
 Preferred sequence:
 
 ```text
-P5   PROD-011 + PROD-016
-P6   PROD-011b
-P7   PROD-017 + PROD-019 + PROD-020
-P8   PROD-012 + PROD-018 when dependencies are satisfied
-P9   PROD-021
-P10  PROD-022 + PROD-023 + PROD-025
-P11  PROD-024
-P12  PROD-026
-P13  PROD-027 + PROD-028 + PROD-029
-P14  PROD-014
-P15  PROD-015
+U0   PROD-011b + PROD-016 where independently eligible
+U1   PROD-017 + PROD-019 + PROD-020; start PROD-021 in the first released worker slot
+U2   PROD-022 + PROD-023 + PROD-025
+U3   PROD-012 + PROD-018 + PROD-024 as their own dependencies clear
+U4   PROD-026
+HF0  HFX-000
+HF1  HFX-101 + HFX-102 + HFX-201
+HF2  HFX-202 + HFX-203 + HFX-204
+HF3  HFX-103 + HFX-104 + HFX-301
+HF4  HFX-302 + HFX-303 + HFX-401
+R1   PROD-014
+R2   PROD-015
 ```
+
+The HFX execution plan in docs/huggingface-hardening-execution-plan.md is subordinate to the PROD dependency graph. HFX work may be prepared earlier, but HFX implementation acceptance does not bypass PROD-026 or the parent PROD-027/028/029 gates.
 
 This is a scheduling guide, not permission to violate dependency eligibility.
 
