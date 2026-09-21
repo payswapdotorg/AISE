@@ -135,6 +135,10 @@ The three workers in each wave must not edit each other's protected surfaces or 
 
 ## Hugging Face hardening execution plan
 
+The 2026-09-21 post-simulation UX/discoverability and deployment composition directive is maintained in `docs/post-simulation-implementation-and-deployment-plan-2026-09-21.md` and governs the next three-worker product-experience/deployment composition pass without changing the frozen architecture or dependency authority.
+
+
+
 The HFX-derived work orders are sequenced by docs/huggingface-hardening-execution-plan.md. The execution plan is subordinate to the productization dependency graph and defines the optimized three-worker waves, the critical path, and the first 30 HF implementation days.
 
 The scheduling optimization is to start PROD-021 as soon as PROD-016 clears rather than waiting for the full adapter wave, while maintaining the three-worker ceiling and protected surfaces. After PROD-026, the HFX hardening sequence converges on HFX-401 before PROD-014 and PROD-015.
