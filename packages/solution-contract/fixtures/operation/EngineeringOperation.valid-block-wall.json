@@ -1,0 +1,111 @@
+{
+  "contractVersion": "1.0.0",
+  "dependsOn": [
+    {
+      "contractVersion": "1.0.0",
+      "dependencyKind": "completion-before",
+      "operationRef": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+      "rationale": "the rebuilt wall section requires the damaged section removed first"
+    }
+  ],
+  "domain": {
+    "contractVersion": "1.0.0",
+    "extensions": [
+      {
+        "kind": "building-element-taxonomy",
+        "ref": "aise-building-elements",
+        "version": "1.0.0"
+      }
+    ],
+    "operationVocabulary": "aise-building-operations-v1",
+    "vertical": "building"
+  },
+  "effects": [
+    {
+      "affectedNodeRefs": [
+        "node-wall-002"
+      ],
+      "contractVersion": "1.0.0",
+      "effectKind": "state-transition",
+      "geometryRefs": [
+        {
+          "kind": "plane",
+          "ref": "geo-wall-line-003"
+        }
+      ],
+      "resultingStateRef": "121fc782b17a24a46e7303bb0d51816bf576a9428c46a8e8560bdda7f0b0358f"
+    },
+    {
+      "affectedNodeRefs": [
+        "node-wall-002"
+      ],
+      "contractVersion": "1.0.0",
+      "direction": "added",
+      "effectKind": "quantity-impact",
+      "geometryRefs": [
+        {
+          "kind": "plane",
+          "ref": "geo-wall-line-003"
+        }
+      ],
+      "quantity": {
+        "calculationRef": "calc-demo-op2-001",
+        "dimension": "area",
+        "unit": "m2",
+        "value": 5
+      }
+    }
+  ],
+  "operationId": "72ec9c913958934c4c10e4b2c1452676ca39f0c8ced106f328174dd0f024b699",
+  "operationIndex": 2,
+  "operationType": "block-wall-placement",
+  "parameters": [
+    {
+      "name": "length",
+      "unit": "m",
+      "value": 5
+    },
+    {
+      "name": "height",
+      "unit": "m",
+      "value": 1
+    },
+    {
+      "name": "thickness",
+      "unit": "m",
+      "value": 0.1
+    },
+    {
+      "name": "material",
+      "value": "concrete-block"
+    }
+  ],
+  "provenance": {
+    "authoredAt": "2026-09-16T09:10:00.000Z",
+    "authoredBy": "agent-demo-assistant",
+    "commandText": "Lay blocks to a height of 1 m along this wall.",
+    "evidenceIds": [],
+    "intentRef": "intent-demo-0011",
+    "origin": "agent"
+  },
+  "solutionId": "solution-demo-001",
+  "target": {
+    "contractVersion": "1.0.0",
+    "description": "The wall line along the damaged section",
+    "geometryRefs": [
+      {
+        "kind": "plane",
+        "ref": "geo-wall-line-003"
+      }
+    ],
+    "nodeRefs": [
+      "node-wall-002"
+    ],
+    "selectorKind": "line-extent",
+    "units": {
+      "angular": "rad",
+      "linear": "m"
+    }
+  },
+  "versionNumber": 1
+}

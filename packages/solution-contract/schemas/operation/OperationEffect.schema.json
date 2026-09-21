@@ -1,0 +1,151 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "affectedNodeRefs": {
+      "description": "Reality nodes the effect touches (read-only references to observed reality).",
+      "items": {
+        "description": "Opaque stable identifier assigned by the authority that owns the object.",
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "direction": {
+      "description": "quantity-impact: whether the quantity is added, removed or changed.",
+      "enum": [
+        "added",
+        "removed",
+        "changed"
+      ],
+      "type": "string"
+    },
+    "effectKind": {
+      "enum": [
+        "state-transition",
+        "quantity-impact"
+      ],
+      "type": "string"
+    },
+    "geometryRefs": {
+      "description": "Geometry references the effect's state delta or quantity derives from.",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "kind": {
+            "enum": [
+              "plane",
+              "polygon",
+              "mesh-ref",
+              "point-cloud-ref"
+            ],
+            "type": "string"
+          },
+          "ref": {
+            "description": "Stable id of the referenced geometry artifact (owned by the deterministic geometry services; read-only reference).",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "ref"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "quantity": {
+      "additionalProperties": true,
+      "description": "quantity-impact: the typed quantity this operation affects.",
+      "properties": {
+        "calculationRef": {
+          "description": "Reference to the deterministic calculation/method that produced the value (calculation provenance).",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "dimension": {
+          "enum": [
+            "length",
+            "area",
+            "volume",
+            "mass",
+            "count",
+            "duration"
+          ],
+          "type": "string"
+        },
+        "uncertainty": {
+          "additionalProperties": true,
+          "description": "Propagated measurement uncertainty where stated; absent means 'not stated' — never zero, never fabricated.",
+          "properties": {
+            "kind": {
+              "enum": [
+                "DIMENSIONAL",
+                "STATISTICAL",
+                "INTERVAL"
+              ],
+              "type": "string"
+            },
+            "level": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "lower": {
+              "type": "number"
+            },
+            "plusMinus": {
+              "type": "number"
+            },
+            "upper": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        "unit": {
+          "description": "Explicit unit (REQUIRED — a quantity is never a bare number).",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "value": {
+          "description": "Quantity value in the stated unit.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "dimension",
+        "value",
+        "unit",
+        "calculationRef"
+      ],
+      "type": "object"
+    },
+    "resultingStateRef": {
+      "description": "state-transition: the id of the ProposedState this operation's application produces (states[N] after operation N).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "effectKind",
+    "affectedNodeRefs",
+    "geometryRefs"
+  ],
+  "type": "object"
+}

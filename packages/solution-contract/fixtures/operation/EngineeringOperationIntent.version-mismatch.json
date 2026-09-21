@@ -1,0 +1,61 @@
+{
+  "contractVersion": "2.0.0",
+  "dependsOn": [],
+  "domain": {
+    "contractVersion": "1.0.0",
+    "extensions": [
+      {
+        "kind": "building-element-taxonomy",
+        "ref": "aise-building-elements",
+        "version": "1.0.0"
+      }
+    ],
+    "operationVocabulary": "aise-building-operations-v1",
+    "vertical": "building"
+  },
+  "intentId": "intent-demo-0001",
+  "operationType": "excavation",
+  "parameters": [
+    {
+      "name": "depth",
+      "unit": "m",
+      "value": 1.5
+    },
+    {
+      "name": "width",
+      "unit": "m",
+      "value": 2
+    },
+    {
+      "name": "length",
+      "unit": "m",
+      "value": 3
+    }
+  ],
+  "provenance": {
+    "authoredAt": "2026-09-16T09:00:00.000Z",
+    "authoredBy": "user-demo-engineer",
+    "derivationNote": "operator dimensioned the pit volume directly in the interactive 3D view",
+    "evidenceIds": [],
+    "interactionDetail": "operator dragged the excavation volume handles in the 3D view",
+    "origin": "direct-manipulation"
+  },
+  "target": {
+    "contractVersion": "1.0.0",
+    "description": "The pit excavation area south of the building footprint",
+    "geometryRefs": [
+      {
+        "kind": "polygon",
+        "ref": "geo-pit-outline-001"
+      }
+    ],
+    "nodeRefs": [
+      "node-site-001"
+    ],
+    "selectorKind": "volume",
+    "units": {
+      "angular": "rad",
+      "linear": "m"
+    }
+  }
+}

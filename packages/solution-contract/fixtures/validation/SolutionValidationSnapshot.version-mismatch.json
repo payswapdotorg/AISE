@@ -1,0 +1,35 @@
+{
+  "checks": [
+    {
+      "checkId": "geometry.dimensions-positive",
+      "detail": "all operation dimensions are positive and spatially anchored",
+      "result": "pass"
+    },
+    {
+      "checkId": "units.quantity-units-typed",
+      "detail": "every numeric parameter and quantity carries an explicit unit",
+      "result": "pass"
+    },
+    {
+      "checkId": "operation.ordering-dependencies",
+      "detail": "dependency edges point backwards in the sequence; no cycles",
+      "result": "pass"
+    },
+    {
+      "checkId": "quantities.calculation-refs",
+      "detail": "every quantity effect references its deterministic calculation",
+      "result": "pass"
+    }
+  ],
+  "contractVersion": "2.0.0",
+  "engine": {
+    "kind": "aise-solution-engine",
+    "version": "1.0.0"
+  },
+  "inputDigest": "daabcc77862786f59aa37dd5766a54629c9b0b062498965b82aedc526edf4f6c",
+  "outcome": "pass",
+  "snapshotId": "9b2f4a3a2b6a6cb4035db3e7a4b64229fe84b56c5fffb65a60947847adb3e2f3",
+  "solutionId": "solution-demo-001",
+  "validatedAt": "2026-09-16T10:30:00.000Z",
+  "versionNumber": 1
+}

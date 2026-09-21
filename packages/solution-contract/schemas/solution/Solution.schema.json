@@ -1,0 +1,180 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "baselineRealityVersionId": {
+      "description": "The PINNED authoritative Reality-Graph version this solution branches from. A read-only reference: the Solution Graph is canonical only for the proposal's operation/state history, never observed reality.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "branch": {
+      "additionalProperties": true,
+      "description": "Proposal-branch lineage (absent for unbranched solutions).",
+      "properties": {
+        "branchedAt": {
+          "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "branchedFromSolutionId": {
+          "description": "Opaque stable identifier assigned by the authority that owns the object.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "branchedFromVersionNumber": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "branchedFromSolutionId",
+        "branchedFromVersionNumber",
+        "branchedAt"
+      ],
+      "type": "object"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "createdAt": {
+      "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "currentVersionNumber": {
+      "description": "The version the solution's `status` refers to.",
+      "minimum": 1,
+      "type": "integer"
+    },
+    "domain": {
+      "additionalProperties": true,
+      "description": "The vertical context (building specifics as data — never client authority).",
+      "properties": {
+        "contractVersion": {
+          "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        },
+        "extensions": {
+          "description": "Vertical-specific extension descriptors, carried as DATA — never interpreted, enforced or extended by a client.",
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "kind": {
+                "description": "Extension kind (open vocabulary, e.g. building-element-taxonomy, assembly-compatibility-rules).",
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              "ref": {
+                "description": "Stable reference to the extension definition (vocabulary or ruleset id).",
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              "version": {
+                "description": "Semver version of the extension definition this descriptor pins.",
+                "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "ref",
+              "version"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "operationVocabulary": {
+          "description": "Identifier of the operation-type vocabulary the solution's operations use (e.g. aise-building-operations-v1). Identifies which engine-owned catalogue the open operationType strings belong to.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "vertical": {
+          "description": "The engineering vertical of the solution's operations (OPEN vocabulary; Phase 1 advisory value: building. Documented future verticals: civil-works, mep, industrial-equipment, electronics, integrated-circuits). Rendered verbatim by clients; vertical semantics are owned by the server solution engine.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "vertical",
+        "extensions"
+      ],
+      "type": "object"
+    },
+    "epistemicClass": {
+      "const": "PROPOSED",
+      "description": "ALWAYS 'PROPOSED' — the schema-level seal: a solution is a proposal; it becomes observed reality only through execution, post-work evidence and the existing assurance/verification process, never by implication.",
+      "type": "string"
+    },
+    "problemStatement": {
+      "description": "The engineering problem/intent this solution addresses (the workflow's ENGINEERING PROBLEM / INTENT stage).",
+      "maxLength": 4096,
+      "minLength": 1,
+      "type": "string"
+    },
+    "projectId": {
+      "description": "The project this solution lives in.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "solutionId": {
+      "description": "Stable id of this solution.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "status": {
+      "description": "The governed lifecycle status (lifecycle.ts transition table): draft → validated | superseded | abandoned; validated → superseded | abandoned; superseded/abandoned are terminal. Carries NO approval semantics (approval is an Engineering Case domain act).",
+      "enum": [
+        "draft",
+        "validated",
+        "superseded",
+        "abandoned"
+      ],
+      "type": "string"
+    },
+    "supersededBy": {
+      "description": "When status is superseded: the solution that supersedes this one (invariant superseded_solution_without_successor).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "title": {
+      "description": "Human-readable solution title.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "updatedAt": {
+      "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "solutionId",
+    "projectId",
+    "title",
+    "problemStatement",
+    "domain",
+    "baselineRealityVersionId",
+    "epistemicClass",
+    "status",
+    "currentVersionNumber",
+    "createdAt",
+    "updatedAt"
+  ],
+  "type": "object"
+}

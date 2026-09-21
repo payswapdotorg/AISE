@@ -1,0 +1,101 @@
+{
+  "contractVersion": "2.0.0",
+  "dependsOn": [],
+  "domain": {
+    "contractVersion": "1.0.0",
+    "extensions": [
+      {
+        "kind": "building-element-taxonomy",
+        "ref": "aise-building-elements",
+        "version": "1.0.0"
+      }
+    ],
+    "operationVocabulary": "aise-building-operations-v1",
+    "vertical": "building"
+  },
+  "effects": [
+    {
+      "affectedNodeRefs": [
+        "node-wall-002"
+      ],
+      "contractVersion": "1.0.0",
+      "effectKind": "state-transition",
+      "geometryRefs": [
+        {
+          "kind": "polygon",
+          "ref": "geo-wall-faces-002"
+        }
+      ],
+      "resultingStateRef": "867096c0dcdf1fa778c150918fa629744cf51d162514f0d9b84a46d2f559a2ca"
+    },
+    {
+      "affectedNodeRefs": [
+        "node-wall-002"
+      ],
+      "contractVersion": "1.0.0",
+      "direction": "removed",
+      "effectKind": "quantity-impact",
+      "geometryRefs": [
+        {
+          "kind": "polygon",
+          "ref": "geo-wall-faces-002"
+        }
+      ],
+      "quantity": {
+        "calculationRef": "calc-demo-op1-001",
+        "dimension": "area",
+        "unit": "m2",
+        "value": 12.5
+      }
+    }
+  ],
+  "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+  "operationIndex": 1,
+  "operationType": "demolition-removal",
+  "parameters": [
+    {
+      "name": "length",
+      "unit": "m",
+      "value": 5
+    },
+    {
+      "name": "height",
+      "unit": "m",
+      "value": 2.4
+    },
+    {
+      "name": "thickness",
+      "unit": "m",
+      "value": 0.1
+    }
+  ],
+  "provenance": {
+    "authoredAt": "2026-09-16T09:00:00.000Z",
+    "authoredBy": "user-demo-engineer",
+    "derivationNote": "operator removed the damaged plaster and wall section by direct selection",
+    "evidenceIds": [],
+    "intentRef": "intent-demo-0010",
+    "interactionDetail": "operator selected the damaged wall faces and invoked remove",
+    "origin": "direct-manipulation"
+  },
+  "solutionId": "solution-demo-001",
+  "target": {
+    "contractVersion": "1.0.0",
+    "description": "The affected ground-floor wall faces",
+    "geometryRefs": [
+      {
+        "kind": "polygon",
+        "ref": "geo-wall-faces-002"
+      }
+    ],
+    "nodeRefs": [
+      "node-wall-002"
+    ],
+    "selectorKind": "face-set",
+    "units": {
+      "angular": "rad",
+      "linear": "m"
+    }
+  },
+  "versionNumber": 1
+}

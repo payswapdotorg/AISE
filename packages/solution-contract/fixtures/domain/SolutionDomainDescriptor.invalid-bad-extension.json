@@ -1,0 +1,11 @@
+{
+  "contractVersion": "1.0.0",
+  "extensions": [
+    {
+      "ref": "aise-building-elements",
+      "version": "1.0.0"
+    }
+  ],
+  "operationVocabulary": "aise-building-operations-v1",
+  "vertical": "building"
+}

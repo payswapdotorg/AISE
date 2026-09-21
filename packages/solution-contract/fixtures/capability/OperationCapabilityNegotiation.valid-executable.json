@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "intentRef": "intent-demo-0002",
+  "missingParameters": [],
+  "outcome": "executable",
+  "profileRef": "profile-building-ops-reference",
+  "reasons": [
+    {
+      "code": "capability-satisfied",
+      "detail": "engine profile 'profile-building-ops-reference' declares 'supported' capability for operation type 'excavation' in vertical 'building' and all required parameters ([depth, width, length]) are present with explicit units"
+    }
+  ]
+}

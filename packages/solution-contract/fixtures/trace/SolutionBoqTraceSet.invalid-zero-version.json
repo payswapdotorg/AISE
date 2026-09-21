@@ -1,0 +1,97 @@
+{
+  "contractVersion": "1.0.0",
+  "lineTraces": [
+    {
+      "boqLineId": "boq-line-demo-0001",
+      "contractVersion": "1.0.0",
+      "contributingOperations": [
+        {
+          "contributionKind": "created",
+          "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+          "operationIndex": 1
+        }
+      ],
+      "geometryRefs": [
+        {
+          "kind": "polygon",
+          "ref": "geo-wall-faces-002"
+        }
+      ],
+      "itemDescription": "Demolition and removal of damaged plaster, cement, to ground-floor wall",
+      "quantity": {
+        "calculationRef": "calc-demo-boq-0001",
+        "dimension": "area",
+        "unit": "m2",
+        "value": 12.5
+      },
+      "solutionId": "solution-demo-001",
+      "traceId": "698d7f1e8b41b9b21044b3e2e4d837a164db37d80d62859a6462d33b23c82a4e",
+      "validationSnapshotRef": "9b2f4a3a2b6a6cb4035db3e7a4b64229fe84b56c5fffb65a60947847adb3e2f3",
+      "versionNumber": 1
+    },
+    {
+      "boqLineId": "boq-line-demo-0002",
+      "contractVersion": "1.0.0",
+      "contributingOperations": [
+        {
+          "contributionKind": "created",
+          "operationId": "72ec9c913958934c4c10e4b2c1452676ca39f0c8ced106f328174dd0f024b699",
+          "operationIndex": 2
+        }
+      ],
+      "geometryRefs": [
+        {
+          "kind": "plane",
+          "ref": "geo-wall-line-003"
+        }
+      ],
+      "itemDescription": "Rebuilding damaged wall section with concrete blocks",
+      "quantity": {
+        "calculationRef": "calc-demo-boq-0002",
+        "dimension": "area",
+        "unit": "m2",
+        "value": 5
+      },
+      "solutionId": "solution-demo-001",
+      "traceId": "ebf97cddfd65bc342515c3c13c2b335d6ebe286ffcd30e9aae22ff338c30dd85",
+      "validationSnapshotRef": "9b2f4a3a2b6a6cb4035db3e7a4b64229fe84b56c5fffb65a60947847adb3e2f3",
+      "versionNumber": 1
+    },
+    {
+      "boqLineId": "boq-line-demo-0003",
+      "contractVersion": "1.0.0",
+      "contributingOperations": [
+        {
+          "contributionKind": "removed",
+          "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+          "operationIndex": 1
+        },
+        {
+          "contributionKind": "created",
+          "operationId": "c5b25c38362e4a5af4a0ebe8597514f9c3a27cc7ab9da333d0fa7f543a78e7f2",
+          "operationIndex": 3
+        }
+      ],
+      "geometryRefs": [
+        {
+          "kind": "polygon",
+          "ref": "geo-wall-faces-002"
+        }
+      ],
+      "itemDescription": "Cement plaster, 30 mm thickness, to affected wall faces",
+      "quantity": {
+        "calculationRef": "calc-demo-boq-0003",
+        "dimension": "area",
+        "unit": "m2",
+        "value": 12.5
+      },
+      "solutionId": "solution-demo-001",
+      "traceId": "d0a5c1dcceb5027e89b8ffdc4985532c55e81e1c5fe33372d6948048d92edc10",
+      "validationSnapshotRef": "9b2f4a3a2b6a6cb4035db3e7a4b64229fe84b56c5fffb65a60947847adb3e2f3",
+      "versionNumber": 1
+    }
+  ],
+  "solutionId": "solution-demo-001",
+  "validationSnapshotRef": "9b2f4a3a2b6a6cb4035db3e7a4b64229fe84b56c5fffb65a60947847adb3e2f3",
+  "versionNumber": 0
+}

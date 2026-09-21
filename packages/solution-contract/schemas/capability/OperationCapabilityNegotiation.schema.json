@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "intentRef": {
+      "description": "The intent event this negotiation answered (echo of intentId).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "missingParameters": {
+      "description": "blocked outcome: the required parameter names missing from the intent, in the profile's declaration order (the agent's clarification-question driver). Empty otherwise.",
+      "items": {
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "outcome": {
+      "description": "executable (capability declared and parameters present) | blocked (required parameters missing — ask, never invent) | unsupported (definitively not supported) | unknown (capability undetermined; never conflated with unsupported).",
+      "enum": [
+        "executable",
+        "blocked",
+        "unsupported",
+        "unknown"
+      ],
+      "type": "string"
+    },
+    "profileRef": {
+      "description": "The engine capability profile this negotiation used (echo of profileId).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "reasons": {
+      "description": "NEVER empty: executable carries capability-satisfied (plus capability-degraded with the surfaced limitations when the declared status is degraded); every refusal carries its honest reason.",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "code": {
+            "enum": [
+              "capability-satisfied",
+              "capability-degraded",
+              "domain-not-declared",
+              "domain-unavailable",
+              "domain-unknown",
+              "operation-type-not-declared",
+              "operation-type-unavailable",
+              "operation-type-unknown",
+              "missing-required-parameter"
+            ],
+            "type": "string"
+          },
+          "detail": {
+            "description": "Honest deterministic reason text — names the vertical, operation type or parameter and the declaring profile.",
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "detail"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "intentRef",
+    "profileRef",
+    "outcome",
+    "reasons",
+    "missingParameters"
+  ],
+  "type": "object"
+}

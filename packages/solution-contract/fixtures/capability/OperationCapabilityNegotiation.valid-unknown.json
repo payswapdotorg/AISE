@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "intentRef": "intent-demo-0001",
+  "missingParameters": [],
+  "outcome": "unknown",
+  "profileRef": "profile-building-ops-partial",
+  "reasons": [
+    {
+      "code": "operation-type-unknown",
+      "detail": "operation type 'excavation' capability for vertical 'building' is undetermined (profile status unknown; probing required) — never reported as unsupported"
+    }
+  ]
+}

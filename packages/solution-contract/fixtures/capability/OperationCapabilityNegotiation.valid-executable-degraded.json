@@ -1,0 +1,17 @@
+{
+  "contractVersion": "1.0.0",
+  "intentRef": "intent-demo-0012",
+  "missingParameters": [],
+  "outcome": "executable",
+  "profileRef": "profile-building-ops-partial",
+  "reasons": [
+    {
+      "code": "capability-satisfied",
+      "detail": "engine profile 'profile-building-ops-partial' declares 'degraded' capability for operation type 'plaster-application' in vertical 'building' and all required parameters ([thickness, material]) are present with explicit units"
+    },
+    {
+      "code": "capability-degraded",
+      "detail": "operation type 'plaster-application' executes with declared limitations; declared limitations: quantity uncertainty widened while thickness-sensor calibration is pending"
+    }
+  ]
+}

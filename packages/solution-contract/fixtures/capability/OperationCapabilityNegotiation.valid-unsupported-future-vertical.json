@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "intentRef": "intent-demo-0030",
+  "missingParameters": [],
+  "outcome": "unsupported",
+  "profileRef": "profile-building-ops-reference",
+  "reasons": [
+    {
+      "code": "domain-not-declared",
+      "detail": "operation domain vertical 'mep' is not declared by engine profile 'profile-building-ops-reference' (aise-solution-engine 1.0.0); declared verticals: [building]"
+    }
+  ]
+}

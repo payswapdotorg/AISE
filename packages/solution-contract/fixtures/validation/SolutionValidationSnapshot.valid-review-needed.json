@@ -1,0 +1,35 @@
+{
+  "checks": [
+    {
+      "checkId": "geometry.dimensions-positive",
+      "detail": "all operation dimensions are positive and spatially anchored",
+      "result": "pass"
+    },
+    {
+      "checkId": "units.quantity-units-typed",
+      "detail": "every numeric parameter and quantity carries an explicit unit",
+      "result": "pass"
+    },
+    {
+      "checkId": "operation.ordering-dependencies",
+      "detail": "dependency edges point backwards in the sequence; no cycles",
+      "result": "pass"
+    },
+    {
+      "checkId": "evidence.substrate-coverage",
+      "detail": "wall substrate condition evidence covers 80% of the affected area; engineer review required before BOQ generation",
+      "result": "review-needed"
+    }
+  ],
+  "contractVersion": "1.0.0",
+  "engine": {
+    "kind": "aise-solution-engine",
+    "version": "1.0.0"
+  },
+  "inputDigest": "daabcc77862786f59aa37dd5766a54629c9b0b062498965b82aedc526edf4f6c",
+  "outcome": "review-needed",
+  "snapshotId": "23f4b867e011fb0bb77b310d39c2a13edc86605e5c6f781f5e5325c9a6083259",
+  "solutionId": "solution-demo-001",
+  "validatedAt": "2026-09-16T10:35:00.000Z",
+  "versionNumber": 1
+}

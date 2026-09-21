@@ -1,0 +1,20 @@
+{
+  "affectedNodeRefs": [
+    "node-wall-002"
+  ],
+  "contractVersion": "1.0.0",
+  "direction": "removed",
+  "effectKind": "quantity-impact",
+  "geometryRefs": [
+    {
+      "kind": "polygon",
+      "ref": "geo-wall-faces-002"
+    }
+  ],
+  "quantity": {
+    "calculationRef": "calc-demo-op1-001",
+    "dimension": "area",
+    "unit": "m2",
+    "value": 12.5
+  }
+}

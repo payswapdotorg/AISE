@@ -1,0 +1,382 @@
+{
+  "contractVersion": "1.0.0",
+  "createdAt": "2026-09-16T08:00:00.000Z",
+  "operations": [
+    {
+      "contractVersion": "1.0.0",
+      "dependsOn": [],
+      "domain": {
+        "contractVersion": "1.0.0",
+        "extensions": [
+          {
+            "kind": "building-element-taxonomy",
+            "ref": "aise-building-elements",
+            "version": "1.0.0"
+          }
+        ],
+        "operationVocabulary": "aise-building-operations-v1",
+        "vertical": "building"
+      },
+      "effects": [
+        {
+          "affectedNodeRefs": [
+            "node-wall-002"
+          ],
+          "contractVersion": "1.0.0",
+          "effectKind": "state-transition",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-002"
+            }
+          ],
+          "resultingStateRef": "867096c0dcdf1fa778c150918fa629744cf51d162514f0d9b84a46d2f559a2ca"
+        },
+        {
+          "affectedNodeRefs": [
+            "node-wall-002"
+          ],
+          "contractVersion": "1.0.0",
+          "direction": "removed",
+          "effectKind": "quantity-impact",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-002"
+            }
+          ],
+          "quantity": {
+            "calculationRef": "calc-demo-op1-001",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 12.5
+          }
+        }
+      ],
+      "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+      "operationIndex": 1,
+      "operationType": "demolition-removal",
+      "parameters": [
+        {
+          "name": "length",
+          "unit": "m",
+          "value": 5
+        },
+        {
+          "name": "height",
+          "unit": "m",
+          "value": 2.4
+        },
+        {
+          "name": "thickness",
+          "unit": "m",
+          "value": 0.1
+        }
+      ],
+      "provenance": {
+        "authoredAt": "2026-09-16T09:00:00.000Z",
+        "authoredBy": "user-demo-engineer",
+        "derivationNote": "operator removed the damaged plaster and wall section by direct selection",
+        "evidenceIds": [],
+        "intentRef": "intent-demo-0010",
+        "interactionDetail": "operator selected the damaged wall faces and invoked remove",
+        "origin": "direct-manipulation"
+      },
+      "solutionId": "solution-demo-001",
+      "target": {
+        "contractVersion": "1.0.0",
+        "description": "The affected ground-floor wall faces",
+        "geometryRefs": [
+          {
+            "kind": "polygon",
+            "ref": "geo-wall-faces-002"
+          }
+        ],
+        "nodeRefs": [
+          "node-wall-002"
+        ],
+        "selectorKind": "face-set",
+        "units": {
+          "angular": "rad",
+          "linear": "m"
+        }
+      },
+      "versionNumber": 1
+    },
+    {
+      "contractVersion": "1.0.0",
+      "dependsOn": [
+        {
+          "contractVersion": "1.0.0",
+          "dependencyKind": "completion-before",
+          "operationRef": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+          "rationale": "the rebuilt wall section requires the damaged section removed first"
+        }
+      ],
+      "domain": {
+        "contractVersion": "1.0.0",
+        "extensions": [
+          {
+            "kind": "building-element-taxonomy",
+            "ref": "aise-building-elements",
+            "version": "1.0.0"
+          }
+        ],
+        "operationVocabulary": "aise-building-operations-v1",
+        "vertical": "building"
+      },
+      "effects": [
+        {
+          "affectedNodeRefs": [
+            "node-wall-002"
+          ],
+          "contractVersion": "1.0.0",
+          "effectKind": "state-transition",
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "resultingStateRef": "121fc782b17a24a46e7303bb0d51816bf576a9428c46a8e8560bdda7f0b0358f"
+        },
+        {
+          "affectedNodeRefs": [
+            "node-wall-002"
+          ],
+          "contractVersion": "1.0.0",
+          "direction": "added",
+          "effectKind": "quantity-impact",
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "quantity": {
+            "calculationRef": "calc-demo-op2-001",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 5
+          }
+        }
+      ],
+      "operationId": "72ec9c913958934c4c10e4b2c1452676ca39f0c8ced106f328174dd0f024b699",
+      "operationIndex": 2,
+      "operationType": "block-wall-placement",
+      "parameters": [
+        {
+          "name": "length",
+          "unit": "m",
+          "value": 5
+        },
+        {
+          "name": "height",
+          "unit": "m",
+          "value": 1
+        },
+        {
+          "name": "thickness",
+          "unit": "m",
+          "value": 0.1
+        },
+        {
+          "name": "material",
+          "value": "concrete-block"
+        }
+      ],
+      "provenance": {
+        "authoredAt": "2026-09-16T09:10:00.000Z",
+        "authoredBy": "agent-demo-assistant",
+        "commandText": "Lay blocks to a height of 1 m along this wall.",
+        "evidenceIds": [],
+        "intentRef": "intent-demo-0011",
+        "origin": "agent"
+      },
+      "solutionId": "solution-demo-001",
+      "target": {
+        "contractVersion": "1.0.0",
+        "description": "The wall line along the damaged section",
+        "geometryRefs": [
+          {
+            "kind": "plane",
+            "ref": "geo-wall-line-003"
+          }
+        ],
+        "nodeRefs": [
+          "node-wall-002"
+        ],
+        "selectorKind": "line-extent",
+        "units": {
+          "angular": "rad",
+          "linear": "m"
+        }
+      },
+      "versionNumber": 1
+    },
+    {
+      "contractVersion": "1.0.0",
+      "dependsOn": [
+        {
+          "contractVersion": "1.0.0",
+          "dependencyKind": "completion-before",
+          "operationRef": "72ec9c913958934c4c10e4b2c1452676ca39f0c8ced106f328174dd0f024b699",
+          "rationale": "plaster applies to the rebuilt wall surface"
+        }
+      ],
+      "domain": {
+        "contractVersion": "1.0.0",
+        "extensions": [
+          {
+            "kind": "building-element-taxonomy",
+            "ref": "aise-building-elements",
+            "version": "1.0.0"
+          }
+        ],
+        "operationVocabulary": "aise-building-operations-v1",
+        "vertical": "building"
+      },
+      "effects": [
+        {
+          "affectedNodeRefs": [
+            "node-wall-002"
+          ],
+          "contractVersion": "1.0.0",
+          "effectKind": "state-transition",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-002"
+            }
+          ],
+          "resultingStateRef": "bc0031ec7a87f55bf00816c28e916b26c7b829d8cdce5a52cf62e27dd2ffe3bf"
+        },
+        {
+          "affectedNodeRefs": [
+            "node-wall-002"
+          ],
+          "contractVersion": "1.0.0",
+          "direction": "added",
+          "effectKind": "quantity-impact",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-002"
+            }
+          ],
+          "quantity": {
+            "calculationRef": "calc-demo-op3-001",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 12.5
+          }
+        }
+      ],
+      "operationId": "c5b25c38362e4a5af4a0ebe8597514f9c3a27cc7ab9da333d0fa7f543a78e7f2",
+      "operationIndex": 3,
+      "operationType": "plaster-application",
+      "parameters": [
+        {
+          "name": "thickness",
+          "unit": "mm",
+          "value": 30
+        },
+        {
+          "name": "material",
+          "value": "cement-plaster"
+        }
+      ],
+      "provenance": {
+        "authoredAt": "2026-09-16T09:15:00.000Z",
+        "authoredBy": "agent-demo-assistant",
+        "commandText": "Apply 30 mm plaster to the affected wall faces.",
+        "evidenceIds": [],
+        "intentRef": "intent-demo-0012",
+        "origin": "agent"
+      },
+      "solutionId": "solution-demo-001",
+      "target": {
+        "contractVersion": "1.0.0",
+        "description": "The affected ground-floor wall faces",
+        "geometryRefs": [
+          {
+            "kind": "polygon",
+            "ref": "geo-wall-faces-002"
+          }
+        ],
+        "nodeRefs": [
+          "node-wall-002"
+        ],
+        "selectorKind": "face-set",
+        "units": {
+          "angular": "rad",
+          "linear": "m"
+        }
+      },
+      "versionNumber": 1
+    }
+  ],
+  "solutionId": "solution-demo-001",
+  "states": [
+    {
+      "appliedOperationIds": [],
+      "baselineRealityVersionId": "rgv-demo-0007",
+      "contentDigest": "b5c79b7787e6b9367b246cdefbfe378d5795c877e004c528f3f57c68bb0c50d2",
+      "contractVersion": "1.0.0",
+      "epistemicStatus": "PROPOSED",
+      "materializedAt": "2026-09-16T10:00:00.000Z",
+      "solutionId": "solution-demo-001",
+      "stateId": "78b7ec546e9770eda07fc0f1af98919fe3252bb71ac82ab707f9947b43cf7ec8",
+      "stateIndex": 0,
+      "versionNumber": 1
+    },
+    {
+      "appliedOperationIds": [
+        "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9"
+      ],
+      "baselineRealityVersionId": "rgv-demo-0007",
+      "contentDigest": "c3c5408455916a1e5e7dc9469c777c7a051d4ad8bec4289a1c57314b503b3892",
+      "contractVersion": "1.0.0",
+      "epistemicStatus": "PROPOSED",
+      "materializedAt": "2026-09-16T10:01:00.000Z",
+      "solutionId": "solution-demo-001",
+      "stateId": "867096c0dcdf1fa778c150918fa629744cf51d162514f0d9b84a46d2f559a2ca",
+      "stateIndex": 1,
+      "versionNumber": 1
+    },
+    {
+      "appliedOperationIds": [
+        "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+        "72ec9c913958934c4c10e4b2c1452676ca39f0c8ced106f328174dd0f024b699"
+      ],
+      "baselineRealityVersionId": "rgv-demo-0007",
+      "contentDigest": "589fea40959a5ed7864e2c041428e549c92d8f8240b530286b4fba4e984e9e6e",
+      "contractVersion": "1.0.0",
+      "epistemicStatus": "PROPOSED",
+      "materializedAt": "2026-09-16T10:02:00.000Z",
+      "solutionId": "solution-demo-001",
+      "stateId": "121fc782b17a24a46e7303bb0d51816bf576a9428c46a8e8560bdda7f0b0358f",
+      "stateIndex": 2,
+      "versionNumber": 1
+    },
+    {
+      "appliedOperationIds": [
+        "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+        "72ec9c913958934c4c10e4b2c1452676ca39f0c8ced106f328174dd0f024b699",
+        "c5b25c38362e4a5af4a0ebe8597514f9c3a27cc7ab9da333d0fa7f543a78e7f2"
+      ],
+      "baselineRealityVersionId": "rgv-demo-0007",
+      "contentDigest": "2d12600564189497b0259123ca444ba4c5e6411641fe516504ace3c488a52377",
+      "contractVersion": "1.0.0",
+      "epistemicStatus": "PROPOSED",
+      "materializedAt": "2026-09-16T10:03:00.000Z",
+      "solutionId": "solution-demo-001",
+      "stateId": "bc0031ec7a87f55bf00816c28e916b26c7b829d8cdce5a52cf62e27dd2ffe3bf",
+      "stateIndex": 3,
+      "versionNumber": 1
+    }
+  ],
+  "status": "validated",
+  "validationSnapshotRef": "9b2f4a3a2b6a6cb4035db3e7a4b64229fe84b56c5fffb65a60947847adb3e2f3",
+  "versionNumber": 1
+}

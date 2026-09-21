@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "description": {
+      "description": "Human-readable place description (e.g. 'the affected wall faces'); presentation only — excluded from identity derivations.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "geometryRefs": {
+      "description": "Deterministic geometry references anchoring or limiting the target (drawn pit outlines, wall face polygons…).",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "kind": {
+            "enum": [
+              "plane",
+              "polygon",
+              "mesh-ref",
+              "point-cloud-ref"
+            ],
+            "type": "string"
+          },
+          "ref": {
+            "description": "Stable id of the referenced geometry artifact (owned by the deterministic geometry services; read-only reference).",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "ref"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "nodeRefs": {
+      "description": "Stable Reality Graph node ids the target anchors to (read-only references to observed reality).",
+      "items": {
+        "description": "Opaque stable identifier assigned by the authority that owns the object.",
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "selectorKind": {
+      "description": "How the target selects space: element (whole node), face-set (element faces), surface-region, volume, line-extent, point, storey or space.",
+      "enum": [
+        "element",
+        "face-set",
+        "surface-region",
+        "volume",
+        "line-extent",
+        "point",
+        "storey",
+        "space"
+      ],
+      "type": "string"
+    },
+    "units": {
+      "additionalProperties": true,
+      "description": "Units of the spatial coordinates/anchors (carried verbatim).",
+      "properties": {
+        "angular": {
+          "description": "Angular unit of the target's anchors (e.g. rad).",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "linear": {
+          "description": "Linear unit of the target's anchors (e.g. m).",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "linear",
+        "angular"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "selectorKind",
+    "nodeRefs",
+    "geometryRefs",
+    "units",
+    "description"
+  ],
+  "type": "object"
+}

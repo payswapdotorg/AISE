@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "checks": {
+      "description": "The explicit findings — at least one; validation is never silent.",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "checkId": {
+            "description": "Stable check identifier (e.g. geometry.dimensions-positive, units.quantity-units-typed, operation.ordering-dependencies).",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "detail": {
+            "description": "Deterministic finding detail — what passed, failed, is unknown or needs review. Never silent, never fabricated.",
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "pass",
+              "fail",
+              "unknown",
+              "review-needed"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "checkId",
+          "result",
+          "detail"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "engine": {
+      "additionalProperties": true,
+      "description": "The deterministic validation engine that produced the snapshot.",
+      "properties": {
+        "kind": {
+          "description": "The deterministic validation engine kind (e.g. aise-solution-engine) — provider identity belongs in provenance.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "version": {
+          "description": "The engine's version.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "version"
+      ],
+      "type": "object"
+    },
+    "inputDigest": {
+      "description": "sha-256 digest of the validated solution-version content — the snapshot certifies EXACTLY these bytes.",
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "outcome": {
+      "description": "Worst-of the checks: fail > review-needed > unknown > pass (invariant validation_outcome_not_worst_of_checks).",
+      "enum": [
+        "pass",
+        "fail",
+        "unknown",
+        "review-needed"
+      ],
+      "type": "string"
+    },
+    "snapshotId": {
+      "description": "Deterministic snapshot identity (deriveValidationSnapshotId).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "solutionId": {
+      "description": "The validated solution.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "validatedAt": {
+      "description": "Validation instant; EXCLUDED from the snapshot identity derivation.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "versionNumber": {
+      "description": "The validated solution version (the snapshot is version-pinned).",
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "snapshotId",
+    "solutionId",
+    "versionNumber",
+    "outcome",
+    "checks",
+    "inputDigest",
+    "engine",
+    "validatedAt"
+  ],
+  "type": "object"
+}

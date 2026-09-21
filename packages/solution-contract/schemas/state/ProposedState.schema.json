@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "appliedOperationIds": {
+      "description": "Ordered ids of the operations 1..stateIndex (length must equal stateIndex — invariant proposed_state_index_mismatch).",
+      "items": {
+        "description": "Opaque stable identifier assigned by the authority that owns the object.",
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "baselineRealityVersionId": {
+      "description": "The PINNED authoritative Reality-Graph version this proposed state branches from — a read-only reference; proposals never mutate observed reality.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "contentDigest": {
+      "description": "sha-256 digest of the engine-materialized state content (PROD-022); the contract pins the digest form, not the materialization.",
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "epistemicStatus": {
+      "const": "PROPOSED",
+      "description": "ALWAYS 'PROPOSED' — the schema-level proposal-isolation seal: OBSERVED/INFERRED/CONFIRMED are unrepresentable inside a proposed state.",
+      "type": "string"
+    },
+    "materializedAt": {
+      "description": "Engine clock instant of materialization; EXCLUDED from the state identity derivation (identity is content).",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "solutionId": {
+      "description": "The solution this state belongs to.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "stateId": {
+      "description": "Deterministic proposed-state identity (deriveProposedStateId). The SAME identifier feeds the synchronized 3D, 2D and BOQ views of this proposal step.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "stateIndex": {
+      "description": "Layer number: 0 = the baseline overlay; N = after operation N.",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "versionNumber": {
+      "description": "The solution version this state belongs to.",
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "stateId",
+    "solutionId",
+    "versionNumber",
+    "stateIndex",
+    "baselineRealityVersionId",
+    "epistemicStatus",
+    "appliedOperationIds",
+    "materializedAt"
+  ],
+  "type": "object"
+}

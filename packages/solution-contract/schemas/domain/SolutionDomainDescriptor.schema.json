@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "extensions": {
+      "description": "Vertical-specific extension descriptors, carried as DATA — never interpreted, enforced or extended by a client.",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "kind": {
+            "description": "Extension kind (open vocabulary, e.g. building-element-taxonomy, assembly-compatibility-rules).",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "ref": {
+            "description": "Stable reference to the extension definition (vocabulary or ruleset id).",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "version": {
+            "description": "Semver version of the extension definition this descriptor pins.",
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "ref",
+          "version"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "operationVocabulary": {
+      "description": "Identifier of the operation-type vocabulary the solution's operations use (e.g. aise-building-operations-v1). Identifies which engine-owned catalogue the open operationType strings belong to.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "vertical": {
+      "description": "The engineering vertical of the solution's operations (OPEN vocabulary; Phase 1 advisory value: building. Documented future verticals: civil-works, mep, industrial-equipment, electronics, integrated-circuits). Rendered verbatim by clients; vertical semantics are owned by the server solution engine.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "vertical",
+    "extensions"
+  ],
+  "type": "object"
+}

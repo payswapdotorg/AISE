@@ -1,0 +1,5 @@
+{
+  "contractVersion": "1.0.0",
+  "dependencyKind": "completion-before",
+  "rationale": "the rebuilt wall section requires the damaged section removed first"
+}

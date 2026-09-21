@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "intentRef": "intent-demo-0031",
+  "missingParameters": [],
+  "outcome": "unsupported",
+  "profileRef": "profile-building-ops-reference",
+  "reasons": [
+    {
+      "code": "operation-type-not-declared",
+      "detail": "operation type 'trench-shoring' is not declared by engine profile 'profile-building-ops-reference' for vertical 'building'; declared types: [excavation, backfill, demolition-removal, foundation-placement, slab-placement, block-wall-placement, opening-creation, plaster-application, building-service-installation, finish-application]"
+    }
+  ]
+}
