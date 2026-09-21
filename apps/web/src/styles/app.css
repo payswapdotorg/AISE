@@ -14,7 +14,17 @@
   --surface-2: #eef1f4;
   --ink: #1c2733;
   --ink-soft: #4a5a6a;
-  --ink-faint: #7a8894;
+  /* PROD-012-R (WCAG 1.4.3 AA): the faint ink is the DE-EMPHASIZED text
+   * tone (crumbs, field labels, source notes, journey hints, state detail,
+   * task-strip notes, the gate divider). The pre-remediation #7a8894 sat
+   * at 3.64:1 on --surface — a serious axe violation on the Dashboard's
+   * .journey-hint elements. #5c6b77 keeps the tone visibly "faint" while
+   * clearing 4.5:1 on EVERY light surface of the palette it can render on
+   * (computed in apps/web/src/styles/tokens.test.ts, which pins the
+   * ratios): surface 5.49, bg 5.07, surface-2 4.84, warn-bg 4.96,
+   * error-bg 4.72, derived-bg 4.70, the four epistemic backgrounds
+   * 4.74–4.89. */
+  --ink-faint: #5c6b77;
   --line: #d7dee5;
   --brand: #0f4c5c;
   --brand-ink: #ffffff;
@@ -132,7 +142,18 @@ a:hover {
   padding: 10px 16px;
   display: flex;
   align-items: center;
+  /* PROD-012-R (responsive-mobile): the SIGNED-IN header (brand + user
+   * menu + API-mode chip + drawer toggle) needs ~469px at its natural
+   * sizes — one unwrapped flex row overflows a 390px viewport (the
+   * PROD-012 scrollWidth 469 vs innerWidth 390 FAIL, which also squeezed
+   * the 44px drawer toggle to ~32px). Wrapping lets the row flow onto a
+   * second line instead of overflowing; the desktop row (>=880px, where
+   * everything fits with room to spare) is a single line and is visually
+   * unchanged. The 8px row-gap only applies BETWEEN wrapped lines, so it
+   * is inert on the single-line desktop row. */
+  flex-wrap: wrap;
   gap: 12px;
+  row-gap: 8px;
 }
 
 .brand {

@@ -1,0 +1,70 @@
+PROD-012-R local production-build reproduction harness — before
+target: http://localhost:4273 (vite preview over apps/web/dist, API proxied from :8790)
+==> preflight: the built bundle (documented workaround pass)
+  harness workaround: NOT needed — the adapter-contract fixtures-loader dead module-init pattern is absent (upstream fixed or changed); serving the unpatched build
+stack: healthy on http://localhost:4273 (log: /tmp/aise-012r-cgCr5L/start.log)
+==> responsive-mobile diagnostics (mobile 390x844)
+  gate overflow: scrollWidth 390 vs innerWidth 390 (budget +1) — PASS
+  signed-in shell overflow: scrollWidth 469 vs innerWidth 390 (budget +1) — FAIL
+  elements exceeding the 390px viewport (15 shown):
+    <header.app-header> left=0.0 right=468.8 width=468.8
+    <div.app-header-inner> left=0.0 right=468.8 width=468.8
+    <span.api-chip.api-chip-live> left=336.3 right=409.2 width=72.9
+    <button.nav-toggle> left=421.2 right=452.8 width=31.7
+    <div.app-body> left=0.0 right=468.8 width=468.8
+    <main#main-content.app-main> left=0.0 right=468.8 width=468.8
+    <div.page-head> left=16.0 right=452.8 width=436.8
+    <h1> left=16.0 right=452.8 width=436.8
+    <p> left=16.0 right=452.8 width=436.8
+    <nav.toolbar> left=16.0 right=452.8 width=436.8
+    <section.card> left=16.0 right=452.8 width=436.8
+    <div.card-head> left=17.0 right=451.8 width=434.8
+    <div.card-meta> left=33.0 right=435.8 width=402.8
+    <span> left=33.0 right=427.1 width=394.1
+    <div.card-body> left=17.0 right=451.8 width=434.8
+  .app-header-inner: scrollWidth 469 vs clientWidth 469
+    <a.brand> left=16.0 right=125.2 width=109.2 top=22.5
+    <span.header-spacer> left=137.2 right=137.2 width=0.0 top=44.4
+    <span.user-menu> left=149.2 right=324.3 width=175.1 top=10.0
+    <span.api-chip.api-chip-live> left=336.3 right=409.2 width=72.9 top=28.1
+    <button.nav-toggle> left=421.2 right=452.8 width=31.7 top=22.4
+  drawer-open overflow: scrollWidth 469 vs innerWidth 390 (budget +1) — FAIL
+  axe (mobile 390x844): critical=0 serious=1 moderate=3 minor=0 — FAIL
+    [serious] color-contrast — Elements must meet minimum color contrast ratio thresholds (5 node(s))
+      target=[".state-detail"]
+      target=["li:nth-child(1) > .journey-body > .journey-hint"]
+      target=["li:nth-child(2) > .journey-body > .journey-hint"]
+      target=["li:nth-child(3) > .journey-body > .journey-hint"]
+    [moderate] landmark-main-is-top-level — Main landmark should not be contained in another landmark (1 node(s))
+      target=["#main-content"]
+    [moderate] landmark-no-duplicate-main — Document should not have more than one main landmark (1 node(s))
+      target=["#app"]
+    [moderate] landmark-unique — Landmarks should have a unique role or role/label/title (i.e. accessible name) combination (1 node(s))
+      target=["#app"]
+  journey-hint pair (4 nodes): #7a8894 on #ffffff (li.) = 3.64:1 — FAIL (AA 4.5:1)
+  main landmarks: 2 (app, main-content) — NESTED (duplicate top-level landmark)
+  cleanup: ok (Sign out control; the gate returned)
+==> responsive-desktop mirror (desktop 1440x900)
+  gate overflow: scrollWidth 1440 vs innerWidth 1440 (budget +1) — PASS
+  signed-in shell overflow: scrollWidth 1440 vs innerWidth 1440 (budget +1) — PASS
+  nav rail visible at desktop: true — PASS
+  header geometry @desktop: .brand(l=146.0,r=331.6,w=185.6,t=10.0,h=43.9) .user-menu(l=911.4,r=1209.1,w=297.7,t=13.9,h=36.0) .api-chip(l=1063.2,r=1122.6,w=59.5,t=15.6,h=32.6) .nav-toggle=hidden
+  header one-row @desktop (center spread 0.00px, row height 63.9px): PASS
+  axe (desktop 1440x900): critical=0 serious=1 moderate=3 minor=0 — FAIL
+    [serious] color-contrast — Elements must meet minimum color contrast ratio thresholds (5 node(s))
+      target=[".state-detail"]
+      target=["li:nth-child(1) > .journey-body > .journey-hint"]
+      target=["li:nth-child(2) > .journey-body > .journey-hint"]
+      target=["li:nth-child(3) > .journey-body > .journey-hint"]
+    [moderate] landmark-main-is-top-level — Main landmark should not be contained in another landmark (1 node(s))
+      target=["#main-content"]
+    [moderate] landmark-no-duplicate-main — Document should not have more than one main landmark (1 node(s))
+      target=["#app"]
+    [moderate] landmark-unique — Landmarks should have a unique role or role/label/title (i.e. accessible name) combination (1 node(s))
+      target=["#app"]
+  journey-hint pair (4 nodes): #7a8894 on #ffffff (li.) = 3.64:1 — FAIL (AA 4.5:1)
+  main landmarks: 2 (app, main-content) — NESTED (duplicate top-level landmark)
+  cleanup: ok (Sign out control; the gate returned)
+cleanup: browser closed
+teardown: stack stopped, both scratch ports dark, scratch dir removed
+REPRO: DONE (before)
