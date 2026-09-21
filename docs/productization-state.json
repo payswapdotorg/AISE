@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-21T04:35:00Z",
+  "lastReconciledAt": "2026-09-21T07:30:12Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -270,10 +270,13 @@
     },
     {
       "id": "PROD-019",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-016"
-      ]
+      ],
+      "mergedSha": "91886e9",
+      "finalizedAt": "2026-09-21T07:30:12Z",
+      "evidence": "apps/android :core adapter (11 main sources + 9 test sources incl. conformance corpus; 64 new Gradle tests) + :app field runtime/journey wiring + evidence docs (conformance-report, field-journey, gradle-trace). Lead gates: root VERIFY 3718/0 (unchanged), Gradle :core:test 387/0 re-run at integration station (portable Temurin JDK 21), typecheck+lint PASS. Honest notes: :app:test/:app:assembleDebug require Android SDK (not run — integration-station debt); declared profile omits voice/depth/lidar/deep-links per facts-exercised rule (depth+lidar negotiate BLOCKED, surfaced verbatim). Worker commit 0429c51."
     },
     {
       "id": "PROD-020",
