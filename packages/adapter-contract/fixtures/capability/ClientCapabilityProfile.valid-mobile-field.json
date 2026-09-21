@@ -1,0 +1,105 @@
+{
+  "contractVersion": "1.0.0",
+  "profileId": "profile-mobile-field-reference",
+  "adapterKind": "mobile-field",
+  "capturedAt": "2026-01-15T09:05:00.000Z",
+  "screen": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "screen",
+      "status": "supported",
+      "details": {
+        "safeArea": "notch-aware"
+      },
+      "limitations": []
+    },
+    "sizeClass": "compact",
+    "multiWindow": false
+  },
+  "input": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "input",
+      "status": "supported",
+      "details": {
+        "handedness": "one-hand-field-use"
+      },
+      "limitations": []
+    },
+    "modes": [
+      "touch",
+      "gesture",
+      "voice",
+      "camera-scan"
+    ]
+  },
+  "sensors": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "sensors",
+      "status": "supported",
+      "details": {},
+      "limitations": []
+    },
+    "kinds": [
+      "imu",
+      "gps",
+      "compass"
+    ]
+  },
+  "camera": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "camera",
+      "status": "supported",
+      "details": {
+        "flash": "torch-supported"
+      },
+      "limitations": [
+        "depth quality varies by device; LiDAR not assumed on the reference profile"
+      ]
+    },
+    "captureKinds": [
+      "still",
+      "video",
+      "depth"
+    ]
+  },
+  "offlineStorage": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "offline-storage",
+      "status": "supported",
+      "details": {
+        "mechanism": "file-backed-queue"
+      },
+      "limitations": [
+        "queue is bounded; missions resume within the declared bound"
+      ]
+    },
+    "mode": "bounded-queue",
+    "queueBoundBytes": 536870912
+  },
+  "notifications": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "notifications",
+      "status": "supported",
+      "details": {},
+      "limitations": []
+    },
+    "mode": "system"
+  },
+  "deepLinks": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "deep-links",
+      "status": "supported",
+      "details": {
+        "scheme": "aise"
+      },
+      "limitations": []
+    },
+    "mode": "app-scheme"
+  }
+}

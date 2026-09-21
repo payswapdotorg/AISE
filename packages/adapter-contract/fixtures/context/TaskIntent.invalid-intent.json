@@ -1,0 +1,10 @@
+{
+  "contractVersion": "1.0.0",
+  "taskId": "task-2c9f01",
+  "taskType": "field-capture",
+  "intent": "",
+  "projectRef": "proj-7f3a2b",
+  "targetRefs": ["case-91ab", "node-wall-12"],
+  "parameters": {},
+  "createdAt": "2026-01-15T09:25:00.000Z"
+}

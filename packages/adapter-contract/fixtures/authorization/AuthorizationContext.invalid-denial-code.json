@@ -1,0 +1,14 @@
+{
+  "contractVersion": "1.0.0",
+  "subjectRef": "principal-field-12",
+  "grantedActions": [
+    "reality:read"
+  ],
+  "denials": [
+    {
+      "action": "reality:write",
+      "reasonCode": "",
+      "reasonDetail": "An empty reason code is not a stable denial code."
+    }
+  ]
+}

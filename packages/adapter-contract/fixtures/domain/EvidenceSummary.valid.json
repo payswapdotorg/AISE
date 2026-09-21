@@ -1,0 +1,24 @@
+{
+  "contractVersion": "1.0.0",
+  "subjectKind": "engineering_case",
+  "subjectRef": "case-91ab",
+  "totalItems": 3,
+  "evidenceContentIds": [
+    "f08d256aa75518620f5814c1ab6639876b8d3dc50028bc567ba3c4c39c225712",
+    "60dbb33388e68f526c58a7b6595a72a33475bcb95f9706f0ceafe94e7488680b",
+    "234de3783bf00bd0e2a1b21d1f16d6cafb10b629ed027e57c526712ec68e46cd"
+  ],
+  "gaps": [
+    {
+      "gapId": "gap-4471",
+      "kind": "MISSING",
+      "description": "No calibrated reference dimension was captured for the cracked masonry area; a scale reference or manual measurement is required before dimension assertions can be grounded."
+    },
+    {
+      "gapId": "gap-4472",
+      "kind": "WEAK",
+      "description": "The single oblique photo of the wall base is too low-angle to support the crack-width comparison the case relies on."
+    }
+  ],
+  "summarizedAt": "2026-01-15T10:00:00.000Z"
+}

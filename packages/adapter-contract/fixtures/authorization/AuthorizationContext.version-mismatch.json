@@ -1,0 +1,8 @@
+{
+  "contractVersion": "2.0.0",
+  "subjectRef": "principal-field-12",
+  "grantedActions": [
+    "reality:read"
+  ],
+  "denials": []
+}

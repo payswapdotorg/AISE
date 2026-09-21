@@ -1,0 +1,10 @@
+{
+  "contractVersion": "1.0.0",
+  "domain": "camera",
+  "status": "supported",
+  "details": {
+    "source": "getUserMedia",
+    "flash": "torch-supported"
+  },
+  "limitations": ["no depth or LiDAR capture through the browser camera API"]
+}

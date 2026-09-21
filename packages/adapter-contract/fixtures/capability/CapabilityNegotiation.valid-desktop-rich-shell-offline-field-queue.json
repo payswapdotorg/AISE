@@ -1,0 +1,43 @@
+{
+  "contractVersion": "1.0.0",
+  "adapterKind": "desktop-rich-shell",
+  "profileRef": "profile-desktop-rich-shell-reference",
+  "requirementsRef": "requirements-offline-field-queue",
+  "outcome": "degraded",
+  "domainOutcomes": [
+    {
+      "domain": "sensors",
+      "outcome": "unsupported",
+      "blocking": false,
+      "reason": "sensor capability unavailable on this client"
+    },
+    {
+      "domain": "offline-storage",
+      "outcome": "satisfied",
+      "blocking": true,
+      "reason": null
+    },
+    {
+      "domain": "notifications",
+      "outcome": "satisfied",
+      "blocking": false,
+      "reason": null
+    },
+    {
+      "domain": "deep-links",
+      "outcome": "satisfied",
+      "blocking": false,
+      "reason": null
+    }
+  ],
+  "permittedInteractionModes": [
+    "menu-navigation",
+    "keyboard-shortcut",
+    "table-review",
+    "panel-inspection",
+    "drag-inspect",
+    "window-management",
+    "file-workflow",
+    "offline-queue"
+  ]
+}

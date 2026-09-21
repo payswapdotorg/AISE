@@ -1,0 +1,28 @@
+{
+  "contractVersion": "1.0.0",
+  "adapterKind": "browser",
+  "profileRef": "profile-browser-reference",
+  "requirementsRef": "requirements-field-depth-capture",
+  "outcome": "blocked",
+  "domainOutcomes": [
+    {
+      "domain": "input",
+      "outcome": "unsupported",
+      "blocking": true,
+      "reason": "input requirement unmet: required any of [camera-scan, touch]; profile declares [keyboard, pointer]"
+    },
+    {
+      "domain": "camera",
+      "outcome": "unsupported",
+      "blocking": true,
+      "reason": "camera requirement unmet: required any of [depth]; profile declares [still, video]"
+    },
+    {
+      "domain": "offline-storage",
+      "outcome": "unsupported",
+      "blocking": false,
+      "reason": "offline-storage requirement unmet: required min mode bounded-queue; profile declares session-cache"
+    }
+  ],
+  "permittedInteractionModes": []
+}

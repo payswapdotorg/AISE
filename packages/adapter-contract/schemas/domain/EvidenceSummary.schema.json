@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "evidenceContentIds": {
+      "description": "Content ids of the known evidence (bounded by the producer; an open continuation reference may be carried as an unknown field).",
+      "items": {
+        "description": "sha-256 content address (64 lowercase hex). Normative derivation: the frozen AISE-CONTENT-V1 canonical encoding (see apps/android ContentIdentity).",
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "gaps": {
+      "description": "Knowledge gaps that ground next-action recommendations.",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "description": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "gapId": {
+            "description": "Opaque stable identifier assigned by the authority that owns the object.",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "kind": {
+            "description": "MISSING | WEAK | AMBIGUOUS — the canonical gap-kind vocabulary of @aise/shared-contracts; a gap is a fact about what is NOT known, never absence.",
+            "enum": [
+              "MISSING",
+              "WEAK",
+              "AMBIGUOUS"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "gapId",
+          "kind",
+          "description"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "subjectKind": {
+      "description": "Open vocabulary (lower_snake_case) naming the subject this summary covers (e.g. `task`, `project`, `engineering_case`).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "subjectRef": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "summarizedAt": {
+      "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "totalItems": {
+      "description": "Total known evidence items for the subject.",
+      "minimum": 0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "subjectKind",
+    "subjectRef",
+    "totalItems",
+    "evidenceContentIds",
+    "gaps",
+    "summarizedAt"
+  ],
+  "type": "object"
+}

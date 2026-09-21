@@ -514,24 +514,29 @@ export function isUuid(value: string): boolean {
 // HandlerOptions.identity) — same lazy discipline as the case wiring:
 // resolved only inside the /v1/identity path guard, so deployments without
 // identity traffic never construct the store.
-let defaultIdentityRoutes: IdentityRouteOptions | null = null;
+// FIX-001: memoized PER HANDLER (keyed on the handler's own options object —
+// each createRequestHandler call owns one), never module-global: two handlers
+// over different data dirs can never leak each other's authorities.
+const defaultIdentityRoutesByOptions = new WeakMap<HandlerOptions, IdentityRouteOptions>();
 
 function identityRoutesOrDefault(options: HandlerOptions): IdentityRouteOptions {
   if (options.identity !== undefined) {
     return options.identity;
   }
-  if (defaultIdentityRoutes === null) {
+  let routes = defaultIdentityRoutesByOptions.get(options);
+  if (routes === undefined) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultIdentityRoutes = {
+    routes = {
       service: new IdentityService({
         store: new FsIdentityStore(dataDir),
         clock: (): string => new Date().toISOString(),
       }),
       logger: options.logger,
     };
+    defaultIdentityRoutesByOptions.set(options, routes);
   }
-  return defaultIdentityRoutes;
+  return routes;
 }
 
 // AISE-032 routing: memoized default reality-vs-design comparison routing
@@ -551,16 +556,20 @@ function identityRoutesOrDefault(options: HandlerOptions): IdentityRouteOptions 
 // No code path from here can write the reality or evidence authorities —
 // the resolver interfaces expose exactly one READ method each and the
 // instances behind them are never exported.
-let defaultComparisonRoutes: ComparisonRouteOptions | null = null;
+// FIX-001: memoized PER HANDLER (keyed on the handler's own options object —
+// each createRequestHandler call owns one), never module-global: two handlers
+// over different data dirs can never leak each other's authorities.
+const defaultComparisonRoutesByOptions = new WeakMap<HandlerOptions, ComparisonRouteOptions>();
 
 function comparisonRoutesOrDefault(options: HandlerOptions): ComparisonRouteOptions {
   if (options.comparison !== undefined) {
     return options.comparison;
   }
-  if (defaultComparisonRoutes === null) {
+  let routes = defaultComparisonRoutesByOptions.get(options);
+  if (routes === undefined) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultComparisonRoutes = {
+    routes = {
       service: new ComparisonService({
         store: new FsComparisonStore(dataDir),
         clock: (): string => new Date().toISOString(),
@@ -571,8 +580,9 @@ function comparisonRoutesOrDefault(options: HandlerOptions): ComparisonRouteOpti
       }),
       logger: options.logger,
     };
+    defaultComparisonRoutesByOptions.set(options, routes);
   }
-  return defaultComparisonRoutes;
+  return routes;
 }
 
 // AISE-018 routing: memoized default adaptive evidence-gap routing (see
@@ -595,16 +605,20 @@ function comparisonRoutesOrDefault(options: HandlerOptions): ComparisonRouteOpti
 // from here can write the assurance, reality or evidence authorities —
 // the resolver interfaces expose exactly one READ method each and the
 // instances behind them are never exported.
-let defaultGapsRoutes: GapsRouteOptions | null = null;
+// FIX-001: memoized PER HANDLER (keyed on the handler's own options object —
+// each createRequestHandler call owns one), never module-global: two handlers
+// over different data dirs can never leak each other's authorities.
+const defaultGapsRoutesByOptions = new WeakMap<HandlerOptions, GapsRouteOptions>();
 
 function gapsRoutesOrDefault(options: HandlerOptions): GapsRouteOptions {
   if (options.gaps !== undefined) {
     return options.gaps;
   }
-  if (defaultGapsRoutes === null) {
+  let routes = defaultGapsRoutesByOptions.get(options);
+  if (routes === undefined) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultGapsRoutes = {
+    routes = {
       service: new GapAnalysisService({
         store: new FsGapAnalysisStore(dataDir),
         clock: (): string => new Date().toISOString(),
@@ -617,8 +631,9 @@ function gapsRoutesOrDefault(options: HandlerOptions): GapsRouteOptions {
       }),
       logger: options.logger,
     };
+    defaultGapsRoutesByOptions.set(options, routes);
   }
-  return defaultGapsRoutes;
+  return routes;
 }
 
 // AISE-041 routing: memoized default adoption (workflow migration and
@@ -637,16 +652,20 @@ function gapsRoutesOrDefault(options: HandlerOptions): GapsRouteOptions {
 // service). There is no register/sync/write path from here into the
 // integrations authority, and the profiler itself NEVER migrates
 // anything: it inventories, scores and tracks governed candidates only.
-let defaultAdoptionRoutes: AdoptionRouteOptions | null = null;
+// FIX-001: memoized PER HANDLER (keyed on the handler's own options object —
+// each createRequestHandler call owns one), never module-global: two handlers
+// over different data dirs can never leak each other's authorities.
+const defaultAdoptionRoutesByOptions = new WeakMap<HandlerOptions, AdoptionRouteOptions>();
 
 function adoptionRoutesOrDefault(options: HandlerOptions): AdoptionRouteOptions {
   if (options.adoption !== undefined) {
     return options.adoption;
   }
-  if (defaultAdoptionRoutes === null) {
+  let routes = defaultAdoptionRoutesByOptions.get(options);
+  if (routes === undefined) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultAdoptionRoutes = {
+    routes = {
       service: new AdoptionService({
         store: new FsAdoptionStore(dataDir),
         clock: (): string => new Date().toISOString(),
@@ -654,8 +673,9 @@ function adoptionRoutesOrDefault(options: HandlerOptions): AdoptionRouteOptions 
       }),
       logger: options.logger,
     };
+    defaultAdoptionRoutesByOptions.set(options, routes);
   }
-  return defaultAdoptionRoutes;
+  return routes;
 }
 
 // PROD-006 routing: memoized default artifact storage routing (see
@@ -671,16 +691,20 @@ function adoptionRoutesOrDefault(options: HandlerOptions): AdoptionRouteOptions 
 // storage call, and the predicate port (allowAllArtifactAccess — the open
 // local-dev default of every other pre-auth /v1 surface) is the single
 // access seam PROD-010 will wire to the authenticated principal context.
-let defaultArtifactsRoutes: ArtifactsRouteOptions | null = null;
+// FIX-001: memoized PER HANDLER (keyed on the handler's own options object —
+// each createRequestHandler call owns one), never module-global: two handlers
+// over different data dirs can never leak each other's authorities.
+const defaultArtifactsRoutesByOptions = new WeakMap<HandlerOptions, ArtifactsRouteOptions>();
 
 function artifactsRoutesOrDefault(options: HandlerOptions): ArtifactsRouteOptions {
   if (options.artifacts !== undefined) {
     return options.artifacts;
   }
-  if (defaultArtifactsRoutes === null) {
+  let routes = defaultArtifactsRoutesByOptions.get(options);
+  if (routes === undefined) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultArtifactsRoutes = {
+    routes = {
       service: new ArtifactService({
         storage: new FsArtifactStorage(dataDir),
         metadata: new FsArtifactMetadataStore(dataDir),
@@ -694,25 +718,30 @@ function artifactsRoutesOrDefault(options: HandlerOptions): ArtifactsRouteOption
       logger: options.logger,
       accessPredicate: allowAllArtifactAccess,
     };
+    defaultArtifactsRoutesByOptions.set(options, routes);
   }
-  return defaultArtifactsRoutes;
+  return routes;
 }
 
 // AISE-011: memoized default BOQ routing (see HandlerOptions.boq).
-let defaultBoqRoutes: BoqRouteOptions | null = null;
+// FIX-001: memoized PER HANDLER (keyed on the handler's own options object —
+// each createRequestHandler call owns one), never module-global: two handlers
+// over different data dirs can never leak each other's authorities.
+const defaultBoqRoutesByOptions = new WeakMap<HandlerOptions, BoqRouteOptions>();
 
 function boqRoutesOrDefault(options: HandlerOptions): BoqRouteOptions {
   if (options.boq !== undefined) {
     return options.boq;
   }
-  if (defaultBoqRoutes === null) {
+  let routes = defaultBoqRoutesByOptions.get(options);
+  if (routes === undefined) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
     const service = new BoqService({
       store: new FsBoqStore(dataDir),
       clock: () => new Date().toISOString(),
     });
-    defaultBoqRoutes = {
+    routes = {
       service,
       logger: options.logger,
       // AISE-014: derived normalization surface over the SAME data dir —
@@ -725,32 +754,38 @@ function boqRoutesOrDefault(options: HandlerOptions): BoqRouteOptions {
         boq: service,
       }),
     };
+    defaultBoqRoutesByOptions.set(options, routes);
   }
-  return defaultBoqRoutes;
+  return routes;
 }
 
 // AISE-025 routing: memoized default Engineering Case routing (see
 // HandlerOptions.cases) — same lazy discipline as the BOQ wiring: resolved
 // only inside the /v1/cases path guard, so deployments without case traffic
 // never construct the store.
-let defaultCasesRoutes: CasesRouteOptions | null = null;
+// FIX-001: memoized PER HANDLER (keyed on the handler's own options object —
+// each createRequestHandler call owns one), never module-global: two handlers
+// over different data dirs can never leak each other's authorities.
+const defaultCasesRoutesByOptions = new WeakMap<HandlerOptions, CasesRouteOptions>();
 
 function casesRoutesOrDefault(options: HandlerOptions): CasesRouteOptions {
   if (options.cases !== undefined) {
     return options.cases;
   }
-  if (defaultCasesRoutes === null) {
+  let routes = defaultCasesRoutesByOptions.get(options);
+  if (routes === undefined) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultCasesRoutes = {
+    routes = {
       service: new CaseService({
         store: new FsCaseStore(dataDir),
         clock: (): string => new Date().toISOString(),
       }),
       logger: options.logger,
     };
+    defaultCasesRoutesByOptions.set(options, routes);
   }
-  return defaultCasesRoutes;
+  return routes;
 }
 
 // AISE-026 routing: memoized default Intervention Studio routing (see
@@ -760,7 +795,10 @@ function casesRoutesOrDefault(options: HandlerOptions): CasesRouteOptions {
 // ISOLATION: the default baseline resolver is READ-ONLY BY CONSTRUCTION —
 // it calls the reality store's read method `getVersion` for the PINNED
 // version id and nothing else; no code path from here can write reality.
-let defaultInterventionRoutes: InterventionRouteOptions | null = null;
+// FIX-001: memoized PER HANDLER (keyed on the handler's own options object —
+// each createRequestHandler call owns one), never module-global: two handlers
+// over different data dirs can never leak each other's authorities.
+const defaultInterventionRoutesByOptions = new WeakMap<HandlerOptions, InterventionRouteOptions>();
 
 /** Read-only baseline resolution over a reality store (reads only). */
 function readOnlyBaselineResolver(store: RealityStore): BaselineResolver {
@@ -774,10 +812,11 @@ function interventionRoutesOrDefault(options: HandlerOptions): InterventionRoute
   if (options.interventions !== undefined) {
     return options.interventions;
   }
-  if (defaultInterventionRoutes === null) {
+  let routes = defaultInterventionRoutesByOptions.get(options);
+  if (routes === undefined) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultInterventionRoutes = {
+    routes = {
       service: new InterventionService({
         store: new FsInterventionStore(dataDir),
         clock: (): string => new Date().toISOString(),
@@ -785,8 +824,9 @@ function interventionRoutesOrDefault(options: HandlerOptions): InterventionRoute
       }),
       logger: options.logger,
     };
+    defaultInterventionRoutesByOptions.set(options, routes);
   }
-  return defaultInterventionRoutes;
+  return routes;
 }
 
 // AISE-031 routing: memoized default Execution/Outcome routing (see
@@ -808,17 +848,21 @@ function interventionRoutesOrDefault(options: HandlerOptions): InterventionRoute
 // intervention, case or evidence authorities — the resolver interfaces
 // expose exactly one READ method each and the instances behind them are
 // never exported.
-let defaultExecutionRoutes: ExecutionRouteOptions | null = null;
+// FIX-001: memoized PER HANDLER (keyed on the handler's own options object —
+// each createRequestHandler call owns one), never module-global: two handlers
+// over different data dirs can never leak each other's authorities.
+const defaultExecutionRoutesByOptions = new WeakMap<HandlerOptions, ExecutionRouteOptions>();
 
 function executionRoutesOrDefault(options: HandlerOptions): ExecutionRouteOptions {
   if (options.executions !== undefined) {
     return options.executions;
   }
-  if (defaultExecutionRoutes === null) {
+  let routes = defaultExecutionRoutesByOptions.get(options);
+  if (routes === undefined) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
     const wallClock = (): string => new Date().toISOString();
-    defaultExecutionRoutes = {
+    routes = {
       service: new ExecutionService({
         store: new FsExecutionStore(dataDir),
         clock: wallClock,
@@ -838,8 +882,9 @@ function executionRoutesOrDefault(options: HandlerOptions): ExecutionRouteOption
       }),
       logger: options.logger,
     };
+    defaultExecutionRoutesByOptions.set(options, routes);
   }
-  return defaultExecutionRoutes;
+  return routes;
 }
 
 // AISE-028 routing: memoized default impact routing (see
@@ -858,18 +903,22 @@ function executionRoutesOrDefault(options: HandlerOptions): ExecutionRouteOption
 // boqRoutesOrDefault, constructed fresh here) — the adapter calls their
 // READ methods `getScenario`, `getLatest` and `getImport` and nothing else.
 // No code path from here can write the intervention or BOQ authorities.
-let defaultImpactRoutes: ImpactRouteOptions | null = null;
+// FIX-001: memoized PER HANDLER (keyed on the handler's own options object —
+// each createRequestHandler call owns one), never module-global: two handlers
+// over different data dirs can never leak each other's authorities.
+const defaultImpactRoutesByOptions = new WeakMap<HandlerOptions, ImpactRouteOptions>();
 
 function impactRoutesOrDefault(options: HandlerOptions): ImpactRouteOptions {
   if (options.impacts !== undefined) {
     return options.impacts;
   }
-  if (defaultImpactRoutes === null) {
+  let routes = defaultImpactRoutesByOptions.get(options);
+  if (routes === undefined) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
     const wallClock = (): string => new Date().toISOString();
     const boq = new BoqService({ store: new FsBoqStore(dataDir), clock: wallClock });
-    defaultImpactRoutes = {
+    routes = {
       service: new ImpactService({
         store: new FsImpactStore(dataDir),
         clock: wallClock,
@@ -896,8 +945,9 @@ function impactRoutesOrDefault(options: HandlerOptions): ImpactRouteOptions {
       }),
       logger: options.logger,
     };
+    defaultImpactRoutesByOptions.set(options, routes);
   }
-  return defaultImpactRoutes;
+  return routes;
 }
 
 // AISE-038 routing: memoized default developer API/SDK routing (see
@@ -906,16 +956,21 @@ function impactRoutesOrDefault(options: HandlerOptions): ImpactRouteOptions {
 // SDK traffic never touch it. The default wiring owns NO stores: the
 // SDK is a pure contract layer (the frozen SDK_CONTRACT registry plus
 // this handler's logger); explicit wiring wins, as everywhere else.
-let defaultSdkRoutes: SdkRouteOptions | null = null;
+// FIX-001: memoized PER HANDLER (keyed on the handler's own options object —
+// each createRequestHandler call owns one), never module-global: two handlers
+// over different data dirs can never leak each other's authorities.
+const defaultSdkRoutesByOptions = new WeakMap<HandlerOptions, SdkRouteOptions>();
 
 function sdkRoutesOrDefault(options: HandlerOptions): SdkRouteOptions {
   if (options.sdk !== undefined) {
     return options.sdk;
   }
-  if (defaultSdkRoutes === null) {
-    defaultSdkRoutes = { logger: options.logger };
+  let routes = defaultSdkRoutesByOptions.get(options);
+  if (routes === undefined) {
+    routes = { logger: options.logger };
+    defaultSdkRoutesByOptions.set(options, routes);
   }
-  return defaultSdkRoutes;
+  return routes;
 }
 
 async function route(

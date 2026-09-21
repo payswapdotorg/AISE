@@ -1,0 +1,73 @@
+{
+  "contractVersion": "1.0.0",
+  "profileId": "profile-browser-reference",
+  "adapterKind": "browser",
+  "capturedAt": "2026-01-15T09:00:00.000Z",
+  "screen": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "screen",
+      "status": "supported",
+      "details": {},
+      "limitations": []
+    },
+    "sizeClass": "expanded",
+    "multiWindow": false
+  },
+  "input": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "input",
+      "status": "supported",
+      "details": {},
+      "limitations": []
+    },
+    "modes": [
+      "keyboard",
+      "pointer"
+    ]
+  },
+  "sensors": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "sensors",
+      "status": "unavailable",
+      "details": {},
+      "limitations": []
+    },
+    "kinds": []
+  },
+  "camera": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "camera",
+      "status": "supported",
+      "details": {},
+      "limitations": []
+    },
+    "captureKinds": [
+      "still",
+      "video"
+    ]
+  },
+  "notifications": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "notifications",
+      "status": "supported",
+      "details": {},
+      "limitations": []
+    },
+    "mode": "in-app"
+  },
+  "deepLinks": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "deep-links",
+      "status": "supported",
+      "details": {},
+      "limitations": []
+    },
+    "mode": "universal"
+  }
+}

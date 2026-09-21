@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "projectId": {
+      "description": "Stable id of the project the user is working in (server-assigned).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "projectName": {
+      "description": "Project display name (server-stated).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "sourceSystem": {
+      "description": "Source-of-record identity for the project context when it is synchronized from an external system (e.g. `bim-ifc`, `erp`); absent for AISE-native contexts.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "updatedAt": {
+      "description": "Instant the server produced this context snapshot.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "userRole": {
+      "description": "The requesting user's role in this project (server-stated, open vocabulary; advisory well-known values: owner, admin, engineer, reviewer, field-operator, observer). Carried verbatim; never reinterpreted by the adapter.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "projectId",
+    "projectName",
+    "userRole",
+    "updatedAt"
+  ],
+  "type": "object"
+}

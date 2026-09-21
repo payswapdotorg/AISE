@@ -1,0 +1,10 @@
+{
+  "contractVersion": "1.0.0",
+  "outcomeId": "outcome-77e2",
+  "epistemicState": "OBSERVED",
+  "comparisonAvailable": "yes",
+  "postWorkEvidenceContentIds": [
+    "196b5ab5d99835a2a14dce2348d3a29c0a21226d65bb0ce8a088fcfcd37c0e43"
+  ],
+  "updatedAt": "2026-01-16T14:20:00.000Z"
+}

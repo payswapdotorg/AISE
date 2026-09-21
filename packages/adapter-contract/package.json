@@ -1,0 +1,22 @@
+{
+  "name": "@aise/adapter-contract",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE shared client adapter contract (PROD-016, SHARED): versioned platform-neutral semantic objects (ProjectContext, TaskIntent, CapabilityDescriptor, EvidenceSummary, RealitySummary, BOQContext, EngineeringCaseSummary, InterventionScenarioSummary, OutcomeSummary, NextBestAction, AuthorizationContext, OperationResult), client capability negotiation and the adapter conformance harness for the browser/mobile/desktop adapters over one AISE product core (ACR-004). Data + contract logic only — no I/O in the harness core, no server behavior, no UI, no client-side authority.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "gen:schemas": "bun scripts/generate-schemas.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/shared-contracts": "workspace:*",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "zod-to-json-schema": "^3.24.0"
+  }
+}

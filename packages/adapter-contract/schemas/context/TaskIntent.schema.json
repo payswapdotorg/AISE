@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "createdAt": {
+      "description": "Instant the intent was authored.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "intent": {
+      "description": "Natural-language statement of what the user needs to do.",
+      "maxLength": 4096,
+      "minLength": 1,
+      "type": "string"
+    },
+    "parameters": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Inspectable task parameters as an open string map (units, filters, options). Unknown keys are data and must be preserved.",
+      "type": "object"
+    },
+    "projectRef": {
+      "description": "Project this task is performed in.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "targetRefs": {
+      "description": "Stable ids of the entities the task concerns (objects, cases, BOQ imports, scenarios…); may be empty for project-wide tasks.",
+      "items": {
+        "description": "Opaque stable identifier assigned by the authority that owns the object.",
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "taskId": {
+      "description": "Stable id of this task intent (client- or server-assigned).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "taskType": {
+      "description": "Task type (open vocabulary; advisory well-known values: field-capture, evidence-review, boq-inspection, engineering-case-review, intervention-review, outcome-comparison, solution-authoring, project-administration).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "taskId",
+    "taskType",
+    "intent",
+    "projectRef",
+    "targetRefs",
+    "parameters",
+    "createdAt"
+  ],
+  "type": "object"
+}

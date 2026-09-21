@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.0.0",
+  "taskId": "task-2c9f01",
+  "taskType": "field-capture",
+  "intent": "Capture depth evidence of the cracked masonry on level 2 so the engineering case can be diagnosed.",
+  "projectRef": "proj-7f3a2b",
+  "targetRefs": ["case-91ab", "node-wall-12"],
+  "parameters": {
+    "priority": "high",
+    "area": "level-2"
+  },
+  "createdAt": "2026-01-15T09:25:00.000Z"
+}

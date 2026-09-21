@@ -1,0 +1,37 @@
+{
+  "contractVersion": "1.0.0",
+  "adapterKind": "mobile-field",
+  "profileRef": "profile-mobile-field-reference",
+  "requirementsRef": "requirements-field-depth-capture",
+  "outcome": "permitted",
+  "domainOutcomes": [
+    {
+      "domain": "input",
+      "outcome": "satisfied",
+      "blocking": true,
+      "reason": null
+    },
+    {
+      "domain": "camera",
+      "outcome": "satisfied",
+      "blocking": true,
+      "reason": null
+    },
+    {
+      "domain": "offline-storage",
+      "outcome": "satisfied",
+      "blocking": false,
+      "reason": null
+    }
+  ],
+  "permittedInteractionModes": [
+    "menu-navigation",
+    "panel-inspection",
+    "drag-inspect",
+    "camera-capture",
+    "gesture",
+    "voice-command",
+    "scan-control",
+    "offline-queue"
+  ]
+}

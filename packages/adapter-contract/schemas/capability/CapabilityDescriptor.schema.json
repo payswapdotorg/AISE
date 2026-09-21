@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "details": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+      "type": "object"
+    },
+    "domain": {
+      "description": "The client capability domain this descriptor describes (open vocabulary; well-known values: screen, input, sensors, camera, offline-storage, notifications, deep-links).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "limitations": {
+      "description": "Material limitations of this domain on this client right now (rendered before any consequential action).",
+      "items": {
+        "maxLength": 4096,
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "status": {
+      "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+      "enum": [
+        "supported",
+        "unavailable",
+        "degraded",
+        "unknown"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "domain",
+    "status",
+    "details",
+    "limitations"
+  ],
+  "type": "object"
+}

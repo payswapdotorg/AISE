@@ -1,0 +1,9 @@
+{
+  "contractVersion": "1.0.0",
+  "actionId": "action-8ba1",
+  "taskRef": "task-2c9f01",
+  "kind": "capture-evidence",
+  "status": "actionable",
+  "prompt": "Capture a depth scan of the cracked masonry on level 2 with the reference scale bar placed along the crack, then submit the mission batch for review.",
+  "blockers": []
+}

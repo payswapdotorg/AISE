@@ -1,0 +1,9 @@
+{
+  "contractVersion": "1.0.0",
+  "requirementsId": "requirements-notification-broadcast",
+  "taskType": "project-administration",
+  "notifications": {
+    "minMode": "system",
+    "blocking": false
+  }
+}

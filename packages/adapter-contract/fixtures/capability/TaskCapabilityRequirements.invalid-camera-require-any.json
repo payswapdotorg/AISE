@@ -1,0 +1,9 @@
+{
+  "contractVersion": "1.0.0",
+  "requirementsId": "requirements-field-depth-capture",
+  "taskType": "field-capture",
+  "camera": {
+    "requireAny": [],
+    "blocking": true
+  }
+}

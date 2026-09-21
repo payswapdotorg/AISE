@@ -1,0 +1,18 @@
+{
+  "contractVersion": "1.0.0",
+  "actionId": "action-8ba2",
+  "taskRef": "task-2c9f01",
+  "kind": "capture-evidence",
+  "status": "blocked",
+  "prompt": "Depth capture cannot start: this device profile does not satisfy the depth-capture requirement, and the operator is not authorized to submit reality writes on this project.",
+  "blockers": [
+    {
+      "reasonCode": "capability-blocked",
+      "detail": "The negotiated capability outcome is blocked: camera requirement unmet (required any of [depth]; profile declares [still, video]). Capture can proceed after switching to a depth-capable device or escalating to a specialist instrument."
+    },
+    {
+      "reasonCode": "authorization-denied",
+      "detail": "The server's authorization context denies `reality:write` for this principal (reason: missing-permission). Request the project engineer to grant the field-operator role before retrying."
+    }
+  ]
+}

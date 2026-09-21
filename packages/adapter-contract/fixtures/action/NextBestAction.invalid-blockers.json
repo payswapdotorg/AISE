@@ -1,0 +1,11 @@
+{
+  "contractVersion": "1.0.0",
+  "actionId": "action-8ba1",
+  "taskRef": "task-2c9f01",
+  "kind": "capture-evidence",
+  "status": "blocked",
+  "prompt": "Depth capture cannot start.",
+  "blockers": {
+    "reasonCode": "capability-blocked"
+  }
+}

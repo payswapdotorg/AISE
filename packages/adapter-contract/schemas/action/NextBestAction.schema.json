@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "actionId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "blockers": {
+      "description": "Typed blockers; empty iff status is actionable.",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "detail": {
+            "description": "Human-readable blocker explanation.",
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "reasonCode": {
+            "description": "Stable machine-readable blocker code (open vocabulary; e.g. `authorization-denied`, `evidence-gap`, `capability-blocked`, `provider-unavailable`, `offline-queued`).",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "reasonCode",
+          "detail"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "kind": {
+      "description": "Action kind (open vocabulary; advisory well-known values: open-project, select-task, inspect-evidence, capture-evidence, submit-evidence, inspect-boq-item, inspect-case, inspect-intervention, compare-outcome, measure-reference, answer-question, escalate, await-authorization, retry-sync).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "prompt": {
+      "description": "The next-action prompt — for blocked actions, the explanation the user must see.",
+      "maxLength": 4096,
+      "minLength": 1,
+      "type": "string"
+    },
+    "status": {
+      "description": "actionable (the prompt is a usable next action) | blocked (the blockers explain why no useful action is currently possible).",
+      "enum": [
+        "actionable",
+        "blocked"
+      ],
+      "type": "string"
+    },
+    "taskRef": {
+      "description": "The task this action serves.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "actionId",
+    "taskRef",
+    "kind",
+    "status",
+    "prompt",
+    "blockers"
+  ],
+  "type": "object"
+}

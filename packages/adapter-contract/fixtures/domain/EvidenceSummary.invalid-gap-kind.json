@@ -1,0 +1,17 @@
+{
+  "contractVersion": "1.0.0",
+  "subjectKind": "engineering_case",
+  "subjectRef": "case-91ab",
+  "totalItems": 1,
+  "evidenceContentIds": [
+    "f08d256aa75518620f5814c1ab6639876b8d3dc50028bc567ba3c4c39c225712"
+  ],
+  "gaps": [
+    {
+      "gapId": "gap-4471",
+      "kind": "LOST",
+      "description": "A gap kind that is not part of the canonical vocabulary."
+    }
+  ],
+  "summarizedAt": "2026-01-15T10:00:00.000Z"
+}

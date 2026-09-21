@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "actionRef": {
+      "description": "The user action / NextBestAction this operation executed.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "completedAt": {
+      "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "failure": {
+      "additionalProperties": true,
+      "description": "The typed failure. REQUIRED when status is failed/rejected; SHOULD be absent otherwise.",
+      "properties": {
+        "code": {
+          "description": "Stable failure code (open vocabulary; advisory well-known values: provider-unavailable, input-incompatible, authorization-denied, contract-version-unsupported, offline-conflict, server-error).",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "detail": {
+          "description": "Human-readable failure supplement; never replaces the stable code.",
+          "maxLength": 4096,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "code"
+      ],
+      "type": "object"
+    },
+    "operationId": {
+      "description": "Stable id of the completed operation.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "resultRefs": {
+      "description": "Opaque references to the authoritative artifacts the operation created or affected; rendered verbatim, never reinterpreted.",
+      "items": {
+        "description": "Opaque stable identifier assigned by the authority that owns the object.",
+        "maxLength": 256,
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "status": {
+      "description": "succeeded | failed (a typed failure is present) | rejected (the server refused the action) | pending (accepted, not yet complete).",
+      "enum": [
+        "succeeded",
+        "failed",
+        "rejected",
+        "pending"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "operationId",
+    "actionRef",
+    "status",
+    "resultRefs",
+    "completedAt"
+  ],
+  "type": "object"
+}

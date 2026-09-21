@@ -1,0 +1,17 @@
+{
+  "contractVersion": "1.0.0",
+  "requirementsId": "requirements-boq-review",
+  "taskType": "boq-inspection",
+  "screen": {
+    "minSizeClass": "regular",
+    "blocking": false
+  },
+  "input": {
+    "requireAny": [
+      "pointer",
+      "touch",
+      "keyboard"
+    ],
+    "blocking": true
+  }
+}
