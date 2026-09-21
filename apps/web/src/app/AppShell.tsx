@@ -63,6 +63,10 @@ const PRIMARY_NAV: readonly NavEntry[] = [
         label: "Scenario — Intervention Studio",
         target: { name: "intervention", projectId: "project-zurich-hq", query: {} },
       },
+      {
+        label: "Corpus — Outcomes (demo journey)",
+        target: { name: "outcomes", projectId: "proj-7f3a2b" },
+      },
     ],
   },
   { surface: "settings", label: "Settings / Integrations", target: { name: "settings" }, subs: [] },
@@ -204,6 +208,7 @@ function routeSurfaceGroup(route: Route): SurfaceName | "projects" {
     case "boq-lens":
     case "case":
     case "intervention":
+    case "outcomes":
       return "projects";
     case "settings":
       return "settings";

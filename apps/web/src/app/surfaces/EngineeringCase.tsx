@@ -59,6 +59,8 @@ import { ProjectSurfaceNav } from "../components";
 import { TaskFlowStrip } from "../task-first";
 import { formatRoute } from "../router";
 import { plural, shortId } from "../format";
+import { CaseCrossLinksCard } from "../../parity/components";
+import { demoLensInput } from "../demo";
 
 /** What the Engineering Case surface renders once loaded. */
 export interface CaseData {
@@ -202,6 +204,16 @@ function CaseDemo({ data }: { readonly data: CaseData }): ReactNode {
         />
       )}
       <ScenarioReviewCard scenario={demo.scenario} mode={data.mode} />
+      {caseView === null ? null : (
+        <CaseCrossLinksCard
+          projectId={data.projectId}
+          caseView={caseView}
+          evidence={demo.evidence}
+          reality={demoReality(data.projectId)}
+          lens={demoLensInput(data.projectId)}
+          mode={data.mode}
+        />
+      )}
       {caseView === null ? null : (
         <CaseEvidenceCard
           evidence={demo.evidence}

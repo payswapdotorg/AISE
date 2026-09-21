@@ -49,6 +49,10 @@ import { TaskFlowStrip } from "../task-first";
 import { formatRoute } from "../router";
 import { formatBytes, plural, shortId } from "../format";
 import { measurementText } from "../../workspace";
+import { captureCrossLinks } from "../../parity/cross-links";
+import { CrossLinkList, PlanRealityCard } from "../../parity/components";
+import { planRealityView } from "../../parity/plan-reality";
+import { demoBoqImport, demoCase, demoLensInput, demoScenario } from "../demo";
 
 /** What the SiteTwin surface renders once loaded. */
 export interface SiteTwinData {
@@ -139,6 +143,13 @@ export function SiteTwinBody({
   readonly selectedNodeId: string | null;
   readonly onSelectNode: (nodeId: string) => void;
 }): ReactNode {
+  const planReality = planRealityView({
+    projectId: data.projectId,
+    workspace: data.workspace,
+    reality: data.reality,
+    evidenceCount: data.evidence.length,
+    scenario: data.mode === "demo" ? demoScenario(data.projectId) : null,
+  });
   return (
     <>
       {data.workspace === null ? (
@@ -166,8 +177,9 @@ export function SiteTwinBody({
           onSelectNode={onSelectNode}
         />
       )}
+      <PlanRealityCard view={planReality} />
       <RealityCard reality={data.reality} mode={data.mode} />
-      <EvidenceCard evidence={data.evidence} mode={data.mode} />
+      <EvidenceCard evidence={data.evidence} mode={data.mode} projectId={data.projectId} />
     </>
   );
 }
@@ -477,15 +489,23 @@ function RealityCard({
 function EvidenceCard({
   evidence,
   mode,
+  projectId,
 }: {
   readonly evidence: readonly EvidencePaneView[];
   readonly mode: "demo" | "api";
+  readonly projectId: string;
 }): ReactNode {
+  // The capture → issue → quantity cross-links need the records this build
+  // holds for the project: the demo world's case/BOQ/lens records (live
+  // mode holds no readable evidence route at all — the honest note below).
+  const caseView = mode === "demo" ? demoCase(projectId) : null;
+  const boqImport = mode === "demo" ? demoBoqImport(projectId) : null;
+  const lens = mode === "demo" ? demoLensInput(projectId) : null;
   return (
     <Card
       title="Evidence records"
       badge={<DataBadge mode={mode} />}
-      meta={<span>captures behind the reality graph — invalidation is a state, not a deletion</span>}
+      meta={<span>captures behind the reality graph — invalidation is a state, not a deletion; each capture opens the issues and quantities derived from it</span>}
     >
       {evidence.length === 0 ? (
         mode === "api" ? (
@@ -510,6 +530,7 @@ function EvidenceCard({
                 <th>Size</th>
                 <th>Captured</th>
                 <th>State</th>
+                <th>Opens (issues / quantities)</th>
               </tr>
             </thead>
             <tbody>
@@ -535,6 +556,11 @@ function EvidenceCard({
                         invalidated — {record.invalidationReason.value}
                       </span>
                     )}
+                  </td>
+                  <td data-capture-links="true">
+                    <CrossLinkList
+                      links={captureCrossLinks(projectId, record, caseView, boqImport, lens)}
+                    />
                   </td>
                 </tr>
               ))}

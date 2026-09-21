@@ -25,7 +25,7 @@ export interface InterventionQuery {
   readonly scenario?: string;
 }
 
-/** Every route the product shell can address (the seven surfaces + meta). */
+/** Every route the product shell can address (the surfaces + meta). */
 export type Route =
   | { readonly name: "dashboard" }
   | { readonly name: "projects" }
@@ -41,6 +41,7 @@ export type Route =
       readonly projectId: string;
       readonly query: InterventionQuery;
     }
+  | { readonly name: "outcomes"; readonly projectId: string }
   | { readonly name: "settings" }
   | { readonly name: "not-found"; readonly hash: string };
 
@@ -52,10 +53,11 @@ export type SurfaceName =
   | "boq-lens"
   | "case"
   | "intervention"
+  | "outcomes"
   | "settings";
 
 /** The per-project surfaces (everything under `#/projects/:id/…`). */
-export type ProjectSurface = "sitetwin" | "boq-lens" | "case" | "intervention";
+export type ProjectSurface = "sitetwin" | "boq-lens" | "case" | "intervention" | "outcomes";
 
 /** The per-project surface order (the golden journey order). */
 export const PROJECT_SURFACES: readonly {
@@ -66,6 +68,7 @@ export const PROJECT_SURFACES: readonly {
   Object.freeze({ surface: "boq-lens", label: "BOQ Lens" } as const),
   Object.freeze({ surface: "case", label: "Engineering Case" } as const),
   Object.freeze({ surface: "intervention", label: "Intervention Studio" } as const),
+  Object.freeze({ surface: "outcomes", label: "Outcomes" } as const),
 ]);
 
 /** The route of one per-project surface (the typed projection of the nav). */
@@ -82,6 +85,8 @@ export function projectSurfaceRoute(
       return { name: "case", projectId };
     case "intervention":
       return { name: "intervention", projectId, query: {} };
+    case "outcomes":
+      return { name: "outcomes", projectId };
   }
 }
 
@@ -106,6 +111,8 @@ export function routeSurface(route: Route): SurfaceName | "projects-overview" | 
       return "case";
     case "intervention":
       return "intervention";
+    case "outcomes":
+      return "outcomes";
     case "settings":
       return "settings";
     case "not-found":
@@ -171,7 +178,12 @@ export function parseHash(hash: string): Route {
     }
     if (segments.length === 3) {
       const surface = segments[2];
-      if (surface === "sitetwin" || surface === "boq-lens" || surface === "case") {
+      if (
+        surface === "sitetwin" ||
+        surface === "boq-lens" ||
+        surface === "case" ||
+        surface === "outcomes"
+      ) {
         return rejectQuery(query, hash, { name: surface, projectId });
       }
       if (surface === "intervention") {
@@ -275,6 +287,8 @@ export function formatRoute(route: Route): string {
       return `#/projects/${encodeURIComponent(route.projectId)}/boq-lens`;
     case "case":
       return `#/projects/${encodeURIComponent(route.projectId)}/case`;
+    case "outcomes":
+      return `#/projects/${encodeURIComponent(route.projectId)}/outcomes`;
     case "intervention": {
       const base = `#/projects/${encodeURIComponent(route.projectId)}/intervention`;
       const params: string[] = [];

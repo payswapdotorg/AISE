@@ -46,6 +46,9 @@ import { ProjectSurfaceNav } from "../components";
 import { TaskFlowStrip } from "../task-first";
 import { formatRoute } from "../router";
 import { formatMoney, plural } from "../format";
+import { BoqLineBridgesCard } from "../../parity/components";
+import { quantityBoundaryLabels } from "../../parity/boundary-labels";
+import { demoBoqImport, demoCase, demoWorkspaceInput } from "../demo";
 
 /** What the BOQ Lens surface renders once loaded. */
 export interface BoqLensData {
@@ -307,7 +310,22 @@ export function BoqLensBody({
           />
         </Card>
       ) : (
-        <TraceCard lens={lens} item={selectedItem} />
+        <>
+          <BoqLineBridgesCard
+            projectId={data.projectId}
+            item={selectedItem}
+            boqImport={data.mode === "demo" ? demoBoqImport(data.projectId) : null}
+            workspace={data.mode === "demo" ? demoWorkspaceInput(data.projectId) : null}
+            caseViews={
+              data.mode === "demo" && demoCase(data.projectId) !== null
+                ? [demoCase(data.projectId)!]
+                : []
+            }
+            boundaryLabels={quantityBoundaryLabels(selectedItem, null)}
+            mode={data.mode}
+          />
+          <TraceCard lens={lens} item={selectedItem} />
+        </>
       )}
     </>
   );
