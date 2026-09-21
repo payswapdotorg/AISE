@@ -45,6 +45,7 @@ import {
   SourceNote,
 } from "../components";
 import { ProjectSurfaceNav } from "../components";
+import { TaskFlowStrip } from "../task-first";
 import { formatRoute } from "../router";
 import { plural } from "../format";
 
@@ -154,6 +155,7 @@ export function ProjectOverview({
           and what they honestly do not cover yet.
         </p>
       </div>
+      <TaskFlowStrip projectId={projectId} />
       <ProjectSurfaceNav projectId={projectId} current="overview" />
       <ResourceView
         state={state}

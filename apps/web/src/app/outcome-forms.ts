@@ -643,3 +643,82 @@ export function runComparisonRequestBody(draft: ComparisonDraft): RunComparisonR
     ...(coverage !== undefined && coverage.ok ? { coverage: coverage.coverage } : {}),
   };
 }
+
+/* ------------------------------------------------------------------ */
+/* PROD-017 — TaskIntent authoring (W-R3, the client-authored object)  */
+/* ------------------------------------------------------------------ */
+
+import type { TaskIntent } from "@aise/adapter-contract";
+import type { TaskIntentIdentity } from "./create-forms";
+
+/**
+ * The outcome-loop write legs author typed TaskIntent wire objects (the
+ * ONE client-authored semantic object, PROD-016): intent, not authority —
+ * the server validates, plans and answers. Ids and instants are
+ * CALLER-SUPPLIED (the shell's typed-id convention); pure functions, no
+ * clock, no randomness.
+ */
+
+/** The TaskIntent an execution draft authors (the outcome loop's first leg). */
+export function taskIntentFromExecutionDraft(
+  draft: ExecutionDraft,
+  identity: TaskIntentIdentity,
+): TaskIntent {
+  return {
+    contractVersion: "1.0.0",
+    taskId: identity.taskId,
+    taskType: "outcome-comparison",
+    intent: `Record the execution of the approved intervention state of scenario ${draft.scenarioId} for case ${draft.caseId}, with its executed steps and post-work evidence.`,
+    projectRef: draft.scenarioId,
+    targetRefs: [draft.executionRecordId, draft.caseId, draft.scenarioId, draft.stateId],
+    parameters: {
+      executedStepCount: String(draft.executedStepIds.length),
+      evidenceCount: String(draft.evidenceIds.length),
+      ...(draft.executedAt !== undefined ? { executedAt: draft.executedAt } : {}),
+    },
+    createdAt: identity.createdAt,
+  };
+}
+
+/** The TaskIntent an outcome draft authors (the OBSERVED post-work statement). */
+export function taskIntentFromOutcomeDraft(
+  draft: OutcomeDraft,
+  executionRecordId: string,
+  identity: TaskIntentIdentity,
+): TaskIntent {
+  return {
+    contractVersion: "1.0.0",
+    taskId: identity.taskId,
+    taskType: "outcome-comparison",
+    intent: `Record the OBSERVED post-work outcome for case ${draft.caseId}: ${draft.statement}`,
+    projectRef: executionRecordId,
+    targetRefs: [draft.caseId, executionRecordId],
+    parameters: {
+      evidenceCount: String(draft.evidenceIds.length),
+      ...(draft.observedAt !== undefined ? { observedAt: draft.observedAt } : {}),
+    },
+    createdAt: identity.createdAt,
+  };
+}
+
+/** The TaskIntent a comparison draft authors (reality vs the incumbent design). */
+export function taskIntentFromComparisonDraft(
+  draft: ComparisonDraft,
+  identity: TaskIntentIdentity,
+): TaskIntent {
+  return {
+    contractVersion: "1.0.0",
+    taskId: identity.taskId,
+    taskType: "outcome-comparison",
+    intent: `Compare reality version ${draft.versionId} of the project against the ${draft.systemClass} design ${draft.sourceRecordId} (revision ${draft.revision}).`,
+    projectRef: draft.projectId,
+    targetRefs: [draft.comparisonId, draft.versionId, draft.sourceRecordId],
+    parameters: {
+      systemClass: draft.systemClass,
+      systemInstanceId: draft.systemInstanceId,
+      sourceRecordId: draft.sourceRecordId,
+      revision: draft.revision,
+    },
+    createdAt: identity.createdAt,
+  };
+}

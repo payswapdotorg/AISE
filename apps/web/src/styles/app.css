@@ -1194,3 +1194,76 @@ label.inline-label {
     break-inside: avoid;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* PROD-017 — the task-first adapter components                        */
+/* ------------------------------------------------------------------ */
+
+/* The compact next-action strip every primary surface exposes. */
+.task-strip {
+  margin: 0 0 14px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--brand);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 10px 14px;
+}
+
+.task-strip-line {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.task-strip-line[data-strip-state="blocked"] {
+  border-left-color: var(--error);
+}
+
+.task-strip-blocker {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.74rem;
+  background: var(--error-bg);
+  color: var(--error);
+  border-radius: 6px;
+  padding: 1px 7px;
+}
+
+.task-strip-note {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+}
+
+/* The task-intent authoring form (the entry experience). */
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.task-form .inline-label {
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.task-form input,
+.task-form select {
+  flex: 1 1 260px;
+  max-width: 480px;
+}
+
+/* The server-authoritative operation-result note. */
+.task-operation {
+  margin-top: 8px;
+  border-top: 1px dashed var(--line);
+  padding-top: 8px;
+}
+
+.task-operation p {
+  margin: 0 0 4px;
+  font-size: 0.88rem;
+}

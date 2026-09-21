@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "AISE product web shell — dashboard, projects, SiteTwin/evidence, BOQ Lens, engineering case, intervention studio and settings over the frozen apps/web libraries.",
+  "description": "AISE task-first browser adapter (PROD-017) \u2014 dashboard, projects, SiteTwin/evidence, BOQ Lens, engineering case, intervention studio and settings over the frozen apps/web libraries, consuming the shared adapter contract at the app/api.ts seam.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "@aise/adapter-contract": "workspace:*"
   }
 }

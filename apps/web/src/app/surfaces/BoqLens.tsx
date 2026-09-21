@@ -43,6 +43,7 @@ import {
   ResourceView,
 } from "../components";
 import { ProjectSurfaceNav } from "../components";
+import { TaskFlowStrip } from "../task-first";
 import { formatRoute } from "../router";
 import { formatMoney, plural } from "../format";
 
@@ -109,6 +110,7 @@ export function BoqLensSurface({ projectId }: { readonly projectId: string }): R
           claim-level traceability.
         </p>
       </div>
+      <TaskFlowStrip projectId={projectId} />
       <ProjectSurfaceNav projectId={projectId} current="boq-lens" />
       <ResourceView
         state={state}

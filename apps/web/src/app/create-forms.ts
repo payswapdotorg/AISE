@@ -36,6 +36,8 @@ import {
   type ShellConnectorAction,
   type ShellPermissionTarget,
 } from "../shell";
+import { TASK_TYPES } from "@aise/adapter-contract";
+import type { TaskIntent } from "@aise/adapter-contract";
 
 /* ------------------------------------------------------------------ */
 /* The frozen vocabulary mirrors (VERBATIM from the owning authorities) */
@@ -736,4 +738,191 @@ export type ProjectsLoadMode = "live" | "demo";
  */
 export function projectsResourceKey(mode: ProjectsLoadMode, principalId: string): string {
   return `projects:${mode}:${principalId}`;
+}
+
+/* ------------------------------------------------------------------ */
+/* PROD-017 — TaskIntent authoring (W-R3, the client-authored object)  */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The ONE semantic object this adapter legitimately AUTHORS (PROD-016):
+ * the user's typed task intent. Authoring an intent is NOT authority —
+ * the server validates, plans and answers it; the builders below emit
+ * wire objects that decode/round-trip through `@aise/adapter-contract`'s
+ * own TaskIntent codec (asserted by tests — drift is a failure, never a
+ * silent payload).
+ *
+ * Ids and instants are CALLER-SUPPLIED (the app's typed-id convention —
+ * the same discipline as every other id/timestamp field in this shell:
+ * pure modules take them as parameters; panels read them from inputs).
+ * Determinism: no clock, no randomness.
+ */
+
+/** The advisory task-type vocabulary (open; carried verbatim from the contract). */
+
+/** Options every TaskIntent builder shares (caller-supplied identity). */
+export interface TaskIntentIdentity {
+  /** Client-assigned stable task id (`task-…`). */
+  readonly taskId: string;
+  /** ISO-8601 UTC milliseconds — the instant the intent was authored. */
+  readonly createdAt: string;
+}
+
+/** Validate the shared identity fields (defects named, never thrown). */
+export function validateTaskIntentIdentity(identity: TaskIntentIdentity): readonly string[] {
+  const defects: string[] = [];
+  boundedId(identity.taskId, "taskId", defects);
+  if (!nonEmpty(identity.createdAt)) {
+    defects.push("createdAt must be a non-empty string");
+  } else if (!ISO_UTC_MS.test(identity.createdAt)) {
+    defects.push("createdAt must be an ISO-8601 UTC timestamp (milliseconds)");
+  }
+  return defects;
+}
+
+/** True when the task type is one of the contract's advisory well-known values. */
+export function isAdvisoryTaskType(taskType: string): boolean {
+  return (TASK_TYPES as readonly string[]).includes(taskType);
+}
+
+/** The task-selection draft of the task-first landing (W-R3's entry form). */
+export interface TaskSelectionDraft {
+  readonly projectRef: string;
+  /** Open vocabulary; advisory well-known values come from the contract. */
+  readonly taskType: string;
+  /** Natural-language statement of what the user needs to do. */
+  readonly intent: string;
+  /** Stable ids of the entities the task concerns (may be empty). */
+  readonly targetRefs: readonly string[];
+  /** Inspectable parameters as an open string map. */
+  readonly parameters: Readonly<Record<string, string>>;
+}
+
+/** Validate a task-selection draft (defects named, never thrown). */
+export function validateTaskSelectionDraft(draft: TaskSelectionDraft): readonly string[] {
+  const defects: string[] = [];
+  boundedId(draft.projectRef, "projectRef", defects);
+  if (!nonEmpty(draft.taskType)) {
+    defects.push("taskType must be a non-empty string");
+  } else if (draft.taskType !== draft.taskType.trim()) {
+    defects.push("taskType must not carry surrounding whitespace");
+  }
+  if (!nonEmpty(draft.intent)) {
+    defects.push("intent must be a non-empty statement of what you need to do");
+  } else if (draft.intent.length > 2000) {
+    defects.push("intent must be at most 2000 characters");
+  }
+  if (!Array.isArray(draft.targetRefs)) {
+    defects.push("targetRefs must be an array");
+  } else if (!draft.targetRefs.every((id) => nonEmpty(id))) {
+    defects.push("targetRefs entries must be non-empty strings");
+  }
+  if (typeof draft.parameters !== "object" || draft.parameters === null) {
+    defects.push("parameters must be an object");
+  } else if (
+    !Object.entries(draft.parameters).every(
+      ([key, value]) => nonEmpty(key) && typeof value === "string",
+    )
+  ) {
+    defects.push("parameters must be a string→string map with non-empty keys");
+  }
+  return defects;
+}
+
+/** Assemble the typed TaskIntent wire object from a VALID selection draft. */
+export function taskIntentFromSelection(
+  draft: TaskSelectionDraft,
+  identity: TaskIntentIdentity,
+): TaskIntent {
+  return {
+    contractVersion: "1.0.0",
+    taskId: identity.taskId,
+    taskType: draft.taskType,
+    intent: draft.intent,
+    projectRef: draft.projectRef,
+    targetRefs: [...draft.targetRefs],
+    parameters: { ...draft.parameters },
+    createdAt: identity.createdAt,
+  };
+}
+
+/** The TaskIntent a new-project draft authors (task-first framing of the write). */
+export function taskIntentFromNewProjectDraft(
+  draft: NewProjectDraft,
+  identity: TaskIntentIdentity,
+): TaskIntent {
+  return {
+    contractVersion: "1.0.0",
+    taskId: identity.taskId,
+    taskType: "project-administration",
+    intent: `Create the project ${draft.name} in organization ${draft.organizationId}.`,
+    projectRef: draft.projectId,
+    targetRefs: [draft.projectId],
+    parameters: {
+      organizationId: draft.organizationId,
+      name: draft.name,
+      actor: draft.actor,
+    },
+    createdAt: identity.createdAt,
+  };
+}
+
+/** The TaskIntent a new-scenario draft authors. */
+export function taskIntentFromNewScenarioDraft(
+  draft: NewScenarioDraft,
+  identity: TaskIntentIdentity,
+): TaskIntent {
+  return {
+    contractVersion: "1.0.0",
+    taskId: identity.taskId,
+    taskType: "solution-authoring",
+    intent: `Propose an intervention scenario "${draft.title}" over the pinned reality baseline ${draft.baselineVersionId}.`,
+    projectRef: draft.projectId,
+    targetRefs: [draft.scenarioId],
+    parameters: {
+      baselineVersionId: draft.baselineVersionId,
+    },
+    createdAt: identity.createdAt,
+  };
+}
+
+/** The TaskIntent a new-case draft authors. */
+export function taskIntentFromNewCaseDraft(
+  draft: NewCaseDraft,
+  identity: TaskIntentIdentity,
+): TaskIntent {
+  return {
+    contractVersion: "1.0.0",
+    taskId: identity.taskId,
+    taskType: "engineering-case-review",
+    intent: `Open the engineering case "${draft.title}" linking the observed nodes and evidence.`,
+    projectRef: draft.projectId,
+    targetRefs: [draft.caseId],
+    parameters: {
+      nodeCount: String(draft.nodeIds.length),
+      evidenceCount: String(draft.evidenceIds.length),
+      captureSessionCount: String(draft.captureSessionIds.length),
+    },
+    createdAt: identity.createdAt,
+  };
+}
+
+/** The TaskIntent an approval-reference draft authors. */
+export function taskIntentFromApprovalReferenceDraft(
+  draft: ApprovalReferenceDraft,
+  scenarioId: string,
+  identity: TaskIntentIdentity,
+): TaskIntent {
+  return {
+    contractVersion: "1.0.0",
+    taskId: identity.taskId,
+    taskType: "intervention-review",
+    intent: `Record the case review decision ${draft.reviewDecision} for scenario ${scenarioId}.`,
+    projectRef: scenarioId,
+    targetRefs: [scenarioId, draft.caseId],
+    parameters: {
+      reviewDecision: draft.reviewDecision,
+    },
+    createdAt: identity.createdAt,
+  };
 }

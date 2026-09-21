@@ -45,6 +45,7 @@ import {
   UnavailableState,
 } from "../components";
 import { ProjectSurfaceNav } from "../components";
+import { TaskFlowStrip } from "../task-first";
 import { formatRoute } from "../router";
 import { formatBytes, plural, shortId } from "../format";
 import { measurementText } from "../../workspace";
@@ -111,6 +112,7 @@ export function SiteTwin({ projectId }: { readonly projectId: string }): ReactNo
           every view.
         </p>
       </div>
+      <TaskFlowStrip projectId={projectId} />
       <ProjectSurfaceNav projectId={projectId} current="sitetwin" />
       <ResourceView
         state={state}
