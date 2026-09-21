@@ -1,0 +1,435 @@
+{
+  "replay": {
+    "solutionId": "solution-demo-001",
+    "versionNumber": 1,
+    "status": "draft",
+    "stateCount": 4,
+    "operationCount": 3,
+    "states": [
+      {
+        "stateIndex": 0,
+        "stateId": "ce0f5133d8a0097d7a53766687cf145c43448ac54a1b9e01c66bbe498a0e0dd2",
+        "contentDigest": "01057ab2b0111d0eea3661fa064b34a87acdf0f7043338a003267ef794b670f6",
+        "appliedOperationIds": [],
+        "materializedAt": "2026-09-16T10:00:00.000Z"
+      },
+      {
+        "stateIndex": 1,
+        "stateId": "cb7cc34aa2a883d14ceff1fc4146113077598c2c09c051ab284019d8a0f6e764",
+        "contentDigest": "6f95657b0a52944d7d87639641e5062fdb9f83c7d0bd2b91b4e2459282d4d2da",
+        "appliedOperationIds": [
+          "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9"
+        ],
+        "materializedAt": "2026-09-16T10:01:00.000Z"
+      },
+      {
+        "stateIndex": 2,
+        "stateId": "a4951ff261cfa434be6582460b7db4710c3700351f494dd82f027be9c7ca2768",
+        "contentDigest": "4eaa4f4fd62153ff873fdbf60955dd2a8f2c7afd772fd5c56e9f0864be05ec75",
+        "appliedOperationIds": [
+          "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+          "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea"
+        ],
+        "materializedAt": "2026-09-16T10:02:00.000Z"
+      },
+      {
+        "stateIndex": 3,
+        "stateId": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8",
+        "contentDigest": "36eecf9f9d3d74281d195c5e0c197ced355d70b7f244c5513d92fa102a0f3e5b",
+        "appliedOperationIds": [
+          "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+          "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+          "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+        ],
+        "materializedAt": "2026-09-16T10:03:00.000Z"
+      }
+    ],
+    "operations": [
+      {
+        "operationIndex": 1,
+        "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+        "operationType": "demolition-removal",
+        "intentRef": "intent-demo-0010",
+        "effectCount": 3
+      },
+      {
+        "operationIndex": 2,
+        "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+        "operationType": "block-wall-placement",
+        "intentRef": "intent-demo-0011",
+        "effectCount": 4
+      },
+      {
+        "operationIndex": 3,
+        "operationId": "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e",
+        "operationType": "plaster-application",
+        "intentRef": "intent-demo-0012",
+        "effectCount": 3
+      }
+    ],
+    "steps": [
+      {
+        "stepIndex": 1,
+        "intentId": "intent-demo-0010",
+        "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+        "transitionId": "879ef07899eccca5bf83abc3bd7541a4f0709bfa162c464f55db3d521491c681",
+        "parentStateId": "ce0f5133d8a0097d7a53766687cf145c43448ac54a1b9e01c66bbe498a0e0dd2",
+        "resultingStateId": "cb7cc34aa2a883d14ceff1fc4146113077598c2c09c051ab284019d8a0f6e764",
+        "limitsExceeded": 0,
+        "quantities": [
+          {
+            "label": "removed-volume",
+            "dimension": "volume",
+            "value": 1.2,
+            "unit": "m3",
+            "direction": "removed",
+            "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+            "formula": "length × height × thickness"
+          },
+          {
+            "label": "removed-face-area",
+            "dimension": "area",
+            "value": 12,
+            "unit": "m2",
+            "direction": "removed",
+            "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+            "formula": "length × height"
+          }
+        ]
+      },
+      {
+        "stepIndex": 2,
+        "intentId": "intent-demo-0011",
+        "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+        "transitionId": "5c8526f42cb1257bb7f6b5d9edd5b611529233621b1caacb7c40bd62dd9bf80a",
+        "parentStateId": "cb7cc34aa2a883d14ceff1fc4146113077598c2c09c051ab284019d8a0f6e764",
+        "resultingStateId": "a4951ff261cfa434be6582460b7db4710c3700351f494dd82f027be9c7ca2768",
+        "limitsExceeded": 0,
+        "quantities": [
+          {
+            "label": "wall-volume",
+            "dimension": "volume",
+            "value": 0.5,
+            "unit": "m3",
+            "direction": "added",
+            "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+            "formula": "length × height × thickness"
+          },
+          {
+            "label": "wall-face-area",
+            "dimension": "area",
+            "value": 5,
+            "unit": "m2",
+            "direction": "added",
+            "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+            "formula": "length × height"
+          },
+          {
+            "label": "block-count",
+            "dimension": "count",
+            "value": 65,
+            "unit": "count",
+            "direction": "added",
+            "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+            "formula": "ceil(height / 0.2) × ceil(length / 0.4) — nominal module face incl. joints, partial module counts as a whole block"
+          }
+        ]
+      },
+      {
+        "stepIndex": 3,
+        "intentId": "intent-demo-0012",
+        "operationId": "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e",
+        "transitionId": "5c13e5da32fe06ee7cac9f3a0a4f0087e3ae8798fadb045a7e788b7100634cc0",
+        "parentStateId": "a4951ff261cfa434be6582460b7db4710c3700351f494dd82f027be9c7ca2768",
+        "resultingStateId": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8",
+        "limitsExceeded": 0,
+        "quantities": [
+          {
+            "label": "plaster-area",
+            "dimension": "area",
+            "value": 12.5,
+            "unit": "m2",
+            "direction": "added",
+            "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+            "formula": "resolved baseline target surface area (read-only geometry fact)"
+          },
+          {
+            "label": "plaster-volume",
+            "dimension": "volume",
+            "value": 0.375,
+            "unit": "m3",
+            "direction": "added",
+            "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+            "formula": "surface area × thickness"
+          }
+        ]
+      }
+    ]
+  },
+  "validationSnapshot": {
+    "snapshotId": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+    "outcome": "pass",
+    "inputDigest": "c0e7ebe60ae82a5986fb91eacceaf287f03923b1f2340738208856703f60e256",
+    "checks": [
+      {
+        "checkId": "operation.contract-invariants",
+        "result": "pass"
+      },
+      {
+        "checkId": "geometry.dimensions-positive",
+        "result": "pass"
+      },
+      {
+        "checkId": "units.quantity-units-typed",
+        "result": "pass"
+      },
+      {
+        "checkId": "operation.ordering-dependencies",
+        "result": "pass"
+      },
+      {
+        "checkId": "quantities.calculation-refs",
+        "result": "pass"
+      },
+      {
+        "checkId": "operation.capability-declared",
+        "result": "pass"
+      },
+      {
+        "checkId": "operation.phase1-limits",
+        "result": "pass"
+      }
+    ]
+  },
+  "quantityInventory": {
+    "stateIndex": 3,
+    "stateId": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8",
+    "perOperation": [
+      {
+        "operationIndex": 1,
+        "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+        "dimension": "volume",
+        "value": 1.2,
+        "unit": "m3",
+        "direction": "removed",
+        "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+        "sourceStateId": "ce0f5133d8a0097d7a53766687cf145c43448ac54a1b9e01c66bbe498a0e0dd2",
+        "parameters": [
+          {
+            "name": "length",
+            "value": 5,
+            "unit": "m"
+          },
+          {
+            "name": "height",
+            "value": 2.4,
+            "unit": "m"
+          },
+          {
+            "name": "thickness",
+            "value": 0.1,
+            "unit": "m"
+          }
+        ]
+      },
+      {
+        "operationIndex": 1,
+        "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+        "dimension": "area",
+        "value": 12,
+        "unit": "m2",
+        "direction": "removed",
+        "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+        "sourceStateId": "ce0f5133d8a0097d7a53766687cf145c43448ac54a1b9e01c66bbe498a0e0dd2",
+        "parameters": [
+          {
+            "name": "length",
+            "value": 5,
+            "unit": "m"
+          },
+          {
+            "name": "height",
+            "value": 2.4,
+            "unit": "m"
+          },
+          {
+            "name": "thickness",
+            "value": 0.1,
+            "unit": "m"
+          }
+        ]
+      },
+      {
+        "operationIndex": 2,
+        "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+        "dimension": "volume",
+        "value": 0.5,
+        "unit": "m3",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+        "sourceStateId": "cb7cc34aa2a883d14ceff1fc4146113077598c2c09c051ab284019d8a0f6e764",
+        "parameters": [
+          {
+            "name": "length",
+            "value": 5,
+            "unit": "m"
+          },
+          {
+            "name": "height",
+            "value": 1,
+            "unit": "m"
+          },
+          {
+            "name": "thickness",
+            "value": 0.1,
+            "unit": "m"
+          },
+          {
+            "name": "material",
+            "value": "concrete-block"
+          }
+        ]
+      },
+      {
+        "operationIndex": 2,
+        "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+        "dimension": "area",
+        "value": 5,
+        "unit": "m2",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+        "sourceStateId": "cb7cc34aa2a883d14ceff1fc4146113077598c2c09c051ab284019d8a0f6e764",
+        "parameters": [
+          {
+            "name": "length",
+            "value": 5,
+            "unit": "m"
+          },
+          {
+            "name": "height",
+            "value": 1,
+            "unit": "m"
+          },
+          {
+            "name": "thickness",
+            "value": 0.1,
+            "unit": "m"
+          },
+          {
+            "name": "material",
+            "value": "concrete-block"
+          }
+        ]
+      },
+      {
+        "operationIndex": 2,
+        "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+        "dimension": "count",
+        "value": 65,
+        "unit": "count",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+        "sourceStateId": "cb7cc34aa2a883d14ceff1fc4146113077598c2c09c051ab284019d8a0f6e764",
+        "parameters": [
+          {
+            "name": "length",
+            "value": 5,
+            "unit": "m"
+          },
+          {
+            "name": "height",
+            "value": 1,
+            "unit": "m"
+          },
+          {
+            "name": "thickness",
+            "value": 0.1,
+            "unit": "m"
+          },
+          {
+            "name": "material",
+            "value": "concrete-block"
+          }
+        ]
+      },
+      {
+        "operationIndex": 3,
+        "operationId": "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e",
+        "dimension": "area",
+        "value": 12.5,
+        "unit": "m2",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+        "sourceStateId": "a4951ff261cfa434be6582460b7db4710c3700351f494dd82f027be9c7ca2768",
+        "parameters": [
+          {
+            "name": "thickness",
+            "value": 30,
+            "unit": "mm"
+          },
+          {
+            "name": "material",
+            "value": "cement-plaster"
+          }
+        ]
+      },
+      {
+        "operationIndex": 3,
+        "operationId": "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e",
+        "dimension": "volume",
+        "value": 0.375,
+        "unit": "m3",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+        "sourceStateId": "a4951ff261cfa434be6582460b7db4710c3700351f494dd82f027be9c7ca2768",
+        "parameters": [
+          {
+            "name": "thickness",
+            "value": 30,
+            "unit": "mm"
+          },
+          {
+            "name": "material",
+            "value": "cement-plaster"
+          }
+        ]
+      }
+    ],
+    "totals": [
+      {
+        "dimension": "area",
+        "unit": "m2",
+        "netValue": 5.5,
+        "addedValue": 17.5,
+        "removedValue": 12,
+        "contributingOperationIds": [
+          "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+          "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+          "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+        ]
+      },
+      {
+        "dimension": "count",
+        "unit": "count",
+        "netValue": 65,
+        "addedValue": 65,
+        "removedValue": 0,
+        "contributingOperationIds": [
+          "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea"
+        ]
+      },
+      {
+        "dimension": "volume",
+        "unit": "m3",
+        "netValue": -0.325,
+        "addedValue": 0.875,
+        "removedValue": 1.2,
+        "contributingOperationIds": [
+          "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+          "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+          "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+        ]
+      }
+    ]
+  }
+}

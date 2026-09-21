@@ -49,6 +49,8 @@
       "version": "0.1.0",
       "dependencies": {
         "@aise/shared-contracts": "workspace:*",
+        "@aise/solution-contract": "workspace:*",
+        "@aise/solution-engine": "workspace:*",
         "postgres": "3.4.5",
       },
     },
@@ -87,6 +89,14 @@
         "zod-to-json-schema": "^3.24.0",
       },
     },
+    "packages/solution-engine": {
+      "name": "@aise/solution-engine",
+      "version": "1.0.0",
+      "dependencies": {
+        "@aise/shared-contracts": "workspace:*",
+        "@aise/solution-contract": "workspace:*",
+      },
+    },
   },
   "packages": {
     "@aise/adapter-contract": ["@aise/adapter-contract@workspace:packages/adapter-contract"],
@@ -98,6 +108,8 @@
     "@aise/shared-contracts": ["@aise/shared-contracts@workspace:packages/shared-contracts"],
 
     "@aise/solution-contract": ["@aise/solution-contract@workspace:packages/solution-contract"],
+
+    "@aise/solution-engine": ["@aise/solution-engine@workspace:packages/solution-engine"],
 
     "@aise/web": ["@aise/web@workspace:apps/web"],
 

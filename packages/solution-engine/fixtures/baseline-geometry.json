@@ -1,0 +1,6 @@
+{
+  "geo-wall-faces-002": { "value": 12.5, "unit": "m2" },
+  "geo-wall-line-003": { "value": 5, "unit": "m2" },
+  "geo-slab-region-005": { "value": 12, "unit": "m2" },
+  "geo-pit-outline-001": { "value": 6, "unit": "m2" }
+}
