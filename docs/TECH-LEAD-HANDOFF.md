@@ -113,6 +113,7 @@ docs/productization-roadmap.md
 docs/productization-work-orders.md
 docs/productization-layer-hardening-work-orders.md
 docs/huggingface-hardening-execution-plan.md
+docs/post-simulation-implementation-and-deployment-plan-2026-09-21.md
 docs/productization-state.json
 docs/PRODUCTION-READINESS-GATE.md
 docs/free-tier-deployment.md
@@ -272,3 +273,6 @@ For technology substitution, additionally run provider swap/dual-provider eviden
 `docs/PRODUCTION-READINESS-GATE.md` is binding. Only `PROD-015` may declare `PRODUCT-READY`.
 
 Final evidence must include both product journeys, all three adapter conformance, the interactive-solution building benchmark, Evidence Envelope/agent safety evidence, technology-substitution evidence for Layers 1–3, security/tenant evidence, quota/cost evidence, exact final SHA and environment/configuration fingerprint.
+
+
+The post-simulation plan in docs/post-simulation-implementation-and-deployment-plan-2026-09-21.md is the current UX/discoverability and deployment-composition directive. It supersedes ad-hoc UI composition: use the Project Command Center, task-first journey model, ShareNet-inspired calm visual system, and the explicit three-worker deployment/conformance track. It does not alter the frozen architecture or work-item authority.
