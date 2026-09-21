@@ -1,0 +1,195 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "boqLineId": {
+      "description": "Identity of the GENERATED solution-BOQ line (a derived projection — the source BOQ, if any, remains a separate source/revision that is never silently overwritten).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "contributingOperations": {
+      "description": "The solution steps that produced/changed/removed this line — NEVER empty: every generated BOQ line traces to at least one operation (schema-level minimum).",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "contributionKind": {
+            "enum": [
+              "created",
+              "modified",
+              "removed"
+            ],
+            "type": "string"
+          },
+          "operationId": {
+            "description": "The contributing operation's deterministic identity.",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "operationIndex": {
+            "description": "The contributing operation's 1-based position in the solution version's sequence.",
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operationId",
+          "operationIndex",
+          "contributionKind"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "geometryRefs": {
+      "description": "Geometry references the line's quantity derives from (geometry provenance).",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "kind": {
+            "enum": [
+              "plane",
+              "polygon",
+              "mesh-ref",
+              "point-cloud-ref"
+            ],
+            "type": "string"
+          },
+          "ref": {
+            "description": "Stable id of the referenced geometry artifact (owned by the deterministic geometry services; read-only reference).",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "ref"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "itemDescription": {
+      "description": "The generated line's item description (derived wording; source BOQ wording rules apply to source BOQs, which stay separate).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "quantity": {
+      "additionalProperties": true,
+      "description": "The line's typed quantity with explicit unit and calculation provenance (calculationRef) — the deterministic quantity derivation of PROD-025.",
+      "properties": {
+        "calculationRef": {
+          "description": "Reference to the deterministic calculation/method that produced the value (calculation provenance).",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "dimension": {
+          "enum": [
+            "length",
+            "area",
+            "volume",
+            "mass",
+            "count",
+            "duration"
+          ],
+          "type": "string"
+        },
+        "uncertainty": {
+          "additionalProperties": true,
+          "description": "Propagated measurement uncertainty where stated; absent means 'not stated' — never zero, never fabricated.",
+          "properties": {
+            "kind": {
+              "enum": [
+                "DIMENSIONAL",
+                "STATISTICAL",
+                "INTERVAL"
+              ],
+              "type": "string"
+            },
+            "level": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "lower": {
+              "type": "number"
+            },
+            "plusMinus": {
+              "type": "number"
+            },
+            "upper": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        "unit": {
+          "description": "Explicit unit (REQUIRED — a quantity is never a bare number).",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "value": {
+          "description": "Quantity value in the stated unit.",
+          "type": "number"
+        }
+      },
+      "required": [
+        "dimension",
+        "value",
+        "unit",
+        "calculationRef"
+      ],
+      "type": "object"
+    },
+    "solutionId": {
+      "description": "The solution whose version produced this line (version pin).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "traceId": {
+      "description": "Deterministic trace identity (deriveSolutionBoqLineTraceId): sha-256 over {solutionId, versionNumber, boqLineId} — pinned to the solution VERSION that produced the line.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "validationSnapshotRef": {
+      "description": "The DECLARED validation snapshot the BOQ generation used (never absent — a solution BOQ exists only tied to a snapshot).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "versionNumber": {
+      "description": "The solution VERSION that produced this line (version pin — the trace never floats across versions).",
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "boqLineId",
+    "traceId",
+    "solutionId",
+    "versionNumber",
+    "validationSnapshotRef",
+    "itemDescription",
+    "contributingOperations",
+    "quantity",
+    "geometryRefs"
+  ],
+  "type": "object"
+}

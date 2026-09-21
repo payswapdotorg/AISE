@@ -1,0 +1,99 @@
+{
+  "contractVersion": "1.0.0",
+  "dialect": "http://json-schema.org/draft-07/schema#",
+  "families": {
+    "capability": "1.0.0",
+    "domain": "1.0.0",
+    "operation": "1.0.0",
+    "solution": "1.0.0",
+    "state": "1.0.0",
+    "trace": "1.0.0",
+    "validation": "1.0.0"
+  },
+  "objects": [
+    {
+      "contractVersion": "1.0.0",
+      "family": "operation",
+      "file": "schemas/operation/EngineeringOperation.schema.json",
+      "name": "EngineeringOperation"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "operation",
+      "file": "schemas/operation/EngineeringOperationIntent.schema.json",
+      "name": "EngineeringOperationIntent"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "capability",
+      "file": "schemas/capability/OperationCapabilityNegotiation.schema.json",
+      "name": "OperationCapabilityNegotiation"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "capability",
+      "file": "schemas/capability/OperationCapabilityProfile.schema.json",
+      "name": "OperationCapabilityProfile"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "operation",
+      "file": "schemas/operation/OperationDependency.schema.json",
+      "name": "OperationDependency"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "operation",
+      "file": "schemas/operation/OperationEffect.schema.json",
+      "name": "OperationEffect"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "operation",
+      "file": "schemas/operation/OperationTarget.schema.json",
+      "name": "OperationTarget"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "state",
+      "file": "schemas/state/ProposedState.schema.json",
+      "name": "ProposedState"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "trace",
+      "file": "schemas/trace/SolutionBoqLineTrace.schema.json",
+      "name": "SolutionBoqLineTrace"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "trace",
+      "file": "schemas/trace/SolutionBoqTraceSet.schema.json",
+      "name": "SolutionBoqTraceSet"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "solution",
+      "file": "schemas/solution/Solution.schema.json",
+      "name": "Solution"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "domain",
+      "file": "schemas/domain/SolutionDomainDescriptor.schema.json",
+      "name": "SolutionDomainDescriptor"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "validation",
+      "file": "schemas/validation/SolutionValidationSnapshot.schema.json",
+      "name": "SolutionValidationSnapshot"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "solution",
+      "file": "schemas/solution/SolutionVersion.schema.json",
+      "name": "SolutionVersion"
+    }
+  ]
+}

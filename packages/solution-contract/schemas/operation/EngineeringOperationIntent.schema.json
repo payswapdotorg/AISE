@@ -1,0 +1,358 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "dependsOn": {
+      "description": "Precedence/dependency edges the authoring mode asserts.",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "contractVersion": {
+            "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+            "type": "string"
+          },
+          "dependencyKind": {
+            "enum": [
+              "completion-before",
+              "state-precondition"
+            ],
+            "type": "string"
+          },
+          "operationRef": {
+            "description": "The operation this dependency points at (its completion or its resulting proposed state is the precondition).",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "rationale": {
+            "description": "Why the dependency exists (presentation; excluded from identity).",
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "contractVersion",
+          "operationRef",
+          "dependencyKind"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "domain": {
+      "additionalProperties": true,
+      "description": "The vertical context — building specifics as data, never client authority. A future vertical is representable here; capability negotiation answers honestly whether the engine supports it.",
+      "properties": {
+        "contractVersion": {
+          "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        },
+        "extensions": {
+          "description": "Vertical-specific extension descriptors, carried as DATA — never interpreted, enforced or extended by a client.",
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "kind": {
+                "description": "Extension kind (open vocabulary, e.g. building-element-taxonomy, assembly-compatibility-rules).",
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              "ref": {
+                "description": "Stable reference to the extension definition (vocabulary or ruleset id).",
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              "version": {
+                "description": "Semver version of the extension definition this descriptor pins.",
+                "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "ref",
+              "version"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "operationVocabulary": {
+          "description": "Identifier of the operation-type vocabulary the solution's operations use (e.g. aise-building-operations-v1). Identifies which engine-owned catalogue the open operationType strings belong to.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "vertical": {
+          "description": "The engineering vertical of the solution's operations (OPEN vocabulary; Phase 1 advisory value: building. Documented future verticals: civil-works, mep, industrial-equipment, electronics, integrated-circuits). Rendered verbatim by clients; vertical semantics are owned by the server solution engine.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "vertical",
+        "extensions"
+      ],
+      "type": "object"
+    },
+    "intentId": {
+      "description": "Stable id of this authoring intent EVENT (client-session or server assigned). Distinguishes authoring events, NOT operations: two intents with the same semantics and different origins/provenance compile to the SAME operation identity (see identity.ts).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "operationType": {
+      "description": "The operation type (OPEN vocabulary; Phase 1 building advisory values: BUILDING_OPERATION_TYPES of the domain module). The closed catalogue is engine-owned — the wire type stays open so future verticals never require a contract change.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "parameters": {
+      "description": "Explicit typed parameters with units (at least one).",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "description": "Parameter name (open vocabulary, lower-kebab-case; e.g. depth, width, length, thickness, height, diameter, material).",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "unit": {
+            "description": "Explicit unit for numeric values (e.g. m, mm). REQUIRED for numeric values (invariant numeric_parameter_without_unit); absent for non-numeric values.",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {
+            "description": "The parameter value. Numeric values REQUIRE an explicit unit; string values carry named choices (e.g. material) without units.",
+            "type": [
+              "number",
+              "string",
+              "boolean"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "proposedTo": {
+      "additionalProperties": true,
+      "description": "The solution/version this intent proposes into (absent while unattached).",
+      "properties": {
+        "solutionId": {
+          "description": "Opaque stable identifier assigned by the authority that owns the object.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "versionNumber": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "solutionId",
+        "versionNumber"
+      ],
+      "type": "object"
+    },
+    "provenance": {
+      "additionalProperties": true,
+      "description": "The authoring attribution: origin (direct-manipulation | agent | imported-template), author, instant, evidence and — for agent origin — the exact normalized command text.",
+      "properties": {
+        "authoredAt": {
+          "description": "Instant the intent was authored (excluded from identity derivations).",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "type": "string"
+        },
+        "authoredBy": {
+          "description": "Stable reference of the author: user id, agent id or template id.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "commandText": {
+          "description": "agent origin: the EXACT normalized natural-language command that compiled to this operation — carried verbatim, never paraphrased.",
+          "maxLength": 4096,
+          "minLength": 1,
+          "type": "string"
+        },
+        "derivationNote": {
+          "description": "Explicit derivation/attribution statement when no evidence id applies (e.g. 'operator dimensioned the volume directly in the interactive 3D view').",
+          "maxLength": 4096,
+          "minLength": 1,
+          "type": "string"
+        },
+        "evidenceIds": {
+          "description": "Input evidence content ids (64-hex Evidence-Graph addresses); may be empty when a derivation note or command text states the provenance.",
+          "items": {
+            "description": "sha-256 content address (64 lowercase hex). Normative derivation: the frozen AISE-CONTENT-V1 canonical encoding (see apps/android ContentIdentity).",
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "intentRef": {
+          "description": "OPERATION RECORDS ONLY: the intent event that authored this operation (the compile provenance link of PROD-022/023).",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "interactionDetail": {
+          "description": "direct-manipulation origin: the manipulation description (e.g. 'operator dragged excavation volume handles in the 3D view').",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "origin": {
+          "description": "How the operation was authored: direct-manipulation (interactive environment), agent (natural-language command compiled to the same typed semantics) or imported-template.",
+          "enum": [
+            "direct-manipulation",
+            "agent",
+            "imported-template"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "origin",
+        "authoredBy",
+        "authoredAt",
+        "evidenceIds"
+      ],
+      "type": "object"
+    },
+    "target": {
+      "additionalProperties": true,
+      "description": "The stable spatial target with explicit units, anchored to observed reality through read-only references.",
+      "properties": {
+        "contractVersion": {
+          "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+          "type": "string"
+        },
+        "description": {
+          "description": "Human-readable place description (e.g. 'the affected wall faces'); presentation only — excluded from identity derivations.",
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        },
+        "geometryRefs": {
+          "description": "Deterministic geometry references anchoring or limiting the target (drawn pit outlines, wall face polygons…).",
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "plane",
+                  "polygon",
+                  "mesh-ref",
+                  "point-cloud-ref"
+                ],
+                "type": "string"
+              },
+              "ref": {
+                "description": "Stable id of the referenced geometry artifact (owned by the deterministic geometry services; read-only reference).",
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "ref"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "nodeRefs": {
+          "description": "Stable Reality Graph node ids the target anchors to (read-only references to observed reality).",
+          "items": {
+            "description": "Opaque stable identifier assigned by the authority that owns the object.",
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "selectorKind": {
+          "description": "How the target selects space: element (whole node), face-set (element faces), surface-region, volume, line-extent, point, storey or space.",
+          "enum": [
+            "element",
+            "face-set",
+            "surface-region",
+            "volume",
+            "line-extent",
+            "point",
+            "storey",
+            "space"
+          ],
+          "type": "string"
+        },
+        "units": {
+          "additionalProperties": true,
+          "description": "Units of the spatial coordinates/anchors (carried verbatim).",
+          "properties": {
+            "angular": {
+              "description": "Angular unit of the target's anchors (e.g. rad).",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "linear": {
+              "description": "Linear unit of the target's anchors (e.g. m).",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "linear",
+            "angular"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "contractVersion",
+        "selectorKind",
+        "nodeRefs",
+        "geometryRefs",
+        "units",
+        "description"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "intentId",
+    "operationType",
+    "domain",
+    "parameters",
+    "target",
+    "dependsOn",
+    "provenance"
+  ],
+  "type": "object"
+}

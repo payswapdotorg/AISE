@@ -1,0 +1,64 @@
+{
+  "contractVersion": "1.0.0",
+  "dependsOn": [],
+  "domain": {
+    "contractVersion": "1.0.0",
+    "extensions": [
+      {
+        "kind": "building-element-taxonomy",
+        "ref": "aise-building-elements",
+        "version": "1.0.0"
+      }
+    ],
+    "operationVocabulary": "aise-building-operations-v1",
+    "vertical": "building"
+  },
+  "intentId": "intent-demo-0021",
+  "operationType": "foundation-placement",
+  "parameters": [
+    {
+      "name": "length",
+      "unit": "m",
+      "value": 5
+    },
+    {
+      "name": "width",
+      "unit": "m",
+      "value": 0.6
+    },
+    {
+      "name": "depth",
+      "unit": "m",
+      "value": 0.5
+    },
+    {
+      "name": "material",
+      "value": "plain-concrete"
+    }
+  ],
+  "provenance": {
+    "authoredAt": "2026-09-16T09:00:00.000Z",
+    "authoredBy": "user-demo-engineer",
+    "derivationNote": "operator dimensioned the strip footing along the wall line",
+    "evidenceIds": [],
+    "origin": "direct-manipulation"
+  },
+  "target": {
+    "contractVersion": "1.0.0",
+    "description": "The strip footing line below the damaged wall section",
+    "geometryRefs": [
+      {
+        "kind": "plane",
+        "ref": "geo-footing-line-004"
+      }
+    ],
+    "nodeRefs": [
+      "node-wall-002"
+    ],
+    "selectorKind": "line-extent",
+    "units": {
+      "angular": "rad",
+      "linear": "m"
+    }
+  }
+}

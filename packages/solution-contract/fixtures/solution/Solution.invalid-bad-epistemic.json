@@ -1,0 +1,25 @@
+{
+  "baselineRealityVersionId": "rgv-demo-0007",
+  "contractVersion": "1.0.0",
+  "createdAt": "2026-09-16T08:00:00.000Z",
+  "currentVersionNumber": 1,
+  "domain": {
+    "contractVersion": "1.0.0",
+    "extensions": [
+      {
+        "kind": "building-element-taxonomy",
+        "ref": "aise-building-elements",
+        "version": "1.0.0"
+      }
+    ],
+    "operationVocabulary": "aise-building-operations-v1",
+    "vertical": "building"
+  },
+  "epistemicClass": "OBSERVED",
+  "problemStatement": "Rising damp has damaged the ground-floor masonry wall; the damaged section must be removed, rebuilt with concrete blocks and re-plastered.",
+  "projectId": "proj-demo-001",
+  "solutionId": "solution-demo-001",
+  "status": "validated",
+  "title": "Ground-floor wall upgrade solution",
+  "updatedAt": "2026-09-16T10:30:00.000Z"
+}

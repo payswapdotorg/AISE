@@ -1,0 +1,58 @@
+{
+  "contractVersion": "1.0.0",
+  "dependsOn": [],
+  "domain": {
+    "contractVersion": "1.0.0",
+    "extensions": [
+      {
+        "kind": "building-element-taxonomy",
+        "ref": "aise-building-elements",
+        "version": "1.0.0"
+      }
+    ],
+    "operationVocabulary": "aise-building-operations-v1",
+    "vertical": "building"
+  },
+  "intentId": "intent-demo-0012",
+  "operationType": "plaster-application",
+  "parameters": [
+    {
+      "name": "thickness",
+      "unit": "mm",
+      "value": 30
+    },
+    {
+      "name": "material",
+      "value": "cement-plaster"
+    }
+  ],
+  "proposedTo": {
+    "solutionId": "solution-demo-001",
+    "versionNumber": 1
+  },
+  "provenance": {
+    "authoredAt": "2026-09-16T09:15:00.000Z",
+    "authoredBy": "agent-demo-assistant",
+    "commandText": "Apply 30 mm plaster to the affected wall faces.",
+    "evidenceIds": [],
+    "origin": "agent"
+  },
+  "target": {
+    "contractVersion": "1.0.0",
+    "description": "The affected ground-floor wall faces",
+    "geometryRefs": [
+      {
+        "kind": "polygon",
+        "ref": "geo-wall-faces-002"
+      }
+    ],
+    "nodeRefs": [
+      "node-wall-002"
+    ],
+    "selectorKind": "face-set",
+    "units": {
+      "angular": "rad",
+      "linear": "m"
+    }
+  }
+}

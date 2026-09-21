@@ -1,0 +1,143 @@
+{
+  "contractVersion": "1.0.0",
+  "domains": [
+    {
+      "domain": {
+        "contractVersion": "1.0.0",
+        "extensions": [
+          {
+            "kind": "building-element-taxonomy",
+            "ref": "aise-building-elements",
+            "version": "1.0.0"
+          }
+        ],
+        "operationVocabulary": "aise-building-operations-v1",
+        "vertical": "building"
+      },
+      "operations": [
+        {
+          "limitations": [
+            "maximum excavation depth is 6 m per operation (Phase 1 building scope)"
+          ],
+          "operationType": "excavation",
+          "requiredParameters": [
+            "depth",
+            "width",
+            "length"
+          ],
+          "status": "supported"
+        },
+        {
+          "limitations": [],
+          "operationType": "backfill",
+          "requiredParameters": [
+            "depth",
+            "width",
+            "length"
+          ],
+          "status": "supported"
+        },
+        {
+          "limitations": [
+            "load-bearing elements require engineer review before removal"
+          ],
+          "operationType": "demolition-removal",
+          "requiredParameters": [
+            "length",
+            "height",
+            "thickness"
+          ],
+          "status": "supported"
+        },
+        {
+          "limitations": [
+            "strip footings only in the Phase 1 building scope"
+          ],
+          "operationType": "foundation-placement",
+          "requiredParameters": [
+            "length",
+            "width",
+            "depth",
+            "material"
+          ],
+          "status": "supported"
+        },
+        {
+          "limitations": [
+            "ground-bearing slabs only in the Phase 1 building scope"
+          ],
+          "operationType": "slab-placement",
+          "requiredParameters": [
+            "length",
+            "width",
+            "thickness",
+            "material"
+          ],
+          "status": "supported"
+        },
+        {
+          "limitations": [
+            "maximum wall height is 3 m per operation"
+          ],
+          "operationType": "block-wall-placement",
+          "requiredParameters": [
+            "length",
+            "height",
+            "thickness",
+            "material"
+          ],
+          "status": "supported"
+        },
+        {
+          "limitations": [
+            "openings in load-bearing walls require engineer review"
+          ],
+          "operationType": "opening-creation",
+          "requiredParameters": [
+            "width",
+            "height",
+            "material"
+          ],
+          "status": "supported"
+        },
+        {
+          "limitations": [
+            "maximum plaster thickness is 50 mm per coat"
+          ],
+          "operationType": "plaster-application",
+          "requiredParameters": [
+            "thickness",
+            "material"
+          ],
+          "status": "supported"
+        },
+        {
+          "limitations": [
+            "conduit and cable-tray runs only (Phase 1 MEP foundation subset)"
+          ],
+          "operationType": "building-service-installation",
+          "requiredParameters": [
+            "length",
+            "diameter",
+            "material"
+          ],
+          "status": "supported"
+        },
+        {
+          "limitations": [],
+          "operationType": "finish-application",
+          "requiredParameters": [
+            "thickness",
+            "material"
+          ],
+          "status": "supported"
+        }
+      ],
+      "status": "supported"
+    }
+  ],
+  "engineKind": "aise-solution-engine",
+  "engineVersion": "1.0.0",
+  "profileId": "profile-building-ops-reference",
+  "updatedAt": "2026-09-16T00:00:00.000Z"
+}

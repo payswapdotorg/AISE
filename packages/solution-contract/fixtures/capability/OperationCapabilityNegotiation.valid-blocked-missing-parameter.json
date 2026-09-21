@@ -1,0 +1,15 @@
+{
+  "contractVersion": "1.0.0",
+  "intentRef": "intent-demo-0032",
+  "missingParameters": [
+    "depth"
+  ],
+  "outcome": "blocked",
+  "profileRef": "profile-building-ops-reference",
+  "reasons": [
+    {
+      "code": "missing-required-parameter",
+      "detail": "intent is missing required parameter 'depth' (with an explicit unit) for operation type 'excavation' in vertical 'building'; the engine requires [depth, width, length] — ask for the missing value, never invent it"
+    }
+  ]
+}

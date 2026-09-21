@@ -63,6 +63,18 @@
         "zod-to-json-schema": "^3.24.0",
       },
     },
+    "packages/solution-contract": {
+      "name": "@aise/solution-contract",
+      "version": "1.0.0",
+      "dependencies": {
+        "@aise/shared-contracts": "workspace:*",
+        "zod": "^3.25.0",
+      },
+      "devDependencies": {
+        "ajv": "^8.17.1",
+        "zod-to-json-schema": "^3.24.0",
+      },
+    },
   },
   "packages": {
     "@aise/adapter-contract": ["@aise/adapter-contract@workspace:packages/adapter-contract"],
@@ -70,6 +82,8 @@
     "@aise/api": ["@aise/api@workspace:backend/api"],
 
     "@aise/shared-contracts": ["@aise/shared-contracts@workspace:packages/shared-contracts"],
+
+    "@aise/solution-contract": ["@aise/solution-contract@workspace:packages/solution-contract"],
 
     "@aise/web": ["@aise/web@workspace:apps/web"],
 

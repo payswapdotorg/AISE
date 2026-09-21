@@ -1,0 +1,6 @@
+{
+  "contractVersion": "1.0.0",
+  "dependencyKind": "after",
+  "operationRef": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+  "rationale": "the rebuilt wall section requires the damaged section removed first"
+}

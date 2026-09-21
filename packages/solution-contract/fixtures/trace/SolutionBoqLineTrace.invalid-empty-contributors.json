@@ -1,0 +1,22 @@
+{
+  "boqLineId": "boq-line-demo-0001",
+  "contractVersion": "1.0.0",
+  "contributingOperations": [],
+  "geometryRefs": [
+    {
+      "kind": "polygon",
+      "ref": "geo-wall-faces-002"
+    }
+  ],
+  "itemDescription": "Demolition and removal of damaged plaster, cement, to ground-floor wall",
+  "quantity": {
+    "calculationRef": "calc-demo-boq-0001",
+    "dimension": "area",
+    "unit": "m2",
+    "value": 12.5
+  },
+  "solutionId": "solution-demo-001",
+  "traceId": "698d7f1e8b41b9b21044b3e2e4d837a164db37d80d62859a6462d33b23c82a4e",
+  "validationSnapshotRef": "9b2f4a3a2b6a6cb4035db3e7a4b64229fe84b56c5fffb65a60947847adb3e2f3",
+  "versionNumber": 1
+}

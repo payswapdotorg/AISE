@@ -1,0 +1,28 @@
+{
+  "boqLineId": "boq-line-demo-0002",
+  "contractVersion": "1.0.0",
+  "contributingOperations": [
+    {
+      "contributionKind": "created",
+      "operationId": "72ec9c913958934c4c10e4b2c1452676ca39f0c8ced106f328174dd0f024b699",
+      "operationIndex": 2
+    }
+  ],
+  "geometryRefs": [
+    {
+      "kind": "plane",
+      "ref": "geo-wall-line-003"
+    }
+  ],
+  "itemDescription": "Rebuilding damaged wall section with concrete blocks",
+  "quantity": {
+    "calculationRef": "calc-demo-boq-0002",
+    "dimension": "area",
+    "unit": "m2",
+    "value": 5
+  },
+  "solutionId": "solution-demo-001",
+  "traceId": "ebf97cddfd65bc342515c3c13c2b335d6ebe286ffcd30e9aae22ff338c30dd85",
+  "validationSnapshotRef": "9b2f4a3a2b6a6cb4035db3e7a4b64229fe84b56c5fffb65a60947847adb3e2f3",
+  "versionNumber": 1
+}

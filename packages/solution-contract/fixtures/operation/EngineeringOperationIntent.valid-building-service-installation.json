@@ -1,0 +1,59 @@
+{
+  "contractVersion": "1.0.0",
+  "dependsOn": [],
+  "domain": {
+    "contractVersion": "1.0.0",
+    "extensions": [
+      {
+        "kind": "building-element-taxonomy",
+        "ref": "aise-building-elements",
+        "version": "1.0.0"
+      }
+    ],
+    "operationVocabulary": "aise-building-operations-v1",
+    "vertical": "building"
+  },
+  "intentId": "intent-demo-0024",
+  "operationType": "building-service-installation",
+  "parameters": [
+    {
+      "name": "length",
+      "unit": "m",
+      "value": 12
+    },
+    {
+      "name": "diameter",
+      "unit": "mm",
+      "value": 25
+    },
+    {
+      "name": "material",
+      "value": "pvc-conduit"
+    }
+  ],
+  "provenance": {
+    "authoredAt": "2026-09-16T09:00:00.000Z",
+    "authoredBy": "user-demo-engineer",
+    "derivationNote": "operator routed the conduit along the wall line",
+    "evidenceIds": [],
+    "origin": "direct-manipulation"
+  },
+  "target": {
+    "contractVersion": "1.0.0",
+    "description": "The wall line along the damaged section",
+    "geometryRefs": [
+      {
+        "kind": "plane",
+        "ref": "geo-wall-line-003"
+      }
+    ],
+    "nodeRefs": [
+      "node-wall-002"
+    ],
+    "selectorKind": "line-extent",
+    "units": {
+      "angular": "rad",
+      "linear": "m"
+    }
+  }
+}

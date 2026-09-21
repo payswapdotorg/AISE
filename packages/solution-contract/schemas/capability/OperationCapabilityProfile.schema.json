@@ -1,0 +1,180 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "domains": {
+      "description": "One entry per vertical the engine declares capability for (unique verticals — invariant duplicate_profile_vertical). Phase 1: the building vertical only.",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "domain": {
+            "additionalProperties": true,
+            "description": "The vertical this capability entry covers (building in Phase 1; future verticals are addable by the engine without contract changes).",
+            "properties": {
+              "contractVersion": {
+                "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+                "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                "type": "string"
+              },
+              "extensions": {
+                "description": "Vertical-specific extension descriptors, carried as DATA — never interpreted, enforced or extended by a client.",
+                "items": {
+                  "additionalProperties": true,
+                  "properties": {
+                    "kind": {
+                      "description": "Extension kind (open vocabulary, e.g. building-element-taxonomy, assembly-compatibility-rules).",
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "ref": {
+                      "description": "Stable reference to the extension definition (vocabulary or ruleset id).",
+                      "maxLength": 256,
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "version": {
+                      "description": "Semver version of the extension definition this descriptor pins.",
+                      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "ref",
+                    "version"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "operationVocabulary": {
+                "description": "Identifier of the operation-type vocabulary the solution's operations use (e.g. aise-building-operations-v1). Identifies which engine-owned catalogue the open operationType strings belong to.",
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              "vertical": {
+                "description": "The engineering vertical of the solution's operations (OPEN vocabulary; Phase 1 advisory value: building. Documented future verticals: civil-works, mep, industrial-equipment, electronics, integrated-circuits). Rendered verbatim by clients; vertical semantics are owned by the server solution engine.",
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "contractVersion",
+              "vertical",
+              "extensions"
+            ],
+            "type": "object"
+          },
+          "operations": {
+            "description": "The per-operation-type capability entries (unique operation types — invariant duplicate_operation_type_capability).",
+            "items": {
+              "additionalProperties": true,
+              "properties": {
+                "limitations": {
+                  "description": "Material limitations of this operation type on this engine right now (rendered before any consequential action).",
+                  "items": {
+                    "maxLength": 4096,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "operationType": {
+                  "description": "The operation type this entry declares capability for (the ENGINE's vocabulary; open string, e.g. the BUILDING_OPERATION_TYPES values).",
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "requiredParameters": {
+                  "description": "Parameter names the engine requires to execute this operation type (missing ones negotiate to `blocked`, driving the agent's clarification questions — never invented values).",
+                  "items": {
+                    "maxLength": 256,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "status": {
+                  "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; never equivalent to `unavailable`.",
+                  "enum": [
+                    "supported",
+                    "unavailable",
+                    "degraded",
+                    "unknown"
+                  ],
+                  "type": "string"
+                }
+              },
+              "required": [
+                "operationType",
+                "status",
+                "requiredParameters",
+                "limitations"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "status": {
+            "description": "Domain-level status. `unknown` is never conflated with `unavailable` (an undetermined domain negotiates to `unknown`, not `unsupported`).",
+            "enum": [
+              "supported",
+              "unavailable",
+              "degraded",
+              "unknown"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain",
+          "status",
+          "operations"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "engineKind": {
+      "description": "The deterministic solution engine declaring this profile (e.g. aise-solution-engine).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "engineVersion": {
+      "description": "The declaring engine's version.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "profileId": {
+      "description": "Stable id of this capability profile.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "updatedAt": {
+      "description": "Instant the engine produced this profile snapshot.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "profileId",
+    "engineKind",
+    "engineVersion",
+    "domains",
+    "updatedAt"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,14 @@
+{
+  "affectedNodeRefs": [
+    "node-wall-002"
+  ],
+  "contractVersion": "1.0.0",
+  "effectKind": "state-transition",
+  "geometryRefs": [
+    {
+      "kind": "polygon",
+      "ref": "geo-wall-faces-002"
+    }
+  ],
+  "resultingStateRef": "867096c0dcdf1fa778c150918fa629744cf51d162514f0d9b84a46d2f559a2ca"
+}

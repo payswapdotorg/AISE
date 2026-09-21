@@ -1,0 +1,16 @@
+{
+  "appliedOperationIds": [
+    "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+    "72ec9c913958934c4c10e4b2c1452676ca39f0c8ced106f328174dd0f024b699",
+    "c5b25c38362e4a5af4a0ebe8597514f9c3a27cc7ab9da333d0fa7f543a78e7f2"
+  ],
+  "baselineRealityVersionId": "rgv-demo-0007",
+  "contentDigest": "2d12600564189497b0259123ca444ba4c5e6411641fe516504ace3c488a52377",
+  "contractVersion": "1.0.0",
+  "epistemicStatus": "PROPOSED",
+  "materializedAt": "2026-09-16T10:03:00.000Z",
+  "solutionId": "solution-demo-001",
+  "stateId": "bc0031ec7a87f55bf00816c28e916b26c7b829d8cdce5a52cf62e27dd2ffe3bf",
+  "stateIndex": 3,
+  "versionNumber": 1
+}

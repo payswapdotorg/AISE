@@ -1,0 +1,33 @@
+{
+  "boqLineId": "boq-line-demo-0003",
+  "contractVersion": "1.0.0",
+  "contributingOperations": [
+    {
+      "contributionKind": "removed",
+      "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+      "operationIndex": 1
+    },
+    {
+      "contributionKind": "created",
+      "operationId": "c5b25c38362e4a5af4a0ebe8597514f9c3a27cc7ab9da333d0fa7f543a78e7f2",
+      "operationIndex": 3
+    }
+  ],
+  "geometryRefs": [
+    {
+      "kind": "polygon",
+      "ref": "geo-wall-faces-002"
+    }
+  ],
+  "itemDescription": "Cement plaster, 30 mm thickness, to affected wall faces",
+  "quantity": {
+    "calculationRef": "calc-demo-boq-0003",
+    "dimension": "area",
+    "unit": "m2",
+    "value": 12.5
+  },
+  "solutionId": "solution-demo-001",
+  "traceId": "d0a5c1dcceb5027e89b8ffdc4985532c55e81e1c5fe33372d6948048d92edc10",
+  "validationSnapshotRef": "9b2f4a3a2b6a6cb4035db3e7a4b64229fe84b56c5fffb65a60947847adb3e2f3",
+  "versionNumber": 1
+}

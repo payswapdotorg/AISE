@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "dependencyKind": {
+      "enum": [
+        "completion-before",
+        "state-precondition"
+      ],
+      "type": "string"
+    },
+    "operationRef": {
+      "description": "The operation this dependency points at (its completion or its resulting proposed state is the precondition).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "rationale": {
+      "description": "Why the dependency exists (presentation; excluded from identity).",
+      "maxLength": 4096,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "operationRef",
+    "dependencyKind"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,31 @@
+{
+  "baselineRealityVersionId": "rgv-demo-0007",
+  "branch": {
+    "branchedAt": "2026-09-16T11:00:00.000Z",
+    "branchedFromSolutionId": "solution-demo-001",
+    "branchedFromVersionNumber": 1
+  },
+  "contractVersion": "1.0.0",
+  "createdAt": "2026-09-16T11:00:00.000Z",
+  "currentVersionNumber": 1,
+  "domain": {
+    "contractVersion": "1.0.0",
+    "extensions": [
+      {
+        "kind": "building-element-taxonomy",
+        "ref": "aise-building-elements",
+        "version": "1.0.0"
+      }
+    ],
+    "operationVocabulary": "aise-building-operations-v1",
+    "vertical": "building"
+  },
+  "epistemicClass": "PROPOSED",
+  "problemStatement": "Repair the rising-damp damage by chemical damp-proof injection and renovation plaster instead of rebuilding the wall section.",
+  "projectId": "proj-demo-001",
+  "solutionId": "solution-demo-002",
+  "status": "superseded",
+  "supersededBy": "solution-demo-003",
+  "title": "Alternative substrate repair solution",
+  "updatedAt": "2026-09-16T12:00:00.000Z"
+}
