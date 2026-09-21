@@ -37,6 +37,7 @@ import { SiteTwin } from "./surfaces/SiteTwin";
 import { BoqLensSurface } from "./surfaces/BoqLens";
 import { EngineeringCase } from "./surfaces/EngineeringCase";
 import { InterventionStudio } from "./surfaces/InterventionStudio";
+import { SolutionSurface } from "./surfaces/Solution";
 import { Outcomes } from "./surfaces/Outcomes";
 import { Settings } from "./surfaces/Settings";
 
@@ -272,6 +273,14 @@ function RoutedSurface({
           scenarioId={route.query.scenario}
         />
       );
+    case "solution":
+      return (
+        <SolutionSurface
+          key={routeKey(route)}
+          projectId={route.projectId}
+          query={route.query}
+        />
+      );
     case "outcomes":
       return <Outcomes projectId={route.projectId} />;
     case "settings":
@@ -339,6 +348,14 @@ export function NotFound({ hash }: { readonly hash: string }): ReactNode {
               Intervention Studio
             </a>{" "}
             — proposed states, 2D/3D/BOQ impact (per project)
+          </li>
+          <li>
+            <a href={formatRoute({ name: "solution", projectId: "proj-demo-001", query: {} })}>
+              Interactive Solution
+            </a>{" "}
+            — the interactive engineering-solution workflow: observed reality →
+            problem → proposed operations → validation → solution BOQ with
+            line ↔ step traceability (per project)
           </li>
           <li>
             <a href={formatRoute({ name: "outcomes", projectId: "proj-7f3a2b" })}>

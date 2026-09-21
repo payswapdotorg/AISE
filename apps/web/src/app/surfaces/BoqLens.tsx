@@ -47,6 +47,7 @@ import { TaskFlowStrip } from "../task-first";
 import { formatRoute } from "../router";
 import { formatMoney, plural } from "../format";
 import { BoqLineBridgesCard } from "../../parity/components";
+import { BoqLineSolutionTraceBridge } from "../solution-composition";
 import { quantityBoundaryLabels } from "../../parity/boundary-labels";
 import { demoBoqImport, demoCase, demoWorkspaceInput } from "../demo";
 
@@ -322,6 +323,18 @@ export function BoqLensBody({
                 : []
             }
             boundaryLabels={quantityBoundaryLabels(selectedItem, null)}
+            mode={data.mode}
+          />
+          {/* PROD-026: the solution-trace bridge — the demo dataset holds no
+              solution-generated BOQ for any project with lens rows, so the
+              join input is honestly null (the unresolved state states the
+              recorded reason; a live wiring passes the generated BOQ's
+              identity-only source reference when the deployment holds one). */}
+          <BoqLineSolutionTraceBridge
+            projectId={data.projectId}
+            item={selectedItem}
+            boqImport={data.mode === "demo" ? demoBoqImport(data.projectId) : null}
+            solutionBoq={null}
             mode={data.mode}
           />
           <TraceCard lens={lens} item={selectedItem} />

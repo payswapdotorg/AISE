@@ -1,0 +1,2356 @@
+{
+  "benchmarkKind": "aise-building-benchmark",
+  "benchmarkVersion": "1.0.0",
+  "equivalence": {
+    "agentOperationIds": [
+      "83ef53b5b84bf852e3cc2a04ba69d022deed7d8d5f79cda68347290396cdcb68",
+      "f88f3cad710c764879cebc2d0ee1f057c4f6245fa558a2cf211be9e137a4836c",
+      "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+      "a533700ca29c07681265e1c1874903f5ddd9845e7c269a947cfc66bc0f750810",
+      "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e",
+      "2d234af2019eea611232973983b6cb7b9d8b729f3246bc12928f175886054e45",
+      "46e10c11892f4fb2c0f608f6b1bf209678f39ccc719212b4e61e8020831b7299",
+      "06ad33c0bedddf5e9e6e8bf854a996f3ed6eb0ee1277e7874a722e18c8ca1e72",
+      "65ca6c01cca9423a720d8303ac34a9468ed8d8366507abbc2d7a6c1aefaf8bad"
+    ],
+    "directOperationIds": [
+      "83ef53b5b84bf852e3cc2a04ba69d022deed7d8d5f79cda68347290396cdcb68",
+      "f88f3cad710c764879cebc2d0ee1f057c4f6245fa558a2cf211be9e137a4836c",
+      "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+      "a533700ca29c07681265e1c1874903f5ddd9845e7c269a947cfc66bc0f750810",
+      "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e",
+      "2d234af2019eea611232973983b6cb7b9d8b729f3246bc12928f175886054e45",
+      "46e10c11892f4fb2c0f608f6b1bf209678f39ccc719212b4e61e8020831b7299",
+      "06ad33c0bedddf5e9e6e8bf854a996f3ed6eb0ee1277e7874a722e18c8ca1e72",
+      "65ca6c01cca9423a720d8303ac34a9468ed8d8366507abbc2d7a6c1aefaf8bad"
+    ],
+    "identical": true
+  },
+  "record": {
+    "boq": {
+      "assumptions": [],
+      "baselineRealityVersionId": "rgv-benchmark-0001",
+      "boqId": "23af67490e0f2fcdc69c4be85d814e336594d89abc20dccb2e8680ce0ae4b624",
+      "lineCount": 11,
+      "lines": [
+        {
+          "assumptionRefs": [],
+          "boqLineId": "2a6c20f2297cb1115e6ee0fb8d5051f58a2d4104c482cc37003716686541bcf4",
+          "buildingElement": "existing-element",
+          "contributingSteps": [
+            {
+              "contributionKind": "removed",
+              "operationId": "f88f3cad710c764879cebc2d0ee1f057c4f6245fa558a2cf211be9e137a4836c",
+              "operationIndex": 2,
+              "resultingStateRef": "e0ce53118529b6fc74bac11db5819309fbe93905637be3294f0f23a02cadef85"
+            }
+          ],
+          "direction": "removed",
+          "geometryRefs": [
+            {
+              "kind": "mesh-ref",
+              "ref": "geo-wall-body-retrofit-001"
+            }
+          ],
+          "itemDescription": "Demolition and removal of existing elements, measured by area [m2]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 7.2
+          },
+          "sectionId": "site-preparation",
+          "traceId": "7cbe5d1ce3fd3de88f049c59ae71a8be8f2d7005fc22eed6a508bfc1afb18d02"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "0f570b5757117c518512888a33634d8361501089575b318e3b551c717f793544",
+          "buildingElement": "existing-element",
+          "contributingSteps": [
+            {
+              "contributionKind": "removed",
+              "operationId": "f88f3cad710c764879cebc2d0ee1f057c4f6245fa558a2cf211be9e137a4836c",
+              "operationIndex": 2,
+              "resultingStateRef": "e0ce53118529b6fc74bac11db5819309fbe93905637be3294f0f23a02cadef85"
+            }
+          ],
+          "direction": "removed",
+          "geometryRefs": [
+            {
+              "kind": "mesh-ref",
+              "ref": "geo-wall-body-retrofit-001"
+            }
+          ],
+          "itemDescription": "Demolition and removal of existing elements, measured by volume [m3]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 1.548
+          },
+          "sectionId": "site-preparation",
+          "traceId": "87138d3e35f641ec4307919c5d37826d1dec82ed45fab1cd56a4b49f8a4975a3"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "364c17ba20bbc14d17ad926485d77d3bf25308826347762d6d1436888c5bfd4e",
+          "buildingElement": "wall",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+              "operationIndex": 3,
+              "resultingStateRef": "5bbaea22b098ce621e0d62cd3a8b46452f1cc7177c09fe542c35a0424770f52e"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-retrofit-001"
+            }
+          ],
+          "itemDescription": "Block wall construction — concrete-block, measured by area [m2]",
+          "material": "concrete-block",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 7.2
+          },
+          "sectionId": "structure",
+          "traceId": "91a94de72bb45dc5346fe1c47e2aaf7c85da3bde6d09605fdbbf9ff2ee30dbaf"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "7aeac4468bd3d8fbaec1135b51a691f7c611e9cdd674341bdb4cf087a3ee4992",
+          "buildingElement": "wall",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+              "operationIndex": 3,
+              "resultingStateRef": "5bbaea22b098ce621e0d62cd3a8b46452f1cc7177c09fe542c35a0424770f52e"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-retrofit-001"
+            }
+          ],
+          "itemDescription": "Block wall construction — concrete-block, measured by volume [m3]",
+          "material": "concrete-block",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 1.008
+          },
+          "sectionId": "structure",
+          "traceId": "0a3d097aac9cdb24790e02eced70cd8eb54fbb44bcfc0ba13c18053dba1d02ac"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "a5d9c0a156f35a8d8b3d06c8b2c5f2de3c677cd3c1819cbc70f7ff9d5e81e309",
+          "buildingElement": "wall",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+              "operationIndex": 3,
+              "resultingStateRef": "5bbaea22b098ce621e0d62cd3a8b46452f1cc7177c09fe542c35a0424770f52e"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-retrofit-001"
+            }
+          ],
+          "itemDescription": "Block wall construction — concrete-block, measured by number [count]",
+          "material": "concrete-block",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+            "dimension": "count",
+            "unit": "count",
+            "value": 96
+          },
+          "sectionId": "structure",
+          "traceId": "79b8409e96fc3505501d69660a362afa29e8a0f2818263aa215fff1d9a1c5e0d"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "ea5d48b28c9de27bc611895612a341cf96a8dacf7e0264113d8290a72cc5f3ef",
+          "buildingElement": "wall",
+          "contributingSteps": [
+            {
+              "contributionKind": "removed",
+              "operationId": "83ef53b5b84bf852e3cc2a04ba69d022deed7d8d5f79cda68347290396cdcb68",
+              "operationIndex": 1,
+              "resultingStateRef": "78dda18ffc1f31c841fc0a730a0897e800d9204d811fe43a3e43ec944dea2437"
+            }
+          ],
+          "direction": "removed",
+          "geometryRefs": [
+            {
+              "kind": "mesh-ref",
+              "ref": "geo-wall-body-retrofit-001"
+            }
+          ],
+          "itemDescription": "Formation of openings in existing elements — door, measured by area [m2]",
+          "material": "door",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/opening-creation/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 2.1
+          },
+          "sectionId": "enclosure",
+          "traceId": "879d7968ae1ce37eb5ad7399809961c47e81ead02e02a3d9684a376381704e38"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "fdcb578f8305b101ea10d3f6856865a0f90c65109d18942007e1cd14595b353c",
+          "buildingElement": "wall",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "83ef53b5b84bf852e3cc2a04ba69d022deed7d8d5f79cda68347290396cdcb68",
+              "operationIndex": 1,
+              "resultingStateRef": "78dda18ffc1f31c841fc0a730a0897e800d9204d811fe43a3e43ec944dea2437"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "mesh-ref",
+              "ref": "geo-wall-body-retrofit-001"
+            }
+          ],
+          "itemDescription": "Formation of openings in existing elements — door, measured by number [count]",
+          "material": "door",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/opening-creation/v1",
+            "dimension": "count",
+            "unit": "count",
+            "value": 1
+          },
+          "sectionId": "enclosure",
+          "traceId": "09fc096d309782d8e038300f960070ad7c1a7296196d84089dbe2c21305e2b0d"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "84ec8a7897ce285f469efe1315cc319f1fd061b658170a1adab7df7fd9ddeae0",
+          "buildingElement": "wall-surface",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "a533700ca29c07681265e1c1874903f5ddd9845e7c269a947cfc66bc0f750810",
+              "operationIndex": 4,
+              "resultingStateRef": "46d49a0645fe1c84b32becfe199d5c123838686c5d74bbee1c83195f404e2dfd"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by area [m2]",
+          "material": "cement-plaster",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 21.6
+          },
+          "sectionId": "enclosure",
+          "traceId": "0eb86e92027b49e1fba98b9a3950be7967a392ca27199f40073cfbb532e808ee"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "e6a69e2a132c14664d5d6195f2a6b07bd83f062a6ae26baa8355194338e85598",
+          "buildingElement": "wall-surface",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "a533700ca29c07681265e1c1874903f5ddd9845e7c269a947cfc66bc0f750810",
+              "operationIndex": 4,
+              "resultingStateRef": "46d49a0645fe1c84b32becfe199d5c123838686c5d74bbee1c83195f404e2dfd"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by volume [m3]",
+          "material": "cement-plaster",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 0.324
+          },
+          "sectionId": "enclosure",
+          "traceId": "e3ff3ac56c7ad44fe1a7e03772c24558dda19613bff81dcf8903e1b7fb34670d"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "e0dee6369ce6c9d8b1f318c362ecd279648c28a5d02bb32a75c180ce46cc925b",
+          "buildingElement": "surface",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e",
+              "operationIndex": 5,
+              "resultingStateRef": "8a78474a190bd25c450df6a3a3497aa56a87491214d00ad506c67250da8bd0be"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Applied finish coating — acrylic-paint, measured by area [m2]",
+          "material": "acrylic-paint",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/finish-application/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 21.6
+          },
+          "sectionId": "finishes",
+          "traceId": "a663e7a0af48f47785db3de7e30911bf527f63713457a8ce3e51f80ed019a7e9"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "22b664414d4ade602531cee31079965eb2d046174aa3391b28cc33b67ad489a4",
+          "buildingElement": "surface",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e",
+              "operationIndex": 5,
+              "resultingStateRef": "8a78474a190bd25c450df6a3a3497aa56a87491214d00ad506c67250da8bd0be"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Applied finish coating — acrylic-paint, measured by volume [m3]",
+          "material": "acrylic-paint",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/finish-application/v1",
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 0.0432
+          },
+          "sectionId": "finishes",
+          "traceId": "b616ee3ced79d2bd30ba19c2f79fadd9ea736a46e666f1653ec2574949d04af5"
+        }
+      ],
+      "solutionId": "solution-benchmark-001",
+      "totals": [
+        {
+          "addedValue": 50.4,
+          "dimension": "area",
+          "netValue": 41.1,
+          "removedValue": 9.3,
+          "unit": "m2"
+        },
+        {
+          "addedValue": 97,
+          "dimension": "count",
+          "netValue": 97,
+          "removedValue": 0,
+          "unit": "count"
+        },
+        {
+          "addedValue": 1.3752,
+          "dimension": "volume",
+          "netValue": -0.1728,
+          "removedValue": 1.548,
+          "unit": "m3"
+        }
+      ],
+      "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+      "verification": {
+        "ok": true,
+        "summary": "verified: 11 lines, 4 sections, 0 assumptions over 5 operations"
+      },
+      "versionNumber": 1
+    },
+    "boqTraceSet": {
+      "contractVersion": "1.0.0",
+      "lineTraces": [
+        {
+          "boqLineId": "2a6c20f2297cb1115e6ee0fb8d5051f58a2d4104c482cc37003716686541bcf4",
+          "contractVersion": "1.0.0",
+          "contributingOperations": [
+            {
+              "contributionKind": "removed",
+              "operationId": "f88f3cad710c764879cebc2d0ee1f057c4f6245fa558a2cf211be9e137a4836c",
+              "operationIndex": 2
+            }
+          ],
+          "geometryRefs": [
+            {
+              "kind": "mesh-ref",
+              "ref": "geo-wall-body-retrofit-001"
+            }
+          ],
+          "itemDescription": "Demolition and removal of existing elements, measured by area [m2]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 7.2
+          },
+          "solutionId": "solution-benchmark-001",
+          "traceId": "7cbe5d1ce3fd3de88f049c59ae71a8be8f2d7005fc22eed6a508bfc1afb18d02",
+          "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+          "versionNumber": 1
+        },
+        {
+          "boqLineId": "0f570b5757117c518512888a33634d8361501089575b318e3b551c717f793544",
+          "contractVersion": "1.0.0",
+          "contributingOperations": [
+            {
+              "contributionKind": "removed",
+              "operationId": "f88f3cad710c764879cebc2d0ee1f057c4f6245fa558a2cf211be9e137a4836c",
+              "operationIndex": 2
+            }
+          ],
+          "geometryRefs": [
+            {
+              "kind": "mesh-ref",
+              "ref": "geo-wall-body-retrofit-001"
+            }
+          ],
+          "itemDescription": "Demolition and removal of existing elements, measured by volume [m3]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 1.548
+          },
+          "solutionId": "solution-benchmark-001",
+          "traceId": "87138d3e35f641ec4307919c5d37826d1dec82ed45fab1cd56a4b49f8a4975a3",
+          "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+          "versionNumber": 1
+        },
+        {
+          "boqLineId": "364c17ba20bbc14d17ad926485d77d3bf25308826347762d6d1436888c5bfd4e",
+          "contractVersion": "1.0.0",
+          "contributingOperations": [
+            {
+              "contributionKind": "created",
+              "operationId": "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+              "operationIndex": 3
+            }
+          ],
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-retrofit-001"
+            }
+          ],
+          "itemDescription": "Block wall construction — concrete-block, measured by area [m2]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 7.2
+          },
+          "solutionId": "solution-benchmark-001",
+          "traceId": "91a94de72bb45dc5346fe1c47e2aaf7c85da3bde6d09605fdbbf9ff2ee30dbaf",
+          "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+          "versionNumber": 1
+        },
+        {
+          "boqLineId": "7aeac4468bd3d8fbaec1135b51a691f7c611e9cdd674341bdb4cf087a3ee4992",
+          "contractVersion": "1.0.0",
+          "contributingOperations": [
+            {
+              "contributionKind": "created",
+              "operationId": "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+              "operationIndex": 3
+            }
+          ],
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-retrofit-001"
+            }
+          ],
+          "itemDescription": "Block wall construction — concrete-block, measured by volume [m3]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 1.008
+          },
+          "solutionId": "solution-benchmark-001",
+          "traceId": "0a3d097aac9cdb24790e02eced70cd8eb54fbb44bcfc0ba13c18053dba1d02ac",
+          "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+          "versionNumber": 1
+        },
+        {
+          "boqLineId": "a5d9c0a156f35a8d8b3d06c8b2c5f2de3c677cd3c1819cbc70f7ff9d5e81e309",
+          "contractVersion": "1.0.0",
+          "contributingOperations": [
+            {
+              "contributionKind": "created",
+              "operationId": "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+              "operationIndex": 3
+            }
+          ],
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-retrofit-001"
+            }
+          ],
+          "itemDescription": "Block wall construction — concrete-block, measured by number [count]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+            "dimension": "count",
+            "unit": "count",
+            "value": 96
+          },
+          "solutionId": "solution-benchmark-001",
+          "traceId": "79b8409e96fc3505501d69660a362afa29e8a0f2818263aa215fff1d9a1c5e0d",
+          "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+          "versionNumber": 1
+        },
+        {
+          "boqLineId": "ea5d48b28c9de27bc611895612a341cf96a8dacf7e0264113d8290a72cc5f3ef",
+          "contractVersion": "1.0.0",
+          "contributingOperations": [
+            {
+              "contributionKind": "removed",
+              "operationId": "83ef53b5b84bf852e3cc2a04ba69d022deed7d8d5f79cda68347290396cdcb68",
+              "operationIndex": 1
+            }
+          ],
+          "geometryRefs": [
+            {
+              "kind": "mesh-ref",
+              "ref": "geo-wall-body-retrofit-001"
+            }
+          ],
+          "itemDescription": "Formation of openings in existing elements — door, measured by area [m2]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/opening-creation/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 2.1
+          },
+          "solutionId": "solution-benchmark-001",
+          "traceId": "879d7968ae1ce37eb5ad7399809961c47e81ead02e02a3d9684a376381704e38",
+          "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+          "versionNumber": 1
+        },
+        {
+          "boqLineId": "fdcb578f8305b101ea10d3f6856865a0f90c65109d18942007e1cd14595b353c",
+          "contractVersion": "1.0.0",
+          "contributingOperations": [
+            {
+              "contributionKind": "created",
+              "operationId": "83ef53b5b84bf852e3cc2a04ba69d022deed7d8d5f79cda68347290396cdcb68",
+              "operationIndex": 1
+            }
+          ],
+          "geometryRefs": [
+            {
+              "kind": "mesh-ref",
+              "ref": "geo-wall-body-retrofit-001"
+            }
+          ],
+          "itemDescription": "Formation of openings in existing elements — door, measured by number [count]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/opening-creation/v1",
+            "dimension": "count",
+            "unit": "count",
+            "value": 1
+          },
+          "solutionId": "solution-benchmark-001",
+          "traceId": "09fc096d309782d8e038300f960070ad7c1a7296196d84089dbe2c21305e2b0d",
+          "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+          "versionNumber": 1
+        },
+        {
+          "boqLineId": "84ec8a7897ce285f469efe1315cc319f1fd061b658170a1adab7df7fd9ddeae0",
+          "contractVersion": "1.0.0",
+          "contributingOperations": [
+            {
+              "contributionKind": "created",
+              "operationId": "a533700ca29c07681265e1c1874903f5ddd9845e7c269a947cfc66bc0f750810",
+              "operationIndex": 4
+            }
+          ],
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by area [m2]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 21.6
+          },
+          "solutionId": "solution-benchmark-001",
+          "traceId": "0eb86e92027b49e1fba98b9a3950be7967a392ca27199f40073cfbb532e808ee",
+          "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+          "versionNumber": 1
+        },
+        {
+          "boqLineId": "e6a69e2a132c14664d5d6195f2a6b07bd83f062a6ae26baa8355194338e85598",
+          "contractVersion": "1.0.0",
+          "contributingOperations": [
+            {
+              "contributionKind": "created",
+              "operationId": "a533700ca29c07681265e1c1874903f5ddd9845e7c269a947cfc66bc0f750810",
+              "operationIndex": 4
+            }
+          ],
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by volume [m3]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 0.324
+          },
+          "solutionId": "solution-benchmark-001",
+          "traceId": "e3ff3ac56c7ad44fe1a7e03772c24558dda19613bff81dcf8903e1b7fb34670d",
+          "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+          "versionNumber": 1
+        },
+        {
+          "boqLineId": "e0dee6369ce6c9d8b1f318c362ecd279648c28a5d02bb32a75c180ce46cc925b",
+          "contractVersion": "1.0.0",
+          "contributingOperations": [
+            {
+              "contributionKind": "created",
+              "operationId": "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e",
+              "operationIndex": 5
+            }
+          ],
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Applied finish coating — acrylic-paint, measured by area [m2]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/finish-application/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 21.6
+          },
+          "solutionId": "solution-benchmark-001",
+          "traceId": "a663e7a0af48f47785db3de7e30911bf527f63713457a8ce3e51f80ed019a7e9",
+          "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+          "versionNumber": 1
+        },
+        {
+          "boqLineId": "22b664414d4ade602531cee31079965eb2d046174aa3391b28cc33b67ad489a4",
+          "contractVersion": "1.0.0",
+          "contributingOperations": [
+            {
+              "contributionKind": "created",
+              "operationId": "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e",
+              "operationIndex": 5
+            }
+          ],
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Applied finish coating — acrylic-paint, measured by volume [m3]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/finish-application/v1",
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 0.0432
+          },
+          "solutionId": "solution-benchmark-001",
+          "traceId": "b616ee3ced79d2bd30ba19c2f79fadd9ea736a46e666f1653ec2574949d04af5",
+          "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+          "versionNumber": 1
+        }
+      ],
+      "solutionId": "solution-benchmark-001",
+      "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+      "versionNumber": 1
+    },
+    "crossSurfaceLinks": [
+      {
+        "basis": "the solution world's recorded case pin (case-benchmark-retrofit-001)",
+        "href": "#/projects/proj-benchmark-001/solution?case=case-benchmark-retrofit-001",
+        "label": "case case-benchmark-retrofit-001 → the interactive solution workspace"
+      },
+      {
+        "basis": "the proposal-composition affordance of the Intervention Studio surface",
+        "href": "#/projects/proj-benchmark-001/solution",
+        "label": "intervention → the interactive solution composition"
+      },
+      {
+        "basis": "the clicked generated line's trace — the document-level source reference",
+        "href": "#/projects/proj-benchmark-001/solution?boq-line=22b664414d4ade602531cee31079965eb2d046174aa3391b28cc33b67ad489a4&step=5",
+        "label": "BOQ lens line → the solution BOQ line trace (22b664414d4a…)"
+      },
+      {
+        "basis": "the generated solution BOQ is a separate derived projection — the source BOQ surface stays distinct",
+        "href": "#/projects/proj-benchmark-001/boq-lens",
+        "label": "the source BOQ surface of this project (BOQ Lens)"
+      }
+    ],
+    "journeyId": "94c95fea163707d9a10843bd49d2cdf310100ec651244e20e83d72de68d7fe63",
+    "journeyKind": "aise-composed-solution-journey",
+    "journeyVersion": "1.0.0",
+    "mode": "mixed",
+    "operationIdentities": [
+      {
+        "operationId": "83ef53b5b84bf852e3cc2a04ba69d022deed7d8d5f79cda68347290396cdcb68",
+        "origin": "agent",
+        "step": 4,
+        "versionNumber": 1
+      },
+      {
+        "operationId": "f88f3cad710c764879cebc2d0ee1f057c4f6245fa558a2cf211be9e137a4836c",
+        "origin": "direct-manipulation",
+        "step": 5,
+        "versionNumber": 1
+      },
+      {
+        "operationId": "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+        "origin": "agent",
+        "step": 6,
+        "versionNumber": 1
+      },
+      {
+        "operationId": "a533700ca29c07681265e1c1874903f5ddd9845e7c269a947cfc66bc0f750810",
+        "origin": "direct-manipulation",
+        "step": 7,
+        "versionNumber": 1
+      },
+      {
+        "operationId": "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e",
+        "origin": "agent",
+        "step": 8,
+        "versionNumber": 1
+      },
+      {
+        "operationId": "2d234af2019eea611232973983b6cb7b9d8b729f3246bc12928f175886054e45",
+        "origin": "direct-manipulation",
+        "step": 14,
+        "versionNumber": 2
+      },
+      {
+        "operationId": "46e10c11892f4fb2c0f608f6b1bf209678f39ccc719212b4e61e8020831b7299",
+        "origin": "agent",
+        "step": 14,
+        "versionNumber": 2
+      },
+      {
+        "operationId": "06ad33c0bedddf5e9e6e8bf854a996f3ed6eb0ee1277e7874a722e18c8ca1e72",
+        "origin": "direct-manipulation",
+        "step": 14,
+        "versionNumber": 2
+      },
+      {
+        "operationId": "65ca6c01cca9423a720d8303ac34a9468ed8d8366507abbc2d7a6c1aefaf8bad",
+        "origin": "agent",
+        "step": 14,
+        "versionNumber": 2
+      }
+    ],
+    "revisedBoq": {
+      "assumptions": [],
+      "baselineRealityVersionId": "rgv-benchmark-0001",
+      "boqId": "e63680d0cb82213fb2a2ff154639a2dbeb084b42ebde23f90742d2589202b89c",
+      "lineCount": 9,
+      "lines": [
+        {
+          "assumptionRefs": [],
+          "boqLineId": "35097dd43603f616818972d730d037cbbb216742633cb8a1c6a4de0c88ef4f07",
+          "buildingElement": "existing-element",
+          "contributingSteps": [
+            {
+              "contributionKind": "removed",
+              "operationId": "2d234af2019eea611232973983b6cb7b9d8b729f3246bc12928f175886054e45",
+              "operationIndex": 1,
+              "resultingStateRef": "7e4872408cf856cd3327d6dddc1acdf580bc66fc13b38630700908fb130582c5"
+            }
+          ],
+          "direction": "removed",
+          "geometryRefs": [
+            {
+              "kind": "mesh-ref",
+              "ref": "geo-wall-body-retrofit-001"
+            }
+          ],
+          "itemDescription": "Demolition and removal of existing elements, measured by area [m2]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 7.2
+          },
+          "sectionId": "site-preparation",
+          "traceId": "d27be5c7516e43b1ab6820c2407d7a11990d7ad7f969758aa6ea938dd8d0cb94"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "c5f067e0935731dd6983652f5b24e123a121044c5e237a8493ea2fc46880f1c3",
+          "buildingElement": "existing-element",
+          "contributingSteps": [
+            {
+              "contributionKind": "removed",
+              "operationId": "2d234af2019eea611232973983b6cb7b9d8b729f3246bc12928f175886054e45",
+              "operationIndex": 1,
+              "resultingStateRef": "7e4872408cf856cd3327d6dddc1acdf580bc66fc13b38630700908fb130582c5"
+            }
+          ],
+          "direction": "removed",
+          "geometryRefs": [
+            {
+              "kind": "mesh-ref",
+              "ref": "geo-wall-body-retrofit-001"
+            }
+          ],
+          "itemDescription": "Demolition and removal of existing elements, measured by volume [m3]",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 1.548
+          },
+          "sectionId": "site-preparation",
+          "traceId": "48ecbf6803285cc1e80b0d904786ae4de992832ed0715298e55a381bde1750af"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "0d0e6a89aea829d1135d5592db8e573cb10e766a44538d04f87d8f0e5f2bf94d",
+          "buildingElement": "wall",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "46e10c11892f4fb2c0f608f6b1bf209678f39ccc719212b4e61e8020831b7299",
+              "operationIndex": 2,
+              "resultingStateRef": "432e1a7f304dc262137bd85f5e3741d0100e0ba1ef5097bd7ab34a0135663096"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-retrofit-001"
+            }
+          ],
+          "itemDescription": "Block wall construction — concrete-block, measured by area [m2]",
+          "material": "concrete-block",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 7.2
+          },
+          "sectionId": "structure",
+          "traceId": "7ded535f4f449b6843095cb3fa5d8e6ee0e2be00841ce8e37e15b4960c324ac4"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "5c6742f00aa758e8cb389910c8cdbe82232222076f56102a690a649692301841",
+          "buildingElement": "wall",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "46e10c11892f4fb2c0f608f6b1bf209678f39ccc719212b4e61e8020831b7299",
+              "operationIndex": 2,
+              "resultingStateRef": "432e1a7f304dc262137bd85f5e3741d0100e0ba1ef5097bd7ab34a0135663096"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-retrofit-001"
+            }
+          ],
+          "itemDescription": "Block wall construction — concrete-block, measured by volume [m3]",
+          "material": "concrete-block",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 1.008
+          },
+          "sectionId": "structure",
+          "traceId": "83e0e968222e27a9c33343698c88d67e6834396d02ba36a108ad189d7968fbff"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "99e23118cbc590968651595faa8e8969c7627d6d7f9d5302e2aa6c7484ae9aba",
+          "buildingElement": "wall",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "46e10c11892f4fb2c0f608f6b1bf209678f39ccc719212b4e61e8020831b7299",
+              "operationIndex": 2,
+              "resultingStateRef": "432e1a7f304dc262137bd85f5e3741d0100e0ba1ef5097bd7ab34a0135663096"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-retrofit-001"
+            }
+          ],
+          "itemDescription": "Block wall construction — concrete-block, measured by number [count]",
+          "material": "concrete-block",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+            "dimension": "count",
+            "unit": "count",
+            "value": 96
+          },
+          "sectionId": "structure",
+          "traceId": "5570a555c6345cbe1931a46eb9f59a9cef41eab07a5467fe1e2e14ddd17b87f5"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "cf40141eb21ec2132b4ae3ee864960c660812f928afcf47a0bf1c3d4f2911523",
+          "buildingElement": "wall-surface",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "06ad33c0bedddf5e9e6e8bf854a996f3ed6eb0ee1277e7874a722e18c8ca1e72",
+              "operationIndex": 3,
+              "resultingStateRef": "4b8ddc1b423be24d93eacd8406f9133d79845df0f464510e6379970d8e989600"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by area [m2]",
+          "material": "cement-plaster",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 21.6
+          },
+          "sectionId": "enclosure",
+          "traceId": "08a7df84ce02e90c51e69de0405dea01530e0866f9b58b3b867a2658717d34c7"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "0d17af2eb82b252516292fb3fe76585f3664cae1b71d4f02a1d6783f311d6625",
+          "buildingElement": "wall-surface",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "06ad33c0bedddf5e9e6e8bf854a996f3ed6eb0ee1277e7874a722e18c8ca1e72",
+              "operationIndex": 3,
+              "resultingStateRef": "4b8ddc1b423be24d93eacd8406f9133d79845df0f464510e6379970d8e989600"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by volume [m3]",
+          "material": "cement-plaster",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 0.324
+          },
+          "sectionId": "enclosure",
+          "traceId": "87437d2c98e9f0dc6392ef91b81af7e1b92329a029edbe040d66a3fd89bf6cd0"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "4b56eb3211048bf8f4575d8fe2b0a99437c315bd1f281b993905f29ac08473f7",
+          "buildingElement": "surface",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "65ca6c01cca9423a720d8303ac34a9468ed8d8366507abbc2d7a6c1aefaf8bad",
+              "operationIndex": 4,
+              "resultingStateRef": "08a191982f1cf637bd8a7c14f39b2d5354839fa91080f980636e1380d18133ef"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Applied finish coating — acrylic-paint, measured by area [m2]",
+          "material": "acrylic-paint",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/finish-application/v1",
+            "dimension": "area",
+            "unit": "m2",
+            "value": 21.6
+          },
+          "sectionId": "finishes",
+          "traceId": "66c2d12d909e498de55ae3060eb10532c4e52caacfb94168da03eb5842cfa59d"
+        },
+        {
+          "assumptionRefs": [],
+          "boqLineId": "469f8507ca2af7d90e958ca97eff4c711150022c0345ac2b3649b064b4d426e8",
+          "buildingElement": "surface",
+          "contributingSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "65ca6c01cca9423a720d8303ac34a9468ed8d8366507abbc2d7a6c1aefaf8bad",
+              "operationIndex": 4,
+              "resultingStateRef": "08a191982f1cf637bd8a7c14f39b2d5354839fa91080f980636e1380d18133ef"
+            }
+          ],
+          "direction": "added",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Applied finish coating — acrylic-paint, measured by volume [m3]",
+          "material": "acrylic-paint",
+          "quantity": {
+            "calculationRef": "aise-solution-engine/quantity/finish-application/v1",
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 0.0432
+          },
+          "sectionId": "finishes",
+          "traceId": "fc687c72af0333bdde0765d9fd9a99e7a2537ee4f8261ce76a11ec9767a7e83d"
+        }
+      ],
+      "solutionId": "solution-benchmark-001",
+      "totals": [
+        {
+          "addedValue": 50.4,
+          "dimension": "area",
+          "netValue": 43.2,
+          "removedValue": 7.2,
+          "unit": "m2"
+        },
+        {
+          "addedValue": 96,
+          "dimension": "count",
+          "netValue": 96,
+          "removedValue": 0,
+          "unit": "count"
+        },
+        {
+          "addedValue": 1.3752,
+          "dimension": "volume",
+          "netValue": -0.1728,
+          "removedValue": 1.548,
+          "unit": "m3"
+        }
+      ],
+      "validationSnapshotRef": "305de8f7aa030a25dbec4812209be06abeb98035e13011c976be0941fea72b9b",
+      "verification": {
+        "ok": true,
+        "summary": "verified: 9 lines, 4 sections, 0 assumptions over 4 operations"
+      },
+      "versionNumber": 2
+    },
+    "seal": {
+      "everyStateSealedProposed": true,
+      "observedSceneDigestAfter": "34746b218c9344f0002a51c030ce782455f5609d54d732384db56b0a9f5a3a43",
+      "observedSceneDigestBefore": "34746b218c9344f0002a51c030ce782455f5609d54d732384db56b0a9f5a3a43",
+      "pinnedRealityVersionId": "rgv-benchmark-0001",
+      "sealedStateCount": 11
+    },
+    "steps": [
+      {
+        "detail": "opened the observed building reality pinned to Reality-Graph version 'rgv-benchmark-0001' — 3 observed element(s), read-only; the baseline surface facts anchor coated operations through the engine's read-only resolver",
+        "leg": "open-reality",
+        "links": [
+          {
+            "basis": "the solution's pinned baseline reality version — the same project's evidence surface",
+            "href": "#/projects/proj-benchmark-001/sitetwin",
+            "label": "The observed reality (SiteTwin / Evidence)"
+          }
+        ],
+        "step": 1,
+        "title": "Reconstruct / open the current building reality"
+      },
+      {
+        "detail": "selected the engineering problem of case 'case-benchmark-retrofit-001': undefined",
+        "leg": "select-problem",
+        "links": [
+          {
+            "basis": "the solution world's recorded case pin (case-benchmark-retrofit-001)",
+            "href": "#/projects/proj-benchmark-001/case",
+            "label": "case case-benchmark-retrofit-001 (Engineering Case)"
+          }
+        ],
+        "step": 2,
+        "title": "Select the engineering problem"
+      },
+      {
+        "detail": "created solution 'solution-benchmark-001' — version 1, layer 0 (the baseline overlay over the pinned observed reality); the proposal starts empty",
+        "leg": "create-solution",
+        "stateTransition": {
+          "fromStateId": null,
+          "toStateDigest": "01057ab2b0111d0eea3661fa064b34a87acdf0f7043338a003267ef794b670f6",
+          "toStateId": "fb0468a60687f501eeaff25cb70f2a1ab842156f8dd50e473efdf5ae7f2db6fb",
+          "toStateIndex": 0,
+          "versionNumber": 1
+        },
+        "step": 3,
+        "title": "Create the interactive solution"
+      },
+      {
+        "detail": "asked the agent: 'Cut a new door opening 1 m wide and 2.1 m high in this wall.' — the confirmed proposal applies through THE SAME submission path as direct manipulation, over The wall body along the retrofit run",
+        "leg": "manipulate",
+        "operation": {
+          "commandText": "Cut a new door opening 1 m wide and 2.1 m high in this wall.",
+          "intentId": "intent-benchmark-opening-001",
+          "operationId": "83ef53b5b84bf852e3cc2a04ba69d022deed7d8d5f79cda68347290396cdcb68",
+          "operationIndex": 1,
+          "operationType": "opening-creation",
+          "origin": "agent",
+          "parameters": [
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 1
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.1
+            },
+            {
+              "name": "material",
+              "value": "door"
+            }
+          ],
+          "solutionId": "solution-benchmark-001",
+          "target": {
+            "geometryRefs": [
+              {
+                "kind": "mesh-ref",
+                "ref": "geo-wall-body-retrofit-001"
+              }
+            ],
+            "nodeRefs": [
+              "node-wall-retrofit-001"
+            ],
+            "selectorKind": "element"
+          },
+          "versionNumber": 1
+        },
+        "stateTransition": {
+          "fromStateId": "fb0468a60687f501eeaff25cb70f2a1ab842156f8dd50e473efdf5ae7f2db6fb",
+          "toStateDigest": "7bab8343e048f89e94af07ccdac3f360ae4b49c7623a9d7a6876cca4dc08e613",
+          "toStateId": "78dda18ffc1f31c841fc0a730a0897e800d9204d811fe43a3e43ec944dea2437",
+          "toStateIndex": 1,
+          "transitionId": "a42171585141b26991ef05acb05e986cee2d0c2a10dfeae9a5ba7bc3fa2245e7",
+          "versionNumber": 1
+        },
+        "step": 4,
+        "title": "Use agent commands — opening-creation"
+      },
+      {
+        "detail": "selected The wall body along the retrofit run in the drawing and executed the direct-manipulation action 'demolition-removal' — the typed intent flows through the ONE submission path into the engine",
+        "leg": "manipulate",
+        "operation": {
+          "intentId": "intent-benchmark-demolition-001",
+          "operationId": "f88f3cad710c764879cebc2d0ee1f057c4f6245fa558a2cf211be9e137a4836c",
+          "operationIndex": 2,
+          "operationType": "demolition-removal",
+          "origin": "direct-manipulation",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.4
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.215
+            }
+          ],
+          "solutionId": "solution-benchmark-001",
+          "target": {
+            "geometryRefs": [
+              {
+                "kind": "mesh-ref",
+                "ref": "geo-wall-body-retrofit-001"
+              }
+            ],
+            "nodeRefs": [
+              "node-wall-retrofit-001"
+            ],
+            "selectorKind": "element"
+          },
+          "versionNumber": 1
+        },
+        "stateTransition": {
+          "fromStateId": "78dda18ffc1f31c841fc0a730a0897e800d9204d811fe43a3e43ec944dea2437",
+          "toStateDigest": "ac671a7ab10ba80e88e2b99f9b9a852be9630c21ce136daae1e81124dd2dad73",
+          "toStateId": "e0ce53118529b6fc74bac11db5819309fbe93905637be3294f0f23a02cadef85",
+          "toStateIndex": 2,
+          "transitionId": "775f103fd91d210d58964d46b3f3302f43e85e8b6a1603f941bf046b6ff015c3",
+          "versionNumber": 1
+        },
+        "step": 5,
+        "title": "Manipulate directly — demolition-removal"
+      },
+      {
+        "detail": "asked the agent: 'Rebuild the damaged section with concrete blocks.' (after a clarification: length, height, thickness) — the confirmed proposal applies through THE SAME submission path as direct manipulation, over The wall line along the retrofit run",
+        "leg": "manipulate",
+        "operation": {
+          "commandText": "Rebuild the damaged section with concrete blocks.",
+          "intentId": "intent-benchmark-block-001",
+          "operationId": "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+          "operationIndex": 3,
+          "operationType": "block-wall-placement",
+          "origin": "agent",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.4
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.14
+            },
+            {
+              "name": "material",
+              "value": "concrete-block"
+            }
+          ],
+          "solutionId": "solution-benchmark-001",
+          "target": {
+            "geometryRefs": [
+              {
+                "kind": "plane",
+                "ref": "geo-wall-line-retrofit-001"
+              }
+            ],
+            "nodeRefs": [
+              "node-wall-retrofit-001"
+            ],
+            "selectorKind": "line-extent"
+          },
+          "versionNumber": 1
+        },
+        "stateTransition": {
+          "fromStateId": "e0ce53118529b6fc74bac11db5819309fbe93905637be3294f0f23a02cadef85",
+          "toStateDigest": "ad34850022dc50ae3d78167985b532232625563bd0246f90bd6a7c945c796839",
+          "toStateId": "5bbaea22b098ce621e0d62cd3a8b46452f1cc7177c09fe542c35a0424770f52e",
+          "toStateIndex": 3,
+          "transitionId": "14090833c09a0045ae58687b260135b714571596f503234d1c337c5d6a6883b0",
+          "versionNumber": 1
+        },
+        "step": 6,
+        "title": "Use agent commands — block-wall-placement"
+      },
+      {
+        "detail": "selected The ground-floor wall faces (8 m run) in the drawing and executed the direct-manipulation action 'plaster-application' — the typed intent flows through the ONE submission path into the engine",
+        "leg": "manipulate",
+        "operation": {
+          "intentId": "intent-benchmark-plaster-001",
+          "operationId": "a533700ca29c07681265e1c1874903f5ddd9845e7c269a947cfc66bc0f750810",
+          "operationIndex": 4,
+          "operationType": "plaster-application",
+          "origin": "direct-manipulation",
+          "parameters": [
+            {
+              "name": "thickness",
+              "unit": "mm",
+              "value": 15
+            },
+            {
+              "name": "material",
+              "value": "cement-plaster"
+            }
+          ],
+          "solutionId": "solution-benchmark-001",
+          "target": {
+            "geometryRefs": [
+              {
+                "kind": "polygon",
+                "ref": "geo-wall-faces-retrofit-001"
+              }
+            ],
+            "nodeRefs": [
+              "node-wall-retrofit-001"
+            ],
+            "selectorKind": "face-set"
+          },
+          "versionNumber": 1
+        },
+        "stateTransition": {
+          "fromStateId": "5bbaea22b098ce621e0d62cd3a8b46452f1cc7177c09fe542c35a0424770f52e",
+          "toStateDigest": "cc36b3805f01d4790467d4b296b8ee19f48145db9e7aa463c8cfe4034e4e60ea",
+          "toStateId": "46d49a0645fe1c84b32becfe199d5c123838686c5d74bbee1c83195f404e2dfd",
+          "toStateIndex": 4,
+          "transitionId": "736297d5e4d80d0917da16107a4e751cac9e23c19da65d35758dcb13342a2d29",
+          "versionNumber": 1
+        },
+        "step": 7,
+        "title": "Manipulate directly — plaster-application"
+      },
+      {
+        "detail": "asked the agent: 'Apply a 2 mm acrylic paint finish to the wall faces.' — the confirmed proposal applies through THE SAME submission path as direct manipulation, over The ground-floor wall faces (8 m run)",
+        "leg": "manipulate",
+        "operation": {
+          "commandText": "Apply a 2 mm acrylic paint finish to the wall faces.",
+          "intentId": "intent-benchmark-finish-001",
+          "operationId": "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e",
+          "operationIndex": 5,
+          "operationType": "finish-application",
+          "origin": "agent",
+          "parameters": [
+            {
+              "name": "thickness",
+              "unit": "mm",
+              "value": 2
+            },
+            {
+              "name": "material",
+              "value": "acrylic-paint"
+            }
+          ],
+          "solutionId": "solution-benchmark-001",
+          "target": {
+            "geometryRefs": [
+              {
+                "kind": "polygon",
+                "ref": "geo-wall-faces-retrofit-001"
+              }
+            ],
+            "nodeRefs": [
+              "node-wall-retrofit-001"
+            ],
+            "selectorKind": "face-set"
+          },
+          "versionNumber": 1
+        },
+        "stateTransition": {
+          "fromStateId": "46d49a0645fe1c84b32becfe199d5c123838686c5d74bbee1c83195f404e2dfd",
+          "toStateDigest": "d4bd2b6ea4185b511f7723bfab13166ef2d8a14bcb994b0196384cd3d79dc342",
+          "toStateId": "8a78474a190bd25c450df6a3a3497aa56a87491214d00ad506c67250da8bd0be",
+          "toStateIndex": 5,
+          "transitionId": "d853a47f1e870ac15b1242bca6924732e17203320b7ef12479b87e4cd33dc536",
+          "versionNumber": 1
+        },
+        "step": 8,
+        "title": "Use agent commands — finish-application"
+      },
+      {
+        "detail": "stepped the timeline back to layer 1 (state 78dda18ffc1f…) and forward to the final layer 5 (state 8a78474a190b…) — every cursor position is the engine's own recorded state, never a client-side snapshot",
+        "leg": "step-through",
+        "stateTransition": {
+          "fromStateId": "8a78474a190bd25c450df6a3a3497aa56a87491214d00ad506c67250da8bd0be",
+          "toStateDigest": "d4bd2b6ea4185b511f7723bfab13166ef2d8a14bcb994b0196384cd3d79dc342",
+          "toStateId": "8a78474a190bd25c450df6a3a3497aa56a87491214d00ad506c67250da8bd0be",
+          "toStateIndex": 5,
+          "versionNumber": 1
+        },
+        "step": 9,
+        "title": "Step through the proposed layers/states"
+      },
+      {
+        "detail": "validated version 1 through the engine's deterministic Validate — outcome 'pass' over 7 checks (engine aise-solution-engine 1.0.0); the snapshot certifies the version's exact bytes (inputDigest cd098cbbf68d…)",
+        "leg": "validate",
+        "step": 10,
+        "title": "Validate (the deterministic server-side checks)",
+        "validation": {
+          "checkSummary": [
+            {
+              "checkId": "operation.contract-invariants",
+              "result": "pass"
+            },
+            {
+              "checkId": "geometry.dimensions-positive",
+              "result": "pass"
+            },
+            {
+              "checkId": "units.quantity-units-typed",
+              "result": "pass"
+            },
+            {
+              "checkId": "operation.ordering-dependencies",
+              "result": "pass"
+            },
+            {
+              "checkId": "quantities.calculation-refs",
+              "result": "pass"
+            },
+            {
+              "checkId": "operation.capability-declared",
+              "result": "pass"
+            },
+            {
+              "checkId": "operation.phase1-limits",
+              "result": "pass"
+            }
+          ],
+          "engine": {
+            "kind": "aise-solution-engine",
+            "version": "1.0.0"
+          },
+          "inputDigest": "cd098cbbf68dea169fda82ba6efc6a715e55153982cc842b92b915feceb477ad",
+          "outcome": "pass",
+          "snapshotId": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc"
+        }
+      },
+      {
+        "boq": {
+          "assumptions": [],
+          "baselineRealityVersionId": "rgv-benchmark-0001",
+          "boqId": "23af67490e0f2fcdc69c4be85d814e336594d89abc20dccb2e8680ce0ae4b624",
+          "lineCount": 11,
+          "lines": [
+            {
+              "assumptionRefs": [],
+              "boqLineId": "2a6c20f2297cb1115e6ee0fb8d5051f58a2d4104c482cc37003716686541bcf4",
+              "buildingElement": "existing-element",
+              "contributingSteps": [
+                {
+                  "contributionKind": "removed",
+                  "operationId": "f88f3cad710c764879cebc2d0ee1f057c4f6245fa558a2cf211be9e137a4836c",
+                  "operationIndex": 2,
+                  "resultingStateRef": "e0ce53118529b6fc74bac11db5819309fbe93905637be3294f0f23a02cadef85"
+                }
+              ],
+              "direction": "removed",
+              "geometryRefs": [
+                {
+                  "kind": "mesh-ref",
+                  "ref": "geo-wall-body-retrofit-001"
+                }
+              ],
+              "itemDescription": "Demolition and removal of existing elements, measured by area [m2]",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+                "dimension": "area",
+                "unit": "m2",
+                "value": 7.2
+              },
+              "sectionId": "site-preparation",
+              "traceId": "7cbe5d1ce3fd3de88f049c59ae71a8be8f2d7005fc22eed6a508bfc1afb18d02"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "0f570b5757117c518512888a33634d8361501089575b318e3b551c717f793544",
+              "buildingElement": "existing-element",
+              "contributingSteps": [
+                {
+                  "contributionKind": "removed",
+                  "operationId": "f88f3cad710c764879cebc2d0ee1f057c4f6245fa558a2cf211be9e137a4836c",
+                  "operationIndex": 2,
+                  "resultingStateRef": "e0ce53118529b6fc74bac11db5819309fbe93905637be3294f0f23a02cadef85"
+                }
+              ],
+              "direction": "removed",
+              "geometryRefs": [
+                {
+                  "kind": "mesh-ref",
+                  "ref": "geo-wall-body-retrofit-001"
+                }
+              ],
+              "itemDescription": "Demolition and removal of existing elements, measured by volume [m3]",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+                "dimension": "volume",
+                "unit": "m3",
+                "value": 1.548
+              },
+              "sectionId": "site-preparation",
+              "traceId": "87138d3e35f641ec4307919c5d37826d1dec82ed45fab1cd56a4b49f8a4975a3"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "364c17ba20bbc14d17ad926485d77d3bf25308826347762d6d1436888c5bfd4e",
+              "buildingElement": "wall",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+                  "operationIndex": 3,
+                  "resultingStateRef": "5bbaea22b098ce621e0d62cd3a8b46452f1cc7177c09fe542c35a0424770f52e"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "plane",
+                  "ref": "geo-wall-line-retrofit-001"
+                }
+              ],
+              "itemDescription": "Block wall construction — concrete-block, measured by area [m2]",
+              "material": "concrete-block",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+                "dimension": "area",
+                "unit": "m2",
+                "value": 7.2
+              },
+              "sectionId": "structure",
+              "traceId": "91a94de72bb45dc5346fe1c47e2aaf7c85da3bde6d09605fdbbf9ff2ee30dbaf"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "7aeac4468bd3d8fbaec1135b51a691f7c611e9cdd674341bdb4cf087a3ee4992",
+              "buildingElement": "wall",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+                  "operationIndex": 3,
+                  "resultingStateRef": "5bbaea22b098ce621e0d62cd3a8b46452f1cc7177c09fe542c35a0424770f52e"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "plane",
+                  "ref": "geo-wall-line-retrofit-001"
+                }
+              ],
+              "itemDescription": "Block wall construction — concrete-block, measured by volume [m3]",
+              "material": "concrete-block",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+                "dimension": "volume",
+                "unit": "m3",
+                "value": 1.008
+              },
+              "sectionId": "structure",
+              "traceId": "0a3d097aac9cdb24790e02eced70cd8eb54fbb44bcfc0ba13c18053dba1d02ac"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "a5d9c0a156f35a8d8b3d06c8b2c5f2de3c677cd3c1819cbc70f7ff9d5e81e309",
+              "buildingElement": "wall",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+                  "operationIndex": 3,
+                  "resultingStateRef": "5bbaea22b098ce621e0d62cd3a8b46452f1cc7177c09fe542c35a0424770f52e"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "plane",
+                  "ref": "geo-wall-line-retrofit-001"
+                }
+              ],
+              "itemDescription": "Block wall construction — concrete-block, measured by number [count]",
+              "material": "concrete-block",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+                "dimension": "count",
+                "unit": "count",
+                "value": 96
+              },
+              "sectionId": "structure",
+              "traceId": "79b8409e96fc3505501d69660a362afa29e8a0f2818263aa215fff1d9a1c5e0d"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "ea5d48b28c9de27bc611895612a341cf96a8dacf7e0264113d8290a72cc5f3ef",
+              "buildingElement": "wall",
+              "contributingSteps": [
+                {
+                  "contributionKind": "removed",
+                  "operationId": "83ef53b5b84bf852e3cc2a04ba69d022deed7d8d5f79cda68347290396cdcb68",
+                  "operationIndex": 1,
+                  "resultingStateRef": "78dda18ffc1f31c841fc0a730a0897e800d9204d811fe43a3e43ec944dea2437"
+                }
+              ],
+              "direction": "removed",
+              "geometryRefs": [
+                {
+                  "kind": "mesh-ref",
+                  "ref": "geo-wall-body-retrofit-001"
+                }
+              ],
+              "itemDescription": "Formation of openings in existing elements — door, measured by area [m2]",
+              "material": "door",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/opening-creation/v1",
+                "dimension": "area",
+                "unit": "m2",
+                "value": 2.1
+              },
+              "sectionId": "enclosure",
+              "traceId": "879d7968ae1ce37eb5ad7399809961c47e81ead02e02a3d9684a376381704e38"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "fdcb578f8305b101ea10d3f6856865a0f90c65109d18942007e1cd14595b353c",
+              "buildingElement": "wall",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "83ef53b5b84bf852e3cc2a04ba69d022deed7d8d5f79cda68347290396cdcb68",
+                  "operationIndex": 1,
+                  "resultingStateRef": "78dda18ffc1f31c841fc0a730a0897e800d9204d811fe43a3e43ec944dea2437"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "mesh-ref",
+                  "ref": "geo-wall-body-retrofit-001"
+                }
+              ],
+              "itemDescription": "Formation of openings in existing elements — door, measured by number [count]",
+              "material": "door",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/opening-creation/v1",
+                "dimension": "count",
+                "unit": "count",
+                "value": 1
+              },
+              "sectionId": "enclosure",
+              "traceId": "09fc096d309782d8e038300f960070ad7c1a7296196d84089dbe2c21305e2b0d"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "84ec8a7897ce285f469efe1315cc319f1fd061b658170a1adab7df7fd9ddeae0",
+              "buildingElement": "wall-surface",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "a533700ca29c07681265e1c1874903f5ddd9845e7c269a947cfc66bc0f750810",
+                  "operationIndex": 4,
+                  "resultingStateRef": "46d49a0645fe1c84b32becfe199d5c123838686c5d74bbee1c83195f404e2dfd"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "polygon",
+                  "ref": "geo-wall-faces-retrofit-001"
+                }
+              ],
+              "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by area [m2]",
+              "material": "cement-plaster",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+                "dimension": "area",
+                "unit": "m2",
+                "value": 21.6
+              },
+              "sectionId": "enclosure",
+              "traceId": "0eb86e92027b49e1fba98b9a3950be7967a392ca27199f40073cfbb532e808ee"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "e6a69e2a132c14664d5d6195f2a6b07bd83f062a6ae26baa8355194338e85598",
+              "buildingElement": "wall-surface",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "a533700ca29c07681265e1c1874903f5ddd9845e7c269a947cfc66bc0f750810",
+                  "operationIndex": 4,
+                  "resultingStateRef": "46d49a0645fe1c84b32becfe199d5c123838686c5d74bbee1c83195f404e2dfd"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "polygon",
+                  "ref": "geo-wall-faces-retrofit-001"
+                }
+              ],
+              "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by volume [m3]",
+              "material": "cement-plaster",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+                "dimension": "volume",
+                "unit": "m3",
+                "value": 0.324
+              },
+              "sectionId": "enclosure",
+              "traceId": "e3ff3ac56c7ad44fe1a7e03772c24558dda19613bff81dcf8903e1b7fb34670d"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "e0dee6369ce6c9d8b1f318c362ecd279648c28a5d02bb32a75c180ce46cc925b",
+              "buildingElement": "surface",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e",
+                  "operationIndex": 5,
+                  "resultingStateRef": "8a78474a190bd25c450df6a3a3497aa56a87491214d00ad506c67250da8bd0be"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "polygon",
+                  "ref": "geo-wall-faces-retrofit-001"
+                }
+              ],
+              "itemDescription": "Applied finish coating — acrylic-paint, measured by area [m2]",
+              "material": "acrylic-paint",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/finish-application/v1",
+                "dimension": "area",
+                "unit": "m2",
+                "value": 21.6
+              },
+              "sectionId": "finishes",
+              "traceId": "a663e7a0af48f47785db3de7e30911bf527f63713457a8ce3e51f80ed019a7e9"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "22b664414d4ade602531cee31079965eb2d046174aa3391b28cc33b67ad489a4",
+              "buildingElement": "surface",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e",
+                  "operationIndex": 5,
+                  "resultingStateRef": "8a78474a190bd25c450df6a3a3497aa56a87491214d00ad506c67250da8bd0be"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "polygon",
+                  "ref": "geo-wall-faces-retrofit-001"
+                }
+              ],
+              "itemDescription": "Applied finish coating — acrylic-paint, measured by volume [m3]",
+              "material": "acrylic-paint",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/finish-application/v1",
+                "dimension": "volume",
+                "unit": "m3",
+                "value": 0.0432
+              },
+              "sectionId": "finishes",
+              "traceId": "b616ee3ced79d2bd30ba19c2f79fadd9ea736a46e666f1653ec2574949d04af5"
+            }
+          ],
+          "solutionId": "solution-benchmark-001",
+          "totals": [
+            {
+              "addedValue": 50.4,
+              "dimension": "area",
+              "netValue": 41.1,
+              "removedValue": 9.3,
+              "unit": "m2"
+            },
+            {
+              "addedValue": 97,
+              "dimension": "count",
+              "netValue": 97,
+              "removedValue": 0,
+              "unit": "count"
+            },
+            {
+              "addedValue": 1.3752,
+              "dimension": "volume",
+              "netValue": -0.1728,
+              "removedValue": 1.548,
+              "unit": "m3"
+            }
+          ],
+          "validationSnapshotRef": "4c2f4d962dee99833bc4028f52e20e747d4a3bc46089679c862a287a3c510cdc",
+          "verification": {
+            "ok": true,
+            "summary": "verified: 11 lines, 4 sections, 0 assumptions over 5 operations"
+          },
+          "versionNumber": 1
+        },
+        "detail": "generated the solution BOQ from the declared validation snapshot — 11 line(s) across 4 section(s), every quantity engine-sourced with its calculation reference; the derived projection never overwrites a source BOQ",
+        "leg": "generate-boq",
+        "step": 11,
+        "title": "Generate the solution BOQ"
+      },
+      {
+        "boqLineClick": {
+          "boqLineId": "22b664414d4ade602531cee31079965eb2d046174aa3391b28cc33b67ad489a4",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-retrofit-001"
+            }
+          ],
+          "itemDescription": "Applied finish coating — acrylic-paint, measured by volume [m3]",
+          "quantity": {
+            "dimension": "volume",
+            "unit": "m3",
+            "value": 0.0432
+          },
+          "resolvedSteps": [
+            {
+              "contributionKind": "created",
+              "operationId": "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e",
+              "operationIndex": 5
+            }
+          ]
+        },
+        "detail": "clicked the generated line 'Applied finish coating — acrylic-paint, measured by volume [m3]' (0.0432 m3) — the guarded BOQ pane resolves its trace through the contract's own resolvers",
+        "leg": "click-boq-line",
+        "step": 12,
+        "title": "Click the BOQ line"
+      },
+      {
+        "detail": "the clicked line jumps to solution step 5 — operation 0fa929401baf… (finish-application), state 8a78474a190b… — and the inspector shows its typed parameters, engine-recorded quantities with calculation references and read-only reality anchors (geo-wall-faces-retrofit-001)",
+        "leg": "jump-and-inspect",
+        "links": [
+          {
+            "basis": "the clicked BOQ line's contributing operation — the contract's line → step resolution",
+            "href": "#/projects/proj-benchmark-001/solution?case=case-benchmark-retrofit-001&boq-line=22b664414d4ade602531cee31079965eb2d046174aa3391b28cc33b67ad489a4&step=5",
+            "label": "solution step 5 of solution-benchmark-001 (this surface, deep-linked)"
+          }
+        ],
+        "operation": {
+          "commandText": "Apply a 2 mm acrylic paint finish to the wall faces.",
+          "intentId": "intent-benchmark-finish-001",
+          "operationId": "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e",
+          "operationIndex": 5,
+          "operationType": "finish-application",
+          "origin": "agent",
+          "parameters": [
+            {
+              "name": "thickness",
+              "unit": "mm",
+              "value": 2
+            },
+            {
+              "name": "material",
+              "value": "acrylic-paint"
+            }
+          ],
+          "solutionId": "solution-benchmark-001",
+          "target": {
+            "geometryRefs": [
+              {
+                "kind": "polygon",
+                "ref": "geo-wall-faces-retrofit-001"
+              }
+            ],
+            "nodeRefs": [
+              "node-wall-retrofit-001"
+            ],
+            "selectorKind": "face-set"
+          },
+          "versionNumber": 1
+        },
+        "stateTransition": {
+          "fromStateId": "46d49a0645fe1c84b32becfe199d5c123838686c5d74bbee1c83195f404e2dfd",
+          "toStateDigest": "d4bd2b6ea4185b511f7723bfab13166ef2d8a14bcb994b0196384cd3d79dc342",
+          "toStateId": "8a78474a190bd25c450df6a3a3497aa56a87491214d00ad506c67250da8bd0be",
+          "toStateIndex": 5,
+          "versionNumber": 1
+        },
+        "step": 13,
+        "title": "Jump to the corresponding solution step / geometry (and inspect it)"
+      },
+      {
+        "boq": {
+          "assumptions": [],
+          "baselineRealityVersionId": "rgv-benchmark-0001",
+          "boqId": "e63680d0cb82213fb2a2ff154639a2dbeb084b42ebde23f90742d2589202b89c",
+          "lineCount": 9,
+          "lines": [
+            {
+              "assumptionRefs": [],
+              "boqLineId": "35097dd43603f616818972d730d037cbbb216742633cb8a1c6a4de0c88ef4f07",
+              "buildingElement": "existing-element",
+              "contributingSteps": [
+                {
+                  "contributionKind": "removed",
+                  "operationId": "2d234af2019eea611232973983b6cb7b9d8b729f3246bc12928f175886054e45",
+                  "operationIndex": 1,
+                  "resultingStateRef": "7e4872408cf856cd3327d6dddc1acdf580bc66fc13b38630700908fb130582c5"
+                }
+              ],
+              "direction": "removed",
+              "geometryRefs": [
+                {
+                  "kind": "mesh-ref",
+                  "ref": "geo-wall-body-retrofit-001"
+                }
+              ],
+              "itemDescription": "Demolition and removal of existing elements, measured by area [m2]",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+                "dimension": "area",
+                "unit": "m2",
+                "value": 7.2
+              },
+              "sectionId": "site-preparation",
+              "traceId": "d27be5c7516e43b1ab6820c2407d7a11990d7ad7f969758aa6ea938dd8d0cb94"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "c5f067e0935731dd6983652f5b24e123a121044c5e237a8493ea2fc46880f1c3",
+              "buildingElement": "existing-element",
+              "contributingSteps": [
+                {
+                  "contributionKind": "removed",
+                  "operationId": "2d234af2019eea611232973983b6cb7b9d8b729f3246bc12928f175886054e45",
+                  "operationIndex": 1,
+                  "resultingStateRef": "7e4872408cf856cd3327d6dddc1acdf580bc66fc13b38630700908fb130582c5"
+                }
+              ],
+              "direction": "removed",
+              "geometryRefs": [
+                {
+                  "kind": "mesh-ref",
+                  "ref": "geo-wall-body-retrofit-001"
+                }
+              ],
+              "itemDescription": "Demolition and removal of existing elements, measured by volume [m3]",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+                "dimension": "volume",
+                "unit": "m3",
+                "value": 1.548
+              },
+              "sectionId": "site-preparation",
+              "traceId": "48ecbf6803285cc1e80b0d904786ae4de992832ed0715298e55a381bde1750af"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "0d0e6a89aea829d1135d5592db8e573cb10e766a44538d04f87d8f0e5f2bf94d",
+              "buildingElement": "wall",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "46e10c11892f4fb2c0f608f6b1bf209678f39ccc719212b4e61e8020831b7299",
+                  "operationIndex": 2,
+                  "resultingStateRef": "432e1a7f304dc262137bd85f5e3741d0100e0ba1ef5097bd7ab34a0135663096"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "plane",
+                  "ref": "geo-wall-line-retrofit-001"
+                }
+              ],
+              "itemDescription": "Block wall construction — concrete-block, measured by area [m2]",
+              "material": "concrete-block",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+                "dimension": "area",
+                "unit": "m2",
+                "value": 7.2
+              },
+              "sectionId": "structure",
+              "traceId": "7ded535f4f449b6843095cb3fa5d8e6ee0e2be00841ce8e37e15b4960c324ac4"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "5c6742f00aa758e8cb389910c8cdbe82232222076f56102a690a649692301841",
+              "buildingElement": "wall",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "46e10c11892f4fb2c0f608f6b1bf209678f39ccc719212b4e61e8020831b7299",
+                  "operationIndex": 2,
+                  "resultingStateRef": "432e1a7f304dc262137bd85f5e3741d0100e0ba1ef5097bd7ab34a0135663096"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "plane",
+                  "ref": "geo-wall-line-retrofit-001"
+                }
+              ],
+              "itemDescription": "Block wall construction — concrete-block, measured by volume [m3]",
+              "material": "concrete-block",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+                "dimension": "volume",
+                "unit": "m3",
+                "value": 1.008
+              },
+              "sectionId": "structure",
+              "traceId": "83e0e968222e27a9c33343698c88d67e6834396d02ba36a108ad189d7968fbff"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "99e23118cbc590968651595faa8e8969c7627d6d7f9d5302e2aa6c7484ae9aba",
+              "buildingElement": "wall",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "46e10c11892f4fb2c0f608f6b1bf209678f39ccc719212b4e61e8020831b7299",
+                  "operationIndex": 2,
+                  "resultingStateRef": "432e1a7f304dc262137bd85f5e3741d0100e0ba1ef5097bd7ab34a0135663096"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "plane",
+                  "ref": "geo-wall-line-retrofit-001"
+                }
+              ],
+              "itemDescription": "Block wall construction — concrete-block, measured by number [count]",
+              "material": "concrete-block",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+                "dimension": "count",
+                "unit": "count",
+                "value": 96
+              },
+              "sectionId": "structure",
+              "traceId": "5570a555c6345cbe1931a46eb9f59a9cef41eab07a5467fe1e2e14ddd17b87f5"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "cf40141eb21ec2132b4ae3ee864960c660812f928afcf47a0bf1c3d4f2911523",
+              "buildingElement": "wall-surface",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "06ad33c0bedddf5e9e6e8bf854a996f3ed6eb0ee1277e7874a722e18c8ca1e72",
+                  "operationIndex": 3,
+                  "resultingStateRef": "4b8ddc1b423be24d93eacd8406f9133d79845df0f464510e6379970d8e989600"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "polygon",
+                  "ref": "geo-wall-faces-retrofit-001"
+                }
+              ],
+              "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by area [m2]",
+              "material": "cement-plaster",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+                "dimension": "area",
+                "unit": "m2",
+                "value": 21.6
+              },
+              "sectionId": "enclosure",
+              "traceId": "08a7df84ce02e90c51e69de0405dea01530e0866f9b58b3b867a2658717d34c7"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "0d17af2eb82b252516292fb3fe76585f3664cae1b71d4f02a1d6783f311d6625",
+              "buildingElement": "wall-surface",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "06ad33c0bedddf5e9e6e8bf854a996f3ed6eb0ee1277e7874a722e18c8ca1e72",
+                  "operationIndex": 3,
+                  "resultingStateRef": "4b8ddc1b423be24d93eacd8406f9133d79845df0f464510e6379970d8e989600"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "polygon",
+                  "ref": "geo-wall-faces-retrofit-001"
+                }
+              ],
+              "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by volume [m3]",
+              "material": "cement-plaster",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+                "dimension": "volume",
+                "unit": "m3",
+                "value": 0.324
+              },
+              "sectionId": "enclosure",
+              "traceId": "87437d2c98e9f0dc6392ef91b81af7e1b92329a029edbe040d66a3fd89bf6cd0"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "4b56eb3211048bf8f4575d8fe2b0a99437c315bd1f281b993905f29ac08473f7",
+              "buildingElement": "surface",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "65ca6c01cca9423a720d8303ac34a9468ed8d8366507abbc2d7a6c1aefaf8bad",
+                  "operationIndex": 4,
+                  "resultingStateRef": "08a191982f1cf637bd8a7c14f39b2d5354839fa91080f980636e1380d18133ef"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "polygon",
+                  "ref": "geo-wall-faces-retrofit-001"
+                }
+              ],
+              "itemDescription": "Applied finish coating — acrylic-paint, measured by area [m2]",
+              "material": "acrylic-paint",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/finish-application/v1",
+                "dimension": "area",
+                "unit": "m2",
+                "value": 21.6
+              },
+              "sectionId": "finishes",
+              "traceId": "66c2d12d909e498de55ae3060eb10532c4e52caacfb94168da03eb5842cfa59d"
+            },
+            {
+              "assumptionRefs": [],
+              "boqLineId": "469f8507ca2af7d90e958ca97eff4c711150022c0345ac2b3649b064b4d426e8",
+              "buildingElement": "surface",
+              "contributingSteps": [
+                {
+                  "contributionKind": "created",
+                  "operationId": "65ca6c01cca9423a720d8303ac34a9468ed8d8366507abbc2d7a6c1aefaf8bad",
+                  "operationIndex": 4,
+                  "resultingStateRef": "08a191982f1cf637bd8a7c14f39b2d5354839fa91080f980636e1380d18133ef"
+                }
+              ],
+              "direction": "added",
+              "geometryRefs": [
+                {
+                  "kind": "polygon",
+                  "ref": "geo-wall-faces-retrofit-001"
+                }
+              ],
+              "itemDescription": "Applied finish coating — acrylic-paint, measured by volume [m3]",
+              "material": "acrylic-paint",
+              "quantity": {
+                "calculationRef": "aise-solution-engine/quantity/finish-application/v1",
+                "dimension": "volume",
+                "unit": "m3",
+                "value": 0.0432
+              },
+              "sectionId": "finishes",
+              "traceId": "fc687c72af0333bdde0765d9fd9a99e7a2537ee4f8261ce76a11ec9767a7e83d"
+            }
+          ],
+          "solutionId": "solution-benchmark-001",
+          "totals": [
+            {
+              "addedValue": 50.4,
+              "dimension": "area",
+              "netValue": 43.2,
+              "removedValue": 7.2,
+              "unit": "m2"
+            },
+            {
+              "addedValue": 96,
+              "dimension": "count",
+              "netValue": 96,
+              "removedValue": 0,
+              "unit": "count"
+            },
+            {
+              "addedValue": 1.3752,
+              "dimension": "volume",
+              "netValue": -0.1728,
+              "removedValue": 1.548,
+              "unit": "m3"
+            }
+          ],
+          "validationSnapshotRef": "305de8f7aa030a25dbec4812209be06abeb98035e13011c976be0941fea72b9b",
+          "verification": {
+            "ok": true,
+            "summary": "verified: 9 lines, 4 sections, 0 assumptions over 4 operations"
+          },
+          "versionNumber": 2
+        },
+        "detail": "revised the solution by undoing step 1 (83ef53b5b84b…) — a NEW version 2 whose kept operations were rebuilt through the same engine path; version 1 stays in the history untouched, the observed scene is byte-identical before/after (34746b218c93…), and every proposed state carries the PROPOSED seal over the pinned baseline",
+        "leg": "save-revise",
+        "operation": {
+          "commandText": "Apply a 2 mm acrylic paint finish to the wall faces.",
+          "intentId": "intent-benchmark-finish-001",
+          "operationId": "65ca6c01cca9423a720d8303ac34a9468ed8d8366507abbc2d7a6c1aefaf8bad",
+          "operationIndex": 4,
+          "operationType": "finish-application",
+          "origin": "agent",
+          "parameters": [
+            {
+              "name": "thickness",
+              "unit": "mm",
+              "value": 2
+            },
+            {
+              "name": "material",
+              "value": "acrylic-paint"
+            }
+          ],
+          "solutionId": "solution-benchmark-001",
+          "target": {
+            "geometryRefs": [
+              {
+                "kind": "polygon",
+                "ref": "geo-wall-faces-retrofit-001"
+              }
+            ],
+            "nodeRefs": [
+              "node-wall-retrofit-001"
+            ],
+            "selectorKind": "face-set"
+          },
+          "versionNumber": 2
+        },
+        "stateTransition": {
+          "fromStateId": "8a78474a190bd25c450df6a3a3497aa56a87491214d00ad506c67250da8bd0be",
+          "toStateDigest": "bd34032ea16736109bcfb766109e77f76e419f5b0f6700b283add73d54483dae",
+          "toStateId": "08a191982f1cf637bd8a7c14f39b2d5354839fa91080f980636e1380d18133ef",
+          "toStateIndex": 4,
+          "versionNumber": 2
+        },
+        "step": 14,
+        "title": "Save / revise the solution without altering observed reality",
+        "validation": {
+          "checkSummary": [
+            {
+              "checkId": "operation.contract-invariants",
+              "result": "pass"
+            },
+            {
+              "checkId": "geometry.dimensions-positive",
+              "result": "pass"
+            },
+            {
+              "checkId": "units.quantity-units-typed",
+              "result": "pass"
+            },
+            {
+              "checkId": "operation.ordering-dependencies",
+              "result": "pass"
+            },
+            {
+              "checkId": "quantities.calculation-refs",
+              "result": "pass"
+            },
+            {
+              "checkId": "operation.capability-declared",
+              "result": "pass"
+            },
+            {
+              "checkId": "operation.phase1-limits",
+              "result": "pass"
+            }
+          ],
+          "engine": {
+            "kind": "aise-solution-engine",
+            "version": "1.0.0"
+          },
+          "inputDigest": "b051c6b0688eefb21c408bce7e33ecbc6ea4632b549e7f933c69d9c7748bdb7f",
+          "outcome": "pass",
+          "snapshotId": "305de8f7aa030a25dbec4812209be06abeb98035e13011c976be0941fea72b9b"
+        }
+      }
+    ],
+    "versions": [
+      {
+        "finalStateDigest": "d4bd2b6ea4185b511f7723bfab13166ef2d8a14bcb994b0196384cd3d79dc342",
+        "operationIds": [
+          "83ef53b5b84bf852e3cc2a04ba69d022deed7d8d5f79cda68347290396cdcb68",
+          "f88f3cad710c764879cebc2d0ee1f057c4f6245fa558a2cf211be9e137a4836c",
+          "6bf2b214ac8da1fe7634114e81c445636a7b82bb911e109586d44a6a7b39d5d3",
+          "a533700ca29c07681265e1c1874903f5ddd9845e7c269a947cfc66bc0f750810",
+          "0fa929401baf36d6a64e368d66b8a295f3ea9e7f476b102214ba722c4c47b90e"
+        ],
+        "stateIds": [
+          "fb0468a60687f501eeaff25cb70f2a1ab842156f8dd50e473efdf5ae7f2db6fb",
+          "78dda18ffc1f31c841fc0a730a0897e800d9204d811fe43a3e43ec944dea2437",
+          "e0ce53118529b6fc74bac11db5819309fbe93905637be3294f0f23a02cadef85",
+          "5bbaea22b098ce621e0d62cd3a8b46452f1cc7177c09fe542c35a0424770f52e",
+          "46d49a0645fe1c84b32becfe199d5c123838686c5d74bbee1c83195f404e2dfd",
+          "8a78474a190bd25c450df6a3a3497aa56a87491214d00ad506c67250da8bd0be"
+        ],
+        "status": "draft",
+        "versionNumber": 1
+      },
+      {
+        "finalStateDigest": "bd34032ea16736109bcfb766109e77f76e419f5b0f6700b283add73d54483dae",
+        "operationIds": [
+          "2d234af2019eea611232973983b6cb7b9d8b729f3246bc12928f175886054e45",
+          "46e10c11892f4fb2c0f608f6b1bf209678f39ccc719212b4e61e8020831b7299",
+          "06ad33c0bedddf5e9e6e8bf854a996f3ed6eb0ee1277e7874a722e18c8ca1e72",
+          "65ca6c01cca9423a720d8303ac34a9468ed8d8366507abbc2d7a6c1aefaf8bad"
+        ],
+        "stateIds": [
+          "45410a9b0758e9682b43ec6189ffbf000fc20d94cdb948b5e52152892c80b436",
+          "7e4872408cf856cd3327d6dddc1acdf580bc66fc13b38630700908fb130582c5",
+          "432e1a7f304dc262137bd85f5e3741d0100e0ba1ef5097bd7ab34a0135663096",
+          "4b8ddc1b423be24d93eacd8406f9133d79845df0f464510e6379970d8e989600",
+          "08a191982f1cf637bd8a7c14f39b2d5354839fa91080f980636e1380d18133ef"
+        ],
+        "status": "draft",
+        "versionNumber": 2
+      }
+    ],
+    "world": {
+      "baselineRealityVersionId": "rgv-benchmark-0001",
+      "caseId": "case-benchmark-retrofit-001",
+      "projectId": "proj-benchmark-001",
+      "solutionId": "solution-benchmark-001",
+      "title": "Terrace-house ground-floor masonry retrofit"
+    }
+  },
+  "scenarioDigest": "a22c91a2a6ff28282d9ed2f5d71aef4d275fd24aad71e9aa218e095103eb3ec3",
+  "scenarioId": "benchmark-masonry-retrofit-001",
+  "scenarioVersion": "1.0.0"
+}
+
