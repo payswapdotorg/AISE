@@ -64,6 +64,10 @@ const PRIMARY_NAV: readonly NavEntry[] = [
         target: { name: "intervention", projectId: "project-zurich-hq", query: {} },
       },
       {
+        label: "Demo — Interactive Solution",
+        target: { name: "solution", projectId: "proj-demo-001", query: {} },
+      },
+      {
         label: "Corpus — Outcomes (demo journey)",
         target: { name: "outcomes", projectId: "proj-7f3a2b" },
       },
@@ -208,6 +212,7 @@ function routeSurfaceGroup(route: Route): SurfaceName | "projects" {
     case "boq-lens":
     case "case":
     case "intervention":
+    case "solution":
     case "outcomes":
       return "projects";
     case "settings":

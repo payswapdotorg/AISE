@@ -60,6 +60,7 @@ import { TaskFlowStrip } from "../task-first";
 import { formatRoute } from "../router";
 import { plural, shortId } from "../format";
 import { CaseCrossLinksCard } from "../../parity/components";
+import { CaseToSolutionCard } from "../solution-composition";
 import { demoLensInput } from "../demo";
 
 /** What the Engineering Case surface renders once loaded. */
@@ -211,6 +212,13 @@ function CaseDemo({ data }: { readonly data: CaseData }): ReactNode {
           evidence={demo.evidence}
           reality={demoReality(data.projectId)}
           lens={demoLensInput(data.projectId)}
+          mode={data.mode}
+        />
+      )}
+      {caseView === null ? null : (
+        <CaseToSolutionCard
+          projectId={data.projectId}
+          caseRef={{ caseId: caseView.caseId, title: caseView.title.value }}
           mode={data.mode}
         />
       )}
@@ -499,6 +507,13 @@ function CaseLive({ data }: { readonly data: CaseData }): ReactNode {
           <CaseDetailRecordView record={live.detail} />
         )}
       </Card>
+      {live.detail === null ? null : (
+        <CaseToSolutionCard
+          projectId={data.projectId}
+          caseRef={{ caseId: live.detail.caseId, title: live.detail.title }}
+          mode={data.mode}
+        />
+      )}
     </>
   );
 }

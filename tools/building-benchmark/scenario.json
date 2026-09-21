@@ -1,0 +1,252 @@
+{
+  "scenarioId": "benchmark-masonry-retrofit-001",
+  "version": "1.0.0",
+  "title": "Terrace-house ground-floor masonry retrofit",
+  "problemStatement": "Age and rising damp have damaged the ground-floor masonry of the 8 m wall run: the plaster has failed, a 3 m section of the two-leaf brickwork (215 mm) needs rebuilding in concrete block, a new internal door opening is required in the run, and the whole wall needs re-plastering and a finish coat. The quantities must be checkable against trade practice.",
+  "world": {
+    "projectId": "proj-benchmark-001",
+    "caseId": "case-benchmark-retrofit-001",
+    "solutionId": "solution-benchmark-001",
+    "title": "Terrace-house ground-floor masonry retrofit",
+    "baselineRealityVersionId": "rgv-benchmark-0001",
+    "createdAt": "2026-09-16T08:00:00.000Z",
+    "baselineMaterializedAt": "2026-09-16T10:00:00.000Z",
+    "agentSessionId": "agent-session-benchmark-0001",
+    "agentId": "agent-benchmark-assistant",
+    "userId": "user-benchmark-builder"
+  },
+  "observedReality": {
+    "description": "An 8.0 m x 2.7 m ground-floor masonry wall run (two-leaf clay brick, 215 mm overall thickness), observed read-only and pinned to reality version rgv-benchmark-0001. The south face set carries 21.6 m2 of failed plaster over damp brickwork; a 3 m section is structurally damaged.",
+    "baselineGeometry": {
+      "geo-wall-faces-retrofit-001": { "value": 21.6, "unit": "m2" }
+    },
+    "elements": [
+      {
+        "elementId": "node-wall-body-retrofit-001",
+        "label": "The wall body along the retrofit run",
+        "kind": "wall",
+        "selectorKind": "element",
+        "nodeRefs": ["node-wall-retrofit-001"],
+        "geometryRefs": [{ "kind": "mesh-ref", "ref": "geo-wall-body-retrofit-001" }],
+        "polygons": [
+          [[0, 0, 0], [8, 0, 0], [8, 0.215, 0], [0, 0.215, 0]]
+        ],
+        "anchor": {
+          "origin": [0, 0, 0],
+          "lengthAxis": [1, 0, 0],
+          "outAxis": [0, 1, 0],
+          "anchorLength": 8,
+          "anchorHeight": 2.7
+        },
+        "facts": [
+          { "label": "Observed length", "value": "8 m" },
+          { "label": "Observed height", "value": "2.7 m" },
+          { "label": "Observed thickness", "value": "0.215 m (two-leaf clay brick)" },
+          { "label": "Observed condition", "value": "rising damp and failed plaster; a 3 m section of brickwork is damaged" }
+        ]
+      },
+      {
+        "elementId": "geo-wall-line-retrofit-001",
+        "label": "The wall line along the retrofit run",
+        "kind": "wall",
+        "selectorKind": "line-extent",
+        "nodeRefs": ["node-wall-retrofit-001"],
+        "geometryRefs": [{ "kind": "plane", "ref": "geo-wall-line-retrofit-001" }],
+        "polygons": [
+          [[0, 0, 0], [8, 0, 0], [8, 0.215, 0], [0, 0.215, 0]]
+        ],
+        "anchor": {
+          "origin": [0, 0, 0],
+          "lengthAxis": [1, 0, 0],
+          "outAxis": [0, 1, 0],
+          "anchorLength": 8,
+          "anchorHeight": 2.7
+        },
+        "facts": [
+          { "label": "Observed length", "value": "8 m" },
+          { "label": "Observed height", "value": "2.7 m" },
+          { "label": "Observed thickness", "value": "0.215 m" }
+        ]
+      },
+      {
+        "elementId": "node-wall-faces-retrofit-001",
+        "label": "The ground-floor wall faces (8 m run)",
+        "kind": "wall",
+        "selectorKind": "face-set",
+        "nodeRefs": ["node-wall-retrofit-001"],
+        "geometryRefs": [{ "kind": "polygon", "ref": "geo-wall-faces-retrofit-001" }],
+        "polygons": [
+          [[0, 0, 0], [8, 0, 0], [8, 0, 2.7], [0, 0, 2.7]]
+        ],
+        "anchor": {
+          "origin": [0, 0, 0],
+          "lengthAxis": [1, 0, 0],
+          "outAxis": [0, -1, 0],
+          "anchorLength": 8,
+          "anchorHeight": 2.7
+        },
+        "facts": [
+          { "label": "Observed area (south face set)", "value": "21.6 m2" },
+          { "label": "Observed length", "value": "8 m" },
+          { "label": "Observed height", "value": "2.7 m" },
+          { "label": "Observed condition", "value": "failed cement plaster over damp brickwork" }
+        ]
+      }
+    ]
+  },
+  "operations": [
+    {
+      "operationType": "opening-creation",
+      "origin": "agent",
+      "intentId": "intent-benchmark-opening-001",
+      "targetElementId": "node-wall-body-retrofit-001",
+      "parameters": [
+        { "name": "width", "value": 1, "unit": "m" },
+        { "name": "height", "value": 2.1, "unit": "m" },
+        { "name": "material", "value": "door" }
+      ],
+      "commandText": "Cut a new door opening 1 m wide and 2.1 m high in this wall.",
+      "renderedCommand": "Cut a new door opening 1 m wide and 2.1 m high in this wall.",
+      "authoredAt": "2026-09-16T10:05:00.000Z",
+      "estimates": [
+        {
+          "label": "Opening area",
+          "dimension": "area",
+          "value": 2.1,
+          "unit": "m2",
+          "basis": "width x height (parameters only)"
+        }
+      ]
+    },
+    {
+      "operationType": "demolition-removal",
+      "origin": "direct-manipulation",
+      "intentId": "intent-benchmark-demolition-001",
+      "targetElementId": "node-wall-body-retrofit-001",
+      "parameters": [
+        { "name": "length", "value": 3, "unit": "m" },
+        { "name": "height", "value": 2.4, "unit": "m" },
+        { "name": "thickness", "value": 0.215, "unit": "m" }
+      ],
+      "commandText": "Remove the damaged brickwork section 3 m long, 2.4 m high and 0.215 m thick.",
+      "renderedCommand": "Remove the damaged brickwork section 3 m long, 2.4 m high and 0.215 m thick.",
+      "authoredAt": "2026-09-16T10:10:00.000Z",
+      "estimates": [
+        {
+          "label": "Removed volume",
+          "dimension": "volume",
+          "value": 1.548,
+          "unit": "m3",
+          "basis": "length x height x thickness (parameters only)"
+        },
+        {
+          "label": "Removed face area",
+          "dimension": "area",
+          "value": 7.2,
+          "unit": "m2",
+          "basis": "length x height (parameters only)"
+        }
+      ]
+    },
+    {
+      "operationType": "block-wall-placement",
+      "origin": "agent",
+      "intentId": "intent-benchmark-block-001",
+      "targetElementId": "geo-wall-line-retrofit-001",
+      "parameters": [
+        { "name": "length", "value": 3, "unit": "m" },
+        { "name": "height", "value": 2.4, "unit": "m" },
+        { "name": "thickness", "value": 0.14, "unit": "m" },
+        { "name": "material", "value": "concrete-block" }
+      ],
+      "commandText": "Rebuild the damaged section with concrete blocks.",
+      "renderedCommand": "Lay concrete blocks 3 m long, 2.4 m high and 0.14 m thick along this wall.",
+      "authoredAt": "2026-09-16T10:15:00.000Z",
+      "estimates": [
+        {
+          "label": "Wall face area",
+          "dimension": "area",
+          "value": 7.2,
+          "unit": "m2",
+          "basis": "length x height (parameters only)"
+        },
+        {
+          "label": "Blocks needed",
+          "dimension": "count",
+          "value": 96,
+          "unit": "count",
+          "basis": "ceil(height/0.2) x ceil(length/0.4) (parameters only)"
+        }
+      ],
+      "clarification": {
+        "questions": [
+          {
+            "slotKind": "dimension",
+            "slot": "length",
+            "question": "How long is the section to rebuild?"
+          },
+          {
+            "slotKind": "dimension",
+            "slot": "height",
+            "question": "How high should the rebuilt section rise?"
+          },
+          {
+            "slotKind": "dimension",
+            "slot": "thickness",
+            "question": "How thick is the rebuilt wall (the existing run is 0.215 m two-leaf)?"
+          }
+        ],
+        "answer": "3 m long, 2.4 m high and 0.14 m thick, using concrete blocks"
+      }
+    },
+    {
+      "operationType": "plaster-application",
+      "origin": "direct-manipulation",
+      "intentId": "intent-benchmark-plaster-001",
+      "targetElementId": "node-wall-faces-retrofit-001",
+      "parameters": [
+        { "name": "thickness", "value": 15, "unit": "mm" },
+        { "name": "material", "value": "cement-plaster" }
+      ],
+      "commandText": "Apply 15 mm cement plaster to the wall faces.",
+      "renderedCommand": "Apply 15 mm cement plaster to the wall faces.",
+      "authoredAt": "2026-09-16T10:20:00.000Z",
+      "estimates": [
+        {
+          "label": "Plaster area",
+          "dimension": "area",
+          "value": 21.6,
+          "unit": "m2",
+          "basis": "the observed face-set area (caller-known focus value)"
+        }
+      ]
+    },
+    {
+      "operationType": "finish-application",
+      "origin": "agent",
+      "intentId": "intent-benchmark-finish-001",
+      "targetElementId": "node-wall-faces-retrofit-001",
+      "parameters": [
+        { "name": "thickness", "value": 2, "unit": "mm" },
+        { "name": "material", "value": "acrylic-paint" }
+      ],
+      "commandText": "Apply a 2 mm acrylic paint finish to the wall faces.",
+      "renderedCommand": "Apply a 2 mm acrylic paint finish to the wall faces.",
+      "authoredAt": "2026-09-16T10:25:00.000Z",
+      "estimates": [
+        {
+          "label": "Finish area",
+          "dimension": "area",
+          "value": 21.6,
+          "unit": "m2",
+          "basis": "the observed face-set area (caller-known focus value)"
+        }
+      ]
+    }
+  ],
+  "revise": {
+    "revertOperationIndex": 1,
+    "reason": "save a revision without the new door opening — the rebuild, plaster and finish stand"
+  },
+  "clock": { "base": "2026-09-16T10:00:00.000Z", "stepMs": 60000 }
+}

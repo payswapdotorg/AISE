@@ -55,6 +55,16 @@ export const DEMO_PROJECT_ID = "proj-riverside-refit";
 /** The intervention-scenario project (the viewer fixture world). */
 export const DEMO_SCENARIO_PROJECT_ID = "project-zurich-hq";
 
+/**
+ * The interactive-solution demo project (PROD-026): the solution module's
+ * committed demo wall world (`proj-demo-001` — the SAME world the engine,
+ * the contract corpus and the PROD-025 BOQ fixtures describe). The world's
+ * own records (observed scene, baseline geometry, recorded solution
+ * journey) live in `apps/web/src/solution/fixtures.ts` and are consumed
+ * read-only through that module's public exports.
+ */
+export const DEMO_SOLUTION_PROJECT_ID = "proj-demo-001";
+
 /** One demo project card (Projects surface). */
 export interface DemoProject {
   readonly projectId: string;
@@ -82,6 +92,13 @@ export function demoProjects(): readonly DemoProject[] {
       organizationId: DEMO_ORG_ID,
       name: "project-zurich-hq",
       note: "Intervention scenario project — one proposed office-refit scenario; the demo dataset holds no context or reality records for it (honest empty surfaces).",
+      hasContext: false,
+    },
+    {
+      projectId: DEMO_SOLUTION_PROJECT_ID,
+      organizationId: DEMO_ORG_ID,
+      name: "Demo wall upgrade (interactive solution)",
+      note: "Interactive engineering-solution demo project — the observed wall world (reality version rgv-demo-0007) with the recorded reference solution journey and its generated solution BOQ; the demo dataset holds no context, reality-snapshot or BOQ-import records for it (the solution workspace composes its own case context).",
       hasContext: false,
     },
   ];
@@ -147,6 +164,87 @@ export function demoWorkspaceInput(projectId: string): WorkspaceInput | null {
  */
 export function demoScenario(projectId: string): ViewerScenario | null {
   return projectId === DEMO_SCENARIO_PROJECT_ID ? approvedScenario() : null;
+}
+
+/**
+ * Whether the demo dataset holds the interactive-solution world for a
+ * project (PROD-026): TRUE only for the solution module's committed demo
+ * wall world (`proj-demo-001`). Other projects answer honestly false and
+ * the solution surface renders its genuine empty state — the world is
+ * never borrowed across projects.
+ */
+export function demoSolutionWorldHeld(projectId: string): boolean {
+  return projectId === DEMO_SOLUTION_PROJECT_ID;
+}
+
+/**
+ * The interactive-solution demo world's IDENTITY PINS (PROD-026) — the
+ * browser-safe mirror of the solution module's `DEMO_SOLUTION_WORLD`
+ * constants. The solution module's own value imports transitively require
+ * `node:crypto` (the engine's identity derivations), which a plain
+ * browser bundle externalizes — so the browser-safe composition layer
+ * carries these plain-data pins instead, and the composition-model suite
+ * asserts the mirror equals the module's own constants (no drift).
+ */
+export const DEMO_SOLUTION_WORLD_PINS = Object.freeze({
+  projectId: "proj-demo-001",
+  caseId: "case-demo-wall-001",
+  solutionId: "solution-demo-001",
+  title: "Ground-floor wall upgrade solution",
+  problemStatement:
+    "Rising damp has damaged the ground-floor masonry wall; the damaged " +
+    "section must be removed, rebuilt with concrete blocks and re-plastered.",
+  baselineRealityVersionId: "rgv-demo-0007",
+} as const);
+
+/**
+ * The observed FACTS of the demo solution world's scene (PROD-026) — the
+ * browser-safe mirror of the solution module's `demoObservedScene()`
+ * element facts, rendered by the honest engine-unavailable panel. The
+ * composition-model suite asserts the mirror equals the module's own
+ * scene facts (no drift).
+ */
+export function demoSolutionObservedFacts(): readonly {
+  readonly elementId: string;
+  readonly label: string;
+  readonly facts: readonly { readonly label: string; readonly value: string }[];
+}[] {
+  return [
+    {
+      elementId: "node-wall-002",
+      label: "Damaged ground-floor wall faces",
+      facts: [
+        { label: "Observed area (south face set)", value: "12.5 m2" },
+        { label: "Observed length", value: "5 m" },
+        { label: "Observed height", value: "2.5 m" },
+        { label: "Observed condition", value: "rising damp damage along the base courses" },
+      ],
+    },
+    {
+      elementId: "geo-wall-line-003",
+      label: "The wall line along the damaged section",
+      facts: [
+        { label: "Observed length", value: "5 m" },
+        { label: "Observed height", value: "2.5 m" },
+      ],
+    },
+    {
+      elementId: "node-slab-003",
+      label: "Ground-floor slab",
+      facts: [
+        { label: "Observed extent", value: "5 m × 4 m" },
+        { label: "Observed condition", value: "sound" },
+      ],
+    },
+    {
+      elementId: "node-site-001",
+      label: "Open ground south of the building",
+      facts: [
+        { label: "Observed extent", value: "10 m × 5 m" },
+        { label: "Observed surface", value: "grass and gravel" },
+      ],
+    },
+  ];
 }
 
 /** The acting principals offered by the demo authorization table. */

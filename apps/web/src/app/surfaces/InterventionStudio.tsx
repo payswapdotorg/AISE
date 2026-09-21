@@ -121,6 +121,7 @@ import {
 } from "../components";
 import { ProjectSurfaceNav } from "../components";
 import { TaskFlowStrip } from "../task-first";
+import { InterventionToSolutionCard } from "../solution-composition";
 import { formatRoute } from "../router";
 import { plural, shortId } from "../format";
 import { defaultOrganizationId, storeOrganizationId } from "./Projects";
@@ -398,6 +399,15 @@ export function StudioBody({
           onReload={onReload}
         />
       )}
+      <InterventionToSolutionCard
+        projectId={data.projectId}
+        scenarioRef={
+          data.scenario === null
+            ? null
+            : { scenarioId: data.scenario.scenarioId, title: data.scenario.title }
+        }
+        mode={data.mode}
+      />
     </>
   );
 }

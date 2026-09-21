@@ -1,5 +1,8 @@
 /**
  * PROD-002 — the product web shell's typed hash router.
+ * PROD-026 (additive) — the `solution` surface: the project-scoped route of
+ * the interactive engineering solution composition (`#/projects/:id/solution`
+ * with the deep-linked `case` / `boq-line` / `step` query).
  *
  * A PURE route codec (no DOM access — the hook subscribes separately, so the
  * codec is trivially testable and deterministic):
@@ -25,6 +28,21 @@ export interface InterventionQuery {
   readonly scenario?: string;
 }
 
+/**
+ * The optional query of the solution route (PROD-026 — the deep-linked
+ * journey context of the interactive solution composition): the addressed
+ * engineering case, a clicked solution BOQ line (its trace renders on the
+ * surface) and the proposed-layer step to view.
+ */
+export interface SolutionQuery {
+  /** The engineering case the solution addresses (percent-encoded verbatim). */
+  readonly case?: string;
+  /** The clicked solution BOQ line id (the trace panel selection). */
+  readonly boqLine?: string;
+  /** The proposed-layer step to view (non-negative integer). */
+  readonly step?: number;
+}
+
 /** Every route the product shell can address (the surfaces + meta). */
 export type Route =
   | { readonly name: "dashboard" }
@@ -41,6 +59,11 @@ export type Route =
       readonly projectId: string;
       readonly query: InterventionQuery;
     }
+  | {
+      readonly name: "solution";
+      readonly projectId: string;
+      readonly query: SolutionQuery;
+    }
   | { readonly name: "outcomes"; readonly projectId: string }
   | { readonly name: "settings" }
   | { readonly name: "not-found"; readonly hash: string };
@@ -53,11 +76,18 @@ export type SurfaceName =
   | "boq-lens"
   | "case"
   | "intervention"
+  | "solution"
   | "outcomes"
   | "settings";
 
 /** The per-project surfaces (everything under `#/projects/:id/…`). */
-export type ProjectSurface = "sitetwin" | "boq-lens" | "case" | "intervention" | "outcomes";
+export type ProjectSurface =
+  | "sitetwin"
+  | "boq-lens"
+  | "case"
+  | "intervention"
+  | "solution"
+  | "outcomes";
 
 /** The per-project surface order (the golden journey order). */
 export const PROJECT_SURFACES: readonly {
@@ -68,6 +98,7 @@ export const PROJECT_SURFACES: readonly {
   Object.freeze({ surface: "boq-lens", label: "BOQ Lens" } as const),
   Object.freeze({ surface: "case", label: "Engineering Case" } as const),
   Object.freeze({ surface: "intervention", label: "Intervention Studio" } as const),
+  Object.freeze({ surface: "solution", label: "Interactive Solution" } as const),
   Object.freeze({ surface: "outcomes", label: "Outcomes" } as const),
 ]);
 
@@ -85,6 +116,8 @@ export function projectSurfaceRoute(
       return { name: "case", projectId };
     case "intervention":
       return { name: "intervention", projectId, query: {} };
+    case "solution":
+      return { name: "solution", projectId, query: {} };
     case "outcomes":
       return { name: "outcomes", projectId };
   }
@@ -111,6 +144,8 @@ export function routeSurface(route: Route): SurfaceName | "projects-overview" | 
       return "case";
     case "intervention":
       return "intervention";
+    case "solution":
+      return "solution";
     case "outcomes":
       return "outcomes";
     case "settings":
@@ -188,6 +223,9 @@ export function parseHash(hash: string): Route {
       }
       if (surface === "intervention") {
         return parseInterventionQuery(query, projectId, hash);
+      }
+      if (surface === "solution") {
+        return parseSolutionQuery(query, projectId, hash);
       }
       return { name: "not-found", hash };
     }
@@ -268,6 +306,69 @@ function parseInterventionQuery(
   };
 }
 
+/**
+ * Parse the solution route's query parameters (`case`, `boq-line`,
+ * `step`) — the intervention `?layer=` precedent: percent-encoded verbatim
+ * ids, typed rejections for unknown keys, blank/malformed values, and ANY
+ * parse order. The canonical formatting order is `case` first, then
+ * `boq-line`, then `step`.
+ */
+function parseSolutionQuery(
+  query: string | null,
+  projectId: string,
+  hash: string,
+): Route {
+  if (query === null) {
+    return { name: "solution", projectId, query: {} };
+  }
+  let caseId: string | undefined;
+  let boqLineId: string | undefined;
+  let step: number | undefined;
+  if (query !== "") {
+    for (const pair of query.split("&")) {
+      const equals = pair.indexOf("=");
+      if (equals <= 0) {
+        return { name: "not-found", hash };
+      }
+      const key = pair.slice(0, equals);
+      const value = pair.slice(equals + 1);
+      if (key === "case") {
+        const decoded = decodeSegment(value);
+        if (decoded === null || decoded.trim().length === 0) {
+          return { name: "not-found", hash };
+        }
+        caseId = decoded;
+      } else if (key === "boq-line") {
+        const decoded = decodeSegment(value);
+        if (decoded === null || decoded.trim().length === 0) {
+          return { name: "not-found", hash };
+        }
+        boqLineId = decoded;
+      } else if (key === "step") {
+        if (!/^\d+$/.test(value)) {
+          return { name: "not-found", hash };
+        }
+        const parsed = Number.parseInt(value, 10);
+        if (!Number.isSafeInteger(parsed) || parsed < 0) {
+          return { name: "not-found", hash };
+        }
+        step = parsed;
+      } else {
+        return { name: "not-found", hash };
+      }
+    }
+  }
+  return {
+    name: "solution",
+    projectId,
+    query: {
+      ...(caseId === undefined ? {} : { case: caseId }),
+      ...(boqLineId === undefined ? {} : { boqLine: boqLineId }),
+      ...(step === undefined ? {} : { step }),
+    },
+  };
+}
+
 /* ------------------------------------------------------------------ */
 /* Formatting                                                          */
 /* ------------------------------------------------------------------ */
@@ -297,6 +398,20 @@ export function formatRoute(route: Route): string {
       }
       if (route.query.scenario !== undefined) {
         params.push(`scenario=${encodeURIComponent(route.query.scenario)}`);
+      }
+      return params.length === 0 ? base : `${base}?${params.join("&")}`;
+    }
+    case "solution": {
+      const base = `#/projects/${encodeURIComponent(route.projectId)}/solution`;
+      const params: string[] = [];
+      if (route.query.case !== undefined) {
+        params.push(`case=${encodeURIComponent(route.query.case)}`);
+      }
+      if (route.query.boqLine !== undefined) {
+        params.push(`boq-line=${encodeURIComponent(route.query.boqLine)}`);
+      }
+      if (route.query.step !== undefined) {
+        params.push(`step=${String(route.query.step)}`);
       }
       return params.length === 0 ? base : `${base}?${params.join("&")}`;
     }
