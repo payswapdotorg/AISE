@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-21T07:30:12Z",
+  "lastReconciledAt": "2026-09-21T08:02:54Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -252,11 +252,14 @@
     },
     {
       "id": "PROD-017",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-010",
         "PROD-016"
-      ]
+      ],
+      "mergedSha": "93c337c",
+      "finalizedAt": "2026-09-21T08:02:54Z",
+      "evidence": "apps/web task-first adapter (39 files: task-flow seam loadTaskFlowLive/submitTaskIntentLive consuming @aise/adapter-contract decoders per W-R1/W-R2, task-first landing + NextBestAction strip with explicit blocked/denied/unavailable states, typed TaskIntent authoring forms, BROWSER_ADAPTER_PROFILE + conformance C0-C9 PASS incl. sabotage discrimination, golden journey + render-trace evidence docs). Lead gates: VERIFY 3808/0 (90 new), typecheck+lint PASS, boundaries clean, root bun.lock regenerated. Worker commit e6cb78bc."
     },
     {
       "id": "PROD-018",
