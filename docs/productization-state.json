@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-20T20:04:00Z",
+  "lastReconciledAt": "2026-09-21T00:00:00Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -193,15 +193,18 @@
       "headSha": "b242e10",
       "mergedSha": "eb953b2",
       "finalizedAt": "2026-09-20T20:04:00Z",
-      "evidence": "evidence/PROD-011B/ \u2014 deployed session-stability walk on production (20/20 cross-instance whoami; Upstash record/index/TTL ground truth; exact meter math; logout lifecycle). The walk exposed and the Lead fixed two production defects: the Upstash REST {result|error} envelope was never unwrapped (writes landed but misreported; reads fail-closed 401) and the pipelined INCR/EXPIRE form is rejected by the live endpoint (d6691da); the deploy shape depended on build-cache luck \u2014 the gitignored catch-all bundle is now a committed deploy beacon (05a9fa3+eb953b2), the standard server-side deploy path verified end-to-end."
+      "evidence": "evidence/PROD-011B/ — deployed session-stability walk on production (20/20 cross-instance whoami; Upstash record/index/TTL ground truth; exact meter math; logout lifecycle). The walk exposed and the Lead fixed two production defects: the Upstash REST {result|error} envelope was never unwrapped (writes landed but misreported; reads fail-closed 401) and the pipelined INCR/EXPIRE form is rejected by the live endpoint (d6691da); the deploy shape depended on build-cache luck — the gitignored catch-all bundle is now a committed deploy beacon (05a9fa3+eb953b2), the standard server-side deploy path verified end-to-end."
     },
     {
       "id": "PROD-012",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-011",
         "PROD-011b"
-      ]
+      ],
+      "mergedSha": "b34e809",
+      "finalizedAt": "2026-09-21T00:00:00Z",
+      "evidence": "docs/productization-evidence/PROD-012/run-2026-09-20.txt — deployed-browser verification vs https://aise-tan.vercel.app: 5 PASS (availability, shell-renders, session-lifecycle fail-closed 401, responsive-desktop, console/runtime clean) / 2 honest FAIL root-caused for remediation (79px mobile horizontal overflow @390x844 signed-in shell; WCAG 1.4.3 serious contrast 3.64:1 on .journey-hint, 4 nodes). Suite: tools/deployed-check.ts (seven checks, tools/smoke.ts doctrine). Lead gates: verify baseline-identical, typecheck+lint PASS."
     },
     {
       "id": "PROD-013",
