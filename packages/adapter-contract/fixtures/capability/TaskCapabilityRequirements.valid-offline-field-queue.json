@@ -1,0 +1,24 @@
+{
+  "contractVersion": "1.0.0",
+  "requirementsId": "requirements-offline-field-queue",
+  "taskType": "field-capture",
+  "offlineStorage": {
+    "minMode": "bounded-queue",
+    "minQueueBoundBytes": 52428800,
+    "blocking": true
+  },
+  "notifications": {
+    "minMode": "system",
+    "blocking": false
+  },
+  "deepLinks": {
+    "minMode": "app-scheme",
+    "blocking": false
+  },
+  "sensors": {
+    "requireAny": [
+      "gps"
+    ],
+    "blocking": false
+  }
+}

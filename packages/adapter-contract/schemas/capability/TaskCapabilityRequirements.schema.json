@@ -1,0 +1,201 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "camera": {
+      "additionalProperties": true,
+      "properties": {
+        "blocking": {
+          "type": "boolean"
+        },
+        "requireAny": {
+          "description": "The task needs at least one of these capture kinds.",
+          "items": {
+            "enum": [
+              "still",
+              "video",
+              "depth",
+              "lidar"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "requireAny",
+        "blocking"
+      ],
+      "type": "object"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "deepLinks": {
+      "additionalProperties": true,
+      "properties": {
+        "blocking": {
+          "type": "boolean"
+        },
+        "minMode": {
+          "enum": [
+            "none",
+            "app-scheme",
+            "universal"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "blocking"
+      ],
+      "type": "object"
+    },
+    "input": {
+      "additionalProperties": true,
+      "properties": {
+        "blocking": {
+          "type": "boolean"
+        },
+        "requireAny": {
+          "description": "The task needs at least one of these input modes.",
+          "items": {
+            "enum": [
+              "keyboard",
+              "pointer",
+              "touch",
+              "gesture",
+              "voice",
+              "camera-scan"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "requireAny",
+        "blocking"
+      ],
+      "type": "object"
+    },
+    "notifications": {
+      "additionalProperties": true,
+      "properties": {
+        "blocking": {
+          "type": "boolean"
+        },
+        "minMode": {
+          "enum": [
+            "none",
+            "in-app",
+            "system"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "blocking"
+      ],
+      "type": "object"
+    },
+    "offlineStorage": {
+      "additionalProperties": true,
+      "properties": {
+        "blocking": {
+          "type": "boolean"
+        },
+        "minMode": {
+          "description": "Minimum offline storage mode (none < session-cache < bounded-queue < persistent-store).",
+          "enum": [
+            "none",
+            "session-cache",
+            "bounded-queue",
+            "persistent-store"
+          ],
+          "type": "string"
+        },
+        "minQueueBoundBytes": {
+          "description": "Minimum declared offline queue bound in bytes. Satisfiable only by a profile that declares `queueBoundBytes`.",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "blocking"
+      ],
+      "type": "object"
+    },
+    "requirementsId": {
+      "description": "Stable id of this requirements set (server-assigned).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "screen": {
+      "additionalProperties": true,
+      "properties": {
+        "blocking": {
+          "description": "If true, an unmet screen requirement blocks the task; if false it degrades it (the negotiation records the honest shortfall).",
+          "type": "boolean"
+        },
+        "minSizeClass": {
+          "description": "Minimum screen size class (compact < regular < expanded).",
+          "enum": [
+            "compact",
+            "regular",
+            "expanded"
+          ],
+          "type": "string"
+        },
+        "multiWindow": {
+          "description": "Whether multi-window presentation is required.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "blocking"
+      ],
+      "type": "object"
+    },
+    "sensors": {
+      "additionalProperties": true,
+      "properties": {
+        "blocking": {
+          "type": "boolean"
+        },
+        "requireAny": {
+          "description": "The task needs at least one of these sensor kinds (open vocabulary).",
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "requireAny",
+        "blocking"
+      ],
+      "type": "object"
+    },
+    "taskType": {
+      "description": "The task type these requirements apply to (open vocabulary, echoes the task catalogue).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "requirementsId",
+    "taskType"
+  ],
+  "type": "object"
+}

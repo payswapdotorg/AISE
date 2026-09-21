@@ -1,0 +1,11 @@
+{
+  "contractVersion": "1.0.0",
+  "requirementsId": "requirements-lidar-capture",
+  "taskType": "field-capture",
+  "camera": {
+    "requireAny": [
+      "lidar"
+    ],
+    "blocking": true
+  }
+}

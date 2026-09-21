@@ -1,0 +1,23 @@
+{
+  "contractVersion": "1.0.0",
+  "subjectRef": "principal-field-12",
+  "grantedActions": [
+    "reality:read",
+    "evidence:read",
+    "evidence:submit",
+    "boq:read",
+    "case:read"
+  ],
+  "denials": [
+    {
+      "action": "reality:write",
+      "reasonCode": "missing-permission",
+      "reasonDetail": "The field-operator role on this project does not carry reality:write; ask the project engineer to grant it or perform the write under an engineer session."
+    },
+    {
+      "action": "settings:tenant-admin",
+      "reasonCode": "forbidden-role",
+      "reasonDetail": "Tenant administration requires the admin role."
+    }
+  ]
+}

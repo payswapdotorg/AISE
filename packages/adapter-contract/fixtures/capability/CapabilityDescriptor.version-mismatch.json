@@ -1,0 +1,9 @@
+{
+  "contractVersion": "0.9.0",
+  "domain": "camera",
+  "status": "supported",
+  "details": {
+    "source": "getUserMedia"
+  },
+  "limitations": ["no depth or LiDAR capture through the browser camera API"]
+}

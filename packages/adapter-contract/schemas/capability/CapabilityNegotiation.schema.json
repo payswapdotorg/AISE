@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "adapterKind": {
+      "description": "Echo of the negotiating profile's adapter kind.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "domainOutcomes": {
+      "description": "One entry per domain WITH a requirement, in the fixed domain order (screen, input, sensors, camera, offline-storage, notifications, deep-links).",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "blocking": {
+            "description": "Echo of the requirement's blocking flag (absent = false).",
+            "type": "boolean"
+          },
+          "domain": {
+            "enum": [
+              "screen",
+              "input",
+              "sensors",
+              "camera",
+              "offline-storage",
+              "notifications",
+              "deep-links"
+            ],
+            "type": "string"
+          },
+          "outcome": {
+            "enum": [
+              "satisfied",
+              "unsupported",
+              "unknown"
+            ],
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Honest, deterministic reason when the outcome is `unsupported` or `unknown`; null when `satisfied`."
+          }
+        },
+        "required": [
+          "domain",
+          "outcome",
+          "blocking",
+          "reason"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "outcome": {
+      "description": "Overall worst-of outcome: blocked (a blocking requirement is definitively unmet) > unknown (a blocking requirement is undetermined) > degraded (a non-blocking shortfall) > permitted.",
+      "enum": [
+        "permitted",
+        "degraded",
+        "unknown",
+        "blocked"
+      ],
+      "type": "string"
+    },
+    "permittedInteractionModes": {
+      "description": "The honest interaction modes the profile supports for this task (INTERACTION_MODES declaration order). EMPTY when the overall outcome is `blocked` — the adapter must render the explicit blocked reasons instead.",
+      "items": {
+        "enum": [
+          "menu-navigation",
+          "keyboard-shortcut",
+          "table-review",
+          "panel-inspection",
+          "drag-inspect",
+          "window-management",
+          "file-workflow",
+          "camera-capture",
+          "gesture",
+          "voice-command",
+          "scan-control",
+          "offline-queue"
+        ],
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "profileRef": {
+      "description": "The profile snapshot this negotiation used.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "requirementsRef": {
+      "description": "The requirements set this negotiation used.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "adapterKind",
+    "profileRef",
+    "requirementsRef",
+    "outcome",
+    "domainOutcomes",
+    "permittedInteractionModes"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,99 @@
+{
+  "contractVersion": "1.0.0",
+  "profileId": "profile-browser-reference",
+  "adapterKind": "browser",
+  "capturedAt": "2026-01-15T09:00:00.000Z",
+  "screen": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "screen",
+      "status": "supported",
+      "details": {
+        "layout": "responsive"
+      },
+      "limitations": []
+    },
+    "sizeClass": "expanded",
+    "multiWindow": false
+  },
+  "input": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "input",
+      "status": "supported",
+      "details": {},
+      "limitations": []
+    },
+    "modes": [
+      "keyboard",
+      "pointer"
+    ]
+  },
+  "sensors": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "sensors",
+      "status": "unavailable",
+      "details": {},
+      "limitations": [
+        "the browser sandbox exposes no construction-relevant sensors"
+      ]
+    },
+    "kinds": []
+  },
+  "camera": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "camera",
+      "status": "supported",
+      "details": {
+        "source": "getUserMedia"
+      },
+      "limitations": [
+        "no depth or LiDAR capture through the browser camera API"
+      ]
+    },
+    "captureKinds": [
+      "still",
+      "video"
+    ]
+  },
+  "offlineStorage": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "offline-storage",
+      "status": "supported",
+      "details": {
+        "mechanism": "session-cache"
+      },
+      "limitations": [
+        "session-scoped cache only; no resumable offline capture queue"
+      ]
+    },
+    "mode": "session-cache"
+  },
+  "notifications": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "notifications",
+      "status": "supported",
+      "details": {
+        "mechanism": "in-app"
+      },
+      "limitations": []
+    },
+    "mode": "in-app"
+  },
+  "deepLinks": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "deep-links",
+      "status": "supported",
+      "details": {
+        "mechanism": "https-urls"
+      },
+      "limitations": []
+    },
+    "mode": "universal"
+  }
+}

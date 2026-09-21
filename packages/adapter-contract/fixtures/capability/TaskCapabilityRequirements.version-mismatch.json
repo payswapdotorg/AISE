@@ -1,0 +1,23 @@
+{
+  "contractVersion": "0.9.0",
+  "requirementsId": "requirements-field-depth-capture",
+  "taskType": "field-capture",
+  "camera": {
+    "requireAny": [
+      "depth"
+    ],
+    "blocking": true
+  },
+  "input": {
+    "requireAny": [
+      "camera-scan",
+      "touch"
+    ],
+    "blocking": true
+  },
+  "offlineStorage": {
+    "minMode": "bounded-queue",
+    "minQueueBoundBytes": 104857600,
+    "blocking": false
+  }
+}

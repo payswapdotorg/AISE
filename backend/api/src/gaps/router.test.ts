@@ -549,6 +549,167 @@ describe("gap HTTP surface: lazy default wiring (end-to-end)", () => {
     });
   });
 
+  test("two handlers over different data dirs never share the default gaps wiring (FIX-001 module-memo leak regression)", async () => {
+    await withTempDir(async (rootA) => {
+      // Handler A: default gaps wiring over root A — the first /v1/gaps
+      // request resolves it and, on the broken build, PINS the module-level
+      // memo for the whole process.
+      const envWithDirA: EnvRecord = { ...validEnv, AISE_DATA_DIR: join(rootA, "data") };
+      const handlerA = createRequestHandler({
+        envSource: () => envWithDirA,
+        version: pkg.version,
+        logger: quietLogger,
+        capture: createCaptureGateway({ store: new InMemoryCaptureStore(), clock: fixedClock }),
+      });
+      const createdA = await handlerA(
+        postJson("/v1/reality/projects", JSON.stringify({ projectId: PROJECT_ID })),
+      );
+      expect(createdA.status).toBe(200);
+      const upsertsA = [...buildRealityNodes(), buildChimneyNode()].map((node) => ({
+        op: "upsert-node",
+        node,
+      }));
+      const nodesAppliedA = await handlerA(
+        postJson(
+          `/v1/reality/projects/${PROJECT_ID}/changes`,
+          JSON.stringify({ changes: upsertsA }),
+        ),
+      );
+      expect(nodesAppliedA.status).toBe(200);
+      const tombstoneAppliedA = await handlerA(
+        postJson(
+          `/v1/reality/projects/${PROJECT_ID}/changes`,
+          JSON.stringify({
+            changes: [{ op: "delete", nodeId: "chimney", reason: CHIMNEY_TOMBSTONE_REASON }],
+          }),
+        ),
+      );
+      expect(tombstoneAppliedA.status).toBe(200);
+      for (const fact of buildEvidenceFacts()) {
+        const evidence = await handlerA(
+          postJson(
+            "/v1/evidence",
+            JSON.stringify({
+              contractVersion: "1.0.0",
+              contentId: fact.evidenceId,
+              byteSize: 2048,
+              mediaType: "image/jpeg",
+              capturedAt: FIXED_NOW,
+              acquisitionMethod: fact.method,
+              acquisitionMetadata: { "mission.id": "mission-gaps-000042" },
+            }),
+          ),
+        );
+        expect(evidence.status).toBe(200);
+      }
+      const invalidationA = await handlerA(
+        postJson(
+          `/v1/evidence/${EV_INVALIDATED_LI}/invalidation`,
+          JSON.stringify({ reason: "withdrawn during quality review (fixture canonical invalidation)" }),
+        ),
+      );
+      expect(invalidationA.status).toBe(200);
+      const inputA = buildCanonicalInput();
+      const responseA = await handlerA(
+        postJson(
+          "/v1/gaps",
+          JSON.stringify({
+            analysisId: inputA.analysisId,
+            taskRef: { ...inputA.taskRef, versionId: "v003" },
+            annotations: inputA.annotations,
+            uncertaintyAnnotations: inputA.uncertaintyAnnotations,
+          }),
+        ),
+      );
+      expect(responseA.status).toBe(200);
+
+      await withTempDir(async (rootB) => {
+        // Handler B: a SECOND handler over a DIFFERENT data dir, same default
+        // wiring discipline. On the broken build the default wiring is A's
+        // pinned module-level memo over root A, where project
+        // `${PROJECT_ID}-b` does not exist → the analysis fails (non-200).
+        // On the fixed build B analyzes over ITS OWN root B → 200.
+        const envWithDirB: EnvRecord = { ...validEnv, AISE_DATA_DIR: join(rootB, "data") };
+        const handlerB = createRequestHandler({
+          envSource: () => envWithDirB,
+          version: pkg.version,
+          logger: quietLogger,
+          capture: createCaptureGateway({ store: new InMemoryCaptureStore(), clock: fixedClock }),
+        });
+        const projectB = `${PROJECT_ID}-b`;
+        const createdB = await handlerB(
+          postJson("/v1/reality/projects", JSON.stringify({ projectId: projectB })),
+        );
+        expect(createdB.status).toBe(200);
+        const upsertsB = [...buildRealityNodes(), buildChimneyNode()].map((node) => ({
+          op: "upsert-node",
+          node,
+        }));
+        const nodesAppliedB = await handlerB(
+          postJson(
+            `/v1/reality/projects/${projectB}/changes`,
+            JSON.stringify({ changes: upsertsB }),
+          ),
+        );
+        expect(nodesAppliedB.status).toBe(200);
+        const tombstoneAppliedB = await handlerB(
+          postJson(
+            `/v1/reality/projects/${projectB}/changes`,
+            JSON.stringify({
+              changes: [{ op: "delete", nodeId: "chimney", reason: CHIMNEY_TOMBSTONE_REASON }],
+            }),
+          ),
+        );
+        expect(tombstoneAppliedB.status).toBe(200);
+        for (const fact of buildEvidenceFacts()) {
+          const evidence = await handlerB(
+            postJson(
+              "/v1/evidence",
+              JSON.stringify({
+                contractVersion: "1.0.0",
+                contentId: fact.evidenceId,
+                byteSize: 2048,
+                mediaType: "image/jpeg",
+                capturedAt: FIXED_NOW,
+                acquisitionMethod: fact.method,
+                acquisitionMetadata: { "mission.id": "mission-gaps-000042" },
+              }),
+            ),
+          );
+          expect(evidence.status).toBe(200);
+        }
+        const invalidationB = await handlerB(
+          postJson(
+            `/v1/evidence/${EV_INVALIDATED_LI}/invalidation`,
+            JSON.stringify({ reason: "withdrawn during quality review (fixture canonical invalidation)" }),
+          ),
+        );
+        expect(invalidationB.status).toBe(200);
+        const inputB = buildCanonicalInput();
+        const responseB = await handlerB(
+          postJson(
+            "/v1/gaps",
+            JSON.stringify({
+              analysisId: `${ANALYSIS_ID}-b`,
+              taskRef: { ...inputB.taskRef, projectId: projectB, versionId: "v003" },
+              annotations: inputB.annotations,
+              uncertaintyAnnotations: inputB.uncertaintyAnnotations,
+            }),
+          ),
+        );
+        expect(responseB.status).toBe(200);
+        const bodyA = (await responseA.json()) as { ok: boolean };
+        expect(bodyA.ok).toBe(true);
+        const bodyB = (await responseB.json()) as { ok: boolean };
+        expect(bodyB.ok).toBe(true);
+        // B wrote to ITS OWN data dir — never to A's.
+        expect(
+          existsSync(join(rootB, "data", "gaps", `${sha256Hex(`${ANALYSIS_ID}-b`)}.json`)),
+        ).toBe(true);
+      });
+    });
+  });
+
   test("an injected gaps wiring wins over the default (explicit construction)", async () => {
     await withTempDir(async (root) => {
       const envWithDir: EnvRecord = { ...validEnv, AISE_DATA_DIR: join(root, "elsewhere") };

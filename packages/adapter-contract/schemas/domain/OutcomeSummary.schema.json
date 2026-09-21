@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "comparisonAvailable": {
+      "description": "Whether the server can present a pre/post comparison for this outcome.",
+      "type": "boolean"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "epistemicState": {
+      "description": "The outcome's epistemic state — an executed outcome becomes OBSERVED only through post-work evidence, never by implication.",
+      "enum": [
+        "OBSERVED",
+        "INFERRED",
+        "CONFIRMED",
+        "PROPOSED"
+      ],
+      "type": "string"
+    },
+    "outcomeId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "postWorkEvidenceContentIds": {
+      "description": "Content ids of the post-work evidence supporting this outcome.",
+      "items": {
+        "description": "sha-256 content address (64 lowercase hex). Normative derivation: the frozen AISE-CONTENT-V1 canonical encoding (see apps/android ContentIdentity).",
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "updatedAt": {
+      "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "outcomeId",
+    "epistemicState",
+    "comparisonAvailable",
+    "postWorkEvidenceContentIds",
+    "updatedAt"
+  ],
+  "type": "object"
+}

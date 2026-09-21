@@ -1,0 +1,31 @@
+{
+  "contractVersion": "1.0.0",
+  "adapterKind": "mobile-field",
+  "profileRef": "profile-mobile-field-reference",
+  "requirementsRef": "requirements-boq-review",
+  "outcome": "degraded",
+  "domainOutcomes": [
+    {
+      "domain": "screen",
+      "outcome": "unsupported",
+      "blocking": false,
+      "reason": "screen requirement unmet: required min size class regular; profile declares compact"
+    },
+    {
+      "domain": "input",
+      "outcome": "satisfied",
+      "blocking": true,
+      "reason": null
+    }
+  ],
+  "permittedInteractionModes": [
+    "menu-navigation",
+    "panel-inspection",
+    "drag-inspect",
+    "camera-capture",
+    "gesture",
+    "voice-command",
+    "scan-control",
+    "offline-queue"
+  ]
+}

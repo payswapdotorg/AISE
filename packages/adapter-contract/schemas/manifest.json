@@ -1,0 +1,104 @@
+{
+  "contractVersion": "1.0.0",
+  "dialect": "http://json-schema.org/draft-07/schema#",
+  "families": {
+    "action": "1.0.0",
+    "authorization": "1.0.0",
+    "capability": "1.0.0",
+    "context": "1.0.0",
+    "domain": "1.0.0",
+    "result": "1.0.0"
+  },
+  "objects": [
+    {
+      "contractVersion": "1.0.0",
+      "family": "authorization",
+      "file": "schemas/authorization/AuthorizationContext.schema.json",
+      "name": "AuthorizationContext"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "domain",
+      "file": "schemas/domain/BOQContext.schema.json",
+      "name": "BOQContext"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "capability",
+      "file": "schemas/capability/CapabilityDescriptor.schema.json",
+      "name": "CapabilityDescriptor"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "capability",
+      "file": "schemas/capability/CapabilityNegotiation.schema.json",
+      "name": "CapabilityNegotiation"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "capability",
+      "file": "schemas/capability/ClientCapabilityProfile.schema.json",
+      "name": "ClientCapabilityProfile"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "domain",
+      "file": "schemas/domain/EngineeringCaseSummary.schema.json",
+      "name": "EngineeringCaseSummary"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "domain",
+      "file": "schemas/domain/EvidenceSummary.schema.json",
+      "name": "EvidenceSummary"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "domain",
+      "file": "schemas/domain/InterventionScenarioSummary.schema.json",
+      "name": "InterventionScenarioSummary"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "action",
+      "file": "schemas/action/NextBestAction.schema.json",
+      "name": "NextBestAction"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "result",
+      "file": "schemas/result/OperationResult.schema.json",
+      "name": "OperationResult"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "domain",
+      "file": "schemas/domain/OutcomeSummary.schema.json",
+      "name": "OutcomeSummary"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "context",
+      "file": "schemas/context/ProjectContext.schema.json",
+      "name": "ProjectContext"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "domain",
+      "file": "schemas/domain/RealitySummary.schema.json",
+      "name": "RealitySummary"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "capability",
+      "file": "schemas/capability/TaskCapabilityRequirements.schema.json",
+      "name": "TaskCapabilityRequirements"
+    },
+    {
+      "contractVersion": "1.0.0",
+      "family": "context",
+      "file": "schemas/context/TaskIntent.schema.json",
+      "name": "TaskIntent"
+    }
+  ]
+}

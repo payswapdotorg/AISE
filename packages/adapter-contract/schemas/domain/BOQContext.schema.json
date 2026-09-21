@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "boqId": {
+      "description": "Stable id of the BOQ this context projects.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "lineItemCount": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "revision": {
+      "description": "Revision counter of the BOQ (original wording preserved; revisions retain source identity).",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "sourceRecordRef": {
+      "description": "The VERBATIM incumbent record id when the BOQ originates from an external system of record.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "sourceSystem": {
+      "description": "Source-of-record identity for the BOQ (e.g. `aise-internal`, `erp`, `bim-ifc`). Source BOQs remain authoritative for their own scope.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "updatedAt": {
+      "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "boqId",
+    "revision",
+    "sourceSystem",
+    "lineItemCount",
+    "updatedAt"
+  ],
+  "type": "object"
+}

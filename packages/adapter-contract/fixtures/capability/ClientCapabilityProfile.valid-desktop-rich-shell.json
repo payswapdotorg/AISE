@@ -1,0 +1,95 @@
+{
+  "contractVersion": "1.0.0",
+  "profileId": "profile-desktop-rich-shell-reference",
+  "adapterKind": "desktop-rich-shell",
+  "capturedAt": "2026-01-15T09:10:00.000Z",
+  "screen": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "screen",
+      "status": "supported",
+      "details": {
+        "monitors": "multi-monitor"
+      },
+      "limitations": []
+    },
+    "sizeClass": "expanded",
+    "multiWindow": true
+  },
+  "input": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "input",
+      "status": "supported",
+      "details": {
+        "shortcuts": "full-keyboard-map"
+      },
+      "limitations": []
+    },
+    "modes": [
+      "keyboard",
+      "pointer"
+    ]
+  },
+  "sensors": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "sensors",
+      "status": "unavailable",
+      "details": {},
+      "limitations": [
+        "workstations carry no construction-relevant sensors"
+      ]
+    },
+    "kinds": []
+  },
+  "camera": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "camera",
+      "status": "unavailable",
+      "details": {},
+      "limitations": [
+        "the desktop shell is review-optimized; field capture is delegated to the mobile adapter"
+      ]
+    },
+    "captureKinds": []
+  },
+  "offlineStorage": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "offline-storage",
+      "status": "supported",
+      "details": {
+        "mechanism": "persistent-store"
+      },
+      "limitations": []
+    },
+    "mode": "persistent-store",
+    "queueBoundBytes": 1073741824
+  },
+  "notifications": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "notifications",
+      "status": "supported",
+      "details": {
+        "mechanism": "os-notifications"
+      },
+      "limitations": []
+    },
+    "mode": "system"
+  },
+  "deepLinks": {
+    "descriptor": {
+      "contractVersion": "1.0.0",
+      "domain": "deep-links",
+      "status": "supported",
+      "details": {
+        "scheme": "aise"
+      },
+      "limitations": []
+    },
+    "mode": "app-scheme"
+  }
+}

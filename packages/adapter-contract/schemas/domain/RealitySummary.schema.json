@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "modelVersion": {
+      "description": "The Reality Graph version this summary projects (server-stated; reprocessing creates new versions).",
+      "minimum": 1,
+      "type": "integer"
+    },
+    "objectCount": {
+      "description": "Objects in this model version.",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "projectId": {
+      "description": "Opaque stable identifier assigned by the authority that owns the object.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "readinessDetail": {
+      "description": "The server's human-readable readiness supplement, when provided.",
+      "maxLength": 4096,
+      "minLength": 1,
+      "type": "string"
+    },
+    "readinessStatus": {
+      "description": "The Assurance Engine's readiness statement for this model version, carried OPAQUE and read-only (advisory well-known values: ready, not-ready, partial, escalation-required). The client never decides, derives or lowers readiness.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "updatedAt": {
+      "description": "ISO 8601 UTC timestamp with millisecond precision, `Z` suffix only.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "projectId",
+    "modelVersion",
+    "readinessStatus",
+    "objectCount",
+    "updatedAt"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,546 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": true,
+  "properties": {
+    "adapterKind": {
+      "description": "The adapter kind declaring this profile (open vocabulary; the three reference kinds are browser, mobile-field, desktop-rich-shell).",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "camera": {
+      "additionalProperties": true,
+      "properties": {
+        "captureKinds": {
+          "description": "Capture kinds the adapter exercises (still, video, depth, lidar). Empty = no camera capture integrated (even if hardware exists).",
+          "items": {
+            "enum": [
+              "still",
+              "video",
+              "depth",
+              "lidar"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "descriptor": {
+          "additionalProperties": true,
+          "properties": {
+            "contractVersion": {
+              "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            },
+            "details": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+              "type": "object"
+            },
+            "domain": {
+              "description": "The client capability domain this descriptor describes (open vocabulary; well-known values: screen, input, sensors, camera, offline-storage, notifications, deep-links).",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "limitations": {
+              "description": "Material limitations of this domain on this client right now (rendered before any consequential action).",
+              "items": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "status": {
+              "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+              "enum": [
+                "supported",
+                "unavailable",
+                "degraded",
+                "unknown"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "contractVersion",
+            "domain",
+            "status",
+            "details",
+            "limitations"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "descriptor",
+        "captureKinds"
+      ],
+      "type": "object"
+    },
+    "capturedAt": {
+      "description": "Instant the profile was declared.",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "type": "string"
+    },
+    "contractVersion": {
+      "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+      "type": "string"
+    },
+    "deepLinks": {
+      "additionalProperties": true,
+      "properties": {
+        "descriptor": {
+          "additionalProperties": true,
+          "properties": {
+            "contractVersion": {
+              "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            },
+            "details": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+              "type": "object"
+            },
+            "domain": {
+              "description": "The client capability domain this descriptor describes (open vocabulary; well-known values: screen, input, sensors, camera, offline-storage, notifications, deep-links).",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "limitations": {
+              "description": "Material limitations of this domain on this client right now (rendered before any consequential action).",
+              "items": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "status": {
+              "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+              "enum": [
+                "supported",
+                "unavailable",
+                "degraded",
+                "unknown"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "contractVersion",
+            "domain",
+            "status",
+            "details",
+            "limitations"
+          ],
+          "type": "object"
+        },
+        "mode": {
+          "enum": [
+            "none",
+            "app-scheme",
+            "universal"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "descriptor",
+        "mode"
+      ],
+      "type": "object"
+    },
+    "input": {
+      "additionalProperties": true,
+      "properties": {
+        "descriptor": {
+          "additionalProperties": true,
+          "properties": {
+            "contractVersion": {
+              "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            },
+            "details": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+              "type": "object"
+            },
+            "domain": {
+              "description": "The client capability domain this descriptor describes (open vocabulary; well-known values: screen, input, sensors, camera, offline-storage, notifications, deep-links).",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "limitations": {
+              "description": "Material limitations of this domain on this client right now (rendered before any consequential action).",
+              "items": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "status": {
+              "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+              "enum": [
+                "supported",
+                "unavailable",
+                "degraded",
+                "unknown"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "contractVersion",
+            "domain",
+            "status",
+            "details",
+            "limitations"
+          ],
+          "type": "object"
+        },
+        "modes": {
+          "description": "Input modes the adapter actually exercises right now (at least one; honest facts, not marketing).",
+          "items": {
+            "enum": [
+              "keyboard",
+              "pointer",
+              "touch",
+              "gesture",
+              "voice",
+              "camera-scan"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "descriptor",
+        "modes"
+      ],
+      "type": "object"
+    },
+    "notifications": {
+      "additionalProperties": true,
+      "properties": {
+        "descriptor": {
+          "additionalProperties": true,
+          "properties": {
+            "contractVersion": {
+              "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            },
+            "details": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+              "type": "object"
+            },
+            "domain": {
+              "description": "The client capability domain this descriptor describes (open vocabulary; well-known values: screen, input, sensors, camera, offline-storage, notifications, deep-links).",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "limitations": {
+              "description": "Material limitations of this domain on this client right now (rendered before any consequential action).",
+              "items": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "status": {
+              "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+              "enum": [
+                "supported",
+                "unavailable",
+                "degraded",
+                "unknown"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "contractVersion",
+            "domain",
+            "status",
+            "details",
+            "limitations"
+          ],
+          "type": "object"
+        },
+        "mode": {
+          "enum": [
+            "none",
+            "in-app",
+            "system"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "descriptor",
+        "mode"
+      ],
+      "type": "object"
+    },
+    "offlineStorage": {
+      "additionalProperties": true,
+      "properties": {
+        "descriptor": {
+          "additionalProperties": true,
+          "properties": {
+            "contractVersion": {
+              "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            },
+            "details": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+              "type": "object"
+            },
+            "domain": {
+              "description": "The client capability domain this descriptor describes (open vocabulary; well-known values: screen, input, sensors, camera, offline-storage, notifications, deep-links).",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "limitations": {
+              "description": "Material limitations of this domain on this client right now (rendered before any consequential action).",
+              "items": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "status": {
+              "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+              "enum": [
+                "supported",
+                "unavailable",
+                "degraded",
+                "unknown"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "contractVersion",
+            "domain",
+            "status",
+            "details",
+            "limitations"
+          ],
+          "type": "object"
+        },
+        "mode": {
+          "description": "none | session-cache (lost on exit) | bounded-queue (resumable capture queue with a declared bound) | persistent-store (durable local store).",
+          "enum": [
+            "none",
+            "session-cache",
+            "bounded-queue",
+            "persistent-store"
+          ],
+          "type": "string"
+        },
+        "queueBoundBytes": {
+          "description": "Declared bound of the offline queue/persistent store in bytes, when the adapter can state one. Absent = not declared (a byte-bounded requirement cannot be satisfied by an undeclared bound — honest, never guessed).",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "descriptor",
+        "mode"
+      ],
+      "type": "object"
+    },
+    "profileId": {
+      "description": "Stable identifier of this profile snapshot.",
+      "maxLength": 256,
+      "minLength": 1,
+      "type": "string"
+    },
+    "screen": {
+      "additionalProperties": true,
+      "properties": {
+        "descriptor": {
+          "additionalProperties": true,
+          "description": "The screen domain's honest status/details/limitations.",
+          "properties": {
+            "contractVersion": {
+              "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            },
+            "details": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+              "type": "object"
+            },
+            "domain": {
+              "description": "The client capability domain this descriptor describes (open vocabulary; well-known values: screen, input, sensors, camera, offline-storage, notifications, deep-links).",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "limitations": {
+              "description": "Material limitations of this domain on this client right now (rendered before any consequential action).",
+              "items": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "status": {
+              "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+              "enum": [
+                "supported",
+                "unavailable",
+                "degraded",
+                "unknown"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "contractVersion",
+            "domain",
+            "status",
+            "details",
+            "limitations"
+          ],
+          "type": "object"
+        },
+        "multiWindow": {
+          "description": "Whether the platform can present multiple simultaneous windows/panes.",
+          "type": "boolean"
+        },
+        "sizeClass": {
+          "description": "Advisory size class: compact (phone-class), regular (tablet/small window), expanded (desktop/large window).",
+          "enum": [
+            "compact",
+            "regular",
+            "expanded"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "descriptor",
+        "sizeClass",
+        "multiWindow"
+      ],
+      "type": "object"
+    },
+    "sensors": {
+      "additionalProperties": true,
+      "properties": {
+        "descriptor": {
+          "additionalProperties": true,
+          "properties": {
+            "contractVersion": {
+              "description": "Strict semver contract version carried by every wire object. Decoders accept the same major version; any other version is a typed error.",
+              "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$",
+              "type": "string"
+            },
+            "details": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Adapter-specific structured facts (open map; unknown keys are data).",
+              "type": "object"
+            },
+            "domain": {
+              "description": "The client capability domain this descriptor describes (open vocabulary; well-known values: screen, input, sensors, camera, offline-storage, notifications, deep-links).",
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "limitations": {
+              "description": "Material limitations of this domain on this client right now (rendered before any consequential action).",
+              "items": {
+                "maxLength": 4096,
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "status": {
+              "description": "supported | unavailable | degraded | unknown. `unknown` = not yet determined; it is never equivalent to `unavailable`.",
+              "enum": [
+                "supported",
+                "unavailable",
+                "degraded",
+                "unknown"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "contractVersion",
+            "domain",
+            "status",
+            "details",
+            "limitations"
+          ],
+          "type": "object"
+        },
+        "kinds": {
+          "description": "Sensor kinds available (open vocabulary; advisory well-known values: imu, gps, compass, barometer, nfc). Empty = no sensors.",
+          "items": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "descriptor",
+        "kinds"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "contractVersion",
+    "profileId",
+    "adapterKind",
+    "capturedAt",
+    "screen",
+    "input",
+    "sensors",
+    "camera",
+    "offlineStorage",
+    "notifications",
+    "deepLinks"
+  ],
+  "type": "object"
+}

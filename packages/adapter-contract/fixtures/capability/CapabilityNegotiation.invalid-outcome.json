@@ -1,0 +1,9 @@
+{
+  "contractVersion": "1.0.0",
+  "adapterKind": "browser",
+  "profileRef": "profile-browser-reference",
+  "requirementsRef": "requirements-field-depth-capture",
+  "outcome": "maybe",
+  "domainOutcomes": [],
+  "permittedInteractionModes": []
+}

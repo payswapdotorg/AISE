@@ -1,0 +1,9 @@
+{
+  "contractVersion": "1.0.0",
+  "boqId": "boq-import-33d",
+  "revision": 2,
+  "sourceSystem": "erp",
+  "sourceRecordRef": "ERP-BOQ-2026-0042",
+  "lineItemCount": 1284,
+  "updatedAt": "2026-01-14T16:30:00.000Z"
+}
