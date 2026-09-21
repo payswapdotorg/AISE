@@ -135,6 +135,9 @@ The three workers in each wave must not edit each other's protected surfaces or 
 
 ## Hugging Face hardening execution plan
 
+The 30-day execution calendar is defined in `docs/30-day-productization-sprint-plan-2026-09-21.md`. It translates the dependency graph into daily three-worker assignments and reflow rules; machine state remains authoritative over the calendar.
+
+
 The 2026-09-21 post-simulation UX/discoverability and deployment composition directive is maintained in `docs/post-simulation-implementation-and-deployment-plan-2026-09-21.md` and governs the next three-worker product-experience/deployment composition pass without changing the frozen architecture or dependency authority.
 
 
