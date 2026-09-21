@@ -23,10 +23,12 @@
     "db:seed": "bun tools/db-seed.ts"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
     "@eslint/js": "^10.0.1",
     "@types/bun": "^1.4.2",
     "esbuild": "^0.28.2",
     "eslint": "^10.10.0",
+    "playwright": "1.58.1",
     "typescript": "^5.9.0",
     "typescript-eslint": "^8.70.0"
   },
