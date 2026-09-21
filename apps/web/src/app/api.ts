@@ -1,5 +1,6 @@
 /**
- * PROD-002 — the same-origin API seam of the product web shell.
+ * PROD-002 — the same-origin API seam of the product web shell (the
+ * PROD-017 task-first browser adapter's contract consumption point).
  *
  * ⚠ THE APP NEVER TALKS TO ANY ORIGIN BUT ITS OWN ⚠ (the PROD-001 runtime
  * contract): every request goes to same-origin paths (`/healthz`, `/readyz`,
@@ -1962,4 +1963,139 @@ export async function loadBoqLensLive(
     record: payload.lens as unknown as BoqLensLiveRecord,
     endpoint,
   };
+}
+
+/* ------------------------------------------------------------------ */
+/* PROD-017 — the task-first adapter seam (the W-R1/W-R2 contract        */
+/* consumption point: decodeX through @aise/adapter-contract)           */
+/* ------------------------------------------------------------------ */
+
+import type { TaskFlowBundle, TaskIntentAnswer } from "./task-contract";
+import {
+  decodeAuthorizationContextAtSeam,
+  decodeTaskFlowBundleAtSeam,
+  decodeTaskIntentAnswerAtSeam,
+  describeContractFailure,
+  type AuthorizationContext,
+} from "./task-contract";
+import type { TaskIntent } from "@aise/adapter-contract";
+
+/**
+ * Load the joined TASK-FLOW bundle LIVE — `GET /v1/adapter/projects/:id/task-flow`
+ * (same-origin; the PROD-010 joined-endpoint convention applied to the
+ * task-first view). The answer's `flow` object is the server's assembly of
+ * the shared adapter-contract semantic objects (ProjectContext,
+ * RealitySummary, EvidenceSummary, BOQContext, EngineeringCaseSummary,
+ * InterventionScenarioSummary, OutcomeSummary, NextBestAction,
+ * AuthorizationContext, TaskCapabilityRequirements) — decoded HERE through
+ * the contract's own decoders (task-contract.ts), NEVER through per-module
+ * local mirror validators: a genuine contract payload passes as-is; a
+ * cross-major version or a malformed object is a typed `invalid` failure
+ * carrying the contract error verbatim.
+ *
+ * A 404 is returned as the typed HTTP failure (the caller renders the
+ * explicit "task-flow objects not served on this deployment" unavailable
+ * state — the honest provider-gated state, never a guess).
+ */
+export async function loadTaskFlowLive(
+  fetchImpl: FetchLike,
+  projectId: string,
+): Promise<
+  | { readonly ok: true; readonly flow: TaskFlowBundle; readonly endpoint: string }
+  | { readonly ok: false; readonly failure: ApiFailure }
+> {
+  const endpoint = `/v1/adapter/projects/${encodeURIComponent(projectId)}/task-flow`;
+  const result = envelopePayload(await fetchJson(fetchImpl, endpoint), endpoint);
+  if (!result.ok) {
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  const decoded = decodeTaskFlowBundleAtSeam(payload.flow);
+  if (!decoded.ok) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: describeContractFailure(decoded.failure),
+      },
+    };
+  }
+  return { ok: true, flow: decoded.value, endpoint };
+}
+
+/**
+ * W-R1: load the server's AuthorizationContext LIVE — `GET
+ * /v1/adapter/projects/:id/authorization` (same-origin). Grants and typed
+ * denials are decoded through the CONTRACT decoder and rendered verbatim;
+ * this seam replaces app-local authorization-semantics validation for the
+ * task-first flow (the AISE-040 broker's decision relay in
+ * `createLiveAuthorizationPort` is a different, frozen seam that stays).
+ */
+export async function loadAuthorizationContextLive(
+  fetchImpl: FetchLike,
+  projectId: string,
+): Promise<
+  | { readonly ok: true; readonly authorization: AuthorizationContext; readonly endpoint: string }
+  | { readonly ok: false; readonly failure: ApiFailure }
+> {
+  const endpoint = `/v1/adapter/projects/${encodeURIComponent(projectId)}/authorization`;
+  const result = envelopePayload(await fetchJson(fetchImpl, endpoint), endpoint);
+  if (!result.ok) {
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  const decoded = decodeAuthorizationContextAtSeam(payload.authorization);
+  if (!decoded.ok) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: describeContractFailure(decoded.failure),
+      },
+    };
+  }
+  return { ok: true, authorization: decoded.value, endpoint };
+}
+
+/**
+ * Submit one typed TaskIntent LIVE — `POST /v1/adapter/task-intents`
+ * (same-origin) with the intent wire object as the JSON body (the ONE
+ * client-authored semantic object, W-R3). The answer is the
+ * SERVER-AUTHORITATIVE result: an OperationResult plus the follow-up
+ * NextBestAction (or null) — decoded through the contract decoders, never
+ * locally re-validated. The adapter renders the status, the typed failure
+ * and the result refs verbatim and never resubmits silently.
+ */
+export async function submitTaskIntentLive(
+  fetchImpl: FetchLike,
+  intent: TaskIntent,
+): Promise<
+  | { readonly ok: true; readonly answer: TaskIntentAnswer; readonly endpoint: string }
+  | { readonly ok: false; readonly failure: ApiFailure }
+> {
+  const endpoint = "/v1/adapter/task-intents";
+  const result = envelopePayload(await postJson(fetchImpl, endpoint, intent), endpoint);
+  if (!result.ok) {
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  const decoded = decodeTaskIntentAnswerAtSeam({
+    result: payload.result,
+    action: payload.action ?? null,
+  });
+  if (!decoded.ok) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: describeContractFailure(decoded.failure),
+      },
+    };
+  }
+  return { ok: true, answer: decoded.value, endpoint };
+}
+
+/** True when a typed failure is an HTTP 404 (a route this build does not serve). */
+export function isNotFoundHttp(failure: ApiFailure): boolean {
+  return failure.kind === "http" && failure.status === 404;
 }

@@ -125,3 +125,37 @@ export function toggleEvidenceId(field: string, evidenceId: string): string {
     : [...current, evidenceId];
   return next.join(", ");
 }
+
+/* ------------------------------------------------------------------ */
+/* PROD-017 — TaskIntent authoring (W-R3, the client-authored object)  */
+/* ------------------------------------------------------------------ */
+
+import type { TaskIntent } from "@aise/adapter-contract";
+import type { TaskIntentIdentity } from "./create-forms";
+
+/**
+ * The evidence submission the picker feeds authors a typed TaskIntent wire
+ * object (the ONE client-authored semantic object, PROD-016): the user's
+ * intent to submit the selected evidence records — intent, not authority.
+ * The target refs ARE the selected records' own content ids (no second id
+ * scheme); the caption fields ride as inspectable parameters.
+ */
+export function taskIntentForEvidenceSubmission(
+  selectedEvidenceIds: readonly string[],
+  projectId: string,
+  purpose: string,
+  identity: TaskIntentIdentity,
+): TaskIntent {
+  return {
+    contractVersion: "1.0.0",
+    taskId: identity.taskId,
+    taskType: "field-capture",
+    intent: `Submit ${String(selectedEvidenceIds.length)} selected evidence record${selectedEvidenceIds.length === 1 ? "" : "s"} to the project's evidence register${purpose === "" ? "." : ` for ${purpose}.`}`,
+    projectRef: projectId,
+    targetRefs: [...selectedEvidenceIds],
+    parameters: {
+      evidenceCount: String(selectedEvidenceIds.length),
+    },
+    createdAt: identity.createdAt,
+  };
+}

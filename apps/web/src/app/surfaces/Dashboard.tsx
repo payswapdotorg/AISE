@@ -1,8 +1,12 @@
 /**
  * PROD-002 — the Dashboard surface (the landing page of the golden
- * journey): the API mode, the way into the demo/live projects, the journey
- * map and a dataset overview rendered from the frozen libraries' fixtures
- * (demo mode) or the live API (live mode).
+ * journey). PROD-017: the entry experience is TASK-FIRST — the
+ * "What do you need to do?" intent form (a typed TaskIntent, W-R3) and
+ * the current task's journey panel (NextBestAction-driven) render FIRST,
+ * before the module-first journey map and dataset overview. The API mode,
+ * the way into the demo/live projects, the journey map and a dataset
+ * overview render from the frozen libraries' fixtures (demo mode) or the
+ * live API (live mode).
  */
 
 import { useCallback } from "react";
@@ -28,6 +32,7 @@ import {
 } from "../demo";
 import { Card, DataBadge, EmptyState, ResourceView } from "../components";
 import { plural } from "../format";
+import { TaskFirstLanding } from "../task-first";
 
 /** What the dashboard renders once loaded. */
 export interface DashboardData {
@@ -114,12 +119,21 @@ export function Dashboard(): ReactNode {
   return (
     <>
       <div className="page-head">
-        <h1>Dashboard</h1>
+        <h1>What do you need to do?</h1>
         <p>
           AISE turns site evidence into an engineering reality graph, explains
           cost scope, and lets you design and inspect proposed interventions —
           always keeping observed facts, derived interpretation and proposals
-          distinct.
+          distinct. Start from the task: state what you need to do and the
+          journey follows.
+        </p>
+      </div>
+      <TaskFirstLanding />
+      <div className="page-head">
+        <h2>Workspace overview</h2>
+        <p>
+          The deployment's records and the way into the product surfaces — for
+          when you know where you are going.
         </p>
       </div>
       <ResourceView

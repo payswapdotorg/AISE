@@ -23,6 +23,7 @@
       "name": "@aise/web",
       "version": "0.1.0",
       "dependencies": {
+        "@aise/adapter-contract": "workspace:*",
         "react": "^19.3.0",
         "react-dom": "^19.3.0",
       },

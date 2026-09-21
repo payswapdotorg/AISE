@@ -120,6 +120,7 @@ import {
   inPageAnchorOnClick,
 } from "../components";
 import { ProjectSurfaceNav } from "../components";
+import { TaskFlowStrip } from "../task-first";
 import { formatRoute } from "../router";
 import { plural, shortId } from "../format";
 import { defaultOrganizationId, storeOrganizationId } from "./Projects";
@@ -292,6 +293,7 @@ export function InterventionStudio({
           the 3D, 2D and BOQ panes.
         </p>
       </div>
+      <TaskFlowStrip projectId={projectId} />
       <ProjectSurfaceNav projectId={projectId} current="intervention" />
       <ResourceView
         state={state}
