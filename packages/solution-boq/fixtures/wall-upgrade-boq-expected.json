@@ -1,0 +1,807 @@
+{
+  "artifactKind": "solution-generated-boq",
+  "assumptions": [],
+  "baselineRealityVersionId": "rgv-demo-0007",
+  "boqId": "99a0f52882fdd4e0942fc24feb85eb314e6fb7af794e857842936d34ba4b4767",
+  "contractVersion": "1.0.0",
+  "derivation": {
+    "kind": "aise-solution-boq",
+    "version": "1.0.0"
+  },
+  "elementTaxonomy": {
+    "kind": "building-element-taxonomy",
+    "ref": "aise-building-elements",
+    "version": "1.0.0"
+  },
+  "epistemicClass": "PROPOSED",
+  "lines": [
+    {
+      "activity": "demolition-removal",
+      "assumptionRefs": [],
+      "boqLineId": "f08d0dd8b84195b7f26b81b58a4cef7f4ab950c7066ce8e099244d3e3bebf976",
+      "buildingElement": "existing-element",
+      "calculationMethod": {
+        "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+        "methodSource": "packages/solution-engine/src/quantity-models.ts (documented formula table; see also packages/solution-engine/README.md §The quantity models)"
+      },
+      "contributions": [
+        {
+          "contributionKind": "removed",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-002"
+            }
+          ],
+          "nodeRefs": [
+            "node-wall-002"
+          ],
+          "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+          "operationIndex": 1,
+          "operationValue": 12,
+          "resultingStateRef": "cb7cc34aa2a883d14ceff1fc4146113077598c2c09c051ab284019d8a0f6e764"
+        }
+      ],
+      "direction": "removed",
+      "itemDescription": "Demolition and removal of existing elements, measured by area [m2]",
+      "quantity": {
+        "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+        "dimension": "area",
+        "unit": "m2",
+        "value": 12
+      },
+      "sectionId": "site-preparation",
+      "trace": {
+        "boqLineId": "f08d0dd8b84195b7f26b81b58a4cef7f4ab950c7066ce8e099244d3e3bebf976",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "removed",
+            "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+            "operationIndex": 1
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "polygon",
+            "ref": "geo-wall-faces-002"
+          }
+        ],
+        "itemDescription": "Demolition and removal of existing elements, measured by area [m2]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+          "dimension": "area",
+          "unit": "m2",
+          "value": 12
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "83b82ce4ff965dde36cc245ddc4db1d7064a940a5781a9405d10f9f2f59176c5",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      "traceId": "83b82ce4ff965dde36cc245ddc4db1d7064a940a5781a9405d10f9f2f59176c5",
+      "unit": "m2"
+    },
+    {
+      "activity": "demolition-removal",
+      "assumptionRefs": [],
+      "boqLineId": "07ab0dde87c933a88bb5c82e128d1a53ffbf2a60937f2bb5e16ccad439f4ac5a",
+      "buildingElement": "existing-element",
+      "calculationMethod": {
+        "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+        "methodSource": "packages/solution-engine/src/quantity-models.ts (documented formula table; see also packages/solution-engine/README.md §The quantity models)"
+      },
+      "contributions": [
+        {
+          "contributionKind": "removed",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-002"
+            }
+          ],
+          "nodeRefs": [
+            "node-wall-002"
+          ],
+          "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+          "operationIndex": 1,
+          "operationValue": 1.2,
+          "resultingStateRef": "cb7cc34aa2a883d14ceff1fc4146113077598c2c09c051ab284019d8a0f6e764"
+        }
+      ],
+      "direction": "removed",
+      "itemDescription": "Demolition and removal of existing elements, measured by volume [m3]",
+      "quantity": {
+        "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+        "dimension": "volume",
+        "unit": "m3",
+        "value": 1.2
+      },
+      "sectionId": "site-preparation",
+      "trace": {
+        "boqLineId": "07ab0dde87c933a88bb5c82e128d1a53ffbf2a60937f2bb5e16ccad439f4ac5a",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "removed",
+            "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+            "operationIndex": 1
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "polygon",
+            "ref": "geo-wall-faces-002"
+          }
+        ],
+        "itemDescription": "Demolition and removal of existing elements, measured by volume [m3]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+          "dimension": "volume",
+          "unit": "m3",
+          "value": 1.2
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "adba97d691fc1c7d1f5b72b88f24f0d1025a5f51d34afcef612491b857eec0b6",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      "traceId": "adba97d691fc1c7d1f5b72b88f24f0d1025a5f51d34afcef612491b857eec0b6",
+      "unit": "m3"
+    },
+    {
+      "activity": "block-wall-placement",
+      "assumptionRefs": [],
+      "boqLineId": "b68f93bed0b94c53ab78bc30203c5c5c655c25cd49dd5d68b6b80f50f1bc90ee",
+      "buildingElement": "wall",
+      "calculationMethod": {
+        "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+        "methodSource": "packages/solution-engine/src/quantity-models.ts (documented formula table; see also packages/solution-engine/README.md §The quantity models)"
+      },
+      "contributions": [
+        {
+          "contributionKind": "created",
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "nodeRefs": [
+            "node-wall-002"
+          ],
+          "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+          "operationIndex": 2,
+          "operationValue": 5,
+          "resultingStateRef": "a4951ff261cfa434be6582460b7db4710c3700351f494dd82f027be9c7ca2768"
+        }
+      ],
+      "direction": "added",
+      "itemDescription": "Block wall construction — concrete-block, measured by area [m2]",
+      "material": "concrete-block",
+      "quantity": {
+        "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+        "dimension": "area",
+        "unit": "m2",
+        "value": 5
+      },
+      "sectionId": "structure",
+      "trace": {
+        "boqLineId": "b68f93bed0b94c53ab78bc30203c5c5c655c25cd49dd5d68b6b80f50f1bc90ee",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "created",
+            "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+            "operationIndex": 2
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "plane",
+            "ref": "geo-wall-line-003"
+          }
+        ],
+        "itemDescription": "Block wall construction — concrete-block, measured by area [m2]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+          "dimension": "area",
+          "unit": "m2",
+          "value": 5
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "ad51c16f965fa742f4c867a159e3633c78f28cba97c1965ccf4055c1f116caed",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      "traceId": "ad51c16f965fa742f4c867a159e3633c78f28cba97c1965ccf4055c1f116caed",
+      "unit": "m2"
+    },
+    {
+      "activity": "block-wall-placement",
+      "assumptionRefs": [],
+      "boqLineId": "5dd00ffdfc17393e8e57e7a8b2cef135abb486072692a697a4ba439cdb4adc96",
+      "buildingElement": "wall",
+      "calculationMethod": {
+        "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+        "methodSource": "packages/solution-engine/src/quantity-models.ts (documented formula table; see also packages/solution-engine/README.md §The quantity models)"
+      },
+      "contributions": [
+        {
+          "contributionKind": "created",
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "nodeRefs": [
+            "node-wall-002"
+          ],
+          "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+          "operationIndex": 2,
+          "operationValue": 0.5,
+          "resultingStateRef": "a4951ff261cfa434be6582460b7db4710c3700351f494dd82f027be9c7ca2768"
+        }
+      ],
+      "direction": "added",
+      "itemDescription": "Block wall construction — concrete-block, measured by volume [m3]",
+      "material": "concrete-block",
+      "quantity": {
+        "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+        "dimension": "volume",
+        "unit": "m3",
+        "value": 0.5
+      },
+      "sectionId": "structure",
+      "trace": {
+        "boqLineId": "5dd00ffdfc17393e8e57e7a8b2cef135abb486072692a697a4ba439cdb4adc96",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "created",
+            "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+            "operationIndex": 2
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "plane",
+            "ref": "geo-wall-line-003"
+          }
+        ],
+        "itemDescription": "Block wall construction — concrete-block, measured by volume [m3]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+          "dimension": "volume",
+          "unit": "m3",
+          "value": 0.5
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "a37ed0da9dc25327120568e17ab890dc9842d2f3dd1e92c4e3e8a85d56dd4c2e",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      "traceId": "a37ed0da9dc25327120568e17ab890dc9842d2f3dd1e92c4e3e8a85d56dd4c2e",
+      "unit": "m3"
+    },
+    {
+      "activity": "block-wall-placement",
+      "assumptionRefs": [],
+      "boqLineId": "79f7796daf91553e83f24a0cfa2aa06f27e02f9bed37c28adaff8482956ef31e",
+      "buildingElement": "wall",
+      "calculationMethod": {
+        "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+        "methodSource": "packages/solution-engine/src/quantity-models.ts (documented formula table; see also packages/solution-engine/README.md §The quantity models)"
+      },
+      "contributions": [
+        {
+          "contributionKind": "created",
+          "geometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "nodeRefs": [
+            "node-wall-002"
+          ],
+          "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+          "operationIndex": 2,
+          "operationValue": 65,
+          "resultingStateRef": "a4951ff261cfa434be6582460b7db4710c3700351f494dd82f027be9c7ca2768"
+        }
+      ],
+      "direction": "added",
+      "itemDescription": "Block wall construction — concrete-block, measured by number [count]",
+      "material": "concrete-block",
+      "quantity": {
+        "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+        "dimension": "count",
+        "unit": "count",
+        "value": 65
+      },
+      "sectionId": "structure",
+      "trace": {
+        "boqLineId": "79f7796daf91553e83f24a0cfa2aa06f27e02f9bed37c28adaff8482956ef31e",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "created",
+            "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+            "operationIndex": 2
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "plane",
+            "ref": "geo-wall-line-003"
+          }
+        ],
+        "itemDescription": "Block wall construction — concrete-block, measured by number [count]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+          "dimension": "count",
+          "unit": "count",
+          "value": 65
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "9fa0c35a7f02be2b4dbe7b60a00dd5ee553c5d129075a3ea4e38e98bdb47076b",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      "traceId": "9fa0c35a7f02be2b4dbe7b60a00dd5ee553c5d129075a3ea4e38e98bdb47076b",
+      "unit": "count"
+    },
+    {
+      "activity": "plaster-application",
+      "assumptionRefs": [],
+      "boqLineId": "f81c94bf2179d5eb5bbaa8fb1f8c044612c997759a70033a90360aff6f53a10e",
+      "buildingElement": "wall-surface",
+      "calculationMethod": {
+        "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+        "methodSource": "packages/solution-engine/src/quantity-models.ts (documented formula table; see also packages/solution-engine/README.md §The quantity models)"
+      },
+      "contributions": [
+        {
+          "contributionKind": "created",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-002"
+            }
+          ],
+          "nodeRefs": [
+            "node-wall-002"
+          ],
+          "operationId": "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e",
+          "operationIndex": 3,
+          "operationValue": 12.5,
+          "resultingStateRef": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8"
+        }
+      ],
+      "direction": "added",
+      "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by area [m2]",
+      "material": "cement-plaster",
+      "quantity": {
+        "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+        "dimension": "area",
+        "unit": "m2",
+        "value": 12.5
+      },
+      "sectionId": "enclosure",
+      "trace": {
+        "boqLineId": "f81c94bf2179d5eb5bbaa8fb1f8c044612c997759a70033a90360aff6f53a10e",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "created",
+            "operationId": "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e",
+            "operationIndex": 3
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "polygon",
+            "ref": "geo-wall-faces-002"
+          }
+        ],
+        "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by area [m2]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+          "dimension": "area",
+          "unit": "m2",
+          "value": 12.5
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "2d05fe4d1bca29a0dffafb446caf674fb2d2c2c88d53fa7611c1cab24cb87868",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      "traceId": "2d05fe4d1bca29a0dffafb446caf674fb2d2c2c88d53fa7611c1cab24cb87868",
+      "unit": "m2"
+    },
+    {
+      "activity": "plaster-application",
+      "assumptionRefs": [],
+      "boqLineId": "e4c78656c72b7487425a8f16cf576003b8de7e985c8c4f8ed1c0d204e55340a5",
+      "buildingElement": "wall-surface",
+      "calculationMethod": {
+        "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+        "methodSource": "packages/solution-engine/src/quantity-models.ts (documented formula table; see also packages/solution-engine/README.md §The quantity models)"
+      },
+      "contributions": [
+        {
+          "contributionKind": "created",
+          "geometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-002"
+            }
+          ],
+          "nodeRefs": [
+            "node-wall-002"
+          ],
+          "operationId": "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e",
+          "operationIndex": 3,
+          "operationValue": 0.375,
+          "resultingStateRef": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8"
+        }
+      ],
+      "direction": "added",
+      "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by volume [m3]",
+      "material": "cement-plaster",
+      "quantity": {
+        "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+        "dimension": "volume",
+        "unit": "m3",
+        "value": 0.375
+      },
+      "sectionId": "enclosure",
+      "trace": {
+        "boqLineId": "e4c78656c72b7487425a8f16cf576003b8de7e985c8c4f8ed1c0d204e55340a5",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "created",
+            "operationId": "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e",
+            "operationIndex": 3
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "polygon",
+            "ref": "geo-wall-faces-002"
+          }
+        ],
+        "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by volume [m3]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+          "dimension": "volume",
+          "unit": "m3",
+          "value": 0.375
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "cc2c7ca1bc58709a9c93f317158759c9f5cc9bffdc819af02ac64aaa2607338d",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      "traceId": "cc2c7ca1bc58709a9c93f317158759c9f5cc9bffdc819af02ac64aaa2607338d",
+      "unit": "m3"
+    }
+  ],
+  "operationIds": [
+    "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+    "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+    "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+  ],
+  "sections": [
+    {
+      "lineIds": [
+        "f08d0dd8b84195b7f26b81b58a4cef7f4ab950c7066ce8e099244d3e3bebf976",
+        "07ab0dde87c933a88bb5c82e128d1a53ffbf2a60937f2bb5e16ccad439f4ac5a"
+      ],
+      "sectionId": "site-preparation",
+      "title": "Site preparation"
+    },
+    {
+      "lineIds": [
+        "b68f93bed0b94c53ab78bc30203c5c5c655c25cd49dd5d68b6b80f50f1bc90ee",
+        "5dd00ffdfc17393e8e57e7a8b2cef135abb486072692a697a4ba439cdb4adc96",
+        "79f7796daf91553e83f24a0cfa2aa06f27e02f9bed37c28adaff8482956ef31e"
+      ],
+      "sectionId": "structure",
+      "title": "Structure"
+    },
+    {
+      "lineIds": [
+        "f81c94bf2179d5eb5bbaa8fb1f8c044612c997759a70033a90360aff6f53a10e",
+        "e4c78656c72b7487425a8f16cf576003b8de7e985c8c4f8ed1c0d204e55340a5"
+      ],
+      "sectionId": "enclosure",
+      "title": "Enclosure"
+    }
+  ],
+  "solutionId": "solution-demo-001",
+  "totals": [
+    {
+      "addedValue": 17.5,
+      "contributingOperationIds": [
+        "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+        "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+        "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+      ],
+      "dimension": "area",
+      "netValue": 5.5,
+      "removedValue": 12,
+      "unit": "m2"
+    },
+    {
+      "addedValue": 65,
+      "contributingOperationIds": [
+        "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea"
+      ],
+      "dimension": "count",
+      "netValue": 65,
+      "removedValue": 0,
+      "unit": "count"
+    },
+    {
+      "addedValue": 0.875,
+      "contributingOperationIds": [
+        "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+        "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+        "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+      ],
+      "dimension": "volume",
+      "netValue": -0.325,
+      "removedValue": 1.2,
+      "unit": "m3"
+    }
+  ],
+  "traceSet": {
+    "contractVersion": "1.0.0",
+    "lineTraces": [
+      {
+        "boqLineId": "f08d0dd8b84195b7f26b81b58a4cef7f4ab950c7066ce8e099244d3e3bebf976",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "removed",
+            "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+            "operationIndex": 1
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "polygon",
+            "ref": "geo-wall-faces-002"
+          }
+        ],
+        "itemDescription": "Demolition and removal of existing elements, measured by area [m2]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+          "dimension": "area",
+          "unit": "m2",
+          "value": 12
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "83b82ce4ff965dde36cc245ddc4db1d7064a940a5781a9405d10f9f2f59176c5",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      {
+        "boqLineId": "07ab0dde87c933a88bb5c82e128d1a53ffbf2a60937f2bb5e16ccad439f4ac5a",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "removed",
+            "operationId": "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+            "operationIndex": 1
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "polygon",
+            "ref": "geo-wall-faces-002"
+          }
+        ],
+        "itemDescription": "Demolition and removal of existing elements, measured by volume [m3]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1",
+          "dimension": "volume",
+          "unit": "m3",
+          "value": 1.2
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "adba97d691fc1c7d1f5b72b88f24f0d1025a5f51d34afcef612491b857eec0b6",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      {
+        "boqLineId": "b68f93bed0b94c53ab78bc30203c5c5c655c25cd49dd5d68b6b80f50f1bc90ee",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "created",
+            "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+            "operationIndex": 2
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "plane",
+            "ref": "geo-wall-line-003"
+          }
+        ],
+        "itemDescription": "Block wall construction — concrete-block, measured by area [m2]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+          "dimension": "area",
+          "unit": "m2",
+          "value": 5
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "ad51c16f965fa742f4c867a159e3633c78f28cba97c1965ccf4055c1f116caed",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      {
+        "boqLineId": "5dd00ffdfc17393e8e57e7a8b2cef135abb486072692a697a4ba439cdb4adc96",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "created",
+            "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+            "operationIndex": 2
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "plane",
+            "ref": "geo-wall-line-003"
+          }
+        ],
+        "itemDescription": "Block wall construction — concrete-block, measured by volume [m3]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+          "dimension": "volume",
+          "unit": "m3",
+          "value": 0.5
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "a37ed0da9dc25327120568e17ab890dc9842d2f3dd1e92c4e3e8a85d56dd4c2e",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      {
+        "boqLineId": "79f7796daf91553e83f24a0cfa2aa06f27e02f9bed37c28adaff8482956ef31e",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "created",
+            "operationId": "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+            "operationIndex": 2
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "plane",
+            "ref": "geo-wall-line-003"
+          }
+        ],
+        "itemDescription": "Block wall construction — concrete-block, measured by number [count]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+          "dimension": "count",
+          "unit": "count",
+          "value": 65
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "9fa0c35a7f02be2b4dbe7b60a00dd5ee553c5d129075a3ea4e38e98bdb47076b",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      {
+        "boqLineId": "f81c94bf2179d5eb5bbaa8fb1f8c044612c997759a70033a90360aff6f53a10e",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "created",
+            "operationId": "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e",
+            "operationIndex": 3
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "polygon",
+            "ref": "geo-wall-faces-002"
+          }
+        ],
+        "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by area [m2]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+          "dimension": "area",
+          "unit": "m2",
+          "value": 12.5
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "2d05fe4d1bca29a0dffafb446caf674fb2d2c2c88d53fa7611c1cab24cb87868",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      },
+      {
+        "boqLineId": "e4c78656c72b7487425a8f16cf576003b8de7e985c8c4f8ed1c0d204e55340a5",
+        "contractVersion": "1.0.0",
+        "contributingOperations": [
+          {
+            "contributionKind": "created",
+            "operationId": "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e",
+            "operationIndex": 3
+          }
+        ],
+        "geometryRefs": [
+          {
+            "kind": "polygon",
+            "ref": "geo-wall-faces-002"
+          }
+        ],
+        "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by volume [m3]",
+        "quantity": {
+          "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+          "dimension": "volume",
+          "unit": "m3",
+          "value": 0.375
+        },
+        "solutionId": "solution-demo-001",
+        "traceId": "cc2c7ca1bc58709a9c93f317158759c9f5cc9bffdc819af02ac64aaa2607338d",
+        "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+        "versionNumber": 1
+      }
+    ],
+    "solutionId": "solution-demo-001",
+    "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+    "versionNumber": 1
+  },
+  "validationSnapshot": {
+    "checkSummary": [
+      {
+        "checkId": "operation.contract-invariants",
+        "result": "pass"
+      },
+      {
+        "checkId": "geometry.dimensions-positive",
+        "result": "pass"
+      },
+      {
+        "checkId": "units.quantity-units-typed",
+        "result": "pass"
+      },
+      {
+        "checkId": "operation.ordering-dependencies",
+        "result": "pass"
+      },
+      {
+        "checkId": "quantities.calculation-refs",
+        "result": "pass"
+      },
+      {
+        "checkId": "operation.capability-declared",
+        "result": "pass"
+      },
+      {
+        "checkId": "operation.phase1-limits",
+        "result": "pass"
+      }
+    ],
+    "engine": {
+      "kind": "aise-solution-engine",
+      "version": "1.0.0"
+    },
+    "inputDigest": "c0e7ebe60ae82a5986fb91eacceaf287f03923b1f2340738208856703f60e256",
+    "outcome": "pass",
+    "snapshotId": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777"
+  },
+  "validationSnapshotRef": "9cb90c32c98375696b93a3ed068531cacb32fe02389563d7c87639996adee777",
+  "versionNumber": 1
+}

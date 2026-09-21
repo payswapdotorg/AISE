@@ -1,0 +1,18 @@
+{
+  "name": "@aise/solution-boq",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE deterministic solution BOQ derivation (PROD-025): turns a validated interactive solution version into an auditable, versioned, derived building BOQ with bidirectional BOQ-line ↔ solution-step traceability. Pure deterministic computation over @aise/solution-contract objects and @aise/solution-engine outputs — no network, no clock reads, no randomness, no I/O in the core, and NO write path into any source BOQ store (the generated BOQ is a separate derived projection).",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/shared-contracts": "workspace:*",
+    "@aise/solution-contract": "workspace:*",
+    "@aise/solution-engine": "workspace:*"
+  }
+}
