@@ -1,381 +1,384 @@
 {
-  "$schema": "./productization-state.schema.json",
-  "schemaVersion": 1,
-  "campaign": "AISE-productization",
-  "governingArchitecture": "2.2 + ACR-004 + ACR-005 + ACR-006",
-  "architectureChangeRecords": [
-    "spec/governance/architecture-change-record-004.md",
-    "spec/governance/architecture-change-record-005.md",
-    "spec/governance/architecture-change-record-006.md"
-  ],
-  "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-21T08:02:54Z",
-  "implementationCampaign": {
-    "status": "complete",
-    "workItemsFinalized": 41,
-    "workItemsTotal": 41,
-    "commit": "b9b031a85016ac50caba6cd66990707f7815b179"
-  },
-  "productization": {
-    "status": "not_ready",
-    "installable": "partial-plus",
-    "freeTierDeployed": "yes",
-    "deploymentStatus": "redis-backed-deployment; deployed session-stability walk passed (2026-09-20, PROD-011b finalized)",
-    "userFriendlyInterface": "partial",
-    "publicUrl": "https://aise-tan.vercel.app",
-    "vercelDeploymentId": "dpl_35T9rEJpH2BEyKCU5xUgReU1ghfv",
-    "deployedApplicationCommit": "eb953b2c6dde53711f1b7f536a0fe487e0929cf0",
-    "lastVerifiedCommit": "eb953b2",
-    "finalGate": "docs/PRODUCTION-READINESS-GATE.md"
-  },
-  "execution": {
-    "maxConcurrentWorkers": 3,
-    "mergeGate": "tech-lead/architect",
-    "selectionRule": "dispatch only dependency-eligible productization items; recompute after every accepted merge",
-    "waves": {
-      "adapterWave": {
-        "items": [
-          "PROD-017",
-          "PROD-019",
-          "PROD-020"
-        ],
-        "requires": [
-          "PROD-016"
-        ],
-        "protectedSurfaces": {
-          "PROD-017": "apps/web/**",
-          "PROD-019": "apps/android/**",
-          "PROD-020": "apps/desktop/**"
-        }
-      },
-      "interactiveSolutionWave": {
-        "items": [
-          "PROD-022",
-          "PROD-023",
-          "PROD-025"
-        ],
-        "requires": [
-          "PROD-021"
-        ],
-        "protectedSurfaces": {
-          "PROD-022": "solution execution/validation engine",
-          "PROD-023": "reasoning/agent compiler",
-          "PROD-025": "solution BOQ derivation/tracing"
-        }
-      },
-      "layerHardeningWave": {
-        "items": [
-          "PROD-027",
-          "PROD-028",
-          "PROD-029"
-        ],
-        "requires": [
-          "PROD-026"
-        ],
-        "protectedSurfaces": {
-          "PROD-027": "Layer-1 reality/capture/retrieval/planning hardening",
-          "PROD-028": "Layer-2 Evidence Envelope/reasoning/tool-policy hardening",
-          "PROD-029": "Layer-3 operation/validation/replay/BOQ hardening"
-        }
-      }
-    }
-  },
-  "workItems": [
-    {
-      "id": "PROD-001",
-      "status": "finalized",
-      "dependencies": [],
-      "mergedSha": "9a32a936a1acc4b975708bb931b30d092693fd28",
-      "mergedAt": "2026-09-15T10:05:00Z"
-    },
-    {
-      "id": "PROD-002",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-001"
-      ],
-      "mergedSha": "9262181dc884d0299184da1d33f89cd930db2f6d",
-      "mergedAt": "2026-09-15T11:25:00Z"
-    },
-    {
-      "id": "PROD-003",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-001"
-      ],
-      "mergedSha": "4543d1b524102976ccceb446fef15f9a29dc005c",
-      "mergedAt": "2026-09-15T11:25:00Z"
-    },
-    {
-      "id": "PROD-004",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-003"
-      ],
-      "mergedSha": "4978fd9",
-      "mergedAt": "2026-09-15T16:50:00Z"
-    },
-    {
-      "id": "PROD-005",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-003"
-      ],
-      "mergedSha": "61d919f",
-      "mergedAt": "2026-09-15T17:35:00Z"
-    },
-    {
-      "id": "PROD-006",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-003"
-      ],
-      "mergedSha": "694e6c8",
-      "mergedAt": "2026-09-15T17:20:00Z"
-    },
-    {
-      "id": "PROD-007",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-003"
-      ],
-      "mergedSha": "889301e",
-      "mergedAt": "2026-09-16T03:10:00Z"
-    },
-    {
-      "id": "PROD-008",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-003"
-      ],
-      "mergedSha": "d3cc623",
-      "mergedAt": "2026-09-16T03:10:00Z"
-    },
-    {
-      "id": "PROD-009",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-003",
-        "AISE-012"
-      ],
-      "mergedSha": "f00558a",
-      "mergedAt": "2026-09-16T03:10:00Z"
-    },
-    {
-      "id": "PROD-010",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-002",
-        "PROD-004",
-        "PROD-005",
-        "PROD-006",
-        "PROD-007",
-        "PROD-009"
-      ],
-      "mergedSha": "1aac5f9",
-      "finalizedAt": "2026-09-16T08:00:00Z"
-    },
-    {
-      "id": "PROD-011",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-010"
-      ],
-      "mergedSha": "28fb1f8",
-      "finalizedAt": "2026-09-16T09:30:00Z"
-    },
-    {
-      "id": "PROD-011b",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-011"
-      ],
-      "headSha": "b242e10",
-      "mergedSha": "eb953b2",
-      "finalizedAt": "2026-09-20T20:04:00Z",
-      "evidence": "evidence/PROD-011B/ — deployed session-stability walk on production (20/20 cross-instance whoami; Upstash record/index/TTL ground truth; exact meter math; logout lifecycle). The walk exposed and the Lead fixed two production defects: the Upstash REST {result|error} envelope was never unwrapped (writes landed but misreported; reads fail-closed 401) and the pipelined INCR/EXPIRE form is rejected by the live endpoint (d6691da); the deploy shape depended on build-cache luck — the gitignored catch-all bundle is now a committed deploy beacon (05a9fa3+eb953b2), the standard server-side deploy path verified end-to-end."
-    },
-    {
-      "id": "PROD-012",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-011",
-        "PROD-011b"
-      ],
-      "mergedSha": "b34e809",
-      "finalizedAt": "2026-09-21T00:00:00Z",
-      "evidence": "docs/productization-evidence/PROD-012/run-2026-09-20.txt — deployed-browser verification vs https://aise-tan.vercel.app: 5 PASS (availability, shell-renders, session-lifecycle fail-closed 401, responsive-desktop, console/runtime clean) / 2 honest FAIL root-caused for remediation (79px mobile horizontal overflow @390x844 signed-in shell; WCAG 1.4.3 serious contrast 3.64:1 on .journey-hint, 4 nodes). Suite: tools/deployed-check.ts (seven checks, tools/smoke.ts doctrine). Lead gates: verify baseline-identical, typecheck+lint PASS."
-    },
-    {
-      "id": "PROD-013",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-011"
-      ],
-      "mergedSha": "624e7a4",
-      "evidence": "evidence/PROD-013/ + docs/COST-GUARDS.md; VERIFY 3489/0; free-tier numbers live-verified 2026-09-16"
-    },
-    {
-      "id": "PROD-014",
-      "status": "planned",
-      "dependencies": [
-        "PROD-011b",
-        "PROD-012",
-        "PROD-013",
-        "PROD-016",
-        "PROD-017",
-        "PROD-018",
-        "PROD-019",
-        "PROD-020",
-        "PROD-026",
-        "PROD-027",
-        "PROD-028",
-        "PROD-029"
-      ]
-    },
-    {
-      "id": "PROD-015",
-      "status": "planned",
-      "dependencies": [
-        "PROD-014"
-      ]
-    },
-    {
-      "id": "PROD-016",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-003"
-      ],
-      "mergedSha": "96d5f60",
-      "finalizedAt": "2026-09-21T00:30:00Z",
-      "evidence": "packages/adapter-contract (versioned contract, 15 schemas, 80 fixtures, conformance harness) + spec/client-adapter-contract.md + docs/productization-evidence/PROD-016/{adapter-boundary-audit,compatibility-window,contract-artifacts}.md; delivered via Lead overlay v2 (sha256 f1147c36), merged by the Lead after gates: VERIFY 3577/0 (FIX-001 also fixed the 2 known gaps-wiring flakes), typecheck+lint PASS."
-    },
-    {
-      "id": "PROD-017",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-010",
-        "PROD-016"
-      ],
-      "mergedSha": "93c337c",
-      "finalizedAt": "2026-09-21T08:02:54Z",
-      "evidence": "apps/web task-first adapter (39 files: task-flow seam loadTaskFlowLive/submitTaskIntentLive consuming @aise/adapter-contract decoders per W-R1/W-R2, task-first landing + NextBestAction strip with explicit blocked/denied/unavailable states, typed TaskIntent authoring forms, BROWSER_ADAPTER_PROFILE + conformance C0-C9 PASS incl. sabotage discrimination, golden journey + render-trace evidence docs). Lead gates: VERIFY 3808/0 (90 new), typecheck+lint PASS, boundaries clean, root bun.lock regenerated. Worker commit e6cb78bc."
-    },
-    {
-      "id": "PROD-018",
-      "status": "planned",
-      "dependencies": [
-        "PROD-012",
-        "PROD-017",
-        "PROD-019",
-        "PROD-020"
-      ]
-    },
-    {
-      "id": "PROD-019",
-      "status": "finalized",
-      "dependencies": [
-        "PROD-016"
-      ],
-      "mergedSha": "91886e9",
-      "finalizedAt": "2026-09-21T07:30:12Z",
-      "evidence": "apps/android :core adapter (11 main sources + 9 test sources incl. conformance corpus; 64 new Gradle tests) + :app field runtime/journey wiring + evidence docs (conformance-report, field-journey, gradle-trace). Lead gates: root VERIFY 3718/0 (unchanged), Gradle :core:test 387/0 re-run at integration station (portable Temurin JDK 21), typecheck+lint PASS. Honest notes: :app:test/:app:assembleDebug require Android SDK (not run — integration-station debt); declared profile omits voice/depth/lidar/deep-links per facts-exercised rule (depth+lidar negotiate BLOCKED, surfaced verbatim). Worker commit 0429c51."
-    },
-    {
-      "id": "PROD-020",
-      "status": "planned",
-      "dependencies": [
-        "PROD-016"
-      ]
-    },
-    {
-      "id": "PROD-021",
-      "status": "finalized",
-      "dependencies": [
-        "AISE-026",
-        "AISE-027",
-        "AISE-028",
-        "PROD-016"
-      ],
-      "architecture": "ACR-005",
-      "mergedSha": "da1df94",
-      "finalizedAt": "2026-09-21T04:35:00Z",
-      "evidence": "packages/solution-contract (28 src, 14 schemas, 86 fixtures, 141 tests) + spec/solution-operation-contract.md + docs/productization-evidence/PROD-021/{contract-artifacts,operation-fixtures,boq-trace-conformance}.md; Lead gates: VERIFY 3718/0 (141 new), typecheck+lint PASS, boundaries clean. Worker commit 74873ca."
-    },
-    {
-      "id": "PROD-022",
-      "status": "planned",
-      "dependencies": [
-        "PROD-021"
-      ]
-    },
-    {
-      "id": "PROD-023",
-      "status": "planned",
-      "dependencies": [
-        "PROD-021"
-      ]
-    },
-    {
-      "id": "PROD-024",
-      "status": "planned",
-      "dependencies": [
-        "PROD-017",
-        "PROD-022",
-        "PROD-023"
-      ]
-    },
-    {
-      "id": "PROD-025",
-      "status": "planned",
-      "dependencies": [
-        "PROD-021",
-        "PROD-022"
-      ]
-    },
-    {
-      "id": "PROD-026",
-      "status": "planned",
-      "dependencies": [
-        "PROD-024",
-        "PROD-025",
-        "PROD-018"
-      ]
-    },
-    {
-      "id": "PROD-027",
-      "status": "planned",
-      "dependencies": [
-        "PROD-026"
-      ],
-      "architecture": "ACR-006"
-    },
-    {
-      "id": "PROD-028",
-      "status": "planned",
-      "dependencies": [
-        "PROD-026"
-      ],
-      "architecture": "ACR-006"
-    },
-    {
-      "id": "PROD-029",
-      "status": "planned",
-      "dependencies": [
-        "PROD-026"
-      ],
-      "architecture": "ACR-006"
-    }
-  ],
-  "simulation": {
-    "journeyArtifacts": [
-      "docs/product-journey-simulation.md",
-      "docs/interactive-engineering-solution-workflow.md",
-      "docs/layered-competitive-stress-test-2026-09-16.md"
+ "$schema": "./productization-state.schema.json",
+ "schemaVersion": 1,
+ "campaign": "AISE-productization",
+ "governingArchitecture": "2.2 + ACR-004 + ACR-005 + ACR-006",
+ "architectureChangeRecords": [
+  "spec/governance/architecture-change-record-004.md",
+  "spec/governance/architecture-change-record-005.md",
+  "spec/governance/architecture-change-record-006.md"
+ ],
+ "technologySubstitutionContract": "spec/technology-substitution-contract.md",
+ "lastReconciledAt": "2026-09-21T10:32:00Z",
+ "implementationCampaign": {
+  "status": "complete",
+  "workItemsFinalized": 41,
+  "workItemsTotal": 41,
+  "commit": "b9b031a85016ac50caba6cd66990707f7815b179"
+ },
+ "productization": {
+  "status": "not_ready",
+  "installable": "partial-plus",
+  "freeTierDeployed": "yes",
+  "deploymentStatus": "redis-backed-deployment; deployed session-stability walk passed (2026-09-20, PROD-011b finalized)",
+  "userFriendlyInterface": "partial",
+  "publicUrl": "https://aise-tan.vercel.app",
+  "vercelDeploymentId": "dpl_35T9rEJpH2BEyKCU5xUgReU1ghfv",
+  "deployedApplicationCommit": "eb953b2c6dde53711f1b7f536a0fe487e0929cf0",
+  "lastVerifiedCommit": "eb953b2",
+  "finalGate": "docs/PRODUCTION-READINESS-GATE.md"
+ },
+ "execution": {
+  "maxConcurrentWorkers": 3,
+  "mergeGate": "tech-lead/architect",
+  "selectionRule": "dispatch only dependency-eligible productization items; recompute after every accepted merge",
+  "waves": {
+   "adapterWave": {
+    "items": [
+     "PROD-017",
+     "PROD-019",
+     "PROD-020"
     ],
-    "competitiveArtifact": "docs/layered-competitive-stress-test-2026-09-16.md",
-    "adapterContract": "spec/client-adapter-contract.md",
-    "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-    "status": "design-simulation-complete; adapter, interactive-solution and layer-hardening implementation-verification pending"
+    "requires": [
+     "PROD-016"
+    ],
+    "protectedSurfaces": {
+     "PROD-017": "apps/web/**",
+     "PROD-019": "apps/android/**",
+     "PROD-020": "apps/desktop/**"
+    }
+   },
+   "interactiveSolutionWave": {
+    "items": [
+     "PROD-022",
+     "PROD-023",
+     "PROD-025"
+    ],
+    "requires": [
+     "PROD-021"
+    ],
+    "protectedSurfaces": {
+     "PROD-022": "solution execution/validation engine",
+     "PROD-023": "reasoning/agent compiler",
+     "PROD-025": "solution BOQ derivation/tracing"
+    }
+   },
+   "layerHardeningWave": {
+    "items": [
+     "PROD-027",
+     "PROD-028",
+     "PROD-029"
+    ],
+    "requires": [
+     "PROD-026"
+    ],
+    "protectedSurfaces": {
+     "PROD-027": "Layer-1 reality/capture/retrieval/planning hardening",
+     "PROD-028": "Layer-2 Evidence Envelope/reasoning/tool-policy hardening",
+     "PROD-029": "Layer-3 operation/validation/replay/BOQ hardening"
+    }
+   }
   }
+ },
+ "workItems": [
+  {
+   "id": "PROD-001",
+   "status": "finalized",
+   "dependencies": [],
+   "mergedSha": "9a32a936a1acc4b975708bb931b30d092693fd28",
+   "mergedAt": "2026-09-15T10:05:00Z"
+  },
+  {
+   "id": "PROD-002",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-001"
+   ],
+   "mergedSha": "9262181dc884d0299184da1d33f89cd930db2f6d",
+   "mergedAt": "2026-09-15T11:25:00Z"
+  },
+  {
+   "id": "PROD-003",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-001"
+   ],
+   "mergedSha": "4543d1b524102976ccceb446fef15f9a29dc005c",
+   "mergedAt": "2026-09-15T11:25:00Z"
+  },
+  {
+   "id": "PROD-004",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-003"
+   ],
+   "mergedSha": "4978fd9",
+   "mergedAt": "2026-09-15T16:50:00Z"
+  },
+  {
+   "id": "PROD-005",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-003"
+   ],
+   "mergedSha": "61d919f",
+   "mergedAt": "2026-09-15T17:35:00Z"
+  },
+  {
+   "id": "PROD-006",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-003"
+   ],
+   "mergedSha": "694e6c8",
+   "mergedAt": "2026-09-15T17:20:00Z"
+  },
+  {
+   "id": "PROD-007",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-003"
+   ],
+   "mergedSha": "889301e",
+   "mergedAt": "2026-09-16T03:10:00Z"
+  },
+  {
+   "id": "PROD-008",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-003"
+   ],
+   "mergedSha": "d3cc623",
+   "mergedAt": "2026-09-16T03:10:00Z"
+  },
+  {
+   "id": "PROD-009",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-003",
+    "AISE-012"
+   ],
+   "mergedSha": "f00558a",
+   "mergedAt": "2026-09-16T03:10:00Z"
+  },
+  {
+   "id": "PROD-010",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-002",
+    "PROD-004",
+    "PROD-005",
+    "PROD-006",
+    "PROD-007",
+    "PROD-009"
+   ],
+   "mergedSha": "1aac5f9",
+   "finalizedAt": "2026-09-16T08:00:00Z"
+  },
+  {
+   "id": "PROD-011",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-010"
+   ],
+   "mergedSha": "28fb1f8",
+   "finalizedAt": "2026-09-16T09:30:00Z"
+  },
+  {
+   "id": "PROD-011b",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-011"
+   ],
+   "headSha": "b242e10",
+   "mergedSha": "eb953b2",
+   "finalizedAt": "2026-09-20T20:04:00Z",
+   "evidence": "evidence/PROD-011B/ — deployed session-stability walk on production (20/20 cross-instance whoami; Upstash record/index/TTL ground truth; exact meter math; logout lifecycle). The walk exposed and the Lead fixed two production defects: the Upstash REST {result|error} envelope was never unwrapped (writes landed but misreported; reads fail-closed 401) and the pipelined INCR/EXPIRE form is rejected by the live endpoint (d6691da); the deploy shape depended on build-cache luck — the gitignored catch-all bundle is now a committed deploy beacon (05a9fa3+eb953b2), the standard server-side deploy path verified end-to-end."
+  },
+  {
+   "id": "PROD-012",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-011",
+    "PROD-011b"
+   ],
+   "mergedSha": "b34e809",
+   "finalizedAt": "2026-09-21T00:00:00Z",
+   "evidence": "docs/productization-evidence/PROD-012/run-2026-09-20.txt — deployed-browser verification vs https://aise-tan.vercel.app: 5 PASS (availability, shell-renders, session-lifecycle fail-closed 401, responsive-desktop, console/runtime clean) / 2 honest FAIL root-caused for remediation (79px mobile horizontal overflow @390x844 signed-in shell; WCAG 1.4.3 serious contrast 3.64:1 on .journey-hint, 4 nodes). Suite: tools/deployed-check.ts (seven checks, tools/smoke.ts doctrine). Lead gates: verify baseline-identical, typecheck+lint PASS."
+  },
+  {
+   "id": "PROD-013",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-011"
+   ],
+   "mergedSha": "624e7a4",
+   "evidence": "evidence/PROD-013/ + docs/COST-GUARDS.md; VERIFY 3489/0; free-tier numbers live-verified 2026-09-16"
+  },
+  {
+   "id": "PROD-014",
+   "status": "planned",
+   "dependencies": [
+    "PROD-011b",
+    "PROD-012",
+    "PROD-013",
+    "PROD-016",
+    "PROD-017",
+    "PROD-018",
+    "PROD-019",
+    "PROD-020",
+    "PROD-026",
+    "PROD-027",
+    "PROD-028",
+    "PROD-029"
+   ]
+  },
+  {
+   "id": "PROD-015",
+   "status": "planned",
+   "dependencies": [
+    "PROD-014"
+   ]
+  },
+  {
+   "id": "PROD-016",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-003"
+   ],
+   "mergedSha": "96d5f60",
+   "finalizedAt": "2026-09-21T00:30:00Z",
+   "evidence": "packages/adapter-contract (versioned contract, 15 schemas, 80 fixtures, conformance harness) + spec/client-adapter-contract.md + docs/productization-evidence/PROD-016/{adapter-boundary-audit,compatibility-window,contract-artifacts}.md; delivered via Lead overlay v2 (sha256 f1147c36), merged by the Lead after gates: VERIFY 3577/0 (FIX-001 also fixed the 2 known gaps-wiring flakes), typecheck+lint PASS."
+  },
+  {
+   "id": "PROD-017",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-010",
+    "PROD-016"
+   ],
+   "mergedSha": "93c337c",
+   "finalizedAt": "2026-09-21T08:02:54Z",
+   "evidence": "apps/web task-first adapter (39 files: task-flow seam loadTaskFlowLive/submitTaskIntentLive consuming @aise/adapter-contract decoders per W-R1/W-R2, task-first landing + NextBestAction strip with explicit blocked/denied/unavailable states, typed TaskIntent authoring forms, BROWSER_ADAPTER_PROFILE + conformance C0-C9 PASS incl. sabotage discrimination, golden journey + render-trace evidence docs). Lead gates: VERIFY 3808/0 (90 new), typecheck+lint PASS, boundaries clean, root bun.lock regenerated. Worker commit e6cb78bc."
+  },
+  {
+   "id": "PROD-018",
+   "status": "planned",
+   "dependencies": [
+    "PROD-012",
+    "PROD-017",
+    "PROD-019",
+    "PROD-020"
+   ]
+  },
+  {
+   "id": "PROD-019",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-016"
+   ],
+   "mergedSha": "91886e9",
+   "finalizedAt": "2026-09-21T07:30:12Z",
+   "evidence": "apps/android :core adapter (11 main sources + 9 test sources incl. conformance corpus; 64 new Gradle tests) + :app field runtime/journey wiring + evidence docs (conformance-report, field-journey, gradle-trace). Lead gates: root VERIFY 3718/0 (unchanged), Gradle :core:test 387/0 re-run at integration station (portable Temurin JDK 21), typecheck+lint PASS. Honest notes: :app:test/:app:assembleDebug require Android SDK (not run — integration-station debt); declared profile omits voice/depth/lidar/deep-links per facts-exercised rule (depth+lidar negotiate BLOCKED, surfaced verbatim). Worker commit 0429c51."
+  },
+  {
+   "id": "PROD-020",
+   "status": "finalized",
+   "dependencies": [
+    "PROD-016"
+   ],
+   "mergedSha": "88422b6",
+   "finalizedAt": "2026-09-21T10:32:00Z",
+   "evidence": "apps/desktop Electron 44 thin installed shell (32 files: adapter seam consuming all twelve semantic + three negotiation objects from @aise/adapter-contract, policy-driven platform layer (shell/main.ts is the only electron import), review layouts + keyboard shortcut registry, local integrations + convenience store, TaskIntent outbox offline/resume, desktop capability profile, C0-C9 conformance ALL PASS incl. sabotage discrimination, golden journey + 4 evidence docs; ELECTRON_SKIP_BINARY_DOWNLOAD keeps headless CI green). Lead gates: VERIFY 3983/0 (175 new exact), typecheck+lint PASS, boundaries clean, root bun.lock regenerated for the apps/desktop workspace edge. Worker commit 14d4d10."
+  },
+  {
+   "id": "PROD-021",
+   "status": "finalized",
+   "dependencies": [
+    "AISE-026",
+    "AISE-027",
+    "AISE-028",
+    "PROD-016"
+   ],
+   "architecture": "ACR-005",
+   "mergedSha": "da1df94",
+   "finalizedAt": "2026-09-21T04:35:00Z",
+   "evidence": "packages/solution-contract (28 src, 14 schemas, 86 fixtures, 141 tests) + spec/solution-operation-contract.md + docs/productization-evidence/PROD-021/{contract-artifacts,operation-fixtures,boq-trace-conformance}.md; Lead gates: VERIFY 3718/0 (141 new), typecheck+lint PASS, boundaries clean. Worker commit 74873ca."
+  },
+  {
+   "id": "PROD-022",
+   "status": "planned",
+   "dependencies": [
+    "PROD-021"
+   ]
+  },
+  {
+   "id": "PROD-023",
+   "status": "planned",
+   "dependencies": [
+    "PROD-021"
+   ]
+  },
+  {
+   "id": "PROD-024",
+   "status": "planned",
+   "dependencies": [
+    "PROD-017",
+    "PROD-022",
+    "PROD-023"
+   ]
+  },
+  {
+   "id": "PROD-025",
+   "status": "planned",
+   "dependencies": [
+    "PROD-021",
+    "PROD-022"
+   ]
+  },
+  {
+   "id": "PROD-026",
+   "status": "planned",
+   "dependencies": [
+    "PROD-024",
+    "PROD-025",
+    "PROD-018"
+   ]
+  },
+  {
+   "id": "PROD-027",
+   "status": "planned",
+   "dependencies": [
+    "PROD-026"
+   ],
+   "architecture": "ACR-006"
+  },
+  {
+   "id": "PROD-028",
+   "status": "planned",
+   "dependencies": [
+    "PROD-026"
+   ],
+   "architecture": "ACR-006"
+  },
+  {
+   "id": "PROD-029",
+   "status": "planned",
+   "dependencies": [
+    "PROD-026"
+   ],
+   "architecture": "ACR-006"
+  }
+ ],
+ "simulation": {
+  "journeyArtifacts": [
+   "docs/product-journey-simulation.md",
+   "docs/interactive-engineering-solution-workflow.md",
+   "docs/layered-competitive-stress-test-2026-09-16.md"
+  ],
+  "competitiveArtifact": "docs/layered-competitive-stress-test-2026-09-16.md",
+  "adapterContract": "spec/client-adapter-contract.md",
+  "technologySubstitutionContract": "spec/technology-substitution-contract.md",
+  "status": "design-simulation-complete; adapter, interactive-solution and layer-hardening implementation-verification pending"
+ }
 }
