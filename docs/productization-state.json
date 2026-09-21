@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-21T20:55:00Z",
+  "lastReconciledAt": "2026-09-21T21:20:00Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -204,7 +204,23 @@
       ],
       "mergedSha": "b34e809",
       "finalizedAt": "2026-09-21T00:00:00Z",
-      "evidence": "docs/productization-evidence/PROD-012/run-2026-09-20.txt \u2014 deployed-browser verification vs https://aise-tan.vercel.app: 5 PASS (availability, shell-renders, session-lifecycle fail-closed 401, responsive-desktop, console/runtime clean) / 2 honest FAIL root-caused for remediation (79px mobile horizontal overflow @390x844 signed-in shell; WCAG 1.4.3 serious contrast 3.64:1 on .journey-hint, 4 nodes). Suite: tools/deployed-check.ts (seven checks, tools/smoke.ts doctrine). Lead gates: verify baseline-identical, typecheck+lint PASS."
+      "evidence": "docs/productization-evidence/PROD-012/run-2026-09-20.txt \u2014 deployed-browser verification vs https://aise-tan.vercel.app: 5 PASS (availability, shell-renders, session-lifecycle fail-closed 401, responsive-desktop, console/runtime clean) / 2 honest FAIL root-caused for remediation (79px mobile horizontal overflow @390x844 signed-in shell; WCAG 1.4.3 serious contrast 3.64:1 on .journey-hint, 4 nodes). Suite: tools/deployed-check.ts (seven checks, tools/smoke.ts doctrine). Lead gates: verify baseline-identical, typecheck+lint PASS.",
+      "remediation": {
+        "status": "finalized",
+        "mergedSha": "667d22e",
+        "mergedAt": "2026-09-21T21:20:00Z",
+        "workerChat": "0787996e-cb58-49a7-a5d0-25d0aa95652c",
+        "workerCommit": "4235a7555dbd6dd742a473c17e8c2481dd243e83",
+        "recoveryMethod": "work-log replay + deterministic harness regeneration",
+        "replayProof": "diffstat 6/1191/1 exact + verify 4329/0 exact + run outputs 70/45 lines exact",
+        "resolved": [
+          "mobile overflow 390x844 (flex-wrap)",
+          "WCAG 1.4.3 contrast 3.64->5.49:1"
+        ],
+        "deferred": [
+          "nested main landmark (index.html main#app -> div#app, outside surface)"
+        ]
+      }
     },
     {
       "id": "PROD-013",
