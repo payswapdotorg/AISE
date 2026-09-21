@@ -63,7 +63,7 @@ Current productization remains `not_ready`. The provisional deployment is `https
 
 ```text
 ✅ PROD-001 … PROD-011
-⏳ PROD-011b
+✅ PROD-011b
 ✅ PROD-013
 ⬜ PROD-012
 ⬜ PROD-014
@@ -114,6 +114,7 @@ docs/productization-work-orders.md
 docs/productization-layer-hardening-work-orders.md
 docs/huggingface-hardening-execution-plan.md
 docs/post-simulation-implementation-and-deployment-plan-2026-09-21.md
+docs/30-day-productization-sprint-plan-2026-09-21.md
 docs/productization-state.json
 docs/PRODUCTION-READINESS-GATE.md
 docs/free-tier-deployment.md
@@ -276,3 +277,6 @@ Final evidence must include both product journeys, all three adapter conformance
 
 
 The post-simulation plan in docs/post-simulation-implementation-and-deployment-plan-2026-09-21.md is the current UX/discoverability and deployment-composition directive. It supersedes ad-hoc UI composition: use the Project Command Center, task-first journey model, ShareNet-inspired calm visual system, and the explicit three-worker deployment/conformance track. It does not alter the frozen architecture or work-item authority.
+
+
+The 30-day sprint calendar in docs/30-day-productization-sprint-plan-2026-09-21.md is the day-by-day dispatch plan. It is subordinate to machine-state eligibility: a day may not authorize a dependency that is still planned, and the Tech Lead must reflow later days after any accepted merge or blocker.
