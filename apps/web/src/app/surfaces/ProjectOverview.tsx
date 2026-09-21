@@ -27,6 +27,8 @@ import {
   demoEvidenceList,
   demoLensInput,
   demoReality,
+  demoScenario,
+  demoWorkspaceInput,
 } from "../demo";
 import type {
   BoqPaneView,
@@ -48,6 +50,9 @@ import { ProjectSurfaceNav } from "../components";
 import { TaskFlowStrip } from "../task-first";
 import { formatRoute } from "../router";
 import { plural } from "../format";
+import { CanonicalActionBar, PlanRealityCard } from "../../parity/components";
+import { TaskCompositionPanel } from "../../parity/task-composition";
+import { planRealityView } from "../../parity/plan-reality";
 
 /** What the overview renders once loaded. */
 export interface ProjectOverviewData {
@@ -157,6 +162,8 @@ export function ProjectOverview({
       </div>
       <TaskFlowStrip projectId={projectId} />
       <ProjectSurfaceNav projectId={projectId} current="overview" />
+      <CanonicalActionBar projectId={projectId} />
+      <TaskCompositionPanel projectId={projectId} />
       <ResourceView
         state={state}
         loadingLabel="Loading the project scope…"
@@ -168,12 +175,20 @@ export function ProjectOverview({
 }
 
 export function ProjectOverviewBody({ data }: { readonly data: ProjectOverviewData }): ReactNode {
+  const planReality = planRealityView({
+    projectId: data.projectId,
+    workspace: data.demo !== null ? demoWorkspaceInput(data.projectId) : null,
+    reality: data.demo !== null ? data.demo.reality : (data.live?.reality ?? null),
+    evidenceCount: data.demo !== null ? data.demo.evidenceTotal : 0,
+    scenario: data.mode === "demo" ? demoScenario(data.projectId) : null,
+  });
   return (
     <div className="grid grid-2">
       <ContextCard data={data} />
       <ScopeCard data={data} />
       <CostScopeCard data={data} />
       <MissingEvidenceCard data={data} />
+      <PlanRealityCard view={planReality} />
     </div>
   );
 }

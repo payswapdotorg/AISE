@@ -66,6 +66,10 @@ import { SemanticObjectsAudit } from "./contract-objects";
 import { BROWSER_ADAPTER_PROFILE } from "./adapter-profile";
 import type { TaskFlowBundle } from "./task-contract";
 import { formatRoute } from "./router";
+import {
+  CanonicalActionBar,
+  TaskCompositionPanelBody,
+} from "../parity/components";
 
 /* ------------------------------------------------------------------ */
 /* The task-flow resource                                              */
@@ -438,6 +442,7 @@ export function TaskFlowPanelBody({ data }: { readonly data: TaskFlowResourceDat
     <div className="grid grid-2">
       <NextBestActionPanel view={data.view} mode={data.mode} />
       <TaskJourneyView view={data.view} />
+      <TaskCompositionPanelBody data={data} />
       <AuthorizationPanel view={data.view} />
       <NegotiationPanel view={data.view} />
       <BrowserAdapterCard />
@@ -860,11 +865,15 @@ export function OperationResultNote({
 
 /**
  * The task-first landing: the intent form, the open/create-project
- * entrypoints and the current task's journey panel.
+ * entrypoints and the current task's journey panel. PROD-018: the four
+ * canonical actions (Capture → Investigate → Build solution → Review
+ * outcome) label the entry points — the parity composition's terminology
+ * normalization, rendered over the app's real routes.
  */
 export function TaskFirstLanding(): ReactNode {
   return (
     <>
+      <CanonicalActionBar projectId={DEMO_TASK_PROJECT_ID} />
       <TaskIntentForm initialProjectId={DEMO_TASK_PROJECT_ID} />
       <TaskFlowPanel projectId={DEMO_TASK_PROJECT_ID} />
     </>

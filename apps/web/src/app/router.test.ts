@@ -6,6 +6,8 @@ import { describe, expect, test } from "bun:test";
 import {
   formatRoute,
   parseHash,
+  projectSurfaceRoute,
+  PROJECT_SURFACES,
   routeKey,
   routeSurface,
   type Route,
@@ -73,6 +75,23 @@ describe("PROD-002 router codec", () => {
       });
     });
 
+    test("the outcomes surface parses and rejects queries (PROD-018)", () => {
+      expect(parseHash("#/projects/p1/outcomes")).toEqual({
+        name: "outcomes",
+        projectId: "p1",
+      });
+      expect(parseHash("#/projects/p1/outcomes?x=1").name).toBe("not-found");
+      expect(routeSurface({ name: "outcomes", projectId: "p1" })).toBe("outcomes");
+      expect(projectSurfaceRoute("outcomes", "p1")).toEqual({
+        name: "outcomes",
+        projectId: "p1",
+      });
+      expect(formatRoute({ name: "outcomes", projectId: "p1" })).toBe(
+        "#/projects/p1/outcomes",
+      );
+      expect(PROJECT_SURFACES.map((surface) => surface.surface)).toContain("outcomes");
+    });
+
     test("unknown surface names and trailing segments are not-found", () => {
       expect(parseHash("#/projects/p1/evidence").name).toBe("not-found");
       expect(parseHash("#/projects/p1/boq-lens/extra").name).toBe("not-found");
@@ -132,6 +151,7 @@ describe("PROD-002 router codec", () => {
       roundTrip({ name: "sitetwin", projectId: "p1" });
       roundTrip({ name: "boq-lens", projectId: "p1" });
       roundTrip({ name: "case", projectId: "p1" });
+      roundTrip({ name: "outcomes", projectId: "p1" });
       roundTrip({ name: "intervention", projectId: "p1", query: {} });
       roundTrip({ name: "intervention", projectId: "p1", query: { layer: 2 } });
     });
@@ -149,6 +169,7 @@ describe("PROD-002 router codec", () => {
       expect(routeSurface({ name: "sitetwin", projectId: "p" })).toBe("sitetwin");
       expect(routeSurface({ name: "boq-lens", projectId: "p" })).toBe("boq-lens");
       expect(routeSurface({ name: "case", projectId: "p" })).toBe("case");
+      expect(routeSurface({ name: "outcomes", projectId: "p" })).toBe("outcomes");
       expect(
         routeSurface({ name: "intervention", projectId: "p", query: {} }),
       ).toBe("intervention");

@@ -61,7 +61,7 @@ export function ProjectSurfaceNav({
   current,
 }: {
   readonly projectId: string;
-  readonly current: "overview" | "sitetwin" | "boq-lens" | "case" | "intervention";
+  readonly current: "overview" | "sitetwin" | "boq-lens" | "case" | "intervention" | "outcomes";
 }): ReactNode {
   return (
     <nav className="toolbar" aria-label="Project surfaces">

@@ -37,6 +37,7 @@ import { SiteTwin } from "./surfaces/SiteTwin";
 import { BoqLensSurface } from "./surfaces/BoqLens";
 import { EngineeringCase } from "./surfaces/EngineeringCase";
 import { InterventionStudio } from "./surfaces/InterventionStudio";
+import { Outcomes } from "./surfaces/Outcomes";
 import { Settings } from "./surfaces/Settings";
 
 /** The browser's fetch (same-origin paths only — see api.ts). */
@@ -271,6 +272,8 @@ function RoutedSurface({
           scenarioId={route.query.scenario}
         />
       );
+    case "outcomes":
+      return <Outcomes projectId={route.projectId} />;
     case "settings":
       return (
         <Settings
@@ -336,6 +339,12 @@ export function NotFound({ hash }: { readonly hash: string }): ReactNode {
               Intervention Studio
             </a>{" "}
             — proposed states, 2D/3D/BOQ impact (per project)
+          </li>
+          <li>
+            <a href={formatRoute({ name: "outcomes", projectId: "proj-7f3a2b" })}>
+              Outcomes
+            </a>{" "}
+            — post-work evidence + before/after comparison (per project)
           </li>
           <li>
             <a href={formatRoute({ name: "settings" })}>Settings / Integrations</a> — API
