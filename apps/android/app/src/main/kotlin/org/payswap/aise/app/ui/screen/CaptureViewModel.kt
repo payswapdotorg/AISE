@@ -48,8 +48,8 @@ class CaptureViewModel(
 
     private var videoWriter: VideoAssetWriter? = null
 
-    fun startSession() = guarded("start session") {
-        controller.startSession(environment.deviceIdentity(), environment.imuActive())
+    fun startSession(missionRef: String? = null) = guarded("start session") {
+        controller.startSession(environment.deviceIdentity(), environment.imuActive(), missionRef)
     }
 
     fun pause() = guarded("pause") { controller.pause() }

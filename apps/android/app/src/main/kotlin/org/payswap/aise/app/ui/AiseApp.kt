@@ -25,6 +25,7 @@ import org.payswap.aise.app.navigation.AppDestination
 import org.payswap.aise.app.ui.screen.AboutScreen
 import org.payswap.aise.app.ui.screen.CaptureScreen
 import org.payswap.aise.app.ui.screen.CaptureViewModel
+import org.payswap.aise.app.ui.screen.FieldJourneyViewModel
 import org.payswap.aise.app.ui.screen.HomeScreen
 import org.payswap.aise.app.ui.screen.SettingsScreen
 
@@ -77,6 +78,12 @@ fun AiseApp(container: AppContainer, modifier: Modifier = Modifier) {
                         factory = CaptureViewModel.factory(
                             container.captureController,
                             container.captureEnvironment,
+                        ),
+                    ),
+                    journeyViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+                        factory = FieldJourneyViewModel.factory(
+                            container.fieldJourneyRuntime,
+                            container.captureController,
                         ),
                     ),
                     modifier = Modifier.padding(innerPadding),

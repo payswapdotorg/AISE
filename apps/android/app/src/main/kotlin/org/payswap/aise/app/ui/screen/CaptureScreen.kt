@@ -41,17 +41,23 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import org.payswap.aise.app.capture.platform.CameraCaptureAdapter
 import org.payswap.aise.app.capture.platform.RotationVectorSnapshotter
+import org.payswap.aise.core.adapter.FieldJourneyPhase
 import org.payswap.aise.core.session.CaptureSessionRecord
 import org.payswap.aise.core.session.CaptureSessionStatus
 
 /**
- * The capture screen (AISE-005): camera permission gate → live preview →
- * session lifecycle controls (start/pause/resume/finalize) + still/video
- * capture buttons + the journal-derived session summary.
+ * The capture screen (AISE-005, extended by PROD-019): camera permission
+ * gate → the FIELD-JOURNEY MISSION PANEL (verdict, exact capture actions and
+ * evidence gaps — never generic prompts) → live preview → session lifecycle
+ * controls (start/pause/resume/finalize) + still/video capture buttons +
+ * the journal-derived session summary + the explicit submission/offline
+ * banner.
  *
  * The UI is DERIVED state throughout (spec/architecture-lock.md invariant 8):
- * everything shown comes from the controller's journal-folded session flow;
- * nothing here records truth, judges quality or declares readiness.
+ * everything shown comes from the controller's journal-folded session flow
+ * and the runtime's journey phases; nothing here records truth, judges
+ * quality or declares readiness. A BLOCKED verdict renders the reason
+ * VERBATIM; a deferred submission renders the offline reason VERBATIM.
  *
  * Recording flow (state-driven, no imperative bridges):
  *  - "Record" → [CaptureViewModel.beginVideoAsset] exposes the writer's tmp
@@ -65,6 +71,7 @@ import org.payswap.aise.core.session.CaptureSessionStatus
 @Composable
 fun CaptureScreen(
     viewModel: CaptureViewModel,
+    journeyViewModel: FieldJourneyViewModel,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -94,6 +101,10 @@ fun CaptureScreen(
 
         HorizontalDivider()
 
+        FieldJourneyMissionPanel(journeyViewModel)
+
+        HorizontalDivider()
+
         if (!hasCameraPermission) {
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -115,13 +126,13 @@ fun CaptureScreen(
                 }
             }
         } else {
-            CaptureStage(viewModel)
+            CaptureStage(viewModel, journeyViewModel)
         }
     }
 }
 
 @Composable
-private fun CaptureStage(viewModel: CaptureViewModel) {
+private fun CaptureStage(viewModel: CaptureViewModel, journeyViewModel: FieldJourneyViewModel) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val session by viewModel.session.collectAsState()
@@ -209,7 +220,14 @@ private fun CaptureStage(viewModel: CaptureViewModel) {
     // Session lifecycle controls.
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         if (session == null) {
-            Button(onClick = { viewModel.startSession() }, enabled = !busy && cameraReady) {
+            Button(
+                onClick = {
+                    val missionRef = (journeyViewModel.phase.value as? FieldJourneyPhase.MissionActive)
+                        ?.directive?.missionId
+                    viewModel.startSession(missionRef)
+                },
+                enabled = !busy && cameraReady,
+            ) {
                 Text("Start session")
             }
         } else if (capturing) {
@@ -278,6 +296,233 @@ private fun CaptureStage(viewModel: CaptureViewModel) {
 
     if (session != null) {
         SessionSummary(session!!)
+    }
+
+    // The evidence-submission seam (PROD-019): submit the finalized
+    // session's manifest through the journey seam — in this build the seam
+    // reports network-unavailable EXPLICITLY (a first-class state, never a
+    // silent failure) and the evidence stays in the resumable offline store.
+    // The panel appears once evidence exists and no session is open (the
+    // controller nulls the session flow at finalize — the journal and the
+    // manifest remain the truth on disk).
+    val journeyPhase by journeyViewModel.phase.collectAsState()
+    val missionWithEvidence = journeyPhase as? FieldJourneyPhase.MissionActive
+    if (missionWithEvidence != null && session == null && missionWithEvidence.evidenceByStep.isNotEmpty()) {
+        SubmissionPanel(journeyViewModel)
+    }
+}
+
+/** The submission controls + the explicit offline state. */
+@Composable
+private fun SubmissionPanel(journeyViewModel: FieldJourneyViewModel) {
+    val busy by journeyViewModel.busy.collectAsState()
+    val message by journeyViewModel.message.collectAsState()
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text("Evidence submission", style = MaterialTheme.typography.titleSmall)
+            Text(
+                "The sync transport is not wired in this build — submission defers to the " +
+                    "resumable offline store (an explicit state, never a silent failure).",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = { journeyViewModel.submitEvidence() }, enabled = !busy) {
+                    Text("Submit evidence")
+                }
+                OutlinedButton(onClick = { journeyViewModel.resumeSubmission() }, enabled = !busy) {
+                    Text("Retry submission")
+                }
+            }
+            if (message != null) {
+                Text(
+                    message!!,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * The field-journey mission panel (PROD-019): the negotiated verdict, the
+ * EXACT capture actions and the evidence gaps — derived state only.
+ */
+@Composable
+private fun FieldJourneyMissionPanel(journeyViewModel: FieldJourneyViewModel) {
+    val phase by journeyViewModel.phase.collectAsState()
+    val busy by journeyViewModel.busy.collectAsState()
+    val message by journeyViewModel.message.collectAsState()
+
+    LaunchedEffect(message) {
+        if (message != null) {
+            kotlinx.coroutines.delay(6_000)
+            journeyViewModel.consumeMessage()
+        }
+    }
+
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text("Field journey", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "Task intent → capability assessment → adaptive mission. Server documents " +
+                    "are build-time provisioned (badged) until the AISE-030 sync transport lands.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            when (val current = phase) {
+                is FieldJourneyPhase.Idle -> {
+                    Button(onClick = { journeyViewModel.startJourney() }, enabled = !busy) {
+                        Text("Start field journey")
+                    }
+                }
+
+                is FieldJourneyPhase.IntentSelected -> {
+                    Text("Intent selected — assessing…", style = MaterialTheme.typography.bodySmall)
+                }
+
+                is FieldJourneyPhase.Assessed -> {
+                    VerdictBanner(current.negotiation.outcome.wireName, emptyList())
+                    Text(
+                        "Mission not prepared yet.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+
+                is FieldJourneyPhase.Blocked -> {
+                    // The explicit BLOCKED state: reasons rendered VERBATIM,
+                    // never a generic capture prompt.
+                    VerdictBanner(current.negotiation.outcome.wireName, current.negotiation.blockedReasons)
+                }
+
+                is FieldJourneyPhase.MissionActive -> {
+                    VerdictBanner(current.directive.negotiationOutcome.wireName, current.directive.degradedNotes)
+                    if (current.directive.deviceBlockers.isNotEmpty()) {
+                        Text(
+                            "Device blockers:",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                        current.directive.deviceBlockers.forEach { blocker ->
+                            Text(
+                                blocker,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    }
+                    Text(
+                        "Mission ${current.directive.missionId} (provisioned)",
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                    current.directive.steps.forEach { step ->
+                        val recorded = current.evidenceByStep[step.stepId]?.size ?: 0
+                        Text(
+                            "${step.exactAction} — ${step.title}" +
+                                if (step.mandatory) " (mandatory)" else " (optional)",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (step.actionable) {
+                                MaterialTheme.colorScheme.onSurface
+                            } else {
+                                MaterialTheme.colorScheme.error
+                            },
+                        )
+                        Text(
+                            step.instructions,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        if (step.note != null) {
+                            Text(
+                                step.note!!, // the honest burden/probing/blocker note, verbatim
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                        Text(
+                            if (recorded > 0) "Evidence recorded: $recorded asset(s)" else "Evidence gap — not yet captured",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (recorded > 0) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                        )
+                    }
+                    val gaps = current.gaps.size
+                    Text(
+                        if (gaps == 0) "All steps have recorded evidence" else "Evidence gaps: $gaps step(s)",
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                }
+
+                is FieldJourneyPhase.DeferredOffline -> {
+                    VerdictBanner("deferred-offline", listOf(current.submission.reason))
+                    Text(
+                        "Attempt ${current.submission.attempts} — evidence remains in the durable offline store; " +
+                            "retry when the transport is available.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+
+                is FieldJourneyPhase.Submitted -> {
+                    VerdictBanner("submitted", emptyList())
+                    Text(
+                        "Server reference: ${current.submission.serverRef}",
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+
+                is FieldJourneyPhase.SubmissionFailed -> {
+                    VerdictBanner("submission-failed", listOf(current.submission.reason))
+                }
+            }
+
+            if (phase !is FieldJourneyPhase.Idle) {
+                OutlinedButton(onClick = { journeyViewModel.resetJourney() }, enabled = !busy) {
+                    Text("New field intent")
+                }
+            }
+            if (message != null && phase !is FieldJourneyPhase.DeferredOffline) {
+                Text(
+                    message!!,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+    }
+}
+
+/** The negotiated-verdict banner (blocked reasons and degraded notes verbatim). */
+@Composable
+private fun VerdictBanner(verdict: String, notes: List<String>) {
+    val blocked = verdict == "blocked"
+    Text(
+        "Task $verdict",
+        style = MaterialTheme.typography.titleSmall,
+        color = if (blocked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+    )
+    notes.forEach { note ->
+        Text(
+            note, // rendered VERBATIM — never paraphrased away
+            style = MaterialTheme.typography.bodySmall,
+            color = if (blocked) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 

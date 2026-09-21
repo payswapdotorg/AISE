@@ -1,10 +1,14 @@
 # AISE Android Field Client — `apps/android`
 
-AISE-002 foundation + **AISE-005 capture session layer**: the Android shell,
-navigation, the local persistence abstraction, the build/test harness, and
-the offline capture session runtime — stills, video, sensor metadata, the
-event-sourced session journal, the offline manifest and crash recovery.
-Everything here is **offline-first** and carries **no server authority**.
+AISE-002 foundation + **AISE-005 capture session layer** + **PROD-019 mobile
+adapter layer**: the Android shell, navigation, the local persistence
+abstraction, the build/test harness, the offline capture session runtime —
+stills, video, sensor metadata, the event-sourced session journal, the
+offline manifest and crash recovery — and the **shared client-adapter
+contract consumption** that promotes this foundation into the product's
+mobile adapter (capability negotiation, conformance, the field journey and
+the explicit-unavailable submission seam). Everything here is
+**offline-first** and carries **no server authority**.
 
 This is a self-contained Gradle (Kotlin DSL) project inside the AISE
 repository. The repository root is a bun/TypeScript workspace that ignores
@@ -15,8 +19,8 @@ skips it; Gradle ignores the root workspace entirely).
 
 | Module | Kind | Contents |
 |---|---|---|
-| `:core` | pure Kotlin/JVM (no Android) | AISE-002 persistence abstraction + content identity + their contracts; **AISE-005 capture domain**: the session state machine, journal events + replay fold, asset records, the manifest exporter, the streaming content hasher and the strict-subset JSON codec — all fully unit-tested on a plain JVM |
-| `:app` | Android application | single-activity Compose shell (Home / **Capture** / Settings / About), the capture runtime (`capture/`), CameraX/sensor platform glue (`capture/platform/`), the file-backed local store, and the file-based journal/recovery engine |
+| `:core` | pure Kotlin/JVM (no Android) | AISE-002 persistence abstraction + content identity + their contracts; **AISE-005 capture domain**: the session state machine, journal events + replay fold, asset records, the manifest exporter, the streaming content hasher and the strict-subset JSON codec — all fully unit-tested on a plain JVM; **PROD-019 adapter package** (`org.payswap.aise.core.adapter`): the adapter-contract version mirror, the `ClientCapabilityProfile` / `TaskCapabilityRequirements` / `CapabilityNegotiation` wire mirrors + the faithful negotiation consumer, the honest `mobile-field` profile declaration, the C0–C9 conformance runner, the TaskIntent mirror, the field-journey state machine and the explicit-unavailable submission seam |
+| `:app` | Android application | single-activity Compose shell (Home / **Capture** / Settings / About), the capture runtime (`capture/`), CameraX/sensor platform glue (`capture/platform/`), the file-backed local store, the file-based journal/recovery engine, and the **field-journey runtime + mission panel** (`field/`, PROD-019): intent → assessment → adaptive mission → guided capture bookkeeping → submission |
 
 Toolchain: **Kotlin 2.1.21, AGP 8.7.3, Gradle 8.14.3 (wrapper), JDK 21
 toolchain, compileSdk 35, minSdk 26, targetSdk 35.** Every version is pinned
@@ -221,6 +225,104 @@ plan below is the dogfood checklist AISE-035 executes on real hardware:
 7. **Honest degradation**: device without rotation-vector sensor → IMU
    domain `unknown` + limitation recorded; device refusing the triple
    camera combination → video disabled with the fact surfaced.
+
+## The mobile adapter layer (PROD-019)
+
+The Android client is an **adapter over the shared AISE product core**
+(ACR-004): it consumes the versioned, checkable client-adapter contract of
+PROD-016 (`packages/adapter-contract`, `ADAPTER_CONTRACT_VERSION = 1.0.0`)
+and never duplicates domain authority. The compatibility window forbids
+adapter workers from changing the shared contract — this client CONSUMES the
+committed JSON Schemas, fixtures and `CONFORMANCE_CHECKS` semantics.
+
+### `:core` — `org.payswap.aise.core.adapter` (pure Kotlin, JVM-tested)
+
+- **`AdapterContractVersion`** (A-R1): the `1.0.0` mirror, cross-checked
+  against the committed TypeScript source AND `schemas/manifest.json` by
+  tests, so wire drift is a CI failure. Same-major versions decode;
+  cross-major is a typed refusal — never silently accepted.
+- **`ClientCapabilityProfile` / `TaskCapabilityRequirements` /
+  `CapabilityNegotiation` mirrors** (A-R2): the seven-domain capability
+  declaration, the server-owned requirements set (immutable, read-only) and
+  the negotiation result object — all rendered/parsed by the frozen canonical
+  JSON codec and validated in tests against the committed schemas/fixtures.
+- **`negotiateCapabilities`** (A-R2): the faithful Kotlin mirror of the
+  package's pure negotiation — same domain outcomes
+  (`satisfied | unsupported | unknown`), same overall verdicts
+  (`permitted | degraded | unknown | blocked`, worst-of with impossibility
+  outranking undetermination), same interaction-mode derivation, same VERBATIM
+  reason strings. Byte-pinned against all four committed negotiation
+  fixtures. NO AUTHORITY: it changes capture strategy and operator burden,
+  never an assurance threshold (asserted by tests).
+- **`MobileFieldAdapterProfile.declare(snapshot)`**: the honest
+  `mobile-field` declaration derived from the AISE-006 device snapshot:
+  still+video capture kinds ONLY (the adapter exercises the CameraX
+  still/video binding — no depth API, so no depth kind even on depth-capable
+  hardware; the device fact flows into the limitations verbatim),
+  `persistent-store` offline mode with NO guessed byte bound (an undeclared
+  bound is never invented — byte-bounded requirements negotiate to explicit
+  honest shortfalls), `in-app` notifications, no deep links, GPS never
+  declared (no location permission — AISE-005 decision).
+- **`AdapterConformance` + `MobileAdapterBinding`** (A-R4): the C0–C9
+  conformance runner (pure; the networknt validator + committed schemas are
+  injected test-side) and the mobile binding — the four mirrored objects
+  round-trip through Kotlin domain types; the other semantic objects are
+  carried opaque and read-only (the audit's verbatim-mirror discipline).
+  Sabotage bindings that drop/mutate authoritative fields or claim
+  unsupported modes FAIL explicit checks (discrimination-tested).
+- **`CompatibilityCheckerAlignment`** (A-R3): the recorded alignment between
+  the DEVICE-capture-domain checker (AISE-030, 8 domains, step verdicts) and
+  the CLIENT-platform negotiation (PROD-016, 7 domains, task verdicts) — a
+  total order-preserving vocabulary mapping, identical honest-unknown
+  discipline, impossibility-outranks-undetermination in both, and the two
+  gates are INDEPENDENT (either can block without the other; both directions
+  are proven by tests). The checker stays facts-not-policy.
+- **`FieldJourney`**: the pure journey state machine — field-intent
+  selection (`TaskIntentValue`, the client-authored object) → capability
+  assessment → adaptive mission (`MissionDirective`: exact capture actions,
+  server instructions/mandatory/requirementRefs VERBATIM, honest readiness +
+  burden notes, blocked reasons verbatim) → evidence bookkeeping →
+  submission/resume.
+- **`EvidenceSubmission`**: the resumable submission engine — deterministic
+  idempotency key (sha-256 of the payload), explicit
+  `Deferred(reason, attempts)` when the network is unavailable (a first-class
+  state, never a silent failure), `Submitted(serverRef)` /
+  `Failed(reason)` on typed server answers.
+
+### `:app` — the field-journey runtime and the mission panel
+
+- **`field/FieldJourneyRuntime`**: wires the :core journey to the EXISTING
+  capture controller (which stays the owner of capture truth). Server-owned
+  documents (requirements, mission plan) are PROVISIONED AT BUILD TIME and
+  badged as such in the UI (like the web app's badged demo dataset) until
+  the AISE-030 transport lands; they are consumed read-only. Evidence
+  bookkeeping assigns each new intact session asset to the earliest open gap
+  step with a matching acquisition method — deterministic progress FACTS,
+  never sufficiency/readiness claims.
+- **`field/OfflineUntilSyncTransport`**: this build's submission seam —
+  always explicitly `Unavailable` with the surfaced reason; evidence remains
+  in the durable offline store (sessions + manifests) until the transport
+  arrives.
+- **The mission panel** (Capture screen, extended not replaced): the
+  negotiated verdict banner (blocked reasons and degraded notes rendered
+  VERBATIM — an explicit BLOCKED state, never a generic prompt), the step
+  list with EXACT capture actions and evidence gaps, device blockers, and
+  the submission panel with the explicit offline state.
+
+### What is verified where (PROD-019 additions)
+
+| Verification | Where it runs |
+|---|---|
+| Adapter-contract version mirror == committed TS source == committed schema manifest; same-major/cross-major typed refusals; version-mismatch fixtures refused | `:core:test` |
+| Committed corpus: 27 valid fixtures validate against the committed schemas; 30 deliberately-invalid fixtures rejected; 8 version-mismatch fixtures schema-valid but wire-refused | `:core:test` |
+| C0–C9 conformance with the lossless golden binding AND the mobile adapter binding; 6 sabotage discrimination cases (dropped/mutated authoritative fields, hidden denials/failure/blockers, dishonest modes) | `:core:test` |
+| Kotlin `AUTHORITATIVE_FIELDS` + `CONFORMANCE_CHECKS` mirrors == committed TypeScript source | `:core:test` |
+| Negotiation consumer reproduces ALL committed negotiation fixtures exactly (outcomes, domain order, verbatim reasons, mode order); mode derivation of the three reference profiles; unknown≠unsupported; worst-of; blocked⇒no modes; no-assurance invariants | `:core:test` |
+| Honest profile declaration from device snapshots (camera/depth/IMU cases); profile schema-validity; determinism | `:core:test` |
+| TaskIntent round-trip + schema validity; cross-major refusal | `:core:test` |
+| The representative field journey with offline interruption/resume (journal fold, exactly-once reopen, finalize, schema-validated submission payload, deferred→resumed submission with a stable idempotency key); blocked journeys render verbatim reasons; degradation changes burden not thresholds (mandatory/requirementRefs verbatim) | `:core:test` |
+| A-R3 alignment invariants (total mapping, severity orders, honest-unknown, independent gates, distinct vocabularies) | `:core:test` |
+| Field-journey runtime (journey start, honest profile, evidence bookkeeping, seam deferral/resume, reset) | `:app:test` (JVM; requires the Android SDK to execute) |
 
 ## No-server-authority architectural note
 

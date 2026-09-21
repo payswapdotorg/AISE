@@ -88,6 +88,30 @@ class CaptureSessionController(
         mutex.withLock { openRecord() }
     }
 
+    /**
+     * The manifest text of the most recently completed (FINALIZED/SYNCED)
+     * session — null when none exists. The evidence-payload source for the
+     * field-journey submission seam (PROD-019): the manifest is the completed
+     * session's portable projection (AISE-005 discipline, unchanged).
+     */
+    suspend fun lastFinalizedManifestText(): String? = withIo {
+        mutex.withLock {
+            SessionDirectory.scan(sessionsRoot)
+                .mapNotNull { dir ->
+                    if (!dir.manifestFile.isFile) return@mapNotNull null
+                    val read = JsonlSessionJournal(dir.journalFile).read()
+                    if (read.events.isEmpty()) return@mapNotNull null
+                    val record = runCatching { SessionReplaySession(read.events) }.getOrNull()
+                        ?: return@mapNotNull null
+                    val completed = record.status == CaptureSessionStatus.FINALIZED ||
+                        record.status == CaptureSessionStatus.SYNCED
+                    if (completed) record to dir else null
+                }
+                .maxByOrNull { (record, _) -> record.endedAtUtcMillis ?: record.startedAtUtcMillis }
+                ?.let { (_, dir) -> dir.manifestFile.readText(Charsets.UTF_8) }
+        }
+    }
+
     private fun openRecord(): CaptureSessionRecord? =
         SessionDirectory.scan(sessionsRoot)
             .mapNotNull { dir ->
