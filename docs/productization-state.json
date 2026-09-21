@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-21T00:00:00Z",
+  "lastReconciledAt": "2026-09-21T00:30:00Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -242,10 +242,13 @@
     },
     {
       "id": "PROD-016",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-003"
-      ]
+      ],
+      "mergedSha": "96d5f60",
+      "finalizedAt": "2026-09-21T00:30:00Z",
+      "evidence": "packages/adapter-contract (versioned contract, 15 schemas, 80 fixtures, conformance harness) + spec/client-adapter-contract.md + docs/productization-evidence/PROD-016/{adapter-boundary-audit,compatibility-window,contract-artifacts}.md; delivered via Lead overlay v2 (sha256 f1147c36), merged by the Lead after gates: VERIFY 3577/0 (FIX-001 also fixed the 2 known gaps-wiring flakes), typecheck+lint PASS."
     },
     {
       "id": "PROD-017",
