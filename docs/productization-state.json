@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-21T21:20:00Z",
+  "lastReconciledAt": "2026-09-21T21:35:00Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -364,11 +364,19 @@
     },
     {
       "id": "PROD-025",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-021",
         "PROD-022"
-      ]
+      ],
+      "mergedSha": "9e5aac5",
+      "mergedAt": "2026-09-21T21:35:00Z",
+      "evidence": {
+        "workerChat": "f0beb12f-82f0-4f19-b3a5-554c13270540",
+        "workerCommit": "791b6676c0ebb83780a15b333d86a495659f588d",
+        "harvest": "standard staged delivery (41/41, diffstat-exact 40/11049/0)",
+        "verify": "4438 pass / 0 fail (baseline 4323 + 115)"
+      }
     },
     {
       "id": "PROD-026",
