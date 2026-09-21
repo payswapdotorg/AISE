@@ -1,0 +1,17 @@
+{
+  "name": "@aise/solution-engine",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE deterministic interactive solution engine (PROD-022): applies typed engineering operations (from @aise/solution-contract intents) to proposed states and produces reproducible proposed states, effects and derived quantities. Pure deterministic computation — no network, no clock reads, no randomness, no environment-dependent output, NO write path to authoritative reality (read-only baseline resolution only).",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/shared-contracts": "workspace:*",
+    "@aise/solution-contract": "workspace:*"
+  }
+}

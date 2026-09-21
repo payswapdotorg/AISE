@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@aise/shared-contracts": "workspace:*",
+    "@aise/solution-contract": "workspace:*",
+    "@aise/solution-engine": "workspace:*",
     "postgres": "3.4.5"
   },
   "exports": {

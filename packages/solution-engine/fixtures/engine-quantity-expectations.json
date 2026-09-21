@@ -1,0 +1,222 @@
+[
+  {
+    "intentFixture": "valid-excavation-direct",
+    "operationType": "excavation",
+    "quantities": [
+      {
+        "label": "excavated-soil-volume",
+        "dimension": "volume",
+        "value": 9,
+        "unit": "m3",
+        "direction": "removed",
+        "calculationRef": "aise-solution-engine/quantity/excavation/v1"
+      },
+      {
+        "label": "excavation-footprint",
+        "dimension": "area",
+        "value": 6,
+        "unit": "m2",
+        "direction": "removed",
+        "calculationRef": "aise-solution-engine/quantity/excavation/v1"
+      }
+    ]
+  },
+  {
+    "intentFixture": "valid-backfill",
+    "operationType": "backfill",
+    "quantities": [
+      {
+        "label": "backfill-volume",
+        "dimension": "volume",
+        "value": 9,
+        "unit": "m3",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/backfill/v1"
+      }
+    ]
+  },
+  {
+    "intentFixture": "valid-demolition-removal",
+    "operationType": "demolition-removal",
+    "quantities": [
+      {
+        "label": "removed-volume",
+        "dimension": "volume",
+        "value": 1.2,
+        "unit": "m3",
+        "direction": "removed",
+        "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1"
+      },
+      {
+        "label": "removed-face-area",
+        "dimension": "area",
+        "value": 12,
+        "unit": "m2",
+        "direction": "removed",
+        "calculationRef": "aise-solution-engine/quantity/demolition-removal/v1"
+      }
+    ]
+  },
+  {
+    "intentFixture": "valid-foundation-placement",
+    "operationType": "foundation-placement",
+    "quantities": [
+      {
+        "label": "footing-volume",
+        "dimension": "volume",
+        "value": 1.5,
+        "unit": "m3",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/foundation-placement/v1"
+      },
+      {
+        "label": "footing-plan-area",
+        "dimension": "area",
+        "value": 3,
+        "unit": "m2",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/foundation-placement/v1"
+      }
+    ]
+  },
+  {
+    "intentFixture": "valid-slab-placement",
+    "operationType": "slab-placement",
+    "quantities": [
+      {
+        "label": "slab-volume",
+        "dimension": "volume",
+        "value": 1.8,
+        "unit": "m3",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/slab-placement/v1"
+      },
+      {
+        "label": "slab-plan-area",
+        "dimension": "area",
+        "value": 12,
+        "unit": "m2",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/slab-placement/v1"
+      }
+    ]
+  },
+  {
+    "intentFixture": "valid-block-wall-placement",
+    "operationType": "block-wall-placement",
+    "quantities": [
+      {
+        "label": "wall-volume",
+        "dimension": "volume",
+        "value": 0.5,
+        "unit": "m3",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1"
+      },
+      {
+        "label": "wall-face-area",
+        "dimension": "area",
+        "value": 5,
+        "unit": "m2",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1"
+      },
+      {
+        "label": "block-count",
+        "dimension": "count",
+        "value": 65,
+        "unit": "count",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1"
+      }
+    ]
+  },
+  {
+    "intentFixture": "valid-opening-creation",
+    "operationType": "opening-creation",
+    "quantities": [
+      {
+        "label": "opening-area",
+        "dimension": "area",
+        "value": 1.89,
+        "unit": "m2",
+        "direction": "removed",
+        "calculationRef": "aise-solution-engine/quantity/opening-creation/v1"
+      },
+      {
+        "label": "opening-count",
+        "dimension": "count",
+        "value": 1,
+        "unit": "count",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/opening-creation/v1"
+      }
+    ]
+  },
+  {
+    "intentFixture": "valid-plaster-application",
+    "operationType": "plaster-application",
+    "quantities": [
+      {
+        "label": "plaster-area",
+        "dimension": "area",
+        "value": 12.5,
+        "unit": "m2",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/plaster-application/v1"
+      },
+      {
+        "label": "plaster-volume",
+        "dimension": "volume",
+        "value": 0.375,
+        "unit": "m3",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/plaster-application/v1"
+      }
+    ]
+  },
+  {
+    "intentFixture": "valid-building-service-installation",
+    "operationType": "building-service-installation",
+    "quantities": [
+      {
+        "label": "service-run-length",
+        "dimension": "length",
+        "value": 12,
+        "unit": "m",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/building-service-installation/v1"
+      },
+      {
+        "label": "service-run-count",
+        "dimension": "count",
+        "value": 1,
+        "unit": "count",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/building-service-installation/v1"
+      }
+    ]
+  },
+  {
+    "intentFixture": "valid-finish-application",
+    "operationType": "finish-application",
+    "quantities": [
+      {
+        "label": "finish-area",
+        "dimension": "area",
+        "value": 12.5,
+        "unit": "m2",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/finish-application/v1"
+      },
+      {
+        "label": "finish-volume",
+        "dimension": "volume",
+        "value": 0.025,
+        "unit": "m3",
+        "direction": "added",
+        "calculationRef": "aise-solution-engine/quantity/finish-application/v1"
+      }
+    ]
+  }
+]
