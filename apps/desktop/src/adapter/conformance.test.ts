@@ -34,7 +34,6 @@ import {
   AUTHORITATIVE_FIELDS,
   CONFORMANCE_CHECKS,
   createLosslessBinding,
-  loadCommittedFixtures,
   runConformance,
   REFERENCE_BOQ_REVIEW_REQUIREMENTS,
   REFERENCE_FIELD_DEPTH_CAPTURE_REQUIREMENTS,
@@ -42,6 +41,7 @@ import {
   type AdapterConformanceBinding,
   type ConformanceCorpus,
 } from "@aise/adapter-contract";
+import { loadCommittedFixtures } from "@aise/adapter-contract/fixtures-loader";
 import { createDesktopConformanceBinding, DESKTOP_BINDING_ID } from "./binding";
 import {
   DESKTOP_ADAPTER_PROFILE,

@@ -81,7 +81,6 @@ describe("the public API exposes no authority mutation path", () => {
       "resolveLinesForOperation",
       "assertSolutionLifecycleTransition",
       "checkSolutionContractObject",
-      "loadCommittedFixtures",
       "REFERENCE_BUILDING_DOMAIN",
       "REFERENCE_BUILDING_OPERATION_PROFILE",
       "BUILDING_OPERATION_TYPES",

@@ -168,12 +168,19 @@ The seeded content you just saw is deterministic fixture data the API
 bootstraps on start (the demo tenant, its projects, the demo BOQ import) —
 honest labels, no live capture hardware behind it (§6).
 
-**Known limitation (honest):** opening `http://localhost:4173/` in a plain
-browser at this commit renders a blank page — a module-evaluation defect in
-the adapter seam (`packages/adapter-contract`'s fixture loader re-exported
-into the browser bundle) that was escalated by PROD-026 and is awaiting its
-governed fix in the adapter seam. The server behind the URL is real and
-smoke-proven; the visual experience is the next leg.
+**Fixed by PROD-030 (was a known limitation):** opening
+`http://localhost:4173/` in a plain browser used to render a blank page —
+a module-evaluation defect in the adapter seam (the fixtures loader
+re-exported from the `@aise/adapter-contract` barrel, crashing the browser
+bundle at module init). PROD-030 landed the seam fix (the loader moved to
+the documented `@aise/adapter-contract/fixtures-loader` subpath; the
+barrels a browser imports can no longer reach `node:fs`) and added the
+browser-bundle gate (`tools/web-bundle/`) that builds the bundle, scans it
+for Node-builtin externalization markers and mounts it in a real Chromium
+on every `bun run verify` — history and proof:
+[`docs/productization-evidence/PROD-030/`](productization-evidence/PROD-030/).
+The server behind the URL is real and smoke-proven, and the visual
+experience now boots in a plain browser.
 
 ## 3B. The demo walkthrough — the deployed URL (the product leg)
 
@@ -292,7 +299,7 @@ Where the deeper evidence lives, per wave (all under
 | `demo: FAILED at phase "build"` | Run `bun run build` directly and read the full output; a build without its artifacts is a failure by design. | §7 |
 | `demo: FAILED at phase "start"` (health wait / web wait) | Read the printed tail of `data/demo/server.log` — the API prints its own reason there (port conflict, bad env, invalid `DATABASE_URL`). | §11 |
 | `demo: FAILED at phase "smoke" — port 8787 in use` | A leftover process (often a crashed API). Stop it and re-run `bun run demo`. | §11 |
-| Local web page at `http://localhost:4173/` is blank | The known local-bundle defect at this commit (§3A note). The runtime is fine — use the deployed URL for the visual walk, and the local API legs in §3A. | — |
+| Local web page at `http://localhost:4173/` is blank | FIXED by PROD-030 — the former local-bundle defect (§3A note): the shared-contract barrels no longer re-export the Node-only fixtures loader, and the `tools/web-bundle/` gate proves the built bundle mounts in a real Chromium with zero page errors on every verify run. If you still see a blank page, read the tail of `data/demo/server.log` (a start/build failure, not the bundle). | — |
 | No **Sign in / Enter demo** gate on the deployed app; or auth errors | The deployment enables auth; the demo path needs no credentials. If YOUR local `.env` sets `AISE_AUTH=0`, the gate intentionally does not appear locally. | §5 |
 | `bun run verify` fails | It stops at the first failing step and says which. Run the single steps (`bun run typecheck`, `bun run lint`, `bun run test`) for the full picture. | §9 |
 | Where did my demo data go? | Everything the demo writes is under `data/demo/` (gitignored). `--fresh` deletes exactly that directory. Your real `AISE_DATA_DIR` is untouched. | §11 |
@@ -314,9 +321,12 @@ Where the deeper evidence lives, per wave (all under
   commit, with its two recorded PROD-012 findings, §3B).
 - **Not a hardened internet-facing server.** The local start is Vite's
   production-LIKE preview over the built bundle ([INSTALL.md §7](INSTALL.md)).
-- **Not the local UI at this commit.** The known blank-in-plain-browsers
-  bundle defect (§3A) means the local visual surface is not honestly
-  demonstrable until its governed seam fix lands.
+- **The local visual surface is now demonstrable (PROD-030).** The former
+  blank-in-plain-browsers bundle defect (§3A) is fixed, and the
+  `tools/web-bundle/` gate proves the mount in a real Chromium on every
+  `bun run verify` run — the local UI at this commit is honestly
+  demonstrable (the honest-limitation history:
+  [`docs/productization-evidence/PROD-030/`](productization-evidence/PROD-030/)).
 
 ---
 
