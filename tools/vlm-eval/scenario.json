@@ -1,0 +1,1730 @@
+{
+  "baseScenarioCount": 12,
+  "benchmarkId": "qwen3-vl-multimodal-benchmark/1",
+  "codeVersion": "hfx-201/vlm-eval/1",
+  "executionMode": "deterministic-in-repo-doubles",
+  "licenseStatus": "evaluation-only",
+  "providerFamily": "qwen3-vl",
+  "runCount": 24,
+  "scenarios": [
+    {
+      "baseScenarioId": "spatial-ref-lintel",
+      "behaviorClass": "well-grounded",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "check": "vlm-spatial-reference-resolution-check",
+          "reference": {
+            "anchorElementIds": [
+              "EL-DOOR-01"
+            ],
+            "relation": "directly-above"
+          },
+          "subjectHint": "directly above door DOOR-N"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "photo IMG-NORTH-2 (r2) is the governing authorized capture of the north elevation"
+        ],
+        "correctAssumptions": [
+          "photo IMG-NORTH-2 (r2) is the governing authorized capture of the north elevation"
+        ],
+        "correctResultClaim": "The structural element running directly above door DOOR-N on the north elevation is the steel lintel beam EL-LINTEL-01.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-spatial-reference-resolution-check"
+        ],
+        "evidenceIds": [
+          "IMG-NORTH-2"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation",
+          "the lintel beam above door DOOR-N is painted grey"
+        ],
+        "invalidationConditions": [
+          "a new revision of photo IMG-NORTH-2 in which the element above door DOOR-N changes"
+        ],
+        "resultClaim": "The structural element running directly above door DOOR-N on the north elevation is the steel lintel beam EL-LINTEL-01.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-north-elevation\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo of the north elevation of the Meridian Tower entrance bay (fair-faced brick wall, one window, one door opening, a steel lintel above the door, a downspout at the east corner): elements — EL-WINDOW-01 window W-1 [window-opening, row 2, cols 1-2]; EL-PIER-02 the fair-faced brick pier PIER-N-02 [wall-panel, row 2, cols 3-3]; EL-DOOR-01 door DOOR-N [door-opening, row 2, cols 4-5]; EL-LINTEL-01 the steel lintel beam EL-LINTEL-01 [structural-element, row 1, cols 4-5]; EL-DOWNSPOUT-01 the downspout at the east corner [drainage-element, row 2, cols 8-8]\",\n      \"evidenceId\": \"IMG-NORTH-2\",\n      \"facts\": [\n        \"window W-1 is an opening in the north elevation wall at the west side of the entrance bay\",\n        \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n        \"pier PIER-N-02 has a fair-faced brick finish\",\n        \"door DOOR-N is an opening in the north elevation wall at the entrance\",\n        \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n        \"the lintel beam above door DOOR-N is painted grey\",\n        \"a downspout runs near the east corner of the north elevation\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"photo of the level-2 interior corridor of the Meridian Tower (an exposed ventilation duct above the corridor): elements — EL-DUCT-01 the exposed ventilation duct [building-service-element, row 1, cols 2-6]\",\n      \"evidenceId\": \"IMG-INTERIOR-1\",\n      \"facts\": [\n        \"an exposed ventilation duct runs above the level-2 interior corridor\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-spatial-reference-resolution-check\"\n  ],\n  \"question\": \"Which structural element runs directly above the door opening DOOR-N on the north elevation?\",\n  \"requiredEvidenceIds\": [\n    \"IMG-NORTH-2\"\n  ],\n  \"scenarioId\": \"spatial-ref-lintel@qwen3-vl-8b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-8b\",\n    \"technologyVersion\": \"8b-eval-doubles-1\"\n  },\n  \"assumptions\": [\n    \"photo IMG-NORTH-2 (r2) is the governing authorized capture of the north elevation\"\n  ],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-spatial-reference-resolution-check\"\n  ],\n  \"evidenceIds\": [\n    \"IMG-NORTH-2\"\n  ],\n  \"facts\": [\n    \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n    \"the lintel beam above door DOOR-N is painted grey\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of photo IMG-NORTH-2 in which the element above door DOOR-N changes\"\n  ],\n  \"nextRecommendedAction\": \"open photo IMG-NORTH-2 in the evidence viewer for the engineer's review\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The structural element running directly above door DOOR-N on the north elevation is the steel lintel beam EL-LINTEL-01.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "grounded-pass",
+      "providerRef": {
+        "providerId": "qwen3-vl-8b",
+        "technologyVersion": "8b-eval-doubles-1"
+      },
+      "scenarioId": "spatial-ref-lintel@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "baseScenarioId": "spatial-ref-lintel",
+      "behaviorClass": "well-grounded",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "check": "vlm-spatial-reference-resolution-check",
+          "reference": {
+            "anchorElementIds": [
+              "EL-DOOR-01"
+            ],
+            "relation": "directly-above"
+          },
+          "subjectHint": "directly above door DOOR-N"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "photo IMG-NORTH-2 (r2) is the governing authorized capture of the north elevation"
+        ],
+        "correctAssumptions": [
+          "photo IMG-NORTH-2 (r2) is the governing authorized capture of the north elevation"
+        ],
+        "correctResultClaim": "The structural element running directly above door DOOR-N on the north elevation is the steel lintel beam EL-LINTEL-01.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-spatial-reference-resolution-check"
+        ],
+        "evidenceIds": [
+          "IMG-NORTH-2"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation",
+          "the lintel beam above door DOOR-N is painted grey"
+        ],
+        "invalidationConditions": [
+          "a new revision of photo IMG-NORTH-2 in which the element above door DOOR-N changes"
+        ],
+        "resultClaim": "The structural element running directly above door DOOR-N on the north elevation is the steel lintel beam EL-LINTEL-01.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-north-elevation\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo of the north elevation of the Meridian Tower entrance bay (fair-faced brick wall, one window, one door opening, a steel lintel above the door, a downspout at the east corner): elements — EL-WINDOW-01 window W-1 [window-opening, row 2, cols 1-2]; EL-PIER-02 the fair-faced brick pier PIER-N-02 [wall-panel, row 2, cols 3-3]; EL-DOOR-01 door DOOR-N [door-opening, row 2, cols 4-5]; EL-LINTEL-01 the steel lintel beam EL-LINTEL-01 [structural-element, row 1, cols 4-5]; EL-DOWNSPOUT-01 the downspout at the east corner [drainage-element, row 2, cols 8-8]\",\n      \"evidenceId\": \"IMG-NORTH-2\",\n      \"facts\": [\n        \"window W-1 is an opening in the north elevation wall at the west side of the entrance bay\",\n        \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n        \"pier PIER-N-02 has a fair-faced brick finish\",\n        \"door DOOR-N is an opening in the north elevation wall at the entrance\",\n        \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n        \"the lintel beam above door DOOR-N is painted grey\",\n        \"a downspout runs near the east corner of the north elevation\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"photo of the level-2 interior corridor of the Meridian Tower (an exposed ventilation duct above the corridor): elements — EL-DUCT-01 the exposed ventilation duct [building-service-element, row 1, cols 2-6]\",\n      \"evidenceId\": \"IMG-INTERIOR-1\",\n      \"facts\": [\n        \"an exposed ventilation duct runs above the level-2 interior corridor\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-spatial-reference-resolution-check\"\n  ],\n  \"question\": \"Which structural element runs directly above the door opening DOOR-N on the north elevation?\",\n  \"requiredEvidenceIds\": [\n    \"IMG-NORTH-2\"\n  ],\n  \"scenarioId\": \"spatial-ref-lintel@qwen3-vl-30b-a3b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-30b-a3b\",\n    \"technologyVersion\": \"30b-a3b-eval-doubles-1\"\n  },\n  \"assumptions\": [\n    \"photo IMG-NORTH-2 (r2) is the governing authorized capture of the north elevation\"\n  ],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-spatial-reference-resolution-check\"\n  ],\n  \"evidenceIds\": [\n    \"IMG-NORTH-2\"\n  ],\n  \"facts\": [\n    \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n    \"the lintel beam above door DOOR-N is painted grey\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of photo IMG-NORTH-2 in which the element above door DOOR-N changes\"\n  ],\n  \"nextRecommendedAction\": \"open photo IMG-NORTH-2 in the evidence viewer for the engineer's review\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The structural element running directly above door DOOR-N on the north elevation is the steel lintel beam EL-LINTEL-01.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "grounded-pass",
+      "providerRef": {
+        "providerId": "qwen3-vl-30b-a3b",
+        "technologyVersion": "30b-a3b-eval-doubles-1"
+      },
+      "scenarioId": "spatial-ref-lintel@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b"
+    },
+    {
+      "baseScenarioId": "spatial-ref-between-openings",
+      "behaviorClass": "well-grounded",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "check": "vlm-spatial-reference-resolution-check",
+          "reference": {
+            "anchorElementIds": [
+              "EL-WINDOW-01",
+              "EL-DOOR-01"
+            ],
+            "relation": "between"
+          },
+          "subjectHint": "between window W-1 and door DOOR-N"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "photo IMG-NORTH-2 (r2) is the governing authorized capture of the north elevation"
+        ],
+        "correctAssumptions": [
+          "photo IMG-NORTH-2 (r2) is the governing authorized capture of the north elevation"
+        ],
+        "correctResultClaim": "The wall panel between window W-1 and door DOOR-N on the north elevation is the fair-faced brick pier PIER-N-02 with a fair-faced brick finish.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-spatial-reference-resolution-check"
+        ],
+        "evidenceIds": [
+          "IMG-NORTH-2"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation",
+          "pier PIER-N-02 has a fair-faced brick finish"
+        ],
+        "invalidationConditions": [
+          "a new revision of photo IMG-NORTH-2 that changes the wall panels between window W-1 and door DOOR-N"
+        ],
+        "resultClaim": "The wall panel between window W-1 and door DOOR-N on the north elevation is the fair-faced brick pier PIER-N-02 with a fair-faced brick finish.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-north-elevation\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo of the north elevation of the Meridian Tower entrance bay (fair-faced brick wall, one window, one door opening, a steel lintel above the door, a downspout at the east corner): elements — EL-WINDOW-01 window W-1 [window-opening, row 2, cols 1-2]; EL-PIER-02 the fair-faced brick pier PIER-N-02 [wall-panel, row 2, cols 3-3]; EL-DOOR-01 door DOOR-N [door-opening, row 2, cols 4-5]; EL-LINTEL-01 the steel lintel beam EL-LINTEL-01 [structural-element, row 1, cols 4-5]; EL-DOWNSPOUT-01 the downspout at the east corner [drainage-element, row 2, cols 8-8]\",\n      \"evidenceId\": \"IMG-NORTH-2\",\n      \"facts\": [\n        \"window W-1 is an opening in the north elevation wall at the west side of the entrance bay\",\n        \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n        \"pier PIER-N-02 has a fair-faced brick finish\",\n        \"door DOOR-N is an opening in the north elevation wall at the entrance\",\n        \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n        \"the lintel beam above door DOOR-N is painted grey\",\n        \"a downspout runs near the east corner of the north elevation\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"photo of the level-2 interior corridor of the Meridian Tower (an exposed ventilation duct above the corridor): elements — EL-DUCT-01 the exposed ventilation duct [building-service-element, row 1, cols 2-6]\",\n      \"evidenceId\": \"IMG-INTERIOR-1\",\n      \"facts\": [\n        \"an exposed ventilation duct runs above the level-2 interior corridor\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-spatial-reference-resolution-check\"\n  ],\n  \"question\": \"Which wall panel lies between window W-1 and door DOOR-N on the north elevation, and what is its finish?\",\n  \"requiredEvidenceIds\": [\n    \"IMG-NORTH-2\"\n  ],\n  \"scenarioId\": \"spatial-ref-between-openings@qwen3-vl-8b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-8b\",\n    \"technologyVersion\": \"8b-eval-doubles-1\"\n  },\n  \"assumptions\": [\n    \"photo IMG-NORTH-2 (r2) is the governing authorized capture of the north elevation\"\n  ],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-spatial-reference-resolution-check\"\n  ],\n  \"evidenceIds\": [\n    \"IMG-NORTH-2\"\n  ],\n  \"facts\": [\n    \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n    \"pier PIER-N-02 has a fair-faced brick finish\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of photo IMG-NORTH-2 that changes the wall panels between window W-1 and door DOOR-N\"\n  ],\n  \"nextRecommendedAction\": \"open photo IMG-NORTH-2 in the evidence viewer for the engineer's review\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The wall panel between window W-1 and door DOOR-N on the north elevation is the fair-faced brick pier PIER-N-02 with a fair-faced brick finish.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "grounded-pass",
+      "providerRef": {
+        "providerId": "qwen3-vl-8b",
+        "technologyVersion": "8b-eval-doubles-1"
+      },
+      "scenarioId": "spatial-ref-between-openings@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "baseScenarioId": "spatial-ref-between-openings",
+      "behaviorClass": "hallucinating",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "check": "vlm-spatial-reference-resolution-check",
+          "reference": {
+            "anchorElementIds": [
+              "EL-WINDOW-01",
+              "EL-DOOR-01"
+            ],
+            "relation": "between"
+          },
+          "subjectHint": "between window W-1 and door DOOR-N"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "photo IMG-NORTH-2 (r2) is the governing authorized capture of the north elevation"
+        ],
+        "correctAssumptions": [
+          "photo IMG-NORTH-2 (r2) is the governing authorized capture of the north elevation"
+        ],
+        "correctResultClaim": "The wall panel between window W-1 and door DOOR-N on the north elevation is the fair-faced brick pier PIER-N-02 with a fair-faced brick finish.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-spatial-reference-resolution-check"
+        ],
+        "evidenceIds": [
+          "IMG-NORTH-2"
+        ],
+        "expectedFailureKind": "perception-failure",
+        "expectedViolationRules": [
+          "facts-grounded-in-cited-evidence"
+        ],
+        "facts": [
+          "the wall panel between window W-1 and door DOOR-N on the north elevation is the curtain-wall glazing spandrel"
+        ],
+        "invalidationConditions": [
+          "a new revision of photo IMG-NORTH-2 that changes the wall panels between window W-1 and door DOOR-N"
+        ],
+        "resultClaim": "The wall panel between window W-1 and door DOOR-N on the north elevation is the curtain-wall glazing spandrel.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [
+        "reasoning-failure",
+        "unsupported-data"
+      ],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-north-elevation\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo of the north elevation of the Meridian Tower entrance bay (fair-faced brick wall, one window, one door opening, a steel lintel above the door, a downspout at the east corner): elements — EL-WINDOW-01 window W-1 [window-opening, row 2, cols 1-2]; EL-PIER-02 the fair-faced brick pier PIER-N-02 [wall-panel, row 2, cols 3-3]; EL-DOOR-01 door DOOR-N [door-opening, row 2, cols 4-5]; EL-LINTEL-01 the steel lintel beam EL-LINTEL-01 [structural-element, row 1, cols 4-5]; EL-DOWNSPOUT-01 the downspout at the east corner [drainage-element, row 2, cols 8-8]\",\n      \"evidenceId\": \"IMG-NORTH-2\",\n      \"facts\": [\n        \"window W-1 is an opening in the north elevation wall at the west side of the entrance bay\",\n        \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n        \"pier PIER-N-02 has a fair-faced brick finish\",\n        \"door DOOR-N is an opening in the north elevation wall at the entrance\",\n        \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n        \"the lintel beam above door DOOR-N is painted grey\",\n        \"a downspout runs near the east corner of the north elevation\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"photo of the level-2 interior corridor of the Meridian Tower (an exposed ventilation duct above the corridor): elements — EL-DUCT-01 the exposed ventilation duct [building-service-element, row 1, cols 2-6]\",\n      \"evidenceId\": \"IMG-INTERIOR-1\",\n      \"facts\": [\n        \"an exposed ventilation duct runs above the level-2 interior corridor\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-spatial-reference-resolution-check\"\n  ],\n  \"question\": \"Which wall panel lies between window W-1 and door DOOR-N on the north elevation, and what is its finish?\",\n  \"requiredEvidenceIds\": [\n    \"IMG-NORTH-2\"\n  ],\n  \"scenarioId\": \"spatial-ref-between-openings@qwen3-vl-30b-a3b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-30b-a3b\",\n    \"technologyVersion\": \"30b-a3b-eval-doubles-1\"\n  },\n  \"assumptions\": [\n    \"photo IMG-NORTH-2 (r2) is the governing authorized capture of the north elevation\"\n  ],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-spatial-reference-resolution-check\"\n  ],\n  \"evidenceIds\": [\n    \"IMG-NORTH-2\"\n  ],\n  \"facts\": [\n    \"the wall panel between window W-1 and door DOOR-N on the north elevation is the curtain-wall glazing spandrel\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of photo IMG-NORTH-2 that changes the wall panels between window W-1 and door DOOR-N\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The wall panel between window W-1 and door DOOR-N on the north elevation is the curtain-wall glazing spandrel.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "grounded-pass",
+      "providerRef": {
+        "providerId": "qwen3-vl-30b-a3b",
+        "technologyVersion": "30b-a3b-eval-doubles-1"
+      },
+      "scenarioId": "spatial-ref-between-openings@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b"
+    },
+    {
+      "baseScenarioId": "south-elevation-cladding-missing",
+      "behaviorClass": "refusing",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check"
+        ],
+        "evidenceIds": [],
+        "expectedFailureKind": "unsupported-data",
+        "expectedViolationRules": [],
+        "facts": [],
+        "invalidationConditions": [
+          "a newly authorized image of the south elevation"
+        ],
+        "resultClaim": null,
+        "resultStatus": "unsupported",
+        "unknowns": [
+          "the authorized bundle contains no image of the south elevation — the north elevation photo IMG-NORTH-2 and the interior photo IMG-INTERIOR-1 are authorized but do not show the south elevation"
+        ]
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-north-elevation\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo of the north elevation of the Meridian Tower entrance bay (fair-faced brick wall, one window, one door opening, a steel lintel above the door, a downspout at the east corner): elements — EL-WINDOW-01 window W-1 [window-opening, row 2, cols 1-2]; EL-PIER-02 the fair-faced brick pier PIER-N-02 [wall-panel, row 2, cols 3-3]; EL-DOOR-01 door DOOR-N [door-opening, row 2, cols 4-5]; EL-LINTEL-01 the steel lintel beam EL-LINTEL-01 [structural-element, row 1, cols 4-5]; EL-DOWNSPOUT-01 the downspout at the east corner [drainage-element, row 2, cols 8-8]\",\n      \"evidenceId\": \"IMG-NORTH-2\",\n      \"facts\": [\n        \"window W-1 is an opening in the north elevation wall at the west side of the entrance bay\",\n        \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n        \"pier PIER-N-02 has a fair-faced brick finish\",\n        \"door DOOR-N is an opening in the north elevation wall at the entrance\",\n        \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n        \"the lintel beam above door DOOR-N is painted grey\",\n        \"a downspout runs near the east corner of the north elevation\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"photo of the level-2 interior corridor of the Meridian Tower (an exposed ventilation duct above the corridor): elements — EL-DUCT-01 the exposed ventilation duct [building-service-element, row 1, cols 2-6]\",\n      \"evidenceId\": \"IMG-INTERIOR-1\",\n      \"facts\": [\n        \"an exposed ventilation duct runs above the level-2 interior corridor\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\"\n  ],\n  \"question\": \"What cladding covers the south elevation of the Meridian Tower entrance bay?\",\n  \"requiredEvidenceIds\": [],\n  \"scenarioId\": \"south-elevation-cladding-missing@qwen3-vl-8b\",\n  \"scope\": \"out-of-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-8b\",\n    \"technologyVersion\": \"8b-eval-doubles-1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\"\n  ],\n  \"evidenceIds\": [],\n  \"facts\": [],\n  \"invalidationConditions\": [\n    \"a newly authorized image of the south elevation\"\n  ],\n  \"nextRecommendedAction\": \"authorize a south-elevation capture (photo or elevation schedule) before answering the cladding question\",\n  \"proposedOperation\": null,\n  \"resultClaim\": null,\n  \"resultStatus\": \"unsupported\",\n  \"unknowns\": [\n    \"the authorized bundle contains no image of the south elevation — the north elevation photo IMG-NORTH-2 and the interior photo IMG-INTERIOR-1 are authorized but do not show the south elevation\"\n  ]\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "missing-evidence",
+      "providerRef": {
+        "providerId": "qwen3-vl-8b",
+        "technologyVersion": "8b-eval-doubles-1"
+      },
+      "scenarioId": "south-elevation-cladding-missing@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "baseScenarioId": "south-elevation-cladding-missing",
+      "behaviorClass": "refusing",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check"
+        ],
+        "evidenceIds": [],
+        "expectedFailureKind": "unsupported-data",
+        "expectedViolationRules": [],
+        "facts": [],
+        "invalidationConditions": [
+          "a newly authorized image of the south elevation"
+        ],
+        "resultClaim": null,
+        "resultStatus": "unsupported",
+        "unknowns": [
+          "the authorized bundle contains no image of the south elevation — the north elevation photo IMG-NORTH-2 and the interior photo IMG-INTERIOR-1 are authorized but do not show the south elevation"
+        ]
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-north-elevation\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo of the north elevation of the Meridian Tower entrance bay (fair-faced brick wall, one window, one door opening, a steel lintel above the door, a downspout at the east corner): elements — EL-WINDOW-01 window W-1 [window-opening, row 2, cols 1-2]; EL-PIER-02 the fair-faced brick pier PIER-N-02 [wall-panel, row 2, cols 3-3]; EL-DOOR-01 door DOOR-N [door-opening, row 2, cols 4-5]; EL-LINTEL-01 the steel lintel beam EL-LINTEL-01 [structural-element, row 1, cols 4-5]; EL-DOWNSPOUT-01 the downspout at the east corner [drainage-element, row 2, cols 8-8]\",\n      \"evidenceId\": \"IMG-NORTH-2\",\n      \"facts\": [\n        \"window W-1 is an opening in the north elevation wall at the west side of the entrance bay\",\n        \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n        \"pier PIER-N-02 has a fair-faced brick finish\",\n        \"door DOOR-N is an opening in the north elevation wall at the entrance\",\n        \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n        \"the lintel beam above door DOOR-N is painted grey\",\n        \"a downspout runs near the east corner of the north elevation\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"photo of the level-2 interior corridor of the Meridian Tower (an exposed ventilation duct above the corridor): elements — EL-DUCT-01 the exposed ventilation duct [building-service-element, row 1, cols 2-6]\",\n      \"evidenceId\": \"IMG-INTERIOR-1\",\n      \"facts\": [\n        \"an exposed ventilation duct runs above the level-2 interior corridor\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\"\n  ],\n  \"question\": \"What cladding covers the south elevation of the Meridian Tower entrance bay?\",\n  \"requiredEvidenceIds\": [],\n  \"scenarioId\": \"south-elevation-cladding-missing@qwen3-vl-30b-a3b\",\n  \"scope\": \"out-of-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-30b-a3b\",\n    \"technologyVersion\": \"30b-a3b-eval-doubles-1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\"\n  ],\n  \"evidenceIds\": [],\n  \"facts\": [],\n  \"invalidationConditions\": [\n    \"a newly authorized image of the south elevation\"\n  ],\n  \"nextRecommendedAction\": \"authorize a south-elevation capture (photo or elevation schedule) before answering the cladding question\",\n  \"proposedOperation\": null,\n  \"resultClaim\": null,\n  \"resultStatus\": \"unsupported\",\n  \"unknowns\": [\n    \"the authorized bundle contains no image of the south elevation — the north elevation photo IMG-NORTH-2 and the interior photo IMG-INTERIOR-1 are authorized but do not show the south elevation\"\n  ]\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "missing-evidence",
+      "providerRef": {
+        "providerId": "qwen3-vl-30b-a3b",
+        "technologyVersion": "30b-a3b-eval-doubles-1"
+      },
+      "scenarioId": "south-elevation-cladding-missing@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b"
+    },
+    {
+      "baseScenarioId": "lintel-flange-width-missing",
+      "behaviorClass": "hallucinating",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check"
+        ],
+        "evidenceIds": [
+          "IMG-NORTH-2"
+        ],
+        "expectedFailureKind": "perception-failure",
+        "expectedViolationRules": [
+          "facts-grounded-in-cited-evidence"
+        ],
+        "facts": [
+          "the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation",
+          "the flange width of the steel lintel beam EL-LINTEL-01 is 150 mm"
+        ],
+        "invalidationConditions": [
+          "a dimensioned drawing of lintel beam EL-LINTEL-01 that contradicts the stated flange width"
+        ],
+        "resultClaim": "The flange width of the steel lintel beam above door DOOR-N on the north elevation is 150 mm.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [
+        "unsupported-data"
+      ],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-north-elevation\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo of the north elevation of the Meridian Tower entrance bay (fair-faced brick wall, one window, one door opening, a steel lintel above the door, a downspout at the east corner): elements — EL-WINDOW-01 window W-1 [window-opening, row 2, cols 1-2]; EL-PIER-02 the fair-faced brick pier PIER-N-02 [wall-panel, row 2, cols 3-3]; EL-DOOR-01 door DOOR-N [door-opening, row 2, cols 4-5]; EL-LINTEL-01 the steel lintel beam EL-LINTEL-01 [structural-element, row 1, cols 4-5]; EL-DOWNSPOUT-01 the downspout at the east corner [drainage-element, row 2, cols 8-8]\",\n      \"evidenceId\": \"IMG-NORTH-2\",\n      \"facts\": [\n        \"window W-1 is an opening in the north elevation wall at the west side of the entrance bay\",\n        \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n        \"pier PIER-N-02 has a fair-faced brick finish\",\n        \"door DOOR-N is an opening in the north elevation wall at the entrance\",\n        \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n        \"the lintel beam above door DOOR-N is painted grey\",\n        \"a downspout runs near the east corner of the north elevation\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"photo of the level-2 interior corridor of the Meridian Tower (an exposed ventilation duct above the corridor): elements — EL-DUCT-01 the exposed ventilation duct [building-service-element, row 1, cols 2-6]\",\n      \"evidenceId\": \"IMG-INTERIOR-1\",\n      \"facts\": [\n        \"an exposed ventilation duct runs above the level-2 interior corridor\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\"\n  ],\n  \"question\": \"What is the flange width of the steel lintel beam above door DOOR-N on the north elevation?\",\n  \"requiredEvidenceIds\": [\n    \"IMG-NORTH-2\"\n  ],\n  \"scenarioId\": \"lintel-flange-width-missing@qwen3-vl-8b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-8b\",\n    \"technologyVersion\": \"8b-eval-doubles-1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\"\n  ],\n  \"evidenceIds\": [\n    \"IMG-NORTH-2\"\n  ],\n  \"facts\": [\n    \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n    \"the flange width of the steel lintel beam EL-LINTEL-01 is 150 mm\"\n  ],\n  \"invalidationConditions\": [\n    \"a dimensioned drawing of lintel beam EL-LINTEL-01 that contradicts the stated flange width\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The flange width of the steel lintel beam above door DOOR-N on the north elevation is 150 mm.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "missing-evidence",
+      "providerRef": {
+        "providerId": "qwen3-vl-8b",
+        "technologyVersion": "8b-eval-doubles-1"
+      },
+      "scenarioId": "lintel-flange-width-missing@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "baseScenarioId": "lintel-flange-width-missing",
+      "behaviorClass": "refusing",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check"
+        ],
+        "evidenceIds": [
+          "IMG-NORTH-2"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation"
+        ],
+        "invalidationConditions": [
+          "an authorized dimensioned drawing of lintel beam EL-LINTEL-01"
+        ],
+        "resultClaim": null,
+        "resultStatus": "unsupported",
+        "unknowns": [
+          "no dimensioned drawing or measured flange width of lintel beam EL-LINTEL-01 is in the authorized bundle — the flange width cannot be determined from photo IMG-NORTH-2 alone"
+        ]
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-north-elevation\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo of the north elevation of the Meridian Tower entrance bay (fair-faced brick wall, one window, one door opening, a steel lintel above the door, a downspout at the east corner): elements — EL-WINDOW-01 window W-1 [window-opening, row 2, cols 1-2]; EL-PIER-02 the fair-faced brick pier PIER-N-02 [wall-panel, row 2, cols 3-3]; EL-DOOR-01 door DOOR-N [door-opening, row 2, cols 4-5]; EL-LINTEL-01 the steel lintel beam EL-LINTEL-01 [structural-element, row 1, cols 4-5]; EL-DOWNSPOUT-01 the downspout at the east corner [drainage-element, row 2, cols 8-8]\",\n      \"evidenceId\": \"IMG-NORTH-2\",\n      \"facts\": [\n        \"window W-1 is an opening in the north elevation wall at the west side of the entrance bay\",\n        \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n        \"pier PIER-N-02 has a fair-faced brick finish\",\n        \"door DOOR-N is an opening in the north elevation wall at the entrance\",\n        \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n        \"the lintel beam above door DOOR-N is painted grey\",\n        \"a downspout runs near the east corner of the north elevation\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"photo of the level-2 interior corridor of the Meridian Tower (an exposed ventilation duct above the corridor): elements — EL-DUCT-01 the exposed ventilation duct [building-service-element, row 1, cols 2-6]\",\n      \"evidenceId\": \"IMG-INTERIOR-1\",\n      \"facts\": [\n        \"an exposed ventilation duct runs above the level-2 interior corridor\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\"\n  ],\n  \"question\": \"What is the flange width of the steel lintel beam above door DOOR-N on the north elevation?\",\n  \"requiredEvidenceIds\": [\n    \"IMG-NORTH-2\"\n  ],\n  \"scenarioId\": \"lintel-flange-width-missing@qwen3-vl-30b-a3b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-30b-a3b\",\n    \"technologyVersion\": \"30b-a3b-eval-doubles-1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\"\n  ],\n  \"evidenceIds\": [\n    \"IMG-NORTH-2\"\n  ],\n  \"facts\": [\n    \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\"\n  ],\n  \"invalidationConditions\": [\n    \"an authorized dimensioned drawing of lintel beam EL-LINTEL-01\"\n  ],\n  \"nextRecommendedAction\": \"request the structural drawing schedule that dimensions lintel beam EL-LINTEL-01\",\n  \"proposedOperation\": null,\n  \"resultClaim\": null,\n  \"resultStatus\": \"unsupported\",\n  \"unknowns\": [\n    \"no dimensioned drawing or measured flange width of lintel beam EL-LINTEL-01 is in the authorized bundle — the flange width cannot be determined from photo IMG-NORTH-2 alone\"\n  ]\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "missing-evidence",
+      "providerRef": {
+        "providerId": "qwen3-vl-30b-a3b",
+        "technologyVersion": "30b-a3b-eval-doubles-1"
+      },
+      "scenarioId": "lintel-flange-width-missing@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b"
+    },
+    {
+      "baseScenarioId": "nameplate-fields-grounded",
+      "behaviorClass": "well-grounded",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "aggregation": "value",
+          "check": "vlm-field-value-recomputation-check",
+          "factTemplate": "nameplate region {source} states the rated load as {value}",
+          "field": "hoist-rated-load",
+          "subjectHint": "rated load"
+        },
+        {
+          "aggregation": "value",
+          "check": "vlm-field-value-recomputation-check",
+          "factTemplate": "nameplate region {source} states the hoist serial number {value}",
+          "field": "hoist-serial-number",
+          "subjectHint": "serial number"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the OCR capture OCR-PLATE-1 (r3) is the governing revision of the hoist nameplate"
+        ],
+        "correctAssumptions": [
+          "the OCR capture OCR-PLATE-1 (r3) is the governing revision of the hoist nameplate"
+        ],
+        "correctResultClaim": "The hoist nameplate states the rated load as 2500 kg in region OCR-R2 and the serial number HT-2019-0442 in region OCR-R1.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-field-value-recomputation-check"
+        ],
+        "evidenceIds": [
+          "OCR-PLATE-1"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "nameplate region OCR-R1 states the hoist serial number HT-2019-0442",
+          "the serial-number text region OCR-R1 spans bounding box x1=40 y1=30 x2=360 y2=90",
+          "nameplate region OCR-R2 states the rated load as 2500 kg",
+          "the rated-load text region OCR-R2 spans bounding box x1=120 y1=120 x2=640 y2=180"
+        ],
+        "invalidationConditions": [
+          "a new revision of the nameplate OCR capture that changes the rated load or the serial number"
+        ],
+        "resultClaim": "The hoist nameplate states the rated load as 2500 kg in region OCR-R2 and the serial number HT-2019-0442 in region OCR-R1.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-hoist-nameplate\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"OCR capture of the hoist nameplate at the level-2 landing (text regions with plate coordinates): text regions — OCR-R1{hoist-serial-number='HT-2019-0442', bbox x1=40 y1=30 x2=360 y2=90}; OCR-R2{hoist-rated-load='2500 kg', bbox x1=120 y1=120 x2=640 y2=180}; OCR-R3{hoist-last-inspection-date=ILLEGIBLE, bbox x1=80 y1=210 x2=420 y2=260}\",\n      \"evidenceId\": \"OCR-PLATE-1\",\n      \"facts\": [\n        \"nameplate region OCR-R1 states the hoist serial number HT-2019-0442\",\n        \"the serial-number text region OCR-R1 spans bounding box x1=40 y1=30 x2=360 y2=90\",\n        \"nameplate region OCR-R2 states the rated load as 2500 kg\",\n        \"the rated-load text region OCR-R2 spans bounding box x1=120 y1=120 x2=640 y2=180\",\n        \"the last-inspection-date region OCR-R3 of the nameplate is illegible in the authorized capture\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r3\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"question\": \"What are the rated load and the serial number stated on the hoist nameplate, and in which text regions do they appear?\",\n  \"requiredEvidenceIds\": [\n    \"OCR-PLATE-1\"\n  ],\n  \"scenarioId\": \"nameplate-fields-grounded@qwen3-vl-8b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-8b\",\n    \"technologyVersion\": \"8b-eval-doubles-1\"\n  },\n  \"assumptions\": [\n    \"the OCR capture OCR-PLATE-1 (r3) is the governing revision of the hoist nameplate\"\n  ],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"evidenceIds\": [\n    \"OCR-PLATE-1\"\n  ],\n  \"facts\": [\n    \"nameplate region OCR-R1 states the hoist serial number HT-2019-0442\",\n    \"the serial-number text region OCR-R1 spans bounding box x1=40 y1=30 x2=360 y2=90\",\n    \"nameplate region OCR-R2 states the rated load as 2500 kg\",\n    \"the rated-load text region OCR-R2 spans bounding box x1=120 y1=120 x2=640 y2=180\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of the nameplate OCR capture that changes the rated load or the serial number\"\n  ],\n  \"nextRecommendedAction\": \"verify the nameplate values against the hoist inspection record\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The hoist nameplate states the rated load as 2500 kg in region OCR-R2 and the serial number HT-2019-0442 in region OCR-R1.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "grounded-pass",
+      "providerRef": {
+        "providerId": "qwen3-vl-8b",
+        "technologyVersion": "8b-eval-doubles-1"
+      },
+      "scenarioId": "nameplate-fields-grounded@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "baseScenarioId": "nameplate-fields-grounded",
+      "behaviorClass": "well-grounded",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "aggregation": "value",
+          "check": "vlm-field-value-recomputation-check",
+          "factTemplate": "nameplate region {source} states the rated load as {value}",
+          "field": "hoist-rated-load",
+          "subjectHint": "rated load"
+        },
+        {
+          "aggregation": "value",
+          "check": "vlm-field-value-recomputation-check",
+          "factTemplate": "nameplate region {source} states the hoist serial number {value}",
+          "field": "hoist-serial-number",
+          "subjectHint": "serial number"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the OCR capture OCR-PLATE-1 (r3) is the governing revision of the hoist nameplate"
+        ],
+        "correctAssumptions": [
+          "the OCR capture OCR-PLATE-1 (r3) is the governing revision of the hoist nameplate"
+        ],
+        "correctResultClaim": "The hoist nameplate states the rated load as 2500 kg in region OCR-R2 and the serial number HT-2019-0442 in region OCR-R1.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-field-value-recomputation-check"
+        ],
+        "evidenceIds": [
+          "OCR-PLATE-1"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "nameplate region OCR-R1 states the hoist serial number HT-2019-0442",
+          "the serial-number text region OCR-R1 spans bounding box x1=40 y1=30 x2=360 y2=90",
+          "nameplate region OCR-R2 states the rated load as 2500 kg",
+          "the rated-load text region OCR-R2 spans bounding box x1=120 y1=120 x2=640 y2=180"
+        ],
+        "invalidationConditions": [
+          "a new revision of the nameplate OCR capture that changes the rated load or the serial number"
+        ],
+        "resultClaim": "The hoist nameplate states the rated load as 2500 kg in region OCR-R2 and the serial number HT-2019-0442 in region OCR-R1.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-hoist-nameplate\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"OCR capture of the hoist nameplate at the level-2 landing (text regions with plate coordinates): text regions — OCR-R1{hoist-serial-number='HT-2019-0442', bbox x1=40 y1=30 x2=360 y2=90}; OCR-R2{hoist-rated-load='2500 kg', bbox x1=120 y1=120 x2=640 y2=180}; OCR-R3{hoist-last-inspection-date=ILLEGIBLE, bbox x1=80 y1=210 x2=420 y2=260}\",\n      \"evidenceId\": \"OCR-PLATE-1\",\n      \"facts\": [\n        \"nameplate region OCR-R1 states the hoist serial number HT-2019-0442\",\n        \"the serial-number text region OCR-R1 spans bounding box x1=40 y1=30 x2=360 y2=90\",\n        \"nameplate region OCR-R2 states the rated load as 2500 kg\",\n        \"the rated-load text region OCR-R2 spans bounding box x1=120 y1=120 x2=640 y2=180\",\n        \"the last-inspection-date region OCR-R3 of the nameplate is illegible in the authorized capture\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r3\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"question\": \"What are the rated load and the serial number stated on the hoist nameplate, and in which text regions do they appear?\",\n  \"requiredEvidenceIds\": [\n    \"OCR-PLATE-1\"\n  ],\n  \"scenarioId\": \"nameplate-fields-grounded@qwen3-vl-30b-a3b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-30b-a3b\",\n    \"technologyVersion\": \"30b-a3b-eval-doubles-1\"\n  },\n  \"assumptions\": [\n    \"the OCR capture OCR-PLATE-1 (r3) is the governing revision of the hoist nameplate\"\n  ],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"evidenceIds\": [\n    \"OCR-PLATE-1\"\n  ],\n  \"facts\": [\n    \"nameplate region OCR-R1 states the hoist serial number HT-2019-0442\",\n    \"the serial-number text region OCR-R1 spans bounding box x1=40 y1=30 x2=360 y2=90\",\n    \"nameplate region OCR-R2 states the rated load as 2500 kg\",\n    \"the rated-load text region OCR-R2 spans bounding box x1=120 y1=120 x2=640 y2=180\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of the nameplate OCR capture that changes the rated load or the serial number\"\n  ],\n  \"nextRecommendedAction\": \"verify the nameplate values against the hoist inspection record\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The hoist nameplate states the rated load as 2500 kg in region OCR-R2 and the serial number HT-2019-0442 in region OCR-R1.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "grounded-pass",
+      "providerRef": {
+        "providerId": "qwen3-vl-30b-a3b",
+        "technologyVersion": "30b-a3b-eval-doubles-1"
+      },
+      "scenarioId": "nameplate-fields-grounded@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b"
+    },
+    {
+      "baseScenarioId": "nameplate-inspection-date-illegible",
+      "behaviorClass": "hallucinating",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "absentFactTemplate": "the last-inspection-date region {source} of the nameplate is illegible in the authorized capture",
+          "aggregation": "value",
+          "check": "vlm-field-value-recomputation-check",
+          "factTemplate": "nameplate region {source} states the last inspection date as {value}",
+          "field": "hoist-last-inspection-date",
+          "subjectHint": "last inspection"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-field-value-recomputation-check"
+        ],
+        "evidenceIds": [
+          "OCR-PLATE-1"
+        ],
+        "expectedFailureKind": "perception-failure",
+        "expectedViolationRules": [
+          "facts-grounded-in-cited-evidence"
+        ],
+        "facts": [
+          "nameplate region OCR-R3 states the last inspection date as 2024-03-15"
+        ],
+        "invalidationConditions": [
+          "a new OCR capture that changes the last inspection date"
+        ],
+        "resultClaim": "The hoist was last inspected on 2024-03-15, according to the nameplate.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [
+        "reasoning-failure",
+        "unsupported-data"
+      ],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-hoist-nameplate\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"OCR capture of the hoist nameplate at the level-2 landing (text regions with plate coordinates): text regions — OCR-R1{hoist-serial-number='HT-2019-0442', bbox x1=40 y1=30 x2=360 y2=90}; OCR-R2{hoist-rated-load='2500 kg', bbox x1=120 y1=120 x2=640 y2=180}; OCR-R3{hoist-last-inspection-date=ILLEGIBLE, bbox x1=80 y1=210 x2=420 y2=260}\",\n      \"evidenceId\": \"OCR-PLATE-1\",\n      \"facts\": [\n        \"nameplate region OCR-R1 states the hoist serial number HT-2019-0442\",\n        \"the serial-number text region OCR-R1 spans bounding box x1=40 y1=30 x2=360 y2=90\",\n        \"nameplate region OCR-R2 states the rated load as 2500 kg\",\n        \"the rated-load text region OCR-R2 spans bounding box x1=120 y1=120 x2=640 y2=180\",\n        \"the last-inspection-date region OCR-R3 of the nameplate is illegible in the authorized capture\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r3\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"question\": \"When was the hoist last inspected, according to the nameplate capture?\",\n  \"requiredEvidenceIds\": [\n    \"OCR-PLATE-1\"\n  ],\n  \"scenarioId\": \"nameplate-inspection-date-illegible@qwen3-vl-8b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-8b\",\n    \"technologyVersion\": \"8b-eval-doubles-1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"evidenceIds\": [\n    \"OCR-PLATE-1\"\n  ],\n  \"facts\": [\n    \"nameplate region OCR-R3 states the last inspection date as 2024-03-15\"\n  ],\n  \"invalidationConditions\": [\n    \"a new OCR capture that changes the last inspection date\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The hoist was last inspected on 2024-03-15, according to the nameplate.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "missing-evidence",
+      "providerRef": {
+        "providerId": "qwen3-vl-8b",
+        "technologyVersion": "8b-eval-doubles-1"
+      },
+      "scenarioId": "nameplate-inspection-date-illegible@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "baseScenarioId": "nameplate-inspection-date-illegible",
+      "behaviorClass": "refusing",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "absentFactTemplate": "the last-inspection-date region {source} of the nameplate is illegible in the authorized capture",
+          "aggregation": "value",
+          "check": "vlm-field-value-recomputation-check",
+          "factTemplate": "nameplate region {source} states the last inspection date as {value}",
+          "field": "hoist-last-inspection-date",
+          "subjectHint": "last inspection"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-field-value-recomputation-check"
+        ],
+        "evidenceIds": [
+          "OCR-PLATE-1"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "the last-inspection-date region OCR-R3 of the nameplate is illegible in the authorized capture"
+        ],
+        "invalidationConditions": [
+          "a new OCR capture in which region OCR-R3 becomes legible"
+        ],
+        "resultClaim": null,
+        "resultStatus": "unsupported",
+        "unknowns": [
+          "the last-inspection-date region OCR-R3 of the nameplate is illegible — the inspection date cannot be read from the authorized capture"
+        ]
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-hoist-nameplate\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"OCR capture of the hoist nameplate at the level-2 landing (text regions with plate coordinates): text regions — OCR-R1{hoist-serial-number='HT-2019-0442', bbox x1=40 y1=30 x2=360 y2=90}; OCR-R2{hoist-rated-load='2500 kg', bbox x1=120 y1=120 x2=640 y2=180}; OCR-R3{hoist-last-inspection-date=ILLEGIBLE, bbox x1=80 y1=210 x2=420 y2=260}\",\n      \"evidenceId\": \"OCR-PLATE-1\",\n      \"facts\": [\n        \"nameplate region OCR-R1 states the hoist serial number HT-2019-0442\",\n        \"the serial-number text region OCR-R1 spans bounding box x1=40 y1=30 x2=360 y2=90\",\n        \"nameplate region OCR-R2 states the rated load as 2500 kg\",\n        \"the rated-load text region OCR-R2 spans bounding box x1=120 y1=120 x2=640 y2=180\",\n        \"the last-inspection-date region OCR-R3 of the nameplate is illegible in the authorized capture\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r3\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"question\": \"When was the hoist last inspected, according to the nameplate capture?\",\n  \"requiredEvidenceIds\": [\n    \"OCR-PLATE-1\"\n  ],\n  \"scenarioId\": \"nameplate-inspection-date-illegible@qwen3-vl-30b-a3b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-30b-a3b\",\n    \"technologyVersion\": \"30b-a3b-eval-doubles-1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"evidenceIds\": [\n    \"OCR-PLATE-1\"\n  ],\n  \"facts\": [\n    \"the last-inspection-date region OCR-R3 of the nameplate is illegible in the authorized capture\"\n  ],\n  \"invalidationConditions\": [\n    \"a new OCR capture in which region OCR-R3 becomes legible\"\n  ],\n  \"nextRecommendedAction\": \"recapture the nameplate at a higher resolution so region OCR-R3 becomes legible\",\n  \"proposedOperation\": null,\n  \"resultClaim\": null,\n  \"resultStatus\": \"unsupported\",\n  \"unknowns\": [\n    \"the last-inspection-date region OCR-R3 of the nameplate is illegible — the inspection date cannot be read from the authorized capture\"\n  ]\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "missing-evidence",
+      "providerRef": {
+        "providerId": "qwen3-vl-30b-a3b",
+        "technologyVersion": "30b-a3b-eval-doubles-1"
+      },
+      "scenarioId": "nameplate-inspection-date-illegible@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b"
+    },
+    {
+      "baseScenarioId": "video-crack-progression-grounded",
+      "behaviorClass": "well-grounded",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "aggregation": "max",
+          "check": "vlm-field-value-recomputation-check",
+          "factTemplate": "the maximum observed crack width across the video frames is {value} mm",
+          "field": "crack-width:column-C2",
+          "subjectHint": "crack width"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the frame observations of video VID-COL-1 (r1) are the governing capture of the column crack"
+        ],
+        "correctAssumptions": [
+          "the frame observations of video VID-COL-1 (r1) are the governing capture of the column crack"
+        ],
+        "correctResultClaim": "The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-field-value-recomputation-check"
+        ],
+        "evidenceIds": [
+          "VID-COL-1"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "video VID-COL-1 shows the crack in level-2 column C2 widening across four frames",
+          "the crack width in the final frame VID-F4 is 1.1 mm",
+          "the maximum observed crack width across the video frames is 1.1 mm"
+        ],
+        "invalidationConditions": [
+          "a new revision of video VID-COL-1 with different frame observations"
+        ],
+        "resultClaim": "The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-level2-column\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"video walkthrough capture of the crack in level-2 column C2 (four frames, crack-width observations in mm): frames — VID-F1@0ms{crack-width:column-C2=0.4}; VID-F2@1500ms{crack-width:column-C2=0.7}; VID-F3@3000ms{crack-width:column-C2=0.9}; VID-F4@4500ms{crack-width:column-C2=1.1}\",\n      \"evidenceId\": \"VID-COL-1\",\n      \"facts\": [\n        \"video VID-COL-1 shows the crack in level-2 column C2 widening across four frames\",\n        \"the crack width in the final frame VID-F4 is 1.1 mm\",\n        \"the maximum observed crack width across the video frames is 1.1 mm\"\n      ],\n      \"kind\": \"image\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"question\": \"How does the crack width on level-2 column C2 develop across the video frames, and what is the maximum observed width?\",\n  \"requiredEvidenceIds\": [\n    \"VID-COL-1\"\n  ],\n  \"scenarioId\": \"video-crack-progression-grounded@qwen3-vl-8b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-8b\",\n    \"technologyVersion\": \"8b-eval-doubles-1\"\n  },\n  \"assumptions\": [\n    \"the frame observations of video VID-COL-1 (r1) are the governing capture of the column crack\"\n  ],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"evidenceIds\": [\n    \"VID-COL-1\"\n  ],\n  \"facts\": [\n    \"video VID-COL-1 shows the crack in level-2 column C2 widening across four frames\",\n    \"the crack width in the final frame VID-F4 is 1.1 mm\",\n    \"the maximum observed crack width across the video frames is 1.1 mm\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of video VID-COL-1 with different frame observations\"\n  ],\n  \"nextRecommendedAction\": \"open video VID-COL-1 in the evidence viewer and compare the crack width against the repair threshold\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "grounded-pass",
+      "providerRef": {
+        "providerId": "qwen3-vl-8b",
+        "technologyVersion": "8b-eval-doubles-1"
+      },
+      "scenarioId": "video-crack-progression-grounded@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "baseScenarioId": "video-crack-progression-grounded",
+      "behaviorClass": "well-grounded",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "aggregation": "max",
+          "check": "vlm-field-value-recomputation-check",
+          "factTemplate": "the maximum observed crack width across the video frames is {value} mm",
+          "field": "crack-width:column-C2",
+          "subjectHint": "crack width"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the frame observations of video VID-COL-1 (r1) are the governing capture of the column crack"
+        ],
+        "correctAssumptions": [
+          "the frame observations of video VID-COL-1 (r1) are the governing capture of the column crack"
+        ],
+        "correctResultClaim": "The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-field-value-recomputation-check"
+        ],
+        "evidenceIds": [
+          "VID-COL-1"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "video VID-COL-1 shows the crack in level-2 column C2 widening across four frames",
+          "the crack width in the final frame VID-F4 is 1.1 mm",
+          "the maximum observed crack width across the video frames is 1.1 mm"
+        ],
+        "invalidationConditions": [
+          "a new revision of video VID-COL-1 with different frame observations"
+        ],
+        "resultClaim": "The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-level2-column\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"video walkthrough capture of the crack in level-2 column C2 (four frames, crack-width observations in mm): frames — VID-F1@0ms{crack-width:column-C2=0.4}; VID-F2@1500ms{crack-width:column-C2=0.7}; VID-F3@3000ms{crack-width:column-C2=0.9}; VID-F4@4500ms{crack-width:column-C2=1.1}\",\n      \"evidenceId\": \"VID-COL-1\",\n      \"facts\": [\n        \"video VID-COL-1 shows the crack in level-2 column C2 widening across four frames\",\n        \"the crack width in the final frame VID-F4 is 1.1 mm\",\n        \"the maximum observed crack width across the video frames is 1.1 mm\"\n      ],\n      \"kind\": \"image\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"question\": \"How does the crack width on level-2 column C2 develop across the video frames, and what is the maximum observed width?\",\n  \"requiredEvidenceIds\": [\n    \"VID-COL-1\"\n  ],\n  \"scenarioId\": \"video-crack-progression-grounded@qwen3-vl-30b-a3b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-30b-a3b\",\n    \"technologyVersion\": \"30b-a3b-eval-doubles-1\"\n  },\n  \"assumptions\": [\n    \"the frame observations of video VID-COL-1 (r1) are the governing capture of the column crack\"\n  ],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"evidenceIds\": [\n    \"VID-COL-1\"\n  ],\n  \"facts\": [\n    \"video VID-COL-1 shows the crack in level-2 column C2 widening across four frames\",\n    \"the crack width in the final frame VID-F4 is 1.1 mm\",\n    \"the maximum observed crack width across the video frames is 1.1 mm\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of video VID-COL-1 with different frame observations\"\n  ],\n  \"nextRecommendedAction\": \"open video VID-COL-1 in the evidence viewer and compare the crack width against the repair threshold\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "grounded-pass",
+      "providerRef": {
+        "providerId": "qwen3-vl-30b-a3b",
+        "technologyVersion": "30b-a3b-eval-doubles-1"
+      },
+      "scenarioId": "video-crack-progression-grounded@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b"
+    },
+    {
+      "baseScenarioId": "video-crack-width-hallucination",
+      "behaviorClass": "hallucinating",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "aggregation": "max",
+          "check": "vlm-field-value-recomputation-check",
+          "factTemplate": "the maximum observed crack width across the video frames is {value} mm",
+          "field": "crack-width:column-C2",
+          "subjectHint": "crack width"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the frame observations of video VID-COL-1 (r1) are the governing capture of the column crack"
+        ],
+        "correctAssumptions": [
+          "the frame observations of video VID-COL-1 (r1) are the governing capture of the column crack"
+        ],
+        "correctResultClaim": "The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-field-value-recomputation-check"
+        ],
+        "evidenceIds": [
+          "VID-COL-1"
+        ],
+        "expectedFailureKind": "perception-failure",
+        "expectedViolationRules": [
+          "facts-grounded-in-cited-evidence"
+        ],
+        "facts": [
+          "the crack width in the final frame VID-F4 is 1.4 mm"
+        ],
+        "invalidationConditions": [
+          "a revised frame observation that contradicts the stated width"
+        ],
+        "resultClaim": "The crack width on level-2 column C2 reaches 1.4 mm at the final frame of video VID-COL-1.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [
+        "reasoning-failure",
+        "unsupported-data"
+      ],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-level2-column\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"video walkthrough capture of the crack in level-2 column C2 (four frames, crack-width observations in mm): frames — VID-F1@0ms{crack-width:column-C2=0.4}; VID-F2@1500ms{crack-width:column-C2=0.7}; VID-F3@3000ms{crack-width:column-C2=0.9}; VID-F4@4500ms{crack-width:column-C2=1.1}\",\n      \"evidenceId\": \"VID-COL-1\",\n      \"facts\": [\n        \"video VID-COL-1 shows the crack in level-2 column C2 widening across four frames\",\n        \"the crack width in the final frame VID-F4 is 1.1 mm\",\n        \"the maximum observed crack width across the video frames is 1.1 mm\"\n      ],\n      \"kind\": \"image\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"question\": \"How does the crack width on level-2 column C2 develop across the video frames, and what is the maximum observed width?\",\n  \"requiredEvidenceIds\": [\n    \"VID-COL-1\"\n  ],\n  \"scenarioId\": \"video-crack-width-hallucination@qwen3-vl-8b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-8b\",\n    \"technologyVersion\": \"8b-eval-doubles-1\"\n  },\n  \"assumptions\": [\n    \"the frame observations of video VID-COL-1 (r1) are the governing capture of the column crack\"\n  ],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"evidenceIds\": [\n    \"VID-COL-1\"\n  ],\n  \"facts\": [\n    \"the crack width in the final frame VID-F4 is 1.4 mm\"\n  ],\n  \"invalidationConditions\": [\n    \"a revised frame observation that contradicts the stated width\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The crack width on level-2 column C2 reaches 1.4 mm at the final frame of video VID-COL-1.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "grounded-pass",
+      "providerRef": {
+        "providerId": "qwen3-vl-8b",
+        "technologyVersion": "8b-eval-doubles-1"
+      },
+      "scenarioId": "video-crack-width-hallucination@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "baseScenarioId": "video-crack-width-hallucination",
+      "behaviorClass": "well-grounded",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "aggregation": "max",
+          "check": "vlm-field-value-recomputation-check",
+          "factTemplate": "the maximum observed crack width across the video frames is {value} mm",
+          "field": "crack-width:column-C2",
+          "subjectHint": "crack width"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the frame observations of video VID-COL-1 (r1) are the governing capture of the column crack"
+        ],
+        "correctAssumptions": [
+          "the frame observations of video VID-COL-1 (r1) are the governing capture of the column crack"
+        ],
+        "correctResultClaim": "The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-field-value-recomputation-check"
+        ],
+        "evidenceIds": [
+          "VID-COL-1"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "video VID-COL-1 shows the crack in level-2 column C2 widening across four frames",
+          "the crack width in the final frame VID-F4 is 1.1 mm",
+          "the maximum observed crack width across the video frames is 1.1 mm"
+        ],
+        "invalidationConditions": [
+          "a new revision of video VID-COL-1 with different frame observations"
+        ],
+        "resultClaim": "The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-level2-column\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"video walkthrough capture of the crack in level-2 column C2 (four frames, crack-width observations in mm): frames — VID-F1@0ms{crack-width:column-C2=0.4}; VID-F2@1500ms{crack-width:column-C2=0.7}; VID-F3@3000ms{crack-width:column-C2=0.9}; VID-F4@4500ms{crack-width:column-C2=1.1}\",\n      \"evidenceId\": \"VID-COL-1\",\n      \"facts\": [\n        \"video VID-COL-1 shows the crack in level-2 column C2 widening across four frames\",\n        \"the crack width in the final frame VID-F4 is 1.1 mm\",\n        \"the maximum observed crack width across the video frames is 1.1 mm\"\n      ],\n      \"kind\": \"image\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"question\": \"How does the crack width on level-2 column C2 develop across the video frames, and what is the maximum observed width?\",\n  \"requiredEvidenceIds\": [\n    \"VID-COL-1\"\n  ],\n  \"scenarioId\": \"video-crack-width-hallucination@qwen3-vl-30b-a3b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-30b-a3b\",\n    \"technologyVersion\": \"30b-a3b-eval-doubles-1\"\n  },\n  \"assumptions\": [\n    \"the frame observations of video VID-COL-1 (r1) are the governing capture of the column crack\"\n  ],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-field-value-recomputation-check\"\n  ],\n  \"evidenceIds\": [\n    \"VID-COL-1\"\n  ],\n  \"facts\": [\n    \"video VID-COL-1 shows the crack in level-2 column C2 widening across four frames\",\n    \"the crack width in the final frame VID-F4 is 1.1 mm\",\n    \"the maximum observed crack width across the video frames is 1.1 mm\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of video VID-COL-1 with different frame observations\"\n  ],\n  \"nextRecommendedAction\": \"open video VID-COL-1 in the evidence viewer and compare the crack width against the repair threshold\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "grounded-pass",
+      "providerRef": {
+        "providerId": "qwen3-vl-30b-a3b",
+        "technologyVersion": "30b-a3b-eval-doubles-1"
+      },
+      "scenarioId": "video-crack-width-hallucination@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b"
+    },
+    {
+      "baseScenarioId": "beam-section-conflict-surfaced",
+      "behaviorClass": "well-grounded",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "check": "vlm-conflict-detection-check",
+          "field": "section-size:beam-S-12",
+          "subjectHint": "section of level-2 spandrel beam S-12"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.",
+        "correctResultStatus": "conflicted",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-conflict-detection-check"
+        ],
+        "evidenceIds": [
+          "DRAW-BEAM-1",
+          "STENCIL-OCR-1"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "structural drawing DRAW-BEAM-1 (sheet S-201 REV-B) specifies the section of level-2 spandrel beam S-12 as W12x26",
+          "the stenciled marking on level-2 spandrel beam S-12 read by OCR region STC-R1 states section W14x22"
+        ],
+        "invalidationConditions": [
+          "a revision of DRAW-BEAM-1 or STENCIL-OCR-1 that resolves the section-size disagreement"
+        ],
+        "resultClaim": "The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.",
+        "resultStatus": "conflicted",
+        "unknowns": [
+          "which of the two authorized values for the section of level-2 spandrel beam S-12 governs is unresolved"
+        ]
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-beam-s12\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"scan of structural drawing sheet S-201 REV-B (level-2 framing notes): elements — EL-SECTION-NOTE-S12 the section note for spandrel beam S-12 [drawing-annotation, row 1, cols 1-2]\",\n      \"evidenceId\": \"DRAW-BEAM-1\",\n      \"facts\": [\n        \"structural drawing DRAW-BEAM-1 (sheet S-201 REV-B) specifies the section of level-2 spandrel beam S-12 as W12x26\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"OCR capture of the stenciled marking on level-2 spandrel beam S-12 (site visit): text regions — STC-R1{section-size:beam-S-12='W14x22', bbox x1=20 y1=40 x2=300 y2=110}\",\n      \"evidenceId\": \"STENCIL-OCR-1\",\n      \"facts\": [\n        \"the stenciled marking on level-2 spandrel beam S-12 read by OCR region STC-R1 states section W14x22\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-conflict-detection-check\"\n  ],\n  \"question\": \"What is the section size of level-2 spandrel beam S-12?\",\n  \"requiredEvidenceIds\": [\n    \"DRAW-BEAM-1\",\n    \"STENCIL-OCR-1\"\n  ],\n  \"scenarioId\": \"beam-section-conflict-surfaced@qwen3-vl-8b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-8b\",\n    \"technologyVersion\": \"8b-eval-doubles-1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-conflict-detection-check\"\n  ],\n  \"evidenceIds\": [\n    \"DRAW-BEAM-1\",\n    \"STENCIL-OCR-1\"\n  ],\n  \"facts\": [\n    \"structural drawing DRAW-BEAM-1 (sheet S-201 REV-B) specifies the section of level-2 spandrel beam S-12 as W12x26\",\n    \"the stenciled marking on level-2 spandrel beam S-12 read by OCR region STC-R1 states section W14x22\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of DRAW-BEAM-1 or STENCIL-OCR-1 that resolves the section-size disagreement\"\n  ],\n  \"nextRecommendedAction\": \"raise an engineering query to resolve the governing section size of beam S-12 before using it\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.\",\n  \"resultStatus\": \"conflicted\",\n  \"unknowns\": [\n    \"which of the two authorized values for the section of level-2 spandrel beam S-12 governs is unresolved\"\n  ]\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "conflicting-evidence",
+      "providerRef": {
+        "providerId": "qwen3-vl-8b",
+        "technologyVersion": "8b-eval-doubles-1"
+      },
+      "scenarioId": "beam-section-conflict-surfaced@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "baseScenarioId": "beam-section-conflict-surfaced",
+      "behaviorClass": "well-grounded",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "check": "vlm-conflict-detection-check",
+          "field": "section-size:beam-S-12",
+          "subjectHint": "section of level-2 spandrel beam S-12"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.",
+        "correctResultStatus": "conflicted",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-conflict-detection-check"
+        ],
+        "evidenceIds": [
+          "DRAW-BEAM-1",
+          "STENCIL-OCR-1"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "structural drawing DRAW-BEAM-1 (sheet S-201 REV-B) specifies the section of level-2 spandrel beam S-12 as W12x26",
+          "the stenciled marking on level-2 spandrel beam S-12 read by OCR region STC-R1 states section W14x22"
+        ],
+        "invalidationConditions": [
+          "a revision of DRAW-BEAM-1 or STENCIL-OCR-1 that resolves the section-size disagreement"
+        ],
+        "resultClaim": "The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.",
+        "resultStatus": "conflicted",
+        "unknowns": [
+          "which of the two authorized values for the section of level-2 spandrel beam S-12 governs is unresolved"
+        ]
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-beam-s12\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"scan of structural drawing sheet S-201 REV-B (level-2 framing notes): elements — EL-SECTION-NOTE-S12 the section note for spandrel beam S-12 [drawing-annotation, row 1, cols 1-2]\",\n      \"evidenceId\": \"DRAW-BEAM-1\",\n      \"facts\": [\n        \"structural drawing DRAW-BEAM-1 (sheet S-201 REV-B) specifies the section of level-2 spandrel beam S-12 as W12x26\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"OCR capture of the stenciled marking on level-2 spandrel beam S-12 (site visit): text regions — STC-R1{section-size:beam-S-12='W14x22', bbox x1=20 y1=40 x2=300 y2=110}\",\n      \"evidenceId\": \"STENCIL-OCR-1\",\n      \"facts\": [\n        \"the stenciled marking on level-2 spandrel beam S-12 read by OCR region STC-R1 states section W14x22\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-conflict-detection-check\"\n  ],\n  \"question\": \"What is the section size of level-2 spandrel beam S-12?\",\n  \"requiredEvidenceIds\": [\n    \"DRAW-BEAM-1\",\n    \"STENCIL-OCR-1\"\n  ],\n  \"scenarioId\": \"beam-section-conflict-surfaced@qwen3-vl-30b-a3b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-30b-a3b\",\n    \"technologyVersion\": \"30b-a3b-eval-doubles-1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-conflict-detection-check\"\n  ],\n  \"evidenceIds\": [\n    \"DRAW-BEAM-1\",\n    \"STENCIL-OCR-1\"\n  ],\n  \"facts\": [\n    \"structural drawing DRAW-BEAM-1 (sheet S-201 REV-B) specifies the section of level-2 spandrel beam S-12 as W12x26\",\n    \"the stenciled marking on level-2 spandrel beam S-12 read by OCR region STC-R1 states section W14x22\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of DRAW-BEAM-1 or STENCIL-OCR-1 that resolves the section-size disagreement\"\n  ],\n  \"nextRecommendedAction\": \"raise an engineering query to resolve the governing section size of beam S-12 before using it\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.\",\n  \"resultStatus\": \"conflicted\",\n  \"unknowns\": [\n    \"which of the two authorized values for the section of level-2 spandrel beam S-12 governs is unresolved\"\n  ]\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "conflicting-evidence",
+      "providerRef": {
+        "providerId": "qwen3-vl-30b-a3b",
+        "technologyVersion": "30b-a3b-eval-doubles-1"
+      },
+      "scenarioId": "beam-section-conflict-surfaced@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b"
+    },
+    {
+      "baseScenarioId": "beam-section-conflict-silent-resolution",
+      "behaviorClass": "hallucinating",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "check": "vlm-conflict-detection-check",
+          "field": "section-size:beam-S-12",
+          "subjectHint": "section of level-2 spandrel beam S-12"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.",
+        "correctResultStatus": "conflicted",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-conflict-detection-check"
+        ],
+        "evidenceIds": [
+          "DRAW-BEAM-1"
+        ],
+        "expectedFailureKind": "retrieval-failure",
+        "expectedViolationRules": [],
+        "facts": [
+          "structural drawing DRAW-BEAM-1 (sheet S-201 REV-B) specifies the section of level-2 spandrel beam S-12 as W12x26"
+        ],
+        "invalidationConditions": [
+          "a revision of structural drawing DRAW-BEAM-1 that changes the section of beam S-12"
+        ],
+        "resultClaim": "The section size of level-2 spandrel beam S-12 is W12x26 per structural drawing DRAW-BEAM-1.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "expectedGroundedKinds": [
+        "retrieval-failure"
+      ],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-beam-s12\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"scan of structural drawing sheet S-201 REV-B (level-2 framing notes): elements — EL-SECTION-NOTE-S12 the section note for spandrel beam S-12 [drawing-annotation, row 1, cols 1-2]\",\n      \"evidenceId\": \"DRAW-BEAM-1\",\n      \"facts\": [\n        \"structural drawing DRAW-BEAM-1 (sheet S-201 REV-B) specifies the section of level-2 spandrel beam S-12 as W12x26\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"OCR capture of the stenciled marking on level-2 spandrel beam S-12 (site visit): text regions — STC-R1{section-size:beam-S-12='W14x22', bbox x1=20 y1=40 x2=300 y2=110}\",\n      \"evidenceId\": \"STENCIL-OCR-1\",\n      \"facts\": [\n        \"the stenciled marking on level-2 spandrel beam S-12 read by OCR region STC-R1 states section W14x22\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-conflict-detection-check\"\n  ],\n  \"question\": \"What is the section size of level-2 spandrel beam S-12?\",\n  \"requiredEvidenceIds\": [\n    \"DRAW-BEAM-1\",\n    \"STENCIL-OCR-1\"\n  ],\n  \"scenarioId\": \"beam-section-conflict-silent-resolution@qwen3-vl-8b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-8b\",\n    \"technologyVersion\": \"8b-eval-doubles-1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-conflict-detection-check\"\n  ],\n  \"evidenceIds\": [\n    \"DRAW-BEAM-1\"\n  ],\n  \"facts\": [\n    \"structural drawing DRAW-BEAM-1 (sheet S-201 REV-B) specifies the section of level-2 spandrel beam S-12 as W12x26\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of structural drawing DRAW-BEAM-1 that changes the section of beam S-12\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The section size of level-2 spandrel beam S-12 is W12x26 per structural drawing DRAW-BEAM-1.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "conflicting-evidence",
+      "providerRef": {
+        "providerId": "qwen3-vl-8b",
+        "technologyVersion": "8b-eval-doubles-1"
+      },
+      "scenarioId": "beam-section-conflict-silent-resolution@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "baseScenarioId": "beam-section-conflict-silent-resolution",
+      "behaviorClass": "well-grounded",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        },
+        {
+          "check": "vlm-conflict-detection-check",
+          "field": "section-size:beam-S-12",
+          "subjectHint": "section of level-2 spandrel beam S-12"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.",
+        "correctResultStatus": "conflicted",
+        "deterministicChecks": [
+          "vlm-fact-derivability-check",
+          "vlm-conflict-detection-check"
+        ],
+        "evidenceIds": [
+          "DRAW-BEAM-1",
+          "STENCIL-OCR-1"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "structural drawing DRAW-BEAM-1 (sheet S-201 REV-B) specifies the section of level-2 spandrel beam S-12 as W12x26",
+          "the stenciled marking on level-2 spandrel beam S-12 read by OCR region STC-R1 states section W14x22"
+        ],
+        "invalidationConditions": [
+          "a revision of DRAW-BEAM-1 or STENCIL-OCR-1 that resolves the section-size disagreement"
+        ],
+        "resultClaim": "The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.",
+        "resultStatus": "conflicted",
+        "unknowns": [
+          "which of the two authorized values for the section of level-2 spandrel beam S-12 governs is unresolved"
+        ]
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-beam-s12\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"scan of structural drawing sheet S-201 REV-B (level-2 framing notes): elements — EL-SECTION-NOTE-S12 the section note for spandrel beam S-12 [drawing-annotation, row 1, cols 1-2]\",\n      \"evidenceId\": \"DRAW-BEAM-1\",\n      \"facts\": [\n        \"structural drawing DRAW-BEAM-1 (sheet S-201 REV-B) specifies the section of level-2 spandrel beam S-12 as W12x26\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"OCR capture of the stenciled marking on level-2 spandrel beam S-12 (site visit): text regions — STC-R1{section-size:beam-S-12='W14x22', bbox x1=20 y1=40 x2=300 y2=110}\",\n      \"evidenceId\": \"STENCIL-OCR-1\",\n      \"facts\": [\n        \"the stenciled marking on level-2 spandrel beam S-12 read by OCR region STC-R1 states section W14x22\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-conflict-detection-check\"\n  ],\n  \"question\": \"What is the section size of level-2 spandrel beam S-12?\",\n  \"requiredEvidenceIds\": [\n    \"DRAW-BEAM-1\",\n    \"STENCIL-OCR-1\"\n  ],\n  \"scenarioId\": \"beam-section-conflict-silent-resolution@qwen3-vl-30b-a3b\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"multimodal-reasoning\",\n    \"providerId\": \"qwen3-vl-30b-a3b\",\n    \"technologyVersion\": \"30b-a3b-eval-doubles-1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"vlm-fact-derivability-check\",\n    \"vlm-conflict-detection-check\"\n  ],\n  \"evidenceIds\": [\n    \"DRAW-BEAM-1\",\n    \"STENCIL-OCR-1\"\n  ],\n  \"facts\": [\n    \"structural drawing DRAW-BEAM-1 (sheet S-201 REV-B) specifies the section of level-2 spandrel beam S-12 as W12x26\",\n    \"the stenciled marking on level-2 spandrel beam S-12 read by OCR region STC-R1 states section W14x22\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of DRAW-BEAM-1 or STENCIL-OCR-1 that resolves the section-size disagreement\"\n  ],\n  \"nextRecommendedAction\": \"raise an engineering query to resolve the governing section size of beam S-12 before using it\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.\",\n  \"resultStatus\": \"conflicted\",\n  \"unknowns\": [\n    \"which of the two authorized values for the section of level-2 spandrel beam S-12 governs is unresolved\"\n  ]\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "conflicting-evidence",
+      "providerRef": {
+        "providerId": "qwen3-vl-30b-a3b",
+        "technologyVersion": "30b-a3b-eval-doubles-1"
+      },
+      "scenarioId": "beam-section-conflict-silent-resolution@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b"
+    },
+    {
+      "baseScenarioId": "unsupported-audio-transcription",
+      "behaviorClass": "refusing",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [],
+        "evidenceIds": [],
+        "expectedFailureKind": "unsupported-data",
+        "expectedViolationRules": [],
+        "facts": [],
+        "invalidationConditions": [],
+        "resultClaim": null,
+        "resultStatus": "unsupported",
+        "unknowns": [
+          "question 'Transcribe the spoken safety instructions from the site briefing audio recording.' requires capability or data outside the declared capability and modality set of provider 'qwen3-vl-8b' (8b-eval-doubles-1) — declared modalities: image, video, document, text; explicit unsupported refusal, never a guess"
+        ]
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "refuse",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-north-elevation\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo of the north elevation of the Meridian Tower entrance bay (fair-faced brick wall, one window, one door opening, a steel lintel above the door, a downspout at the east corner): elements — EL-WINDOW-01 window W-1 [window-opening, row 2, cols 1-2]; EL-PIER-02 the fair-faced brick pier PIER-N-02 [wall-panel, row 2, cols 3-3]; EL-DOOR-01 door DOOR-N [door-opening, row 2, cols 4-5]; EL-LINTEL-01 the steel lintel beam EL-LINTEL-01 [structural-element, row 1, cols 4-5]; EL-DOWNSPOUT-01 the downspout at the east corner [drainage-element, row 2, cols 8-8]\",\n      \"evidenceId\": \"IMG-NORTH-2\",\n      \"facts\": [\n        \"window W-1 is an opening in the north elevation wall at the west side of the entrance bay\",\n        \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n        \"pier PIER-N-02 has a fair-faced brick finish\",\n        \"door DOOR-N is an opening in the north elevation wall at the entrance\",\n        \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n        \"the lintel beam above door DOOR-N is painted grey\",\n        \"a downspout runs near the east corner of the north elevation\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"photo of the level-2 interior corridor of the Meridian Tower (an exposed ventilation duct above the corridor): elements — EL-DUCT-01 the exposed ventilation duct [building-service-element, row 1, cols 2-6]\",\n      \"evidenceId\": \"IMG-INTERIOR-1\",\n      \"facts\": [\n        \"an exposed ventilation duct runs above the level-2 interior corridor\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\"\n  ],\n  \"question\": \"Transcribe the spoken safety instructions from the site briefing audio recording.\",\n  \"requiredEvidenceIds\": [],\n  \"scenarioId\": \"unsupported-audio-transcription@qwen3-vl-8b\",\n  \"scope\": \"out-of-scope\"\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "unsupported-question",
+      "providerRef": {
+        "providerId": "qwen3-vl-8b",
+        "technologyVersion": "8b-eval-doubles-1"
+      },
+      "scenarioId": "unsupported-audio-transcription@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "baseScenarioId": "unsupported-audio-transcription",
+      "behaviorClass": "refusing",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [],
+        "evidenceIds": [],
+        "expectedFailureKind": "unsupported-data",
+        "expectedViolationRules": [],
+        "facts": [],
+        "invalidationConditions": [],
+        "resultClaim": null,
+        "resultStatus": "unsupported",
+        "unknowns": [
+          "question 'Transcribe the spoken safety instructions from the site briefing audio recording.' requires capability or data outside the declared capability and modality set of provider 'qwen3-vl-30b-a3b' (30b-a3b-eval-doubles-1) — declared modalities: image, video, document, text; explicit unsupported refusal, never a guess"
+        ]
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "refuse",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-north-elevation\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo of the north elevation of the Meridian Tower entrance bay (fair-faced brick wall, one window, one door opening, a steel lintel above the door, a downspout at the east corner): elements — EL-WINDOW-01 window W-1 [window-opening, row 2, cols 1-2]; EL-PIER-02 the fair-faced brick pier PIER-N-02 [wall-panel, row 2, cols 3-3]; EL-DOOR-01 door DOOR-N [door-opening, row 2, cols 4-5]; EL-LINTEL-01 the steel lintel beam EL-LINTEL-01 [structural-element, row 1, cols 4-5]; EL-DOWNSPOUT-01 the downspout at the east corner [drainage-element, row 2, cols 8-8]\",\n      \"evidenceId\": \"IMG-NORTH-2\",\n      \"facts\": [\n        \"window W-1 is an opening in the north elevation wall at the west side of the entrance bay\",\n        \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n        \"pier PIER-N-02 has a fair-faced brick finish\",\n        \"door DOOR-N is an opening in the north elevation wall at the entrance\",\n        \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n        \"the lintel beam above door DOOR-N is painted grey\",\n        \"a downspout runs near the east corner of the north elevation\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"photo of the level-2 interior corridor of the Meridian Tower (an exposed ventilation duct above the corridor): elements — EL-DUCT-01 the exposed ventilation duct [building-service-element, row 1, cols 2-6]\",\n      \"evidenceId\": \"IMG-INTERIOR-1\",\n      \"facts\": [\n        \"an exposed ventilation duct runs above the level-2 interior corridor\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\"\n  ],\n  \"question\": \"Transcribe the spoken safety instructions from the site briefing audio recording.\",\n  \"requiredEvidenceIds\": [],\n  \"scenarioId\": \"unsupported-audio-transcription@qwen3-vl-30b-a3b\",\n  \"scope\": \"out-of-scope\"\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "unsupported-question",
+      "providerRef": {
+        "providerId": "qwen3-vl-30b-a3b",
+        "technologyVersion": "30b-a3b-eval-doubles-1"
+      },
+      "scenarioId": "unsupported-audio-transcription@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b"
+    },
+    {
+      "baseScenarioId": "unsupported-code-verification",
+      "behaviorClass": "refusing",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [],
+        "evidenceIds": [],
+        "expectedFailureKind": "unsupported-data",
+        "expectedViolationRules": [],
+        "facts": [],
+        "invalidationConditions": [],
+        "resultClaim": null,
+        "resultStatus": "unsupported",
+        "unknowns": [
+          "question 'Does the steel lintel beam above door DOOR-N on the north elevation satisfy the EC3 bending utilization limit for the documented loads?' requires capability or data outside the declared capability and modality set of provider 'qwen3-vl-8b' (8b-eval-doubles-1) — declared modalities: image, video, document, text; explicit unsupported refusal, never a guess"
+        ]
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "refuse",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-north-elevation\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo of the north elevation of the Meridian Tower entrance bay (fair-faced brick wall, one window, one door opening, a steel lintel above the door, a downspout at the east corner): elements — EL-WINDOW-01 window W-1 [window-opening, row 2, cols 1-2]; EL-PIER-02 the fair-faced brick pier PIER-N-02 [wall-panel, row 2, cols 3-3]; EL-DOOR-01 door DOOR-N [door-opening, row 2, cols 4-5]; EL-LINTEL-01 the steel lintel beam EL-LINTEL-01 [structural-element, row 1, cols 4-5]; EL-DOWNSPOUT-01 the downspout at the east corner [drainage-element, row 2, cols 8-8]\",\n      \"evidenceId\": \"IMG-NORTH-2\",\n      \"facts\": [\n        \"window W-1 is an opening in the north elevation wall at the west side of the entrance bay\",\n        \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n        \"pier PIER-N-02 has a fair-faced brick finish\",\n        \"door DOOR-N is an opening in the north elevation wall at the entrance\",\n        \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n        \"the lintel beam above door DOOR-N is painted grey\",\n        \"a downspout runs near the east corner of the north elevation\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"photo of the level-2 interior corridor of the Meridian Tower (an exposed ventilation duct above the corridor): elements — EL-DUCT-01 the exposed ventilation duct [building-service-element, row 1, cols 2-6]\",\n      \"evidenceId\": \"IMG-INTERIOR-1\",\n      \"facts\": [\n        \"an exposed ventilation duct runs above the level-2 interior corridor\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\"\n  ],\n  \"question\": \"Does the steel lintel beam above door DOOR-N on the north elevation satisfy the EC3 bending utilization limit for the documented loads?\",\n  \"requiredEvidenceIds\": [],\n  \"scenarioId\": \"unsupported-code-verification@qwen3-vl-8b\",\n  \"scope\": \"out-of-scope\"\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "unsupported-question",
+      "providerRef": {
+        "providerId": "qwen3-vl-8b",
+        "technologyVersion": "8b-eval-doubles-1"
+      },
+      "scenarioId": "unsupported-code-verification@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "baseScenarioId": "unsupported-code-verification",
+      "behaviorClass": "refusing",
+      "capability": "multimodal-reasoning",
+      "checkPlan": [
+        {
+          "check": "vlm-fact-derivability-check"
+        }
+      ],
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [],
+        "evidenceIds": [],
+        "expectedFailureKind": "unsupported-data",
+        "expectedViolationRules": [],
+        "facts": [],
+        "invalidationConditions": [],
+        "resultClaim": null,
+        "resultStatus": "unsupported",
+        "unknowns": [
+          "question 'Does the steel lintel beam above door DOOR-N on the north elevation satisfy the EC3 bending utilization limit for the documented loads?' requires capability or data outside the declared capability and modality set of provider 'qwen3-vl-30b-a3b' (30b-a3b-eval-doubles-1) — declared modalities: image, video, document, text; explicit unsupported refusal, never a guess"
+        ]
+      },
+      "expectedGroundedKinds": [],
+      "input": {
+        "capability": "multimodal-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "refuse",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-north-elevation\",\n    \"projectId\": \"proj-meridian-tower-007\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo of the north elevation of the Meridian Tower entrance bay (fair-faced brick wall, one window, one door opening, a steel lintel above the door, a downspout at the east corner): elements — EL-WINDOW-01 window W-1 [window-opening, row 2, cols 1-2]; EL-PIER-02 the fair-faced brick pier PIER-N-02 [wall-panel, row 2, cols 3-3]; EL-DOOR-01 door DOOR-N [door-opening, row 2, cols 4-5]; EL-LINTEL-01 the steel lintel beam EL-LINTEL-01 [structural-element, row 1, cols 4-5]; EL-DOWNSPOUT-01 the downspout at the east corner [drainage-element, row 2, cols 8-8]\",\n      \"evidenceId\": \"IMG-NORTH-2\",\n      \"facts\": [\n        \"window W-1 is an opening in the north elevation wall at the west side of the entrance bay\",\n        \"the fair-faced brick pier PIER-N-02 lies between window W-1 and door DOOR-N on the north elevation\",\n        \"pier PIER-N-02 has a fair-faced brick finish\",\n        \"door DOOR-N is an opening in the north elevation wall at the entrance\",\n        \"the steel lintel beam EL-LINTEL-01 spans directly above door DOOR-N on the north elevation\",\n        \"the lintel beam above door DOOR-N is painted grey\",\n        \"a downspout runs near the east corner of the north elevation\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"photo of the level-2 interior corridor of the Meridian Tower (an exposed ventilation duct above the corridor): elements — EL-DUCT-01 the exposed ventilation duct [building-service-element, row 1, cols 2-6]\",\n      \"evidenceId\": \"IMG-INTERIOR-1\",\n      \"facts\": [\n        \"an exposed ventilation duct runs above the level-2 interior corridor\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"vlm-fact-derivability-check\"\n  ],\n  \"question\": \"Does the steel lintel beam above door DOOR-N on the north elevation satisfy the EC3 bending utilization limit for the documented loads?\",\n  \"requiredEvidenceIds\": [],\n  \"scenarioId\": \"unsupported-code-verification@qwen3-vl-30b-a3b\",\n  \"scope\": \"out-of-scope\"\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "matrixCell": "unsupported-question",
+      "providerRef": {
+        "providerId": "qwen3-vl-30b-a3b",
+        "technologyVersion": "30b-a3b-eval-doubles-1"
+      },
+      "scenarioId": "unsupported-code-verification@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b"
+    }
+  ],
+  "suiteId": "qwen3-vl-provider-benchmark/1",
+  "variants": [
+    {
+      "capability": "multimodal-reasoning",
+      "licenseStatus": "evaluation-only",
+      "profileDigest": "b98e6c5707984a6bc8a6451bb84eb7c04ad1db51da1b24460d83df4f9a3188e7",
+      "providerId": "qwen3-vl-8b",
+      "technologyVersion": "8b-eval-doubles-1",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "capability": "multimodal-reasoning",
+      "licenseStatus": "evaluation-only",
+      "profileDigest": "4ba1c9482c30bf6e93ebbbea239bf968a0d6549ecbf732f138bffbdf2fd3c512",
+      "providerId": "qwen3-vl-30b-a3b",
+      "technologyVersion": "30b-a3b-eval-doubles-1",
+      "variant": "qwen3-vl-30b-a3b"
+    }
+  ],
+  "version": "1.0.0"
+}
