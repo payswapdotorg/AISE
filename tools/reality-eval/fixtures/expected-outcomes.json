@@ -1,0 +1,1850 @@
+{
+  "benchmarkVersion": "1.0.0",
+  "evaluations": [
+    {
+      "discriminationCaught": false,
+      "failureObservationKinds": [],
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "55877c694ff924efaa7b5e0d936cdcb4e5d3d45cf52dcc37e237ba8f633f3d6d"
+        ],
+        "benchmarkRecordReferences": [
+          "35737403cf7b90275e99746875282470e540c242144c7a580c98237bd13e9d4e"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "layer1-reality-evaluation"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "reality-eval-harness/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the Layer-1 evaluation harness never reads the runtime environment (identical scenarios over identical registry logs reproduce byte-identical records)"
+        },
+        "inputDigests": [
+          "ecaa09c74ad465660d47b553fb9c42e4cfc0a59651ae806f13244382e9518954"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "935b0fd61aa98157b210ae2d864ee2b38adfd458229ba2215808f9ad302c2d4d",
+        "normalizedResultDigest": "ef22442fb66ef6aa4f256d1da2b0a5b4eecfb12aef71c54c05aeafa3c0920914",
+        "profileReference": {
+          "profileDigest": "74061fb70c8ad27f3f284f3d3470923be9ec06524a5b6a783b99d473dc08b169",
+          "providerId": "fixture-reconstruction-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "reproducibilityStatement": "Layer-1 evaluation of scenario 'recon-flagship-positive-001': the registered profile (digest above), the normalized input (digest above), the normalized provider result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the provider-native payload, if any, is opaque provenance and never parsed into canonical Layer-1 types",
+        "schemaVersion": "provider-provenance/1"
+      },
+      "record": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "failureObservations": [],
+        "kind": "provider-benchmark-record",
+        "metrics": [
+          {
+            "detail": "floor floor — rms residual of 576 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "floor",
+            "unit": "m",
+            "value": 0.002031607808929997
+          },
+          {
+            "detail": "floor floor — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "floor",
+            "unit": "m",
+            "value": 0.00011125275411624495
+          },
+          {
+            "detail": "ceiling ceiling — rms residual of 576 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "ceiling",
+            "unit": "m",
+            "value": 0.0019502439279139327
+          },
+          {
+            "detail": "ceiling ceiling — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "ceiling",
+            "unit": "m",
+            "value": 0.00014096954890912498
+          },
+          {
+            "detail": "wall wall_west — rms residual of 488 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "wall_west",
+            "unit": "m",
+            "value": 0.002029068877789901
+          },
+          {
+            "detail": "wall wall_west — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "wall_west",
+            "unit": "m",
+            "value": 0.0001518909130878194
+          },
+          {
+            "detail": "wall wall_east — rms residual of 576 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "wall_east",
+            "unit": "m",
+            "value": 0.002025684937931501
+          },
+          {
+            "detail": "wall wall_east — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "wall_east",
+            "unit": "m",
+            "value": 0.00008206641751981912
+          },
+          {
+            "detail": "wall wall_north — rms residual of 486 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "wall_north",
+            "unit": "m",
+            "value": 0.0019035658442093232
+          },
+          {
+            "detail": "wall wall_north — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "wall_north",
+            "unit": "m",
+            "value": 0.0000622676503328597
+          },
+          {
+            "detail": "wall wall_south — rms residual of 576 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "wall_south",
+            "unit": "m",
+            "value": 0.0020312415252094953
+          },
+          {
+            "detail": "wall wall_south — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "wall_south",
+            "unit": "m",
+            "value": 0.00008908119028449507
+          },
+          {
+            "detail": "object_face box_storage::xmin — rms residual of 36 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_storage::xmin",
+            "unit": "m",
+            "value": 0.0020660345907883453
+          },
+          {
+            "detail": "object_face box_storage::xmin — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_storage::xmin",
+            "unit": "m",
+            "value": 0.00017081019962601288
+          },
+          {
+            "detail": "object_face box_storage::xmax — rms residual of 36 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_storage::xmax",
+            "unit": "m",
+            "value": 0.0015984773777720119
+          },
+          {
+            "detail": "object_face box_storage::xmax — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_storage::xmax",
+            "unit": "m",
+            "value": 0.00044547503230042544
+          },
+          {
+            "detail": "object_face box_storage::ymin — rms residual of 36 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_storage::ymin",
+            "unit": "m",
+            "value": 0.0018187988115601138
+          },
+          {
+            "detail": "object_face box_storage::ymin — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_storage::ymin",
+            "unit": "m",
+            "value": 0.00046652652742498437
+          },
+          {
+            "detail": "object_face box_storage::ymax — rms residual of 36 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_storage::ymax",
+            "unit": "m",
+            "value": 0.0024050707344262976
+          },
+          {
+            "detail": "object_face box_storage::ymax — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_storage::ymax",
+            "unit": "m",
+            "value": 0.0002025098352415908
+          },
+          {
+            "detail": "object_face box_storage::zmin — rms residual of 36 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_storage::zmin",
+            "unit": "m",
+            "value": 0.0019165594523294551
+          },
+          {
+            "detail": "object_face box_storage::zmin — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_storage::zmin",
+            "unit": "m",
+            "value": 0.0009086804502133621
+          },
+          {
+            "detail": "object_face box_storage::zmax — rms residual of 36 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_storage::zmax",
+            "unit": "m",
+            "value": 0.0017575218293661816
+          },
+          {
+            "detail": "object_face box_storage::zmax — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_storage::zmax",
+            "unit": "m",
+            "value": 0.00025409763261904916
+          },
+          {
+            "detail": "room width (west↔east walls) — measured 4.200095m vs truth 4.200000m",
+            "metric": "scale_error",
+            "subjectId": "room_width",
+            "unit": "ratio",
+            "value": 0.000022524352742335297
+          },
+          {
+            "detail": "room width (west↔east walls) — signed error measured(4.200095m) − truth(4.200000m)",
+            "metric": "dimension_error",
+            "subjectId": "room_width",
+            "unit": "m",
+            "value": 0.00009460228151780825
+          },
+          {
+            "detail": "room depth (north↔south walls) — measured 3.599986m vs truth 3.600000m",
+            "metric": "scale_error",
+            "subjectId": "room_depth",
+            "unit": "ratio",
+            "value": 0.000003840622930178444
+          },
+          {
+            "detail": "room depth (north↔south walls) — signed error measured(3.599986m) − truth(3.600000m)",
+            "metric": "dimension_error",
+            "subjectId": "room_depth",
+            "unit": "m",
+            "value": -0.000013826242548642398
+          },
+          {
+            "detail": "room height (floor↔ceiling) — measured 2.699762m vs truth 2.700000m",
+            "metric": "scale_error",
+            "subjectId": "room_height",
+            "unit": "ratio",
+            "value": 0.00008826302664563008
+          },
+          {
+            "detail": "room height (floor↔ceiling) — signed error measured(2.699762m) − truth(2.700000m)",
+            "metric": "dimension_error",
+            "subjectId": "room_height",
+            "unit": "m",
+            "value": -0.00023831017194320125
+          },
+          {
+            "detail": "object box_storage — measured volume 0.575049065m³ vs truth 0.576000000m³",
+            "metric": "object_volume_error",
+            "subjectId": "box_storage",
+            "unit": "ratio",
+            "value": 0.0016509287898752872
+          },
+          {
+            "detail": "every per-instance threshold satisfied — the provider's output meets the scenario's declared criteria over the canonical expectation (provider 'fixture-reconstruction-provider' 1.0.0-fixture-v1)",
+            "metric": "criteria_satisfied",
+            "unit": "ratio",
+            "value": 1
+          }
+        ],
+        "providerId": "fixture-reconstruction-provider",
+        "recordId": "35737403cf7b90275e99746875282470e540c242144c7a580c98237bd13e9d4e",
+        "reproduction": {
+          "codeVersion": "reality-eval-harness/1",
+          "inputsDigest": "ecaa09c74ad465660d47b553fb9c42e4cfc0a59651ae806f13244382e9518954",
+          "statement": "deterministic reproduction: scenario 'recon-flagship-positive-001' (1.0.0), the normalized input (digest above), the provider profile 'fixture-reconstruction-provider' (1.0.0-fixture-v1) resolved by registry-log replay, and the harness code version (above) fully determine these metric values — no clock, no randomness, no network"
+        },
+        "resourceObservations": {
+          "compute": "deterministic fixture computation — no accelerator, fully offline",
+          "latencyMsP50": 1,
+          "latencyMsP95": 5,
+          "memoryMiB": 16
+        },
+        "schemaVersion": "provider-benchmark/1",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioClass": "positive",
+      "scenarioId": "recon-flagship-positive-001",
+      "verdict": "pass"
+    },
+    {
+      "discriminationCaught": false,
+      "failureObservationKinds": [],
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "03be406568f1583542ec3a00b4ee2457e1025bb4761e701f8ae06a106f4051ae"
+        ],
+        "benchmarkRecordReferences": [
+          "105179dc94a56ebba879a7e30b6fd60251e1578a0fa0e8bbfbe10e085c266229"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "layer1-reality-evaluation"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "reality-eval-harness/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the Layer-1 evaluation harness never reads the runtime environment (identical scenarios over identical registry logs reproduce byte-identical records)"
+        },
+        "inputDigests": [
+          "f0fbd0c536a43a41e164c96c4f1df468050453882034cad959f9433f91cda1ab"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "d10f01c19ec0e6fc8afa98ed391e34e9117656a96f3e439313c1efc67577bd55",
+        "normalizedResultDigest": "6c25c9f3dbb49d02645062893b69aa52832f66a8af065fa6d162362147569489",
+        "profileReference": {
+          "profileDigest": "74061fb70c8ad27f3f284f3d3470923be9ec06524a5b6a783b99d473dc08b169",
+          "providerId": "fixture-reconstruction-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "reproducibilityStatement": "Layer-1 evaluation of scenario 'recon-midrange-positive-002': the registered profile (digest above), the normalized input (digest above), the normalized provider result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the provider-native payload, if any, is opaque provenance and never parsed into canonical Layer-1 types",
+        "schemaVersion": "provider-provenance/1"
+      },
+      "record": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "failureObservations": [],
+        "kind": "provider-benchmark-record",
+        "metrics": [
+          {
+            "detail": "floor floor — rms residual of 400 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "floor",
+            "unit": "m",
+            "value": 0.008096059309739759
+          },
+          {
+            "detail": "floor floor — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "floor",
+            "unit": "m",
+            "value": 0.0007934684199690133
+          },
+          {
+            "detail": "ceiling ceiling — rms residual of 400 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "ceiling",
+            "unit": "m",
+            "value": 0.008042368313628449
+          },
+          {
+            "detail": "ceiling ceiling — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "ceiling",
+            "unit": "m",
+            "value": 0.00029170694216783645
+          },
+          {
+            "detail": "wall wall_west — rms residual of 400 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "wall_west",
+            "unit": "m",
+            "value": 0.00789024382058135
+          },
+          {
+            "detail": "wall wall_west — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "wall_west",
+            "unit": "m",
+            "value": 0.00015404501674156018
+          },
+          {
+            "detail": "wall wall_east — rms residual of 346 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "wall_east",
+            "unit": "m",
+            "value": 0.008080799930575153
+          },
+          {
+            "detail": "wall wall_east — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "wall_east",
+            "unit": "m",
+            "value": 0.0007670050447423407
+          },
+          {
+            "detail": "wall wall_north — rms residual of 400 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "wall_north",
+            "unit": "m",
+            "value": 0.00847952959937542
+          },
+          {
+            "detail": "wall wall_north — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "wall_north",
+            "unit": "m",
+            "value": 0.0006025050422014862
+          },
+          {
+            "detail": "wall wall_south — rms residual of 320 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "wall_south",
+            "unit": "m",
+            "value": 0.007995131551350648
+          },
+          {
+            "detail": "wall wall_south — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "wall_south",
+            "unit": "m",
+            "value": 0.00034594414946054197
+          },
+          {
+            "detail": "object_face box_cabinet::xmin — rms residual of 25 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_cabinet::xmin",
+            "unit": "m",
+            "value": 0.006889708013112446
+          },
+          {
+            "detail": "object_face box_cabinet::xmin — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_cabinet::xmin",
+            "unit": "m",
+            "value": 0.0017810188910887348
+          },
+          {
+            "detail": "object_face box_cabinet::xmax — rms residual of 25 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_cabinet::xmax",
+            "unit": "m",
+            "value": 0.006862914237073135
+          },
+          {
+            "detail": "object_face box_cabinet::xmax — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_cabinet::xmax",
+            "unit": "m",
+            "value": 0.003544138201827174
+          },
+          {
+            "detail": "object_face box_cabinet::ymin — rms residual of 25 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_cabinet::ymin",
+            "unit": "m",
+            "value": 0.007713083830712334
+          },
+          {
+            "detail": "object_face box_cabinet::ymin — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_cabinet::ymin",
+            "unit": "m",
+            "value": 0.0007923841392587938
+          },
+          {
+            "detail": "object_face box_cabinet::ymax — rms residual of 25 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_cabinet::ymax",
+            "unit": "m",
+            "value": 0.008585756375939993
+          },
+          {
+            "detail": "object_face box_cabinet::ymax — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_cabinet::ymax",
+            "unit": "m",
+            "value": 0.0013893911411780601
+          },
+          {
+            "detail": "object_face box_cabinet::zmin — rms residual of 25 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_cabinet::zmin",
+            "unit": "m",
+            "value": 0.007722141308273226
+          },
+          {
+            "detail": "object_face box_cabinet::zmin — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_cabinet::zmin",
+            "unit": "m",
+            "value": 0.0030278219840462806
+          },
+          {
+            "detail": "object_face box_cabinet::zmax — rms residual of 25 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_cabinet::zmax",
+            "unit": "m",
+            "value": 0.00915651845425123
+          },
+          {
+            "detail": "object_face box_cabinet::zmax — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_cabinet::zmax",
+            "unit": "m",
+            "value": 0.0008576074537255263
+          },
+          {
+            "detail": "room width (west↔east walls) — measured 3.500515m vs truth 3.500000m",
+            "metric": "scale_error",
+            "subjectId": "room_width",
+            "unit": "ratio",
+            "value": 0.00014717777581006532
+          },
+          {
+            "detail": "room width (west↔east walls) — signed error measured(3.500515m) − truth(3.500000m)",
+            "metric": "dimension_error",
+            "subjectId": "room_width",
+            "unit": "m",
+            "value": 0.0005151222153352286
+          },
+          {
+            "detail": "room depth (north↔south walls) — measured 2.999173m vs truth 3.000000m",
+            "metric": "scale_error",
+            "subjectId": "room_depth",
+            "unit": "ratio",
+            "value": 0.00027575366883825225
+          },
+          {
+            "detail": "room depth (north↔south walls) — signed error measured(2.999173m) − truth(3.000000m)",
+            "metric": "dimension_error",
+            "subjectId": "room_depth",
+            "unit": "m",
+            "value": -0.0008272610065147568
+          },
+          {
+            "detail": "room height (floor↔ceiling) — measured 2.550356m vs truth 2.550000m",
+            "metric": "scale_error",
+            "subjectId": "room_height",
+            "unit": "ratio",
+            "value": 0.00013955479593107193
+          },
+          {
+            "detail": "room height (floor↔ceiling) — signed error measured(2.550356m) − truth(2.550000m)",
+            "metric": "dimension_error",
+            "subjectId": "room_height",
+            "unit": "m",
+            "value": 0.00035586472962423343
+          },
+          {
+            "detail": "object box_cabinet — measured volume 0.123197814m³ vs truth 0.125000000m³",
+            "metric": "object_volume_error",
+            "subjectId": "box_cabinet",
+            "unit": "ratio",
+            "value": 0.014417488416155423
+          },
+          {
+            "detail": "every per-instance threshold satisfied — the provider's output meets the scenario's declared criteria over the canonical expectation (provider 'fixture-reconstruction-provider' 1.0.0-fixture-v1)",
+            "metric": "criteria_satisfied",
+            "unit": "ratio",
+            "value": 1
+          }
+        ],
+        "providerId": "fixture-reconstruction-provider",
+        "recordId": "105179dc94a56ebba879a7e30b6fd60251e1578a0fa0e8bbfbe10e085c266229",
+        "reproduction": {
+          "codeVersion": "reality-eval-harness/1",
+          "inputsDigest": "f0fbd0c536a43a41e164c96c4f1df468050453882034cad959f9433f91cda1ab",
+          "statement": "deterministic reproduction: scenario 'recon-midrange-positive-002' (1.0.0), the normalized input (digest above), the provider profile 'fixture-reconstruction-provider' (1.0.0-fixture-v1) resolved by registry-log replay, and the harness code version (above) fully determine these metric values — no clock, no randomness, no network"
+        },
+        "resourceObservations": {
+          "compute": "deterministic fixture computation — no accelerator, fully offline",
+          "latencyMsP50": 1,
+          "latencyMsP95": 5,
+          "memoryMiB": 16
+        },
+        "schemaVersion": "provider-benchmark/1",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioClass": "positive",
+      "scenarioId": "recon-midrange-positive-002",
+      "verdict": "pass"
+    },
+    {
+      "discriminationCaught": true,
+      "failureObservationKinds": [
+        "perception-failure",
+        "perception-failure",
+        "perception-failure",
+        "perception-failure",
+        "perception-failure",
+        "perception-failure",
+        "perception-failure"
+      ],
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "b3718bc71d74ba95875093832720ea4b58fc9648e98f6a921748c3cc5463c267"
+        ],
+        "benchmarkRecordReferences": [
+          "430375e5b32a35a1c1be519f4731a75fcc92bc3d9ad5dc882172789642092f64"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "layer1-reality-evaluation"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "reality-eval-harness/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the Layer-1 evaluation harness never reads the runtime environment (identical scenarios over identical registry logs reproduce byte-identical records)"
+        },
+        "inputDigests": [
+          "ecaa09c74ad465660d47b553fb9c42e4cfc0a59651ae806f13244382e9518954"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "0f43d31e17088078dabef266d3cd2666657df2ff37b9d8ff2fed5a76df00ffd6",
+        "normalizedResultDigest": "d2e951e59c960026ed06f65cc1c4f81eb7dea6b18ad60f456ac3b853af300a79",
+        "profileReference": {
+          "profileDigest": "12d0e1407c00c89df05cf02177dd6f509db89b3c7939b35166a0c2e25a163efa",
+          "providerId": "fixture-reconstruction-provider",
+          "technologyVersion": "1.1.0-fixture-v2"
+        },
+        "reproducibilityStatement": "Layer-1 evaluation of scenario 'recon-flagship-discrimination-003': the registered profile (digest above), the normalized input (digest above), the normalized provider result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the provider-native payload, if any, is opaque provenance and never parsed into canonical Layer-1 types",
+        "schemaVersion": "provider-provenance/1"
+      },
+      "record": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "failureObservations": [
+          {
+            "detail": "scenario 'recon-flagship-discrimination-003': metric scale_error on room width (west↔east walls) (room_width) — |0.020022974839797102| > 0.01 (CRITICAL: mirrors gates-1 flagship_lidar: 1% scale error invalidates LiDAR-class dimensional engineering use); measured 4.284096m vs truth 4.200000m — the plausible-but-wrong result was CAUGHT by the criteria",
+            "kind": "perception-failure"
+          },
+          {
+            "detail": "scenario 'recon-flagship-discrimination-003': metric dimension_error on room width (west↔east walls) (room_width) — |0.08409649432714783| > 0.02 (CRITICAL: mirrors gates-1 flagship_lidar: 20mm absolute dimension error invalidates LiDAR-class work); signed error measured(4.284096m) − truth(4.200000m) — the plausible-but-wrong result was CAUGHT by the criteria",
+            "kind": "perception-failure"
+          },
+          {
+            "detail": "scenario 'recon-flagship-discrimination-003': metric scale_error on room depth (north↔south walls) (room_depth) — |0.019996082564611224| > 0.01 (CRITICAL: mirrors gates-1 flagship_lidar: 1% scale error invalidates LiDAR-class dimensional engineering use); measured 3.671986m vs truth 3.600000m — the plausible-but-wrong result was CAUGHT by the criteria",
+            "kind": "perception-failure"
+          },
+          {
+            "detail": "scenario 'recon-flagship-discrimination-003': metric dimension_error on room depth (north↔south walls) (room_depth) — |0.0719858972326004| > 0.02 (CRITICAL: mirrors gates-1 flagship_lidar: 20mm absolute dimension error invalidates LiDAR-class work); signed error measured(3.671986m) − truth(3.600000m) — the plausible-but-wrong result was CAUGHT by the criteria",
+            "kind": "perception-failure"
+          },
+          {
+            "detail": "scenario 'recon-flagship-discrimination-003': metric scale_error on room height (floor↔ceiling) (room_height) — |0.019909971712821495| > 0.01 (CRITICAL: mirrors gates-1 flagship_lidar: 1% scale error invalidates LiDAR-class dimensional engineering use); measured 2.753757m vs truth 2.700000m — the plausible-but-wrong result was CAUGHT by the criteria",
+            "kind": "perception-failure"
+          },
+          {
+            "detail": "scenario 'recon-flagship-discrimination-003': metric dimension_error on room height (floor↔ceiling) (room_height) — |0.053756923624618036| > 0.02 (CRITICAL: mirrors gates-1 flagship_lidar: 20mm absolute dimension error invalidates LiDAR-class work); signed error measured(2.753757m) − truth(2.700000m) — the plausible-but-wrong result was CAUGHT by the criteria",
+            "kind": "perception-failure"
+          },
+          {
+            "detail": "scenario 'recon-flagship-discrimination-003': metric object_volume_error on object box_storage (box_storage) — |0.05945602116075405| > 0.05 (CRITICAL: mirrors gates-1 flagship_lidar: 5% object volume error invalidates LiDAR-class quantity takeoff); measured volume 0.610246668m³ vs truth 0.576000000m³ — the plausible-but-wrong result was CAUGHT by the criteria",
+            "kind": "perception-failure"
+          }
+        ],
+        "kind": "provider-benchmark-record",
+        "metrics": [
+          {
+            "detail": "floor floor — rms residual of 576 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "floor",
+            "unit": "m",
+            "value": 0.002031607808929997
+          },
+          {
+            "detail": "floor floor — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "floor",
+            "unit": "m",
+            "value": 0.00011125275411624495
+          },
+          {
+            "detail": "ceiling ceiling — rms residual of 576 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "ceiling",
+            "unit": "m",
+            "value": 0.0019502439279139327
+          },
+          {
+            "detail": "ceiling ceiling — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "ceiling",
+            "unit": "m",
+            "value": 0.00014096954890912498
+          },
+          {
+            "detail": "wall wall_west — rms residual of 488 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "wall_west",
+            "unit": "m",
+            "value": 0.002029068877789901
+          },
+          {
+            "detail": "wall wall_west — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "wall_west",
+            "unit": "m",
+            "value": 0.0001518909130878194
+          },
+          {
+            "detail": "wall wall_east — rms residual of 576 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "wall_east",
+            "unit": "m",
+            "value": 0.002025684937931501
+          },
+          {
+            "detail": "wall wall_east — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "wall_east",
+            "unit": "m",
+            "value": 0.00008206641751981912
+          },
+          {
+            "detail": "wall wall_north — rms residual of 486 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "wall_north",
+            "unit": "m",
+            "value": 0.0019035658442093232
+          },
+          {
+            "detail": "wall wall_north — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "wall_north",
+            "unit": "m",
+            "value": 0.0000622676503328597
+          },
+          {
+            "detail": "wall wall_south — rms residual of 576 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "wall_south",
+            "unit": "m",
+            "value": 0.0020312415252094953
+          },
+          {
+            "detail": "wall wall_south — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "wall_south",
+            "unit": "m",
+            "value": 0.00008908119028449507
+          },
+          {
+            "detail": "object_face box_storage::xmin — rms residual of 36 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_storage::xmin",
+            "unit": "m",
+            "value": 0.0020660345907883453
+          },
+          {
+            "detail": "object_face box_storage::xmin — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_storage::xmin",
+            "unit": "m",
+            "value": 0.00017081019962601288
+          },
+          {
+            "detail": "object_face box_storage::xmax — rms residual of 36 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_storage::xmax",
+            "unit": "m",
+            "value": 0.0015984773777720119
+          },
+          {
+            "detail": "object_face box_storage::xmax — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_storage::xmax",
+            "unit": "m",
+            "value": 0.00044547503230042544
+          },
+          {
+            "detail": "object_face box_storage::ymin — rms residual of 36 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_storage::ymin",
+            "unit": "m",
+            "value": 0.0018187988115601138
+          },
+          {
+            "detail": "object_face box_storage::ymin — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_storage::ymin",
+            "unit": "m",
+            "value": 0.00046652652742498437
+          },
+          {
+            "detail": "object_face box_storage::ymax — rms residual of 36 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_storage::ymax",
+            "unit": "m",
+            "value": 0.0024050707344262976
+          },
+          {
+            "detail": "object_face box_storage::ymax — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_storage::ymax",
+            "unit": "m",
+            "value": 0.0002025098352415908
+          },
+          {
+            "detail": "object_face box_storage::zmin — rms residual of 36 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_storage::zmin",
+            "unit": "m",
+            "value": 0.0019165594523294551
+          },
+          {
+            "detail": "object_face box_storage::zmin — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_storage::zmin",
+            "unit": "m",
+            "value": 0.0009086804502133621
+          },
+          {
+            "detail": "object_face box_storage::zmax — rms residual of 36 observed points about the reconstructed plane",
+            "metric": "plane_fit_rms",
+            "subjectId": "box_storage::zmax",
+            "unit": "m",
+            "value": 0.0017575218293661816
+          },
+          {
+            "detail": "object_face box_storage::zmax — mean point-to-plane distance of ground-truth points to the reconstructed plane",
+            "metric": "registration_error",
+            "subjectId": "box_storage::zmax",
+            "unit": "m",
+            "value": 0.00025409763261904916
+          },
+          {
+            "detail": "room width (west↔east walls) — measured 4.284096m vs truth 4.200000m",
+            "metric": "scale_error",
+            "subjectId": "room_width",
+            "unit": "ratio",
+            "value": 0.020022974839797102
+          },
+          {
+            "detail": "room width (west↔east walls) — signed error measured(4.284096m) − truth(4.200000m)",
+            "metric": "dimension_error",
+            "subjectId": "room_width",
+            "unit": "m",
+            "value": 0.08409649432714783
+          },
+          {
+            "detail": "room depth (north↔south walls) — measured 3.671986m vs truth 3.600000m",
+            "metric": "scale_error",
+            "subjectId": "room_depth",
+            "unit": "ratio",
+            "value": 0.019996082564611224
+          },
+          {
+            "detail": "room depth (north↔south walls) — signed error measured(3.671986m) − truth(3.600000m)",
+            "metric": "dimension_error",
+            "subjectId": "room_depth",
+            "unit": "m",
+            "value": 0.0719858972326004
+          },
+          {
+            "detail": "room height (floor↔ceiling) — measured 2.753757m vs truth 2.700000m",
+            "metric": "scale_error",
+            "subjectId": "room_height",
+            "unit": "ratio",
+            "value": 0.019909971712821495
+          },
+          {
+            "detail": "room height (floor↔ceiling) — signed error measured(2.753757m) − truth(2.700000m)",
+            "metric": "dimension_error",
+            "subjectId": "room_height",
+            "unit": "m",
+            "value": 0.053756923624618036
+          },
+          {
+            "detail": "object box_storage — measured volume 0.610246668m³ vs truth 0.576000000m³",
+            "metric": "object_volume_error",
+            "subjectId": "box_storage",
+            "unit": "ratio",
+            "value": 0.05945602116075405
+          },
+          {
+            "detail": "7 per-instance threshold violation(s) — the criteria caught the provider's output against the canonical expectation (provider 'fixture-reconstruction-provider' 1.1.0-fixture-v2)",
+            "metric": "criteria_satisfied",
+            "unit": "ratio",
+            "value": 0
+          }
+        ],
+        "providerId": "fixture-reconstruction-provider",
+        "recordId": "430375e5b32a35a1c1be519f4731a75fcc92bc3d9ad5dc882172789642092f64",
+        "reproduction": {
+          "codeVersion": "reality-eval-harness/1",
+          "inputsDigest": "ecaa09c74ad465660d47b553fb9c42e4cfc0a59651ae806f13244382e9518954",
+          "statement": "deterministic reproduction: scenario 'recon-flagship-discrimination-003' (1.0.0), the normalized input (digest above), the provider profile 'fixture-reconstruction-provider' (1.1.0-fixture-v2) resolved by registry-log replay, and the harness code version (above) fully determine these metric values — no clock, no randomness, no network"
+        },
+        "resourceObservations": {
+          "compute": "deterministic fixture computation — no accelerator, fully offline",
+          "latencyMsP50": 1,
+          "latencyMsP95": 5,
+          "memoryMiB": 16
+        },
+        "schemaVersion": "provider-benchmark/1",
+        "technologyVersion": "1.1.0-fixture-v2"
+      },
+      "scenarioClass": "discrimination",
+      "scenarioId": "recon-flagship-discrimination-003",
+      "verdict": "fail"
+    },
+    {
+      "discriminationCaught": false,
+      "failureObservationKinds": [
+        "timeout"
+      ],
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "2a3ea098d9ef79add1b1e58facebfb3489017ba6654c5ad7fd4eb6b9e3e9946a"
+        ],
+        "benchmarkRecordReferences": [
+          "1a4121a1c1280d905dfcafe61879dc02681e1648a690ffe9c1abc056f727c0bd"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "layer1-reality-evaluation"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "reality-eval-harness/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the Layer-1 evaluation harness never reads the runtime environment (identical scenarios over identical registry logs reproduce byte-identical records)"
+        },
+        "inputDigests": [
+          "a0bdf180ed6ce6e5c0200ae3b47cde440df010abea6986479cd696023fcb2aca"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "43b48a85c82cdf5759933d1a2d872827469bf75ad0111d8ef2fb8488bd5404cc",
+        "normalizedResultDigest": "4f5262825a35504e023cda178d79579c8a98e1309359e84b09dd948300a6f8fb",
+        "profileReference": {
+          "profileDigest": "12d0e1407c00c89df05cf02177dd6f509db89b3c7939b35166a0c2e25a163efa",
+          "providerId": "fixture-reconstruction-provider",
+          "technologyVersion": "1.1.0-fixture-v2"
+        },
+        "reproducibilityStatement": "Layer-1 evaluation of scenario 'recon-timeout-negative-004': the registered profile (digest above), the normalized input (digest above), the normalized provider result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the provider-native payload, if any, is opaque provenance and never parsed into canonical Layer-1 types",
+        "schemaVersion": "provider-provenance/1"
+      },
+      "record": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "failureObservations": [
+          {
+            "detail": "scenario 'recon-timeout-negative-004' (negative): the provider answered the explicit closed-vocabulary failure 'timeout' (declared: sceneTag 'timeout:oversized-fusion-input' exceeds the fixture provider's declared latency budget (timeoutMs 5000) — explicit timeout observation, never a fabricated or partial reconstruction); the scenario's lawful explicit kinds were [timeout] — the negative path is explicit and safe (no fabricated output)",
+            "kind": "timeout"
+          }
+        ],
+        "kind": "provider-benchmark-record",
+        "metrics": [
+          {
+            "detail": "1 = the provider answered one of the scenario's expected explicit failure kinds ([timeout]); 0 = the observed refusal was unexpected (or outputs were expected)",
+            "metric": "explicit_failure_alignment",
+            "unit": "ratio",
+            "value": 1
+          }
+        ],
+        "providerId": "fixture-reconstruction-provider",
+        "recordId": "1a4121a1c1280d905dfcafe61879dc02681e1648a690ffe9c1abc056f727c0bd",
+        "reproduction": {
+          "codeVersion": "reality-eval-harness/1",
+          "inputsDigest": "a0bdf180ed6ce6e5c0200ae3b47cde440df010abea6986479cd696023fcb2aca",
+          "statement": "deterministic reproduction: scenario 'recon-timeout-negative-004' (1.0.0), the normalized input (digest above), the provider profile 'fixture-reconstruction-provider' (1.1.0-fixture-v2) resolved by registry-log replay, and the harness code version (above) fully determine these metric values — no clock, no randomness, no network"
+        },
+        "resourceObservations": {
+          "compute": "deterministic fixture computation — no accelerator, fully offline",
+          "latencyMsP50": 1,
+          "latencyMsP95": 5,
+          "memoryMiB": 16
+        },
+        "schemaVersion": "provider-benchmark/1",
+        "technologyVersion": "1.1.0-fixture-v2"
+      },
+      "scenarioClass": "negative",
+      "scenarioId": "recon-timeout-negative-004",
+      "verdict": "pass"
+    },
+    {
+      "discriminationCaught": false,
+      "failureObservationKinds": [],
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "b5b9786729413318086c74dd5f29e6e7f24d0b656dd5f435268fa0691a2b6536"
+        ],
+        "benchmarkRecordReferences": [
+          "85d8ce5d14d88b892b395ff301107542f7c25c6d9cb37c3a093f2f9ee74c071b"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "layer1-reality-evaluation"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "reality-eval-harness/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the Layer-1 evaluation harness never reads the runtime environment (identical scenarios over identical registry logs reproduce byte-identical records)"
+        },
+        "inputDigests": [
+          "b60259729e94af7623f40841037575b2ebe6204d834ffd835894ae073173b69a"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "abcf5603f0e2fc8d17f0d51473ae94dd1df9467f09383280b9f0d69bb7402886",
+        "normalizedResultDigest": "fd1bc24e72cb453ceafea5814b4c3949f50908213fd739b2de861dd9d1c63009",
+        "profileReference": {
+          "profileDigest": "0fd3f3c4a68bff970cce8bd6447adc98ff42b1f8a9c0b8239167bcab0f09fd0c",
+          "providerId": "fixture-reality-depth-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "reproducibilityStatement": "Layer-1 evaluation of scenario 'depth-wall-positive-005': the registered profile (digest above), the normalized input (digest above), the normalized provider result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the provider-native payload, if any, is opaque provenance and never parsed into canonical Layer-1 types",
+        "schemaVersion": "provider-provenance/1"
+      },
+      "record": {
+        "benchmarkId": "reality-eval-depth/1",
+        "capability": "depth",
+        "failureObservations": [],
+        "kind": "provider-benchmark-record",
+        "metrics": [
+          {
+            "detail": "depth grid — mean absolute error of the estimated depth grid against the documented truth (16 cells)",
+            "metric": "depth_mae_m",
+            "subjectId": "depth-wall-positive-005-grid",
+            "unit": "m",
+            "value": 0
+          },
+          {
+            "detail": "depth grid — maximum absolute error of the estimated depth grid against the documented truth",
+            "metric": "depth_max_error_m",
+            "subjectId": "depth-wall-positive-005-grid",
+            "unit": "m",
+            "value": 0
+          },
+          {
+            "detail": "every per-instance threshold satisfied — the provider's depth output meets the scenario's declared criteria over the documented truth (provider 'fixture-reality-depth-provider' 1.0.0-fixture-v1)",
+            "metric": "criteria_satisfied",
+            "unit": "ratio",
+            "value": 1
+          }
+        ],
+        "providerId": "fixture-reality-depth-provider",
+        "recordId": "85d8ce5d14d88b892b395ff301107542f7c25c6d9cb37c3a093f2f9ee74c071b",
+        "reproduction": {
+          "codeVersion": "reality-eval-harness/1",
+          "inputsDigest": "b60259729e94af7623f40841037575b2ebe6204d834ffd835894ae073173b69a",
+          "statement": "deterministic reproduction: scenario 'depth-wall-positive-005' (1.0.0), the normalized input (digest above), the provider profile 'fixture-reality-depth-provider' (1.0.0-fixture-v1) resolved by registry-log replay, and the harness code version (above) fully determine these metric values — no clock, no randomness, no network"
+        },
+        "resourceObservations": {
+          "compute": "deterministic fixture computation — no accelerator, fully offline",
+          "latencyMsP50": 0.5,
+          "latencyMsP95": 1,
+          "memoryMiB": 16
+        },
+        "schemaVersion": "provider-benchmark/1",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioClass": "positive",
+      "scenarioId": "depth-wall-positive-005",
+      "verdict": "pass"
+    },
+    {
+      "discriminationCaught": false,
+      "failureObservationKinds": [
+        "unsupported-data"
+      ],
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "d3a96d0aea8c8991ed73c771bd6821f5f6c17bde18468fdda2d758060a2f1b9e"
+        ],
+        "benchmarkRecordReferences": [
+          "11fb5643ee7e17eed1872d84a2382f7c4309ab9da4b76c55c66cb0aa3ae1f120"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "layer1-reality-evaluation"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "reality-eval-harness/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the Layer-1 evaluation harness never reads the runtime environment (identical scenarios over identical registry logs reproduce byte-identical records)"
+        },
+        "inputDigests": [
+          "65eaa92f324804a97b7fc5bd42c6f6082883fbd092a6dce43ec3ada5ddf591c1"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "8326f455c249c1932327f1500ff7e1354eb7f8373efd80d0da231535dcb0030a",
+        "normalizedResultDigest": "c4196abc0776d35268f5118dbecb784b3c551574da970514467ac8df0c9be148",
+        "profileReference": {
+          "profileDigest": "0fd3f3c4a68bff970cce8bd6447adc98ff42b1f8a9c0b8239167bcab0f09fd0c",
+          "providerId": "fixture-reality-depth-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "reproducibilityStatement": "Layer-1 evaluation of scenario 'depth-unsupported-negative-006': the registered profile (digest above), the normalized input (digest above), the normalized provider result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the provider-native payload, if any, is opaque provenance and never parsed into canonical Layer-1 types",
+        "schemaVersion": "provider-provenance/1"
+      },
+      "record": {
+        "benchmarkId": "reality-eval-depth/1",
+        "capability": "depth",
+        "failureObservations": [
+          {
+            "detail": "scenario 'depth-unsupported-negative-006' (negative): the provider answered the explicit closed-vocabulary failure 'unsupported-data' (declared: sceneTag 'unsupported:thermal-only-capture' is outside the fixture provider's declared support (supported: 'interior-wall') — explicit refusal, never fabricated depth values); the scenario's lawful explicit kinds were [unsupported-data] — the negative path is explicit and safe (no fabricated output)",
+            "kind": "unsupported-data"
+          }
+        ],
+        "kind": "provider-benchmark-record",
+        "metrics": [
+          {
+            "detail": "1 = the provider answered one of the scenario's expected explicit failure kinds ([unsupported-data]); 0 = the observed refusal was unexpected (or outputs were expected)",
+            "metric": "explicit_failure_alignment",
+            "unit": "ratio",
+            "value": 1
+          }
+        ],
+        "providerId": "fixture-reality-depth-provider",
+        "recordId": "11fb5643ee7e17eed1872d84a2382f7c4309ab9da4b76c55c66cb0aa3ae1f120",
+        "reproduction": {
+          "codeVersion": "reality-eval-harness/1",
+          "inputsDigest": "65eaa92f324804a97b7fc5bd42c6f6082883fbd092a6dce43ec3ada5ddf591c1",
+          "statement": "deterministic reproduction: scenario 'depth-unsupported-negative-006' (1.0.0), the normalized input (digest above), the provider profile 'fixture-reality-depth-provider' (1.0.0-fixture-v1) resolved by registry-log replay, and the harness code version (above) fully determine these metric values — no clock, no randomness, no network"
+        },
+        "resourceObservations": {
+          "compute": "deterministic fixture computation — no accelerator, fully offline",
+          "latencyMsP50": 0.5,
+          "latencyMsP95": 1,
+          "memoryMiB": 16
+        },
+        "schemaVersion": "provider-benchmark/1",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioClass": "negative",
+      "scenarioId": "depth-unsupported-negative-006",
+      "verdict": "pass"
+    }
+  ],
+  "kind": "reality-eval-expected-outcomes",
+  "registryLog": [
+    {
+      "kind": "provider-registered",
+      "profile": {
+        "benchmarkResults": [],
+        "capabilities": [
+          "reconstruction"
+        ],
+        "computeProfile": {
+          "accelerator": "none",
+          "minimumCores": 1,
+          "offlineCapable": true,
+          "recommendedCores": 1,
+          "statement": "deterministic fixture computation — no accelerator, fully offline"
+        },
+        "costProfile": {
+          "currency": "n/a",
+          "model": "none",
+          "quotaPolicy": "fixture provider — deterministic local computation, no quota, no fallback needed",
+          "unitCost": 0
+        },
+        "description": "Deterministic reference reconstruction fixture (v1): least-squares plane fits over the ground-truth-blind capture view of the pinned Layer-1 golden fixtures — the honest measured baseline that passes the committed thresholds.",
+        "displayName": "Fixture Reconstruction Provider v1",
+        "failureModes": [
+          {
+            "behavior": "typed normalization refusal with structured issues — never a silent coercion",
+            "condition": "input or output payload violates the declared contracts",
+            "kind": "contract-mismatch"
+          }
+        ],
+        "inputContract": {
+          "contractId": "fixture-reconstruction-input/1",
+          "fields": [
+            {
+              "description": "the pinned Layer-1 golden fixture id (the canonical benchmark fixture the provider is evaluated over)",
+              "maxLength": 128,
+              "minLength": 1,
+              "name": "fixtureId",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "description": "the device class of the fixture's synthetic capture (must match the fixture's own class)",
+              "maxLength": 32,
+              "minLength": 1,
+              "name": "deviceClass",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "description": "declared scene class; on the degraded v2 a tag starting with 'timeout:' triggers the documented explicit timeout refusal",
+              "maxLength": 128,
+              "minLength": 1,
+              "name": "sceneTag",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "point-cloud"
+        },
+        "kind": "provider-profile",
+        "latencyProfile": {
+          "expectedMsP50": 1,
+          "expectedMsP95": 5,
+          "statement": "declared fixture latencies — no wall-clock measurement exists in the harness",
+          "timeoutMs": 5000
+        },
+        "license": {
+          "commercialUse": true,
+          "evaluationOnly": false,
+          "identifier": "fixture-eval-permissive-1.0",
+          "intendedUse": "deterministic Layer-1 evaluation fixtures behind the AISE reality-eval harness (in-repo doubles, no real model)",
+          "intendedUseCleared": true
+        },
+        "memoryProfile": {
+          "minimumMiB": 16,
+          "recommendedMiB": 32,
+          "statement": "declared fixture memory envelope (no environment is sensed)"
+        },
+        "outputContract": {
+          "contractId": "fixture-reconstruction-output/1",
+          "fields": [
+            {
+              "description": "unit plane normal components (x, y, z per canonical surface, aligned with the fixture's surface order); unit-norm is enforced at the canonical projection",
+              "maxLength": 512,
+              "minLength": 3,
+              "name": "planeNormals",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "plane offsets d (dot(normal, x) + d = 0), one per canonical surface; finiteness is enforced at the canonical projection",
+              "maxLength": 256,
+              "name": "planeOffsets",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "measured linear dimensions (meters), aligned with the fixture's measurement-request order",
+              "max": 1000,
+              "maxLength": 256,
+              "min": 0,
+              "minLength": 1,
+              "name": "measuredDimensions",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "measured object volumes (cubic meters), aligned with the fixture's object order",
+              "max": 10000,
+              "maxLength": 256,
+              "min": 0,
+              "minLength": 1,
+              "name": "measuredVolumes",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "the engine's deterministic diagnostic note (carried verbatim)",
+              "maxLength": 512,
+              "minLength": 1,
+              "name": "note",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "point-cloud"
+        },
+        "provenanceContract": {
+          "configurationDigestRequired": true,
+          "inputDigestRequired": true,
+          "nativePayloadPolicy": "opaque-required",
+          "providerIdentityRequired": true
+        },
+        "providerId": "fixture-reconstruction-provider",
+        "schemaVersion": "provider-profile/1",
+        "supportedModalities": [
+          "point-cloud",
+          "mesh"
+        ],
+        "technologyVersion": "1.0.0-fixture-v1",
+        "uncertaintyCharacteristics": {
+          "calibration": "none-declared",
+          "confidenceSeparateFromMeasurementUncertainty": true,
+          "notes": "the fixture emits deterministic geometry values without confidence scores and without measurement uncertainty — confidence is never fabricated and never substitutes for measurement uncertainty"
+        }
+      }
+    },
+    {
+      "kind": "provider-registered",
+      "profile": {
+        "benchmarkResults": [],
+        "capabilities": [
+          "reconstruction"
+        ],
+        "computeProfile": {
+          "accelerator": "none",
+          "minimumCores": 1,
+          "offlineCapable": true,
+          "recommendedCores": 1,
+          "statement": "deterministic fixture computation — no accelerator, fully offline"
+        },
+        "costProfile": {
+          "currency": "n/a",
+          "model": "none",
+          "quotaPolicy": "fixture provider — deterministic local computation, no quota, no fallback needed",
+          "unitCost": 0
+        },
+        "description": "Deterministic reference reconstruction fixture (v2, degraded): a systematic x1.02 linear scale bias on measured dimensions and volumes — plausible-but-wrong geometry the discrimination criteria must catch — plus the documented explicit timeout behavior.",
+        "displayName": "Fixture Reconstruction Provider v2",
+        "failureModes": [
+          {
+            "behavior": "the biased output is contract-valid and plausible — the scenario's per-instance thresholds must CATCH it and record the perception-failure observation (never a silent low score)",
+            "condition": "the systematic x1.02 linear scale bias on measured dimensions (x1.02^3 on volumes) — the documented degraded behavior",
+            "kind": "perception-failure"
+          },
+          {
+            "behavior": "the explicit closed-vocabulary timeout refusal — never a fabricated or partial reconstruction",
+            "condition": "sceneTag starting with 'timeout:' (an input exceeding the declared latency budget)",
+            "kind": "timeout"
+          },
+          {
+            "behavior": "typed normalization refusal with structured issues — never a silent coercion",
+            "condition": "input or output payload violates the declared contracts",
+            "kind": "contract-mismatch"
+          }
+        ],
+        "inputContract": {
+          "contractId": "fixture-reconstruction-input/1",
+          "fields": [
+            {
+              "description": "the pinned Layer-1 golden fixture id (the canonical benchmark fixture the provider is evaluated over)",
+              "maxLength": 128,
+              "minLength": 1,
+              "name": "fixtureId",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "description": "the device class of the fixture's synthetic capture (must match the fixture's own class)",
+              "maxLength": 32,
+              "minLength": 1,
+              "name": "deviceClass",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "description": "declared scene class; on the degraded v2 a tag starting with 'timeout:' triggers the documented explicit timeout refusal",
+              "maxLength": 128,
+              "minLength": 1,
+              "name": "sceneTag",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "point-cloud"
+        },
+        "kind": "provider-profile",
+        "latencyProfile": {
+          "expectedMsP50": 1,
+          "expectedMsP95": 5,
+          "statement": "declared fixture latencies — no wall-clock measurement exists in the harness",
+          "timeoutMs": 5000
+        },
+        "license": {
+          "commercialUse": true,
+          "evaluationOnly": false,
+          "identifier": "fixture-eval-permissive-1.0",
+          "intendedUse": "deterministic Layer-1 evaluation fixtures behind the AISE reality-eval harness (in-repo doubles, no real model)",
+          "intendedUseCleared": true
+        },
+        "memoryProfile": {
+          "minimumMiB": 16,
+          "recommendedMiB": 32,
+          "statement": "declared fixture memory envelope (no environment is sensed)"
+        },
+        "outputContract": {
+          "contractId": "fixture-reconstruction-output/1",
+          "fields": [
+            {
+              "description": "unit plane normal components (x, y, z per canonical surface, aligned with the fixture's surface order); unit-norm is enforced at the canonical projection",
+              "maxLength": 512,
+              "minLength": 3,
+              "name": "planeNormals",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "plane offsets d (dot(normal, x) + d = 0), one per canonical surface; finiteness is enforced at the canonical projection",
+              "maxLength": 256,
+              "name": "planeOffsets",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "measured linear dimensions (meters), aligned with the fixture's measurement-request order",
+              "max": 1000,
+              "maxLength": 256,
+              "min": 0,
+              "minLength": 1,
+              "name": "measuredDimensions",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "measured object volumes (cubic meters), aligned with the fixture's object order",
+              "max": 10000,
+              "maxLength": 256,
+              "min": 0,
+              "minLength": 1,
+              "name": "measuredVolumes",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "the engine's deterministic diagnostic note (carried verbatim)",
+              "maxLength": 512,
+              "minLength": 1,
+              "name": "note",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "point-cloud"
+        },
+        "provenanceContract": {
+          "configurationDigestRequired": true,
+          "inputDigestRequired": true,
+          "nativePayloadPolicy": "opaque-required",
+          "providerIdentityRequired": true
+        },
+        "providerId": "fixture-reconstruction-provider",
+        "schemaVersion": "provider-profile/1",
+        "supportedModalities": [
+          "point-cloud",
+          "mesh"
+        ],
+        "technologyVersion": "1.1.0-fixture-v2",
+        "uncertaintyCharacteristics": {
+          "calibration": "none-declared",
+          "confidenceSeparateFromMeasurementUncertainty": true,
+          "notes": "the fixture emits deterministic geometry values without confidence scores and without measurement uncertainty — confidence is never fabricated and never substitutes for measurement uncertainty"
+        }
+      }
+    },
+    {
+      "kind": "provider-registered",
+      "profile": {
+        "benchmarkResults": [],
+        "capabilities": [
+          "depth"
+        ],
+        "computeProfile": {
+          "accelerator": "none",
+          "minimumCores": 1,
+          "offlineCapable": true,
+          "recommendedCores": 1,
+          "statement": "deterministic fixture computation — no accelerator, fully offline"
+        },
+        "costProfile": {
+          "currency": "n/a",
+          "model": "none",
+          "quotaPolicy": "fixture provider — deterministic local computation, no quota, no fallback needed",
+          "unitCost": 0
+        },
+        "description": "Deterministic depth-estimation fixture (the HFX-000 reference pattern's variant): reproduces the documented depth truth exactly and answers the explicit unsupported-data refusal on out-of-domain scene tags.",
+        "displayName": "Fixture Reality Depth Provider v1",
+        "failureModes": [
+          {
+            "behavior": "explicit unsupported-data refusal — never fabricated depth values",
+            "condition": "sceneTag starting with 'unsupported:' (a scene class outside declared support)",
+            "kind": "unsupported-data"
+          },
+          {
+            "behavior": "typed normalization refusal with structured issues — never a silent coercion",
+            "condition": "input or output payload violates the declared contracts",
+            "kind": "contract-mismatch"
+          }
+        ],
+        "inputContract": {
+          "contractId": "fixture-reality-depth-input/1",
+          "fields": [
+            {
+              "description": "grid width of the fixture sample grid (cells)",
+              "max": 64,
+              "min": 1,
+              "name": "gridWidth",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "description": "grid height of the fixture sample grid (cells)",
+              "max": 64,
+              "min": 1,
+              "name": "gridHeight",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "description": "normalized sample values in [0, 1], row-major gridWidth x gridHeight",
+              "max": 1,
+              "maxLength": 4096,
+              "min": 0,
+              "minLength": 1,
+              "name": "samples",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "declared scene class; a tag starting with 'unsupported:' (out-of-domain input) triggers the explicit unsupported-data refusal",
+              "maxLength": 128,
+              "minLength": 1,
+              "name": "sceneTag",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "image"
+        },
+        "kind": "provider-profile",
+        "latencyProfile": {
+          "expectedMsP50": 0.5,
+          "expectedMsP95": 1,
+          "statement": "declared fixture latencies — no wall-clock measurement exists in the harness",
+          "timeoutMs": 5000
+        },
+        "license": {
+          "commercialUse": true,
+          "evaluationOnly": false,
+          "identifier": "fixture-eval-permissive-1.0",
+          "intendedUse": "deterministic Layer-1 evaluation fixtures behind the AISE reality-eval harness (in-repo doubles, no real model)",
+          "intendedUseCleared": true
+        },
+        "memoryProfile": {
+          "minimumMiB": 16,
+          "recommendedMiB": 32,
+          "statement": "declared fixture memory envelope (no environment is sensed)"
+        },
+        "outputContract": {
+          "contractId": "fixture-reality-depth-output/1",
+          "fields": [
+            {
+              "description": "estimated depth per grid cell (meters), row-major gridWidth x gridHeight",
+              "max": 4,
+              "maxLength": 4096,
+              "min": 0,
+              "minLength": 1,
+              "name": "depthMap",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "the depth unit of the depthMap values (Layer-1 canonical depth is meters)",
+              "maxLength": 8,
+              "minLength": 1,
+              "name": "unit",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "depth-map"
+        },
+        "provenanceContract": {
+          "configurationDigestRequired": true,
+          "inputDigestRequired": true,
+          "nativePayloadPolicy": "opaque-required",
+          "providerIdentityRequired": true
+        },
+        "providerId": "fixture-reality-depth-provider",
+        "schemaVersion": "provider-profile/1",
+        "supportedModalities": [
+          "image",
+          "depth-map"
+        ],
+        "technologyVersion": "1.0.0-fixture-v1",
+        "uncertaintyCharacteristics": {
+          "calibration": "none-declared",
+          "confidenceSeparateFromMeasurementUncertainty": true,
+          "notes": "the fixture emits deterministic depth values without confidence scores and without measurement uncertainty — confidence is never fabricated and never substitutes for measurement uncertainty"
+        }
+      }
+    },
+    {
+      "kind": "evaluation-started",
+      "providerId": "fixture-reconstruction-provider",
+      "technologyVersion": "1.0.0-fixture-v1"
+    },
+    {
+      "kind": "evaluation-started",
+      "providerId": "fixture-reconstruction-provider",
+      "technologyVersion": "1.1.0-fixture-v2"
+    },
+    {
+      "kind": "evaluation-started",
+      "providerId": "fixture-reality-depth-provider",
+      "technologyVersion": "1.0.0-fixture-v1"
+    },
+    {
+      "execution": {
+        "capability": "reconstruction",
+        "inputDigest": "ecaa09c74ad465660d47b553fb9c42e4cfc0a59651ae806f13244382e9518954",
+        "normalizedResultDigest": "ef22442fb66ef6aa4f256d1da2b0a5b4eecfb12aef71c54c05aeafa3c0920914"
+      },
+      "kind": "execution-normalized",
+      "providerId": "fixture-reconstruction-provider",
+      "technologyVersion": "1.0.0-fixture-v1"
+    },
+    {
+      "kind": "provenance-sealed",
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "55877c694ff924efaa7b5e0d936cdcb4e5d3d45cf52dcc37e237ba8f633f3d6d"
+        ],
+        "benchmarkRecordReferences": [
+          "35737403cf7b90275e99746875282470e540c242144c7a580c98237bd13e9d4e"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "layer1-reality-evaluation"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "reality-eval-harness/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the Layer-1 evaluation harness never reads the runtime environment (identical scenarios over identical registry logs reproduce byte-identical records)"
+        },
+        "inputDigests": [
+          "ecaa09c74ad465660d47b553fb9c42e4cfc0a59651ae806f13244382e9518954"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "935b0fd61aa98157b210ae2d864ee2b38adfd458229ba2215808f9ad302c2d4d",
+        "normalizedResultDigest": "ef22442fb66ef6aa4f256d1da2b0a5b4eecfb12aef71c54c05aeafa3c0920914",
+        "profileReference": {
+          "profileDigest": "74061fb70c8ad27f3f284f3d3470923be9ec06524a5b6a783b99d473dc08b169",
+          "providerId": "fixture-reconstruction-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "reproducibilityStatement": "Layer-1 evaluation of scenario 'recon-flagship-positive-001': the registered profile (digest above), the normalized input (digest above), the normalized provider result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the provider-native payload, if any, is opaque provenance and never parsed into canonical Layer-1 types",
+        "schemaVersion": "provider-provenance/1"
+      }
+    },
+    {
+      "execution": {
+        "capability": "reconstruction",
+        "inputDigest": "f0fbd0c536a43a41e164c96c4f1df468050453882034cad959f9433f91cda1ab",
+        "normalizedResultDigest": "6c25c9f3dbb49d02645062893b69aa52832f66a8af065fa6d162362147569489"
+      },
+      "kind": "execution-normalized",
+      "providerId": "fixture-reconstruction-provider",
+      "technologyVersion": "1.0.0-fixture-v1"
+    },
+    {
+      "kind": "provenance-sealed",
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "03be406568f1583542ec3a00b4ee2457e1025bb4761e701f8ae06a106f4051ae"
+        ],
+        "benchmarkRecordReferences": [
+          "105179dc94a56ebba879a7e30b6fd60251e1578a0fa0e8bbfbe10e085c266229"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "layer1-reality-evaluation"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "reality-eval-harness/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the Layer-1 evaluation harness never reads the runtime environment (identical scenarios over identical registry logs reproduce byte-identical records)"
+        },
+        "inputDigests": [
+          "f0fbd0c536a43a41e164c96c4f1df468050453882034cad959f9433f91cda1ab"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "d10f01c19ec0e6fc8afa98ed391e34e9117656a96f3e439313c1efc67577bd55",
+        "normalizedResultDigest": "6c25c9f3dbb49d02645062893b69aa52832f66a8af065fa6d162362147569489",
+        "profileReference": {
+          "profileDigest": "74061fb70c8ad27f3f284f3d3470923be9ec06524a5b6a783b99d473dc08b169",
+          "providerId": "fixture-reconstruction-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "reproducibilityStatement": "Layer-1 evaluation of scenario 'recon-midrange-positive-002': the registered profile (digest above), the normalized input (digest above), the normalized provider result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the provider-native payload, if any, is opaque provenance and never parsed into canonical Layer-1 types",
+        "schemaVersion": "provider-provenance/1"
+      }
+    },
+    {
+      "execution": {
+        "capability": "reconstruction",
+        "inputDigest": "ecaa09c74ad465660d47b553fb9c42e4cfc0a59651ae806f13244382e9518954",
+        "normalizedResultDigest": "d2e951e59c960026ed06f65cc1c4f81eb7dea6b18ad60f456ac3b853af300a79"
+      },
+      "kind": "execution-normalized",
+      "providerId": "fixture-reconstruction-provider",
+      "technologyVersion": "1.1.0-fixture-v2"
+    },
+    {
+      "kind": "provenance-sealed",
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "b3718bc71d74ba95875093832720ea4b58fc9648e98f6a921748c3cc5463c267"
+        ],
+        "benchmarkRecordReferences": [
+          "430375e5b32a35a1c1be519f4731a75fcc92bc3d9ad5dc882172789642092f64"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "layer1-reality-evaluation"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "reality-eval-harness/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the Layer-1 evaluation harness never reads the runtime environment (identical scenarios over identical registry logs reproduce byte-identical records)"
+        },
+        "inputDigests": [
+          "ecaa09c74ad465660d47b553fb9c42e4cfc0a59651ae806f13244382e9518954"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "0f43d31e17088078dabef266d3cd2666657df2ff37b9d8ff2fed5a76df00ffd6",
+        "normalizedResultDigest": "d2e951e59c960026ed06f65cc1c4f81eb7dea6b18ad60f456ac3b853af300a79",
+        "profileReference": {
+          "profileDigest": "12d0e1407c00c89df05cf02177dd6f509db89b3c7939b35166a0c2e25a163efa",
+          "providerId": "fixture-reconstruction-provider",
+          "technologyVersion": "1.1.0-fixture-v2"
+        },
+        "reproducibilityStatement": "Layer-1 evaluation of scenario 'recon-flagship-discrimination-003': the registered profile (digest above), the normalized input (digest above), the normalized provider result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the provider-native payload, if any, is opaque provenance and never parsed into canonical Layer-1 types",
+        "schemaVersion": "provider-provenance/1"
+      }
+    },
+    {
+      "execution": {
+        "capability": "reconstruction",
+        "inputDigest": "a0bdf180ed6ce6e5c0200ae3b47cde440df010abea6986479cd696023fcb2aca",
+        "normalizedResultDigest": "4f5262825a35504e023cda178d79579c8a98e1309359e84b09dd948300a6f8fb"
+      },
+      "kind": "execution-normalized",
+      "providerId": "fixture-reconstruction-provider",
+      "technologyVersion": "1.1.0-fixture-v2"
+    },
+    {
+      "kind": "provenance-sealed",
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "2a3ea098d9ef79add1b1e58facebfb3489017ba6654c5ad7fd4eb6b9e3e9946a"
+        ],
+        "benchmarkRecordReferences": [
+          "1a4121a1c1280d905dfcafe61879dc02681e1648a690ffe9c1abc056f727c0bd"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "layer1-reality-evaluation"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "reality-eval-harness/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the Layer-1 evaluation harness never reads the runtime environment (identical scenarios over identical registry logs reproduce byte-identical records)"
+        },
+        "inputDigests": [
+          "a0bdf180ed6ce6e5c0200ae3b47cde440df010abea6986479cd696023fcb2aca"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "43b48a85c82cdf5759933d1a2d872827469bf75ad0111d8ef2fb8488bd5404cc",
+        "normalizedResultDigest": "4f5262825a35504e023cda178d79579c8a98e1309359e84b09dd948300a6f8fb",
+        "profileReference": {
+          "profileDigest": "12d0e1407c00c89df05cf02177dd6f509db89b3c7939b35166a0c2e25a163efa",
+          "providerId": "fixture-reconstruction-provider",
+          "technologyVersion": "1.1.0-fixture-v2"
+        },
+        "reproducibilityStatement": "Layer-1 evaluation of scenario 'recon-timeout-negative-004': the registered profile (digest above), the normalized input (digest above), the normalized provider result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the provider-native payload, if any, is opaque provenance and never parsed into canonical Layer-1 types",
+        "schemaVersion": "provider-provenance/1"
+      }
+    },
+    {
+      "execution": {
+        "capability": "depth",
+        "inputDigest": "b60259729e94af7623f40841037575b2ebe6204d834ffd835894ae073173b69a",
+        "normalizedResultDigest": "fd1bc24e72cb453ceafea5814b4c3949f50908213fd739b2de861dd9d1c63009"
+      },
+      "kind": "execution-normalized",
+      "providerId": "fixture-reality-depth-provider",
+      "technologyVersion": "1.0.0-fixture-v1"
+    },
+    {
+      "kind": "provenance-sealed",
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "b5b9786729413318086c74dd5f29e6e7f24d0b656dd5f435268fa0691a2b6536"
+        ],
+        "benchmarkRecordReferences": [
+          "85d8ce5d14d88b892b395ff301107542f7c25c6d9cb37c3a093f2f9ee74c071b"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "layer1-reality-evaluation"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "reality-eval-harness/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the Layer-1 evaluation harness never reads the runtime environment (identical scenarios over identical registry logs reproduce byte-identical records)"
+        },
+        "inputDigests": [
+          "b60259729e94af7623f40841037575b2ebe6204d834ffd835894ae073173b69a"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "abcf5603f0e2fc8d17f0d51473ae94dd1df9467f09383280b9f0d69bb7402886",
+        "normalizedResultDigest": "fd1bc24e72cb453ceafea5814b4c3949f50908213fd739b2de861dd9d1c63009",
+        "profileReference": {
+          "profileDigest": "0fd3f3c4a68bff970cce8bd6447adc98ff42b1f8a9c0b8239167bcab0f09fd0c",
+          "providerId": "fixture-reality-depth-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "reproducibilityStatement": "Layer-1 evaluation of scenario 'depth-wall-positive-005': the registered profile (digest above), the normalized input (digest above), the normalized provider result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the provider-native payload, if any, is opaque provenance and never parsed into canonical Layer-1 types",
+        "schemaVersion": "provider-provenance/1"
+      }
+    },
+    {
+      "execution": {
+        "capability": "depth",
+        "inputDigest": "65eaa92f324804a97b7fc5bd42c6f6082883fbd092a6dce43ec3ada5ddf591c1",
+        "normalizedResultDigest": "c4196abc0776d35268f5118dbecb784b3c551574da970514467ac8df0c9be148"
+      },
+      "kind": "execution-normalized",
+      "providerId": "fixture-reality-depth-provider",
+      "technologyVersion": "1.0.0-fixture-v1"
+    },
+    {
+      "kind": "provenance-sealed",
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "d3a96d0aea8c8991ed73c771bd6821f5f6c17bde18468fdda2d758060a2f1b9e"
+        ],
+        "benchmarkRecordReferences": [
+          "11fb5643ee7e17eed1872d84a2382f7c4309ab9da4b76c55c66cb0aa3ae1f120"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "layer1-reality-evaluation"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "reality-eval-harness/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the Layer-1 evaluation harness never reads the runtime environment (identical scenarios over identical registry logs reproduce byte-identical records)"
+        },
+        "inputDigests": [
+          "65eaa92f324804a97b7fc5bd42c6f6082883fbd092a6dce43ec3ada5ddf591c1"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "8326f455c249c1932327f1500ff7e1354eb7f8373efd80d0da231535dcb0030a",
+        "normalizedResultDigest": "c4196abc0776d35268f5118dbecb784b3c551574da970514467ac8df0c9be148",
+        "profileReference": {
+          "profileDigest": "0fd3f3c4a68bff970cce8bd6447adc98ff42b1f8a9c0b8239167bcab0f09fd0c",
+          "providerId": "fixture-reality-depth-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "reproducibilityStatement": "Layer-1 evaluation of scenario 'depth-unsupported-negative-006': the registered profile (digest above), the normalized input (digest above), the normalized provider result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the provider-native payload, if any, is opaque provenance and never parsed into canonical Layer-1 types",
+        "schemaVersion": "provider-provenance/1"
+      }
+    }
+  ],
+  "scenarioSetDigest": "97b026b4ec495e5a441fd76f114285fcad1bb41be71625cefb55c9258558c404",
+  "schemaVersion": "reality-eval-outcomes/1",
+  "suiteId": "reality-eval-layer1/1",
+  "suiteVersion": "1.0.0"
+}

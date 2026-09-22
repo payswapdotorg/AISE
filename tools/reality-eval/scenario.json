@@ -1,0 +1,804 @@
+{
+  "benchmarkVersion": "1.0.0",
+  "kind": "reality-eval-scenario-set",
+  "providers": [
+    {
+      "benchmarkResults": [],
+      "capabilities": [
+        "reconstruction"
+      ],
+      "computeProfile": {
+        "accelerator": "none",
+        "minimumCores": 1,
+        "offlineCapable": true,
+        "recommendedCores": 1,
+        "statement": "deterministic fixture computation — no accelerator, fully offline"
+      },
+      "costProfile": {
+        "currency": "n/a",
+        "model": "none",
+        "quotaPolicy": "fixture provider — deterministic local computation, no quota, no fallback needed",
+        "unitCost": 0
+      },
+      "description": "Deterministic reference reconstruction fixture (v1): least-squares plane fits over the ground-truth-blind capture view of the pinned Layer-1 golden fixtures — the honest measured baseline that passes the committed thresholds.",
+      "displayName": "Fixture Reconstruction Provider v1",
+      "failureModes": [
+        {
+          "behavior": "typed normalization refusal with structured issues — never a silent coercion",
+          "condition": "input or output payload violates the declared contracts",
+          "kind": "contract-mismatch"
+        }
+      ],
+      "inputContract": {
+        "contractId": "fixture-reconstruction-input/1",
+        "fields": [
+          {
+            "description": "the pinned Layer-1 golden fixture id (the canonical benchmark fixture the provider is evaluated over)",
+            "maxLength": 128,
+            "minLength": 1,
+            "name": "fixtureId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "the device class of the fixture's synthetic capture (must match the fixture's own class)",
+            "maxLength": 32,
+            "minLength": 1,
+            "name": "deviceClass",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "declared scene class; on the degraded v2 a tag starting with 'timeout:' triggers the documented explicit timeout refusal",
+            "maxLength": 128,
+            "minLength": 1,
+            "name": "sceneTag",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "modality": "point-cloud"
+      },
+      "kind": "provider-profile",
+      "latencyProfile": {
+        "expectedMsP50": 1,
+        "expectedMsP95": 5,
+        "statement": "declared fixture latencies — no wall-clock measurement exists in the harness",
+        "timeoutMs": 5000
+      },
+      "license": {
+        "commercialUse": true,
+        "evaluationOnly": false,
+        "identifier": "fixture-eval-permissive-1.0",
+        "intendedUse": "deterministic Layer-1 evaluation fixtures behind the AISE reality-eval harness (in-repo doubles, no real model)",
+        "intendedUseCleared": true
+      },
+      "memoryProfile": {
+        "minimumMiB": 16,
+        "recommendedMiB": 32,
+        "statement": "declared fixture memory envelope (no environment is sensed)"
+      },
+      "outputContract": {
+        "contractId": "fixture-reconstruction-output/1",
+        "fields": [
+          {
+            "description": "unit plane normal components (x, y, z per canonical surface, aligned with the fixture's surface order); unit-norm is enforced at the canonical projection",
+            "maxLength": 512,
+            "minLength": 3,
+            "name": "planeNormals",
+            "required": true,
+            "type": "number-array"
+          },
+          {
+            "description": "plane offsets d (dot(normal, x) + d = 0), one per canonical surface; finiteness is enforced at the canonical projection",
+            "maxLength": 256,
+            "name": "planeOffsets",
+            "required": true,
+            "type": "number-array"
+          },
+          {
+            "description": "measured linear dimensions (meters), aligned with the fixture's measurement-request order",
+            "max": 1000,
+            "maxLength": 256,
+            "min": 0,
+            "minLength": 1,
+            "name": "measuredDimensions",
+            "required": true,
+            "type": "number-array"
+          },
+          {
+            "description": "measured object volumes (cubic meters), aligned with the fixture's object order",
+            "max": 10000,
+            "maxLength": 256,
+            "min": 0,
+            "minLength": 1,
+            "name": "measuredVolumes",
+            "required": true,
+            "type": "number-array"
+          },
+          {
+            "description": "the engine's deterministic diagnostic note (carried verbatim)",
+            "maxLength": 512,
+            "minLength": 1,
+            "name": "note",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "modality": "point-cloud"
+      },
+      "provenanceContract": {
+        "configurationDigestRequired": true,
+        "inputDigestRequired": true,
+        "nativePayloadPolicy": "opaque-required",
+        "providerIdentityRequired": true
+      },
+      "providerId": "fixture-reconstruction-provider",
+      "schemaVersion": "provider-profile/1",
+      "supportedModalities": [
+        "point-cloud",
+        "mesh"
+      ],
+      "technologyVersion": "1.0.0-fixture-v1",
+      "uncertaintyCharacteristics": {
+        "calibration": "none-declared",
+        "confidenceSeparateFromMeasurementUncertainty": true,
+        "notes": "the fixture emits deterministic geometry values without confidence scores and without measurement uncertainty — confidence is never fabricated and never substitutes for measurement uncertainty"
+      }
+    },
+    {
+      "benchmarkResults": [],
+      "capabilities": [
+        "reconstruction"
+      ],
+      "computeProfile": {
+        "accelerator": "none",
+        "minimumCores": 1,
+        "offlineCapable": true,
+        "recommendedCores": 1,
+        "statement": "deterministic fixture computation — no accelerator, fully offline"
+      },
+      "costProfile": {
+        "currency": "n/a",
+        "model": "none",
+        "quotaPolicy": "fixture provider — deterministic local computation, no quota, no fallback needed",
+        "unitCost": 0
+      },
+      "description": "Deterministic reference reconstruction fixture (v2, degraded): a systematic x1.02 linear scale bias on measured dimensions and volumes — plausible-but-wrong geometry the discrimination criteria must catch — plus the documented explicit timeout behavior.",
+      "displayName": "Fixture Reconstruction Provider v2",
+      "failureModes": [
+        {
+          "behavior": "the biased output is contract-valid and plausible — the scenario's per-instance thresholds must CATCH it and record the perception-failure observation (never a silent low score)",
+          "condition": "the systematic x1.02 linear scale bias on measured dimensions (x1.02^3 on volumes) — the documented degraded behavior",
+          "kind": "perception-failure"
+        },
+        {
+          "behavior": "the explicit closed-vocabulary timeout refusal — never a fabricated or partial reconstruction",
+          "condition": "sceneTag starting with 'timeout:' (an input exceeding the declared latency budget)",
+          "kind": "timeout"
+        },
+        {
+          "behavior": "typed normalization refusal with structured issues — never a silent coercion",
+          "condition": "input or output payload violates the declared contracts",
+          "kind": "contract-mismatch"
+        }
+      ],
+      "inputContract": {
+        "contractId": "fixture-reconstruction-input/1",
+        "fields": [
+          {
+            "description": "the pinned Layer-1 golden fixture id (the canonical benchmark fixture the provider is evaluated over)",
+            "maxLength": 128,
+            "minLength": 1,
+            "name": "fixtureId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "the device class of the fixture's synthetic capture (must match the fixture's own class)",
+            "maxLength": 32,
+            "minLength": 1,
+            "name": "deviceClass",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "declared scene class; on the degraded v2 a tag starting with 'timeout:' triggers the documented explicit timeout refusal",
+            "maxLength": 128,
+            "minLength": 1,
+            "name": "sceneTag",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "modality": "point-cloud"
+      },
+      "kind": "provider-profile",
+      "latencyProfile": {
+        "expectedMsP50": 1,
+        "expectedMsP95": 5,
+        "statement": "declared fixture latencies — no wall-clock measurement exists in the harness",
+        "timeoutMs": 5000
+      },
+      "license": {
+        "commercialUse": true,
+        "evaluationOnly": false,
+        "identifier": "fixture-eval-permissive-1.0",
+        "intendedUse": "deterministic Layer-1 evaluation fixtures behind the AISE reality-eval harness (in-repo doubles, no real model)",
+        "intendedUseCleared": true
+      },
+      "memoryProfile": {
+        "minimumMiB": 16,
+        "recommendedMiB": 32,
+        "statement": "declared fixture memory envelope (no environment is sensed)"
+      },
+      "outputContract": {
+        "contractId": "fixture-reconstruction-output/1",
+        "fields": [
+          {
+            "description": "unit plane normal components (x, y, z per canonical surface, aligned with the fixture's surface order); unit-norm is enforced at the canonical projection",
+            "maxLength": 512,
+            "minLength": 3,
+            "name": "planeNormals",
+            "required": true,
+            "type": "number-array"
+          },
+          {
+            "description": "plane offsets d (dot(normal, x) + d = 0), one per canonical surface; finiteness is enforced at the canonical projection",
+            "maxLength": 256,
+            "name": "planeOffsets",
+            "required": true,
+            "type": "number-array"
+          },
+          {
+            "description": "measured linear dimensions (meters), aligned with the fixture's measurement-request order",
+            "max": 1000,
+            "maxLength": 256,
+            "min": 0,
+            "minLength": 1,
+            "name": "measuredDimensions",
+            "required": true,
+            "type": "number-array"
+          },
+          {
+            "description": "measured object volumes (cubic meters), aligned with the fixture's object order",
+            "max": 10000,
+            "maxLength": 256,
+            "min": 0,
+            "minLength": 1,
+            "name": "measuredVolumes",
+            "required": true,
+            "type": "number-array"
+          },
+          {
+            "description": "the engine's deterministic diagnostic note (carried verbatim)",
+            "maxLength": 512,
+            "minLength": 1,
+            "name": "note",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "modality": "point-cloud"
+      },
+      "provenanceContract": {
+        "configurationDigestRequired": true,
+        "inputDigestRequired": true,
+        "nativePayloadPolicy": "opaque-required",
+        "providerIdentityRequired": true
+      },
+      "providerId": "fixture-reconstruction-provider",
+      "schemaVersion": "provider-profile/1",
+      "supportedModalities": [
+        "point-cloud",
+        "mesh"
+      ],
+      "technologyVersion": "1.1.0-fixture-v2",
+      "uncertaintyCharacteristics": {
+        "calibration": "none-declared",
+        "confidenceSeparateFromMeasurementUncertainty": true,
+        "notes": "the fixture emits deterministic geometry values without confidence scores and without measurement uncertainty — confidence is never fabricated and never substitutes for measurement uncertainty"
+      }
+    },
+    {
+      "benchmarkResults": [],
+      "capabilities": [
+        "depth"
+      ],
+      "computeProfile": {
+        "accelerator": "none",
+        "minimumCores": 1,
+        "offlineCapable": true,
+        "recommendedCores": 1,
+        "statement": "deterministic fixture computation — no accelerator, fully offline"
+      },
+      "costProfile": {
+        "currency": "n/a",
+        "model": "none",
+        "quotaPolicy": "fixture provider — deterministic local computation, no quota, no fallback needed",
+        "unitCost": 0
+      },
+      "description": "Deterministic depth-estimation fixture (the HFX-000 reference pattern's variant): reproduces the documented depth truth exactly and answers the explicit unsupported-data refusal on out-of-domain scene tags.",
+      "displayName": "Fixture Reality Depth Provider v1",
+      "failureModes": [
+        {
+          "behavior": "explicit unsupported-data refusal — never fabricated depth values",
+          "condition": "sceneTag starting with 'unsupported:' (a scene class outside declared support)",
+          "kind": "unsupported-data"
+        },
+        {
+          "behavior": "typed normalization refusal with structured issues — never a silent coercion",
+          "condition": "input or output payload violates the declared contracts",
+          "kind": "contract-mismatch"
+        }
+      ],
+      "inputContract": {
+        "contractId": "fixture-reality-depth-input/1",
+        "fields": [
+          {
+            "description": "grid width of the fixture sample grid (cells)",
+            "max": 64,
+            "min": 1,
+            "name": "gridWidth",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "description": "grid height of the fixture sample grid (cells)",
+            "max": 64,
+            "min": 1,
+            "name": "gridHeight",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "description": "normalized sample values in [0, 1], row-major gridWidth x gridHeight",
+            "max": 1,
+            "maxLength": 4096,
+            "min": 0,
+            "minLength": 1,
+            "name": "samples",
+            "required": true,
+            "type": "number-array"
+          },
+          {
+            "description": "declared scene class; a tag starting with 'unsupported:' (out-of-domain input) triggers the explicit unsupported-data refusal",
+            "maxLength": 128,
+            "minLength": 1,
+            "name": "sceneTag",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "modality": "image"
+      },
+      "kind": "provider-profile",
+      "latencyProfile": {
+        "expectedMsP50": 0.5,
+        "expectedMsP95": 1,
+        "statement": "declared fixture latencies — no wall-clock measurement exists in the harness",
+        "timeoutMs": 5000
+      },
+      "license": {
+        "commercialUse": true,
+        "evaluationOnly": false,
+        "identifier": "fixture-eval-permissive-1.0",
+        "intendedUse": "deterministic Layer-1 evaluation fixtures behind the AISE reality-eval harness (in-repo doubles, no real model)",
+        "intendedUseCleared": true
+      },
+      "memoryProfile": {
+        "minimumMiB": 16,
+        "recommendedMiB": 32,
+        "statement": "declared fixture memory envelope (no environment is sensed)"
+      },
+      "outputContract": {
+        "contractId": "fixture-reality-depth-output/1",
+        "fields": [
+          {
+            "description": "estimated depth per grid cell (meters), row-major gridWidth x gridHeight",
+            "max": 4,
+            "maxLength": 4096,
+            "min": 0,
+            "minLength": 1,
+            "name": "depthMap",
+            "required": true,
+            "type": "number-array"
+          },
+          {
+            "description": "the depth unit of the depthMap values (Layer-1 canonical depth is meters)",
+            "maxLength": 8,
+            "minLength": 1,
+            "name": "unit",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "modality": "depth-map"
+      },
+      "provenanceContract": {
+        "configurationDigestRequired": true,
+        "inputDigestRequired": true,
+        "nativePayloadPolicy": "opaque-required",
+        "providerIdentityRequired": true
+      },
+      "providerId": "fixture-reality-depth-provider",
+      "schemaVersion": "provider-profile/1",
+      "supportedModalities": [
+        "image",
+        "depth-map"
+      ],
+      "technologyVersion": "1.0.0-fixture-v1",
+      "uncertaintyCharacteristics": {
+        "calibration": "none-declared",
+        "confidenceSeparateFromMeasurementUncertainty": true,
+        "notes": "the fixture emits deterministic depth values without confidence scores and without measurement uncertainty — confidence is never fabricated and never substitutes for measurement uncertainty"
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "benchmarkId": "reality-eval-reconstruction/1",
+      "capability": "reconstruction",
+      "criteria": {
+        "expectedFailureKinds": [],
+        "thresholds": [
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "plane_fit_rms",
+            "rationale": "mirrors gates-1 flagship_lidar: 2x the 2mm 1-sigma flagship noise envelope",
+            "threshold": 0.004
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "registration_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 2.5x the 2mm flagship noise envelope",
+            "threshold": 0.005
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "scale_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 1% scale error invalidates LiDAR-class dimensional engineering use",
+            "threshold": 0.01
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "dimension_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 20mm absolute dimension error invalidates LiDAR-class work",
+            "threshold": 0.02
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "object_volume_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 5% object volume error invalidates LiDAR-class quantity takeoff",
+            "threshold": 0.05
+          }
+        ]
+      },
+      "expected": {
+        "fixtureId": "fixture-flagship-livingroom-001",
+        "kind": "reconstruction-scene"
+      },
+      "input": {
+        "capability": "reconstruction",
+        "kind": "provider-input",
+        "payload": {
+          "deviceClass": "flagship_lidar",
+          "fixtureId": "fixture-flagship-livingroom-001",
+          "sceneTag": "interior-livingroom"
+        }
+      },
+      "kind": "reality-eval-scenario",
+      "providerReference": {
+        "providerId": "fixture-reconstruction-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioClass": "positive",
+      "scenarioId": "recon-flagship-positive-001",
+      "scenarioVersion": "1.0.0",
+      "schemaVersion": "reality-eval-scenario/1"
+    },
+    {
+      "benchmarkId": "reality-eval-reconstruction/1",
+      "capability": "reconstruction",
+      "criteria": {
+        "expectedFailureKinds": [],
+        "thresholds": [
+          {
+            "critical": false,
+            "failureKind": "perception-failure",
+            "metric": "plane_fit_rms",
+            "rationale": "mirrors gates-1 midrange_no_depth: 2x the 8mm midrange noise envelope",
+            "threshold": 0.016
+          },
+          {
+            "critical": false,
+            "failureKind": "perception-failure",
+            "metric": "registration_error",
+            "rationale": "mirrors gates-1 midrange_no_depth: 2.5x the 8mm midrange noise envelope",
+            "threshold": 0.02
+          },
+          {
+            "critical": false,
+            "failureKind": "perception-failure",
+            "metric": "scale_error",
+            "rationale": "mirrors gates-1 midrange_no_depth: photogrammetry-tier scale drift; flagged for review",
+            "threshold": 0.025
+          },
+          {
+            "critical": false,
+            "failureKind": "perception-failure",
+            "metric": "dimension_error",
+            "rationale": "mirrors gates-1 midrange_no_depth: midrange absolute dimension tolerance",
+            "threshold": 0.04
+          },
+          {
+            "critical": false,
+            "failureKind": "perception-failure",
+            "metric": "object_volume_error",
+            "rationale": "mirrors gates-1 midrange_no_depth: midrange object volume tolerance",
+            "threshold": 0.15
+          }
+        ]
+      },
+      "expected": {
+        "fixtureId": "fixture-midrange-bedroom-001",
+        "kind": "reconstruction-scene"
+      },
+      "input": {
+        "capability": "reconstruction",
+        "kind": "provider-input",
+        "payload": {
+          "deviceClass": "midrange_no_depth",
+          "fixtureId": "fixture-midrange-bedroom-001",
+          "sceneTag": "interior-bedroom"
+        }
+      },
+      "kind": "reality-eval-scenario",
+      "providerReference": {
+        "providerId": "fixture-reconstruction-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioClass": "positive",
+      "scenarioId": "recon-midrange-positive-002",
+      "scenarioVersion": "1.0.0",
+      "schemaVersion": "reality-eval-scenario/1"
+    },
+    {
+      "benchmarkId": "reality-eval-reconstruction/1",
+      "capability": "reconstruction",
+      "criteria": {
+        "expectedFailureKinds": [],
+        "thresholds": [
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "plane_fit_rms",
+            "rationale": "mirrors gates-1 flagship_lidar: 2x the 2mm 1-sigma flagship noise envelope",
+            "threshold": 0.004
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "registration_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 2.5x the 2mm flagship noise envelope",
+            "threshold": 0.005
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "scale_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 1% scale error invalidates LiDAR-class dimensional engineering use",
+            "threshold": 0.01
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "dimension_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 20mm absolute dimension error invalidates LiDAR-class work",
+            "threshold": 0.02
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "object_volume_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 5% object volume error invalidates LiDAR-class quantity takeoff",
+            "threshold": 0.05
+          }
+        ]
+      },
+      "expected": {
+        "fixtureId": "fixture-flagship-livingroom-001",
+        "kind": "reconstruction-scene"
+      },
+      "input": {
+        "capability": "reconstruction",
+        "kind": "provider-input",
+        "payload": {
+          "deviceClass": "flagship_lidar",
+          "fixtureId": "fixture-flagship-livingroom-001",
+          "sceneTag": "interior-livingroom"
+        }
+      },
+      "kind": "reality-eval-scenario",
+      "providerReference": {
+        "providerId": "fixture-reconstruction-provider",
+        "technologyVersion": "1.1.0-fixture-v2"
+      },
+      "scenarioClass": "discrimination",
+      "scenarioId": "recon-flagship-discrimination-003",
+      "scenarioVersion": "1.0.0",
+      "schemaVersion": "reality-eval-scenario/1"
+    },
+    {
+      "benchmarkId": "reality-eval-reconstruction/1",
+      "capability": "reconstruction",
+      "criteria": {
+        "expectedFailureKinds": [
+          "timeout"
+        ],
+        "thresholds": []
+      },
+      "expected": {
+        "kind": "explicit-refusal"
+      },
+      "input": {
+        "capability": "reconstruction",
+        "kind": "provider-input",
+        "payload": {
+          "deviceClass": "flagship_lidar",
+          "fixtureId": "fixture-flagship-livingroom-001",
+          "sceneTag": "timeout:oversized-fusion-input"
+        }
+      },
+      "kind": "reality-eval-scenario",
+      "providerReference": {
+        "providerId": "fixture-reconstruction-provider",
+        "technologyVersion": "1.1.0-fixture-v2"
+      },
+      "scenarioClass": "negative",
+      "scenarioId": "recon-timeout-negative-004",
+      "scenarioVersion": "1.0.0",
+      "schemaVersion": "reality-eval-scenario/1"
+    },
+    {
+      "benchmarkId": "reality-eval-depth/1",
+      "capability": "depth",
+      "criteria": {
+        "expectedFailureKinds": [],
+        "thresholds": [
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "depth_mae_m",
+            "rationale": "mean absolute depth error above 10mm invalidates the wall-mapping use the depth lane serves",
+            "threshold": 0.01
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "depth_max_error_m",
+            "rationale": "maximum absolute depth error above 50mm is a visible wall-position error",
+            "threshold": 0.05
+          }
+        ]
+      },
+      "expected": {
+        "gridHeight": 4,
+        "gridWidth": 4,
+        "kind": "depth-grid",
+        "truthM": [
+          1,
+          1.4,
+          1.8,
+          2.2,
+          2.6,
+          3,
+          2.8,
+          2.4,
+          2,
+          1.6,
+          1.2,
+          1.5,
+          2.5,
+          1.7,
+          2.3,
+          1.3
+        ],
+        "unit": "m"
+      },
+      "input": {
+        "capability": "depth",
+        "kind": "provider-input",
+        "payload": {
+          "gridHeight": 4,
+          "gridWidth": 4,
+          "samples": [
+            0,
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1,
+            0.9,
+            0.7,
+            0.5,
+            0.3,
+            0.1,
+            0.25,
+            0.75,
+            0.35,
+            0.65,
+            0.15
+          ],
+          "sceneTag": "interior-wall"
+        }
+      },
+      "kind": "reality-eval-scenario",
+      "providerReference": {
+        "providerId": "fixture-reality-depth-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioClass": "positive",
+      "scenarioId": "depth-wall-positive-005",
+      "scenarioVersion": "1.0.0",
+      "schemaVersion": "reality-eval-scenario/1"
+    },
+    {
+      "benchmarkId": "reality-eval-depth/1",
+      "capability": "depth",
+      "criteria": {
+        "expectedFailureKinds": [
+          "unsupported-data"
+        ],
+        "thresholds": []
+      },
+      "expected": {
+        "kind": "explicit-refusal"
+      },
+      "input": {
+        "capability": "depth",
+        "kind": "provider-input",
+        "payload": {
+          "gridHeight": 4,
+          "gridWidth": 4,
+          "samples": [
+            0,
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1,
+            0.9,
+            0.7,
+            0.5,
+            0.3,
+            0.1,
+            0.25,
+            0.75,
+            0.35,
+            0.65,
+            0.15
+          ],
+          "sceneTag": "unsupported:thermal-only-capture"
+        }
+      },
+      "kind": "reality-eval-scenario",
+      "providerReference": {
+        "providerId": "fixture-reality-depth-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioClass": "negative",
+      "scenarioId": "depth-unsupported-negative-006",
+      "scenarioVersion": "1.0.0",
+      "schemaVersion": "reality-eval-scenario/1"
+    }
+  ],
+  "schemaVersion": "reality-eval-scenario-set/1",
+  "suiteId": "reality-eval-layer1/1",
+  "suiteVersion": "1.0.0"
+}
