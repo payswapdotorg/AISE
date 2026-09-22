@@ -1,0 +1,1357 @@
+{
+  "benchmarkId": "qwen3-vl-multimodal-benchmark/1",
+  "codeVersion": "hfx-201/vlm-eval/1",
+  "comparison": {
+    "benchmarkId": "qwen3-vl-multimodal-benchmark/1",
+    "capability": "multimodal-reasoning",
+    "comparabilityKey": "qwen3-vl-multimodal-benchmark/1|multimodal-reasoning",
+    "honestNote": "both runs exercise DETERMINISTIC IN-REPO DOUBLES standing in for the registered Qwen3-VL candidates — the per-variant outcome counts measure the scripted demonstration capability profiles, not measured model behavior; a future real-model run slots into the same benchmark id, capability and comparability key without any schema change",
+    "rows": [
+      {
+        "behaviorMatrixCellsPassed": [
+          "conflicting-evidence",
+          "grounded-pass",
+          "missing-evidence",
+          "unsupported-question"
+        ],
+        "benchmarkRecordId": "8c5d66dfaef6b53034e2a5a0b57191efc2d847cc4c3352d8244f95686dcb8c62",
+        "classificationMatches": 12,
+        "comparabilityKey": "qwen3-vl-multimodal-benchmark/1|multimodal-reasoning",
+        "expectedMatches": 12,
+        "groundedFailureObservations": 6,
+        "groundedObservationCounts": {
+          "reasoning-failure": 2,
+          "retrieval-failure": 1,
+          "unsupported-data": 3
+        },
+        "licenseStatus": "evaluation-only",
+        "measurementUncertaintyRuns": 2,
+        "outcomeCounts": {
+          "none": 5,
+          "perception-failure": 3,
+          "retrieval-failure": 1,
+          "unsupported-data": 3
+        },
+        "profileDigest": "b98e6c5707984a6bc8a6451bb84eb7c04ad1db51da1b24460d83df4f9a3188e7",
+        "provenanceManifestId": "816eb7eaf9a85f5d9cef5d8eb4296555ae2f45ad3156338ddd82423a3defb71f",
+        "providerId": "qwen3-vl-8b",
+        "scenarioCount": 12,
+        "technologyVersion": "8b-eval-doubles-1",
+        "variant": "qwen3-vl-8b"
+      },
+      {
+        "behaviorMatrixCellsPassed": [
+          "conflicting-evidence",
+          "grounded-pass",
+          "missing-evidence",
+          "unsupported-question"
+        ],
+        "benchmarkRecordId": "48747b88ea59f817247b11f159cd3b3ca9b337e4006677de678158c155f2a017",
+        "classificationMatches": 12,
+        "comparabilityKey": "qwen3-vl-multimodal-benchmark/1|multimodal-reasoning",
+        "expectedMatches": 12,
+        "groundedFailureObservations": 2,
+        "groundedObservationCounts": {
+          "reasoning-failure": 1,
+          "unsupported-data": 1
+        },
+        "licenseStatus": "evaluation-only",
+        "measurementUncertaintyRuns": 2,
+        "outcomeCounts": {
+          "none": 8,
+          "perception-failure": 1,
+          "unsupported-data": 3
+        },
+        "profileDigest": "4ba1c9482c30bf6e93ebbbea239bf968a0d6549ecbf732f138bffbdf2fd3c512",
+        "provenanceManifestId": "a88d45c27722add529778aaf9c82d05a421afa63d81806860994f83c1deb8557",
+        "providerId": "qwen3-vl-30b-a3b",
+        "scenarioCount": 12,
+        "technologyVersion": "30b-a3b-eval-doubles-1",
+        "variant": "qwen3-vl-30b-a3b"
+      }
+    ]
+  },
+  "executionMode": "deterministic-in-repo-doubles",
+  "licenseStatus": "evaluation-only",
+  "outcomes": [
+    {
+      "baseScenarioId": "spatial-ref-lintel",
+      "behaviorClass": "well-grounded",
+      "classification": "none",
+      "envelopeDigest": "db83f1e94a10a0b39d65fa611c27970532839ac25c498b5f4005ee9e7133b5a0",
+      "evidenceIds": [
+        "IMG-NORTH-2"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "IMG-NORTH-2",
+          "revision": "r2"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-spatial-reference-resolution-check",
+          "verdict": "confirmed"
+        }
+      ],
+      "inputDigest": "48f2f6b2f1165b8c356c649906a19e7b58c9555adbc8f42493c383b796bad0d1",
+      "manifestId": "ef0219f7d67c7c35ee97c323b25cb291dd8bfaf06f4fcb49f85217122649cb77",
+      "matrixCell": "grounded-pass",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "85aee6368754145fb01f4232b609a0905e0870b493b7e0d1f359c1e482504c1e",
+      "recordId": "7a26a340810ae8392d0a71b212d7cb4eb1d0239a13b8b8a2b4609287b6d6a147",
+      "resultClaim": "The structural element running directly above door DOOR-N on the north elevation is the steel lintel beam EL-LINTEL-01.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "spatial-ref-lintel@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "spatial-ref-lintel",
+      "behaviorClass": "well-grounded",
+      "classification": "none",
+      "envelopeDigest": "52eaf955c90e1a143682256e59b984a6b7a8487427882f31b855eeb183cc3375",
+      "evidenceIds": [
+        "IMG-NORTH-2"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "IMG-NORTH-2",
+          "revision": "r2"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-spatial-reference-resolution-check",
+          "verdict": "confirmed"
+        }
+      ],
+      "inputDigest": "91f5712ca6cec4e76dac6d091cfc041dde04604fa54ec9bb365330511e5915c7",
+      "manifestId": "443241c537aa296767e153e97ab61bd78f7b79297cc8f3bba479b04532860510",
+      "matrixCell": "grounded-pass",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "05710ae5d49041c062ad6e9981dafd6b4c59d4f304ad1b5dc1216ab820b81bf3",
+      "recordId": "ad27d4d3294050f26b21f67fc0887569ba0aeb86b65780669c25d1c69382547c",
+      "resultClaim": "The structural element running directly above door DOOR-N on the north elevation is the steel lintel beam EL-LINTEL-01.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "spatial-ref-lintel@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "spatial-ref-between-openings",
+      "behaviorClass": "well-grounded",
+      "classification": "none",
+      "envelopeDigest": "49818409d742a274b645bdaad6fc6eab5b4acc3d34e9c74de76900bb7484b597",
+      "evidenceIds": [
+        "IMG-NORTH-2"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "IMG-NORTH-2",
+          "revision": "r2"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-spatial-reference-resolution-check",
+          "verdict": "confirmed"
+        }
+      ],
+      "inputDigest": "49c1fe44b290c08a89735209eb439d8ee2a08544fe694440135375c7c9b6044c",
+      "manifestId": "66b44bdbf0748561c8033dd7a403f625b7aaa06e172aa3f7a7b149c0bfc55721",
+      "matrixCell": "grounded-pass",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "7a9b4f4b373133f5c3c0b234e77607f902c1b667119ce2d79135ef5f6068d3c3",
+      "recordId": "5053493a79fbbb3bb5bec3ed4172c73c0a09adc3ca045a419b49ad20577a0995",
+      "resultClaim": "The wall panel between window W-1 and door DOOR-N on the north elevation is the fair-faced brick pier PIER-N-02 with a fair-faced brick finish.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "spatial-ref-between-openings@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "spatial-ref-between-openings",
+      "behaviorClass": "hallucinating",
+      "classification": "perception-failure",
+      "envelopeDigest": "be7d8212f84bef38eb92f455787ebe377a4d5361889a3c5b889dbee7bafc6a71",
+      "evidenceIds": [
+        "IMG-NORTH-2"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "IMG-NORTH-2",
+          "revision": "r2"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 2,
+      "groundedObservationKinds": [
+        "reasoning-failure",
+        "unsupported-data"
+      ],
+      "groundedPass": false,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "not-derivable"
+        },
+        {
+          "check": "vlm-spatial-reference-resolution-check",
+          "verdict": "contradicted"
+        }
+      ],
+      "inputDigest": "9d77f23fedaea251370974a528525d998921348456a9909d5f6e0c5b43e38162",
+      "manifestId": "6886230ce8d346c578b4477dfb0554f0f517c1a88e06bf0c9469969215656b85",
+      "matrixCell": "grounded-pass",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 2
+      },
+      "normalizedResultDigest": "0b261dc0439e94ccb9b7a8b0cc10750d4ea08bef587f96204cbf39b0f9661493",
+      "recordId": "dfea823142aea96e3faee97c176893c389d73026498d4595e7f70748cefd1bac",
+      "resultClaim": "The wall panel between window W-1 and door DOOR-N on the north elevation is the curtain-wall glazing spandrel.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "spatial-ref-between-openings@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b",
+      "violationKinds": [
+        "perception-failure"
+      ],
+      "violationRules": [
+        "facts-grounded-in-cited-evidence"
+      ]
+    },
+    {
+      "baseScenarioId": "south-elevation-cladding-missing",
+      "behaviorClass": "refusing",
+      "classification": "unsupported-data",
+      "envelopeDigest": "ec01b10ca4c3e4e0717f5b134281a5bcd4bed6c1fd2ed427e593be417fab574a",
+      "evidenceIds": [],
+      "evidenceRevisions": [],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        }
+      ],
+      "inputDigest": "2a5b999c451e6f04c3bdeafc0d9ab57364e7f721c7555478304f27577fa19f39",
+      "manifestId": "541c7e07df8141bf34036dbd937ef903d1b8b69244edcb90489e71c35d855045",
+      "matrixCell": "missing-evidence",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "7fc0cedcaeee8da95ae9c4c7e6fab5df945e757acbac1bc0582f61422d5e7024",
+      "recordId": "c63cabc79f514188cd0f90131deff3dfbbd2afe03674c30612f4a97672d8e972",
+      "resultClaim": null,
+      "resultStatus": "unsupported",
+      "revisionBindingOk": true,
+      "scenarioId": "south-elevation-cladding-missing@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "south-elevation-cladding-missing",
+      "behaviorClass": "refusing",
+      "classification": "unsupported-data",
+      "envelopeDigest": "de597781742b7e194bd865650109da6e0c861b9e7ce74a0c6235819554befe99",
+      "evidenceIds": [],
+      "evidenceRevisions": [],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        }
+      ],
+      "inputDigest": "4d7a76ee3a2da6753dbb6f3bd72a8f3e698289c95a835c9488787c5fa488db7e",
+      "manifestId": "50ffa5a6efd2086afa1a113c4a61ff0bebd2e592f5ef85e77137e6bdad581294",
+      "matrixCell": "missing-evidence",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "0ebbecde6a16d5bca65774effed0f19688bc637e4573235c8472b1d190f2e475",
+      "recordId": "08aedee995c84a53d9e564928aadcec553cf89780ff58b88602a775c9a2cf3c1",
+      "resultClaim": null,
+      "resultStatus": "unsupported",
+      "revisionBindingOk": true,
+      "scenarioId": "south-elevation-cladding-missing@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "lintel-flange-width-missing",
+      "behaviorClass": "hallucinating",
+      "classification": "perception-failure",
+      "envelopeDigest": "94c3d1a60715ff773d7e1db40ea0a3af1e6be25f95ad9d49d4ba5252c9b2ab5b",
+      "evidenceIds": [
+        "IMG-NORTH-2"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "IMG-NORTH-2",
+          "revision": "r2"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 1,
+      "groundedObservationKinds": [
+        "unsupported-data"
+      ],
+      "groundedPass": false,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "not-derivable"
+        }
+      ],
+      "inputDigest": "877bdb09a0496a80887ea86d20638b688fc6a8fe72628b1d11679065baccec84",
+      "manifestId": "4fe87b3399b18f092250dfe1562162dbf9aa14d5a5ec9393b5f8f5b6823c73ba",
+      "matrixCell": "missing-evidence",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 1
+      },
+      "normalizedResultDigest": "e8776e687ccac5ebad3899f4462d6807089cdae11c9b76ac5242e53f42cec516",
+      "recordId": "8844254d78c29e928bc47bb8d0f6608949b75bf20e00c8e49e7b0a97d635cf4a",
+      "resultClaim": "The flange width of the steel lintel beam above door DOOR-N on the north elevation is 150 mm.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "lintel-flange-width-missing@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b",
+      "violationKinds": [
+        "perception-failure"
+      ],
+      "violationRules": [
+        "facts-grounded-in-cited-evidence"
+      ]
+    },
+    {
+      "baseScenarioId": "lintel-flange-width-missing",
+      "behaviorClass": "refusing",
+      "classification": "none",
+      "envelopeDigest": "9ded82314fa95975a63e9ab765977f99fea67e2dcd21cc673b01e139b8b52320",
+      "evidenceIds": [
+        "IMG-NORTH-2"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "IMG-NORTH-2",
+          "revision": "r2"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        }
+      ],
+      "inputDigest": "b2c6323e5642a14598e6f09bfad7076da77df80b541889ee524df92f2caeb5f4",
+      "manifestId": "ff8e206efbadd641bd809bb3d2c80c84e34b4c2e30d1defdc4fc2f10cae4d257",
+      "matrixCell": "missing-evidence",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "b06ea81e2125abaf9f34c755da5d0b7b39547ed0ed10467829a0e6da1db36576",
+      "recordId": "6f504d32272c1ee904c89393d81051ab9913be0c7cb7c80b3f73ec5339a9bcf9",
+      "resultClaim": null,
+      "resultStatus": "unsupported",
+      "revisionBindingOk": true,
+      "scenarioId": "lintel-flange-width-missing@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "nameplate-fields-grounded",
+      "behaviorClass": "well-grounded",
+      "classification": "none",
+      "envelopeDigest": "46bc13fc2699ac0dc300cfe896e9bb6db0a4a3dd5a62e47e57fdb2a98f4384a6",
+      "evidenceIds": [
+        "OCR-PLATE-1"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "OCR-PLATE-1",
+          "revision": "r3"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-field-value-recomputation-check",
+          "verdict": "confirmed"
+        },
+        {
+          "check": "vlm-field-value-recomputation-check",
+          "verdict": "confirmed"
+        }
+      ],
+      "inputDigest": "f80d4eb597c02ae376262e0bccdd9597794f919eb0c98587c66c03fe69404ef9",
+      "manifestId": "b5d3e1f8c42aee1c705bd5c45cf0b1f09343553598a6ae5e032750d2bde2f8b8",
+      "matrixCell": "grounded-pass",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "0b0d447ab592ec115a610055422131001061cb77f74afe4e83a4f481dd4f792d",
+      "recordId": "4ee89afa8fbfb6f1448a88099534401088bc8804228e6ad3917c96bf01aea093",
+      "resultClaim": "The hoist nameplate states the rated load as 2500 kg in region OCR-R2 and the serial number HT-2019-0442 in region OCR-R1.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "nameplate-fields-grounded@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "nameplate-fields-grounded",
+      "behaviorClass": "well-grounded",
+      "classification": "none",
+      "envelopeDigest": "f15df8261d56eb95d4240a6c06db6e28f84bb2cf112ffd662d7acf556a45a02a",
+      "evidenceIds": [
+        "OCR-PLATE-1"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "OCR-PLATE-1",
+          "revision": "r3"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-field-value-recomputation-check",
+          "verdict": "confirmed"
+        },
+        {
+          "check": "vlm-field-value-recomputation-check",
+          "verdict": "confirmed"
+        }
+      ],
+      "inputDigest": "dc5a2260ff599b7247474a9ca0d9aa83b55f337e198799df5eccd35e7ed48750",
+      "manifestId": "993e25d89f28dbaca82e72347029e76ae0da2581220fcca15bdaac04b6166b96",
+      "matrixCell": "grounded-pass",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "dede2742749d127bed6995f7d8aaa9bb746ff8ed0d3a94ab798c990eb5be1e84",
+      "recordId": "95c226b52e4a53870f2cf95b67ed7728fe56a74cacf5e953400e4f3d575851a3",
+      "resultClaim": "The hoist nameplate states the rated load as 2500 kg in region OCR-R2 and the serial number HT-2019-0442 in region OCR-R1.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "nameplate-fields-grounded@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "nameplate-inspection-date-illegible",
+      "behaviorClass": "hallucinating",
+      "classification": "perception-failure",
+      "envelopeDigest": "d1e92568749bfffc748cae55f01205dcb0d494a50b6d2ee39272f981ce267cb1",
+      "evidenceIds": [
+        "OCR-PLATE-1"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "OCR-PLATE-1",
+          "revision": "r3"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 2,
+      "groundedObservationKinds": [
+        "reasoning-failure",
+        "unsupported-data"
+      ],
+      "groundedPass": false,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "not-derivable"
+        },
+        {
+          "check": "vlm-field-value-recomputation-check",
+          "verdict": "contradicted"
+        }
+      ],
+      "inputDigest": "e95067c005a56467028526dd74e65b149c91bfcf453140a933e9ef515f884c6c",
+      "manifestId": "7cbeee73033a5e15fa58579b03d98c6ee49e97a49d5ee52f628cb389c9cb60f5",
+      "matrixCell": "missing-evidence",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 2
+      },
+      "normalizedResultDigest": "18c16bf2836d50a89b7afdb666c19157a5274be346617df69da54a97a78b1afe",
+      "recordId": "433813f1daac27c4f1d5b874c42d799a2eba48011fa66e039812c1fa609563cd",
+      "resultClaim": "The hoist was last inspected on 2024-03-15, according to the nameplate.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "nameplate-inspection-date-illegible@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b",
+      "violationKinds": [
+        "perception-failure"
+      ],
+      "violationRules": [
+        "facts-grounded-in-cited-evidence"
+      ]
+    },
+    {
+      "baseScenarioId": "nameplate-inspection-date-illegible",
+      "behaviorClass": "refusing",
+      "classification": "none",
+      "envelopeDigest": "e8c5f6228c2cd1069cc6fea43ffc6b802a01a5c1b99e494502b557853084e511",
+      "evidenceIds": [
+        "OCR-PLATE-1"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "OCR-PLATE-1",
+          "revision": "r3"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-field-value-recomputation-check",
+          "verdict": "confirmed"
+        }
+      ],
+      "inputDigest": "b25be754d6508e72d3b89f25cb622a500ea50d643174221fb1e850e4237d76e7",
+      "manifestId": "81f134d034168e278fedc521e557b2f97fb55d155d900c3cdb6d9ff9fac3ef1e",
+      "matrixCell": "missing-evidence",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "7a9ead6912268bcb26ab448627abf9c49190cd2f4d419cd086167ce5d4b077ac",
+      "recordId": "6b6f5db84c522753b3cac2512de300a5e1fa0ce1c19ab2241fae748e3c1487ef",
+      "resultClaim": null,
+      "resultStatus": "unsupported",
+      "revisionBindingOk": true,
+      "scenarioId": "nameplate-inspection-date-illegible@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "video-crack-progression-grounded",
+      "behaviorClass": "well-grounded",
+      "classification": "none",
+      "envelopeDigest": "636087bacf3f7ebf0f83e1bca2ad4434987d59ea47651f3d0fb753a2ce4c1968",
+      "evidenceIds": [
+        "VID-COL-1"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "VID-COL-1",
+          "revision": "r1"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-field-value-recomputation-check",
+          "verdict": "confirmed"
+        }
+      ],
+      "inputDigest": "0b71d0f5ef0c2a0650e1a1b0d20a6f5994413896ab0882a4de94295d2f05c486",
+      "manifestId": "a068898696ec75bb85180b94323f1ab3d1b424da503c5e2b1d1780be15086d7d",
+      "matrixCell": "grounded-pass",
+      "measurementUncertainty": [
+        {
+          "evidenceId": "VID-COL-1",
+          "sigma": 0.05,
+          "unit": "mm"
+        }
+      ],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "3bd9a2707d0afb2ae4a9ee9ed099fb79e7e0a832fd61edd4c6562ce9491b4c00",
+      "recordId": "e00adec87076bf6430a481fd88b1ffe28e094236bee615fd0a87cab589dca02b",
+      "resultClaim": "The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "video-crack-progression-grounded@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "video-crack-progression-grounded",
+      "behaviorClass": "well-grounded",
+      "classification": "none",
+      "envelopeDigest": "de14d2dd6c230ccc2f80c1d4dddcbcc55756110577946a230ab2902ecf282dcb",
+      "evidenceIds": [
+        "VID-COL-1"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "VID-COL-1",
+          "revision": "r1"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-field-value-recomputation-check",
+          "verdict": "confirmed"
+        }
+      ],
+      "inputDigest": "340097b8c53149c074ff2f72b9e42f6984d70528c5aa53cac5f36cc84b4b2509",
+      "manifestId": "8eec300e3fe28bfe03c01043e7fc42cbcc8820ad9075da0cfbe7024d04d6ba95",
+      "matrixCell": "grounded-pass",
+      "measurementUncertainty": [
+        {
+          "evidenceId": "VID-COL-1",
+          "sigma": 0.05,
+          "unit": "mm"
+        }
+      ],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "3556324c1adb0e2ce6a8ffb6bbcb75d7d8129938979caa5268a176ce8ef7bf1e",
+      "recordId": "020c6aeae86096a637ea31fdeb37293597e627b12b9d6149d421b57349672422",
+      "resultClaim": "The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "video-crack-progression-grounded@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "video-crack-width-hallucination",
+      "behaviorClass": "hallucinating",
+      "classification": "perception-failure",
+      "envelopeDigest": "4218dfab00dbb851bcc85e5778489ed4f2569c19cac9fd28bc14469e9651f82b",
+      "evidenceIds": [
+        "VID-COL-1"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "VID-COL-1",
+          "revision": "r1"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 2,
+      "groundedObservationKinds": [
+        "reasoning-failure",
+        "unsupported-data"
+      ],
+      "groundedPass": false,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "not-derivable"
+        },
+        {
+          "check": "vlm-field-value-recomputation-check",
+          "verdict": "contradicted"
+        }
+      ],
+      "inputDigest": "3f0f15c9411d43b9f62d8dc3dc8f07e0aeec78fdc98c7d03a677e4b8b9685026",
+      "manifestId": "c5e5a228268a5e16adca3650a7ae176971f7a7a3cfdcd720be9cd56113252a27",
+      "matrixCell": "grounded-pass",
+      "measurementUncertainty": [
+        {
+          "evidenceId": "VID-COL-1",
+          "sigma": 0.05,
+          "unit": "mm"
+        }
+      ],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 2
+      },
+      "normalizedResultDigest": "19a689205b0820bb39a1e7b1f892316362498cd2db175136716c86d72b1f0bc0",
+      "recordId": "5dcb4db41d3c0facbe352834caecfe643afb28b8b44aac336c5981055861adde",
+      "resultClaim": "The crack width on level-2 column C2 reaches 1.4 mm at the final frame of video VID-COL-1.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "video-crack-width-hallucination@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b",
+      "violationKinds": [
+        "perception-failure"
+      ],
+      "violationRules": [
+        "facts-grounded-in-cited-evidence"
+      ]
+    },
+    {
+      "baseScenarioId": "video-crack-width-hallucination",
+      "behaviorClass": "well-grounded",
+      "classification": "none",
+      "envelopeDigest": "de14d2dd6c230ccc2f80c1d4dddcbcc55756110577946a230ab2902ecf282dcb",
+      "evidenceIds": [
+        "VID-COL-1"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "VID-COL-1",
+          "revision": "r1"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-field-value-recomputation-check",
+          "verdict": "confirmed"
+        }
+      ],
+      "inputDigest": "b08b44abc63f8b13da2e8b79d5dd91ed0d3f23ca08b2955c0f9f5eef6fc299a3",
+      "manifestId": "b2ddfa323b9994a6f41c33955c0ffaeb61973ef450e0b9527a1668a0fff6013a",
+      "matrixCell": "grounded-pass",
+      "measurementUncertainty": [
+        {
+          "evidenceId": "VID-COL-1",
+          "sigma": 0.05,
+          "unit": "mm"
+        }
+      ],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "f52e40ab86c12f94e990485b9b57bc9d1cd1cd3069e3f0abd157d148aa5ae2c9",
+      "recordId": "9a54639ab9b5b76219c547d71db87c213ab75e9e844f6f7bafd1fe6a3af86845",
+      "resultClaim": "The crack in level-2 column C2 widens from 0.4 mm to 1.1 mm across the four frames of video VID-COL-1; the maximum observed width is 1.1 mm.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "video-crack-width-hallucination@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "beam-section-conflict-surfaced",
+      "behaviorClass": "well-grounded",
+      "classification": "none",
+      "envelopeDigest": "85cc8d7b3d9bf892b83d5afa6058ba6439298a02fbdf930dc10ed6b54b536679",
+      "evidenceIds": [
+        "DRAW-BEAM-1",
+        "STENCIL-OCR-1"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "DRAW-BEAM-1",
+          "revision": "r2"
+        },
+        {
+          "evidenceId": "STENCIL-OCR-1",
+          "revision": "r1"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-conflict-detection-check",
+          "verdict": "conflict-surfaced"
+        }
+      ],
+      "inputDigest": "37310dca104f44ab2e1d37200fb2bcc7ce1a6ad15d6726697f6280017525f767",
+      "manifestId": "004758cb7a2d0350a6e3a4d185797b2c27e462d372df718dbebda7ca258eacfd",
+      "matrixCell": "conflicting-evidence",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "807c6ac0ffebfceb448a3500dc2cb5814dfbfbd54a91e11791ad55ae82d7c5d0",
+      "recordId": "9094940da318e23a526691c48dab03bff5fd5a7a47ade738141575d0abc6d6ac",
+      "resultClaim": "The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.",
+      "resultStatus": "conflicted",
+      "revisionBindingOk": true,
+      "scenarioId": "beam-section-conflict-surfaced@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "beam-section-conflict-surfaced",
+      "behaviorClass": "well-grounded",
+      "classification": "none",
+      "envelopeDigest": "331cf04f3fa9c509fe4536429ca858ff61a6a1f354badad99924175418567243",
+      "evidenceIds": [
+        "DRAW-BEAM-1",
+        "STENCIL-OCR-1"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "DRAW-BEAM-1",
+          "revision": "r2"
+        },
+        {
+          "evidenceId": "STENCIL-OCR-1",
+          "revision": "r1"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-conflict-detection-check",
+          "verdict": "conflict-surfaced"
+        }
+      ],
+      "inputDigest": "4c0c6b8e24183a22383b6e269f35c2de96ef3430716e3c0173f84e2b6383898a",
+      "manifestId": "a8a15aaba39b35b717d18f910746110d351d88fd05debfa218a4c25547e39528",
+      "matrixCell": "conflicting-evidence",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "bf7fa230d2244051a58cddd9cf39e2e296f49cd8162a069a56dfd5cc268668b9",
+      "recordId": "56cc247835304a96879c54e54aca91006e4dd74c2826f7bbac8b648d0802c91f",
+      "resultClaim": "The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.",
+      "resultStatus": "conflicted",
+      "revisionBindingOk": true,
+      "scenarioId": "beam-section-conflict-surfaced@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "beam-section-conflict-silent-resolution",
+      "behaviorClass": "hallucinating",
+      "classification": "retrieval-failure",
+      "envelopeDigest": "7671ca5cbf6d46c13919eee5a24dc024d473ae3d4c532ef4f6219810d3a091b0",
+      "evidenceIds": [
+        "DRAW-BEAM-1"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "DRAW-BEAM-1",
+          "revision": "r2"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 1,
+      "groundedObservationKinds": [
+        "retrieval-failure"
+      ],
+      "groundedPass": false,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-conflict-detection-check",
+          "verdict": "conflict-silently-resolved"
+        }
+      ],
+      "inputDigest": "d51f883e00236f66cd573bbe96af9016f0669aaeae1ffc0237fe7d5872174979",
+      "manifestId": "19dc23618a15c6162194e329f36ce6d6500185bcee8caebfebd1ef1e7352f19c",
+      "matrixCell": "conflicting-evidence",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 1
+      },
+      "normalizedResultDigest": "f9cc860d9adaf2fd0c1378a55bd154f0853441814dfaa4514f9cc17c853218a7",
+      "recordId": "b3d453551e6c66290b28273487643ca1272f70b78192905ed04d279b9d213dad",
+      "resultClaim": "The section size of level-2 spandrel beam S-12 is W12x26 per structural drawing DRAW-BEAM-1.",
+      "resultStatus": "supported",
+      "revisionBindingOk": true,
+      "scenarioId": "beam-section-conflict-silent-resolution@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "beam-section-conflict-silent-resolution",
+      "behaviorClass": "well-grounded",
+      "classification": "none",
+      "envelopeDigest": "331cf04f3fa9c509fe4536429ca858ff61a6a1f354badad99924175418567243",
+      "evidenceIds": [
+        "DRAW-BEAM-1",
+        "STENCIL-OCR-1"
+      ],
+      "evidenceRevisions": [
+        {
+          "evidenceId": "DRAW-BEAM-1",
+          "revision": "r2"
+        },
+        {
+          "evidenceId": "STENCIL-OCR-1",
+          "revision": "r1"
+        }
+      ],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        },
+        {
+          "check": "vlm-conflict-detection-check",
+          "verdict": "conflict-surfaced"
+        }
+      ],
+      "inputDigest": "9ca9213286df14100a614ad73fe54a3f37d605a8fcc59a93582d1f70f728bb28",
+      "manifestId": "73f5f196c2825da2c5def7d119a80e265f6ce91a254e16901398e5d81e5a9802",
+      "matrixCell": "conflicting-evidence",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "beab196d6c064229b582b2bf34301acae17697dafef1bc5f6e6502f80fc7beca",
+      "recordId": "4d2a5b3850807c6d2c4d0faacc020633e69bdf3e1d3385f04ca2a25d57c2f495",
+      "resultClaim": "The authorized evidence conflicts on the section size of level-2 spandrel beam S-12: structural drawing DRAW-BEAM-1 (r2) specifies W12x26 while the stenciled site marking STENCIL-OCR-1 (r1) reads W14x22 — the conflict must be resolved before the value is used.",
+      "resultStatus": "conflicted",
+      "revisionBindingOk": true,
+      "scenarioId": "beam-section-conflict-silent-resolution@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "unsupported-audio-transcription",
+      "behaviorClass": "refusing",
+      "classification": "unsupported-data",
+      "envelopeDigest": "d17ac7c6702d357b7eaecec84062dc85906a15b323ca73a19eaa0e5eb321b786",
+      "evidenceIds": [],
+      "evidenceRevisions": [],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        }
+      ],
+      "inputDigest": "37ffaa8db17a46a70a046ba4f9b9f3fa2b415ac41ef0371f3bf4cfa76ebe63bc",
+      "manifestId": "e441d5afdd77cc3ebbc8163f4566b124df8e23574d11e30d670e9b8ccba90931",
+      "matrixCell": "unsupported-question",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "dfec1bf5ba9ba6d8c7e2da98b496cd8a154fee16cdf41ae04b763eb5c252f95b",
+      "recordId": "105853c531d0cc6a7a79c0e9acf1c96faebdd2af32fc42d9f0d10a6f72544070",
+      "resultClaim": null,
+      "resultStatus": "unsupported",
+      "revisionBindingOk": true,
+      "scenarioId": "unsupported-audio-transcription@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "unsupported-audio-transcription",
+      "behaviorClass": "refusing",
+      "classification": "unsupported-data",
+      "envelopeDigest": "ded7252e9f7999c6a3b4c13d2b7c794b19ebce6c826e515099bf61e4efbc800d",
+      "evidenceIds": [],
+      "evidenceRevisions": [],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        }
+      ],
+      "inputDigest": "07870e42b6c5a355d87ee8e59c4b558bb4299fcdac01c5b9e874bf78e37852a8",
+      "manifestId": "c53e301e315ef4ef97ac9a52e217fd0791f3cc01fd343a13b106f24e3db81a12",
+      "matrixCell": "unsupported-question",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "bfc953c554b74653e0e26dafc06e695bf4def302aa6a8b48bff6b8a5eca84f7f",
+      "recordId": "7d17d687096481273f8776a138677c504f0ce274909fcf069ea152e8eb3bbf49",
+      "resultClaim": null,
+      "resultStatus": "unsupported",
+      "revisionBindingOk": true,
+      "scenarioId": "unsupported-audio-transcription@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "unsupported-code-verification",
+      "behaviorClass": "refusing",
+      "classification": "unsupported-data",
+      "envelopeDigest": "1c04c06c2980e27b0ed50fa063ea0377d1de8819396b6416c09e29925b2e2a11",
+      "evidenceIds": [],
+      "evidenceRevisions": [],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        }
+      ],
+      "inputDigest": "61c9acde5328921b610807fc4e93eaf2a13bc6b6531d8e69a80ee9b3af286e47",
+      "manifestId": "1ec9cb7d27343e3e3ce3bcb9006bc068d753987d67e0e7ae0fcbfa73d2a8c072",
+      "matrixCell": "unsupported-question",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "128fa5a6b1685617e42e1d97d6528961ef714c0f11bfa88d0eed84fe47031484",
+      "recordId": "ea523c2497596d15e729de13d28074ce158b6f9dfa8a2d917d8386a7ed2d7325",
+      "resultClaim": null,
+      "resultStatus": "unsupported",
+      "revisionBindingOk": true,
+      "scenarioId": "unsupported-code-verification@qwen3-vl-8b",
+      "variant": "qwen3-vl-8b",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "baseScenarioId": "unsupported-code-verification",
+      "behaviorClass": "refusing",
+      "classification": "unsupported-data",
+      "envelopeDigest": "7c2a41e2cd4fa7d651f6e8352126ba46a7b602b1b36c89dbe75a21cd268869a9",
+      "evidenceIds": [],
+      "evidenceRevisions": [],
+      "expectedMatch": true,
+      "groundedFailureObservations": 0,
+      "groundedObservationKinds": [],
+      "groundedPass": true,
+      "groundedVerdicts": [
+        {
+          "check": "vlm-fact-derivability-check",
+          "verdict": "all-derivable"
+        }
+      ],
+      "inputDigest": "c5baa16c2fe201fbad99cffca9f039394303c515e5c6547f2a09d0235fafd33b",
+      "manifestId": "ff23cc083b70ce5e3264b9b18c0857d3d54f991839fa749a63d953041ad92ce9",
+      "matrixCell": "unsupported-question",
+      "measurementUncertainty": [],
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1,
+        "groundedFailureObservations": 0
+      },
+      "normalizedResultDigest": "12ccd166fd2195989a9694d888b38c9146ad23b0e8c0f78a45bf0f8666ea6df9",
+      "recordId": "94eabfe9d816bcc016bfcec997edabd9de9d3fcd8231b909344dcfa21b1db656",
+      "resultClaim": null,
+      "resultStatus": "unsupported",
+      "revisionBindingOk": true,
+      "scenarioId": "unsupported-code-verification@qwen3-vl-30b-a3b",
+      "variant": "qwen3-vl-30b-a3b",
+      "violationKinds": [],
+      "violationRules": []
+    }
+  ],
+  "providerFamily": "qwen3-vl",
+  "replayEqual": true,
+  "runCount": 24,
+  "suiteId": "qwen3-vl-provider-benchmark/1",
+  "summary": {
+    "byClassification": {
+      "none": 13,
+      "perception-failure": 4,
+      "retrieval-failure": 1,
+      "unsupported-data": 6
+    },
+    "byMatrixCell": {
+      "conflicting-evidence": 4,
+      "grounded-pass": 10,
+      "missing-evidence": 6,
+      "unsupported-question": 4
+    },
+    "byVariant": {
+      "qwen3-vl-30b-a3b": {
+        "behaviorMatrixCellsPassed": [
+          "conflicting-evidence",
+          "grounded-pass",
+          "missing-evidence",
+          "unsupported-question"
+        ],
+        "byBehaviorClass": {
+          "hallucinating": 1,
+          "refusing": 5,
+          "well-grounded": 6
+        },
+        "byClassification": {
+          "none": 8,
+          "perception-failure": 1,
+          "unsupported-data": 3
+        },
+        "byMatrixCell": {
+          "conflicting-evidence": 2,
+          "grounded-pass": 5,
+          "missing-evidence": 3,
+          "unsupported-question": 2
+        },
+        "classificationMatches": 12,
+        "expectedMatches": 12,
+        "groundedFailureObservations": 2,
+        "groundedObservationKinds": {
+          "reasoning-failure": 1,
+          "unsupported-data": 1
+        },
+        "measurementUncertaintyRuns": 2,
+        "scenarioCount": 12,
+        "variant": "qwen3-vl-30b-a3b"
+      },
+      "qwen3-vl-8b": {
+        "behaviorMatrixCellsPassed": [
+          "conflicting-evidence",
+          "grounded-pass",
+          "missing-evidence",
+          "unsupported-question"
+        ],
+        "byBehaviorClass": {
+          "hallucinating": 4,
+          "refusing": 3,
+          "well-grounded": 5
+        },
+        "byClassification": {
+          "none": 5,
+          "perception-failure": 3,
+          "retrieval-failure": 1,
+          "unsupported-data": 3
+        },
+        "byMatrixCell": {
+          "conflicting-evidence": 2,
+          "grounded-pass": 5,
+          "missing-evidence": 3,
+          "unsupported-question": 2
+        },
+        "classificationMatches": 12,
+        "expectedMatches": 12,
+        "groundedFailureObservations": 6,
+        "groundedObservationKinds": {
+          "reasoning-failure": 2,
+          "retrieval-failure": 1,
+          "unsupported-data": 3
+        },
+        "measurementUncertaintyRuns": 2,
+        "scenarioCount": 12,
+        "variant": "qwen3-vl-8b"
+      }
+    },
+    "classificationMatches": 24,
+    "expectedMatches": 24,
+    "groundedFailureObservations": 8,
+    "total": 24
+  },
+  "variants": [
+    {
+      "benchmarkRecordId": "8c5d66dfaef6b53034e2a5a0b57191efc2d847cc4c3352d8244f95686dcb8c62",
+      "comparabilityKey": "qwen3-vl-multimodal-benchmark/1|multimodal-reasoning",
+      "licenseStatus": "evaluation-only",
+      "profileDigest": "b98e6c5707984a6bc8a6451bb84eb7c04ad1db51da1b24460d83df4f9a3188e7",
+      "promotionRefusalKinds": [
+        "license-blocked"
+      ],
+      "provenanceManifestId": "816eb7eaf9a85f5d9cef5d8eb4296555ae2f45ad3156338ddd82423a3defb71f",
+      "providerId": "qwen3-vl-8b",
+      "registryState": "rejected",
+      "technologyVersion": "8b-eval-doubles-1",
+      "variant": "qwen3-vl-8b"
+    },
+    {
+      "benchmarkRecordId": "48747b88ea59f817247b11f159cd3b3ca9b337e4006677de678158c155f2a017",
+      "comparabilityKey": "qwen3-vl-multimodal-benchmark/1|multimodal-reasoning",
+      "licenseStatus": "evaluation-only",
+      "profileDigest": "4ba1c9482c30bf6e93ebbbea239bf968a0d6549ecbf732f138bffbdf2fd3c512",
+      "promotionRefusalKinds": [
+        "license-blocked"
+      ],
+      "provenanceManifestId": "a88d45c27722add529778aaf9c82d05a421afa63d81806860994f83c1deb8557",
+      "providerId": "qwen3-vl-30b-a3b",
+      "registryState": "rejected",
+      "technologyVersion": "30b-a3b-eval-doubles-1",
+      "variant": "qwen3-vl-30b-a3b"
+    }
+  ],
+  "version": "1.0.0"
+}
