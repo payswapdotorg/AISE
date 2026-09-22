@@ -485,6 +485,17 @@
         "harvest": "standard staged delivery (28/28, diffstat-exact 27/11029/0)",
         "verify": "5235 pass / 0 fail (baseline 5105 + 130); runner 22/22",
         "note": "Qwen3-VL provider benchmark (8B + 30B-A3B separate profiles, deterministic doubles, behavior matrix + hallucination catch) — VLM eval wave"
+      },
+      {
+        "id": "HFX-101",
+        "status": "finalized",
+        "mergedSha": "4b9e647",
+        "mergedAt": "2026-09-22T10:20:00Z",
+        "workerChat": "e9020220-0b31-4659-a554-8dcef2f734ae",
+        "workerCommit": "2a920f71360871560b4f38bb5bac6bdceedc0b42",
+        "harvest": "standard staged delivery (28/28, diffstat-exact 28/19799/0)",
+        "verify": "5348 pass / 0 fail at base b7c5c63 (5235 + 113); combined main 5373/0 (5260 + 113)",
+        "note": "MapAnything Layer-1 universal-reconstruction benchmark (registered candidate profile, deterministic doubles, four-cell behavior matrix, versioning discipline, comparison records vs the reference path) — survived the 06:30 platform drop, revived 07:45, completed 07:46"
       }
     ]
   }
