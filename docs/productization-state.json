@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-22T00:55:00Z",
+  "lastReconciledAt": "2026-09-22T02:10:00Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -397,27 +397,51 @@
     },
     {
       "id": "PROD-027",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-026"
       ],
-      "architecture": "ACR-006"
+      "architecture": "ACR-006",
+      "mergedSha": "59860fc",
+      "mergedAt": "2026-09-22T02:10:00Z",
+      "evidence": {
+        "workerChat": "e7d9c7ca-9d62-484b-9a1f-f99172873a8a",
+        "workerCommit": "3fae25956b2b8ab6a531e0706de9029f8b2f48fa",
+        "harvest": "standard staged delivery (23/23, diffstat-exact 22/10222/0)",
+        "verify": "4878 pass / 0 fail (baseline 4742 + 136)"
+      }
     },
     {
       "id": "PROD-028",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-026"
       ],
-      "architecture": "ACR-006"
+      "architecture": "ACR-006",
+      "mergedSha": "65665be",
+      "mergedAt": "2026-09-22T02:10:00Z",
+      "evidence": {
+        "workerChat": "beb47439-43b0-46bf-9118-6fd815ee4488",
+        "workerCommit": "per DELIVERY.txt",
+        "harvest": "standard staged delivery (22/22, diffstat-exact 21/9212/0)",
+        "verify": "5105 pass / 0 fail (cumulative + 123)"
+      }
     },
     {
       "id": "PROD-029",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-026"
       ],
-      "architecture": "ACR-006"
+      "architecture": "ACR-006",
+      "mergedSha": "c99a888",
+      "mergedAt": "2026-09-22T02:10:00Z",
+      "evidence": {
+        "workerChat": "28aa1094-f92c-4d46-aed7-69f4b607f008",
+        "workerCommit": "50c1c6e7f2ad7b0cb117c526a009dac3a1bba3e9",
+        "harvest": "standard staged delivery (24/24, diffstat-exact 23/8640/0)",
+        "verify": "4982 pass / 0 fail (cumulative + 104)"
+      }
     }
   ],
   "simulation": {
