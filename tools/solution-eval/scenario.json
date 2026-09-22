@@ -1,0 +1,496 @@
+{
+  "description": "Four Layer-3 seams × {faithful, divergent} fixture substitutes. The equal scenarios must be PROVEN canonically equal; the divergent scenarios must be CAUGHT with the declared closed-vocabulary failure kind — a harness that only proves the happy path is a failed delivery (the day-27 doctrine).",
+  "matrixId": "layer3-substitution-matrix/1",
+  "scenarios": [
+    {
+      "baselineId": "command-corpus-slice/1",
+      "expectation": "canonical-equality",
+      "kind": "layer3-substitution-scenario",
+      "note": "the substitute replays the canonical compiler's committed semantic projections — the harness must PROVE the operation identities equal",
+      "scenarioId": "layer3-compiler-faithful-001",
+      "schemaVersion": "layer3-substitution/1",
+      "seam": "operation-compiler",
+      "substitute": {
+        "providerId": "fixture-compiler-provider",
+        "technologyVersion": "1.0.0-fixture-faithful"
+      },
+      "substitutedRun": {
+        "capability": "layer3-operation-compiler",
+        "executions": [
+          {
+            "execution": {
+              "capability": "layer3-operation-compiler",
+              "outputs": {
+                "intentRef": "intent-substitute-compiler-1",
+                "intentSemanticsJson": "{\n  \"dependsOn\": [],\n  \"operationType\": \"excavation\",\n  \"parameters\": [\n    {\n      \"name\": \"depth\",\n      \"unit\": \"m\",\n      \"value\": 1.5\n    },\n    {\n      \"name\": \"width\",\n      \"unit\": \"m\",\n      \"value\": 2\n    },\n    {\n      \"name\": \"length\",\n      \"unit\": \"m\",\n      \"value\": 3\n    }\n  ],\n  \"target\": {\n    \"geometryRefs\": [\n      {\n        \"kind\": \"polygon\",\n        \"ref\": \"geo-pit-outline-001\"\n      }\n    ],\n    \"nodeRefs\": [\n      \"node-site-001\"\n    ],\n    \"selectorKind\": \"volume\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"m\"\n    }\n  },\n  \"vertical\": \"building\"\n}\n",
+                "operationType": "excavation"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-compiler-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "faithful"
+                }
+              }
+            },
+            "inputKey": "REP-EXC-001"
+          },
+          {
+            "execution": {
+              "capability": "layer3-operation-compiler",
+              "outputs": {
+                "intentRef": "intent-substitute-compiler-2",
+                "intentSemanticsJson": "{\n  \"dependsOn\": [],\n  \"operationType\": \"block-wall-placement\",\n  \"parameters\": [\n    {\n      \"name\": \"length\",\n      \"unit\": \"m\",\n      \"value\": 5\n    },\n    {\n      \"name\": \"height\",\n      \"unit\": \"m\",\n      \"value\": 1\n    },\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"m\",\n      \"value\": 0.1\n    },\n    {\n      \"name\": \"material\",\n      \"value\": \"concrete-block\"\n    }\n  ],\n  \"target\": {\n    \"geometryRefs\": [\n      {\n        \"kind\": \"plane\",\n        \"ref\": \"geo-wall-line-003\"\n      }\n    ],\n    \"nodeRefs\": [\n      \"node-wall-002\"\n    ],\n    \"selectorKind\": \"line-extent\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"m\"\n    }\n  },\n  \"vertical\": \"building\"\n}\n",
+                "operationType": "block-wall-placement"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-compiler-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "faithful"
+                }
+              }
+            },
+            "inputKey": "REP-BLOCK-001"
+          },
+          {
+            "execution": {
+              "capability": "layer3-operation-compiler",
+              "outputs": {
+                "intentRef": "intent-substitute-compiler-3",
+                "intentSemanticsJson": "{\n  \"dependsOn\": [],\n  \"operationType\": \"plaster-application\",\n  \"parameters\": [\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 30\n    },\n    {\n      \"name\": \"material\",\n      \"value\": \"cement-plaster\"\n    }\n  ],\n  \"target\": {\n    \"geometryRefs\": [\n      {\n        \"kind\": \"polygon\",\n        \"ref\": \"geo-wall-faces-002\"\n      }\n    ],\n    \"nodeRefs\": [\n      \"node-wall-002\"\n    ],\n    \"selectorKind\": \"face-set\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"m\"\n    }\n  },\n  \"vertical\": \"building\"\n}\n",
+                "operationType": "plaster-application"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-compiler-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "faithful"
+                }
+              }
+            },
+            "inputKey": "REP-PLASTER-001"
+          }
+        ]
+      },
+      "title": "Faithful NL operation-compiler substitution over the command-corpus slice"
+    },
+    {
+      "baselineId": "command-corpus-slice/1",
+      "expectation": "declared-divergence",
+      "expectedDivergenceKind": "operation-semantic-failure",
+      "kind": "layer3-substitution-scenario",
+      "note": "the discriminator utterance REP-BLOCK-001 compiles with thickness 0.2 m instead of 0.1 m — a different semantic parameter is a different canonical operation identity",
+      "scenarioId": "layer3-compiler-divergent-001",
+      "schemaVersion": "layer3-substitution/1",
+      "seam": "operation-compiler",
+      "substitute": {
+        "providerId": "fixture-compiler-provider",
+        "technologyVersion": "1.1.0-fixture-divergent"
+      },
+      "substitutedRun": {
+        "capability": "layer3-operation-compiler",
+        "executions": [
+          {
+            "execution": {
+              "capability": "layer3-operation-compiler",
+              "outputs": {
+                "intentRef": "intent-substitute-compiler-1",
+                "intentSemanticsJson": "{\n  \"dependsOn\": [],\n  \"operationType\": \"excavation\",\n  \"parameters\": [\n    {\n      \"name\": \"depth\",\n      \"unit\": \"m\",\n      \"value\": 1.5\n    },\n    {\n      \"name\": \"width\",\n      \"unit\": \"m\",\n      \"value\": 2\n    },\n    {\n      \"name\": \"length\",\n      \"unit\": \"m\",\n      \"value\": 3\n    }\n  ],\n  \"target\": {\n    \"geometryRefs\": [\n      {\n        \"kind\": \"polygon\",\n        \"ref\": \"geo-pit-outline-001\"\n      }\n    ],\n    \"nodeRefs\": [\n      \"node-site-001\"\n    ],\n    \"selectorKind\": \"volume\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"m\"\n    }\n  },\n  \"vertical\": \"building\"\n}\n",
+                "operationType": "excavation"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-compiler-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "divergent"
+                }
+              }
+            },
+            "inputKey": "REP-EXC-001"
+          },
+          {
+            "execution": {
+              "capability": "layer3-operation-compiler",
+              "outputs": {
+                "intentRef": "intent-substitute-compiler-2",
+                "intentSemanticsJson": "{\n  \"dependsOn\": [],\n  \"operationType\": \"block-wall-placement\",\n  \"parameters\": [\n    {\n      \"name\": \"length\",\n      \"unit\": \"m\",\n      \"value\": 5\n    },\n    {\n      \"name\": \"height\",\n      \"unit\": \"m\",\n      \"value\": 1\n    },\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"m\",\n      \"value\": 0.2\n    },\n    {\n      \"name\": \"material\",\n      \"value\": \"concrete-block\"\n    }\n  ],\n  \"target\": {\n    \"geometryRefs\": [\n      {\n        \"kind\": \"plane\",\n        \"ref\": \"geo-wall-line-003\"\n      }\n    ],\n    \"nodeRefs\": [\n      \"node-wall-002\"\n    ],\n    \"selectorKind\": \"line-extent\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"m\"\n    }\n  },\n  \"vertical\": \"building\"\n}\n",
+                "operationType": "block-wall-placement"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-compiler-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "divergent"
+                }
+              }
+            },
+            "inputKey": "REP-BLOCK-001"
+          },
+          {
+            "execution": {
+              "capability": "layer3-operation-compiler",
+              "outputs": {
+                "intentRef": "intent-substitute-compiler-3",
+                "intentSemanticsJson": "{\n  \"dependsOn\": [],\n  \"operationType\": \"plaster-application\",\n  \"parameters\": [\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 30\n    },\n    {\n      \"name\": \"material\",\n      \"value\": \"cement-plaster\"\n    }\n  ],\n  \"target\": {\n    \"geometryRefs\": [\n      {\n        \"kind\": \"polygon\",\n        \"ref\": \"geo-wall-faces-002\"\n      }\n    ],\n    \"nodeRefs\": [\n      \"node-wall-002\"\n    ],\n    \"selectorKind\": \"face-set\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"m\"\n    }\n  },\n  \"vertical\": \"building\"\n}\n",
+                "operationType": "plaster-application"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-compiler-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "divergent"
+                }
+              }
+            },
+            "inputKey": "REP-PLASTER-001"
+          }
+        ]
+      },
+      "title": "Divergent NL operation-compiler substitution (block-wall thickness misread)"
+    },
+    {
+      "baselineId": "wall-upgrade-journey/1",
+      "expectation": "canonical-equality",
+      "kind": "layer3-substitution-scenario",
+      "note": "the substitute replays the engine's committed wall-upgrade state chain and effect quantities — the harness must PROVE the state digests and quantities equal",
+      "scenarioId": "layer3-engine-faithful-001",
+      "schemaVersion": "layer3-substitution/1",
+      "seam": "engine-execution",
+      "substitute": {
+        "providerId": "fixture-engine-provider",
+        "technologyVersion": "1.0.0-fixture-faithful"
+      },
+      "substitutedRun": {
+        "capability": "layer3-engine-execution",
+        "executions": [
+          {
+            "execution": {
+              "capability": "layer3-engine-execution",
+              "outputs": {
+                "operationRef": "intent-demo-0010",
+                "quantitiesJson": "[\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/demolition-removal/v1\",\n    \"dimension\": \"volume\",\n    \"direction\": \"removed\",\n    \"label\": \"removed-volume\",\n    \"unit\": \"m3\",\n    \"value\": 1.2\n  },\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/demolition-removal/v1\",\n    \"dimension\": \"area\",\n    \"direction\": \"removed\",\n    \"label\": \"removed-face-area\",\n    \"unit\": \"m2\",\n    \"value\": 12\n  }\n]\n",
+                "resultingStateId": "cb7cc34aa2a883d14ceff1fc4146113077598c2c09c051ab284019d8a0f6e764",
+                "stateContentDigest": "6f95657b0a52944d7d87639641e5062fdb9f83c7d0bd2b91b4e2459282d4d2da"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-engine-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "faithful"
+                }
+              }
+            },
+            "inputKey": "step-1"
+          },
+          {
+            "execution": {
+              "capability": "layer3-engine-execution",
+              "outputs": {
+                "operationRef": "intent-demo-0011",
+                "quantitiesJson": "[\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/block-wall-placement/v1\",\n    \"dimension\": \"volume\",\n    \"direction\": \"added\",\n    \"label\": \"wall-volume\",\n    \"unit\": \"m3\",\n    \"value\": 0.5\n  },\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/block-wall-placement/v1\",\n    \"dimension\": \"area\",\n    \"direction\": \"added\",\n    \"label\": \"wall-face-area\",\n    \"unit\": \"m2\",\n    \"value\": 5\n  },\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/block-wall-placement/v1\",\n    \"dimension\": \"count\",\n    \"direction\": \"added\",\n    \"label\": \"block-count\",\n    \"unit\": \"count\",\n    \"value\": 65\n  }\n]\n",
+                "resultingStateId": "a4951ff261cfa434be6582460b7db4710c3700351f494dd82f027be9c7ca2768",
+                "stateContentDigest": "4eaa4f4fd62153ff873fdbf60955dd2a8f2c7afd772fd5c56e9f0864be05ec75"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-engine-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "faithful"
+                }
+              }
+            },
+            "inputKey": "step-2"
+          },
+          {
+            "execution": {
+              "capability": "layer3-engine-execution",
+              "outputs": {
+                "operationRef": "intent-demo-0012",
+                "quantitiesJson": "[\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/plaster-application/v1\",\n    \"dimension\": \"area\",\n    \"direction\": \"added\",\n    \"label\": \"plaster-area\",\n    \"unit\": \"m2\",\n    \"value\": 12.5\n  },\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/plaster-application/v1\",\n    \"dimension\": \"volume\",\n    \"direction\": \"added\",\n    \"label\": \"plaster-volume\",\n    \"unit\": \"m3\",\n    \"value\": 0.375\n  }\n]\n",
+                "resultingStateId": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8",
+                "stateContentDigest": "36eecf9f9d3d74281d195c5e0c197ced355d70b7f244c5513d92fa102a0f3e5b"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-engine-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "faithful"
+                }
+              }
+            },
+            "inputKey": "step-3"
+          }
+        ]
+      },
+      "title": "Faithful engine-execution substitution over the wall-upgrade journey"
+    },
+    {
+      "baselineId": "wall-upgrade-journey/1",
+      "expectation": "declared-divergence",
+      "expectedDivergenceKind": "operation-semantic-failure",
+      "kind": "layer3-substitution-scenario",
+      "note": "steps 1–2 byte-equal, step 3's state identity/digest off by one hex digit — a subtly-divergent state evolution is still a divergent canonical state",
+      "scenarioId": "layer3-engine-divergent-001",
+      "schemaVersion": "layer3-substitution/1",
+      "seam": "engine-execution",
+      "substitute": {
+        "providerId": "fixture-engine-provider",
+        "technologyVersion": "1.1.0-fixture-divergent"
+      },
+      "substitutedRun": {
+        "capability": "layer3-engine-execution",
+        "executions": [
+          {
+            "execution": {
+              "capability": "layer3-engine-execution",
+              "outputs": {
+                "operationRef": "intent-demo-0010",
+                "quantitiesJson": "[\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/demolition-removal/v1\",\n    \"dimension\": \"volume\",\n    \"direction\": \"removed\",\n    \"label\": \"removed-volume\",\n    \"unit\": \"m3\",\n    \"value\": 1.2\n  },\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/demolition-removal/v1\",\n    \"dimension\": \"area\",\n    \"direction\": \"removed\",\n    \"label\": \"removed-face-area\",\n    \"unit\": \"m2\",\n    \"value\": 12\n  }\n]\n",
+                "resultingStateId": "cb7cc34aa2a883d14ceff1fc4146113077598c2c09c051ab284019d8a0f6e764",
+                "stateContentDigest": "6f95657b0a52944d7d87639641e5062fdb9f83c7d0bd2b91b4e2459282d4d2da"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-engine-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "divergent"
+                }
+              }
+            },
+            "inputKey": "step-1"
+          },
+          {
+            "execution": {
+              "capability": "layer3-engine-execution",
+              "outputs": {
+                "operationRef": "intent-demo-0011",
+                "quantitiesJson": "[\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/block-wall-placement/v1\",\n    \"dimension\": \"volume\",\n    \"direction\": \"added\",\n    \"label\": \"wall-volume\",\n    \"unit\": \"m3\",\n    \"value\": 0.5\n  },\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/block-wall-placement/v1\",\n    \"dimension\": \"area\",\n    \"direction\": \"added\",\n    \"label\": \"wall-face-area\",\n    \"unit\": \"m2\",\n    \"value\": 5\n  },\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/block-wall-placement/v1\",\n    \"dimension\": \"count\",\n    \"direction\": \"added\",\n    \"label\": \"block-count\",\n    \"unit\": \"count\",\n    \"value\": 65\n  }\n]\n",
+                "resultingStateId": "a4951ff261cfa434be6582460b7db4710c3700351f494dd82f027be9c7ca2768",
+                "stateContentDigest": "4eaa4f4fd62153ff873fdbf60955dd2a8f2c7afd772fd5c56e9f0864be05ec75"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-engine-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "divergent"
+                }
+              }
+            },
+            "inputKey": "step-2"
+          },
+          {
+            "execution": {
+              "capability": "layer3-engine-execution",
+              "outputs": {
+                "operationRef": "intent-demo-0012",
+                "quantitiesJson": "[\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/plaster-application/v1\",\n    \"dimension\": \"area\",\n    \"direction\": \"added\",\n    \"label\": \"plaster-area\",\n    \"unit\": \"m2\",\n    \"value\": 12.5\n  },\n  {\n    \"calculationRef\": \"aise-solution-engine/quantity/plaster-application/v1\",\n    \"dimension\": \"volume\",\n    \"direction\": \"added\",\n    \"label\": \"plaster-volume\",\n    \"unit\": \"m3\",\n    \"value\": 0.375\n  }\n]\n",
+                "resultingStateId": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b9",
+                "stateContentDigest": "36eecf9f9d3d74281d195c5e0c197ced355d70b7f244c5513d92fa102a0f3e5c"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-engine-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "divergent"
+                }
+              }
+            },
+            "inputKey": "step-3"
+          }
+        ]
+      },
+      "title": "Divergent engine-execution substitution (subtly-divergent final state)"
+    },
+    {
+      "baselineId": "wall-upgrade-journey/1",
+      "expectation": "canonical-equality",
+      "kind": "layer3-substitution-scenario",
+      "note": "the substitute agrees with the engine's committed validation snapshot — the harness must PROVE the verdicts equal",
+      "scenarioId": "layer3-validation-faithful-001",
+      "schemaVersion": "layer3-substitution/1",
+      "seam": "validation",
+      "substitute": {
+        "providerId": "fixture-validation-provider",
+        "technologyVersion": "1.0.0-fixture-faithful"
+      },
+      "substitutedRun": {
+        "capability": "layer3-validation",
+        "executions": [
+          {
+            "execution": {
+              "capability": "layer3-validation",
+              "outputs": {
+                "checksJson": "[\n  {\n    \"checkId\": \"operation.contract-invariants\",\n    \"detail\": \"all 3 operations, 4 states and the version container satisfy every contract invariant (typed-unit parameters, anchored targets, provenance, layer alignment)\",\n    \"result\": \"pass\"\n  },\n  {\n    \"checkId\": \"geometry.dimensions-positive\",\n    \"detail\": \"every numeric operation parameter is strictly positive\",\n    \"result\": \"pass\"\n  },\n  {\n    \"checkId\": \"units.quantity-units-typed\",\n    \"detail\": \"every numeric parameter and effect quantity carries an explicit, engine-known unit\",\n    \"result\": \"pass\"\n  },\n  {\n    \"checkId\": \"operation.ordering-dependencies\",\n    \"detail\": \"dependency edges point backwards in the sequence; no cycles\",\n    \"result\": \"pass\"\n  },\n  {\n    \"checkId\": \"quantities.calculation-refs\",\n    \"detail\": \"every quantity effect references its deterministic calculation\",\n    \"result\": \"pass\"\n  },\n  {\n    \"checkId\": \"operation.capability-declared\",\n    \"detail\": \"all 3 operations are declared supported by engine profile 'profile-building-ops-reference' for their verticals\",\n    \"result\": \"pass\"\n  },\n  {\n    \"checkId\": \"operation.phase1-limits\",\n    \"detail\": \"every operation is within the quantitative Phase 1 limits\",\n    \"result\": \"pass\"\n  }\n]\n",
+                "outcome": "pass"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-validation-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "faithful"
+                }
+              }
+            },
+            "inputKey": "version-validation"
+          }
+        ]
+      },
+      "title": "Faithful validation substitution over the wall-upgrade version"
+    },
+    {
+      "baselineId": "wall-upgrade-journey/1",
+      "expectation": "declared-divergence",
+      "expectedDivergenceKind": "reasoning-failure",
+      "kind": "layer3-substitution-scenario",
+      "note": "the substitute certifies review-needed on a fabricated exceedance — a verdict the deterministic validator contradicts is an incorrect inference over the same inputs",
+      "scenarioId": "layer3-validation-divergent-001",
+      "schemaVersion": "layer3-substitution/1",
+      "seam": "validation",
+      "substitute": {
+        "providerId": "fixture-validation-provider",
+        "technologyVersion": "1.1.0-fixture-divergent"
+      },
+      "substitutedRun": {
+        "capability": "layer3-validation",
+        "executions": [
+          {
+            "execution": {
+              "capability": "layer3-validation",
+              "outputs": {
+                "checksJson": "[\n  {\n    \"checkId\": \"operation.contract-invariants\",\n    \"detail\": \"all 3 operations, 4 states and the version container satisfy every contract invariant (typed-unit parameters, anchored targets, provenance, layer alignment)\",\n    \"result\": \"pass\"\n  },\n  {\n    \"checkId\": \"geometry.dimensions-positive\",\n    \"detail\": \"every numeric operation parameter is strictly positive\",\n    \"result\": \"pass\"\n  },\n  {\n    \"checkId\": \"units.quantity-units-typed\",\n    \"detail\": \"every numeric parameter and effect quantity carries an explicit, engine-known unit\",\n    \"result\": \"pass\"\n  },\n  {\n    \"checkId\": \"operation.ordering-dependencies\",\n    \"detail\": \"dependency edges point backwards in the sequence; no cycles\",\n    \"result\": \"pass\"\n  },\n  {\n    \"checkId\": \"quantities.calculation-refs\",\n    \"detail\": \"every quantity effect references its deterministic calculation\",\n    \"result\": \"pass\"\n  },\n  {\n    \"checkId\": \"operation.capability-declared\",\n    \"detail\": \"all 3 operations are declared supported by engine profile 'profile-building-ops-reference' for their verticals\",\n    \"result\": \"pass\"\n  },\n  {\n    \"checkId\": \"operation.phase1-limits\",\n    \"detail\": \"the substitute's limit model reports a block-wall height exceedance (1.0 m > its declared 0.9 m substitute limit) — the canonical Phase 1 validator finds no exceedance (limit 3 m)\",\n    \"result\": \"review-needed\"\n  }\n]\n",
+                "outcome": "review-needed"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-validation-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "divergent"
+                }
+              }
+            },
+            "inputKey": "version-validation"
+          }
+        ]
+      },
+      "title": "Divergent validation substitution (disagreeing phase1-limits verdict)"
+    },
+    {
+      "baselineId": "wall-upgrade-journey/1",
+      "expectation": "canonical-equality",
+      "kind": "layer3-substitution-scenario",
+      "note": "the substitute replays the BOQ derivation's committed line semantics — the harness must PROVE the lines equal",
+      "scenarioId": "layer3-boq-faithful-001",
+      "schemaVersion": "layer3-substitution/1",
+      "seam": "boq-derivation",
+      "substitute": {
+        "providerId": "fixture-boq-provider",
+        "technologyVersion": "1.0.0-fixture-faithful"
+      },
+      "substitutedRun": {
+        "capability": "layer3-boq-derivation",
+        "executions": [
+          {
+            "execution": {
+              "capability": "layer3-boq-derivation",
+              "outputs": {
+                "boqLineCount": 7,
+                "linesJson": "[\n  {\n    \"activity\": \"demolition-removal\",\n    \"calculationRef\": \"aise-solution-engine/quantity/demolition-removal/v1\",\n    \"dimension\": \"area\",\n    \"direction\": \"removed\",\n    \"unit\": \"m2\",\n    \"value\": 12\n  },\n  {\n    \"activity\": \"demolition-removal\",\n    \"calculationRef\": \"aise-solution-engine/quantity/demolition-removal/v1\",\n    \"dimension\": \"volume\",\n    \"direction\": \"removed\",\n    \"unit\": \"m3\",\n    \"value\": 1.2\n  },\n  {\n    \"activity\": \"block-wall-placement\",\n    \"calculationRef\": \"aise-solution-engine/quantity/block-wall-placement/v1\",\n    \"dimension\": \"area\",\n    \"direction\": \"added\",\n    \"material\": \"concrete-block\",\n    \"unit\": \"m2\",\n    \"value\": 5\n  },\n  {\n    \"activity\": \"block-wall-placement\",\n    \"calculationRef\": \"aise-solution-engine/quantity/block-wall-placement/v1\",\n    \"dimension\": \"volume\",\n    \"direction\": \"added\",\n    \"material\": \"concrete-block\",\n    \"unit\": \"m3\",\n    \"value\": 0.5\n  },\n  {\n    \"activity\": \"block-wall-placement\",\n    \"calculationRef\": \"aise-solution-engine/quantity/block-wall-placement/v1\",\n    \"dimension\": \"count\",\n    \"direction\": \"added\",\n    \"material\": \"concrete-block\",\n    \"unit\": \"count\",\n    \"value\": 65\n  },\n  {\n    \"activity\": \"plaster-application\",\n    \"calculationRef\": \"aise-solution-engine/quantity/plaster-application/v1\",\n    \"dimension\": \"area\",\n    \"direction\": \"added\",\n    \"material\": \"cement-plaster\",\n    \"unit\": \"m2\",\n    \"value\": 12.5\n  },\n  {\n    \"activity\": \"plaster-application\",\n    \"calculationRef\": \"aise-solution-engine/quantity/plaster-application/v1\",\n    \"dimension\": \"volume\",\n    \"direction\": \"added\",\n    \"material\": \"cement-plaster\",\n    \"unit\": \"m3\",\n    \"value\": 0.375\n  }\n]\n"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-boq-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "faithful"
+                }
+              }
+            },
+            "inputKey": "version-boq"
+          }
+        ]
+      },
+      "title": "Faithful BOQ-derivation substitution over the wall-upgrade version"
+    },
+    {
+      "baselineId": "wall-upgrade-journey/1",
+      "expectation": "declared-divergence",
+      "expectedDivergenceKind": "operation-semantic-failure",
+      "kind": "layer3-substitution-scenario",
+      "note": "the block-count line carries 64 instead of the canonical 65 (floor instead of ceiling on the partial module) — wrong quantity semantics for the operation",
+      "scenarioId": "layer3-boq-divergent-001",
+      "schemaVersion": "layer3-substitution/1",
+      "seam": "boq-derivation",
+      "substitute": {
+        "providerId": "fixture-boq-provider",
+        "technologyVersion": "1.1.0-fixture-divergent"
+      },
+      "substitutedRun": {
+        "capability": "layer3-boq-derivation",
+        "executions": [
+          {
+            "execution": {
+              "capability": "layer3-boq-derivation",
+              "outputs": {
+                "boqLineCount": 7,
+                "linesJson": "[\n  {\n    \"activity\": \"demolition-removal\",\n    \"calculationRef\": \"aise-solution-engine/quantity/demolition-removal/v1\",\n    \"dimension\": \"area\",\n    \"direction\": \"removed\",\n    \"unit\": \"m2\",\n    \"value\": 12\n  },\n  {\n    \"activity\": \"demolition-removal\",\n    \"calculationRef\": \"aise-solution-engine/quantity/demolition-removal/v1\",\n    \"dimension\": \"volume\",\n    \"direction\": \"removed\",\n    \"unit\": \"m3\",\n    \"value\": 1.2\n  },\n  {\n    \"activity\": \"block-wall-placement\",\n    \"calculationRef\": \"aise-solution-engine/quantity/block-wall-placement/v1\",\n    \"dimension\": \"area\",\n    \"direction\": \"added\",\n    \"material\": \"concrete-block\",\n    \"unit\": \"m2\",\n    \"value\": 5\n  },\n  {\n    \"activity\": \"block-wall-placement\",\n    \"calculationRef\": \"aise-solution-engine/quantity/block-wall-placement/v1\",\n    \"dimension\": \"volume\",\n    \"direction\": \"added\",\n    \"material\": \"concrete-block\",\n    \"unit\": \"m3\",\n    \"value\": 0.5\n  },\n  {\n    \"activity\": \"block-wall-placement\",\n    \"calculationRef\": \"aise-solution-engine/quantity/block-wall-placement/v1\",\n    \"dimension\": \"count\",\n    \"direction\": \"added\",\n    \"material\": \"concrete-block\",\n    \"unit\": \"count\",\n    \"value\": 64\n  },\n  {\n    \"activity\": \"plaster-application\",\n    \"calculationRef\": \"aise-solution-engine/quantity/plaster-application/v1\",\n    \"dimension\": \"area\",\n    \"direction\": \"added\",\n    \"material\": \"cement-plaster\",\n    \"unit\": \"m2\",\n    \"value\": 12.5\n  },\n  {\n    \"activity\": \"plaster-application\",\n    \"calculationRef\": \"aise-solution-engine/quantity/plaster-application/v1\",\n    \"dimension\": \"volume\",\n    \"direction\": \"added\",\n    \"material\": \"cement-plaster\",\n    \"unit\": \"m3\",\n    \"value\": 0.375\n  }\n]\n"
+              },
+              "providerNative": {
+                "mediaType": "application/aise-fixture-substitute+json",
+                "payload": {
+                  "engine": "fixture-boq-engine",
+                  "note": "opaque provider-native payload — carried for provenance only, never parsed into canonical domain types",
+                  "variant": "divergent"
+                }
+              }
+            },
+            "inputKey": "version-boq"
+          }
+        ]
+      },
+      "title": "Divergent BOQ-derivation substitution (block-count quantity deviation)"
+    }
+  ],
+  "seams": [
+    {
+      "baselineId": "command-corpus-slice/1",
+      "canonicalComponent": "backend/api/src/reasoning/solution (the PROD-023 command compiler)",
+      "capability": "layer3-operation-compiler",
+      "seam": "operation-compiler"
+    },
+    {
+      "baselineId": "wall-upgrade-journey/1",
+      "canonicalComponent": "packages/solution-engine (the PROD-022 solution engine)",
+      "capability": "layer3-engine-execution",
+      "seam": "engine-execution"
+    },
+    {
+      "baselineId": "wall-upgrade-journey/1",
+      "canonicalComponent": "packages/solution-engine validateSolutionVersion (the server-side Validate)",
+      "capability": "layer3-validation",
+      "seam": "validation"
+    },
+    {
+      "baselineId": "wall-upgrade-journey/1",
+      "canonicalComponent": "packages/solution-boq (the PROD-025 derivation)",
+      "capability": "layer3-boq-derivation",
+      "seam": "boq-derivation"
+    }
+  ],
+  "title": "The Layer-3 substitution matrix (PROD-029)",
+  "version": "1.0.0"
+}
