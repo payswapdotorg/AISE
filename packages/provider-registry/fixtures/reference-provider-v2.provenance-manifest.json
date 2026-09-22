@@ -1,0 +1,31 @@
+{
+  "benchmarkRecordDigests": [
+    "95fb37299285556d86f0065162e7db04e298761d1493543c8218255a7946f7c5"
+  ],
+  "benchmarkRecordReferences": [
+    "d0ec293482f296d6b6ad14595c754f5bdb476c19d9d969c1cd9ec57bdfca09cd"
+  ],
+  "consumerIdentity": {
+    "consumer": "AISE",
+    "surface": "provider-evaluation-control-plane"
+  },
+  "environmentFingerprint": {
+    "codeVersion": "provider-registry/1",
+    "declaredPlatform": "deterministic-fixture",
+    "declaredRuntime": "bun",
+    "statement": "declared, not sensed — the control plane never reads the runtime environment (determinism contract)"
+  },
+  "inputDigests": [
+    "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27"
+  ],
+  "kind": "provider-provenance-manifest",
+  "manifestId": "0ae4964dd23a7cb582410a6b9d7fefd97a38c0b1fe2fd2f5654b606a0948bdd2",
+  "normalizedResultDigest": "5e6a9f53cb2b708ecc80d1d9d377e03e863347d50d7f0f5dc4cb0f0ea385ba62",
+  "profileReference": {
+    "profileDigest": "484fd5a05a70b17e2bfea7f0984e2536759213df4d6c42c73bb172e0de9b49c2",
+    "providerId": "fixture-depth-provider",
+    "technologyVersion": "1.1.0-fixture-v2"
+  },
+  "reproducibilityStatement": "v2 reference lifecycle (license-blocked path): the registered profile, the canonical fixture input (digest above), the normalized result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest",
+  "schemaVersion": "provider-provenance/1"
+}

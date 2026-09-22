@@ -1,0 +1,139 @@
+{
+  "benchmarkResults": [],
+  "capabilities": [
+    "fixture-depth-estimation"
+  ],
+  "computeProfile": {
+    "accelerator": "none",
+    "minimumCores": 1,
+    "offlineCapable": true,
+    "recommendedCores": 1,
+    "statement": "deterministic fixture computation — no accelerator, fully offline"
+  },
+  "costProfile": {
+    "currency": "n/a",
+    "model": "none",
+    "quotaPolicy": "fixture provider — deterministic local computation, no quota, no fallback needed",
+    "unitCost": 0
+  },
+  "description": "Deterministic reference depth-estimation fixture (v2): carries a measurable +0.25 m even-index bias and a research-only license — benchmark metrics are recordable, but the license/use gate refuses production promotion.",
+  "displayName": "Fixture Depth Provider v2",
+  "failureModes": [
+    {
+      "behavior": "explicit unsupported-data refusal — never fabricated depth values",
+      "condition": "sceneTag starting with 'unsupported:' (a scene class outside declared support)",
+      "kind": "unsupported-data"
+    },
+    {
+      "behavior": "typed normalization refusal with structured issues — never a silent coercion",
+      "condition": "input or output payload violates the declared contracts",
+      "kind": "contract-mismatch"
+    },
+    {
+      "behavior": "the license/use gate refuses promotion — research-only terms keep the provider evaluation-only (training and evaluation are separate decisions)",
+      "condition": "a production promotion request for this provider+version",
+      "kind": "license-blocked"
+    }
+  ],
+  "inputContract": {
+    "contractId": "fixture-depth-input/1",
+    "fields": [
+      {
+        "description": "grid width of the fixture sample grid (cells)",
+        "max": 64,
+        "min": 1,
+        "name": "gridWidth",
+        "required": true,
+        "type": "integer"
+      },
+      {
+        "description": "grid height of the fixture sample grid (cells)",
+        "max": 64,
+        "min": 1,
+        "name": "gridHeight",
+        "required": true,
+        "type": "integer"
+      },
+      {
+        "description": "normalized sample values in [0,1], row-major gridWidth×gridHeight",
+        "max": 1,
+        "maxLength": 4096,
+        "min": 0,
+        "minLength": 1,
+        "name": "samples",
+        "required": true,
+        "type": "number-array"
+      },
+      {
+        "description": "declared scene class; a tag starting with 'unsupported:' triggers the provider's explicit unsupported-data refusal",
+        "maxLength": 128,
+        "minLength": 1,
+        "name": "sceneTag",
+        "required": true,
+        "type": "string"
+      }
+    ],
+    "modality": "image"
+  },
+  "kind": "provider-profile",
+  "latencyProfile": {
+    "expectedMsP50": 0.5,
+    "expectedMsP95": 1,
+    "statement": "declared fixture latencies — no wall-clock measurement exists in the control plane",
+    "timeoutMs": 5000
+  },
+  "license": {
+    "commercialUse": false,
+    "evaluationOnly": true,
+    "identifier": "fixture-research-only-1.0",
+    "intendedUse": "research and evaluation of depth-estimation providers only",
+    "intendedUseCleared": false
+  },
+  "memoryProfile": {
+    "minimumMiB": 16,
+    "recommendedMiB": 32,
+    "statement": "declared fixture memory envelope (no environment is sensed)"
+  },
+  "outputContract": {
+    "contractId": "fixture-depth-output/1",
+    "fields": [
+      {
+        "description": "estimated depth per grid cell (meters), row-major gridWidth×gridHeight",
+        "max": 4,
+        "maxLength": 4096,
+        "min": 0,
+        "minLength": 1,
+        "name": "depthMap",
+        "required": true,
+        "type": "number-array"
+      },
+      {
+        "description": "the depth unit of the depthMap values",
+        "maxLength": 8,
+        "minLength": 1,
+        "name": "unit",
+        "required": true,
+        "type": "string"
+      }
+    ],
+    "modality": "depth-map"
+  },
+  "provenanceContract": {
+    "configurationDigestRequired": true,
+    "inputDigestRequired": true,
+    "nativePayloadPolicy": "opaque-required",
+    "providerIdentityRequired": true
+  },
+  "providerId": "fixture-depth-provider",
+  "schemaVersion": "provider-profile/1",
+  "supportedModalities": [
+    "image",
+    "depth-map"
+  ],
+  "technologyVersion": "1.1.0-fixture-v2",
+  "uncertaintyCharacteristics": {
+    "calibration": "none-declared",
+    "confidenceSeparateFromMeasurementUncertainty": true,
+    "notes": "the fixture emits depth values without confidence scores and without measurement uncertainty — confidence is never fabricated and never substitutes for measurement uncertainty"
+  }
+}

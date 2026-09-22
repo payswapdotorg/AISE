@@ -1,0 +1,46 @@
+{
+  "benchmarkId": "fixture-depth-estimation-bench/1",
+  "capability": "fixture-depth-estimation",
+  "failureObservations": [
+    {
+      "detail": "the 'unsupported:thermal-only-capture' scene probe was refused explicitly with the closed-vocabulary unsupported-data failure — no fabricated depth values (the benchmark's hard-negative case)",
+      "kind": "unsupported-data"
+    }
+  ],
+  "kind": "provider-benchmark-record",
+  "metrics": [
+    {
+      "detail": "mean absolute error of the estimated depthMap against the documented reference truth",
+      "metric": "depth_mae_m",
+      "unit": "m",
+      "value": 0.125
+    },
+    {
+      "detail": "maximum absolute error of the estimated depthMap against the documented reference truth",
+      "metric": "depth_max_error_m",
+      "unit": "m",
+      "value": 0.25
+    },
+    {
+      "detail": "the unsupported-scene probe answered an explicit unsupported-data refusal (1 = the negative path is explicit and safe)",
+      "metric": "unsupported_scene_refusal_rate",
+      "unit": "ratio",
+      "value": 1
+    }
+  ],
+  "providerId": "fixture-depth-provider",
+  "recordId": "d0ec293482f296d6b6ad14595c754f5bdb476c19d9d969c1cd9ec57bdfca09cd",
+  "reproduction": {
+    "codeVersion": "fixture-depth-testkit/1",
+    "inputsDigest": "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27",
+    "statement": "deterministic reproduction: the fixed 4x4 fixture input (digest above) through the pure fixture engine at code version (above) always yields these metric values — no clock, no randomness, no network"
+  },
+  "resourceObservations": {
+    "compute": "deterministic-fixture-cpu",
+    "latencyMsP50": 0.5,
+    "latencyMsP95": 1,
+    "memoryMiB": 16
+  },
+  "schemaVersion": "provider-benchmark/1",
+  "technologyVersion": "1.1.0-fixture-v2"
+}
