@@ -1,0 +1,424 @@
+{
+  "cells": [
+    {
+      "benchmarkRecordDigest": "9ffd9f48825cdbe2d6d62d50543a44172280b7d48bcc94dc81b74da4a007c45b",
+      "benchmarkRecordId": "85a558b33146313462deec6bcd90617d58cf7a47c06f1bf16375212ffd1e2aaa",
+      "comparisonPointCount": 3,
+      "divergentPointCount": 0,
+      "equalPointCount": 3,
+      "expectation": "canonical-equality",
+      "expectationSatisfied": true,
+      "manifestId": "0d75ba6629d1b95e3c351fa338e5b64802856955c6e166d69b4a2503a5ae4ba0",
+      "points": [
+        {
+          "equal": true,
+          "pointKind": "operation-identity",
+          "subjectId": "REP-EXC-001"
+        },
+        {
+          "equal": true,
+          "pointKind": "operation-identity",
+          "subjectId": "REP-BLOCK-001"
+        },
+        {
+          "equal": true,
+          "pointKind": "operation-identity",
+          "subjectId": "REP-PLASTER-001"
+        }
+      ],
+      "registryEventCount": 5,
+      "scenarioId": "layer3-compiler-faithful-001",
+      "seam": "operation-compiler",
+      "verdict": "substitution-proven"
+    },
+    {
+      "benchmarkRecordDigest": "1890e18a0ee0d4db0276ad658176c3cc48aa4fb0968974af4228af238bc69e4c",
+      "benchmarkRecordId": "e7cd297c55037b1deaf0ecfd4824cd12ae4e5f8a5623e01a9e9de1ef79319078",
+      "comparisonPointCount": 3,
+      "divergenceFailureKind": "operation-semantic-failure",
+      "divergentPointCount": 1,
+      "equalPointCount": 2,
+      "expectation": "declared-divergence",
+      "expectationSatisfied": true,
+      "manifestId": "0dd42c25587564990627c40b048684dc89534a677aa126f69606b6119f4de943",
+      "points": [
+        {
+          "equal": true,
+          "pointKind": "operation-identity",
+          "subjectId": "REP-EXC-001"
+        },
+        {
+          "equal": false,
+          "pointKind": "operation-identity",
+          "subjectId": "REP-BLOCK-001"
+        },
+        {
+          "equal": true,
+          "pointKind": "operation-identity",
+          "subjectId": "REP-PLASTER-001"
+        }
+      ],
+      "registryEventCount": 5,
+      "scenarioId": "layer3-compiler-divergent-001",
+      "seam": "operation-compiler",
+      "verdict": "divergence-recorded"
+    },
+    {
+      "benchmarkRecordDigest": "343d9fd1bce6e0640343b617f409f318217f557e861bef04e8862ef7d6f0a6f3",
+      "benchmarkRecordId": "c651e97c55f5fc035ff7694b97d8ce95c98ba13308ed5f17721e711e99d742e8",
+      "comparisonPointCount": 10,
+      "divergentPointCount": 0,
+      "equalPointCount": 10,
+      "expectation": "canonical-equality",
+      "expectationSatisfied": true,
+      "manifestId": "24ff5076cdd6e9acead95ebf7f036bc355db6ee04b7bf8d488216a7ce66c94b0",
+      "points": [
+        {
+          "equal": true,
+          "pointKind": "state-digest",
+          "subjectId": "step-1"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-1:removed-volume"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-1:removed-face-area"
+        },
+        {
+          "equal": true,
+          "pointKind": "state-digest",
+          "subjectId": "step-2"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-2:wall-volume"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-2:wall-face-area"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-2:block-count"
+        },
+        {
+          "equal": true,
+          "pointKind": "state-digest",
+          "subjectId": "step-3"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-3:plaster-area"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-3:plaster-volume"
+        }
+      ],
+      "registryEventCount": 5,
+      "scenarioId": "layer3-engine-faithful-001",
+      "seam": "engine-execution",
+      "verdict": "substitution-proven"
+    },
+    {
+      "benchmarkRecordDigest": "cc067e6e9d94ff2a4024c68b13a63e3dd204ac669aa72251c5a4bc742392b5b3",
+      "benchmarkRecordId": "9d5112982fc7765cde978e91614d1f4e0788d271df5405607ef794bbca42f112",
+      "comparisonPointCount": 10,
+      "divergenceFailureKind": "operation-semantic-failure",
+      "divergentPointCount": 1,
+      "equalPointCount": 9,
+      "expectation": "declared-divergence",
+      "expectationSatisfied": true,
+      "manifestId": "3a83fe9e7af7ff7d246fb4c1ba62b6d21693061c0e3c17106e9a34a9600f161f",
+      "points": [
+        {
+          "equal": true,
+          "pointKind": "state-digest",
+          "subjectId": "step-1"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-1:removed-volume"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-1:removed-face-area"
+        },
+        {
+          "equal": true,
+          "pointKind": "state-digest",
+          "subjectId": "step-2"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-2:wall-volume"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-2:wall-face-area"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-2:block-count"
+        },
+        {
+          "equal": false,
+          "pointKind": "state-digest",
+          "subjectId": "step-3"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-3:plaster-area"
+        },
+        {
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "step-3:plaster-volume"
+        }
+      ],
+      "registryEventCount": 5,
+      "scenarioId": "layer3-engine-divergent-001",
+      "seam": "engine-execution",
+      "verdict": "divergence-recorded"
+    },
+    {
+      "benchmarkRecordDigest": "c7eacd12d03e08c8d07260996c7111750055fcd27aca0cd42ce1d0593e8431c4",
+      "benchmarkRecordId": "3a433b3869172b221c43e484fb5d55f2c788646053592f13ea857f03913abc6a",
+      "comparisonPointCount": 8,
+      "divergentPointCount": 0,
+      "equalPointCount": 8,
+      "expectation": "canonical-equality",
+      "expectationSatisfied": true,
+      "manifestId": "c719b7215c63d615e8b8f5cd3475486e3360479fabc568e32b4be6d4c08e5f49",
+      "points": [
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "validation-outcome"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:operation.contract-invariants"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:geometry.dimensions-positive"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:units.quantity-units-typed"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:operation.ordering-dependencies"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:quantities.calculation-refs"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:operation.capability-declared"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:operation.phase1-limits"
+        }
+      ],
+      "registryEventCount": 3,
+      "scenarioId": "layer3-validation-faithful-001",
+      "seam": "validation",
+      "verdict": "substitution-proven"
+    },
+    {
+      "benchmarkRecordDigest": "a12ae61c094d959c26f1ce8bc4dd2fa35883718b13e6f9d4d2c589af5fffcc9e",
+      "benchmarkRecordId": "ef17f3db5bfe6b7f223da3c905e782fc1d9114d587cdde8162110ad0c4516152",
+      "comparisonPointCount": 8,
+      "divergenceFailureKind": "reasoning-failure",
+      "divergentPointCount": 2,
+      "equalPointCount": 6,
+      "expectation": "declared-divergence",
+      "expectationSatisfied": true,
+      "manifestId": "63caa4506c1cf2adae3559038c93eb4aeb310179980a0a58ca4aadca93c5f539",
+      "points": [
+        {
+          "equal": false,
+          "pointKind": "validation-verdict",
+          "subjectId": "validation-outcome"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:operation.contract-invariants"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:geometry.dimensions-positive"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:units.quantity-units-typed"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:operation.ordering-dependencies"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:quantities.calculation-refs"
+        },
+        {
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:operation.capability-declared"
+        },
+        {
+          "equal": false,
+          "pointKind": "validation-verdict",
+          "subjectId": "check:operation.phase1-limits"
+        }
+      ],
+      "registryEventCount": 3,
+      "scenarioId": "layer3-validation-divergent-001",
+      "seam": "validation",
+      "verdict": "divergence-recorded"
+    },
+    {
+      "benchmarkRecordDigest": "0e51da01e1cec71aa8a1c485de82e575618d30b85d951be40833bde1aeacc012",
+      "benchmarkRecordId": "c339ddb0fe92239ad8af4314d69e2d1609467ef288f9df7586748f40e4a3ea74",
+      "comparisonPointCount": 7,
+      "divergentPointCount": 0,
+      "equalPointCount": 7,
+      "expectation": "canonical-equality",
+      "expectationSatisfied": true,
+      "manifestId": "01513c7112dadc103a572f8af1572673ce3f34875fe0e99699ac2533944d2371",
+      "points": [
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "demolition-removal:area"
+        },
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "demolition-removal:volume"
+        },
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "block-wall-placement:area"
+        },
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "block-wall-placement:volume"
+        },
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "block-wall-placement:count"
+        },
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "plaster-application:area"
+        },
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "plaster-application:volume"
+        }
+      ],
+      "registryEventCount": 3,
+      "scenarioId": "layer3-boq-faithful-001",
+      "seam": "boq-derivation",
+      "verdict": "substitution-proven"
+    },
+    {
+      "benchmarkRecordDigest": "939c1d2575ec4f70cf5fb18382b9ef85ca768e3148bef420207db1c964aff25b",
+      "benchmarkRecordId": "e70b7e1fd02a16f94ec0951f460940472d94dba7bd2e48bfb857acb0904f383f",
+      "comparisonPointCount": 7,
+      "divergenceFailureKind": "operation-semantic-failure",
+      "divergentPointCount": 1,
+      "equalPointCount": 6,
+      "expectation": "declared-divergence",
+      "expectationSatisfied": true,
+      "manifestId": "1703a00ad8429fcb320eeec3fea8aff3871e1afc6710e9463ddf704749bf2af3",
+      "points": [
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "demolition-removal:area"
+        },
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "demolition-removal:volume"
+        },
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "block-wall-placement:area"
+        },
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "block-wall-placement:volume"
+        },
+        {
+          "equal": false,
+          "pointKind": "boq-line",
+          "subjectId": "block-wall-placement:count"
+        },
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "plaster-application:area"
+        },
+        {
+          "equal": true,
+          "pointKind": "boq-line",
+          "subjectId": "plaster-application:volume"
+        }
+      ],
+      "registryEventCount": 3,
+      "scenarioId": "layer3-boq-divergent-001",
+      "seam": "boq-derivation",
+      "verdict": "divergence-recorded"
+    }
+  ],
+  "matrixId": "layer3-substitution-matrix/1",
+  "totals": {
+    "divergenceRecorded": 4,
+    "expectationSatisfied": 8,
+    "proven": 4,
+    "refused": 0,
+    "scenarios": 8
+  }
+}
