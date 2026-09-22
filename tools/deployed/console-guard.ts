@@ -51,6 +51,33 @@ const EXPECTED_FAILURES: ReadonlySet<string> = new Set([
 ]);
 
 /**
+ * Expected-by-design ROUTE FAMILIES (parameterized paths). Each entry:
+ * method, path regex, status — same doctrine as the exact triples above,
+ * for routes whose path embeds a resource id.
+ *
+ * 2026-09-22 (PROD-030 follow-up): `GET /v1/adapter/projects/:id/task-flow`
+ * → 404 is the product's OWN designed provider-gated state — the client
+ * contract (apps/web/src/app/api.ts loadTaskFlowLive) documents the 404
+ * as the typed HTTP failure whose caller renders the explicit
+ * "task-flow objects not served on this deployment" unavailable state
+ * (apps/web/src/app/task-first.tsx isNotFoundHttp branch — reason +
+ * impact, never a crash). The joined endpoint is a future capability;
+ * deployments without it answer 404 by design. Excluded per §4.3's
+ * "XHR/fetch 4xx the app HANDLES by design are not blocking".
+ */
+const EXPECTED_FAILURE_ROUTE_FAMILIES: ReadonlyArray<{
+  readonly method: string;
+  readonly path: RegExp;
+  readonly status: number;
+}> = [
+  {
+    method: "GET",
+    path: /^\/v1\/adapter\/projects\/[^/]+\/task-flow$/,
+    status: 404,
+  },
+];
+
+/**
  * The browser's OWN console log line for an expected-by-design failure.
  * Chromium writes `Failed to load resource: the server responded with a
  * status of 401` (with the resource URL in the message location) for the
@@ -63,6 +90,13 @@ const RESOURCE_ERROR_LINE_PATTERN = /^Failed to load resource: the server respon
 const EXPECTED_RESOURCE_ERROR_LINES: ReadonlySet<string> = new Set([
   JSON.stringify({ path: "/v1/auth/whoami", status: 401 }),
 ]);
+
+/** Console-line correlation for the route families above (same status). */
+function isExpectedResourceErrorLineByFamily(pathname: string, status: number): boolean {
+  return EXPECTED_FAILURE_ROUTE_FAMILIES.some(
+    (family) => family.status === status && family.path.test(pathname),
+  );
+}
 
 /** One collected uncaught page error. */
 export interface PageErrorRecord {
@@ -117,8 +151,11 @@ function isExpectedResourceErrorLine(record: ConsoleErrorRecord): boolean {
   } catch {
     return false;
   }
-  return EXPECTED_RESOURCE_ERROR_LINES.has(
-    JSON.stringify({ path: pathname, status: Number(statusMatch[1]) }),
+  return (
+    EXPECTED_RESOURCE_ERROR_LINES.has(
+      JSON.stringify({ path: pathname, status: Number(statusMatch[1]) }),
+    ) ||
+    isExpectedResourceErrorLineByFamily(pathname, Number(statusMatch[1]))
   );
 }
 
@@ -127,8 +164,18 @@ function isExpectedByDesign(record: FailedRequestRecord): boolean {
   if (!FETCH_LIKE_RESOURCE_TYPES.has(record.resourceType)) {
     return false;
   }
-  return EXPECTED_FAILURES.has(
-    JSON.stringify({ method: record.method, path: record.path, status: record.status }),
+  if (
+    EXPECTED_FAILURES.has(
+      JSON.stringify({ method: record.method, path: record.path, status: record.status }),
+    )
+  ) {
+    return true;
+  }
+  return EXPECTED_FAILURE_ROUTE_FAMILIES.some(
+    (family) =>
+      family.method === record.method &&
+      family.status === record.status &&
+      family.path.test(record.path),
   );
 }
 

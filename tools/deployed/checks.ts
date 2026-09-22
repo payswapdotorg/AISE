@@ -820,6 +820,13 @@ async function axeAtViewport(
     const page = pageHandle.page;
     await navigateToTarget(page, ctx.target);
     await waitForGate(page);
+    // 2026-09-22 (pass-17 forensics): settle before the demo click, exactly
+    // like the responsive legs (line ~675). Without the settle this leg
+    // raced the gate's hydration — the Enter-demo click landed ~50ms after
+    // the gate became visible and was silently swallowed in ~50% of fresh
+    // contexts (probe-verified: zero-settle clicks fail intermittently;
+    // 1.5s-settle clicks pass 4/4 with a clean POST /v1/auth/demo → 200).
+    await sleep(BUDGETS.settleMs);
     await enterDemoViaUi(page);
 
     // The routed surface after Enter demo is the Dashboard — wait for its
