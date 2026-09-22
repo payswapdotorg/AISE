@@ -48,6 +48,7 @@
       "name": "@aise/api",
       "version": "0.1.0",
       "dependencies": {
+        "@aise/provider-registry": "workspace:*",
         "@aise/shared-contracts": "workspace:*",
         "@aise/solution-boq": "workspace:*",
         "@aise/solution-contract": "workspace:*",
@@ -65,6 +66,13 @@
       "devDependencies": {
         "ajv": "^8.17.1",
         "zod-to-json-schema": "^3.24.0",
+      },
+    },
+    "packages/provider-registry": {
+      "name": "@aise/provider-registry",
+      "version": "1.0.0",
+      "dependencies": {
+        "@aise/shared-contracts": "workspace:*",
       },
     },
     "packages/shared-contracts": {
@@ -114,6 +122,8 @@
     "@aise/api": ["@aise/api@workspace:backend/api"],
 
     "@aise/desktop": ["@aise/desktop@workspace:apps/desktop"],
+
+    "@aise/provider-registry": ["@aise/provider-registry@workspace:packages/provider-registry"],
 
     "@aise/shared-contracts": ["@aise/shared-contracts@workspace:packages/shared-contracts"],
 

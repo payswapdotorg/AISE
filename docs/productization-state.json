@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-21T23:35:00Z",
+  "lastReconciledAt": "2026-09-22T00:55:00Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -430,5 +430,20 @@
     "adapterContract": "spec/client-adapter-contract.md",
     "technologySubstitutionContract": "spec/technology-substitution-contract.md",
     "status": "design-simulation-complete; adapter, interactive-solution and layer-hardening implementation-verification pending"
+  },
+  "hfx": {
+    "workItems": [
+      {
+        "id": "HFX-000",
+        "status": "finalized",
+        "mergedSha": "16663d66b",
+        "mergedAt": "2026-09-22T00:55:00Z",
+        "workerChat": "181c84ee-8640-4fbc-ae3e-e471126b5f5b",
+        "workerCommit": "50e752e655b770873c625253d4ad0fb40324a263",
+        "harvest": "standard staged delivery (43/43, diffstat-exact 42/10343/0)",
+        "verify": "4742 pass / 0 fail (baseline 4568 + 174)",
+        "note": "provider evaluation control plane \u2014 HF-0 critical path; layer-hardening wave (PROD-027/028/029) now dispatch-eligible"
+      }
+    ]
   }
 }
