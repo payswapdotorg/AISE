@@ -528,6 +528,19 @@
           "verify": "branch 5214/0 (5105+109 exact, boundaries 879); combined 5494/0 (5385+109), boundaries 930; typecheck+lint PASS",
           "note": "IFC-Bench + BIM-Edit corpus — the HFX lane's Layer-2/3 benchmark surface; two-commit worker history (corpus 745ef6d + evidence 53220d3c); dispatch survived the platform outage (landed-and-dropped at 11:29, revived + adopted 12:36 via the fixed adopt path)"
         }
+      },
+      {
+        "id": "HFX-301",
+        "status": "finalized",
+        "mergedSha": "9e66211",
+        "mergedAt": "2026-09-22T15:08:00Z",
+        "evidence": {
+          "workerChat": "e35dca56-331b-4051-8194-0907f1713545",
+          "workerCommit": "4689df927508d5e6c2525ab7d709baf4bfdaa585",
+          "harvest": "standard staged delivery (DELIVERY.txt + 19 files, diffstat-exact 19/11865/0 pure additions)",
+          "verify": "branch 5564/0 (5494+70 exact, boundaries 943); combined 5564/0 tree-identical (branch cut from main HEAD dc35eaf — merge tree = gated branch tree f88c53aa); typecheck+lint PASS",
+          "note": "NL/direct-manipulation equivalence benchmark — four-cell behavior matrix (equivalent / declared-different / agent-refused / agent-clarification) over paired corpora, both authoring paths through the SAME engine, projections onto PROD-029's canonical comparison kinds; HFX-302 (geometry/validation substitution) now dispatch-eligible"
+        }
       }
     ]
   }
