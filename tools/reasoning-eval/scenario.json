@@ -1,0 +1,1392 @@
+{
+  "benchmarkId": "reasoning-eval-suite/1",
+  "codeVersion": "prod-028/reasoning-eval/1",
+  "scenarioCount": 26,
+  "scenarios": [
+    {
+      "capability": "fixture-vlm-reasoning",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the claw hammer is the only tool visible in the authorized images"
+        ],
+        "correctAssumptions": [
+          "the claw hammer is the only tool visible in the authorized images"
+        ],
+        "correctResultClaim": "A claw hammer is visible on the workbench, stored inside the open red toolbox.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-tool-inventory-check"
+        ],
+        "evidenceIds": [
+          "E1"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "a claw hammer is inside the toolbox",
+          "the toolbox lid is open"
+        ],
+        "invalidationConditions": [
+          "a new revision of image E1 showing the toolbox closed or the hammer removed"
+        ],
+        "resultClaim": "A claw hammer is visible on the workbench, stored inside the open red toolbox.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-vlm-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-workbench\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"image: a red toolbox with an open lid on a wooden workbench; a claw hammer lies inside the toolbox\",\n      \"evidenceId\": \"E1\",\n      \"facts\": [\n        \"the image shows a red toolbox on a wooden workbench\",\n        \"the toolbox lid is open\",\n        \"a claw hammer is inside the toolbox\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"image: a coil of yellow safety rope on the wooden workbench\",\n      \"evidenceId\": \"E2\",\n      \"facts\": [\n        \"the image shows a coil of yellow safety rope on the wooden workbench\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"question\": \"Which tool is visible on the workbench, and where is it stored?\",\n  \"requiredEvidenceIds\": [\n    \"E1\"\n  ],\n  \"scenarioId\": \"vlm-correct\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-vlm-reasoning\",\n    \"providerId\": \"fixture-vlm-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the claw hammer is the only tool visible in the authorized images\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"evidenceIds\": [\n    \"E1\"\n  ],\n  \"facts\": [\n    \"a claw hammer is inside the toolbox\",\n    \"the toolbox lid is open\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of image E1 showing the toolbox closed or the hammer removed\"\n  ],\n  \"nextRecommendedAction\": \"verify the tool inventory against the site walk-through record\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"A claw hammer is visible on the workbench, stored inside the open red toolbox.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "providerRef": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "vlm-correct"
+    },
+    {
+      "capability": "fixture-vlm-reasoning",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the claw hammer is the only tool visible in the authorized images"
+        ],
+        "correctAssumptions": [
+          "the claw hammer is the only tool visible in the authorized images"
+        ],
+        "correctResultClaim": "A claw hammer is visible on the workbench, stored inside the open red toolbox.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-tool-inventory-check"
+        ],
+        "evidenceIds": [
+          "E1"
+        ],
+        "expectedFailureKind": "perception-failure",
+        "expectedViolationRules": [
+          "facts-grounded-in-cited-evidence"
+        ],
+        "facts": [
+          "the image shows a blue toolbox on a wooden workbench",
+          "the toolbox lid is open",
+          "a claw hammer is inside the toolbox"
+        ],
+        "invalidationConditions": [
+          "a new revision of image E1 showing the toolbox closed or the hammer removed"
+        ],
+        "resultClaim": "The toolbox visible on the workbench is blue.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-vlm-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-workbench\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"image: a red toolbox with an open lid on a wooden workbench; a claw hammer lies inside the toolbox\",\n      \"evidenceId\": \"E1\",\n      \"facts\": [\n        \"the image shows a red toolbox on a wooden workbench\",\n        \"the toolbox lid is open\",\n        \"a claw hammer is inside the toolbox\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"image: a coil of yellow safety rope on the wooden workbench\",\n      \"evidenceId\": \"E2\",\n      \"facts\": [\n        \"the image shows a coil of yellow safety rope on the wooden workbench\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"question\": \"Which tool is visible on the workbench, and where is it stored?\",\n  \"requiredEvidenceIds\": [\n    \"E1\"\n  ],\n  \"scenarioId\": \"vlm-perception-failure\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-vlm-reasoning\",\n    \"providerId\": \"fixture-vlm-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the claw hammer is the only tool visible in the authorized images\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"evidenceIds\": [\n    \"E1\"\n  ],\n  \"facts\": [\n    \"the image shows a blue toolbox on a wooden workbench\",\n    \"the toolbox lid is open\",\n    \"a claw hammer is inside the toolbox\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of image E1 showing the toolbox closed or the hammer removed\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The toolbox visible on the workbench is blue.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "providerRef": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "vlm-perception-failure"
+    },
+    {
+      "capability": "fixture-vlm-reasoning",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the claw hammer is the only tool visible in the authorized images"
+        ],
+        "correctAssumptions": [
+          "the claw hammer is the only tool visible in the authorized images"
+        ],
+        "correctResultClaim": "A claw hammer is visible on the workbench, stored inside the open red toolbox.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-tool-inventory-check"
+        ],
+        "evidenceIds": [
+          "E1"
+        ],
+        "expectedFailureKind": "perception-failure",
+        "expectedViolationRules": [
+          "facts-grounded-in-cited-evidence"
+        ],
+        "facts": [
+          "a cordless drill is lying on the wooden workbench"
+        ],
+        "invalidationConditions": [
+          "a new revision of image E1 showing the toolbox closed or the hammer removed"
+        ],
+        "resultClaim": "A cordless drill is lying on the workbench.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-vlm-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-workbench\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"image: a red toolbox with an open lid on a wooden workbench; a claw hammer lies inside the toolbox\",\n      \"evidenceId\": \"E1\",\n      \"facts\": [\n        \"the image shows a red toolbox on a wooden workbench\",\n        \"the toolbox lid is open\",\n        \"a claw hammer is inside the toolbox\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"image: a coil of yellow safety rope on the wooden workbench\",\n      \"evidenceId\": \"E2\",\n      \"facts\": [\n        \"the image shows a coil of yellow safety rope on the wooden workbench\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"question\": \"Which tool is visible on the workbench, and where is it stored?\",\n  \"requiredEvidenceIds\": [\n    \"E1\"\n  ],\n  \"scenarioId\": \"vlm-hallucination\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-vlm-reasoning\",\n    \"providerId\": \"fixture-vlm-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the claw hammer is the only tool visible in the authorized images\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"evidenceIds\": [\n    \"E1\"\n  ],\n  \"facts\": [\n    \"a cordless drill is lying on the wooden workbench\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of image E1 showing the toolbox closed or the hammer removed\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"A cordless drill is lying on the workbench.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "providerRef": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "vlm-hallucination"
+    },
+    {
+      "capability": "fixture-vlm-reasoning",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the coil shown in the queried image is the safety rope being asked about"
+        ],
+        "correctAssumptions": [
+          "the coil shown in image E2 is the safety rope being asked about"
+        ],
+        "correctResultClaim": "The safety rope on the workbench is yellow.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-tool-inventory-check"
+        ],
+        "evidenceIds": [
+          "E1"
+        ],
+        "expectedFailureKind": "retrieval-failure",
+        "expectedViolationRules": [],
+        "facts": [
+          "the image shows a red toolbox on a wooden workbench"
+        ],
+        "invalidationConditions": [
+          "a new revision of image E2 that changes the rope's color"
+        ],
+        "resultClaim": "The safety rope on the workbench is red.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-vlm-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-workbench\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"image: a red toolbox with an open lid on a wooden workbench; a claw hammer lies inside the toolbox\",\n      \"evidenceId\": \"E1\",\n      \"facts\": [\n        \"the image shows a red toolbox on a wooden workbench\",\n        \"the toolbox lid is open\",\n        \"a claw hammer is inside the toolbox\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"image: a coil of yellow safety rope on the wooden workbench\",\n      \"evidenceId\": \"E2\",\n      \"facts\": [\n        \"the image shows a coil of yellow safety rope on the wooden workbench\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"question\": \"What color is the safety rope on the workbench?\",\n  \"requiredEvidenceIds\": [\n    \"E2\"\n  ],\n  \"scenarioId\": \"vlm-wrong-evidence\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-vlm-reasoning\",\n    \"providerId\": \"fixture-vlm-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the coil shown in the queried image is the safety rope being asked about\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"evidenceIds\": [\n    \"E1\"\n  ],\n  \"facts\": [\n    \"the image shows a red toolbox on a wooden workbench\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of image E2 that changes the rope's color\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The safety rope on the workbench is red.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "providerRef": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "vlm-wrong-evidence"
+    },
+    {
+      "capability": "fixture-vlm-reasoning",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the claw hammer is the only tool visible in the authorized images"
+        ],
+        "correctAssumptions": [
+          "the claw hammer is the only tool visible in the authorized images"
+        ],
+        "correctResultClaim": "The claw hammer can drive nails; it is stored inside the open red toolbox.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-tool-inventory-check"
+        ],
+        "evidenceIds": [
+          "E1"
+        ],
+        "expectedFailureKind": "reasoning-failure",
+        "expectedViolationRules": [],
+        "facts": [
+          "a claw hammer is inside the toolbox",
+          "the toolbox lid is open"
+        ],
+        "invalidationConditions": [
+          "a new revision of image E1 showing the toolbox closed or the hammer removed"
+        ],
+        "resultClaim": "The screwdriver stored inside the toolbox is the tool that can drive nails.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-vlm-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-workbench\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"image: a red toolbox with an open lid on a wooden workbench; a claw hammer lies inside the toolbox\",\n      \"evidenceId\": \"E1\",\n      \"facts\": [\n        \"the image shows a red toolbox on a wooden workbench\",\n        \"the toolbox lid is open\",\n        \"a claw hammer is inside the toolbox\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"image: a coil of yellow safety rope on the wooden workbench\",\n      \"evidenceId\": \"E2\",\n      \"facts\": [\n        \"the image shows a coil of yellow safety rope on the wooden workbench\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"question\": \"Which tool in the images can drive nails, and where is it stored?\",\n  \"requiredEvidenceIds\": [\n    \"E1\"\n  ],\n  \"scenarioId\": \"vlm-reasoning-failure\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-vlm-reasoning\",\n    \"providerId\": \"fixture-vlm-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the claw hammer is the only tool visible in the authorized images\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"evidenceIds\": [\n    \"E1\"\n  ],\n  \"facts\": [\n    \"a claw hammer is inside the toolbox\",\n    \"the toolbox lid is open\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of image E1 showing the toolbox closed or the hammer removed\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The screwdriver stored inside the toolbox is the tool that can drive nails.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "providerRef": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "vlm-reasoning-failure"
+    },
+    {
+      "capability": "fixture-vlm-reasoning",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [],
+        "evidenceIds": [],
+        "expectedFailureKind": "unsupported-data",
+        "expectedViolationRules": [],
+        "facts": [],
+        "invalidationConditions": [],
+        "resultClaim": null,
+        "resultStatus": "unsupported",
+        "unknowns": [
+          "question 'What is the serial number stamped on the toolbox?' requires data outside the authorized evidence set of context 'ctx-workbench' — explicit refusal, never a fabricated answer"
+        ]
+      },
+      "input": {
+        "capability": "fixture-vlm-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "refuse",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-workbench\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"image: a red toolbox with an open lid on a wooden workbench; a claw hammer lies inside the toolbox\",\n      \"evidenceId\": \"E1\",\n      \"facts\": [\n        \"the image shows a red toolbox on a wooden workbench\",\n        \"the toolbox lid is open\",\n        \"a claw hammer is inside the toolbox\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"image: a coil of yellow safety rope on the wooden workbench\",\n      \"evidenceId\": \"E2\",\n      \"facts\": [\n        \"the image shows a coil of yellow safety rope on the wooden workbench\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"question\": \"What is the serial number stamped on the toolbox?\",\n  \"requiredEvidenceIds\": [],\n  \"scenarioId\": \"vlm-refusal\",\n  \"scope\": \"out-of-scope\"\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "providerRef": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "vlm-refusal"
+    },
+    {
+      "capability": "fixture-vlm-reasoning",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [],
+        "evidenceIds": [
+          "E1"
+        ],
+        "expectedFailureKind": "unsupported-data",
+        "expectedViolationRules": [
+          "claim-requires-authorized-scope",
+          "facts-grounded-in-cited-evidence"
+        ],
+        "facts": [
+          "the serial number TB-2024-1187 is stamped on the red toolbox"
+        ],
+        "invalidationConditions": [],
+        "resultClaim": "The serial number stamped on the toolbox is TB-2024-1187.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-vlm-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-workbench\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"image: a red toolbox with an open lid on a wooden workbench; a claw hammer lies inside the toolbox\",\n      \"evidenceId\": \"E1\",\n      \"facts\": [\n        \"the image shows a red toolbox on a wooden workbench\",\n        \"the toolbox lid is open\",\n        \"a claw hammer is inside the toolbox\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"image: a coil of yellow safety rope on the wooden workbench\",\n      \"evidenceId\": \"E2\",\n      \"facts\": [\n        \"the image shows a coil of yellow safety rope on the wooden workbench\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"question\": \"What is the serial number stamped on the toolbox?\",\n  \"requiredEvidenceIds\": [],\n  \"scenarioId\": \"vlm-hallucination-out-of-scope\",\n  \"scope\": \"out-of-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-vlm-reasoning\",\n    \"providerId\": \"fixture-vlm-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [],\n  \"evidenceIds\": [\n    \"E1\"\n  ],\n  \"facts\": [\n    \"the serial number TB-2024-1187 is stamped on the red toolbox\"\n  ],\n  \"invalidationConditions\": [],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The serial number stamped on the toolbox is TB-2024-1187.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "providerRef": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "vlm-hallucination-out-of-scope"
+    },
+    {
+      "capability": "fixture-vlm-reasoning",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the claw hammer is the only tool visible in the authorized images"
+        ],
+        "correctAssumptions": [
+          "the claw hammer is the only tool visible in the authorized images"
+        ],
+        "correctResultClaim": "A claw hammer is visible on the workbench, stored inside the open red toolbox.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-tool-inventory-check"
+        ],
+        "evidenceIds": [
+          "E1"
+        ],
+        "expectedFailureKind": "contract-mismatch",
+        "expectedViolationRules": [
+          "identity-recorded"
+        ],
+        "facts": [
+          "a claw hammer is inside the toolbox",
+          "the toolbox lid is open"
+        ],
+        "invalidationConditions": [
+          "a new revision of image E1 showing the toolbox closed or the hammer removed"
+        ],
+        "resultClaim": "A claw hammer is visible on the workbench, stored inside the open red toolbox.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-vlm-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-workbench\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"image: a red toolbox with an open lid on a wooden workbench; a claw hammer lies inside the toolbox\",\n      \"evidenceId\": \"E1\",\n      \"facts\": [\n        \"the image shows a red toolbox on a wooden workbench\",\n        \"the toolbox lid is open\",\n        \"a claw hammer is inside the toolbox\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"image: a coil of yellow safety rope on the wooden workbench\",\n      \"evidenceId\": \"E2\",\n      \"facts\": [\n        \"the image shows a coil of yellow safety rope on the wooden workbench\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"question\": \"Which tool is visible on the workbench, and where is it stored?\",\n  \"requiredEvidenceIds\": [\n    \"E1\"\n  ],\n  \"scenarioId\": \"vlm-missing-identity\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": null,\n  \"assumptions\": [\n    \"the claw hammer is the only tool visible in the authorized images\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"evidenceIds\": [\n    \"E1\"\n  ],\n  \"facts\": [\n    \"a claw hammer is inside the toolbox\",\n    \"the toolbox lid is open\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of image E1 showing the toolbox closed or the hammer removed\"\n  ],\n  \"nextRecommendedAction\": \"verify the tool inventory against the site walk-through record\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"A claw hammer is visible on the workbench, stored inside the open red toolbox.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "providerRef": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "vlm-missing-identity"
+    },
+    {
+      "capability": "fixture-vlm-reasoning",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [
+          "the claw hammer is the only tool visible in the authorized images"
+        ],
+        "correctResultClaim": "A claw hammer is visible on the workbench, stored inside the open red toolbox.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-tool-inventory-check"
+        ],
+        "evidenceIds": [
+          "E1"
+        ],
+        "expectedFailureKind": "contract-mismatch",
+        "expectedViolationRules": [
+          "assumptions-explicit"
+        ],
+        "facts": [
+          "a claw hammer is inside the toolbox",
+          "the toolbox lid is open"
+        ],
+        "invalidationConditions": [
+          "a new revision of image E1 showing the toolbox closed or the hammer removed"
+        ],
+        "resultClaim": "A claw hammer is visible on the workbench, stored inside the open red toolbox.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-vlm-reasoning",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-workbench\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"image: a red toolbox with an open lid on a wooden workbench; a claw hammer lies inside the toolbox\",\n      \"evidenceId\": \"E1\",\n      \"facts\": [\n        \"the image shows a red toolbox on a wooden workbench\",\n        \"the toolbox lid is open\",\n        \"a claw hammer is inside the toolbox\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"image: a coil of yellow safety rope on the wooden workbench\",\n      \"evidenceId\": \"E2\",\n      \"facts\": [\n        \"the image shows a coil of yellow safety rope on the wooden workbench\"\n      ],\n      \"kind\": \"image\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"multimodal-reasoning\",\n  \"offeredChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"question\": \"Which tool is visible on the workbench, and where is it stored?\",\n  \"requiredEvidenceIds\": [\n    \"E1\"\n  ],\n  \"scenarioId\": \"vlm-implicit-assumptions\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-vlm-reasoning\",\n    \"providerId\": \"fixture-vlm-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"fixture-tool-inventory-check\"\n  ],\n  \"evidenceIds\": [\n    \"E1\"\n  ],\n  \"facts\": [\n    \"a claw hammer is inside the toolbox\",\n    \"the toolbox lid is open\"\n  ],\n  \"invalidationConditions\": [\n    \"a new revision of image E1 showing the toolbox closed or the hammer removed\"\n  ],\n  \"nextRecommendedAction\": \"verify the tool inventory against the site walk-through record\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"A claw hammer is visible on the workbench, stored inside the open red toolbox.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "multimodal-reasoning",
+      "providerRef": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "vlm-implicit-assumptions"
+    },
+    {
+      "capability": "fixture-document-extraction",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "section 1's listing is the governing revision r2 of the BOQ extract"
+        ],
+        "correctAssumptions": [
+          "section 1's listing is the governing revision r2 of the BOQ extract"
+        ],
+        "correctResultClaim": "Section 1 of the BOQ extract lists 'Concrete C30' with quantity 120 m3.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-boq-field-extraction-check"
+        ],
+        "evidenceIds": [
+          "S1"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "section 1 lists item 'Concrete C30' with quantity 120 m3"
+        ],
+        "invalidationConditions": [
+          "a revision of section 1 that changes the item or quantity"
+        ],
+        "resultClaim": "Section 1 of the BOQ extract lists 'Concrete C30' with quantity 120 m3.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-document-extraction",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-boq-extract\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r2\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"section 1 of the BOQ extract: item 'Concrete C30', quantity 120 m3\",\n      \"evidenceId\": \"S1\",\n      \"facts\": [\n        \"section 1 lists item 'Concrete C30' with quantity 120 m3\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 2 of the BOQ extract: item 'Rebar B500B', quantity 2400 kg, rate per structural drawing REV-C\",\n      \"evidenceId\": \"S2\",\n      \"facts\": [\n        \"section 2 lists item 'Rebar B500B' with quantity 2400 kg\",\n        \"section 2 states the rebar rate applies per structural drawing REV-C\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 3 of the contract extract: warranty duration 60 months, retention 5 percent\",\n      \"evidenceId\": \"S3\",\n      \"facts\": [\n        \"section 3 states the warranty duration is 60 months\",\n        \"section 3 states the retention is 5 percent\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r3\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"question\": \"What concrete grade and quantity does section 1 of the BOQ extract list?\",\n  \"requiredEvidenceIds\": [\n    \"S1\"\n  ],\n  \"scenarioId\": \"doc-correct\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-document-extraction\",\n    \"providerId\": \"fixture-doc-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"section 1's listing is the governing revision r2 of the BOQ extract\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"evidenceIds\": [\n    \"S1\"\n  ],\n  \"facts\": [\n    \"section 1 lists item 'Concrete C30' with quantity 120 m3\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of section 1 that changes the item or quantity\"\n  ],\n  \"nextRecommendedAction\": \"confirm the extracted quantity against the source PDF page\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Section 1 of the BOQ extract lists 'Concrete C30' with quantity 120 m3.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "document-understanding",
+      "providerRef": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "doc-correct"
+    },
+    {
+      "capability": "fixture-document-extraction",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "section 1's listing is the governing revision r2 of the BOQ extract"
+        ],
+        "correctAssumptions": [
+          "section 1's listing is the governing revision r2 of the BOQ extract"
+        ],
+        "correctResultClaim": "Section 1 of the BOQ extract lists 'Concrete C30' with quantity 120 m3.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-boq-field-extraction-check"
+        ],
+        "evidenceIds": [
+          "S1"
+        ],
+        "expectedFailureKind": "perception-failure",
+        "expectedViolationRules": [
+          "facts-grounded-in-cited-evidence"
+        ],
+        "facts": [
+          "section 1 lists item 'Concrete C30' with quantity 120 m3",
+          "section 1 does not state a quantity for the concrete item"
+        ],
+        "invalidationConditions": [
+          "a revision of section 1 that changes the item or quantity"
+        ],
+        "resultClaim": "Section 1 of the BOQ extract lists 'Concrete C30'; the quantity is not stated.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-document-extraction",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-boq-extract\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r2\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"section 1 of the BOQ extract: item 'Concrete C30', quantity 120 m3\",\n      \"evidenceId\": \"S1\",\n      \"facts\": [\n        \"section 1 lists item 'Concrete C30' with quantity 120 m3\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 2 of the BOQ extract: item 'Rebar B500B', quantity 2400 kg, rate per structural drawing REV-C\",\n      \"evidenceId\": \"S2\",\n      \"facts\": [\n        \"section 2 lists item 'Rebar B500B' with quantity 2400 kg\",\n        \"section 2 states the rebar rate applies per structural drawing REV-C\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 3 of the contract extract: warranty duration 60 months, retention 5 percent\",\n      \"evidenceId\": \"S3\",\n      \"facts\": [\n        \"section 3 states the warranty duration is 60 months\",\n        \"section 3 states the retention is 5 percent\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r3\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"question\": \"What concrete grade and quantity does section 1 of the BOQ extract list?\",\n  \"requiredEvidenceIds\": [\n    \"S1\"\n  ],\n  \"scenarioId\": \"doc-missed-field\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-document-extraction\",\n    \"providerId\": \"fixture-doc-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"section 1's listing is the governing revision r2 of the BOQ extract\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"evidenceIds\": [\n    \"S1\"\n  ],\n  \"facts\": [\n    \"section 1 lists item 'Concrete C30' with quantity 120 m3\",\n    \"section 1 does not state a quantity for the concrete item\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of section 1 that changes the item or quantity\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Section 1 of the BOQ extract lists 'Concrete C30'; the quantity is not stated.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "document-understanding",
+      "providerRef": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "doc-missed-field"
+    },
+    {
+      "capability": "fixture-document-extraction",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "the warranty duration is stated in section 2 of the extract"
+        ],
+        "correctAssumptions": [
+          "section 3's statement is the governing revision r3 of the contract extract"
+        ],
+        "correctResultClaim": "Section 3 of the contract extract states the warranty duration is 60 months.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-boq-field-extraction-check"
+        ],
+        "evidenceIds": [
+          "S2"
+        ],
+        "expectedFailureKind": "retrieval-failure",
+        "expectedViolationRules": [],
+        "facts": [
+          "section 2 lists item 'Rebar B500B' with quantity 2400 kg",
+          "section 2 states the rebar rate applies per structural drawing REV-C"
+        ],
+        "invalidationConditions": [
+          "a revision of section 2 that changes the rebar listing"
+        ],
+        "resultClaim": "Section 2 states the warranty duration is 60 months.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-document-extraction",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-boq-extract\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r2\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"section 1 of the BOQ extract: item 'Concrete C30', quantity 120 m3\",\n      \"evidenceId\": \"S1\",\n      \"facts\": [\n        \"section 1 lists item 'Concrete C30' with quantity 120 m3\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 2 of the BOQ extract: item 'Rebar B500B', quantity 2400 kg, rate per structural drawing REV-C\",\n      \"evidenceId\": \"S2\",\n      \"facts\": [\n        \"section 2 lists item 'Rebar B500B' with quantity 2400 kg\",\n        \"section 2 states the rebar rate applies per structural drawing REV-C\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 3 of the contract extract: warranty duration 60 months, retention 5 percent\",\n      \"evidenceId\": \"S3\",\n      \"facts\": [\n        \"section 3 states the warranty duration is 60 months\",\n        \"section 3 states the retention is 5 percent\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r3\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"question\": \"What does section 3 of the contract extract state about the warranty duration?\",\n  \"requiredEvidenceIds\": [\n    \"S3\"\n  ],\n  \"scenarioId\": \"doc-wrong-section\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-document-extraction\",\n    \"providerId\": \"fixture-doc-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the warranty duration is stated in section 2 of the extract\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"evidenceIds\": [\n    \"S2\"\n  ],\n  \"facts\": [\n    \"section 2 lists item 'Rebar B500B' with quantity 2400 kg\",\n    \"section 2 states the rebar rate applies per structural drawing REV-C\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of section 2 that changes the rebar listing\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Section 2 states the warranty duration is 60 months.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "document-understanding",
+      "providerRef": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "doc-wrong-section"
+    },
+    {
+      "capability": "fixture-document-extraction",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "The retention stated in section 3 of the contract extract is not higher than five percent — it is exactly five percent.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-boq-field-extraction-check"
+        ],
+        "evidenceIds": [
+          "S3"
+        ],
+        "expectedFailureKind": "reasoning-failure",
+        "expectedViolationRules": [],
+        "facts": [
+          "section 3 states the retention is 5 percent"
+        ],
+        "invalidationConditions": [
+          "a revision of section 3 that changes the retention percentage"
+        ],
+        "resultClaim": "The retention stated in section 3 of the contract extract is higher than five percent.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-document-extraction",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-boq-extract\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r2\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"section 1 of the BOQ extract: item 'Concrete C30', quantity 120 m3\",\n      \"evidenceId\": \"S1\",\n      \"facts\": [\n        \"section 1 lists item 'Concrete C30' with quantity 120 m3\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 2 of the BOQ extract: item 'Rebar B500B', quantity 2400 kg, rate per structural drawing REV-C\",\n      \"evidenceId\": \"S2\",\n      \"facts\": [\n        \"section 2 lists item 'Rebar B500B' with quantity 2400 kg\",\n        \"section 2 states the rebar rate applies per structural drawing REV-C\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 3 of the contract extract: warranty duration 60 months, retention 5 percent\",\n      \"evidenceId\": \"S3\",\n      \"facts\": [\n        \"section 3 states the warranty duration is 60 months\",\n        \"section 3 states the retention is 5 percent\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r3\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"question\": \"Is the retention stated in section 3 of the contract extract higher than five percent?\",\n  \"requiredEvidenceIds\": [\n    \"S3\"\n  ],\n  \"scenarioId\": \"doc-reasoning-failure\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-document-extraction\",\n    \"providerId\": \"fixture-doc-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"evidenceIds\": [\n    \"S3\"\n  ],\n  \"facts\": [\n    \"section 3 states the retention is 5 percent\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of section 3 that changes the retention percentage\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The retention stated in section 3 of the contract extract is higher than five percent.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "document-understanding",
+      "providerRef": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "doc-reasoning-failure"
+    },
+    {
+      "capability": "fixture-document-extraction",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [],
+        "evidenceIds": [],
+        "expectedFailureKind": "unsupported-data",
+        "expectedViolationRules": [],
+        "facts": [],
+        "invalidationConditions": [],
+        "resultClaim": null,
+        "resultStatus": "unsupported",
+        "unknowns": [
+          "question 'What is the supplier's VAT identification number in the BOQ extract?' requires data outside the authorized evidence set of context 'ctx-boq-extract' — explicit refusal, never a fabricated answer"
+        ]
+      },
+      "input": {
+        "capability": "fixture-document-extraction",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "refuse",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-boq-extract\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r2\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"section 1 of the BOQ extract: item 'Concrete C30', quantity 120 m3\",\n      \"evidenceId\": \"S1\",\n      \"facts\": [\n        \"section 1 lists item 'Concrete C30' with quantity 120 m3\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 2 of the BOQ extract: item 'Rebar B500B', quantity 2400 kg, rate per structural drawing REV-C\",\n      \"evidenceId\": \"S2\",\n      \"facts\": [\n        \"section 2 lists item 'Rebar B500B' with quantity 2400 kg\",\n        \"section 2 states the rebar rate applies per structural drawing REV-C\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 3 of the contract extract: warranty duration 60 months, retention 5 percent\",\n      \"evidenceId\": \"S3\",\n      \"facts\": [\n        \"section 3 states the warranty duration is 60 months\",\n        \"section 3 states the retention is 5 percent\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r3\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"question\": \"What is the supplier's VAT identification number in the BOQ extract?\",\n  \"requiredEvidenceIds\": [],\n  \"scenarioId\": \"doc-refusal\",\n  \"scope\": \"out-of-scope\"\n}\n"
+        }
+      },
+      "lane": "document-understanding",
+      "providerRef": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "doc-refusal"
+    },
+    {
+      "capability": "fixture-document-extraction",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "The warranty duration of section 3 of the contract extract is updated to 72 months.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-boq-field-extraction-check"
+        ],
+        "evidenceIds": [
+          "S3"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "section 3 states the warranty duration is 60 months"
+        ],
+        "invalidationConditions": [
+          "a revision of section 3 that changes the warranty-duration field"
+        ],
+        "resultClaim": "The warranty duration of section 3 of the contract extract is updated to 72 months.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-document-extraction",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-boq-extract\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r2\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"section 1 of the BOQ extract: item 'Concrete C30', quantity 120 m3\",\n      \"evidenceId\": \"S1\",\n      \"facts\": [\n        \"section 1 lists item 'Concrete C30' with quantity 120 m3\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 2 of the BOQ extract: item 'Rebar B500B', quantity 2400 kg, rate per structural drawing REV-C\",\n      \"evidenceId\": \"S2\",\n      \"facts\": [\n        \"section 2 lists item 'Rebar B500B' with quantity 2400 kg\",\n        \"section 2 states the rebar rate applies per structural drawing REV-C\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 3 of the contract extract: warranty duration 60 months, retention 5 percent\",\n      \"evidenceId\": \"S3\",\n      \"facts\": [\n        \"section 3 states the warranty duration is 60 months\",\n        \"section 3 states the retention is 5 percent\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r3\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"operation\": {\n    \"description\": \"update the warranty-duration field of contract section 3, expressing the value in months\",\n    \"field\": \"warranty-duration\",\n    \"operationKind\": \"document-field-edit\",\n    \"targetEvidenceId\": \"S3\",\n    \"unit\": \"months\"\n  },\n  \"question\": \"Update the warranty duration in section 3 of the contract extract to 72 months.\",\n  \"requiredEvidenceIds\": [\n    \"S3\"\n  ],\n  \"scenarioId\": \"doc-operation-correct\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-document-extraction\",\n    \"providerId\": \"fixture-doc-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"evidenceIds\": [\n    \"S3\"\n  ],\n  \"facts\": [\n    \"section 3 states the warranty duration is 60 months\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of section 3 that changes the warranty-duration field\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": {\n    \"field\": \"warranty-duration\",\n    \"operationKind\": \"document-field-edit\",\n    \"targetEvidenceId\": \"S3\",\n    \"unit\": \"months\",\n    \"value\": \"72\"\n  },\n  \"resultClaim\": \"The warranty duration of section 3 of the contract extract is updated to 72 months.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "document-understanding",
+      "providerRef": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "doc-operation-correct"
+    },
+    {
+      "capability": "fixture-document-extraction",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "The warranty duration of section 3 of the contract extract is updated to 72 months.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-boq-field-extraction-check"
+        ],
+        "evidenceIds": [
+          "S3"
+        ],
+        "expectedFailureKind": "operation-semantic-failure",
+        "expectedViolationRules": [
+          "operation-contract-honored"
+        ],
+        "facts": [
+          "section 3 states the warranty duration is 60 months"
+        ],
+        "invalidationConditions": [
+          "a revision of section 3 that changes the warranty-duration field"
+        ],
+        "resultClaim": "The warranty duration of section 3 of the contract extract is updated to 72 months.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-document-extraction",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-boq-extract\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r2\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"section 1 of the BOQ extract: item 'Concrete C30', quantity 120 m3\",\n      \"evidenceId\": \"S1\",\n      \"facts\": [\n        \"section 1 lists item 'Concrete C30' with quantity 120 m3\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 2 of the BOQ extract: item 'Rebar B500B', quantity 2400 kg, rate per structural drawing REV-C\",\n      \"evidenceId\": \"S2\",\n      \"facts\": [\n        \"section 2 lists item 'Rebar B500B' with quantity 2400 kg\",\n        \"section 2 states the rebar rate applies per structural drawing REV-C\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 3 of the contract extract: warranty duration 60 months, retention 5 percent\",\n      \"evidenceId\": \"S3\",\n      \"facts\": [\n        \"section 3 states the warranty duration is 60 months\",\n        \"section 3 states the retention is 5 percent\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r3\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"operation\": {\n    \"description\": \"update the warranty-duration field of contract section 3, expressing the value in months\",\n    \"field\": \"warranty-duration\",\n    \"operationKind\": \"document-field-edit\",\n    \"targetEvidenceId\": \"S3\",\n    \"unit\": \"months\"\n  },\n  \"question\": \"Update the warranty duration in section 3 of the contract extract to 72 months.\",\n  \"requiredEvidenceIds\": [\n    \"S3\"\n  ],\n  \"scenarioId\": \"doc-operation-wrong-target\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-document-extraction\",\n    \"providerId\": \"fixture-doc-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"evidenceIds\": [\n    \"S3\"\n  ],\n  \"facts\": [\n    \"section 3 states the warranty duration is 60 months\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of section 3 that changes the warranty-duration field\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": {\n    \"field\": \"retention\",\n    \"operationKind\": \"document-field-edit\",\n    \"targetEvidenceId\": \"S2\",\n    \"unit\": \"months\",\n    \"value\": \"72\"\n  },\n  \"resultClaim\": \"The warranty duration of section 3 of the contract extract is updated to 72 months.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "document-understanding",
+      "providerRef": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "doc-operation-wrong-target"
+    },
+    {
+      "capability": "fixture-document-extraction",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [
+          "section 1's listing is the governing revision r2 of the BOQ extract"
+        ],
+        "correctAssumptions": [
+          "section 1's listing is the governing revision r2 of the BOQ extract"
+        ],
+        "correctResultClaim": "Section 1 of the BOQ extract lists 'Concrete C30' with quantity 120 m3.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "doc-ocr-confidence-check/9"
+        ],
+        "evidenceIds": [
+          "S1"
+        ],
+        "expectedFailureKind": "contract-mismatch",
+        "expectedViolationRules": [
+          "checks-authorized"
+        ],
+        "facts": [
+          "section 1 lists item 'Concrete C30' with quantity 120 m3"
+        ],
+        "invalidationConditions": [
+          "a revision of section 1 that changes the item or quantity"
+        ],
+        "resultClaim": "Section 1 of the BOQ extract lists 'Concrete C30' with quantity 120 m3.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-document-extraction",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-boq-extract\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r2\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"section 1 of the BOQ extract: item 'Concrete C30', quantity 120 m3\",\n      \"evidenceId\": \"S1\",\n      \"facts\": [\n        \"section 1 lists item 'Concrete C30' with quantity 120 m3\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 2 of the BOQ extract: item 'Rebar B500B', quantity 2400 kg, rate per structural drawing REV-C\",\n      \"evidenceId\": \"S2\",\n      \"facts\": [\n        \"section 2 lists item 'Rebar B500B' with quantity 2400 kg\",\n        \"section 2 states the rebar rate applies per structural drawing REV-C\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"section 3 of the contract extract: warranty duration 60 months, retention 5 percent\",\n      \"evidenceId\": \"S3\",\n      \"facts\": [\n        \"section 3 states the warranty duration is 60 months\",\n        \"section 3 states the retention is 5 percent\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r3\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-boq-field-extraction-check\"\n  ],\n  \"question\": \"What concrete grade and quantity does section 1 of the BOQ extract list?\",\n  \"requiredEvidenceIds\": [\n    \"S1\"\n  ],\n  \"scenarioId\": \"doc-fabricated-check\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-document-extraction\",\n    \"providerId\": \"fixture-doc-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"section 1's listing is the governing revision r2 of the BOQ extract\"\n  ],\n  \"deterministicChecks\": [\n    \"doc-ocr-confidence-check/9\"\n  ],\n  \"evidenceIds\": [\n    \"S1\"\n  ],\n  \"facts\": [\n    \"section 1 lists item 'Concrete C30' with quantity 120 m3\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of section 1 that changes the item or quantity\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Section 1 of the BOQ extract lists 'Concrete C30' with quantity 120 m3.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "document-understanding",
+      "providerRef": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "doc-fabricated-check"
+    },
+    {
+      "capability": "fixture-evidence-retrieval",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-evidence-index-check"
+        ],
+        "evidenceIds": [
+          "H1"
+        ],
+        "expectedFailureKind": "none",
+        "expectedViolationRules": [],
+        "facts": [
+          "photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam"
+        ],
+        "invalidationConditions": [
+          "a re-indexed corpus that changes photo H1's identity or revision"
+        ],
+        "resultClaim": "Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-evidence-retrieval",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-evidence-index\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo H1: level-2 spandrel beam with a crack near midspan\",\n      \"evidenceId\": \"H1\",\n      \"facts\": [\n        \"photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"photo H2: level-2 slab with hairline shrinkage cracks\",\n      \"evidenceId\": \"H2\",\n      \"facts\": [\n        \"photo H2 shows hairline shrinkage cracks in the level-2 slab\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"drawing H3: structural drawing REV-C sheet 4, level-2 beam reinforcement layout\",\n      \"evidenceId\": \"H3\",\n      \"facts\": [\n        \"drawing H3 is structural drawing REV-C sheet 4 showing the level-2 beam reinforcement layout\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"retrieval\",\n  \"offeredChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"question\": \"Find the evidence that documents the crack in the level-2 spandrel beam.\",\n  \"requiredEvidenceIds\": [\n    \"H1\"\n  ],\n  \"scenarioId\": \"retrieval-correct\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-evidence-retrieval\",\n    \"providerId\": \"fixture-retrieval-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"evidenceIds\": [\n    \"H1\"\n  ],\n  \"facts\": [\n    \"photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam\"\n  ],\n  \"invalidationConditions\": [\n    \"a re-indexed corpus that changes photo H1's identity or revision\"\n  ],\n  \"nextRecommendedAction\": \"open photo H1 in the evidence viewer for the inspector's review\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "retrieval",
+      "providerRef": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "retrieval-correct"
+    },
+    {
+      "capability": "fixture-evidence-retrieval",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-evidence-index-check"
+        ],
+        "evidenceIds": [
+          "H2"
+        ],
+        "expectedFailureKind": "retrieval-failure",
+        "expectedViolationRules": [],
+        "facts": [
+          "photo H2 shows hairline shrinkage cracks in the level-2 slab"
+        ],
+        "invalidationConditions": [
+          "a re-indexed corpus that changes photo H2's identity or revision"
+        ],
+        "resultClaim": "Photo H2 documents the crack in the level-2 spandrel beam.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-evidence-retrieval",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-evidence-index\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo H1: level-2 spandrel beam with a crack near midspan\",\n      \"evidenceId\": \"H1\",\n      \"facts\": [\n        \"photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"photo H2: level-2 slab with hairline shrinkage cracks\",\n      \"evidenceId\": \"H2\",\n      \"facts\": [\n        \"photo H2 shows hairline shrinkage cracks in the level-2 slab\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"drawing H3: structural drawing REV-C sheet 4, level-2 beam reinforcement layout\",\n      \"evidenceId\": \"H3\",\n      \"facts\": [\n        \"drawing H3 is structural drawing REV-C sheet 4 showing the level-2 beam reinforcement layout\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"retrieval\",\n  \"offeredChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"question\": \"Find the evidence that documents the crack in the level-2 spandrel beam.\",\n  \"requiredEvidenceIds\": [\n    \"H1\"\n  ],\n  \"scenarioId\": \"retrieval-near-miss\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-evidence-retrieval\",\n    \"providerId\": \"fixture-retrieval-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"evidenceIds\": [\n    \"H2\"\n  ],\n  \"facts\": [\n    \"photo H2 shows hairline shrinkage cracks in the level-2 slab\"\n  ],\n  \"invalidationConditions\": [\n    \"a re-indexed corpus that changes photo H2's identity or revision\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Photo H2 documents the crack in the level-2 spandrel beam.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "retrieval",
+      "providerRef": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "retrieval-near-miss"
+    },
+    {
+      "capability": "fixture-evidence-retrieval",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [],
+        "evidenceIds": [],
+        "expectedFailureKind": "retrieval-failure",
+        "expectedViolationRules": [],
+        "facts": [],
+        "invalidationConditions": [],
+        "resultClaim": null,
+        "resultStatus": "unsupported",
+        "unknowns": [
+          "no corpus evidence matched the question"
+        ]
+      },
+      "input": {
+        "capability": "fixture-evidence-retrieval",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "empty",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-evidence-index\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo H1: level-2 spandrel beam with a crack near midspan\",\n      \"evidenceId\": \"H1\",\n      \"facts\": [\n        \"photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"photo H2: level-2 slab with hairline shrinkage cracks\",\n      \"evidenceId\": \"H2\",\n      \"facts\": [\n        \"photo H2 shows hairline shrinkage cracks in the level-2 slab\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"drawing H3: structural drawing REV-C sheet 4, level-2 beam reinforcement layout\",\n      \"evidenceId\": \"H3\",\n      \"facts\": [\n        \"drawing H3 is structural drawing REV-C sheet 4 showing the level-2 beam reinforcement layout\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"retrieval\",\n  \"offeredChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"question\": \"Find the evidence that documents the crack in the level-2 spandrel beam.\",\n  \"requiredEvidenceIds\": [\n    \"H1\"\n  ],\n  \"scenarioId\": \"retrieval-empty-in-scope\",\n  \"scope\": \"in-scope\"\n}\n"
+        }
+      },
+      "lane": "retrieval",
+      "providerRef": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "retrieval-empty-in-scope"
+    },
+    {
+      "capability": "fixture-evidence-retrieval",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": null,
+        "correctResultStatus": "unsupported",
+        "deterministicChecks": [],
+        "evidenceIds": [],
+        "expectedFailureKind": "unsupported-data",
+        "expectedViolationRules": [],
+        "facts": [],
+        "invalidationConditions": [],
+        "resultClaim": null,
+        "resultStatus": "unsupported",
+        "unknowns": [
+          "no corpus evidence matched the question"
+        ]
+      },
+      "input": {
+        "capability": "fixture-evidence-retrieval",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "empty",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-evidence-index\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo H1: level-2 spandrel beam with a crack near midspan\",\n      \"evidenceId\": \"H1\",\n      \"facts\": [\n        \"photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"photo H2: level-2 slab with hairline shrinkage cracks\",\n      \"evidenceId\": \"H2\",\n      \"facts\": [\n        \"photo H2 shows hairline shrinkage cracks in the level-2 slab\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"drawing H3: structural drawing REV-C sheet 4, level-2 beam reinforcement layout\",\n      \"evidenceId\": \"H3\",\n      \"facts\": [\n        \"drawing H3 is structural drawing REV-C sheet 4 showing the level-2 beam reinforcement layout\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"retrieval\",\n  \"offeredChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"question\": \"Find the evidence that documents the tear in the roof membrane.\",\n  \"requiredEvidenceIds\": [],\n  \"scenarioId\": \"retrieval-empty-out-of-scope\",\n  \"scope\": \"out-of-scope\"\n}\n"
+        }
+      },
+      "lane": "retrieval",
+      "providerRef": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "retrieval-empty-out-of-scope"
+    },
+    {
+      "capability": "fixture-evidence-retrieval",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [],
+        "evidenceIds": [
+          "H9"
+        ],
+        "expectedFailureKind": "unsupported-data",
+        "expectedViolationRules": [
+          "cited-evidence-exists"
+        ],
+        "facts": [],
+        "invalidationConditions": [],
+        "resultClaim": "Photo H9 documents the crack in the level-2 spandrel beam.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-evidence-retrieval",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-evidence-index\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo H1: level-2 spandrel beam with a crack near midspan\",\n      \"evidenceId\": \"H1\",\n      \"facts\": [\n        \"photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"photo H2: level-2 slab with hairline shrinkage cracks\",\n      \"evidenceId\": \"H2\",\n      \"facts\": [\n        \"photo H2 shows hairline shrinkage cracks in the level-2 slab\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"drawing H3: structural drawing REV-C sheet 4, level-2 beam reinforcement layout\",\n      \"evidenceId\": \"H3\",\n      \"facts\": [\n        \"drawing H3 is structural drawing REV-C sheet 4 showing the level-2 beam reinforcement layout\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"retrieval\",\n  \"offeredChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"question\": \"Find the evidence that documents the crack in the level-2 spandrel beam.\",\n  \"requiredEvidenceIds\": [\n    \"H1\"\n  ],\n  \"scenarioId\": \"retrieval-fabricated-hit\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-evidence-retrieval\",\n    \"providerId\": \"fixture-retrieval-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [],\n  \"evidenceIds\": [\n    \"H9\"\n  ],\n  \"facts\": [],\n  \"invalidationConditions\": [],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Photo H9 documents the crack in the level-2 spandrel beam.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "retrieval",
+      "providerRef": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "retrieval-fabricated-hit"
+    },
+    {
+      "capability": "fixture-evidence-retrieval",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [],
+        "evidenceIds": [],
+        "expectedFailureKind": "retrieval-failure",
+        "expectedViolationRules": [
+          "claim-requires-evidence"
+        ],
+        "facts": [],
+        "invalidationConditions": [],
+        "resultClaim": "Photo H1 documents the crack in the level-2 spandrel beam.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-evidence-retrieval",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-evidence-index\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo H1: level-2 spandrel beam with a crack near midspan\",\n      \"evidenceId\": \"H1\",\n      \"facts\": [\n        \"photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"photo H2: level-2 slab with hairline shrinkage cracks\",\n      \"evidenceId\": \"H2\",\n      \"facts\": [\n        \"photo H2 shows hairline shrinkage cracks in the level-2 slab\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"drawing H3: structural drawing REV-C sheet 4, level-2 beam reinforcement layout\",\n      \"evidenceId\": \"H3\",\n      \"facts\": [\n        \"drawing H3 is structural drawing REV-C sheet 4 showing the level-2 beam reinforcement layout\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"retrieval\",\n  \"offeredChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"question\": \"Find the evidence that documents the crack in the level-2 spandrel beam.\",\n  \"requiredEvidenceIds\": [\n    \"H1\"\n  ],\n  \"scenarioId\": \"retrieval-uncited-claim\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-evidence-retrieval\",\n    \"providerId\": \"fixture-retrieval-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [],\n  \"evidenceIds\": [],\n  \"facts\": [],\n  \"invalidationConditions\": [],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Photo H1 documents the crack in the level-2 spandrel beam.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "retrieval",
+      "providerRef": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "retrieval-uncited-claim"
+    },
+    {
+      "capability": "fixture-evidence-retrieval",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-evidence-index-check"
+        ],
+        "evidenceIds": [
+          "H1"
+        ],
+        "expectedFailureKind": "perception-failure",
+        "expectedViolationRules": [
+          "facts-grounded-in-cited-evidence"
+        ],
+        "facts": [
+          "photo H1 shows a 0.4 mm crack near the support end of the level-2 spandrel beam"
+        ],
+        "invalidationConditions": [
+          "a re-indexed corpus that changes photo H1's identity or revision"
+        ],
+        "resultClaim": "Photo H1 documents a 0.4 mm crack near the support end of the level-2 spandrel beam.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-evidence-retrieval",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-evidence-index\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo H1: level-2 spandrel beam with a crack near midspan\",\n      \"evidenceId\": \"H1\",\n      \"facts\": [\n        \"photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"photo H2: level-2 slab with hairline shrinkage cracks\",\n      \"evidenceId\": \"H2\",\n      \"facts\": [\n        \"photo H2 shows hairline shrinkage cracks in the level-2 slab\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"drawing H3: structural drawing REV-C sheet 4, level-2 beam reinforcement layout\",\n      \"evidenceId\": \"H3\",\n      \"facts\": [\n        \"drawing H3 is structural drawing REV-C sheet 4 showing the level-2 beam reinforcement layout\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"retrieval\",\n  \"offeredChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"question\": \"Find the evidence that documents the crack in the level-2 spandrel beam.\",\n  \"requiredEvidenceIds\": [\n    \"H1\"\n  ],\n  \"scenarioId\": \"retrieval-perception-failure\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-evidence-retrieval\",\n    \"providerId\": \"fixture-retrieval-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"evidenceIds\": [\n    \"H1\"\n  ],\n  \"facts\": [\n    \"photo H1 shows a 0.4 mm crack near the support end of the level-2 spandrel beam\"\n  ],\n  \"invalidationConditions\": [\n    \"a re-indexed corpus that changes photo H1's identity or revision\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Photo H1 documents a 0.4 mm crack near the support end of the level-2 spandrel beam.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "retrieval",
+      "providerRef": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "retrieval-perception-failure"
+    },
+    {
+      "capability": "fixture-evidence-retrieval",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "Photo H1 and drawing H3 together are needed to assess the spandrel beam crack against the reinforcement layout.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "fixture-evidence-index-check"
+        ],
+        "evidenceIds": [
+          "H1",
+          "H3"
+        ],
+        "expectedFailureKind": "reasoning-failure",
+        "expectedViolationRules": [],
+        "facts": [
+          "photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam",
+          "drawing H3 is structural drawing REV-C sheet 4 showing the level-2 beam reinforcement layout"
+        ],
+        "invalidationConditions": [
+          "a re-indexed corpus that changes photo H1's or drawing H3's identity"
+        ],
+        "resultClaim": "Photo H1 alone is sufficient to assess the spandrel beam crack against the reinforcement layout.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-evidence-retrieval",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-evidence-index\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo H1: level-2 spandrel beam with a crack near midspan\",\n      \"evidenceId\": \"H1\",\n      \"facts\": [\n        \"photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"photo H2: level-2 slab with hairline shrinkage cracks\",\n      \"evidenceId\": \"H2\",\n      \"facts\": [\n        \"photo H2 shows hairline shrinkage cracks in the level-2 slab\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"drawing H3: structural drawing REV-C sheet 4, level-2 beam reinforcement layout\",\n      \"evidenceId\": \"H3\",\n      \"facts\": [\n        \"drawing H3 is structural drawing REV-C sheet 4 showing the level-2 beam reinforcement layout\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"retrieval\",\n  \"offeredChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"question\": \"Which evidence is needed to assess the spandrel beam crack against the reinforcement layout?\",\n  \"requiredEvidenceIds\": [\n    \"H1\",\n    \"H3\"\n  ],\n  \"scenarioId\": \"retrieval-reasoning-failure\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-evidence-retrieval\",\n    \"providerId\": \"fixture-retrieval-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"evidenceIds\": [\n    \"H1\",\n    \"H3\"\n  ],\n  \"facts\": [\n    \"photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam\",\n    \"drawing H3 is structural drawing REV-C sheet 4 showing the level-2 beam reinforcement layout\"\n  ],\n  \"invalidationConditions\": [\n    \"a re-indexed corpus that changes photo H1's or drawing H3's identity\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Photo H1 alone is sufficient to assess the spandrel beam crack against the reinforcement layout.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "retrieval",
+      "providerRef": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "retrieval-reasoning-failure"
+    },
+    {
+      "capability": "fixture-evidence-retrieval",
+      "criteria": {
+        "requireAgentIdentity": true,
+        "requireAuthorizedChecks": true,
+        "requireAuthorizedScope": true,
+        "requireEvidenceCitation": true,
+        "requireExistingEvidenceRefs": true,
+        "requireExplicitAssumptions": true,
+        "requireExplicitUnknowns": true,
+        "requireGroundedFacts": true,
+        "requireNormalizableOutput": true
+      },
+      "expected": {
+        "assumptions": [],
+        "correctAssumptions": [],
+        "correctResultClaim": "Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.",
+        "correctResultStatus": "supported",
+        "deterministicChecks": [
+          "retrieval-rerank-check/2"
+        ],
+        "evidenceIds": [
+          "H1"
+        ],
+        "expectedFailureKind": "contract-mismatch",
+        "expectedViolationRules": [
+          "checks-authorized"
+        ],
+        "facts": [
+          "photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam"
+        ],
+        "invalidationConditions": [
+          "a re-indexed corpus that changes photo H1's identity or revision"
+        ],
+        "resultClaim": "Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.",
+        "resultStatus": "supported",
+        "unknowns": []
+      },
+      "input": {
+        "capability": "fixture-evidence-retrieval",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-evidence-index\",\n    \"projectId\": \"proj-renaissance-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"photo H1: level-2 spandrel beam with a crack near midspan\",\n      \"evidenceId\": \"H1\",\n      \"facts\": [\n        \"photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"measurement\": {\n        \"sigma\": 0.05,\n        \"unit\": \"mm\"\n      },\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"photo H2: level-2 slab with hairline shrinkage cracks\",\n      \"evidenceId\": \"H2\",\n      \"facts\": [\n        \"photo H2 shows hairline shrinkage cracks in the level-2 slab\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"drawing H3: structural drawing REV-C sheet 4, level-2 beam reinforcement layout\",\n      \"evidenceId\": \"H3\",\n      \"facts\": [\n        \"drawing H3 is structural drawing REV-C sheet 4 showing the level-2 beam reinforcement layout\"\n      ],\n      \"kind\": \"retrieval-hit\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"retrieval\",\n  \"offeredChecks\": [\n    \"fixture-evidence-index-check\"\n  ],\n  \"question\": \"Find the evidence that documents the crack in the level-2 spandrel beam.\",\n  \"requiredEvidenceIds\": [\n    \"H1\"\n  ],\n  \"scenarioId\": \"retrieval-fabricated-check\",\n  \"scope\": \"in-scope\"\n}\n",
+          "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-evidence-retrieval\",\n    \"providerId\": \"fixture-retrieval-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [\n    \"retrieval-rerank-check/2\"\n  ],\n  \"evidenceIds\": [\n    \"H1\"\n  ],\n  \"facts\": [\n    \"photo H1 shows a 0.4 mm crack near midspan of the level-2 spandrel beam\"\n  ],\n  \"invalidationConditions\": [\n    \"a re-indexed corpus that changes photo H1's identity or revision\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+        }
+      },
+      "lane": "retrieval",
+      "providerRef": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "scenarioId": "retrieval-fabricated-check"
+    }
+  ],
+  "suiteId": "reasoning-eval-suite/1",
+  "version": "1.0.0"
+}

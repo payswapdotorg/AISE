@@ -1,0 +1,729 @@
+{
+  "benchmarkId": "reasoning-eval-suite/1",
+  "codeVersion": "prod-028/reasoning-eval/1",
+  "outcomes": [
+    {
+      "classification": "none",
+      "envelopeDigest": "e7f5472028832dec7ad9e03b5b494635e9c66ff9708d58e37f40b4eebabc6fe6",
+      "expectedMatch": true,
+      "inputDigest": "ff98c7a67ab0a2035dd4149a1d95932f945ff9463972a296762f0fa4c118dd6a",
+      "lane": "multimodal-reasoning",
+      "manifestId": "8abc1e21df764a3eeebe68ec079f95eb13ca218d471014065fe59fbb8236ad59",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "0a347e48a767633660f53765dcbabea689602f82ab816ef3abf2f23d90197aa0",
+      "provider": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "35bda5b4f37d7b47acc69c7f74c98c21b7f50f27889198cbc45f8d8853b655d2",
+      "resultClaim": "A claw hammer is visible on the workbench, stored inside the open red toolbox.",
+      "resultStatus": "supported",
+      "scenarioId": "vlm-correct",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "perception-failure",
+      "envelopeDigest": "13526fa7aa7da8650180ae525cb10607c4b894f42a7b985dce6339959e991208",
+      "expectedMatch": true,
+      "inputDigest": "90031d74366a5b4d8ece8a69882edf3e78cc1df9514e6e8a5c58189ed8e77718",
+      "lane": "multimodal-reasoning",
+      "manifestId": "041c0022f764c6f9f51a5499959f4f3b1c4062053daffa8ad74c5169d1d9a8cb",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "2b84f17c2d04dbec10e3b9f6e440a24167dbe014a9429432e92ce4e35907fcb6",
+      "provider": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "694d06d793d035d0d9f85fb26904ce56542a97d73f310f669265d1f96f16db07",
+      "resultClaim": "The toolbox visible on the workbench is blue.",
+      "resultStatus": "supported",
+      "scenarioId": "vlm-perception-failure",
+      "violationKinds": [
+        "perception-failure"
+      ],
+      "violationRules": [
+        "facts-grounded-in-cited-evidence"
+      ]
+    },
+    {
+      "classification": "perception-failure",
+      "envelopeDigest": "f0816457a421402293dd1408babc727f82b074fae504073d6f0818b44660f860",
+      "expectedMatch": true,
+      "inputDigest": "27e76fabdecb01e5a31066d0d606048ebdeea2ce656baf8325fdec34ec276b70",
+      "lane": "multimodal-reasoning",
+      "manifestId": "8426e14c78d8698511cc8f3d665b979d6aba666324b1ccd0f1d19ffcf05ab9ef",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "2ff4b8f5d50e879b8bddd7d81d51c6619581b10db3bab098ba12e84708733249",
+      "provider": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "efc2a4c55241c584562553315b8fe1ec88a48509287ad1cc93ce2d378dd64974",
+      "resultClaim": "A cordless drill is lying on the workbench.",
+      "resultStatus": "supported",
+      "scenarioId": "vlm-hallucination",
+      "violationKinds": [
+        "perception-failure"
+      ],
+      "violationRules": [
+        "facts-grounded-in-cited-evidence"
+      ]
+    },
+    {
+      "classification": "retrieval-failure",
+      "envelopeDigest": "438c0a2dfe752452267af864078b4ae882b6aa5143fc2889aa7cf2b3037cee42",
+      "expectedMatch": true,
+      "inputDigest": "0130b9910a1043c567e3aa0adcde41e0c66a7fc99d2139ccec8072c4f1f5c556",
+      "lane": "multimodal-reasoning",
+      "manifestId": "b076b1abb428718d81dbdf59a463e4cd20f5bdb9f58d627c0dc9aed2d748fefb",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "eaf3640e59985dd228ad77f98849dec5c9a64d33080605a64bbc19482a9a0507",
+      "provider": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "4f34af0cb3879853dc503a3d11b8fc0b4edb6eaea97469fb9520b71b647bf804",
+      "resultClaim": "The safety rope on the workbench is red.",
+      "resultStatus": "supported",
+      "scenarioId": "vlm-wrong-evidence",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "reasoning-failure",
+      "envelopeDigest": "d4446cf75579f49584022d3cc34c4e021fd905882cb3c226ea3e3fccf984ad37",
+      "expectedMatch": true,
+      "inputDigest": "1401b3103ec214a16f8bb8eb20fefb90cb4953bbdd45c32cb088154754a64280",
+      "lane": "multimodal-reasoning",
+      "manifestId": "4998106e9c0a7fac4fd14e8c6ac2c82bcbdbf53b849c07166586e4317528d886",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "1ffd9b5838415d6a5694d279b870584b3c17119b2ba8486a60836e0a489c20b6",
+      "provider": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "4b363e2eaf709cd1dd52bdd1066207a1231b1cbe79e64bbd4019855e9815e143",
+      "resultClaim": "The screwdriver stored inside the toolbox is the tool that can drive nails.",
+      "resultStatus": "supported",
+      "scenarioId": "vlm-reasoning-failure",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "unsupported-data",
+      "envelopeDigest": "86ad132cb2ba4ce30ce76b985bc4b708c4aea85dace58a628ed063cd6d5d1a99",
+      "expectedMatch": true,
+      "inputDigest": "bf0fa6f4bd3ce3bf86e946777bd2b84c78cd1fe20058709913e10133fe941678",
+      "lane": "multimodal-reasoning",
+      "manifestId": "0bbf61f61fad9729a0b5ec3c95a7c38b6717fad68a2c66355bbf2a1f74134ee4",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "31a26f7f6db936ccddab20712aed98089c1b2183ff1651bb8689e125dd010657",
+      "provider": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "283d5aa8bbacd7bf9e56ee83e8f7725b9f2afe3ff9f06f22420c7dfa5090046f",
+      "resultClaim": null,
+      "resultStatus": "unsupported",
+      "scenarioId": "vlm-refusal",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "unsupported-data",
+      "envelopeDigest": "d3959607ee41dfa18dfabfd66a5d4df95479e0d2471363d110f86693b2514edd",
+      "expectedMatch": true,
+      "inputDigest": "bd53589fe0e004f5a443225f4d56e1c66517437adfe5f5c586020c05cf71cfe7",
+      "lane": "multimodal-reasoning",
+      "manifestId": "a816d923d21e42737ad5a8245df3d84d5c90dbb9869f23006f4a87e46a1d70fd",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 2,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "f2d32be967c78319454b72561fd444d7566c055e79976114a28ca1506fd1e2b5",
+      "provider": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "cca72b651395f33a99101b3bcc302b17bdb2f0f78943449cad4c59af32b68042",
+      "resultClaim": "The serial number stamped on the toolbox is TB-2024-1187.",
+      "resultStatus": "supported",
+      "scenarioId": "vlm-hallucination-out-of-scope",
+      "violationKinds": [
+        "unsupported-data",
+        "perception-failure"
+      ],
+      "violationRules": [
+        "claim-requires-authorized-scope",
+        "facts-grounded-in-cited-evidence"
+      ]
+    },
+    {
+      "classification": "contract-mismatch",
+      "envelopeDigest": "a9bd2c8686643eaa7061ea9f280af9c6cfd3e57f99fec411812270265f3ecaa8",
+      "expectedMatch": true,
+      "inputDigest": "f357dba618ec79b456cd4d69601abf4390c035032044492d34393326ebb6eaa1",
+      "lane": "multimodal-reasoning",
+      "manifestId": "8ae52efd40a338e68dd4a4c765d1e622a9403f4a2b72c9aa747088ea37479823",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "6c2031ce6a0cdb39cc47d9a2ca73fcd296d01b1a6d0949287870011656ac9d7f",
+      "provider": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "b17ee4b550e7e2d87d6bd6cc8ac2b59408999d4506be2d4d6b3a44842a884ba8",
+      "resultClaim": "A claw hammer is visible on the workbench, stored inside the open red toolbox.",
+      "resultStatus": "supported",
+      "scenarioId": "vlm-missing-identity",
+      "violationKinds": [
+        "contract-mismatch"
+      ],
+      "violationRules": [
+        "identity-recorded"
+      ]
+    },
+    {
+      "classification": "contract-mismatch",
+      "envelopeDigest": "db24672dc55f1dba5149bcca5cc4ac9a35995f1f7a9ded0b612e02afc3a7d4b2",
+      "expectedMatch": true,
+      "inputDigest": "535735affe5e675c4b5fed919942f5cebd716f09efc4066f57111cb0b47ee5ac",
+      "lane": "multimodal-reasoning",
+      "manifestId": "82aecd5d3bd0b4245c99af4f1e06623eae6ba26ad008fc2fc112c776667ac8e8",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "13b16e78cd054c2f989bf1951d84aa99eb41383fa448a19531b2f8029f7dd3b5",
+      "provider": {
+        "providerId": "fixture-vlm-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "7153a45153f5209fd8b421a2cb268035e0249a7e60ae41c406d1bfff30051cdd",
+      "resultClaim": "A claw hammer is visible on the workbench, stored inside the open red toolbox.",
+      "resultStatus": "supported",
+      "scenarioId": "vlm-implicit-assumptions",
+      "violationKinds": [
+        "contract-mismatch"
+      ],
+      "violationRules": [
+        "assumptions-explicit"
+      ]
+    },
+    {
+      "classification": "none",
+      "envelopeDigest": "5218c7c01f81a0694b689e16a401195f9c23a94ca183d9b9096f772b7d85dc6d",
+      "expectedMatch": true,
+      "inputDigest": "77898c9e45fc12d44c0aa703b2b8fad5146ebb150f9e9e55afd4da7f0fd939e4",
+      "lane": "document-understanding",
+      "manifestId": "50d5001a9c2e02e21ce5662fab8afb82a98cb220d96e0fe97cff8582e4d15d85",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "b48343dbf8ec22ac5b0386c3a4b6ef27e274ccab5a6d2d6a97eda43b307b2bb8",
+      "provider": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "d4c5f28fc929cc47c21df4f2d9f876c05b5b63e7452d04a2e2d2dbe6810f6b79",
+      "resultClaim": "Section 1 of the BOQ extract lists 'Concrete C30' with quantity 120 m3.",
+      "resultStatus": "supported",
+      "scenarioId": "doc-correct",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "perception-failure",
+      "envelopeDigest": "a1ff864ff39f6ef3989757310a794f9bb9b300141d44c36b8417bbe66930db7a",
+      "expectedMatch": true,
+      "inputDigest": "857150d58a987eb3ccc1fbab7d4fb198aff1695890f296f5ec57dec01ee1cf0d",
+      "lane": "document-understanding",
+      "manifestId": "57519d94ac50cb7e46e3a504a983c82fc066f0efc560fe622845da059e90d00b",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "ac73c66d59605c1aa16f4422988982b63f135bae611a787e0e21c66b19856ba3",
+      "provider": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "af130b6feaf8c8836646aaf73256100e0129aaa86e226b3acf1a29e6e01eee1b",
+      "resultClaim": "Section 1 of the BOQ extract lists 'Concrete C30'; the quantity is not stated.",
+      "resultStatus": "supported",
+      "scenarioId": "doc-missed-field",
+      "violationKinds": [
+        "perception-failure"
+      ],
+      "violationRules": [
+        "facts-grounded-in-cited-evidence"
+      ]
+    },
+    {
+      "classification": "retrieval-failure",
+      "envelopeDigest": "665ca85181537f429e922161c6e263681947efae76393f3458c5bcb8ad5d2d4f",
+      "expectedMatch": true,
+      "inputDigest": "d02869185b5728335cf23709d632097963d8e66c3a48e3ec4c12ec2d9547cf7c",
+      "lane": "document-understanding",
+      "manifestId": "6bc76c81b483f28ff336fe5365e368ed84d1dc38107dad16734e75500e85e6bc",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "66bf1a818b01ec3e342eacdc00e7418f66ee7db8f29417672fbbfe80dc12316f",
+      "provider": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "8cdf44383176b42a73490161e7f40fac3b8953610ce0821f8bea866bf377d82f",
+      "resultClaim": "Section 2 states the warranty duration is 60 months.",
+      "resultStatus": "supported",
+      "scenarioId": "doc-wrong-section",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "reasoning-failure",
+      "envelopeDigest": "42f578a800fdff40c2c1737294c922a29ae05f9a04a7e0f1bae91065f60cc0be",
+      "expectedMatch": true,
+      "inputDigest": "99d188c2529de251540dbe9c5ebe24405bd8cf06869e845e246deed117f1f066",
+      "lane": "document-understanding",
+      "manifestId": "b48f694b79311b0ade84d34e9d512a55af5421a01d09be81babcc45e2746a2c8",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "6b0871d9dccdda2a24e2eca48bc099bbf3ed0a4d55a3ab7f79a645c22e41cf09",
+      "provider": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "7b1c9346f7bd9c5845b12fd0828cb4ac7c12138a9059e070827fc1870feb6e80",
+      "resultClaim": "The retention stated in section 3 of the contract extract is higher than five percent.",
+      "resultStatus": "supported",
+      "scenarioId": "doc-reasoning-failure",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "unsupported-data",
+      "envelopeDigest": "d7620a5257293ea46d320683b994ab0e7dbd3d71a685c0ec01cb9a4319332a79",
+      "expectedMatch": true,
+      "inputDigest": "bad6367ec24764f91ab972a9fda2fa4a4aace05bddb525226ecd07cc64c748cc",
+      "lane": "document-understanding",
+      "manifestId": "a71b3d800bde9e44d41bd4c34baa8881480cf8887be6440863c1fd485b7a36c5",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "7905d31cc9cb507854a313dcc2564904d42bb7d0e29a5cce6da3a3a537a121a2",
+      "provider": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "736b9bef8388fbc37b0574047f6de201e033edfd2277c9020ebf51d43231eab6",
+      "resultClaim": null,
+      "resultStatus": "unsupported",
+      "scenarioId": "doc-refusal",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "none",
+      "envelopeDigest": "d041df9d834fbe9931f1805cab3685b3b0968c4a259fe214f2ae3b226cb82680",
+      "expectedMatch": true,
+      "inputDigest": "ef919e5817e1106c144836d744cbaec00bcd48ed5204b7d6dd1e89582cb95bfd",
+      "lane": "document-understanding",
+      "manifestId": "6ab5e0b1f7f08e75dd1a90ee055af2ef0115b6f31446bb48989da0bdb538c3e4",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "7b23399e093d2f46352ad5c327a7176c97c524e0ea10714aa01e51298d4c6838",
+      "provider": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "cb555382274221e3c8846de2096b2859650517df651603fa2e9e888798aa2db6",
+      "resultClaim": "The warranty duration of section 3 of the contract extract is updated to 72 months.",
+      "resultStatus": "supported",
+      "scenarioId": "doc-operation-correct",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "operation-semantic-failure",
+      "envelopeDigest": "32db358c077198e7e156ea89e3b83fb089b1009a6c1434f57afc580d283f75da",
+      "expectedMatch": true,
+      "inputDigest": "c236e9d813a48baf9e0bfd7f7cd4e266a0e07d59e6fe8fb4c33c70856b22d5dd",
+      "lane": "document-understanding",
+      "manifestId": "d7ea0a378cfc4d7de472a4a7903b17644e2f1df6873eff51b4580cc9fe24a18e",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "64e9fb1047e68f5a52936ad7144c6c83aa722c032ed2e285e37b8c3bb3346b5a",
+      "provider": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "f27e4864efe312c345b0f5e2252c3c90d032d76c0e7afe1c96246044f053e98b",
+      "resultClaim": "The warranty duration of section 3 of the contract extract is updated to 72 months.",
+      "resultStatus": "supported",
+      "scenarioId": "doc-operation-wrong-target",
+      "violationKinds": [
+        "operation-semantic-failure"
+      ],
+      "violationRules": [
+        "operation-contract-honored"
+      ]
+    },
+    {
+      "classification": "contract-mismatch",
+      "envelopeDigest": "0e4541656f5a95eb754094682909412665de3c316f0b161bc269ad0efe4825bb",
+      "expectedMatch": true,
+      "inputDigest": "a4d69b40176c48a3a1643efe311bd2c1588d89afe1c995695b8752d5203317b8",
+      "lane": "document-understanding",
+      "manifestId": "b28787288119a801fba27f76fabea384656a49b7cc76d8be618958ca49b96bf4",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "52155bdd02ffb51fa901a0742f0e491a6268e020c260e59cf256d01a8e09ae88",
+      "provider": {
+        "providerId": "fixture-doc-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "e9bac683a96557676502e3abb1c2a38258ee4cb624ce6f3b017eea5d2dbfd8f6",
+      "resultClaim": "Section 1 of the BOQ extract lists 'Concrete C30' with quantity 120 m3.",
+      "resultStatus": "supported",
+      "scenarioId": "doc-fabricated-check",
+      "violationKinds": [
+        "contract-mismatch"
+      ],
+      "violationRules": [
+        "checks-authorized"
+      ]
+    },
+    {
+      "classification": "none",
+      "envelopeDigest": "5b3f87f4dcc47a64607eb5dd748651937156bf0a6c743c6c3b6c470f5ecb00b6",
+      "expectedMatch": true,
+      "inputDigest": "d6ce17c50e4c9e69862d09a80a2761e3c3dfb749bba75fe40baf1be8406ce2f1",
+      "lane": "retrieval",
+      "manifestId": "1e523a4e1037bc01437a01e582a157ba00af1287f7552450258b7410444e0755",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "50d6d91d787bdfa0ecdea198330160240916a46f8eaefe8c09045208f9368e64",
+      "provider": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "fcdb7eb4a63f0bcb1f292b6299d83f87a36ada7e8955d21befead95a7f6370a3",
+      "resultClaim": "Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.",
+      "resultStatus": "supported",
+      "scenarioId": "retrieval-correct",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "retrieval-failure",
+      "envelopeDigest": "c0689efaf6cbf4ec37c28ebcdd9fa4270479e7bc05bc08f1797c22179d02c284",
+      "expectedMatch": true,
+      "inputDigest": "6b05fe8c67f79b320709ca47caac1b0949657af21e51b93abfcd9589dffe6762",
+      "lane": "retrieval",
+      "manifestId": "ea4917af8185d10c666dfff9c6e63770b82a2541d8ae6ab378a8b7462e932c80",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "6fe23accb093866fed0452d053475031e02c5ed8bb03bf42434e59378cf03e6d",
+      "provider": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "d797678903cd609b51fa62c9ac52ddb55616e40584489b25c2a881c5bf39a939",
+      "resultClaim": "Photo H2 documents the crack in the level-2 spandrel beam.",
+      "resultStatus": "supported",
+      "scenarioId": "retrieval-near-miss",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "retrieval-failure",
+      "envelopeDigest": "3beb90949e2f7d3367c1072cddfa7d414251958aa3f8bb01795a4b034790e74a",
+      "expectedMatch": true,
+      "inputDigest": "c8bddad4de1c51c4d4fce8043123f9a0a0f4b51500e64eadffd2f0ab13e815d9",
+      "lane": "retrieval",
+      "manifestId": "da2535513ab41429dc6f10f0ff39bebd715e0ae55609833750c482b81f9a40d1",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "f508b9ba2884d97f3897dda324103063dd81b8281e5a73d491331827ceec0775",
+      "provider": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "87b3f3efef3a9beee796fe345fd4b8c94116d552b28101110b791ecb85c5e29c",
+      "resultClaim": null,
+      "resultStatus": "unsupported",
+      "scenarioId": "retrieval-empty-in-scope",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "unsupported-data",
+      "envelopeDigest": "657b5e3ed6959df3494eb77b2ff8bb71e5ae0c498f51a62b0213fcd34b985ab0",
+      "expectedMatch": true,
+      "inputDigest": "de15ab80107b0d433531bbe13aecd50915027f0810ca98c4ddc28e431c9049ac",
+      "lane": "retrieval",
+      "manifestId": "eda0b3ec2fb11e63a229398e112f7acf628cad7daebd5ab9990a3d2d4deedef6",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "c20951ce125b6042647185319723dc70ac73f118cdec34902f10097b34c02e74",
+      "provider": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "d29ed3596f9faf72d11c93d0a4540fc32d5b6308c8ec47c76bf3d71619742f0f",
+      "resultClaim": null,
+      "resultStatus": "unsupported",
+      "scenarioId": "retrieval-empty-out-of-scope",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "unsupported-data",
+      "envelopeDigest": "637fdcebe50dc108934e0557654fd7fb0330596d32fa7d70569259d7a4fd1baa",
+      "expectedMatch": true,
+      "inputDigest": "4408aa98313244918e584dd7b20fc19a4aa09398feb179445045c8f52823d681",
+      "lane": "retrieval",
+      "manifestId": "c33f73b3c357131a9994edeafe01ac3ee7bdd685ca1b5172f87aa16fd9456b4d",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "63991cb1cc6745ea348b8c99c28c8d33ca167ec113ccf3816501b3baffc31345",
+      "provider": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "75d89237cb0f1010551be0d1bab0ba624ed450e51318084a9ab96672a0d85f35",
+      "resultClaim": "Photo H9 documents the crack in the level-2 spandrel beam.",
+      "resultStatus": "supported",
+      "scenarioId": "retrieval-fabricated-hit",
+      "violationKinds": [
+        "unsupported-data"
+      ],
+      "violationRules": [
+        "cited-evidence-exists"
+      ]
+    },
+    {
+      "classification": "retrieval-failure",
+      "envelopeDigest": "1724738f0e6a2649bca2dd4bbbe47b71b7e123f1ad6ac7622ae853c1a33b5e24",
+      "expectedMatch": true,
+      "inputDigest": "5224fbdbbfa883c82b21de1e2777f769814553b08f8fb67b798f81ac775d8698",
+      "lane": "retrieval",
+      "manifestId": "cc1e10e370e42e9ff41b13dbab1a4dd34d2466d5adc244221b1fee6a4b933945",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "38e2d63a9de131b72c4e6bdc6386a16ea14a061c71a51fba0cc225c0de4a1e4e",
+      "provider": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "0a872fc9603f3f4b2af5b4e985426d5d2d4ed31a8fe3d685bab93e41314389b9",
+      "resultClaim": "Photo H1 documents the crack in the level-2 spandrel beam.",
+      "resultStatus": "supported",
+      "scenarioId": "retrieval-uncited-claim",
+      "violationKinds": [
+        "unsupported-data"
+      ],
+      "violationRules": [
+        "claim-requires-evidence"
+      ]
+    },
+    {
+      "classification": "perception-failure",
+      "envelopeDigest": "c18ccd24150d53f81249b4654ebd13fcfcf71036388cf5bd6a61e22c10fa9843",
+      "expectedMatch": true,
+      "inputDigest": "00d3d7dcdb1b83ecbe3b850f0bd02f3ac695745c4664bdd0fc50489ce2fc138f",
+      "lane": "retrieval",
+      "manifestId": "7f35c48a346bc8d9f139170f7e1e5b666a17039b4ff2b55ebdb5d54e8e089fd1",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "46d3d6f6df2e9b202f88db907eb30bdf440fded8bf943306cadae3f624fba7a0",
+      "provider": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "1efd6bc252f60c693b9e9cd20960ecd7a289f9ebd7866ff5562410d0d715d4d2",
+      "resultClaim": "Photo H1 documents a 0.4 mm crack near the support end of the level-2 spandrel beam.",
+      "resultStatus": "supported",
+      "scenarioId": "retrieval-perception-failure",
+      "violationKinds": [
+        "perception-failure"
+      ],
+      "violationRules": [
+        "facts-grounded-in-cited-evidence"
+      ]
+    },
+    {
+      "classification": "reasoning-failure",
+      "envelopeDigest": "0212eb1d1f6cf81a8c66779a78262d313cf363a2a089b12e81dcbd57d3f19c06",
+      "expectedMatch": true,
+      "inputDigest": "91e2bbc72e8b395dc0919cd2910be29e58494fb5bc5d68005cdad11696c2dd8b",
+      "lane": "retrieval",
+      "manifestId": "b4e1b159e461f3e059d2e8cc5aa5b4d74ba25e46f421c5986617bd33c043fc4c",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 0,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "c6062a67b482f18aeb0b35315b22337e7570cce2f395ae79f9b16684cdac6bdf",
+      "provider": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "4beacbcf3cc6e5d5d7115b781cb4a5d0f5af492c239585c780fb121da012d4f1",
+      "resultClaim": "Photo H1 alone is sufficient to assess the spandrel beam crack against the reinforcement layout.",
+      "resultStatus": "supported",
+      "scenarioId": "retrieval-reasoning-failure",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "contract-mismatch",
+      "envelopeDigest": "acc3a5b7806ed92b501fe41fff06188411ee049ac1577c564c8f4b86d9c37bc3",
+      "expectedMatch": true,
+      "inputDigest": "d1473892b92ddc9bf618f8daa8ef27c6ad9c4714d4ea30d12abeb4e814c39b58",
+      "lane": "retrieval",
+      "manifestId": "03afe50dcaa913b677a4d0eecdc27f6352cd466d7cbe5467bafc824129ecb9b1",
+      "metrics": {
+        "classificationMatch": 1,
+        "envelopeIntegrityViolations": 1,
+        "expectedOutcomeMatch": 1
+      },
+      "normalizedResultDigest": "88d8291eea6fdf7ef349f4314673246a9d160257784a4391f89f385d374b4d69",
+      "provider": {
+        "providerId": "fixture-retrieval-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      },
+      "recordId": "aa01911a068e7b4d7eb827ed2553385adcb2aaf22ef5e72d1dedf70f81e7123e",
+      "resultClaim": "Photo H1 documents the 0.4 mm crack near midspan of the level-2 spandrel beam.",
+      "resultStatus": "supported",
+      "scenarioId": "retrieval-fabricated-check",
+      "violationKinds": [
+        "contract-mismatch"
+      ],
+      "violationRules": [
+        "checks-authorized"
+      ]
+    }
+  ],
+  "scenarioCount": 26,
+  "suiteId": "reasoning-eval-suite/1",
+  "summary": {
+    "byClassification": {
+      "contract-mismatch": 4,
+      "none": 4,
+      "operation-semantic-failure": 1,
+      "perception-failure": 4,
+      "reasoning-failure": 3,
+      "retrieval-failure": 5,
+      "unsupported-data": 5
+    },
+    "byLane": {
+      "document-understanding": 8,
+      "multimodal-reasoning": 9,
+      "retrieval": 9
+    },
+    "classificationMatches": 26,
+    "discriminationCoverage": {
+      "document-understanding": [
+        "contract-mismatch",
+        "none",
+        "operation-semantic-failure",
+        "perception-failure",
+        "reasoning-failure",
+        "retrieval-failure",
+        "unsupported-data"
+      ],
+      "multimodal-reasoning": [
+        "contract-mismatch",
+        "none",
+        "perception-failure",
+        "reasoning-failure",
+        "retrieval-failure",
+        "unsupported-data"
+      ],
+      "retrieval": [
+        "contract-mismatch",
+        "none",
+        "perception-failure",
+        "reasoning-failure",
+        "retrieval-failure",
+        "unsupported-data"
+      ]
+    },
+    "expectedMatches": 26,
+    "total": 26
+  },
+  "version": "1.0.0"
+}
