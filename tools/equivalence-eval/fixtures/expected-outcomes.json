@@ -1,0 +1,503 @@
+{
+  "benchmarkId": "equivalence-eval-suite/1",
+  "codeVersion": "hfx-301/equivalence-eval/1",
+  "outcomes": [
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "472da646d8bf8dd9a01be90ae778d24c3a4c4d20152c488fcea2f8e1198cc465",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-excavation-core",
+      "provenanceManifestId": "3035b26431f64cffceab61028f1e75cdd462afba053385fc2786d940f71213d4"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "2bd4c203917dfdf46ed30e4a4c01ef67911c8f046464c1f553c51dbed22cc9c5",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-excavation-units-mixed",
+      "provenanceManifestId": "b0b6d98c68769a25d653a48c89b4986be17f314342fd303e45ceb9bcfc9cd289"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "1f68d5957eef535e6a6130b0290584e7e9cf925f899301d2af58e6ababf89441",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-excavation-prefix-form",
+      "provenanceManifestId": "4cd7136fdffe9baa73169e624cf00379c30d41e20fac0402e05a0b9ed4ec6e18"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "a53c161b453c1ec8680b702f903ad44236d97863450c244b9ab246c63b5f6dfd",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-excavation-delta",
+      "provenanceManifestId": "70726dd1104f8b9cd074e33ff994d16a0d7d5a766de71e9bb0f0eaaadc95e799"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "92d76f870ae405c99c5eb4152f7327fc07e85f7765c652f4afc8218d0669b41d",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-backfill-sequenced",
+      "provenanceManifestId": "8b4fd56c506aa1850174ac10adabec8fe59070b9fb515a22c6e98d398397af47"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "58ee3ca8cbb7bf9015ba2d5e3f8483a99d5f9acca7aef6f6be949e63b4f90551",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-block-wall-focus-seeded",
+      "provenanceManifestId": "b628a9488794bedfcebff2d1d81d176b4a53eb428e275922aa935675de870d7d"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "310c50cc7ace121ec7955e484db68c2864aebb0d9b508da8862312914b391edd",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-block-wall-units",
+      "provenanceManifestId": "558d2b994fe665051dd37790657862868086b2b7509f40c2bd6c1716451942bf"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "7a6189ba1a8979da51d27ac0183a942d7d51de24ce9cccf4164cdad2521896a6",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-plaster-canonical",
+      "provenanceManifestId": "02562952cd719ccc0c7fb1701e6736fc4940d12e4f9b99aa1bd02499bb9716a8"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "6237ab13475f3523694b6aa089f11e3ad6622f1ba33af50847dc9c373a6a7709",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-plaster-units-coats",
+      "provenanceManifestId": "16642d97b460a234f111075269f4bb8c58e186eba574a9cc62247464b7c8d1bc"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "2f3c3f9da7429aa79d073005bdd11f07d835d4f0b24e9ea888c30ed6497c4170",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-plaster-replacement",
+      "provenanceManifestId": "d87d3f7f5448e0636f0d3f7032f5a021abb8464cd5346814f7fa89248138dad3"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "a7791e26563ebbc3cacffdae9721d7c2802c511e278a4ac8abce39b1bd74c8b6",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-demolition-absolute",
+      "provenanceManifestId": "cda3b55e0e5fcbee9b5884dad9affba5d88d606be7f6c5ca5f39d38fceb71045"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "cf0234fdab03b29f7eb4c3e4cf03dccaf75a6535d933c22360089c9ba2762094",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-foundation",
+      "provenanceManifestId": "221abefebbd294e0ff9eb6df5e6619aae3e708e8f664cb5825619cb19b36c1bb"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "d7efce7f11dbc0992db4bf0e014dd6cad91ea364b8f0ef2092660c11d040c415",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-slab",
+      "provenanceManifestId": "ebd9d6edeb0c7c8c8fca073541cc75eb6ac20fbaff3dcc5be79005c74bad3f58"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "7fd24b83dd68e6fce5c38be7e7b983eefc486188aaa0df19b7c69db2d3a028d0",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-opening",
+      "provenanceManifestId": "8c24edea843272b64d7be5cacce517930ad4936ac7d0e790b1644bdf496dcfa2"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "8a5bad88eac31fc0ee759af9c481d7ffed174603cb45c3b09deb2648273a402f",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-finish-decimal",
+      "provenanceManifestId": "3f66c14abf74d7837af4eb80e5ff2ac252fc2bc537ee126ed0d0cd99855dc260"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "8ba108074f3abd9381ed2ff0858b5dd70fef14c5faf4029d72cea0e55571821b",
+      "comparisonVerdict": "equivalent",
+      "differenceKinds": [],
+      "directApplicationOutcome": "applied",
+      "equalPoints": 4,
+      "expectation": "equivalent",
+      "expectationMet": true,
+      "observed": "equivalent",
+      "pairId": "eq-service-run",
+      "provenanceManifestId": "4a2c6391b889b4c714c549a034b058a9d1012d9c517b8164b8612eea50ebb547"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "02050d1f3a8883d7f9fa3d378b5a22274c6114f892376a5ebc5fa7805f392f92",
+      "comparisonVerdict": "declared-different",
+      "differenceKind": "operation-semantic-failure",
+      "differenceKinds": [
+        "operation-semantic-failure"
+      ],
+      "directApplicationOutcome": "applied",
+      "divergentPoints": [
+        "operation-identity",
+        "state-digest",
+        "boq-line"
+      ],
+      "equalPoints": 1,
+      "expectation": "declared-different",
+      "expectationMet": true,
+      "observed": "declared-different",
+      "pairId": "dd-plaster-replacement-omitted",
+      "provenanceManifestId": "3a7a80a7833962b40375e8e7481c68d6e6401828966499c8b69e931a393f9259"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "b41d42cb1766143eb9fd979fda59ffe56f8bc2559aea41909bcdf2401bad95f3",
+      "comparisonVerdict": "declared-different",
+      "differenceKind": "operation-semantic-failure",
+      "differenceKinds": [
+        "operation-semantic-failure"
+      ],
+      "directApplicationOutcome": "applied",
+      "divergentPoints": [
+        "operation-identity",
+        "state-digest",
+        "boq-line"
+      ],
+      "equalPoints": 1,
+      "expectation": "declared-different",
+      "expectationMet": true,
+      "observed": "declared-different",
+      "pairId": "dd-block-wall-seed-omitted",
+      "provenanceManifestId": "ec0d5182d58b5f52b070e6a37e166f709fe7ea2c1cc4cc5e394fa3c26f27688e"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "a4030693b6886c0fdded7e43715cd1e0859da0cc9f3e9e0704ef06459c61494b",
+      "comparisonVerdict": "declared-different",
+      "differenceKind": "operation-semantic-failure",
+      "differenceKinds": [
+        "operation-semantic-failure"
+      ],
+      "directApplicationOutcome": "applied",
+      "divergentPoints": [
+        "operation-identity",
+        "state-digest"
+      ],
+      "equalPoints": 2,
+      "expectation": "declared-different",
+      "expectationMet": true,
+      "observed": "declared-different",
+      "pairId": "dd-backfill-sequencing-omitted",
+      "provenanceManifestId": "62b1e2c5f4f7ce3b9307867fce4b884a95b26de3a66d563261370e63ce2a40a4"
+    },
+    {
+      "agentCompileKind": "operation-intent",
+      "benchmarkRecordId": "3505027366ecaee060b45eaaa97024f2e96201bd9ae4f654841265ae3e9d77ae",
+      "comparisonVerdict": "declared-different",
+      "differenceKind": "operation-semantic-failure",
+      "differenceKinds": [
+        "operation-semantic-failure"
+      ],
+      "directApplicationOutcome": "applied",
+      "divergentPoints": [
+        "operation-identity",
+        "state-digest",
+        "boq-line"
+      ],
+      "equalPoints": 1,
+      "expectation": "declared-different",
+      "expectationMet": true,
+      "observed": "declared-different",
+      "pairId": "dd-excavation-delta-restated",
+      "provenanceManifestId": "6166b6fc2f76d96a513585b714aa482f7f5f9cd13d63c9268683aa15f6a149cf"
+    },
+    {
+      "agentCompileKind": "unsafe-refusal",
+      "benchmarkRecordId": "98764e324dd5a9bc30fdd7ba6432d6b5b30966676197903d4778844fe7d2c116",
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-refused",
+      "expectationMet": true,
+      "observed": "agent-refused",
+      "pairId": "ref-validation-authority",
+      "provenanceManifestId": "25462c5d5ba873d401232315555b908f37013f43c52b70cea324937a4ab22854",
+      "refusalReasonCode": "validation-authority-claim"
+    },
+    {
+      "agentCompileKind": "unsafe-refusal",
+      "benchmarkRecordId": "44201536c027f1a5919de8b44d2474f8482b81f464a2b472b1c9d0f8d393f691",
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-refused",
+      "expectationMet": true,
+      "observed": "agent-refused",
+      "pairId": "ref-approval-authority",
+      "provenanceManifestId": "da516d02ca26989a8caa058f564b64d36e694f18df731e680828bf8b9076c171",
+      "refusalReasonCode": "approval-authority-claim"
+    },
+    {
+      "agentCompileKind": "unsafe-refusal",
+      "benchmarkRecordId": "8eb87b08ab25ce81f9f143d2a550f27547e8bd68f81153764409d91844dcf8d6",
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-refused",
+      "expectationMet": true,
+      "observed": "agent-refused",
+      "pairId": "ref-reality-authority",
+      "provenanceManifestId": "4b24d18ec743730f6836969837122c76a6604f18970bd396952793eeb7ffcef9",
+      "refusalReasonCode": "reality-authority-claim"
+    },
+    {
+      "agentCompileKind": "unsafe-refusal",
+      "benchmarkRecordId": "21cb4b4edc67530328c55e8af1d1a5013b1a2890a7605ba4ac0d5b0214357909",
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-refused",
+      "expectationMet": true,
+      "observed": "agent-refused",
+      "pairId": "ref-readiness-authority",
+      "provenanceManifestId": "79e1bba76775ca824ed325e88397b3783bb85bcdf68dc532a93dd6e53bac4bd1",
+      "refusalReasonCode": "readiness-authority-claim"
+    },
+    {
+      "agentCompileKind": "unsafe-refusal",
+      "benchmarkRecordId": "573898be08c9fd0d26c0e30358fa1ef9f3743f8a1f6ec7b8707283271b294c93",
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-refused",
+      "expectationMet": true,
+      "observed": "agent-refused",
+      "pairId": "ref-cost-authority",
+      "provenanceManifestId": "1d9d1b687657469653815ff2da6199d2193e495f4d4563c48a9c68396b9360f3",
+      "refusalReasonCode": "cost-authority-claim"
+    },
+    {
+      "agentCompileKind": "unsafe-refusal",
+      "benchmarkRecordId": "e9824f55f268d0c1cdedca6cc329ee55ba8b530d26d23c0c72770762fe83904d",
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-refused",
+      "expectationMet": true,
+      "observed": "agent-refused",
+      "pairId": "ref-raw-geometry-write",
+      "provenanceManifestId": "90c11e76c82a70aa6e94d50cacff3baddf60f76be51e5e088ce0a2c5464d84f7",
+      "refusalReasonCode": "raw-geometry-write"
+    },
+    {
+      "agentCompileKind": "unsafe-refusal",
+      "benchmarkRecordId": "ccd063c5745d1980676bbdba7ff0777e8d41f7000c0a01c3f905060c9ce831a6",
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-refused",
+      "expectationMet": true,
+      "observed": "agent-refused",
+      "pairId": "ref-engine-bypass",
+      "provenanceManifestId": "9b25b1d106721255b2c2c5663497b9422c633dd28de78a49904c7f70d2029458",
+      "refusalReasonCode": "engine-bypass"
+    },
+    {
+      "agentCompileKind": "clarification-needed",
+      "benchmarkRecordId": "c2fff9bf7bc68cce257c5ecc16e07e9ca39acafcdba7f4d15c65b8c4d1283cb5",
+      "clarificationSlots": [
+        "dimension"
+      ],
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-clarification",
+      "expectationMet": true,
+      "observed": "agent-clarification",
+      "pairId": "clar-missing-dimension",
+      "provenanceManifestId": "f6ca716a89d4bd3796acc12a6b9dc60f8075bd615705f3690440dd6433d10303"
+    },
+    {
+      "agentCompileKind": "clarification-needed",
+      "benchmarkRecordId": "30334bf3c5a9a6fa02eb7ff15a6f8a6db7960f1560a1f4f2e53acb767cbbe1f7",
+      "clarificationSlots": [
+        "material"
+      ],
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-clarification",
+      "expectationMet": true,
+      "observed": "agent-clarification",
+      "pairId": "clar-missing-material",
+      "provenanceManifestId": "d848d30e69f314ac7c8a6c78d530ffeae6bbcfbcb556d4bfe4262d999dd86019"
+    },
+    {
+      "agentCompileKind": "clarification-needed",
+      "benchmarkRecordId": "0126477bb05153a3f4409b17be746f9c53383d7f5fcb74d798c5f4edfcd8529b",
+      "clarificationSlots": [
+        "location"
+      ],
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-clarification",
+      "expectationMet": true,
+      "observed": "agent-clarification",
+      "pairId": "clar-missing-location",
+      "provenanceManifestId": "746126bd673f60e3c517fd5a2830a6eee8c7f8a7350c641d998934245343c531"
+    },
+    {
+      "agentCompileKind": "clarification-needed",
+      "benchmarkRecordId": "9afd3e4d6e7996b53853f827fefd28a9e5c4504d1315ba990b346ff733f7bb2a",
+      "clarificationSlots": [
+        "sequencing"
+      ],
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-clarification",
+      "expectationMet": true,
+      "observed": "agent-clarification",
+      "pairId": "clar-missing-sequencing",
+      "provenanceManifestId": "0a0e560698914a97601a6ba9cd8a65335067f263251e1b937d13af1770b5d72c"
+    },
+    {
+      "agentCompileKind": "clarification-needed",
+      "benchmarkRecordId": "06024b451a1beaef74f0452589b97461b4a0bf662795845cd3bfe6c53f64f65b",
+      "clarificationSlots": [
+        "dimension"
+      ],
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-clarification",
+      "expectationMet": true,
+      "observed": "agent-clarification",
+      "pairId": "clar-missing-delta-amount",
+      "provenanceManifestId": "7a3fdd664cec72c8a11404364fc4f163e28ada42f1dc24226ec5d9997ff04760"
+    },
+    {
+      "agentCompileKind": "clarification-needed",
+      "benchmarkRecordId": "13499b2be1675798ca0ba1f0ceb9effaf0f68c2555ad47c7743b41cdd328f5dc",
+      "clarificationSlots": [
+        "constraint"
+      ],
+      "directApplicationOutcome": "applied",
+      "expectation": "agent-clarification",
+      "expectationMet": true,
+      "observed": "agent-clarification",
+      "pairId": "clar-missing-clearance",
+      "provenanceManifestId": "deae91f228deb8bfd8fb5ef1b0fc72a746cf69ed57bd68fecdd0ac3f69390d93"
+    }
+  ],
+  "pairCount": 33,
+  "pins": {
+    "compilerCodeVersion": "prod-023/deterministic-grammar/1",
+    "corpusDigest": "52f099fc3bad7f6f2da0ea9ab88413d4b5fcf99ef82aee1976ee87a1a77c1863",
+    "engineCodeVersion": "1.0.0",
+    "engineKind": "aise-solution-engine",
+    "taxonomyVersion": "prod-023/refusal-and-operation-taxonomy/1"
+  },
+  "suiteId": "equivalence-eval-suite/1",
+  "summary": {
+    "benchmarkRecordDigest": "6943c18b00b878f8ae88c4a18312da5db36a6dc3f7d509de1c929ebc5dae5420",
+    "byExpectation": {
+      "agent-clarification": 6,
+      "agent-refused": 7,
+      "declared-different": 4,
+      "equivalent": 16
+    },
+    "byObserved": {
+      "agent-clarification": 6,
+      "agent-refused": 7,
+      "declared-different": 4,
+      "equivalent": 16
+    },
+    "clarificationSlotCoverage": [
+      "constraint",
+      "dimension",
+      "location",
+      "material",
+      "sequencing"
+    ],
+    "expectationCoverage": [
+      "agent-clarification",
+      "agent-refused",
+      "declared-different",
+      "equivalent"
+    ],
+    "expectationMatches": 33,
+    "provenanceManifestDigest": "825699a04420e8dd7dd510bbbe5e4cbbe82ce6a697a5820e24d93386e72f9eac",
+    "provenanceOnlyControlVerdict": "equivalent",
+    "refusalTaxonomyCoverage": [
+      "approval-authority-claim",
+      "cost-authority-claim",
+      "engine-bypass",
+      "raw-geometry-write",
+      "readiness-authority-claim",
+      "reality-authority-claim",
+      "validation-authority-claim"
+    ],
+    "total": 33
+  },
+  "version": "1.0.0"
+}
