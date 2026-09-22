@@ -1,0 +1,1534 @@
+{
+  "benchmarkId": "bim-eval-suite/1",
+  "buildingModel": {
+    "digest": "690306f35ae6a88f8e782a56edf0553f75f7bb31dc24100fa2e511b2450100fa",
+    "modelId": "bim-eval-tower",
+    "revision": "r1"
+  },
+  "codeVersion": "hfx-204/bim-eval/1",
+  "fixtureCount": 29,
+  "fixtures": [
+    {
+      "fixtureId": "ifc-property-lookup-correct",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "questionClass": "property-lookup",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [
+            "the model extract of wall W1 is the governing revision r1"
+          ],
+          "correctAssumptions": [
+            "the model extract of wall W1 is the governing revision r1"
+          ],
+          "correctResultClaim": "Wall W1 has fire rating REI 90.",
+          "correctResultStatus": "supported",
+          "deterministicChecks": [
+            "fixture-ifc-property-check"
+          ],
+          "evidenceIds": [
+            "EV-WALL-W1"
+          ],
+          "expectedFailureKind": "none",
+          "expectedViolationRules": [],
+          "facts": [
+            "wall W1 has fire rating REI 90"
+          ],
+          "invalidationConditions": [
+            "a revision of the model extract that changes wall W1's fire rating"
+          ],
+          "resultClaim": "Wall W1 has fire rating REI 90.",
+          "resultStatus": "supported",
+          "unknowns": []
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "replay",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"What is the fire rating of wall W1?\",\n  \"requiredEvidenceIds\": [\n    \"EV-WALL-W1\"\n  ],\n  \"scenarioId\": \"ifc-property-lookup-correct\",\n  \"scope\": \"in-scope\"\n}\n",
+            "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-bim-question-answering\",\n    \"providerId\": \"fixture-bim-qa-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the model extract of wall W1 is the governing revision r1\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"evidenceIds\": [\n    \"EV-WALL-W1\"\n  ],\n  \"facts\": [\n    \"wall W1 has fire rating REI 90\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of the model extract that changes wall W1's fire rating\"\n  ],\n  \"nextRecommendedAction\": \"verify the rating against the fire-protection drawing set\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Wall W1 has fire rating REI 90.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-property-lookup-correct"
+      }
+    },
+    {
+      "fixtureId": "ifc-quantity-lookup-correct",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "questionClass": "quantity-lookup",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [
+            "the model extract of slab S1 is the governing revision r1"
+          ],
+          "correctAssumptions": [
+            "the model extract of slab S1 is the governing revision r1"
+          ],
+          "correctResultClaim": "Slab S1 has an area of 48.5 m2.",
+          "correctResultStatus": "supported",
+          "deterministicChecks": [
+            "fixture-ifc-property-check"
+          ],
+          "evidenceIds": [
+            "EV-SLAB-S1"
+          ],
+          "expectedFailureKind": "none",
+          "expectedViolationRules": [],
+          "facts": [
+            "slab S1 has an area of 48.5 m2"
+          ],
+          "invalidationConditions": [
+            "a revision of the model extract that changes slab S1's area"
+          ],
+          "resultClaim": "Slab S1 has an area of 48.5 m2.",
+          "resultStatus": "supported",
+          "unknowns": []
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "replay",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"What is the area of slab S1?\",\n  \"requiredEvidenceIds\": [\n    \"EV-SLAB-S1\"\n  ],\n  \"scenarioId\": \"ifc-quantity-lookup-correct\",\n  \"scope\": \"in-scope\"\n}\n",
+            "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-bim-question-answering\",\n    \"providerId\": \"fixture-bim-qa-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the model extract of slab S1 is the governing revision r1\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"evidenceIds\": [\n    \"EV-SLAB-S1\"\n  ],\n  \"facts\": [\n    \"slab S1 has an area of 48.5 m2\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of the model extract that changes slab S1's area\"\n  ],\n  \"nextRecommendedAction\": \"verify the area against the architectural drawing set\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Slab S1 has an area of 48.5 m2.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-quantity-lookup-correct"
+      }
+    },
+    {
+      "fixtureId": "ifc-spatial-composition-correct",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "questionClass": "spatial-composition",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [
+            "the spatial composition extract is the governing revision r1"
+          ],
+          "correctAssumptions": [
+            "the spatial composition extract is the governing revision r1"
+          ],
+          "correctResultClaim": "The Ground Floor (storey-00) contains wall W1, wall W2, slab S1, door D1 and window WN1.",
+          "correctResultStatus": "supported",
+          "deterministicChecks": [
+            "fixture-ifc-property-check"
+          ],
+          "evidenceIds": [
+            "EV-SPATIAL"
+          ],
+          "expectedFailureKind": "none",
+          "expectedViolationRules": [],
+          "facts": [
+            "storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1"
+          ],
+          "invalidationConditions": [
+            "a revision of the spatial composition that changes storey-00's contents"
+          ],
+          "resultClaim": "The Ground Floor (storey-00) contains wall W1, wall W2, slab S1, door D1 and window WN1.",
+          "resultStatus": "supported",
+          "unknowns": []
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "replay",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"Which building elements does the Ground Floor (storey-00) contain?\",\n  \"requiredEvidenceIds\": [\n    \"EV-SPATIAL\"\n  ],\n  \"scenarioId\": \"ifc-spatial-composition-correct\",\n  \"scope\": \"in-scope\"\n}\n",
+            "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-bim-question-answering\",\n    \"providerId\": \"fixture-bim-qa-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the spatial composition extract is the governing revision r1\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"evidenceIds\": [\n    \"EV-SPATIAL\"\n  ],\n  \"facts\": [\n    \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of the spatial composition that changes storey-00's contents\"\n  ],\n  \"nextRecommendedAction\": \"cross-check the containment against the storey view\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The Ground Floor (storey-00) contains wall W1, wall W2, slab S1, door D1 and window WN1.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-spatial-composition-correct"
+      }
+    },
+    {
+      "fixtureId": "ifc-part-of-topology-correct",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "questionClass": "part-of-topology",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [
+            "the model extract of column C1 is the governing revision r1"
+          ],
+          "correctAssumptions": [
+            "the model extract of column C1 is the governing revision r1"
+          ],
+          "correctResultClaim": "Column C1 is contained in the First Floor (storey-01).",
+          "correctResultStatus": "supported",
+          "deterministicChecks": [
+            "fixture-ifc-property-check"
+          ],
+          "evidenceIds": [
+            "EV-COLUMN-C1"
+          ],
+          "expectedFailureKind": "none",
+          "expectedViolationRules": [],
+          "facts": [
+            "column C1 is contained in storey-01 (First Floor)"
+          ],
+          "invalidationConditions": [
+            "a revision of the model extract that reassigns column C1 to another storey"
+          ],
+          "resultClaim": "Column C1 is contained in the First Floor (storey-01).",
+          "resultStatus": "supported",
+          "unknowns": []
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "replay",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"Which storey contains column C1?\",\n  \"requiredEvidenceIds\": [\n    \"EV-COLUMN-C1\"\n  ],\n  \"scenarioId\": \"ifc-part-of-topology-correct\",\n  \"scope\": \"in-scope\"\n}\n",
+            "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-bim-question-answering\",\n    \"providerId\": \"fixture-bim-qa-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the model extract of column C1 is the governing revision r1\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"evidenceIds\": [\n    \"EV-COLUMN-C1\"\n  ],\n  \"facts\": [\n    \"column C1 is contained in storey-01 (First Floor)\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of the model extract that reassigns column C1 to another storey\"\n  ],\n  \"nextRecommendedAction\": \"verify the containment against the storey plan\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Column C1 is contained in the First Floor (storey-01).\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-part-of-topology-correct"
+      }
+    },
+    {
+      "fixtureId": "ifc-connected-to-topology-correct",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "questionClass": "connected-to-topology",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [
+            "the topology extract is the governing revision r1"
+          ],
+          "correctAssumptions": [
+            "the topology extract is the governing revision r1"
+          ],
+          "correctResultClaim": "Wall W1 is connected to wall W2 at the north-east corner.",
+          "correctResultStatus": "supported",
+          "deterministicChecks": [
+            "fixture-ifc-property-check"
+          ],
+          "evidenceIds": [
+            "EV-TOPO"
+          ],
+          "expectedFailureKind": "none",
+          "expectedViolationRules": [],
+          "facts": [
+            "wall W1 is connected to wall W2 at the north-east corner"
+          ],
+          "invalidationConditions": [
+            "a revision of the topology extract that changes wall W1's connections"
+          ],
+          "resultClaim": "Wall W1 is connected to wall W2 at the north-east corner.",
+          "resultStatus": "supported",
+          "unknowns": []
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "replay",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"Which wall is connected to wall W1, and where?\",\n  \"requiredEvidenceIds\": [\n    \"EV-TOPO\"\n  ],\n  \"scenarioId\": \"ifc-connected-to-topology-correct\",\n  \"scope\": \"in-scope\"\n}\n",
+            "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-bim-question-answering\",\n    \"providerId\": \"fixture-bim-qa-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the topology extract is the governing revision r1\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"evidenceIds\": [\n    \"EV-TOPO\"\n  ],\n  \"facts\": [\n    \"wall W1 is connected to wall W2 at the north-east corner\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of the topology extract that changes wall W1's connections\"\n  ],\n  \"nextRecommendedAction\": \"verify the connection in the 3D model view\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Wall W1 is connected to wall W2 at the north-east corner.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-connected-to-topology-correct"
+      }
+    },
+    {
+      "fixtureId": "ifc-classification-correct",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "questionClass": "classification",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [
+            "the model extract of column C1 is the governing revision r1"
+          ],
+          "correctAssumptions": [
+            "the model extract of column C1 is the governing revision r1"
+          ],
+          "correctResultClaim": "Column C1 is classified IfcColumn.",
+          "correctResultStatus": "supported",
+          "deterministicChecks": [
+            "fixture-ifc-property-check"
+          ],
+          "evidenceIds": [
+            "EV-COLUMN-C1"
+          ],
+          "expectedFailureKind": "none",
+          "expectedViolationRules": [],
+          "facts": [
+            "column C1 is classified IfcColumn"
+          ],
+          "invalidationConditions": [
+            "a revision of the model extract that changes column C1's classification"
+          ],
+          "resultClaim": "Column C1 is classified IfcColumn.",
+          "resultStatus": "supported",
+          "unknowns": []
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "replay",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"What is the IFC classification of column C1?\",\n  \"requiredEvidenceIds\": [\n    \"EV-COLUMN-C1\"\n  ],\n  \"scenarioId\": \"ifc-classification-correct\",\n  \"scope\": \"in-scope\"\n}\n",
+            "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-bim-question-answering\",\n    \"providerId\": \"fixture-bim-qa-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the model extract of column C1 is the governing revision r1\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"evidenceIds\": [\n    \"EV-COLUMN-C1\"\n  ],\n  \"facts\": [\n    \"column C1 is classified IfcColumn\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of the model extract that changes column C1's classification\"\n  ],\n  \"nextRecommendedAction\": \"verify the classification against the IFC schema assignment\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Column C1 is classified IfcColumn.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-classification-correct"
+      }
+    },
+    {
+      "fixtureId": "ifc-property-lookup-perception",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "questionClass": "property-lookup",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [
+            "the model extract of wall W1 is the governing revision r1"
+          ],
+          "correctAssumptions": [
+            "the model extract of wall W1 is the governing revision r1"
+          ],
+          "correctResultClaim": "Wall W1 has fire rating REI 90.",
+          "correctResultStatus": "supported",
+          "deterministicChecks": [
+            "fixture-ifc-property-check"
+          ],
+          "evidenceIds": [
+            "EV-WALL-W1"
+          ],
+          "expectedFailureKind": "perception-failure",
+          "expectedViolationRules": [
+            "facts-grounded-in-cited-evidence"
+          ],
+          "facts": [
+            "wall W1 has fire rating REI 120"
+          ],
+          "invalidationConditions": [
+            "a revision of the model extract that changes wall W1's fire rating"
+          ],
+          "resultClaim": "Wall W1 has fire rating REI 120.",
+          "resultStatus": "supported",
+          "unknowns": []
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "replay",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"What is the fire rating of wall W1?\",\n  \"requiredEvidenceIds\": [\n    \"EV-WALL-W1\"\n  ],\n  \"scenarioId\": \"ifc-property-lookup-perception\",\n  \"scope\": \"in-scope\"\n}\n",
+            "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-bim-question-answering\",\n    \"providerId\": \"fixture-bim-qa-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the model extract of wall W1 is the governing revision r1\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"evidenceIds\": [\n    \"EV-WALL-W1\"\n  ],\n  \"facts\": [\n    \"wall W1 has fire rating REI 120\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of the model extract that changes wall W1's fire rating\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Wall W1 has fire rating REI 120.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-property-lookup-perception"
+      }
+    },
+    {
+      "fixtureId": "ifc-property-lookup-retrieval",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "questionClass": "property-lookup",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [
+            "the model extract of wall W3 is the governing revision r1"
+          ],
+          "correctAssumptions": [
+            "the model extract of wall W3 is the governing revision r1"
+          ],
+          "correctResultClaim": "Wall W3 has fire rating REI 60.",
+          "correctResultStatus": "supported",
+          "deterministicChecks": [
+            "fixture-ifc-property-check"
+          ],
+          "evidenceIds": [
+            "EV-WALL-W1"
+          ],
+          "expectedFailureKind": "retrieval-failure",
+          "expectedViolationRules": [],
+          "facts": [
+            "wall W1 has fire rating REI 90"
+          ],
+          "invalidationConditions": [
+            "a revision of the model extract that changes wall W3's fire rating"
+          ],
+          "resultClaim": "Wall W3 has fire rating REI 90.",
+          "resultStatus": "supported",
+          "unknowns": []
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "replay",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"What is the fire rating of wall W3?\",\n  \"requiredEvidenceIds\": [\n    \"EV-WALL-W3\"\n  ],\n  \"scenarioId\": \"ifc-property-lookup-retrieval\",\n  \"scope\": \"in-scope\"\n}\n",
+            "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-bim-question-answering\",\n    \"providerId\": \"fixture-bim-qa-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the model extract of wall W3 is the governing revision r1\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"evidenceIds\": [\n    \"EV-WALL-W1\"\n  ],\n  \"facts\": [\n    \"wall W1 has fire rating REI 90\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of the model extract that changes wall W3's fire rating\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Wall W3 has fire rating REI 90.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-property-lookup-retrieval"
+      }
+    },
+    {
+      "fixtureId": "ifc-quantity-lookup-reasoning",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "questionClass": "quantity-lookup",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [
+            "the model extracts of slabs S1 and S2 are the governing revision r1"
+          ],
+          "correctAssumptions": [
+            "the model extracts of slabs S1 and S2 are the governing revision r1"
+          ],
+          "correctResultClaim": "Yes — slab S1 (250 mm) is thicker than slab S2 (200 mm).",
+          "correctResultStatus": "supported",
+          "deterministicChecks": [
+            "fixture-ifc-property-check"
+          ],
+          "evidenceIds": [
+            "EV-SLAB-S1",
+            "EV-SLAB-S2"
+          ],
+          "expectedFailureKind": "reasoning-failure",
+          "expectedViolationRules": [],
+          "facts": [
+            "slab S1 has a thickness of 250 mm",
+            "slab S2 has a thickness of 200 mm"
+          ],
+          "invalidationConditions": [
+            "a revision of either slab's thickness"
+          ],
+          "resultClaim": "No — slab S1 is thinner than slab S2.",
+          "resultStatus": "supported",
+          "unknowns": []
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "replay",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"Is slab S1 thicker than slab S2?\",\n  \"requiredEvidenceIds\": [\n    \"EV-SLAB-S1\",\n    \"EV-SLAB-S2\"\n  ],\n  \"scenarioId\": \"ifc-quantity-lookup-reasoning\",\n  \"scope\": \"in-scope\"\n}\n",
+            "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-bim-question-answering\",\n    \"providerId\": \"fixture-bim-qa-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the model extracts of slabs S1 and S2 are the governing revision r1\"\n  ],\n  \"deterministicChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"evidenceIds\": [\n    \"EV-SLAB-S1\",\n    \"EV-SLAB-S2\"\n  ],\n  \"facts\": [\n    \"slab S1 has a thickness of 250 mm\",\n    \"slab S2 has a thickness of 200 mm\"\n  ],\n  \"invalidationConditions\": [\n    \"a revision of either slab's thickness\"\n  ],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"No — slab S1 is thinner than slab S2.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-quantity-lookup-reasoning"
+      }
+    },
+    {
+      "fixtureId": "ifc-property-lookup-unsupported",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "questionClass": "property-lookup",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [],
+          "correctAssumptions": [],
+          "correctResultClaim": null,
+          "correctResultStatus": "unsupported",
+          "deterministicChecks": [],
+          "evidenceIds": [],
+          "expectedFailureKind": "unsupported-data",
+          "expectedViolationRules": [],
+          "facts": [],
+          "invalidationConditions": [],
+          "resultClaim": null,
+          "resultStatus": "unsupported",
+          "unknowns": [
+            "question 'What is the U-value of wall W1?' requires data outside the authorized evidence set of context 'ctx-bim-model-extract' — explicit refusal, never a fabricated answer"
+          ]
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "refuse",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"What is the U-value of wall W1?\",\n  \"requiredEvidenceIds\": [],\n  \"scenarioId\": \"ifc-property-lookup-unsupported\",\n  \"scope\": \"out-of-scope\"\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-property-lookup-unsupported"
+      }
+    },
+    {
+      "fixtureId": "ifc-unavailable-element",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "negativeCase": "unavailable-geometry",
+      "questionClass": "property-lookup",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [],
+          "correctAssumptions": [],
+          "correctResultClaim": null,
+          "correctResultStatus": "unsupported",
+          "deterministicChecks": [],
+          "evidenceIds": [],
+          "expectedFailureKind": "unsupported-data",
+          "expectedViolationRules": [],
+          "facts": [],
+          "invalidationConditions": [],
+          "resultClaim": null,
+          "resultStatus": "unsupported",
+          "unknowns": [
+            "question 'What is the fire rating of wall W9?' requires data outside the authorized evidence set of context 'ctx-bim-model-extract' — explicit refusal, never a fabricated answer"
+          ]
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "refuse",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"What is the fire rating of wall W9?\",\n  \"requiredEvidenceIds\": [],\n  \"scenarioId\": \"ifc-unavailable-element\",\n  \"scope\": \"out-of-scope\"\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-unavailable-element"
+      }
+    },
+    {
+      "fixtureId": "ifc-fabricated-evidence",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "questionClass": "property-lookup",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [
+            "the model extract of door D1 is the governing revision r1"
+          ],
+          "correctAssumptions": [
+            "the model extract of door D1 is the governing revision r1"
+          ],
+          "correctResultClaim": "Door D1 has a width of 900 mm.",
+          "correctResultStatus": "supported",
+          "deterministicChecks": [],
+          "evidenceIds": [
+            "EV-DOOR-D9"
+          ],
+          "expectedFailureKind": "unsupported-data",
+          "expectedViolationRules": [
+            "cited-evidence-exists"
+          ],
+          "facts": [],
+          "invalidationConditions": [],
+          "resultClaim": "Door D1 is 950 mm wide.",
+          "resultStatus": "supported",
+          "unknowns": []
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "replay",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"What is the width of door D1?\",\n  \"requiredEvidenceIds\": [\n    \"EV-DOOR-D1\"\n  ],\n  \"scenarioId\": \"ifc-fabricated-evidence\",\n  \"scope\": \"in-scope\"\n}\n",
+            "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-bim-question-answering\",\n    \"providerId\": \"fixture-bim-qa-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [\n    \"the model extract of door D1 is the governing revision r1\"\n  ],\n  \"deterministicChecks\": [],\n  \"evidenceIds\": [\n    \"EV-DOOR-D9\"\n  ],\n  \"facts\": [],\n  \"invalidationConditions\": [],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Door D1 is 950 mm wide.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-fabricated-evidence"
+      }
+    },
+    {
+      "fixtureId": "ifc-conflicting-evidence",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "negativeCase": "conflicting-evidence",
+      "questionClass": "property-lookup",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [],
+          "correctAssumptions": [],
+          "correctResultClaim": "The authorized evidence conflicts on wall W3's fire rating: the model extract states REI 60 while the inspection note records REI 90.",
+          "correctResultStatus": "conflicted",
+          "deterministicChecks": [],
+          "evidenceIds": [
+            "EV-WALL-W3",
+            "EV-WALL-W3-INSPECT"
+          ],
+          "expectedFailureKind": "none",
+          "expectedViolationRules": [],
+          "facts": [
+            "wall W3 has fire rating REI 60",
+            "the inspection note records wall W3's fire rating as REI 90"
+          ],
+          "invalidationConditions": [
+            "a reconciling revision of wall W3's fire-rating evidence"
+          ],
+          "resultClaim": "The authorized evidence conflicts on wall W3's fire rating: the model extract states REI 60 while the inspection note records REI 90.",
+          "resultStatus": "conflicted",
+          "unknowns": []
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "replay",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"What is the fire rating of wall W3?\",\n  \"requiredEvidenceIds\": [\n    \"EV-WALL-W3\",\n    \"EV-WALL-W3-INSPECT\"\n  ],\n  \"scenarioId\": \"ifc-conflicting-evidence\",\n  \"scope\": \"in-scope\"\n}\n",
+            "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-bim-question-answering\",\n    \"providerId\": \"fixture-bim-qa-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [],\n  \"evidenceIds\": [\n    \"EV-WALL-W3\",\n    \"EV-WALL-W3-INSPECT\"\n  ],\n  \"facts\": [\n    \"wall W3 has fire rating REI 60\",\n    \"the inspection note records wall W3's fire rating as REI 90\"\n  ],\n  \"invalidationConditions\": [\n    \"a reconciling revision of wall W3's fire-rating evidence\"\n  ],\n  \"nextRecommendedAction\": \"resolve the conflict against the authoritative model revision before use\",\n  \"proposedOperation\": null,\n  \"resultClaim\": \"The authorized evidence conflicts on wall W3's fire rating: the model extract states REI 60 while the inspection note records REI 90.\",\n  \"resultStatus\": \"conflicted\",\n  \"unknowns\": []\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-conflicting-evidence"
+      }
+    },
+    {
+      "fixtureId": "ifc-conflicting-evidence-silent-resolution",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "negativeCase": "conflicting-evidence",
+      "questionClass": "property-lookup",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [],
+          "correctAssumptions": [],
+          "correctResultClaim": "The authorized evidence conflicts on wall W3's fire rating: the model extract states REI 60 while the inspection note records REI 90.",
+          "correctResultStatus": "conflicted",
+          "deterministicChecks": [],
+          "evidenceIds": [
+            "EV-WALL-W3",
+            "EV-WALL-W3-INSPECT"
+          ],
+          "expectedFailureKind": "reasoning-failure",
+          "expectedViolationRules": [],
+          "facts": [
+            "wall W3 has fire rating REI 60",
+            "the inspection note records wall W3's fire rating as REI 90"
+          ],
+          "invalidationConditions": [],
+          "resultClaim": "Wall W3 has fire rating REI 90.",
+          "resultStatus": "supported",
+          "unknowns": []
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "replay",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"What is the fire rating of wall W3?\",\n  \"requiredEvidenceIds\": [\n    \"EV-WALL-W3\",\n    \"EV-WALL-W3-INSPECT\"\n  ],\n  \"scenarioId\": \"ifc-conflicting-evidence-silent-resolution\",\n  \"scope\": \"in-scope\"\n}\n",
+            "variantScript": "{\n  \"agentIdentity\": {\n    \"capability\": \"fixture-bim-question-answering\",\n    \"providerId\": \"fixture-bim-qa-provider\",\n    \"technologyVersion\": \"1.0.0-fixture-v1\"\n  },\n  \"assumptions\": [],\n  \"deterministicChecks\": [],\n  \"evidenceIds\": [\n    \"EV-WALL-W3\",\n    \"EV-WALL-W3-INSPECT\"\n  ],\n  \"facts\": [\n    \"wall W3 has fire rating REI 60\",\n    \"the inspection note records wall W3's fire rating as REI 90\"\n  ],\n  \"invalidationConditions\": [],\n  \"nextRecommendedAction\": null,\n  \"proposedOperation\": null,\n  \"resultClaim\": \"Wall W3 has fire rating REI 90.\",\n  \"resultStatus\": \"supported\",\n  \"unknowns\": []\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-conflicting-evidence-silent-resolution"
+      }
+    },
+    {
+      "fixtureId": "ifc-malformed-envelope",
+      "kind": "bim-question-fixture",
+      "lane": "ifc-bench-questions",
+      "questionClass": "property-lookup",
+      "scenario": {
+        "capability": "fixture-bim-question-answering",
+        "criteria": {
+          "requireAgentIdentity": true,
+          "requireAuthorizedChecks": true,
+          "requireAuthorizedScope": true,
+          "requireEvidenceCitation": true,
+          "requireExistingEvidenceRefs": true,
+          "requireExplicitAssumptions": true,
+          "requireExplicitUnknowns": true,
+          "requireGroundedFacts": true,
+          "requireNormalizableOutput": true
+        },
+        "expected": {
+          "assumptions": [],
+          "correctAssumptions": [
+            "the model extract of wall W1 is the governing revision r1"
+          ],
+          "correctResultClaim": "Wall W1 has fire rating REI 90.",
+          "correctResultStatus": "supported",
+          "deterministicChecks": [],
+          "evidenceIds": [],
+          "expectedFailureKind": "contract-mismatch",
+          "expectedViolationRules": [
+            "output-contract-normalizable"
+          ],
+          "facts": [],
+          "invalidationConditions": [],
+          "resultClaim": null,
+          "resultStatus": "unsupported",
+          "unknowns": [
+            "the declared envelope payload is not valid canonical Evidence Envelope JSON"
+          ]
+        },
+        "input": {
+          "capability": "fixture-bim-question-answering",
+          "kind": "provider-input",
+          "payload": {
+            "behaviorTag": "malformed",
+            "bundleJson": "{\n  \"authorizedContext\": {\n    \"contextId\": \"ctx-bim-model-extract\",\n    \"projectId\": \"proj-bim-eval-001\",\n    \"revision\": \"r1\"\n  },\n  \"evidence\": [\n    {\n      \"content\": \"model extract: element wall-W1 (IfcWallStandardCase, ground-floor east wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 6.00 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W1\",\n      \"facts\": [\n        \"wall W1 is classified IfcWallStandardCase\",\n        \"wall W1 has a thickness of 240 mm\",\n        \"wall W1 has fire rating REI 90\",\n        \"wall W1 is made of concrete block\",\n        \"wall W1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W2 (IfcWallStandardCase, ground-floor north wall) — thickness 240 mm, fire rating REI 90, material concrete block, length 4.50 m, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WALL-W2\",\n      \"facts\": [\n        \"wall W2 is classified IfcWallStandardCase\",\n        \"wall W2 has a thickness of 240 mm\",\n        \"wall W2 has fire rating REI 90\",\n        \"wall W2 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element wall-W3 (IfcWallStandardCase, first-floor partition wall) — thickness 200 mm, fire rating REI 60, material gypsum block, length 3.80 m, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-WALL-W3\",\n      \"facts\": [\n        \"wall W3 is classified IfcWallStandardCase\",\n        \"wall W3 has a thickness of 200 mm\",\n        \"wall W3 has fire rating REI 60\",\n        \"wall W3 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"inspection note (revision r2): the fire-protection upgrade walkthrough recorded wall W3's fire rating as REI 90\",\n      \"evidenceId\": \"EV-WALL-W3-INSPECT\",\n      \"facts\": [\n        \"the inspection note records wall W3's fire rating as REI 90\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r2\"\n    },\n    {\n      \"content\": \"model extract: element slab-S1 (IfcSlab, ground-floor slab) — thickness 250 mm, material concrete C30, area 48.5 m2, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-SLAB-S1\",\n      \"facts\": [\n        \"slab S1 is classified IfcSlab\",\n        \"slab S1 has a thickness of 250 mm\",\n        \"slab S1 has an area of 48.5 m2\",\n        \"slab S1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element slab-S2 (IfcSlab, first-floor slab) — thickness 200 mm, material concrete C30, area 46.0 m2, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-SLAB-S2\",\n      \"facts\": [\n        \"slab S2 is classified IfcSlab\",\n        \"slab S2 has a thickness of 200 mm\",\n        \"slab S2 has an area of 46.0 m2\",\n        \"slab S2 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element door-D1 (IfcDoor, entrance door) — width 900 mm, height 2100 mm, fire rating FD 60, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-DOOR-D1\",\n      \"facts\": [\n        \"door D1 is classified IfcDoor\",\n        \"door D1 has a width of 900 mm\",\n        \"door D1 has a height of 2100 mm\",\n        \"door D1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element window-WN1 (IfcWindow, north window) — width 1200 mm, height 1400 mm, contained in storey-00 (Ground Floor)\",\n      \"evidenceId\": \"EV-WINDOW-WN1\",\n      \"facts\": [\n        \"window WN1 is classified IfcWindow\",\n        \"window WN1 has a width of 1200 mm\",\n        \"window WN1 has a height of 1400 mm\",\n        \"window WN1 is contained in storey-00 (Ground Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"model extract: element column-C1 (IfcColumn, first-floor column) — cross-section 300x300 mm, material concrete C30, contained in storey-01 (First Floor)\",\n      \"evidenceId\": \"EV-COLUMN-C1\",\n      \"facts\": [\n        \"column C1 is classified IfcColumn\",\n        \"column C1 is made of concrete C30\",\n        \"column C1 is contained in storey-01 (First Floor)\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"spatial composition extract: storey-00 (Ground Floor, elevation 0.00 m) contains wall W1, wall W2, slab S1, door D1 and window WN1; storey-01 (First Floor, elevation 3.20 m) contains wall W3, slab S2 and column C1\",\n      \"evidenceId\": \"EV-SPATIAL\",\n      \"facts\": [\n        \"storey-00 contains wall W1, wall W2, slab S1, door D1 and window WN1\",\n        \"storey-01 contains wall W3, slab S2 and column C1\",\n        \"storey-00 is the Ground Floor at elevation 0.00 m\",\n        \"storey-01 is the First Floor at elevation 3.20 m\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    },\n    {\n      \"content\": \"topology extract: door D1 fills an opening in wall W1; window WN1 fills an opening in wall W2; wall W1 is connected to wall W2 at the north-east corner\",\n      \"evidenceId\": \"EV-TOPO\",\n      \"facts\": [\n        \"door D1 fills an opening in wall W1\",\n        \"window WN1 fills an opening in wall W2\",\n        \"wall W1 is connected to wall W2 at the north-east corner\"\n      ],\n      \"kind\": \"document-section\",\n      \"revision\": \"r1\"\n    }\n  ],\n  \"lane\": \"document-understanding\",\n  \"offeredChecks\": [\n    \"fixture-ifc-property-check\"\n  ],\n  \"question\": \"What is the fire rating of wall W1?\",\n  \"requiredEvidenceIds\": [\n    \"EV-WALL-W1\"\n  ],\n  \"scenarioId\": \"ifc-malformed-envelope\",\n  \"scope\": \"in-scope\"\n}\n"
+          }
+        },
+        "lane": "document-understanding",
+        "providerRef": {
+          "providerId": "fixture-bim-qa-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioId": "ifc-malformed-envelope"
+      }
+    },
+    {
+      "behavior": "replay",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "element-create",
+      "expected": {
+        "expectedFailureKind": "none",
+        "expectedIntent": {
+          "operationType": "block-wall-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.6
+            },
+            {
+              "name": "thickness",
+              "unit": "mm",
+              "value": 200
+            }
+          ],
+          "targetNodeRefs": [
+            "storey-01"
+          ],
+          "targetSelectorKind": "storey",
+          "targetUnits": {
+            "angular": "rad",
+            "linear": "mm"
+          }
+        },
+        "expectedOracleMatch": true,
+        "expectedViolationRules": []
+      },
+      "fixtureId": "bim-edit-create-correct",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Create a new interior block wall on the first floor, 3.00 m long, 2.60 m high and 200 mm thick.\"\n  },\n  \"commandQuantities\": [\n    {\n      \"name\": \"length\",\n      \"unit\": \"m\",\n      \"value\": 3\n    },\n    {\n      \"name\": \"height\",\n      \"unit\": \"m\",\n      \"value\": 2.6\n    },\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 200\n    }\n  ],\n  \"constraints\": [],\n  \"editClass\": \"element-create\",\n  \"elementProperties\": [\n    {\n      \"elementId\": \"storey-01\",\n      \"name\": \"elevation\",\n      \"unit\": \"m\",\n      \"value\": 3.2\n    }\n  ],\n  \"fixtureId\": \"bim-edit-create-correct\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"storey-01\",\n      \"exists\": true\n    }\n  ],\n  \"requiredParameters\": [\n    \"length\",\n    \"height\",\n    \"thickness\"\n  ]\n}\n",
+          "variantScript": "{\n  \"contractVersion\": \"1.0.0\",\n  \"dependsOn\": [],\n  \"domain\": {\n    \"contractVersion\": \"1.0.0\",\n    \"extensions\": [\n      {\n        \"kind\": \"building-element-taxonomy\",\n        \"ref\": \"aise-building-elements\",\n        \"version\": \"1.0.0\"\n      }\n    ],\n    \"operationVocabulary\": \"aise-building-operations-v1\",\n    \"vertical\": \"building\"\n  },\n  \"intentId\": \"intent-bim-edit-create-correct\",\n  \"operationType\": \"block-wall-placement\",\n  \"parameters\": [\n    {\n      \"name\": \"length\",\n      \"unit\": \"m\",\n      \"value\": 3\n    },\n    {\n      \"name\": \"height\",\n      \"unit\": \"m\",\n      \"value\": 2.6\n    },\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 200\n    }\n  ],\n  \"provenance\": {\n    \"authoredAt\": \"2026-01-01T00:00:00.000Z\",\n    \"authoredBy\": \"fixture-bim-edit-double\",\n    \"commandText\": \"Create a new interior block wall on the first floor, 3.00 m long, 2.60 m high and 200 mm thick.\",\n    \"evidenceIds\": [],\n    \"origin\": \"agent\"\n  },\n  \"target\": {\n    \"contractVersion\": \"1.0.0\",\n    \"description\": \"the first floor the new interior block wall is placed on\",\n    \"geometryRefs\": [],\n    \"nodeRefs\": [\n      \"storey-01\"\n    ],\n    \"selectorKind\": \"storey\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"mm\"\n    }\n  }\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "replay",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "direct-intent",
+      "editClass": "element-create",
+      "expected": {
+        "expectedFailureKind": "none",
+        "expectedIntent": {
+          "operationType": "block-wall-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.6
+            },
+            {
+              "name": "thickness",
+              "unit": "mm",
+              "value": 200
+            }
+          ],
+          "targetNodeRefs": [
+            "storey-01"
+          ],
+          "targetSelectorKind": "storey",
+          "targetUnits": {
+            "angular": "rad",
+            "linear": "mm"
+          }
+        },
+        "expectedOracleMatch": true,
+        "expectedViolationRules": []
+      },
+      "fixtureId": "bim-edit-create-direct-intent",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"direct-intent\",\n    \"intent\": {\n      \"operationType\": \"block-wall-placement\",\n      \"parameters\": [\n        {\n          \"name\": \"length\",\n          \"unit\": \"m\",\n          \"value\": 3\n        },\n        {\n          \"name\": \"height\",\n          \"unit\": \"m\",\n          \"value\": 2.6\n        },\n        {\n          \"name\": \"thickness\",\n          \"unit\": \"mm\",\n          \"value\": 200\n        }\n      ],\n      \"targetNodeRefs\": [\n        \"storey-01\"\n      ],\n      \"targetSelectorKind\": \"storey\",\n      \"targetUnits\": {\n        \"angular\": \"rad\",\n        \"linear\": \"mm\"\n      }\n    }\n  },\n  \"commandQuantities\": [\n    {\n      \"name\": \"length\",\n      \"unit\": \"m\",\n      \"value\": 3\n    },\n    {\n      \"name\": \"height\",\n      \"unit\": \"m\",\n      \"value\": 2.6\n    },\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 200\n    }\n  ],\n  \"constraints\": [],\n  \"editClass\": \"element-create\",\n  \"elementProperties\": [\n    {\n      \"elementId\": \"storey-01\",\n      \"name\": \"elevation\",\n      \"unit\": \"m\",\n      \"value\": 3.2\n    }\n  ],\n  \"fixtureId\": \"bim-edit-create-direct-intent\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"storey-01\",\n      \"exists\": true\n    }\n  ],\n  \"requiredParameters\": [\n    \"length\",\n    \"height\",\n    \"thickness\"\n  ]\n}\n",
+          "variantScript": "{\n  \"contractVersion\": \"1.0.0\",\n  \"dependsOn\": [],\n  \"domain\": {\n    \"contractVersion\": \"1.0.0\",\n    \"extensions\": [\n      {\n        \"kind\": \"building-element-taxonomy\",\n        \"ref\": \"aise-building-elements\",\n        \"version\": \"1.0.0\"\n      }\n    ],\n    \"operationVocabulary\": \"aise-building-operations-v1\",\n    \"vertical\": \"building\"\n  },\n  \"intentId\": \"intent-bim-edit-create-direct-intent\",\n  \"operationType\": \"block-wall-placement\",\n  \"parameters\": [\n    {\n      \"name\": \"length\",\n      \"unit\": \"m\",\n      \"value\": 3\n    },\n    {\n      \"name\": \"height\",\n      \"unit\": \"m\",\n      \"value\": 2.6\n    },\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 200\n    }\n  ],\n  \"provenance\": {\n    \"authoredAt\": \"2026-01-01T00:00:00.000Z\",\n    \"authoredBy\": \"fixture-bim-edit-double\",\n    \"derivationNote\": \"operator authored the block-wall placement directly in the BIM editing view\",\n    \"evidenceIds\": [],\n    \"origin\": \"direct-manipulation\"\n  },\n  \"target\": {\n    \"contractVersion\": \"1.0.0\",\n    \"description\": \"the first floor the new interior block wall is placed on\",\n    \"geometryRefs\": [],\n    \"nodeRefs\": [\n      \"storey-01\"\n    ],\n    \"selectorKind\": \"storey\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"mm\"\n    }\n  }\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "replay",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "element-update",
+      "expected": {
+        "expectedFailureKind": "none",
+        "expectedIntent": {
+          "operationType": "element-property-update",
+          "parameters": [
+            {
+              "name": "fire-rating",
+              "value": "REI 120"
+            }
+          ],
+          "targetNodeRefs": [
+            "wall-W1"
+          ],
+          "targetSelectorKind": "element",
+          "targetUnits": {
+            "angular": "rad",
+            "linear": "mm"
+          }
+        },
+        "expectedOracleMatch": true,
+        "expectedViolationRules": []
+      },
+      "fixtureId": "bim-edit-update-correct",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Update the fire rating of wall W1 to REI 120.\"\n  },\n  \"commandQuantities\": [],\n  \"constraints\": [],\n  \"editClass\": \"element-update\",\n  \"elementProperties\": [\n    {\n      \"elementId\": \"wall-W1\",\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 240\n    }\n  ],\n  \"fixtureId\": \"bim-edit-update-correct\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"wall-W1\",\n      \"exists\": true\n    }\n  ],\n  \"requiredParameters\": [\n    \"fire-rating\"\n  ]\n}\n",
+          "variantScript": "{\n  \"contractVersion\": \"1.0.0\",\n  \"dependsOn\": [],\n  \"domain\": {\n    \"contractVersion\": \"1.0.0\",\n    \"extensions\": [\n      {\n        \"kind\": \"building-element-taxonomy\",\n        \"ref\": \"aise-building-elements\",\n        \"version\": \"1.0.0\"\n      }\n    ],\n    \"operationVocabulary\": \"aise-building-operations-v1\",\n    \"vertical\": \"building\"\n  },\n  \"intentId\": \"intent-bim-edit-update-correct\",\n  \"operationType\": \"element-property-update\",\n  \"parameters\": [\n    {\n      \"name\": \"fire-rating\",\n      \"value\": \"REI 120\"\n    }\n  ],\n  \"provenance\": {\n    \"authoredAt\": \"2026-01-01T00:00:00.000Z\",\n    \"authoredBy\": \"fixture-bim-edit-double\",\n    \"commandText\": \"Update the fire rating of wall W1 to REI 120.\",\n    \"evidenceIds\": [],\n    \"origin\": \"agent\"\n  },\n  \"target\": {\n    \"contractVersion\": \"1.0.0\",\n    \"description\": \"the ground-floor east wall whose fire rating is updated\",\n    \"geometryRefs\": [],\n    \"nodeRefs\": [\n      \"wall-W1\"\n    ],\n    \"selectorKind\": \"element\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"mm\"\n    }\n  }\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "replay",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "element-delete",
+      "expected": {
+        "expectedFailureKind": "none",
+        "expectedIntent": {
+          "operationType": "demolition-removal",
+          "parameters": [
+            {
+              "name": "disposition",
+              "value": "remove-and-dispose"
+            }
+          ],
+          "targetNodeRefs": [
+            "door-D1"
+          ],
+          "targetSelectorKind": "element",
+          "targetUnits": {
+            "angular": "rad",
+            "linear": "mm"
+          }
+        },
+        "expectedOracleMatch": true,
+        "expectedViolationRules": []
+      },
+      "fixtureId": "bim-edit-delete-correct",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Remove door D1 from the ground floor.\"\n  },\n  \"commandQuantities\": [],\n  \"constraints\": [],\n  \"editClass\": \"element-delete\",\n  \"elementProperties\": [],\n  \"fixtureId\": \"bim-edit-delete-correct\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"door-D1\",\n      \"exists\": true\n    }\n  ],\n  \"requiredParameters\": [\n    \"disposition\"\n  ]\n}\n",
+          "variantScript": "{\n  \"contractVersion\": \"1.0.0\",\n  \"dependsOn\": [],\n  \"domain\": {\n    \"contractVersion\": \"1.0.0\",\n    \"extensions\": [\n      {\n        \"kind\": \"building-element-taxonomy\",\n        \"ref\": \"aise-building-elements\",\n        \"version\": \"1.0.0\"\n      }\n    ],\n    \"operationVocabulary\": \"aise-building-operations-v1\",\n    \"vertical\": \"building\"\n  },\n  \"intentId\": \"intent-bim-edit-delete-correct\",\n  \"operationType\": \"demolition-removal\",\n  \"parameters\": [\n    {\n      \"name\": \"disposition\",\n      \"value\": \"remove-and-dispose\"\n    }\n  ],\n  \"provenance\": {\n    \"authoredAt\": \"2026-01-01T00:00:00.000Z\",\n    \"authoredBy\": \"fixture-bim-edit-double\",\n    \"commandText\": \"Remove door D1 from the ground floor.\",\n    \"evidenceIds\": [],\n    \"origin\": \"agent\"\n  },\n  \"target\": {\n    \"contractVersion\": \"1.0.0\",\n    \"description\": \"the entrance door being removed\",\n    \"geometryRefs\": [],\n    \"nodeRefs\": [\n      \"door-D1\"\n    ],\n    \"selectorKind\": \"element\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"mm\"\n    }\n  }\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "replay",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "spatial-change",
+      "expected": {
+        "expectedFailureKind": "none",
+        "expectedIntent": {
+          "operationType": "element-spatial-reassignment",
+          "parameters": [
+            {
+              "name": "target-storey",
+              "value": "storey-01"
+            }
+          ],
+          "targetNodeRefs": [
+            "window-WN1"
+          ],
+          "targetSelectorKind": "element",
+          "targetUnits": {
+            "angular": "rad",
+            "linear": "mm"
+          }
+        },
+        "expectedOracleMatch": true,
+        "expectedViolationRules": []
+      },
+      "fixtureId": "bim-edit-spatial-change-correct",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Reassign window WN1 from the ground floor to the first floor.\"\n  },\n  \"commandQuantities\": [],\n  \"constraints\": [],\n  \"editClass\": \"spatial-change\",\n  \"elementProperties\": [],\n  \"fixtureId\": \"bim-edit-spatial-change-correct\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"window-WN1\",\n      \"exists\": true\n    }\n  ],\n  \"requiredParameters\": [\n    \"target-storey\"\n  ]\n}\n",
+          "variantScript": "{\n  \"contractVersion\": \"1.0.0\",\n  \"dependsOn\": [],\n  \"domain\": {\n    \"contractVersion\": \"1.0.0\",\n    \"extensions\": [\n      {\n        \"kind\": \"building-element-taxonomy\",\n        \"ref\": \"aise-building-elements\",\n        \"version\": \"1.0.0\"\n      }\n    ],\n    \"operationVocabulary\": \"aise-building-operations-v1\",\n    \"vertical\": \"building\"\n  },\n  \"intentId\": \"intent-bim-edit-spatial-change-correct\",\n  \"operationType\": \"element-spatial-reassignment\",\n  \"parameters\": [\n    {\n      \"name\": \"target-storey\",\n      \"value\": \"storey-01\"\n    }\n  ],\n  \"provenance\": {\n    \"authoredAt\": \"2026-01-01T00:00:00.000Z\",\n    \"authoredBy\": \"fixture-bim-edit-double\",\n    \"commandText\": \"Reassign window WN1 from the ground floor to the first floor.\",\n    \"evidenceIds\": [],\n    \"origin\": \"agent\"\n  },\n  \"target\": {\n    \"contractVersion\": \"1.0.0\",\n    \"description\": \"the north window being reassigned to the first floor\",\n    \"geometryRefs\": [],\n    \"nodeRefs\": [\n      \"window-WN1\"\n    ],\n    \"selectorKind\": \"element\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"mm\"\n    }\n  }\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "replay",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "topological-change",
+      "expected": {
+        "expectedFailureKind": "none",
+        "expectedIntent": {
+          "operationType": "element-rehosting",
+          "parameters": [
+            {
+              "name": "host-element",
+              "value": "wall-W2"
+            }
+          ],
+          "targetNodeRefs": [
+            "door-D1"
+          ],
+          "targetSelectorKind": "element",
+          "targetUnits": {
+            "angular": "rad",
+            "linear": "mm"
+          }
+        },
+        "expectedOracleMatch": true,
+        "expectedViolationRules": []
+      },
+      "fixtureId": "bim-edit-topological-change-correct",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Rehost door D1 into wall W2.\"\n  },\n  \"commandQuantities\": [],\n  \"constraints\": [],\n  \"editClass\": \"topological-change\",\n  \"elementProperties\": [],\n  \"fixtureId\": \"bim-edit-topological-change-correct\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"door-D1\",\n      \"exists\": true\n    },\n    {\n      \"elementId\": \"wall-W2\",\n      \"exists\": true\n    }\n  ],\n  \"requiredParameters\": [\n    \"host-element\"\n  ]\n}\n",
+          "variantScript": "{\n  \"contractVersion\": \"1.0.0\",\n  \"dependsOn\": [],\n  \"domain\": {\n    \"contractVersion\": \"1.0.0\",\n    \"extensions\": [\n      {\n        \"kind\": \"building-element-taxonomy\",\n        \"ref\": \"aise-building-elements\",\n        \"version\": \"1.0.0\"\n      }\n    ],\n    \"operationVocabulary\": \"aise-building-operations-v1\",\n    \"vertical\": \"building\"\n  },\n  \"intentId\": \"intent-bim-edit-topological-change-correct\",\n  \"operationType\": \"element-rehosting\",\n  \"parameters\": [\n    {\n      \"name\": \"host-element\",\n      \"value\": \"wall-W2\"\n    }\n  ],\n  \"provenance\": {\n    \"authoredAt\": \"2026-01-01T00:00:00.000Z\",\n    \"authoredBy\": \"fixture-bim-edit-double\",\n    \"commandText\": \"Rehost door D1 into wall W2.\",\n    \"evidenceIds\": [],\n    \"origin\": \"agent\"\n  },\n  \"target\": {\n    \"contractVersion\": \"1.0.0\",\n    \"description\": \"the entrance door being rehosted into the ground-floor north wall\",\n    \"geometryRefs\": [],\n    \"nodeRefs\": [\n      \"door-D1\"\n    ],\n    \"selectorKind\": \"element\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"mm\"\n    }\n  }\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "refuse",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "element-update",
+      "expected": {
+        "expectedFailureKind": "unsupported-data",
+        "expectedIntent": null,
+        "expectedOracleMatch": false,
+        "expectedViolationRules": []
+      },
+      "fixtureId": "bim-edit-unavailable-geometry",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "refuse",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Update the fire rating of wall W9 to REI 120.\"\n  },\n  \"commandQuantities\": [],\n  \"constraints\": [],\n  \"editClass\": \"element-update\",\n  \"elementProperties\": [],\n  \"fixtureId\": \"bim-edit-unavailable-geometry\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"wall-W9\",\n      \"exists\": false\n    }\n  ],\n  \"requiredParameters\": [\n    \"fire-rating\"\n  ]\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "negativeCase": "unavailable-geometry",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "replay",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "element-update",
+      "expected": {
+        "expectedFailureKind": "unsupported-data",
+        "expectedIntent": null,
+        "expectedOracleMatch": false,
+        "expectedViolationRules": [
+          "target-references-existing-elements"
+        ]
+      },
+      "fixtureId": "bim-edit-fabricated-target",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Update the fire rating of wall W9 to REI 120.\"\n  },\n  \"commandQuantities\": [],\n  \"constraints\": [],\n  \"editClass\": \"element-update\",\n  \"elementProperties\": [],\n  \"fixtureId\": \"bim-edit-fabricated-target\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"wall-W9\",\n      \"exists\": false\n    }\n  ],\n  \"requiredParameters\": [\n    \"fire-rating\"\n  ]\n}\n",
+          "variantScript": "{\n  \"contractVersion\": \"1.0.0\",\n  \"dependsOn\": [],\n  \"domain\": {\n    \"contractVersion\": \"1.0.0\",\n    \"extensions\": [\n      {\n        \"kind\": \"building-element-taxonomy\",\n        \"ref\": \"aise-building-elements\",\n        \"version\": \"1.0.0\"\n      }\n    ],\n    \"operationVocabulary\": \"aise-building-operations-v1\",\n    \"vertical\": \"building\"\n  },\n  \"intentId\": \"intent-bim-edit-fabricated-target\",\n  \"operationType\": \"element-property-update\",\n  \"parameters\": [\n    {\n      \"name\": \"fire-rating\",\n      \"value\": \"REI 120\"\n    }\n  ],\n  \"provenance\": {\n    \"authoredAt\": \"2026-01-01T00:00:00.000Z\",\n    \"authoredBy\": \"fixture-bim-edit-double\",\n    \"commandText\": \"Update the fire rating of wall W9 to REI 120.\",\n    \"evidenceIds\": [],\n    \"origin\": \"agent\"\n  },\n  \"target\": {\n    \"contractVersion\": \"1.0.0\",\n    \"description\": \"the referenced wall whose fire rating is updated\",\n    \"geometryRefs\": [],\n    \"nodeRefs\": [\n      \"wall-W9\"\n    ],\n    \"selectorKind\": \"element\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"mm\"\n    }\n  }\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "negativeCase": "unavailable-geometry",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "refuse",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "element-create",
+      "expected": {
+        "expectedFailureKind": "unsupported-data",
+        "expectedIntent": null,
+        "expectedOracleMatch": false,
+        "expectedViolationRules": []
+      },
+      "fixtureId": "bim-edit-missing-dimensions",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "refuse",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Create a new interior block wall on the first floor, 3.00 m long and 200 mm thick.\"\n  },\n  \"commandQuantities\": [\n    {\n      \"name\": \"length\",\n      \"unit\": \"m\",\n      \"value\": 3\n    },\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 200\n    }\n  ],\n  \"constraints\": [],\n  \"editClass\": \"element-create\",\n  \"elementProperties\": [\n    {\n      \"elementId\": \"storey-01\",\n      \"name\": \"elevation\",\n      \"unit\": \"m\",\n      \"value\": 3.2\n    }\n  ],\n  \"fixtureId\": \"bim-edit-missing-dimensions\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"storey-01\",\n      \"exists\": true\n    }\n  ],\n  \"requiredParameters\": [\n    \"length\",\n    \"height\",\n    \"thickness\"\n  ]\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "negativeCase": "missing-dimensions",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "replay",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "element-create",
+      "expected": {
+        "expectedFailureKind": "perception-failure",
+        "expectedIntent": null,
+        "expectedOracleMatch": false,
+        "expectedViolationRules": [
+          "parameters-grounded-in-bundle"
+        ]
+      },
+      "fixtureId": "bim-edit-invented-dimension",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Create a new interior block wall on the first floor, 3.00 m long and 200 mm thick.\"\n  },\n  \"commandQuantities\": [\n    {\n      \"name\": \"length\",\n      \"unit\": \"m\",\n      \"value\": 3\n    },\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 200\n    }\n  ],\n  \"constraints\": [],\n  \"editClass\": \"element-create\",\n  \"elementProperties\": [\n    {\n      \"elementId\": \"storey-01\",\n      \"name\": \"elevation\",\n      \"unit\": \"m\",\n      \"value\": 3.2\n    }\n  ],\n  \"fixtureId\": \"bim-edit-invented-dimension\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"storey-01\",\n      \"exists\": true\n    }\n  ],\n  \"requiredParameters\": [\n    \"length\",\n    \"height\",\n    \"thickness\"\n  ]\n}\n",
+          "variantScript": "{\n  \"contractVersion\": \"1.0.0\",\n  \"dependsOn\": [],\n  \"domain\": {\n    \"contractVersion\": \"1.0.0\",\n    \"extensions\": [\n      {\n        \"kind\": \"building-element-taxonomy\",\n        \"ref\": \"aise-building-elements\",\n        \"version\": \"1.0.0\"\n      }\n    ],\n    \"operationVocabulary\": \"aise-building-operations-v1\",\n    \"vertical\": \"building\"\n  },\n  \"intentId\": \"intent-bim-edit-invented-dimension\",\n  \"operationType\": \"block-wall-placement\",\n  \"parameters\": [\n    {\n      \"name\": \"length\",\n      \"unit\": \"m\",\n      \"value\": 3\n    },\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 200\n    },\n    {\n      \"name\": \"height\",\n      \"unit\": \"m\",\n      \"value\": 2.6\n    }\n  ],\n  \"provenance\": {\n    \"authoredAt\": \"2026-01-01T00:00:00.000Z\",\n    \"authoredBy\": \"fixture-bim-edit-double\",\n    \"commandText\": \"Create a new interior block wall on the first floor, 3.00 m long and 200 mm thick.\",\n    \"evidenceIds\": [],\n    \"origin\": \"agent\"\n  },\n  \"target\": {\n    \"contractVersion\": \"1.0.0\",\n    \"description\": \"the first floor the new interior block wall is placed on\",\n    \"geometryRefs\": [],\n    \"nodeRefs\": [\n      \"storey-01\"\n    ],\n    \"selectorKind\": \"storey\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"mm\"\n    }\n  }\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "negativeCase": "missing-dimensions",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "replay",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "element-create",
+      "expected": {
+        "expectedFailureKind": "operation-semantic-failure",
+        "expectedIntent": {
+          "operationType": "opening-creation",
+          "parameters": [
+            {
+              "name": "width",
+              "unit": "mm",
+              "value": 1800
+            },
+            {
+              "name": "height",
+              "unit": "mm",
+              "value": 2100
+            }
+          ],
+          "targetNodeRefs": [
+            "wall-W1"
+          ],
+          "targetSelectorKind": "element",
+          "targetUnits": {
+            "angular": "rad",
+            "linear": "mm"
+          }
+        },
+        "expectedOracleMatch": true,
+        "expectedViolationRules": [
+          "constraints-honored"
+        ]
+      },
+      "fixtureId": "bim-edit-invalid-constraint",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Create an opening in wall W1 with a width of 1800 mm and a height of 2100 mm.\"\n  },\n  \"commandQuantities\": [\n    {\n      \"name\": \"width\",\n      \"unit\": \"mm\",\n      \"value\": 1800\n    },\n    {\n      \"name\": \"height\",\n      \"unit\": \"mm\",\n      \"value\": 2100\n    }\n  ],\n  \"constraints\": [\n    {\n      \"constraintId\": \"max-opening-width-fire-wall-w1\",\n      \"kind\": \"max-numeric-parameter\",\n      \"maxValue\": 1200,\n      \"parameterName\": \"width\",\n      \"statement\": \"Openings in the REI 90 fire wall W1 must not exceed 1200 mm in width (fire-compartment integrity).\",\n      \"unit\": \"mm\"\n    }\n  ],\n  \"editClass\": \"element-create\",\n  \"elementProperties\": [\n    {\n      \"elementId\": \"wall-W1\",\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 240\n    }\n  ],\n  \"fixtureId\": \"bim-edit-invalid-constraint\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"wall-W1\",\n      \"exists\": true\n    }\n  ],\n  \"requiredParameters\": [\n    \"width\",\n    \"height\"\n  ]\n}\n",
+          "variantScript": "{\n  \"contractVersion\": \"1.0.0\",\n  \"dependsOn\": [],\n  \"domain\": {\n    \"contractVersion\": \"1.0.0\",\n    \"extensions\": [\n      {\n        \"kind\": \"building-element-taxonomy\",\n        \"ref\": \"aise-building-elements\",\n        \"version\": \"1.0.0\"\n      }\n    ],\n    \"operationVocabulary\": \"aise-building-operations-v1\",\n    \"vertical\": \"building\"\n  },\n  \"intentId\": \"intent-bim-edit-invalid-constraint\",\n  \"operationType\": \"opening-creation\",\n  \"parameters\": [\n    {\n      \"name\": \"width\",\n      \"unit\": \"mm\",\n      \"value\": 1800\n    },\n    {\n      \"name\": \"height\",\n      \"unit\": \"mm\",\n      \"value\": 2100\n    }\n  ],\n  \"provenance\": {\n    \"authoredAt\": \"2026-01-01T00:00:00.000Z\",\n    \"authoredBy\": \"fixture-bim-edit-double\",\n    \"commandText\": \"Create an opening in wall W1 with a width of 1800 mm and a height of 2100 mm.\",\n    \"evidenceIds\": [],\n    \"origin\": \"agent\"\n  },\n  \"target\": {\n    \"contractVersion\": \"1.0.0\",\n    \"description\": \"the ground-floor east wall receiving the new opening\",\n    \"geometryRefs\": [],\n    \"nodeRefs\": [\n      \"wall-W1\"\n    ],\n    \"selectorKind\": \"element\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"mm\"\n    }\n  }\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "negativeCase": "invalid-constraints",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "replay",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "element-update",
+      "expected": {
+        "expectedFailureKind": "operation-semantic-failure",
+        "expectedIntent": {
+          "operationType": "element-property-update",
+          "parameters": [
+            {
+              "name": "thickness",
+              "unit": "mm",
+              "value": 240
+            }
+          ],
+          "targetNodeRefs": [
+            "wall-W1"
+          ],
+          "targetSelectorKind": "element",
+          "targetUnits": {
+            "angular": "rad",
+            "linear": "mm"
+          }
+        },
+        "expectedOracleMatch": false,
+        "expectedViolationRules": [
+          "command-semantics-honored",
+          "constraints-honored"
+        ]
+      },
+      "fixtureId": "bim-edit-wrong-unit",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Set the thickness of wall W1 to 240 mm.\"\n  },\n  \"commandQuantities\": [\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 240\n    }\n  ],\n  \"constraints\": [\n    {\n      \"constraintId\": \"wall-thickness-unit-mm\",\n      \"kind\": \"parameter-unit\",\n      \"parameterName\": \"thickness\",\n      \"statement\": \"Wall thickness parameters are expressed in millimetres.\",\n      \"unit\": \"mm\"\n    }\n  ],\n  \"editClass\": \"element-update\",\n  \"elementProperties\": [\n    {\n      \"elementId\": \"wall-W1\",\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 240\n    }\n  ],\n  \"fixtureId\": \"bim-edit-wrong-unit\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"wall-W1\",\n      \"exists\": true\n    }\n  ],\n  \"requiredParameters\": [\n    \"thickness\"\n  ]\n}\n",
+          "variantScript": "{\n  \"contractVersion\": \"1.0.0\",\n  \"dependsOn\": [],\n  \"domain\": {\n    \"contractVersion\": \"1.0.0\",\n    \"extensions\": [\n      {\n        \"kind\": \"building-element-taxonomy\",\n        \"ref\": \"aise-building-elements\",\n        \"version\": \"1.0.0\"\n      }\n    ],\n    \"operationVocabulary\": \"aise-building-operations-v1\",\n    \"vertical\": \"building\"\n  },\n  \"intentId\": \"intent-bim-edit-wrong-unit\",\n  \"operationType\": \"element-property-update\",\n  \"parameters\": [\n    {\n      \"name\": \"thickness\",\n      \"unit\": \"cm\",\n      \"value\": 240\n    }\n  ],\n  \"provenance\": {\n    \"authoredAt\": \"2026-01-01T00:00:00.000Z\",\n    \"authoredBy\": \"fixture-bim-edit-double\",\n    \"commandText\": \"Set the thickness of wall W1 to 240 mm.\",\n    \"evidenceIds\": [],\n    \"origin\": \"agent\"\n  },\n  \"target\": {\n    \"contractVersion\": \"1.0.0\",\n    \"description\": \"the ground-floor east wall whose thickness is set\",\n    \"geometryRefs\": [],\n    \"nodeRefs\": [\n      \"wall-W1\"\n    ],\n    \"selectorKind\": \"element\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"mm\"\n    }\n  }\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "negativeCase": "invalid-constraints",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "replay",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "element-update",
+      "expected": {
+        "expectedFailureKind": "operation-semantic-failure",
+        "expectedIntent": {
+          "operationType": "element-property-update",
+          "parameters": [
+            {
+              "name": "fire-rating",
+              "value": "REI 120"
+            }
+          ],
+          "targetNodeRefs": [
+            "wall-W1"
+          ],
+          "targetSelectorKind": "element",
+          "targetUnits": {
+            "angular": "rad",
+            "linear": "mm"
+          }
+        },
+        "expectedOracleMatch": false,
+        "expectedViolationRules": [
+          "command-semantics-honored"
+        ]
+      },
+      "fixtureId": "bim-edit-wrong-target",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "replay",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Update the fire rating of wall W1 to REI 120.\"\n  },\n  \"commandQuantities\": [],\n  \"constraints\": [],\n  \"editClass\": \"element-update\",\n  \"elementProperties\": [\n    {\n      \"elementId\": \"wall-W1\",\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 240\n    }\n  ],\n  \"fixtureId\": \"bim-edit-wrong-target\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"wall-W1\",\n      \"exists\": true\n    }\n  ],\n  \"requiredParameters\": [\n    \"fire-rating\"\n  ]\n}\n",
+          "variantScript": "{\n  \"contractVersion\": \"1.0.0\",\n  \"dependsOn\": [],\n  \"domain\": {\n    \"contractVersion\": \"1.0.0\",\n    \"extensions\": [\n      {\n        \"kind\": \"building-element-taxonomy\",\n        \"ref\": \"aise-building-elements\",\n        \"version\": \"1.0.0\"\n      }\n    ],\n    \"operationVocabulary\": \"aise-building-operations-v1\",\n    \"vertical\": \"building\"\n  },\n  \"intentId\": \"intent-bim-edit-wrong-target\",\n  \"operationType\": \"element-property-update\",\n  \"parameters\": [\n    {\n      \"name\": \"fire-rating\",\n      \"value\": \"REI 120\"\n    }\n  ],\n  \"provenance\": {\n    \"authoredAt\": \"2026-01-01T00:00:00.000Z\",\n    \"authoredBy\": \"fixture-bim-edit-double\",\n    \"commandText\": \"Update the fire rating of wall W1 to REI 120.\",\n    \"evidenceIds\": [],\n    \"origin\": \"agent\"\n  },\n  \"target\": {\n    \"contractVersion\": \"1.0.0\",\n    \"description\": \"the ground-floor north wall (wrongly targeted)\",\n    \"geometryRefs\": [],\n    \"nodeRefs\": [\n      \"wall-W2\"\n    ],\n    \"selectorKind\": \"element\",\n    \"units\": {\n      \"angular\": \"rad\",\n      \"linear\": \"mm\"\n    }\n  }\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "behavior": "malformed",
+      "capability": "fixture-bim-edit-translation",
+      "commandForm": "natural-language",
+      "editClass": "element-update",
+      "expected": {
+        "expectedFailureKind": "contract-mismatch",
+        "expectedIntent": null,
+        "expectedOracleMatch": false,
+        "expectedViolationRules": [
+          "intent-contract-decodable"
+        ]
+      },
+      "fixtureId": "bim-edit-malformed-intent",
+      "input": {
+        "capability": "fixture-bim-edit-translation",
+        "kind": "provider-input",
+        "payload": {
+          "behaviorTag": "malformed",
+          "bundleJson": "{\n  \"command\": {\n    \"form\": \"natural-language\",\n    \"text\": \"Update the fire rating of wall W1 to REI 120.\"\n  },\n  \"commandQuantities\": [],\n  \"constraints\": [],\n  \"editClass\": \"element-update\",\n  \"elementProperties\": [\n    {\n      \"elementId\": \"wall-W1\",\n      \"name\": \"thickness\",\n      \"unit\": \"mm\",\n      \"value\": 240\n    }\n  ],\n  \"fixtureId\": \"bim-edit-malformed-intent\",\n  \"modelNodeIds\": [\n    \"storey-00\",\n    \"storey-01\",\n    \"wall-W1\",\n    \"wall-W2\",\n    \"wall-W3\",\n    \"slab-S1\",\n    \"slab-S2\",\n    \"door-D1\",\n    \"window-WN1\",\n    \"column-C1\"\n  ],\n  \"referencedElements\": [\n    {\n      \"elementId\": \"wall-W1\",\n      \"exists\": true\n    }\n  ],\n  \"requiredParameters\": [\n    \"fire-rating\"\n  ]\n}\n"
+        }
+      },
+      "kind": "bim-edit-fixture",
+      "lane": "bim-edit-operations",
+      "providerRef": {
+        "providerId": "fixture-bim-edit-provider",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    }
+  ],
+  "suiteId": "bim-eval-suite/1",
+  "upstream": {
+    "bimEdit": {
+      "datasetVendored": false,
+      "fixtureProvenance": "in-repo deterministic fixtures following the published BIM-Edit edit taxonomy (create/update/delete elements; spatial and topological changes) expressed as natural-language-style commands and direct intent records — NOT the upstream dataset; no upstream data is downloaded, vendored or re-distributed",
+      "kind": "bim-eval-upstream-manifest",
+      "license": {
+        "commercialUse": false,
+        "evaluationOnly": true,
+        "identifier": "unverified-upstream-license-no-network-audit",
+        "intendedUse": "evaluation-only: task-taxonomy reference for deterministic in-repo edit fixtures",
+        "intendedUseCleared": false
+      },
+      "pinnedVersion": "bim-edit-edit-class-taxonomy-2025-pinned",
+      "taxonomy": [
+        "element-create",
+        "element-update",
+        "element-delete",
+        "spatial-change",
+        "topological-change"
+      ],
+      "upstreamId": "BIM-Edit"
+    },
+    "ifcBench": {
+      "datasetVendored": false,
+      "fixtureProvenance": "in-repo deterministic fixtures following the published IFC-Bench question taxonomy (property/quantity lookup, spatial composition, part-of/connected-to topology, classification) over a deterministic building-model fixture — NOT the upstream dataset; no upstream data is downloaded, vendored or re-distributed",
+      "kind": "bim-eval-upstream-manifest",
+      "license": {
+        "commercialUse": false,
+        "evaluationOnly": true,
+        "identifier": "unverified-upstream-license-no-network-audit",
+        "intendedUse": "evaluation-only: task-taxonomy reference for deterministic in-repo question fixtures",
+        "intendedUseCleared": false
+      },
+      "pinnedVersion": "ifc-bench-question-taxonomy-2025-pinned",
+      "taxonomy": [
+        "property-lookup",
+        "quantity-lookup",
+        "spatial-composition",
+        "part-of-topology",
+        "connected-to-topology",
+        "classification"
+      ],
+      "upstreamId": "IFC-Bench"
+    }
+  },
+  "version": "1.0.0"
+}
