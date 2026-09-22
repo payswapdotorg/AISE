@@ -1,0 +1,703 @@
+{
+  "benchmarkId": "bim-eval-suite/1",
+  "codeVersion": "hfx-204/bim-eval/1",
+  "outcomes": [
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "property-lookup",
+      "fixtureId": "ifc-property-lookup-correct",
+      "inputDigest": "77d0b73bef07fa3ba32f1c80e19bb45314df10f3b0fe9c8a61518becde04cd6d",
+      "lane": "ifc-bench-questions",
+      "manifestId": "7cb68d88a9c4b6785db47deb012cc4760726dd2fd116dabeba4ad9df3851f123",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0
+      },
+      "normalizedResultDigest": "039f50eb35e55b7a15d6003e54b27282256e3e1500d33ae13b8523512482f1e5",
+      "recordId": "1b0d40c2da7f18f3d3051596067611f9c2aa4123774e8e6c68b6a7f2e317ba8f",
+      "resultStatus": "supported",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "quantity-lookup",
+      "fixtureId": "ifc-quantity-lookup-correct",
+      "inputDigest": "28e5305aaf01fe2525ab019b1686b545ba5d4386ffaa0423703dda65b40a8edc",
+      "lane": "ifc-bench-questions",
+      "manifestId": "b20f942dfc5c7856af409865bf5d582e63ac5a926438d834cbf95ccc43cf6a6a",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0
+      },
+      "normalizedResultDigest": "7cfa44fde68d2aae9632e1ecce24640e217dd2cbb8f458a1ade46e05c9e78a19",
+      "recordId": "86fc46aaeaf4b780812ea1c55b103cf554305d80d79ce9695400305db695ba07",
+      "resultStatus": "supported",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "spatial-composition",
+      "fixtureId": "ifc-spatial-composition-correct",
+      "inputDigest": "7720650dc70957a1d071b869855896eb33410dc478f2220ca3976d1bfc2c84e8",
+      "lane": "ifc-bench-questions",
+      "manifestId": "ce7938a7a9b79c795fe261f430a1e12d139b6d4c8b44cf76d9ad6c4952996891",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0
+      },
+      "normalizedResultDigest": "ea2ddf7804e34a457a98e29b679df37a24518afc442cca8eaa2f0e9e6df20a5c",
+      "recordId": "1513a6868a8f8efc48a92043e795cb6715ada0d31d16f49866350375081e670c",
+      "resultStatus": "supported",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "part-of-topology",
+      "fixtureId": "ifc-part-of-topology-correct",
+      "inputDigest": "6f01357135e7a7e2f428ab6a12dafca6d27d2487e0593411a03632983ffc066b",
+      "lane": "ifc-bench-questions",
+      "manifestId": "7e7742105c65d3d5a274fe6c82665542bce773580b3994bf0a3f0624fb0ad4d7",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0
+      },
+      "normalizedResultDigest": "9daaae92d8705a0669dd18c7efac20c9ae334ef1ea18ee1f20ffc6fc918d2c7b",
+      "recordId": "a27a02e2f752f3ed521f54a60ebcce25cef6c689a82e729ff287ef8f8e13da7c",
+      "resultStatus": "supported",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "connected-to-topology",
+      "fixtureId": "ifc-connected-to-topology-correct",
+      "inputDigest": "4a06477781781c3bc7521792920a1fde4412b6f60b94a220b24e3b79b3101024",
+      "lane": "ifc-bench-questions",
+      "manifestId": "b9d4926cb521a2e7861814e83b22d526b89186e9388e9cfea884a4aa9082f737",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0
+      },
+      "normalizedResultDigest": "f9aaf1e2f75563c6624df2ea983d442dd91bf44cf9554dbb08a05a83f9bb6c13",
+      "recordId": "c5228835f6002d5744b52f2959caac864adc8ff58aac401f565070247a22c050",
+      "resultStatus": "supported",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "classification",
+      "fixtureId": "ifc-classification-correct",
+      "inputDigest": "eecb35dea22da6ce0964db33c1448cfdf86f789a361763b9eea62998823eaa95",
+      "lane": "ifc-bench-questions",
+      "manifestId": "0c9e804ccc66e8b8ecacf5f3784f46435723391143c6edcf5ddd771d6874beed",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0
+      },
+      "normalizedResultDigest": "4ef4706a2cb50a121f45680f479e1954904eb0397d522a5b4f0e341f7168d0e3",
+      "recordId": "0c86c0f1c9b603608db9a590f164cab82bb0e8d3c30a7a6afd78e5fb409f80ef",
+      "resultStatus": "supported",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "perception-failure",
+      "expectedMatch": true,
+      "fixtureClass": "property-lookup",
+      "fixtureId": "ifc-property-lookup-perception",
+      "inputDigest": "18637df5037d95595e6612af679f4d19532645e2434e75d534351e3dc772b9bf",
+      "lane": "ifc-bench-questions",
+      "manifestId": "b3974fc48a62478d22ea41444180a7b283f240914abc3bcff7dab0ffd1037e27",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 1
+      },
+      "normalizedResultDigest": "4f072e809b98aaf9eaf834a183b26b659283c39fc27d585a39a578bba6b34b10",
+      "recordId": "48dcb6b2795d23aa4d557c194fea7b32f7d6ba06acdf5896e11d76ea0062a286",
+      "resultStatus": "supported",
+      "violationKinds": [
+        "perception-failure"
+      ],
+      "violationRules": [
+        "facts-grounded-in-cited-evidence"
+      ]
+    },
+    {
+      "classification": "retrieval-failure",
+      "expectedMatch": true,
+      "fixtureClass": "property-lookup",
+      "fixtureId": "ifc-property-lookup-retrieval",
+      "inputDigest": "d57c4367ae8fc0a19ebaa2edebcdafcc83e7aa5b06526dfd29b09fbbb401eed1",
+      "lane": "ifc-bench-questions",
+      "manifestId": "269e2ddd04e38fa9d7d36f02bcad51fc81ed2fb24463bfccef62973d877eacc9",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0
+      },
+      "normalizedResultDigest": "a8da8b67fc7ac7c0ebee6f3bb5a860a9099d048751d23e1f093ae95c6d8b8cb6",
+      "recordId": "8d72e14a85a7bbc5f1975addcaddd2972f3ec2e863038cc4a06a4a310bf33a9b",
+      "resultStatus": "supported",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "reasoning-failure",
+      "expectedMatch": true,
+      "fixtureClass": "quantity-lookup",
+      "fixtureId": "ifc-quantity-lookup-reasoning",
+      "inputDigest": "eec5f641ddc7464cbc24635be5e5d6ff3e76297321d47975fbf22896ab6d8c04",
+      "lane": "ifc-bench-questions",
+      "manifestId": "2e10a5274d4d9d50a6fee6e2220d141d3766c3a475066ee7eed66231f2d96629",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0
+      },
+      "normalizedResultDigest": "6df6604d2c62a71a06bb11b2e34a28d6e018fabca27e62fa6e8a6aef1dbb9b78",
+      "recordId": "9d968076714e69d792ec4a1a55366b6e480448ca85d635410bddaf4c5a8e8b57",
+      "resultStatus": "supported",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "unsupported-data",
+      "expectedMatch": true,
+      "fixtureClass": "property-lookup",
+      "fixtureId": "ifc-property-lookup-unsupported",
+      "inputDigest": "271d0eb822abadf1cae582e8212294807ea01c3aab94cb9774af83a5ab48ba14",
+      "lane": "ifc-bench-questions",
+      "manifestId": "d5a2a63051f5b3d6278d0807c5db0ee10cff0d680251df29d2a656c9c5c59b90",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0
+      },
+      "normalizedResultDigest": "b2ced8eb00e0defcc63cecec25620612647c266d87e3abdf69182afccb183303",
+      "recordId": "4caef7ce8048ba30692fb482b6e00419f0ed928c52b19f457ed368c07e33f086",
+      "resultStatus": "unsupported",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "unsupported-data",
+      "expectedMatch": true,
+      "fixtureClass": "property-lookup",
+      "fixtureId": "ifc-unavailable-element",
+      "inputDigest": "69034701b4f6a83b7cebc1fcd6fd36f03396a9a7d6c74ed4194bf77cbdbce1c3",
+      "lane": "ifc-bench-questions",
+      "manifestId": "568ebee2bcfd56f37abbac9ebbf5dce971b74804df5da4974da55983be8c780c",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0
+      },
+      "negativeCase": "unavailable-geometry",
+      "normalizedResultDigest": "1678ea2f17e6d8c47ff15d1599a573ab55e60de986d168779fbf58d514a368e8",
+      "recordId": "e3484ffad0983ae126354a3d0861bc44d0e2fdfb646339b5ebb2979208e81366",
+      "resultStatus": "unsupported",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "unsupported-data",
+      "expectedMatch": true,
+      "fixtureClass": "property-lookup",
+      "fixtureId": "ifc-fabricated-evidence",
+      "inputDigest": "7270c5b01f2ac2118bf991b50bf8c298bf7bfa45f9e3dc92ca57fbf9569eda6a",
+      "lane": "ifc-bench-questions",
+      "manifestId": "a059a5dcb2cbe41bb9f10f3e88ce3dfcecf577b175126307a10b96dfee6a24fb",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 1
+      },
+      "normalizedResultDigest": "a9a20de0964b460d2f7cac2baafdb71571d96ad25d830fa5548f1b190ac31756",
+      "recordId": "dd0b4bec91b24439e86509e499bbfdbda23d8008222dac25a7ed9e18db3f2841",
+      "resultStatus": "supported",
+      "violationKinds": [
+        "unsupported-data"
+      ],
+      "violationRules": [
+        "cited-evidence-exists"
+      ]
+    },
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "property-lookup",
+      "fixtureId": "ifc-conflicting-evidence",
+      "inputDigest": "1cef53b3930b099a93414b9da49b956d3121c25f3c80c2c3b5a4a9bebb119f67",
+      "lane": "ifc-bench-questions",
+      "manifestId": "6bc5bfe0e08844d4222699d179238985fae4ad256b77d08ab8f2cc9dc6321667",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0
+      },
+      "negativeCase": "conflicting-evidence",
+      "normalizedResultDigest": "c882a4b8881919e83e4cb7bae5ed519b529d91e424cc5f173013cedd7f051577",
+      "recordId": "55a4f348bd228df2f5eb31837cc1e54f032c75541fc3cf34becf7c8c981aa9f6",
+      "resultStatus": "conflicted",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "reasoning-failure",
+      "expectedMatch": true,
+      "fixtureClass": "property-lookup",
+      "fixtureId": "ifc-conflicting-evidence-silent-resolution",
+      "inputDigest": "3767e2a77ca012e7e4507883847e6183fbcffc2c8d3bca67d7fcaa789f3a02b3",
+      "lane": "ifc-bench-questions",
+      "manifestId": "5b95d88ad3fb1ee72b2eeeb6b203782e546adf8bdda5a93499269542c7b90d98",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0
+      },
+      "negativeCase": "conflicting-evidence",
+      "normalizedResultDigest": "aab22fa00d9171ca06ee3c3e8fe9ba02eb9da93635f6260ff2f2b1892c918537",
+      "recordId": "1950dbe09d0e26632a593124c1a37882715547a34174afc7f53c844830bac9b0",
+      "resultStatus": "supported",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "contract-mismatch",
+      "expectedMatch": true,
+      "fixtureClass": "property-lookup",
+      "fixtureId": "ifc-malformed-envelope",
+      "inputDigest": "ee5124fc4b092f3d2b08519e851e152668ce83e0bf684b920dffe9280e878c15",
+      "lane": "ifc-bench-questions",
+      "manifestId": "4d5ab1caace3460c1bcb0926d4c0c97b7b9f67f3c4582392c81c31303bdba9aa",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 1
+      },
+      "normalizedResultDigest": "3aa0c111e3cdc0228c320b4a5052ec8711618ea38460a83eda986d90b96cd5dc",
+      "recordId": "a04f7c73fcd8506837743b1fbc6ab8d2490c54de760a82d15c107fd21bcd234f",
+      "resultStatus": "unsupported",
+      "violationKinds": [
+        "contract-mismatch"
+      ],
+      "violationRules": [
+        "output-contract-normalizable"
+      ]
+    },
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "element-create",
+      "fixtureId": "bim-edit-create-correct",
+      "inputDigest": "203ebaa360135a354aeb4e6bb2a3c5472d421cd4b479189b0ed5769aef035c40",
+      "lane": "bim-edit-operations",
+      "manifestId": "9dff8eb2c2ac7e586a0250ff14cc62e644ade32925dd956f72eb0b64744bf587",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0,
+        "oracleSemanticsMatch": 1
+      },
+      "normalizedResultDigest": "44f755b7a723ccd31b6fc366b27593d18e8ea1b79fd8471a6bc56e656a9f7bd9",
+      "oracleMatch": true,
+      "recordId": "630bdebe07412c37b7396473990333c8f1faf552c22d5dd35d4017cfe9f04537",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "element-create",
+      "fixtureId": "bim-edit-create-direct-intent",
+      "inputDigest": "f015be10e833266bc04fa9ef893483c6b98ddba2e9afb717bb31ddffbebe621e",
+      "lane": "bim-edit-operations",
+      "manifestId": "6a84b69771c2d3f0060a9f5ad7293bc69af7119a4d5d2c63954e560752a2c96b",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0,
+        "oracleSemanticsMatch": 1
+      },
+      "normalizedResultDigest": "11d62c8f2852d773d0309dee911cbd7e428762deb10608f1aacd3a904f150e01",
+      "oracleMatch": true,
+      "recordId": "3e0d08f3146ed8363eec9132665ff698e1a5745c74270623db32f554c6d332cf",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "element-update",
+      "fixtureId": "bim-edit-update-correct",
+      "inputDigest": "4c4824982a391ceb8c3b767fa8b69c84673e7c16b1f474ddc64e85d588f94fc5",
+      "lane": "bim-edit-operations",
+      "manifestId": "c5f165459016dca4f6d037fa4f922f97463dc974d4b9dacb8210926a758ca4b9",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0,
+        "oracleSemanticsMatch": 1
+      },
+      "normalizedResultDigest": "185a94bcb5e101519ecbef186bc45119ca4d252ad3eaea1c48300259e270f0dc",
+      "oracleMatch": true,
+      "recordId": "3f2077f1ad0a7ea5dcf08e20279c1785539430c8c7e70ad9123ebf9af9a045bd",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "element-delete",
+      "fixtureId": "bim-edit-delete-correct",
+      "inputDigest": "5c48b53dc26fb0fe078353ab72be39998998cdc49bb7c070f7b902eb46e46a6d",
+      "lane": "bim-edit-operations",
+      "manifestId": "78fdab50679a86202bab96465111a4974a2dbac91c731a08c3bb7528a01bfd11",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0,
+        "oracleSemanticsMatch": 1
+      },
+      "normalizedResultDigest": "3498b033e897f2c2f9ec85d087d2ef6f704ca9879c91c545a71da10da92cdc68",
+      "oracleMatch": true,
+      "recordId": "b2e352632790890119c521b3b8d055131a370525581678c66cb41e1a8c568ec0",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "spatial-change",
+      "fixtureId": "bim-edit-spatial-change-correct",
+      "inputDigest": "5768fdc3c93b8a5fce3cbb6fa032c314c17a2a00ca7dc4f8b6a25a2e72392026",
+      "lane": "bim-edit-operations",
+      "manifestId": "b7155afbe3f426f19ab2b3a6e1e7ebcc3cb2c23d0c84afa487fb8f8fe8b8f49e",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0,
+        "oracleSemanticsMatch": 1
+      },
+      "normalizedResultDigest": "a71cd291066c98cd1431a350f1c01879f1b4267a03f2bbc96ae691155d4fdacd",
+      "oracleMatch": true,
+      "recordId": "3ff9cb9f8f9344c481807e8dd0a8c6ba1a97b6d79dedfe920b9b1f7afc6aaf22",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "none",
+      "expectedMatch": true,
+      "fixtureClass": "topological-change",
+      "fixtureId": "bim-edit-topological-change-correct",
+      "inputDigest": "14be04d01202971611daccc21f240d3888cb907a2a625ef2c859f4b86943d7e6",
+      "lane": "bim-edit-operations",
+      "manifestId": "a007b3d283c2d618e007d8673484efe7b000323629ea1d1a4937186af1c9e6ad",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0,
+        "oracleSemanticsMatch": 1
+      },
+      "normalizedResultDigest": "c201f9ad9974e804ab7c3559978d65f1afb8c671d9dac4b32cd78f3438080745",
+      "oracleMatch": true,
+      "recordId": "24658dd8f02ed34823fb4ef33380e10b36df9c889170a2401286a6725212e801",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "unsupported-data",
+      "expectedMatch": true,
+      "fixtureClass": "element-update",
+      "fixtureId": "bim-edit-unavailable-geometry",
+      "inputDigest": "9650c899d8d71ec04384e9709a6b84504bf7b456e58de1e3100edeef6172ecfe",
+      "lane": "bim-edit-operations",
+      "manifestId": "076c76d4df4ecb6abe795b1cd16dad65e57bd8eb72e6f13ec08e72490870bf63",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0,
+        "oracleSemanticsMatch": 0
+      },
+      "negativeCase": "unavailable-geometry",
+      "normalizedResultDigest": "06cbb42df67f7bb16c222135ab2e58dd8c7a661fefd785c187ee2d55d0ab3098",
+      "oracleMatch": false,
+      "recordId": "0c246bd30565d87d9d1539ae8c5d3c3cd8498f7a488f8a915687f9d49bfc4abc",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "unsupported-data",
+      "expectedMatch": true,
+      "fixtureClass": "element-update",
+      "fixtureId": "bim-edit-fabricated-target",
+      "inputDigest": "88d31c765c655368f97ac3d92e31e0a053a35283e9e8b5d481a6096695cd3072",
+      "lane": "bim-edit-operations",
+      "manifestId": "f9b62069edb77e51ce1c1dc397ebc2cfee2276e765bedc21094ad2d64c75877d",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 1,
+        "oracleSemanticsMatch": 0
+      },
+      "negativeCase": "unavailable-geometry",
+      "normalizedResultDigest": "a74d701ee8745e4f10498e97ab2ec29f0e4c3343e2efc84740d1651d59ce2092",
+      "oracleMatch": false,
+      "recordId": "da223f452e63b91c5a9d8a0740ca2ffcf4a4b79122fc769b7e44fcc08068b13f",
+      "violationKinds": [
+        "unsupported-data"
+      ],
+      "violationRules": [
+        "target-references-existing-elements"
+      ]
+    },
+    {
+      "classification": "unsupported-data",
+      "expectedMatch": true,
+      "fixtureClass": "element-create",
+      "fixtureId": "bim-edit-missing-dimensions",
+      "inputDigest": "edf56781acb36b9c4ffb353c64727d047fa3beb9e7a6e6090adb76b7e5f01d10",
+      "lane": "bim-edit-operations",
+      "manifestId": "29252efca3577abe7177b862102b260bf27b53eef8829b6fe9abc97e37297185",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 0,
+        "oracleSemanticsMatch": 0
+      },
+      "negativeCase": "missing-dimensions",
+      "normalizedResultDigest": "e6c38bd218e2885cd41bdab33c4700ef85cdec6acf028afcde2727179f1061b0",
+      "oracleMatch": false,
+      "recordId": "c94ef620156783f49c77cca062834290008e8077a109cf260f547ac2a46837f1",
+      "violationKinds": [],
+      "violationRules": []
+    },
+    {
+      "classification": "perception-failure",
+      "expectedMatch": true,
+      "fixtureClass": "element-create",
+      "fixtureId": "bim-edit-invented-dimension",
+      "inputDigest": "044f35368257383f4a107bc87288b7bf16d6c0b48c3c51348391dbe72024bbd4",
+      "lane": "bim-edit-operations",
+      "manifestId": "db89c89b609bb243c983c6dc53eb840997aa5ccd5bfbfbdd1e2c90ecfcb6e187",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 1,
+        "oracleSemanticsMatch": 0
+      },
+      "negativeCase": "missing-dimensions",
+      "normalizedResultDigest": "a6ee747078a67b8234a86e52ad92ab48226fcbc1b4ca669b1ba6b442c1209acd",
+      "oracleMatch": false,
+      "recordId": "11e290948d051927313543a4665185c297c69c1194d982a4e6ea571d0c85cac6",
+      "violationKinds": [
+        "perception-failure"
+      ],
+      "violationRules": [
+        "parameters-grounded-in-bundle"
+      ]
+    },
+    {
+      "classification": "operation-semantic-failure",
+      "expectedMatch": true,
+      "fixtureClass": "element-create",
+      "fixtureId": "bim-edit-invalid-constraint",
+      "inputDigest": "e9ea5b2133e1d6172d2d1db265b2614608c800fed463134997c9e833759660df",
+      "lane": "bim-edit-operations",
+      "manifestId": "65846b514b7235ad5a3b8a168792445cdfe4f219fd419fa72477b8c8cd55c615",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 1,
+        "oracleSemanticsMatch": 1
+      },
+      "negativeCase": "invalid-constraints",
+      "normalizedResultDigest": "7517a89b868734ee7ea4602f423f9211a4f375fab86c7d9ee08e15bf85d6d752",
+      "oracleMatch": true,
+      "recordId": "a8a1e7ec1ab4723f77837dfbc438774ea8a85f9e28478ddb8afcb7d2e1ef2852",
+      "violationKinds": [
+        "operation-semantic-failure"
+      ],
+      "violationRules": [
+        "constraints-honored"
+      ]
+    },
+    {
+      "classification": "operation-semantic-failure",
+      "expectedMatch": true,
+      "fixtureClass": "element-update",
+      "fixtureId": "bim-edit-wrong-unit",
+      "inputDigest": "4ec6f6d6282aa73f023a13fe1e9a5414f8217f92b911bfcfea34ef92b1422c2b",
+      "lane": "bim-edit-operations",
+      "manifestId": "51eadbaaa990b3befc31805b398f557340605f2dc008d529a416cec94325706e",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 2,
+        "oracleSemanticsMatch": 0
+      },
+      "negativeCase": "invalid-constraints",
+      "normalizedResultDigest": "1affd2493ed585dbb30ebfb1462430c58563c4939ea1daae1f1b798d1b6a293c",
+      "oracleMatch": false,
+      "recordId": "74f87f83c5bac71da3586d872dc62b64ade6799c583e2e665b948e1c19345991",
+      "violationKinds": [
+        "operation-semantic-failure",
+        "operation-semantic-failure"
+      ],
+      "violationRules": [
+        "command-semantics-honored",
+        "constraints-honored"
+      ]
+    },
+    {
+      "classification": "operation-semantic-failure",
+      "expectedMatch": true,
+      "fixtureClass": "element-update",
+      "fixtureId": "bim-edit-wrong-target",
+      "inputDigest": "d47ac2397772eac90ce97e0e06cf33bcf53ef85dcb750886c510676c35dea9b9",
+      "lane": "bim-edit-operations",
+      "manifestId": "b34f3efab6a225660ccc00e1d809a9946df5600fe7f0209f97eac4c004ca7aa5",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 1,
+        "oracleSemanticsMatch": 0
+      },
+      "normalizedResultDigest": "5aab56c7e060ef449fc642c8746762ff4dd7752c999da1355e9fd36c332e9b96",
+      "oracleMatch": false,
+      "recordId": "f4f78912c5b41b36a183a0c1908da06fe666bc7b50f4d02f9c6e4b7000444d87",
+      "violationKinds": [
+        "operation-semantic-failure"
+      ],
+      "violationRules": [
+        "command-semantics-honored"
+      ]
+    },
+    {
+      "classification": "contract-mismatch",
+      "expectedMatch": true,
+      "fixtureClass": "element-update",
+      "fixtureId": "bim-edit-malformed-intent",
+      "inputDigest": "7c9c17c012cff93159bb80cd6abfe0db85efeffabeacae479e4983c464bc8245",
+      "lane": "bim-edit-operations",
+      "manifestId": "082995f6c6b204d5afdf010007496715fdc3e64d330ab4d5f363c67a9a2d95fc",
+      "metrics": {
+        "classificationMatch": 1,
+        "expectedOutcomeMatch": 1,
+        "integrityViolations": 1,
+        "oracleSemanticsMatch": 0
+      },
+      "normalizedResultDigest": "5bf8b303b2eb00fb1d4c7e9d14263a913c57541cea45235f89fc4670cb5c8c43",
+      "oracleMatch": false,
+      "recordId": "94258bcfd40d7b2146f562ead612dd463b4300c6e15ae6d21b56eec08c5f3f87",
+      "violationKinds": [
+        "contract-mismatch"
+      ],
+      "violationRules": [
+        "intent-contract-decodable"
+      ]
+    }
+  ],
+  "scenarioCount": 29,
+  "suiteId": "bim-eval-suite/1",
+  "summary": {
+    "byClassification": {
+      "contract-mismatch": 2,
+      "none": 13,
+      "operation-semantic-failure": 3,
+      "perception-failure": 2,
+      "reasoning-failure": 2,
+      "retrieval-failure": 1,
+      "unsupported-data": 6
+    },
+    "byEditClass": {
+      "element-create": 5,
+      "element-delete": 1,
+      "element-update": 6,
+      "spatial-change": 1,
+      "topological-change": 1
+    },
+    "byLane": {
+      "bim-edit-operations": 14,
+      "ifc-bench-questions": 15
+    },
+    "byQuestionClass": {
+      "classification": 1,
+      "connected-to-topology": 1,
+      "part-of-topology": 1,
+      "property-lookup": 9,
+      "quantity-lookup": 2,
+      "spatial-composition": 1
+    },
+    "classificationMatches": 29,
+    "discriminationCoverage": {
+      "bim-edit-operations": [
+        "contract-mismatch",
+        "none",
+        "operation-semantic-failure",
+        "perception-failure",
+        "unsupported-data"
+      ],
+      "ifc-bench-questions": [
+        "contract-mismatch",
+        "none",
+        "perception-failure",
+        "reasoning-failure",
+        "retrieval-failure",
+        "unsupported-data"
+      ]
+    },
+    "expectedMatches": 29,
+    "negativeCaseCoverage": {
+      "conflicting-evidence": [
+        "ifc-conflicting-evidence",
+        "ifc-conflicting-evidence-silent-resolution"
+      ],
+      "invalid-constraints": [
+        "bim-edit-invalid-constraint",
+        "bim-edit-wrong-unit"
+      ],
+      "missing-dimensions": [
+        "bim-edit-invented-dimension",
+        "bim-edit-missing-dimensions"
+      ],
+      "unavailable-geometry": [
+        "bim-edit-fabricated-target",
+        "bim-edit-unavailable-geometry",
+        "ifc-unavailable-element"
+      ]
+    },
+    "provenanceManifestDigest": "11cb542b1263c94b03397b5b7ca98307335c7795c473c0f4cac4fb36753ce8c5",
+    "total": 29
+  },
+  "upstream": {
+    "bimEdit": {
+      "evaluationOnly": true,
+      "pinnedVersion": "bim-edit-edit-class-taxonomy-2025-pinned",
+      "upstreamId": "BIM-Edit"
+    },
+    "ifcBench": {
+      "evaluationOnly": true,
+      "pinnedVersion": "ifc-bench-question-taxonomy-2025-pinned",
+      "upstreamId": "IFC-Bench"
+    }
+  },
+  "version": "1.0.0"
+}
