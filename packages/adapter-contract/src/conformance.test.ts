@@ -19,10 +19,10 @@ import {
   CONFORMANCE_CHECKS,
   createLosslessBinding,
   deriveInteractionModes,
-  loadCommittedFixtures,
   runConformance,
   type AdapterConformanceBinding,
 } from "./index";
+import { loadCommittedFixtures } from "./fixtures-loader";
 import { REFERENCE_PROFILES } from "./reference-profiles";
 import type { ClientCapabilityProfile } from "./capability";
 

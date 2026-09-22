@@ -11,10 +11,8 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import {
-  loadCommittedFixtures,
-  type ConformanceCorpus,
-} from "@aise/adapter-contract";
+import type { ConformanceCorpus } from "@aise/adapter-contract";
+import { loadCommittedFixtures } from "@aise/adapter-contract/fixtures-loader";
 import {
   decodeAuthorizationContextAtSeam,
   decodeBOQContextAtSeam,

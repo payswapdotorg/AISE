@@ -287,6 +287,12 @@ export type {
   ConformanceReport,
 } from "./conformance";
 
-/* Fixture loader (the only fs-touching helper) ---------------------------------------------- */
+/* Fixture loader — NOT re-exported from this barrel (PROD-030) --------- */
 
-export { loadCommittedFixtures } from "./fixtures-loader";
+// The committed-fixture loader (src/fixtures-loader.ts) is Node-only: its
+// module scope imports node:fs/node:path and evaluates
+// `join(import.meta.dir, "..")` at load time, which crashes module
+// evaluation in a plain-browser bundle (the bundler externalizes the Node
+// builtins). It is therefore exported ONLY through the documented subpath
+// `@aise/adapter-contract/fixtures-loader` (see package.json exports) so a
+// browser importing this barrel can no longer reach node:fs at all.

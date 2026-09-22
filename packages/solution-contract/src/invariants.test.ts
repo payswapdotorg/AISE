@@ -33,10 +33,10 @@ import {
   decodeSolutionValidationSnapshot,
   decodeOperationCapabilityProfile,
   decodeSolutionBoqTraceSet,
-  loadCommittedFixtures,
   REFERENCE_BUILDING_DOMAIN,
   SolutionContractEncodeError,
 } from "./index";
+import { loadCommittedFixtures } from "./fixtures-loader";
 
 const FIXTURE = (path: string): Record<string, unknown> =>
   JSON.parse(readFileSync(join(import.meta.dir, "..", "fixtures", path), "utf8")) as Record<

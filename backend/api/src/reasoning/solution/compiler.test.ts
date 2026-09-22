@@ -35,10 +35,10 @@ import {
   checkEngineeringOperationIntent,
   decodeEngineeringOperationIntentStrict,
   deriveEngineeringOperationId,
-  loadCommittedFixtures,
   operationSemanticIdentityOfIntent,
 } from "@aise/solution-contract";
 import type { EngineeringOperationIntent } from "@aise/solution-contract";
+import { loadCommittedFixtures } from "@aise/solution-contract/fixtures-loader";
 import { createSolutionCommandCompiler } from "./compiler";
 import { createDeterministicGrammarUnderstanding } from "./compiler";
 import { corpusEntriesOf, corpusEquivalenceGroups } from "./corpus";

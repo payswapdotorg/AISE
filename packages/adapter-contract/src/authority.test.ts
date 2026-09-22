@@ -48,7 +48,6 @@ describe("the public API exposes no authority mutation path", () => {
       "deriveInteractionModes",
       "runConformance",
       "createLosslessBinding",
-      "loadCommittedFixtures",
       "AUTHORITATIVE_FIELDS",
       "CONFORMANCE_CHECKS",
       "REFERENCE_PROFILES",

@@ -11,7 +11,8 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { loadCommittedFixtures, type TaskIntent } from "@aise/adapter-contract";
+import { loadCommittedFixtures } from "@aise/adapter-contract/fixtures-loader";
+import type { TaskIntent } from "@aise/adapter-contract";
 import {
   decodeAuthorizationContextAtSeam,
   decodeBOQContextAtSeam,
