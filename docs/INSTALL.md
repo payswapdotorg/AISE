@@ -5,6 +5,20 @@ locally, from a clean checkout to a production-like local start. It is owned
 by PROD-001 (runtime / installability audit). Every command documented here
 has been executed and verified against a fresh checkout of this repository.
 
+> **Just want to see it run?** The one-command demo bootstrap takes a fresh
+> checkout to the working product — dependencies, environment, build, a
+> started server and an end-to-end smoke check — and prints the evaluator
+> entry URLs:
+>
+> ```bash
+> bun run demo          # idempotent; --fresh re-runs from zero; --stop stops the server
+> ```
+>
+> The 10-minute evaluator walkthrough (what to look at, the deployed URL for
+> the visual product experience, troubleshooting) is
+> [`docs/EVALUATOR-GUIDE.md`](EVALUATOR-GUIDE.md). This guide remains the
+> authoritative reference underneath it.
+
 For the productization governance context see `docs/productization-roadmap.md`;
 for what is deliberately NOT included at this stage see
 [§12 What is NOT included](#12-what-is-not-included) below.
@@ -22,18 +36,10 @@ for what is deliberately NOT included at this stage see
 9. [The verification gate — `bun run verify`](#9-the-verification-gate--bun-run-verify)
 10. [Ports and URLs reference](#10-ports-and-urls-reference)
 11. [Troubleshooting](#11-troubleshooting)
-5. [Daily development — `bun run dev`](#5-daily-development--bun-run-dev)
-6. [Production-like local start — `bun run start`](#6-production-like-local-start--bun-run-start)
-7. [Smoke verification — `bun run smoke`](#7-smoke-verification--bun-run-smoke)
-8. [The verification gate — `bun run verify`](#8-the-verification-gate--bun-run-verify)
-9. [Ports and URLs reference](#9-ports-and-urls-reference)
-10. [Troubleshooting](#10-troubleshooting)
-11. [Artifact storage (`/v1/artifacts`)](#11-artifact-storage-v1artifacts)
-12. [What is NOT included](#12-what-is-not-included)
-13. [Android workspace (optional, not part of the install)](#13-android-workspace-optional-not-part-of-the-install)
-11. [What is NOT included](#11-what-is-not-included)
-12. [Android workspace (optional, not part of the install)](#12-android-workspace-optional-not-part-of-the-install)
-13. [Persistence — Neon Postgres (optional)](#13-persistence--neon-postgres-optional)
+12. [Artifact storage (`/v1/artifacts`)](#11-artifact-storage-v1artifacts)
+13. [What is NOT included](#12-what-is-not-included)
+14. [Android workspace (optional, not part of the install)](#13-android-workspace-optional-not-part-of-the-install)
+15. [Persistence — Neon Postgres (optional)](#13-persistence--neon-postgres-optional)
 
 ## 1. Prerequisites
 
@@ -82,10 +88,19 @@ bun run verify
 - `bun run verify` is the deterministic quality gate (typecheck, lint, test,
   workspace-boundary scan) and must end with `VERIFY: PASS`.
 
-That is the entire install. To then see the local application runtime:
+That is the entire install. To then see the local application runtime — or
+skip straight to a running product from zero — use the one-command demo
+bootstrap (it orchestrates install → env → build → start → smoke and prints
+the evaluator entry URLs; see [`docs/EVALUATOR-GUIDE.md`](EVALUATOR-GUIDE.md)):
 
 ```bash
-bun run dev        # development runtime (see §5)
+bun run demo        # one command from a fresh checkout to the working product
+```
+
+or start the development runtime directly:
+
+```bash
+bun run dev        # development runtime (see §6)
 ```
 
 ## 4. Environment configuration

@@ -19,6 +19,7 @@
     "build": "bun tools/build.ts",
     "start": "bun tools/start.ts",
     "smoke": "bun tools/smoke.ts",
+    "demo": "bun tools/bootstrap.ts",
     "db:migrate": "bun tools/db-migrate.ts",
     "db:seed": "bun tools/db-seed.ts"
   },
