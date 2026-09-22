@@ -1,0 +1,1053 @@
+{
+  "events": [
+    {
+      "kind": "provider-registered",
+      "profile": {
+        "benchmarkResults": [],
+        "capabilities": [
+          "fixture-depth-estimation"
+        ],
+        "computeProfile": {
+          "accelerator": "none",
+          "minimumCores": 1,
+          "offlineCapable": true,
+          "recommendedCores": 1,
+          "statement": "deterministic fixture computation — no accelerator, fully offline"
+        },
+        "costProfile": {
+          "currency": "n/a",
+          "model": "none",
+          "quotaPolicy": "fixture provider — deterministic local computation, no quota, no fallback needed",
+          "unitCost": 0
+        },
+        "description": "Deterministic reference depth-estimation fixture (v1): reproduces the documented reference truth exactly; permissively licensed and cleared for production use — the promotable reference lifecycle.",
+        "displayName": "Fixture Depth Provider v1",
+        "failureModes": [
+          {
+            "behavior": "explicit unsupported-data refusal — never fabricated depth values",
+            "condition": "sceneTag starting with 'unsupported:' (a scene class outside declared support)",
+            "kind": "unsupported-data"
+          },
+          {
+            "behavior": "typed normalization refusal with structured issues — never a silent coercion",
+            "condition": "input or output payload violates the declared contracts",
+            "kind": "contract-mismatch"
+          }
+        ],
+        "inputContract": {
+          "contractId": "fixture-depth-input/1",
+          "fields": [
+            {
+              "description": "grid width of the fixture sample grid (cells)",
+              "max": 64,
+              "min": 1,
+              "name": "gridWidth",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "description": "grid height of the fixture sample grid (cells)",
+              "max": 64,
+              "min": 1,
+              "name": "gridHeight",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "description": "normalized sample values in [0,1], row-major gridWidth×gridHeight",
+              "max": 1,
+              "maxLength": 4096,
+              "min": 0,
+              "minLength": 1,
+              "name": "samples",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "declared scene class; a tag starting with 'unsupported:' triggers the provider's explicit unsupported-data refusal",
+              "maxLength": 128,
+              "minLength": 1,
+              "name": "sceneTag",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "image"
+        },
+        "kind": "provider-profile",
+        "latencyProfile": {
+          "expectedMsP50": 0.5,
+          "expectedMsP95": 1,
+          "statement": "declared fixture latencies — no wall-clock measurement exists in the control plane",
+          "timeoutMs": 5000
+        },
+        "license": {
+          "commercialUse": true,
+          "evaluationOnly": false,
+          "identifier": "fixture-permissive-1.0",
+          "intendedUse": "production depth estimation behind the AISE depth-estimation provider port",
+          "intendedUseCleared": true
+        },
+        "memoryProfile": {
+          "minimumMiB": 16,
+          "recommendedMiB": 32,
+          "statement": "declared fixture memory envelope (no environment is sensed)"
+        },
+        "outputContract": {
+          "contractId": "fixture-depth-output/1",
+          "fields": [
+            {
+              "description": "estimated depth per grid cell (meters), row-major gridWidth×gridHeight",
+              "max": 4,
+              "maxLength": 4096,
+              "min": 0,
+              "minLength": 1,
+              "name": "depthMap",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "the depth unit of the depthMap values",
+              "maxLength": 8,
+              "minLength": 1,
+              "name": "unit",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "depth-map"
+        },
+        "provenanceContract": {
+          "configurationDigestRequired": true,
+          "inputDigestRequired": true,
+          "nativePayloadPolicy": "opaque-required",
+          "providerIdentityRequired": true
+        },
+        "providerId": "fixture-depth-provider",
+        "schemaVersion": "provider-profile/1",
+        "supportedModalities": [
+          "image",
+          "depth-map"
+        ],
+        "technologyVersion": "1.0.0-fixture-v1",
+        "uncertaintyCharacteristics": {
+          "calibration": "none-declared",
+          "confidenceSeparateFromMeasurementUncertainty": true,
+          "notes": "the fixture emits depth values without confidence scores and without measurement uncertainty — confidence is never fabricated and never substitutes for measurement uncertainty"
+        }
+      }
+    },
+    {
+      "kind": "provider-registered",
+      "profile": {
+        "benchmarkResults": [],
+        "capabilities": [
+          "fixture-depth-estimation"
+        ],
+        "computeProfile": {
+          "accelerator": "none",
+          "minimumCores": 1,
+          "offlineCapable": true,
+          "recommendedCores": 1,
+          "statement": "deterministic fixture computation — no accelerator, fully offline"
+        },
+        "costProfile": {
+          "currency": "n/a",
+          "model": "none",
+          "quotaPolicy": "fixture provider — deterministic local computation, no quota, no fallback needed",
+          "unitCost": 0
+        },
+        "description": "Deterministic reference depth-estimation fixture (v2): carries a measurable +0.25 m even-index bias and a research-only license — benchmark metrics are recordable, but the license/use gate refuses production promotion.",
+        "displayName": "Fixture Depth Provider v2",
+        "failureModes": [
+          {
+            "behavior": "explicit unsupported-data refusal — never fabricated depth values",
+            "condition": "sceneTag starting with 'unsupported:' (a scene class outside declared support)",
+            "kind": "unsupported-data"
+          },
+          {
+            "behavior": "typed normalization refusal with structured issues — never a silent coercion",
+            "condition": "input or output payload violates the declared contracts",
+            "kind": "contract-mismatch"
+          },
+          {
+            "behavior": "the license/use gate refuses promotion — research-only terms keep the provider evaluation-only (training and evaluation are separate decisions)",
+            "condition": "a production promotion request for this provider+version",
+            "kind": "license-blocked"
+          }
+        ],
+        "inputContract": {
+          "contractId": "fixture-depth-input/1",
+          "fields": [
+            {
+              "description": "grid width of the fixture sample grid (cells)",
+              "max": 64,
+              "min": 1,
+              "name": "gridWidth",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "description": "grid height of the fixture sample grid (cells)",
+              "max": 64,
+              "min": 1,
+              "name": "gridHeight",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "description": "normalized sample values in [0,1], row-major gridWidth×gridHeight",
+              "max": 1,
+              "maxLength": 4096,
+              "min": 0,
+              "minLength": 1,
+              "name": "samples",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "declared scene class; a tag starting with 'unsupported:' triggers the provider's explicit unsupported-data refusal",
+              "maxLength": 128,
+              "minLength": 1,
+              "name": "sceneTag",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "image"
+        },
+        "kind": "provider-profile",
+        "latencyProfile": {
+          "expectedMsP50": 0.5,
+          "expectedMsP95": 1,
+          "statement": "declared fixture latencies — no wall-clock measurement exists in the control plane",
+          "timeoutMs": 5000
+        },
+        "license": {
+          "commercialUse": false,
+          "evaluationOnly": true,
+          "identifier": "fixture-research-only-1.0",
+          "intendedUse": "research and evaluation of depth-estimation providers only",
+          "intendedUseCleared": false
+        },
+        "memoryProfile": {
+          "minimumMiB": 16,
+          "recommendedMiB": 32,
+          "statement": "declared fixture memory envelope (no environment is sensed)"
+        },
+        "outputContract": {
+          "contractId": "fixture-depth-output/1",
+          "fields": [
+            {
+              "description": "estimated depth per grid cell (meters), row-major gridWidth×gridHeight",
+              "max": 4,
+              "maxLength": 4096,
+              "min": 0,
+              "minLength": 1,
+              "name": "depthMap",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "the depth unit of the depthMap values",
+              "maxLength": 8,
+              "minLength": 1,
+              "name": "unit",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "depth-map"
+        },
+        "provenanceContract": {
+          "configurationDigestRequired": true,
+          "inputDigestRequired": true,
+          "nativePayloadPolicy": "opaque-required",
+          "providerIdentityRequired": true
+        },
+        "providerId": "fixture-depth-provider",
+        "schemaVersion": "provider-profile/1",
+        "supportedModalities": [
+          "image",
+          "depth-map"
+        ],
+        "technologyVersion": "1.1.0-fixture-v2",
+        "uncertaintyCharacteristics": {
+          "calibration": "none-declared",
+          "confidenceSeparateFromMeasurementUncertainty": true,
+          "notes": "the fixture emits depth values without confidence scores and without measurement uncertainty — confidence is never fabricated and never substitutes for measurement uncertainty"
+        }
+      }
+    },
+    {
+      "kind": "evaluation-started",
+      "providerId": "fixture-depth-provider",
+      "technologyVersion": "1.0.0-fixture-v1"
+    },
+    {
+      "execution": {
+        "capability": "fixture-depth-estimation",
+        "inputDigest": "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27",
+        "normalizedResultDigest": "eb22b42733137ff6d965c5362159aff7c8155c22c13ecd8bca9028d86a986858"
+      },
+      "kind": "execution-normalized",
+      "providerId": "fixture-depth-provider",
+      "technologyVersion": "1.0.0-fixture-v1"
+    },
+    {
+      "kind": "benchmark-recorded",
+      "record": {
+        "benchmarkId": "fixture-depth-estimation-bench/1",
+        "capability": "fixture-depth-estimation",
+        "failureObservations": [
+          {
+            "detail": "the 'unsupported:thermal-only-capture' scene probe was refused explicitly with the closed-vocabulary unsupported-data failure — no fabricated depth values (the benchmark's hard-negative case)",
+            "kind": "unsupported-data"
+          }
+        ],
+        "kind": "provider-benchmark-record",
+        "metrics": [
+          {
+            "detail": "mean absolute error of the estimated depthMap against the documented reference truth",
+            "metric": "depth_mae_m",
+            "unit": "m",
+            "value": 0
+          },
+          {
+            "detail": "maximum absolute error of the estimated depthMap against the documented reference truth",
+            "metric": "depth_max_error_m",
+            "unit": "m",
+            "value": 0
+          },
+          {
+            "detail": "the unsupported-scene probe answered an explicit unsupported-data refusal (1 = the negative path is explicit and safe)",
+            "metric": "unsupported_scene_refusal_rate",
+            "unit": "ratio",
+            "value": 1
+          }
+        ],
+        "providerId": "fixture-depth-provider",
+        "recordId": "d2435ecb369abda51d2c1e56a005e6a05705247a87169035234e5aa8c8b58778",
+        "reproduction": {
+          "codeVersion": "fixture-depth-testkit/1",
+          "inputsDigest": "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27",
+          "statement": "deterministic reproduction: the fixed 4x4 fixture input (digest above) through the pure fixture engine at code version (above) always yields these metric values — no clock, no randomness, no network"
+        },
+        "resourceObservations": {
+          "compute": "deterministic-fixture-cpu",
+          "latencyMsP50": 0.5,
+          "latencyMsP95": 1,
+          "memoryMiB": 16
+        },
+        "schemaVersion": "provider-benchmark/1",
+        "technologyVersion": "1.0.0-fixture-v1"
+      }
+    },
+    {
+      "kind": "evaluation-started",
+      "providerId": "fixture-depth-provider",
+      "technologyVersion": "1.1.0-fixture-v2"
+    },
+    {
+      "execution": {
+        "capability": "fixture-depth-estimation",
+        "inputDigest": "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27",
+        "normalizedResultDigest": "5e6a9f53cb2b708ecc80d1d9d377e03e863347d50d7f0f5dc4cb0f0ea385ba62"
+      },
+      "kind": "execution-normalized",
+      "providerId": "fixture-depth-provider",
+      "technologyVersion": "1.1.0-fixture-v2"
+    },
+    {
+      "kind": "benchmark-recorded",
+      "record": {
+        "benchmarkId": "fixture-depth-estimation-bench/1",
+        "capability": "fixture-depth-estimation",
+        "failureObservations": [
+          {
+            "detail": "the 'unsupported:thermal-only-capture' scene probe was refused explicitly with the closed-vocabulary unsupported-data failure — no fabricated depth values (the benchmark's hard-negative case)",
+            "kind": "unsupported-data"
+          }
+        ],
+        "kind": "provider-benchmark-record",
+        "metrics": [
+          {
+            "detail": "mean absolute error of the estimated depthMap against the documented reference truth",
+            "metric": "depth_mae_m",
+            "unit": "m",
+            "value": 0.125
+          },
+          {
+            "detail": "maximum absolute error of the estimated depthMap against the documented reference truth",
+            "metric": "depth_max_error_m",
+            "unit": "m",
+            "value": 0.25
+          },
+          {
+            "detail": "the unsupported-scene probe answered an explicit unsupported-data refusal (1 = the negative path is explicit and safe)",
+            "metric": "unsupported_scene_refusal_rate",
+            "unit": "ratio",
+            "value": 1
+          }
+        ],
+        "providerId": "fixture-depth-provider",
+        "recordId": "d0ec293482f296d6b6ad14595c754f5bdb476c19d9d969c1cd9ec57bdfca09cd",
+        "reproduction": {
+          "codeVersion": "fixture-depth-testkit/1",
+          "inputsDigest": "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27",
+          "statement": "deterministic reproduction: the fixed 4x4 fixture input (digest above) through the pure fixture engine at code version (above) always yields these metric values — no clock, no randomness, no network"
+        },
+        "resourceObservations": {
+          "compute": "deterministic-fixture-cpu",
+          "latencyMsP50": 0.5,
+          "latencyMsP95": 1,
+          "memoryMiB": 16
+        },
+        "schemaVersion": "provider-benchmark/1",
+        "technologyVersion": "1.1.0-fixture-v2"
+      }
+    },
+    {
+      "kind": "provenance-sealed",
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "ed980c556b8beed083ea8b4bc7248983d2c53267688fe11318afa476766caf97"
+        ],
+        "benchmarkRecordReferences": [
+          "d2435ecb369abda51d2c1e56a005e6a05705247a87169035234e5aa8c8b58778"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "provider-evaluation-control-plane"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "provider-registry/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the control plane never reads the runtime environment (determinism contract)"
+        },
+        "inputDigests": [
+          "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "aa3d6b68b0d62cf09fee7d11496e0ee25a6b6c23f7e76a17da3545bf1abc5a0b",
+        "normalizedResultDigest": "eb22b42733137ff6d965c5362159aff7c8155c22c13ecd8bca9028d86a986858",
+        "profileReference": {
+          "profileDigest": "fb9372e42bef036243800d7938a82f904ca05ac521e912d0a981d01ea98c7994",
+          "providerId": "fixture-depth-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "reproducibilityStatement": "v1 reference lifecycle: the registered profile, the canonical fixture input (digest above), the normalized result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest",
+        "schemaVersion": "provider-provenance/1"
+      }
+    },
+    {
+      "kind": "provenance-sealed",
+      "manifest": {
+        "benchmarkRecordDigests": [
+          "95fb37299285556d86f0065162e7db04e298761d1493543c8218255a7946f7c5"
+        ],
+        "benchmarkRecordReferences": [
+          "d0ec293482f296d6b6ad14595c754f5bdb476c19d9d969c1cd9ec57bdfca09cd"
+        ],
+        "consumerIdentity": {
+          "consumer": "AISE",
+          "surface": "provider-evaluation-control-plane"
+        },
+        "environmentFingerprint": {
+          "codeVersion": "provider-registry/1",
+          "declaredPlatform": "deterministic-fixture",
+          "declaredRuntime": "bun",
+          "statement": "declared, not sensed — the control plane never reads the runtime environment (determinism contract)"
+        },
+        "inputDigests": [
+          "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27"
+        ],
+        "kind": "provider-provenance-manifest",
+        "manifestId": "0ae4964dd23a7cb582410a6b9d7fefd97a38c0b1fe2fd2f5654b606a0948bdd2",
+        "normalizedResultDigest": "5e6a9f53cb2b708ecc80d1d9d377e03e863347d50d7f0f5dc4cb0f0ea385ba62",
+        "profileReference": {
+          "profileDigest": "484fd5a05a70b17e2bfea7f0984e2536759213df4d6c42c73bb172e0de9b49c2",
+          "providerId": "fixture-depth-provider",
+          "technologyVersion": "1.1.0-fixture-v2"
+        },
+        "reproducibilityStatement": "v2 reference lifecycle (license-blocked path): the registered profile, the canonical fixture input (digest above), the normalized result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest",
+        "schemaVersion": "provider-provenance/1"
+      }
+    },
+    {
+      "checks": [
+        {
+          "detail": "license 'fixture-permissive-1.0' clears commercial use and the declared intended use for production",
+          "gate": "license-use-clearance",
+          "passed": true
+        },
+        {
+          "detail": "1 benchmark record(s) attached, all referencing this provider+version",
+          "gate": "benchmark-evidence",
+          "passed": true
+        },
+        {
+          "detail": "1 provenance manifest(s) sealed against this profile digest",
+          "gate": "provenance-continuity",
+          "passed": true
+        }
+      ],
+      "decision": "promoted",
+      "kind": "promotion-decided",
+      "providerId": "fixture-depth-provider",
+      "refusals": [],
+      "technologyVersion": "1.0.0-fixture-v1"
+    },
+    {
+      "checks": [
+        {
+          "detail": "license 'fixture-research-only-1.0' is evaluation-only (commercialUse: false, intendedUseCleared: false) — the dataset/model-use rule forbids production promotion",
+          "gate": "license-use-clearance",
+          "passed": false
+        },
+        {
+          "detail": "1 benchmark record(s) attached, all referencing this provider+version",
+          "gate": "benchmark-evidence",
+          "passed": true
+        },
+        {
+          "detail": "1 provenance manifest(s) sealed against this profile digest",
+          "gate": "provenance-continuity",
+          "passed": true
+        }
+      ],
+      "decision": "rejected",
+      "kind": "promotion-decided",
+      "providerId": "fixture-depth-provider",
+      "refusals": [
+        {
+          "detail": "provider 'fixture-depth-provider' (1.1.0-fixture-v2) is evaluation-only: licensing/intended-use terms are not explicitly cleared — production promotion is refused (training and evaluation are separate decisions; nothing enters a commercial pipeline silently)",
+          "kind": "license-blocked"
+        }
+      ],
+      "technologyVersion": "1.1.0-fixture-v2"
+    }
+  ],
+  "finalEntries": [
+    {
+      "benchmarkRecords": [
+        {
+          "benchmarkId": "fixture-depth-estimation-bench/1",
+          "capability": "fixture-depth-estimation",
+          "failureObservations": [
+            {
+              "detail": "the 'unsupported:thermal-only-capture' scene probe was refused explicitly with the closed-vocabulary unsupported-data failure — no fabricated depth values (the benchmark's hard-negative case)",
+              "kind": "unsupported-data"
+            }
+          ],
+          "kind": "provider-benchmark-record",
+          "metrics": [
+            {
+              "detail": "mean absolute error of the estimated depthMap against the documented reference truth",
+              "metric": "depth_mae_m",
+              "unit": "m",
+              "value": 0
+            },
+            {
+              "detail": "maximum absolute error of the estimated depthMap against the documented reference truth",
+              "metric": "depth_max_error_m",
+              "unit": "m",
+              "value": 0
+            },
+            {
+              "detail": "the unsupported-scene probe answered an explicit unsupported-data refusal (1 = the negative path is explicit and safe)",
+              "metric": "unsupported_scene_refusal_rate",
+              "unit": "ratio",
+              "value": 1
+            }
+          ],
+          "providerId": "fixture-depth-provider",
+          "recordId": "d2435ecb369abda51d2c1e56a005e6a05705247a87169035234e5aa8c8b58778",
+          "reproduction": {
+            "codeVersion": "fixture-depth-testkit/1",
+            "inputsDigest": "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27",
+            "statement": "deterministic reproduction: the fixed 4x4 fixture input (digest above) through the pure fixture engine at code version (above) always yields these metric values — no clock, no randomness, no network"
+          },
+          "resourceObservations": {
+            "compute": "deterministic-fixture-cpu",
+            "latencyMsP50": 0.5,
+            "latencyMsP95": 1,
+            "memoryMiB": 16
+          },
+          "schemaVersion": "provider-benchmark/1",
+          "technologyVersion": "1.0.0-fixture-v1"
+        }
+      ],
+      "normalizedExecutions": [
+        {
+          "capability": "fixture-depth-estimation",
+          "inputDigest": "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27",
+          "normalizedResultDigest": "eb22b42733137ff6d965c5362159aff7c8155c22c13ecd8bca9028d86a986858"
+        }
+      ],
+      "profile": {
+        "benchmarkResults": [],
+        "capabilities": [
+          "fixture-depth-estimation"
+        ],
+        "computeProfile": {
+          "accelerator": "none",
+          "minimumCores": 1,
+          "offlineCapable": true,
+          "recommendedCores": 1,
+          "statement": "deterministic fixture computation — no accelerator, fully offline"
+        },
+        "costProfile": {
+          "currency": "n/a",
+          "model": "none",
+          "quotaPolicy": "fixture provider — deterministic local computation, no quota, no fallback needed",
+          "unitCost": 0
+        },
+        "description": "Deterministic reference depth-estimation fixture (v1): reproduces the documented reference truth exactly; permissively licensed and cleared for production use — the promotable reference lifecycle.",
+        "displayName": "Fixture Depth Provider v1",
+        "failureModes": [
+          {
+            "behavior": "explicit unsupported-data refusal — never fabricated depth values",
+            "condition": "sceneTag starting with 'unsupported:' (a scene class outside declared support)",
+            "kind": "unsupported-data"
+          },
+          {
+            "behavior": "typed normalization refusal with structured issues — never a silent coercion",
+            "condition": "input or output payload violates the declared contracts",
+            "kind": "contract-mismatch"
+          }
+        ],
+        "inputContract": {
+          "contractId": "fixture-depth-input/1",
+          "fields": [
+            {
+              "description": "grid width of the fixture sample grid (cells)",
+              "max": 64,
+              "min": 1,
+              "name": "gridWidth",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "description": "grid height of the fixture sample grid (cells)",
+              "max": 64,
+              "min": 1,
+              "name": "gridHeight",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "description": "normalized sample values in [0,1], row-major gridWidth×gridHeight",
+              "max": 1,
+              "maxLength": 4096,
+              "min": 0,
+              "minLength": 1,
+              "name": "samples",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "declared scene class; a tag starting with 'unsupported:' triggers the provider's explicit unsupported-data refusal",
+              "maxLength": 128,
+              "minLength": 1,
+              "name": "sceneTag",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "image"
+        },
+        "kind": "provider-profile",
+        "latencyProfile": {
+          "expectedMsP50": 0.5,
+          "expectedMsP95": 1,
+          "statement": "declared fixture latencies — no wall-clock measurement exists in the control plane",
+          "timeoutMs": 5000
+        },
+        "license": {
+          "commercialUse": true,
+          "evaluationOnly": false,
+          "identifier": "fixture-permissive-1.0",
+          "intendedUse": "production depth estimation behind the AISE depth-estimation provider port",
+          "intendedUseCleared": true
+        },
+        "memoryProfile": {
+          "minimumMiB": 16,
+          "recommendedMiB": 32,
+          "statement": "declared fixture memory envelope (no environment is sensed)"
+        },
+        "outputContract": {
+          "contractId": "fixture-depth-output/1",
+          "fields": [
+            {
+              "description": "estimated depth per grid cell (meters), row-major gridWidth×gridHeight",
+              "max": 4,
+              "maxLength": 4096,
+              "min": 0,
+              "minLength": 1,
+              "name": "depthMap",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "the depth unit of the depthMap values",
+              "maxLength": 8,
+              "minLength": 1,
+              "name": "unit",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "depth-map"
+        },
+        "provenanceContract": {
+          "configurationDigestRequired": true,
+          "inputDigestRequired": true,
+          "nativePayloadPolicy": "opaque-required",
+          "providerIdentityRequired": true
+        },
+        "providerId": "fixture-depth-provider",
+        "schemaVersion": "provider-profile/1",
+        "supportedModalities": [
+          "image",
+          "depth-map"
+        ],
+        "technologyVersion": "1.0.0-fixture-v1",
+        "uncertaintyCharacteristics": {
+          "calibration": "none-declared",
+          "confidenceSeparateFromMeasurementUncertainty": true,
+          "notes": "the fixture emits depth values without confidence scores and without measurement uncertainty — confidence is never fabricated and never substitutes for measurement uncertainty"
+        }
+      },
+      "profileDigest": "fb9372e42bef036243800d7938a82f904ca05ac521e912d0a981d01ea98c7994",
+      "promotionDecision": {
+        "checks": [
+          {
+            "detail": "license 'fixture-permissive-1.0' clears commercial use and the declared intended use for production",
+            "gate": "license-use-clearance",
+            "passed": true
+          },
+          {
+            "detail": "1 benchmark record(s) attached, all referencing this provider+version",
+            "gate": "benchmark-evidence",
+            "passed": true
+          },
+          {
+            "detail": "1 provenance manifest(s) sealed against this profile digest",
+            "gate": "provenance-continuity",
+            "passed": true
+          }
+        ],
+        "decision": "promoted",
+        "refusals": []
+      },
+      "provenanceManifests": [
+        {
+          "benchmarkRecordDigests": [
+            "ed980c556b8beed083ea8b4bc7248983d2c53267688fe11318afa476766caf97"
+          ],
+          "benchmarkRecordReferences": [
+            "d2435ecb369abda51d2c1e56a005e6a05705247a87169035234e5aa8c8b58778"
+          ],
+          "consumerIdentity": {
+            "consumer": "AISE",
+            "surface": "provider-evaluation-control-plane"
+          },
+          "environmentFingerprint": {
+            "codeVersion": "provider-registry/1",
+            "declaredPlatform": "deterministic-fixture",
+            "declaredRuntime": "bun",
+            "statement": "declared, not sensed — the control plane never reads the runtime environment (determinism contract)"
+          },
+          "inputDigests": [
+            "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27"
+          ],
+          "kind": "provider-provenance-manifest",
+          "manifestId": "aa3d6b68b0d62cf09fee7d11496e0ee25a6b6c23f7e76a17da3545bf1abc5a0b",
+          "normalizedResultDigest": "eb22b42733137ff6d965c5362159aff7c8155c22c13ecd8bca9028d86a986858",
+          "profileReference": {
+            "profileDigest": "fb9372e42bef036243800d7938a82f904ca05ac521e912d0a981d01ea98c7994",
+            "providerId": "fixture-depth-provider",
+            "technologyVersion": "1.0.0-fixture-v1"
+          },
+          "reproducibilityStatement": "v1 reference lifecycle: the registered profile, the canonical fixture input (digest above), the normalized result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest",
+          "schemaVersion": "provider-provenance/1"
+        }
+      ],
+      "providerId": "fixture-depth-provider",
+      "retirementReason": null,
+      "state": "promoted",
+      "technologyVersion": "1.0.0-fixture-v1"
+    },
+    {
+      "benchmarkRecords": [
+        {
+          "benchmarkId": "fixture-depth-estimation-bench/1",
+          "capability": "fixture-depth-estimation",
+          "failureObservations": [
+            {
+              "detail": "the 'unsupported:thermal-only-capture' scene probe was refused explicitly with the closed-vocabulary unsupported-data failure — no fabricated depth values (the benchmark's hard-negative case)",
+              "kind": "unsupported-data"
+            }
+          ],
+          "kind": "provider-benchmark-record",
+          "metrics": [
+            {
+              "detail": "mean absolute error of the estimated depthMap against the documented reference truth",
+              "metric": "depth_mae_m",
+              "unit": "m",
+              "value": 0.125
+            },
+            {
+              "detail": "maximum absolute error of the estimated depthMap against the documented reference truth",
+              "metric": "depth_max_error_m",
+              "unit": "m",
+              "value": 0.25
+            },
+            {
+              "detail": "the unsupported-scene probe answered an explicit unsupported-data refusal (1 = the negative path is explicit and safe)",
+              "metric": "unsupported_scene_refusal_rate",
+              "unit": "ratio",
+              "value": 1
+            }
+          ],
+          "providerId": "fixture-depth-provider",
+          "recordId": "d0ec293482f296d6b6ad14595c754f5bdb476c19d9d969c1cd9ec57bdfca09cd",
+          "reproduction": {
+            "codeVersion": "fixture-depth-testkit/1",
+            "inputsDigest": "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27",
+            "statement": "deterministic reproduction: the fixed 4x4 fixture input (digest above) through the pure fixture engine at code version (above) always yields these metric values — no clock, no randomness, no network"
+          },
+          "resourceObservations": {
+            "compute": "deterministic-fixture-cpu",
+            "latencyMsP50": 0.5,
+            "latencyMsP95": 1,
+            "memoryMiB": 16
+          },
+          "schemaVersion": "provider-benchmark/1",
+          "technologyVersion": "1.1.0-fixture-v2"
+        }
+      ],
+      "normalizedExecutions": [
+        {
+          "capability": "fixture-depth-estimation",
+          "inputDigest": "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27",
+          "normalizedResultDigest": "5e6a9f53cb2b708ecc80d1d9d377e03e863347d50d7f0f5dc4cb0f0ea385ba62"
+        }
+      ],
+      "profile": {
+        "benchmarkResults": [],
+        "capabilities": [
+          "fixture-depth-estimation"
+        ],
+        "computeProfile": {
+          "accelerator": "none",
+          "minimumCores": 1,
+          "offlineCapable": true,
+          "recommendedCores": 1,
+          "statement": "deterministic fixture computation — no accelerator, fully offline"
+        },
+        "costProfile": {
+          "currency": "n/a",
+          "model": "none",
+          "quotaPolicy": "fixture provider — deterministic local computation, no quota, no fallback needed",
+          "unitCost": 0
+        },
+        "description": "Deterministic reference depth-estimation fixture (v2): carries a measurable +0.25 m even-index bias and a research-only license — benchmark metrics are recordable, but the license/use gate refuses production promotion.",
+        "displayName": "Fixture Depth Provider v2",
+        "failureModes": [
+          {
+            "behavior": "explicit unsupported-data refusal — never fabricated depth values",
+            "condition": "sceneTag starting with 'unsupported:' (a scene class outside declared support)",
+            "kind": "unsupported-data"
+          },
+          {
+            "behavior": "typed normalization refusal with structured issues — never a silent coercion",
+            "condition": "input or output payload violates the declared contracts",
+            "kind": "contract-mismatch"
+          },
+          {
+            "behavior": "the license/use gate refuses promotion — research-only terms keep the provider evaluation-only (training and evaluation are separate decisions)",
+            "condition": "a production promotion request for this provider+version",
+            "kind": "license-blocked"
+          }
+        ],
+        "inputContract": {
+          "contractId": "fixture-depth-input/1",
+          "fields": [
+            {
+              "description": "grid width of the fixture sample grid (cells)",
+              "max": 64,
+              "min": 1,
+              "name": "gridWidth",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "description": "grid height of the fixture sample grid (cells)",
+              "max": 64,
+              "min": 1,
+              "name": "gridHeight",
+              "required": true,
+              "type": "integer"
+            },
+            {
+              "description": "normalized sample values in [0,1], row-major gridWidth×gridHeight",
+              "max": 1,
+              "maxLength": 4096,
+              "min": 0,
+              "minLength": 1,
+              "name": "samples",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "declared scene class; a tag starting with 'unsupported:' triggers the provider's explicit unsupported-data refusal",
+              "maxLength": 128,
+              "minLength": 1,
+              "name": "sceneTag",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "image"
+        },
+        "kind": "provider-profile",
+        "latencyProfile": {
+          "expectedMsP50": 0.5,
+          "expectedMsP95": 1,
+          "statement": "declared fixture latencies — no wall-clock measurement exists in the control plane",
+          "timeoutMs": 5000
+        },
+        "license": {
+          "commercialUse": false,
+          "evaluationOnly": true,
+          "identifier": "fixture-research-only-1.0",
+          "intendedUse": "research and evaluation of depth-estimation providers only",
+          "intendedUseCleared": false
+        },
+        "memoryProfile": {
+          "minimumMiB": 16,
+          "recommendedMiB": 32,
+          "statement": "declared fixture memory envelope (no environment is sensed)"
+        },
+        "outputContract": {
+          "contractId": "fixture-depth-output/1",
+          "fields": [
+            {
+              "description": "estimated depth per grid cell (meters), row-major gridWidth×gridHeight",
+              "max": 4,
+              "maxLength": 4096,
+              "min": 0,
+              "minLength": 1,
+              "name": "depthMap",
+              "required": true,
+              "type": "number-array"
+            },
+            {
+              "description": "the depth unit of the depthMap values",
+              "maxLength": 8,
+              "minLength": 1,
+              "name": "unit",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "modality": "depth-map"
+        },
+        "provenanceContract": {
+          "configurationDigestRequired": true,
+          "inputDigestRequired": true,
+          "nativePayloadPolicy": "opaque-required",
+          "providerIdentityRequired": true
+        },
+        "providerId": "fixture-depth-provider",
+        "schemaVersion": "provider-profile/1",
+        "supportedModalities": [
+          "image",
+          "depth-map"
+        ],
+        "technologyVersion": "1.1.0-fixture-v2",
+        "uncertaintyCharacteristics": {
+          "calibration": "none-declared",
+          "confidenceSeparateFromMeasurementUncertainty": true,
+          "notes": "the fixture emits depth values without confidence scores and without measurement uncertainty — confidence is never fabricated and never substitutes for measurement uncertainty"
+        }
+      },
+      "profileDigest": "484fd5a05a70b17e2bfea7f0984e2536759213df4d6c42c73bb172e0de9b49c2",
+      "promotionDecision": {
+        "checks": [
+          {
+            "detail": "license 'fixture-research-only-1.0' is evaluation-only (commercialUse: false, intendedUseCleared: false) — the dataset/model-use rule forbids production promotion",
+            "gate": "license-use-clearance",
+            "passed": false
+          },
+          {
+            "detail": "1 benchmark record(s) attached, all referencing this provider+version",
+            "gate": "benchmark-evidence",
+            "passed": true
+          },
+          {
+            "detail": "1 provenance manifest(s) sealed against this profile digest",
+            "gate": "provenance-continuity",
+            "passed": true
+          }
+        ],
+        "decision": "rejected",
+        "refusals": [
+          {
+            "detail": "provider 'fixture-depth-provider' (1.1.0-fixture-v2) is evaluation-only: licensing/intended-use terms are not explicitly cleared — production promotion is refused (training and evaluation are separate decisions; nothing enters a commercial pipeline silently)",
+            "kind": "license-blocked"
+          }
+        ]
+      },
+      "provenanceManifests": [
+        {
+          "benchmarkRecordDigests": [
+            "95fb37299285556d86f0065162e7db04e298761d1493543c8218255a7946f7c5"
+          ],
+          "benchmarkRecordReferences": [
+            "d0ec293482f296d6b6ad14595c754f5bdb476c19d9d969c1cd9ec57bdfca09cd"
+          ],
+          "consumerIdentity": {
+            "consumer": "AISE",
+            "surface": "provider-evaluation-control-plane"
+          },
+          "environmentFingerprint": {
+            "codeVersion": "provider-registry/1",
+            "declaredPlatform": "deterministic-fixture",
+            "declaredRuntime": "bun",
+            "statement": "declared, not sensed — the control plane never reads the runtime environment (determinism contract)"
+          },
+          "inputDigests": [
+            "7a1198b71f487b4ef71adec35ee761e99f7fa7d9af9bc52c4e729c3ba15a3d27"
+          ],
+          "kind": "provider-provenance-manifest",
+          "manifestId": "0ae4964dd23a7cb582410a6b9d7fefd97a38c0b1fe2fd2f5654b606a0948bdd2",
+          "normalizedResultDigest": "5e6a9f53cb2b708ecc80d1d9d377e03e863347d50d7f0f5dc4cb0f0ea385ba62",
+          "profileReference": {
+            "profileDigest": "484fd5a05a70b17e2bfea7f0984e2536759213df4d6c42c73bb172e0de9b49c2",
+            "providerId": "fixture-depth-provider",
+            "technologyVersion": "1.1.0-fixture-v2"
+          },
+          "reproducibilityStatement": "v2 reference lifecycle (license-blocked path): the registered profile, the canonical fixture input (digest above), the normalized result (digest above) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest",
+          "schemaVersion": "provider-provenance/1"
+        }
+      ],
+      "providerId": "fixture-depth-provider",
+      "retirementReason": null,
+      "state": "rejected",
+      "technologyVersion": "1.1.0-fixture-v2"
+    }
+  ],
+  "summary": {
+    "eventCount": 12,
+    "exitGate": "registration → evaluation → execution → normalized result → benchmark → provenance → promotion decision (v1 promoted; v2 license-blocked) — without changing canonical AISE semantics",
+    "v1FinalState": "promoted",
+    "v2FinalState": "rejected",
+    "v2RefusalKinds": [
+      "license-blocked"
+    ]
+  }
+}

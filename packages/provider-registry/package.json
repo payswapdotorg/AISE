@@ -1,0 +1,16 @@
+{
+  "name": "@aise/provider-registry",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE provider evaluation control plane (HFX-000): the machine-readable ProviderProfile schema, the append-only provider registry with its promotion state machine and license/use gate, the normalized provider I/O boundary, the closed failure vocabulary, the benchmark result schema and the portable provenance manifest. Pure deterministic computation over declared inputs — no network, no clock reads, no randomness. Provider-specific types never cross the canonical AISE domain boundary.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/shared-contracts": "workspace:*"
+  }
+}

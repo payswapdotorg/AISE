@@ -13,6 +13,7 @@
     "@aise/solution-contract": "workspace:*",
     "@aise/solution-engine": "workspace:*",
     "@aise/solution-boq": "workspace:*",
+    "@aise/provider-registry": "workspace:*",
     "postgres": "3.4.5"
   },
   "exports": {
