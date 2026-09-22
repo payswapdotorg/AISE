@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-22T06:20:00Z",
+  "lastReconciledAt": "2026-09-22T07:20:00Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -233,7 +233,7 @@
     },
     {
       "id": "PROD-014",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-011b",
         "PROD-012",
@@ -247,7 +247,14 @@
         "PROD-027",
         "PROD-028",
         "PROD-029"
-      ]
+      ],
+      "mergedSha": "72d0475",
+      "mergedAt": "2026-09-22T07:20:00Z",
+      "workerChat": "ca27a61e-6c34-4762-be43-93e41d62385e",
+      "workerCommit": "9644bf06bf2458f8c8db85557cc09f202148448a",
+      "harvest": "work-log replay harvest (session killed by server_shutdown post-implementation, pre-staging; 28 Write/Edit/MultiEdit calls + 1 sed replayed, 0 errors; single-file test count exact 25/0/116)",
+      "verify": "5130 pass / 0 fail (baseline 5105 + 25); fresh-checkout transcript regenerated Lead-side at the merged commit (demo 8/8 phases, SMOKE: PASS)",
+      "note": "evaluator documentation + one-command demo bootstrap; PROD-015 (the sole readiness declaration gate) now dispatch-gated on Lead redeploy + Gate F"
     },
     {
       "id": "PROD-015",
