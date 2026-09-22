@@ -1,0 +1,2601 @@
+{
+  "codeVersion": "hfx-101/mapanything-eval/1",
+  "executionMode": "deterministic-in-repo-doubles",
+  "lanes": {
+    "depth": {
+      "benchmarkId": "reality-eval-depth/1",
+      "comparabilityKey": "reality-eval-depth/1|depth",
+      "mapAnythingRunCount": 1,
+      "referenceRunCount": 1
+    },
+    "reconstruction": {
+      "benchmarkId": "reality-eval-reconstruction/1",
+      "comparabilityKey": "reality-eval-reconstruction/1|reconstruction",
+      "mapAnythingRunCount": 7,
+      "referenceRunCount": 3
+    }
+  },
+  "licenseStatus": "evaluation-only",
+  "providerFamily": "mapanything",
+  "providers": [
+    {
+      "capabilities": [
+        "reconstruction",
+        "depth",
+        "multi-image-reconstruction",
+        "metric-depth",
+        "registration"
+      ],
+      "licenseStatus": "evaluation-only",
+      "profileDigest": "3687884e1fea9f3e343bdd00e256b3e74d922512c862f109f848f9816c5f30b6",
+      "providerId": "mapanything",
+      "role": "registered-candidate",
+      "technologyVersion": "eval-doubles-1",
+      "variant": "mapanything"
+    },
+    {
+      "capabilities": [
+        "reconstruction"
+      ],
+      "licenseStatus": "reference-path-fixture",
+      "profileDigest": "74061fb70c8ad27f3f284f3d3470923be9ec06524a5b6a783b99d473dc08b169",
+      "providerId": "fixture-reconstruction-provider",
+      "role": "reference-path",
+      "technologyVersion": "1.0.0-fixture-v1",
+      "variant": "reference-reconstruction"
+    },
+    {
+      "capabilities": [
+        "depth"
+      ],
+      "licenseStatus": "reference-path-fixture",
+      "profileDigest": "0fd3f3c4a68bff970cce8bd6447adc98ff42b1f8a9c0b8239167bcab0f09fd0c",
+      "providerId": "fixture-reality-depth-provider",
+      "role": "reference-path",
+      "technologyVersion": "1.0.0-fixture-v1",
+      "variant": "reference-depth"
+    }
+  ],
+  "runCount": 12,
+  "runs": [
+    {
+      "runId": "recon-multiimage-flagship-grounded-001@mapanything",
+      "scenario": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "criteria": {
+          "expectedFailureKinds": [],
+          "thresholds": [
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "plane_fit_rms",
+              "rationale": "mirrors gates-1 flagship_lidar: 2x the 2mm 1-sigma flagship noise envelope",
+              "threshold": 0.004
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "registration_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 2.5x the 2mm flagship noise envelope",
+              "threshold": 0.005
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "scale_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 1% scale error invalidates LiDAR-class dimensional engineering use",
+              "threshold": 0.01
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "dimension_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 20mm absolute dimension error invalidates LiDAR-class work",
+              "threshold": 0.02
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "object_volume_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 5% object volume error invalidates LiDAR-class quantity takeoff",
+              "threshold": 0.05
+            }
+          ]
+        },
+        "expected": {
+          "fixtureId": "fixture-flagship-livingroom-001",
+          "kind": "reconstruction-scene"
+        },
+        "input": {
+          "capability": "reconstruction",
+          "kind": "provider-input",
+          "payload": {
+            "captureSetJson": "{\n  \"captureSetId\": \"cap-flagship-livingroom-6frame\",\n  \"frames\": [\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-FLAG-01\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"floor\",\n        \"wall_west\"\n      ],\n      \"pointCount\": 1240,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.05,\n          3.05,\n          1.35\n        ]\n      },\n      \"station\": \"S1\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-FLAG-02\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"floor\",\n        \"wall_north\"\n      ],\n      \"pointCount\": 1190,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0.38268343,\n          0.92387953\n        ],\n        \"position\": [\n          3.15,\n          2.05,\n          1.35\n        ]\n      },\n      \"station\": \"S2\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-FLAG-03\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"ceiling\",\n        \"wall_east\"\n      ],\n      \"pointCount\": 1250,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.05,\n          0.55,\n          1.35\n        ]\n      },\n      \"station\": \"S3\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-FLAG-04\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"ceiling\",\n        \"wall_south\"\n      ],\n      \"pointCount\": 1180,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0.38268343,\n          0.92387953\n        ],\n        \"position\": [\n          3.15,\n          1.05,\n          1.35\n        ]\n      },\n      \"station\": \"S4\"\n    },\n    {\n      \"evidenceRevision\": \"r2\",\n      \"frameId\": \"FR-FLAG-05\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"box_storage::xmin\",\n        \"box_storage::xmax\",\n        \"box_storage::ymin\"\n      ],\n      \"pointCount\": 110,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1,\n          0.6,\n          0.4\n        ]\n      },\n      \"station\": \"S5\"\n    },\n    {\n      \"evidenceRevision\": \"r2\",\n      \"frameId\": \"FR-FLAG-06\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"box_storage::ymax\",\n        \"box_storage::zmin\",\n        \"box_storage::zmax\"\n      ],\n      \"pointCount\": 105,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1,\n          0.6,\n          0.55\n        ]\n      },\n      \"station\": \"S6\"\n    }\n  ],\n  \"note\": \"six posed flagship-class frames (six stations, documented intrinsics) covering all twelve canonical surfaces of the living-room golden fixture — the well-grounded multi-image evidence\",\n  \"purpose\": \"multi-image-reconstruction\"\n}\n",
+            "deviceClass": "flagship_lidar",
+            "fixtureId": "fixture-flagship-livingroom-001",
+            "sceneTag": "interior-livingroom",
+            "task": "multi-image-reconstruction"
+          }
+        },
+        "kind": "reality-eval-scenario",
+        "providerReference": {
+          "providerId": "mapanything",
+          "technologyVersion": "eval-doubles-1"
+        },
+        "scenarioClass": "positive",
+        "scenarioId": "recon-multiimage-flagship-grounded-001@mapanything",
+        "scenarioVersion": "1.0.0",
+        "schemaVersion": "reality-eval-scenario/1"
+      },
+      "taskId": "recon-multiimage-flagship-grounded-001",
+      "variant": "mapanything"
+    },
+    {
+      "runId": "recon-multiimage-flagship-grounded-001@reference-reconstruction",
+      "scenario": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "criteria": {
+          "expectedFailureKinds": [],
+          "thresholds": [
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "plane_fit_rms",
+              "rationale": "mirrors gates-1 flagship_lidar: 2x the 2mm 1-sigma flagship noise envelope",
+              "threshold": 0.004
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "registration_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 2.5x the 2mm flagship noise envelope",
+              "threshold": 0.005
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "scale_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 1% scale error invalidates LiDAR-class dimensional engineering use",
+              "threshold": 0.01
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "dimension_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 20mm absolute dimension error invalidates LiDAR-class work",
+              "threshold": 0.02
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "object_volume_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 5% object volume error invalidates LiDAR-class quantity takeoff",
+              "threshold": 0.05
+            }
+          ]
+        },
+        "expected": {
+          "fixtureId": "fixture-flagship-livingroom-001",
+          "kind": "reconstruction-scene"
+        },
+        "input": {
+          "capability": "reconstruction",
+          "kind": "provider-input",
+          "payload": {
+            "deviceClass": "flagship_lidar",
+            "fixtureId": "fixture-flagship-livingroom-001",
+            "sceneTag": "interior-livingroom"
+          }
+        },
+        "kind": "reality-eval-scenario",
+        "providerReference": {
+          "providerId": "fixture-reconstruction-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioClass": "positive",
+        "scenarioId": "recon-multiimage-flagship-grounded-001@reference-reconstruction",
+        "scenarioVersion": "1.0.0",
+        "schemaVersion": "reality-eval-scenario/1"
+      },
+      "taskId": "recon-multiimage-flagship-grounded-001",
+      "variant": "reference-reconstruction"
+    },
+    {
+      "runId": "recon-multiimage-midrange-grounded-002@mapanything",
+      "scenario": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "criteria": {
+          "expectedFailureKinds": [],
+          "thresholds": [
+            {
+              "critical": false,
+              "failureKind": "perception-failure",
+              "metric": "plane_fit_rms",
+              "rationale": "mirrors gates-1 midrange_no_depth: 2x the 8mm midrange noise envelope",
+              "threshold": 0.016
+            },
+            {
+              "critical": false,
+              "failureKind": "perception-failure",
+              "metric": "registration_error",
+              "rationale": "mirrors gates-1 midrange_no_depth: 2.5x the 8mm midrange noise envelope",
+              "threshold": 0.02
+            },
+            {
+              "critical": false,
+              "failureKind": "perception-failure",
+              "metric": "scale_error",
+              "rationale": "mirrors gates-1 midrange_no_depth: photogrammetry-tier scale drift; flagged for review",
+              "threshold": 0.025
+            },
+            {
+              "critical": false,
+              "failureKind": "perception-failure",
+              "metric": "dimension_error",
+              "rationale": "mirrors gates-1 midrange_no_depth: midrange absolute dimension tolerance",
+              "threshold": 0.04
+            },
+            {
+              "critical": false,
+              "failureKind": "perception-failure",
+              "metric": "object_volume_error",
+              "rationale": "mirrors gates-1 midrange_no_depth: midrange object volume tolerance",
+              "threshold": 0.15
+            }
+          ]
+        },
+        "expected": {
+          "fixtureId": "fixture-midrange-bedroom-001",
+          "kind": "reconstruction-scene"
+        },
+        "input": {
+          "capability": "reconstruction",
+          "kind": "provider-input",
+          "payload": {
+            "captureSetJson": "{\n  \"captureSetId\": \"cap-midrange-bedroom-4frame\",\n  \"frames\": [\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-MID-01\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [\n        \"floor\",\n        \"wall_west\",\n        \"wall_north\"\n      ],\n      \"pointCount\": 980,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          0.875,\n          2.5,\n          1.275\n        ]\n      },\n      \"station\": \"S1\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-MID-02\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [\n        \"floor\",\n        \"ceiling\",\n        \"wall_east\"\n      ],\n      \"pointCount\": 1010,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0.38268343,\n          0.92387953\n        ],\n        \"position\": [\n          2.625,\n          1.5,\n          1.275\n        ]\n      },\n      \"station\": \"S2\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-MID-03\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [\n        \"ceiling\",\n        \"wall_south\",\n        \"box_cabinet::xmin\",\n        \"box_cabinet::xmax\"\n      ],\n      \"pointCount\": 760,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.75,\n          0.5,\n          1.275\n        ]\n      },\n      \"station\": \"S3\"\n    },\n    {\n      \"evidenceRevision\": \"r2\",\n      \"frameId\": \"FR-MID-04\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [\n        \"box_cabinet::ymin\",\n        \"box_cabinet::ymax\",\n        \"box_cabinet::zmin\",\n        \"box_cabinet::zmax\"\n      ],\n      \"pointCount\": 90,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          2.85,\n          0.45,\n          0.25\n        ]\n      },\n      \"station\": \"S4\"\n    }\n  ],\n  \"note\": \"four posed midrange-class frames (four stations, documented intrinsics) covering all twelve canonical surfaces of the bedroom golden fixture\",\n  \"purpose\": \"multi-image-reconstruction\"\n}\n",
+            "deviceClass": "midrange_no_depth",
+            "fixtureId": "fixture-midrange-bedroom-001",
+            "sceneTag": "interior-bedroom",
+            "task": "multi-image-reconstruction"
+          }
+        },
+        "kind": "reality-eval-scenario",
+        "providerReference": {
+          "providerId": "mapanything",
+          "technologyVersion": "eval-doubles-1"
+        },
+        "scenarioClass": "positive",
+        "scenarioId": "recon-multiimage-midrange-grounded-002@mapanything",
+        "scenarioVersion": "1.0.0",
+        "schemaVersion": "reality-eval-scenario/1"
+      },
+      "taskId": "recon-multiimage-midrange-grounded-002",
+      "variant": "mapanything"
+    },
+    {
+      "runId": "recon-multiimage-midrange-grounded-002@reference-reconstruction",
+      "scenario": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "criteria": {
+          "expectedFailureKinds": [],
+          "thresholds": [
+            {
+              "critical": false,
+              "failureKind": "perception-failure",
+              "metric": "plane_fit_rms",
+              "rationale": "mirrors gates-1 midrange_no_depth: 2x the 8mm midrange noise envelope",
+              "threshold": 0.016
+            },
+            {
+              "critical": false,
+              "failureKind": "perception-failure",
+              "metric": "registration_error",
+              "rationale": "mirrors gates-1 midrange_no_depth: 2.5x the 8mm midrange noise envelope",
+              "threshold": 0.02
+            },
+            {
+              "critical": false,
+              "failureKind": "perception-failure",
+              "metric": "scale_error",
+              "rationale": "mirrors gates-1 midrange_no_depth: photogrammetry-tier scale drift; flagged for review",
+              "threshold": 0.025
+            },
+            {
+              "critical": false,
+              "failureKind": "perception-failure",
+              "metric": "dimension_error",
+              "rationale": "mirrors gates-1 midrange_no_depth: midrange absolute dimension tolerance",
+              "threshold": 0.04
+            },
+            {
+              "critical": false,
+              "failureKind": "perception-failure",
+              "metric": "object_volume_error",
+              "rationale": "mirrors gates-1 midrange_no_depth: midrange object volume tolerance",
+              "threshold": 0.15
+            }
+          ]
+        },
+        "expected": {
+          "fixtureId": "fixture-midrange-bedroom-001",
+          "kind": "reconstruction-scene"
+        },
+        "input": {
+          "capability": "reconstruction",
+          "kind": "provider-input",
+          "payload": {
+            "deviceClass": "midrange_no_depth",
+            "fixtureId": "fixture-midrange-bedroom-001",
+            "sceneTag": "interior-bedroom"
+          }
+        },
+        "kind": "reality-eval-scenario",
+        "providerReference": {
+          "providerId": "fixture-reconstruction-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioClass": "positive",
+        "scenarioId": "recon-multiimage-midrange-grounded-002@reference-reconstruction",
+        "scenarioVersion": "1.0.0",
+        "schemaVersion": "reality-eval-scenario/1"
+      },
+      "taskId": "recon-multiimage-midrange-grounded-002",
+      "variant": "reference-reconstruction"
+    },
+    {
+      "runId": "recon-registration-twopass-grounded-003@mapanything",
+      "scenario": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "criteria": {
+          "expectedFailureKinds": [],
+          "thresholds": [
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "plane_fit_rms",
+              "rationale": "mirrors gates-1 flagship_lidar: 2x the 2mm 1-sigma flagship noise envelope",
+              "threshold": 0.004
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "registration_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 2.5x the 2mm flagship noise envelope",
+              "threshold": 0.005
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "scale_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 1% scale error invalidates LiDAR-class dimensional engineering use",
+              "threshold": 0.01
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "dimension_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 20mm absolute dimension error invalidates LiDAR-class work",
+              "threshold": 0.02
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "object_volume_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 5% object volume error invalidates LiDAR-class quantity takeoff",
+              "threshold": 0.05
+            }
+          ]
+        },
+        "expected": {
+          "fixtureId": "fixture-flagship-livingroom-001",
+          "kind": "reconstruction-scene"
+        },
+        "input": {
+          "capability": "reconstruction",
+          "kind": "provider-input",
+          "payload": {
+            "captureSetJson": "{\n  \"captureSetId\": \"cap-flagship-livingroom-2pass\",\n  \"frames\": [\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-PASSA-01\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"floor\",\n        \"ceiling\"\n      ],\n      \"pointCount\": 1240,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.05,\n          3.05,\n          1.35\n        ]\n      },\n      \"station\": \"SA1\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-PASSA-02\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"wall_west\",\n        \"wall_north\"\n      ],\n      \"pointCount\": 1190,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0.38268343,\n          0.92387953\n        ],\n        \"position\": [\n          0.55,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SA2\"\n    },\n    {\n      \"evidenceRevision\": \"r2\",\n      \"frameId\": \"FR-PASSA-03\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"box_storage::xmin\",\n        \"box_storage::xmax\"\n      ],\n      \"pointCount\": 110,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1,\n          0.6,\n          0.4\n        ]\n      },\n      \"station\": \"SA3\"\n    },\n    {\n      \"evidenceRevision\": \"r2\",\n      \"frameId\": \"FR-PASSA-04\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"box_storage::ymin\",\n        \"box_storage::zmin\"\n      ],\n      \"pointCount\": 105,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1,\n          0.6,\n          0.55\n        ]\n      },\n      \"station\": \"SA4\"\n    },\n    {\n      \"evidenceRevision\": \"r3\",\n      \"frameId\": \"FR-PASSB-01\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"floor\",\n        \"ceiling\",\n        \"wall_west\"\n      ],\n      \"pointCount\": 1250,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          2.1,\n          3.05,\n          1.35\n        ]\n      },\n      \"station\": \"SB1\"\n    },\n    {\n      \"evidenceRevision\": \"r3\",\n      \"frameId\": \"FR-PASSB-02\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"wall_east\",\n        \"wall_south\"\n      ],\n      \"pointCount\": 1180,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0.38268343,\n          0.92387953\n        ],\n        \"position\": [\n          3.65,\n          1.05,\n          1.35\n        ]\n      },\n      \"station\": \"SB2\"\n    },\n    {\n      \"evidenceRevision\": \"r3\",\n      \"frameId\": \"FR-PASSB-03\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"box_storage::ymin\",\n        \"box_storage::ymax\"\n      ],\n      \"pointCount\": 108,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.2,\n          0.6,\n          0.45\n        ]\n      },\n      \"station\": \"SB3\"\n    },\n    {\n      \"evidenceRevision\": \"r3\",\n      \"frameId\": \"FR-PASSB-04\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"box_storage::zmin\",\n        \"box_storage::zmax\"\n      ],\n      \"pointCount\": 102,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.2,\n          0.6,\n          0.6\n        ]\n      },\n      \"station\": \"SB4\"\n    }\n  ],\n  \"note\": \"two flagship capture passes (four posed frames each, distinct stations and evidence revisions); the passes share five of their twelve union surfaces (41.7% overlap) and cover the fixture fully\",\n  \"passes\": [\n    {\n      \"frameIds\": [\n        \"FR-PASSA-01\",\n        \"FR-PASSA-02\",\n        \"FR-PASSA-03\",\n        \"FR-PASSA-04\"\n      ],\n      \"passId\": \"pass-A\"\n    },\n    {\n      \"frameIds\": [\n        \"FR-PASSB-01\",\n        \"FR-PASSB-02\",\n        \"FR-PASSB-03\",\n        \"FR-PASSB-04\"\n      ],\n      \"passId\": \"pass-B\"\n    }\n  ],\n  \"purpose\": \"registration\"\n}\n",
+            "deviceClass": "flagship_lidar",
+            "fixtureId": "fixture-flagship-livingroom-001",
+            "sceneTag": "interior-livingroom-registration",
+            "task": "registration"
+          }
+        },
+        "kind": "reality-eval-scenario",
+        "providerReference": {
+          "providerId": "mapanything",
+          "technologyVersion": "eval-doubles-1"
+        },
+        "scenarioClass": "positive",
+        "scenarioId": "recon-registration-twopass-grounded-003@mapanything",
+        "scenarioVersion": "1.0.0",
+        "schemaVersion": "reality-eval-scenario/1"
+      },
+      "taskId": "recon-registration-twopass-grounded-003",
+      "variant": "mapanything"
+    },
+    {
+      "runId": "recon-registration-twopass-grounded-003@reference-reconstruction",
+      "scenario": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "criteria": {
+          "expectedFailureKinds": [],
+          "thresholds": [
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "plane_fit_rms",
+              "rationale": "mirrors gates-1 flagship_lidar: 2x the 2mm 1-sigma flagship noise envelope",
+              "threshold": 0.004
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "registration_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 2.5x the 2mm flagship noise envelope",
+              "threshold": 0.005
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "scale_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 1% scale error invalidates LiDAR-class dimensional engineering use",
+              "threshold": 0.01
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "dimension_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 20mm absolute dimension error invalidates LiDAR-class work",
+              "threshold": 0.02
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "object_volume_error",
+              "rationale": "mirrors gates-1 flagship_lidar: 5% object volume error invalidates LiDAR-class quantity takeoff",
+              "threshold": 0.05
+            }
+          ]
+        },
+        "expected": {
+          "fixtureId": "fixture-flagship-livingroom-001",
+          "kind": "reconstruction-scene"
+        },
+        "input": {
+          "capability": "reconstruction",
+          "kind": "provider-input",
+          "payload": {
+            "deviceClass": "flagship_lidar",
+            "fixtureId": "fixture-flagship-livingroom-001",
+            "sceneTag": "interior-livingroom"
+          }
+        },
+        "kind": "reality-eval-scenario",
+        "providerReference": {
+          "providerId": "fixture-reconstruction-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioClass": "positive",
+        "scenarioId": "recon-registration-twopass-grounded-003@reference-reconstruction",
+        "scenarioVersion": "1.0.0",
+        "schemaVersion": "reality-eval-scenario/1"
+      },
+      "taskId": "recon-registration-twopass-grounded-003",
+      "variant": "reference-reconstruction"
+    },
+    {
+      "runId": "depth-metric-wall-grounded-004@mapanything",
+      "scenario": {
+        "benchmarkId": "reality-eval-depth/1",
+        "capability": "depth",
+        "criteria": {
+          "expectedFailureKinds": [],
+          "thresholds": [
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "depth_mae_m",
+              "rationale": "mean absolute depth error above 10mm invalidates the wall-mapping use the depth lane serves",
+              "threshold": 0.01
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "depth_max_error_m",
+              "rationale": "maximum absolute depth error above 50mm is a visible wall-position error",
+              "threshold": 0.05
+            }
+          ]
+        },
+        "expected": {
+          "gridHeight": 4,
+          "gridWidth": 4,
+          "kind": "depth-grid",
+          "truthM": [
+            1,
+            1.4,
+            1.8,
+            2.2,
+            2.6,
+            3,
+            2.8,
+            2.4,
+            2,
+            1.6,
+            1.2,
+            1.5,
+            2.5,
+            1.7,
+            2.3,
+            1.3
+          ],
+          "unit": "m"
+        },
+        "input": {
+          "capability": "depth",
+          "kind": "provider-input",
+          "payload": {
+            "captureSetJson": "{\n  \"captureSetId\": \"cap-depth-wall-2frame\",\n  \"frames\": [\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-DEPTH-01\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [],\n      \"pointCount\": 16,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          0,\n          0,\n          1.5\n        ]\n      },\n      \"station\": \"SD1\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-DEPTH-02\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [],\n      \"pointCount\": 16,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          0.35,\n          0,\n          1.5\n        ]\n      },\n      \"station\": \"SD2\"\n    }\n  ],\n  \"note\": \"two posed depth-sensor frames over the documented 4x4 interior-wall sample grid (16 cells per frame; the grid samples are the evidence, revisions r1)\",\n  \"purpose\": \"metric-depth\"\n}\n",
+            "gridHeight": 4,
+            "gridWidth": 4,
+            "samples": [
+              0,
+              0.2,
+              0.4,
+              0.6,
+              0.8,
+              1,
+              0.9,
+              0.7,
+              0.5,
+              0.3,
+              0.1,
+              0.25,
+              0.75,
+              0.35,
+              0.65,
+              0.15
+            ],
+            "sceneTag": "interior-wall",
+            "task": "metric-depth"
+          }
+        },
+        "kind": "reality-eval-scenario",
+        "providerReference": {
+          "providerId": "mapanything",
+          "technologyVersion": "eval-doubles-1"
+        },
+        "scenarioClass": "positive",
+        "scenarioId": "depth-metric-wall-grounded-004@mapanything",
+        "scenarioVersion": "1.0.0",
+        "schemaVersion": "reality-eval-scenario/1"
+      },
+      "taskId": "depth-metric-wall-grounded-004",
+      "variant": "mapanything"
+    },
+    {
+      "runId": "depth-metric-wall-grounded-004@reference-depth",
+      "scenario": {
+        "benchmarkId": "reality-eval-depth/1",
+        "capability": "depth",
+        "criteria": {
+          "expectedFailureKinds": [],
+          "thresholds": [
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "depth_mae_m",
+              "rationale": "mean absolute depth error above 10mm invalidates the wall-mapping use the depth lane serves",
+              "threshold": 0.01
+            },
+            {
+              "critical": true,
+              "failureKind": "perception-failure",
+              "metric": "depth_max_error_m",
+              "rationale": "maximum absolute depth error above 50mm is a visible wall-position error",
+              "threshold": 0.05
+            }
+          ]
+        },
+        "expected": {
+          "gridHeight": 4,
+          "gridWidth": 4,
+          "kind": "depth-grid",
+          "truthM": [
+            1,
+            1.4,
+            1.8,
+            2.2,
+            2.6,
+            3,
+            2.8,
+            2.4,
+            2,
+            1.6,
+            1.2,
+            1.5,
+            2.5,
+            1.7,
+            2.3,
+            1.3
+          ],
+          "unit": "m"
+        },
+        "input": {
+          "capability": "depth",
+          "kind": "provider-input",
+          "payload": {
+            "gridHeight": 4,
+            "gridWidth": 4,
+            "samples": [
+              0,
+              0.2,
+              0.4,
+              0.6,
+              0.8,
+              1,
+              0.9,
+              0.7,
+              0.5,
+              0.3,
+              0.1,
+              0.25,
+              0.75,
+              0.35,
+              0.65,
+              0.15
+            ],
+            "sceneTag": "interior-wall"
+          }
+        },
+        "kind": "reality-eval-scenario",
+        "providerReference": {
+          "providerId": "fixture-reality-depth-provider",
+          "technologyVersion": "1.0.0-fixture-v1"
+        },
+        "scenarioClass": "positive",
+        "scenarioId": "depth-metric-wall-grounded-004@reference-depth",
+        "scenarioVersion": "1.0.0",
+        "schemaVersion": "reality-eval-scenario/1"
+      },
+      "taskId": "depth-metric-wall-grounded-004",
+      "variant": "reference-depth"
+    },
+    {
+      "runId": "recon-registration-degraded-overlap-005@mapanything",
+      "scenario": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "criteria": {
+          "expectedFailureKinds": [
+            "unsupported-data"
+          ],
+          "thresholds": []
+        },
+        "expected": {
+          "kind": "explicit-refusal"
+        },
+        "input": {
+          "capability": "reconstruction",
+          "kind": "provider-input",
+          "payload": {
+            "captureSetJson": "{\n  \"captureSetId\": \"cap-midrange-bedroom-2pass-low-overlap\",\n  \"frames\": [\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-LO-A1\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [\n        \"floor\",\n        \"wall_west\"\n      ],\n      \"pointCount\": 980,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          0.875,\n          2.5,\n          1.275\n        ]\n      },\n      \"station\": \"SA1\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-LO-A2\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [\n        \"ceiling\",\n        \"wall_east\"\n      ],\n      \"pointCount\": 1010,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0.38268343,\n          0.92387953\n        ],\n        \"position\": [\n          2.625,\n          1.5,\n          1.275\n        ]\n      },\n      \"station\": \"SA2\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-LO-A3\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [\n        \"wall_north\",\n        \"wall_south\"\n      ],\n      \"pointCount\": 960,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.75,\n          0.5,\n          1.275\n        ]\n      },\n      \"station\": \"SA3\"\n    },\n    {\n      \"evidenceRevision\": \"r2\",\n      \"frameId\": \"FR-LO-B1\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [\n        \"floor\",\n        \"box_cabinet::xmin\",\n        \"box_cabinet::xmax\",\n        \"box_cabinet::ymin\"\n      ],\n      \"pointCount\": 520,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          2.85,\n          0.45,\n          0.25\n        ]\n      },\n      \"station\": \"SB1\"\n    },\n    {\n      \"evidenceRevision\": \"r2\",\n      \"frameId\": \"FR-LO-B2\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [\n        \"box_cabinet::ymax\",\n        \"box_cabinet::zmin\",\n        \"box_cabinet::zmax\"\n      ],\n      \"pointCount\": 480,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          2.85,\n          0.45,\n          0.35\n        ]\n      },\n      \"station\": \"SB2\"\n    }\n  ],\n  \"note\": \"two midrange capture passes with only the floor shared between them (overlap 1/12 = 8.3%, below the declared 30% minimum) — the degraded-evidence registration fixture\",\n  \"passes\": [\n    {\n      \"frameIds\": [\n        \"FR-LO-A1\",\n        \"FR-LO-A2\",\n        \"FR-LO-A3\"\n      ],\n      \"passId\": \"pass-A\"\n    },\n    {\n      \"frameIds\": [\n        \"FR-LO-B1\",\n        \"FR-LO-B2\"\n      ],\n      \"passId\": \"pass-B\"\n    }\n  ],\n  \"purpose\": \"registration\"\n}\n",
+            "deviceClass": "midrange_no_depth",
+            "fixtureId": "fixture-midrange-bedroom-001",
+            "sceneTag": "interior-bedroom-registration",
+            "task": "registration"
+          }
+        },
+        "kind": "reality-eval-scenario",
+        "providerReference": {
+          "providerId": "mapanything",
+          "technologyVersion": "eval-doubles-1"
+        },
+        "scenarioClass": "negative",
+        "scenarioId": "recon-registration-degraded-overlap-005@mapanything",
+        "scenarioVersion": "1.0.0",
+        "schemaVersion": "reality-eval-scenario/1"
+      },
+      "taskId": "recon-registration-degraded-overlap-005",
+      "variant": "mapanything"
+    },
+    {
+      "runId": "recon-multiimage-degraded-coverage-006@mapanything",
+      "scenario": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "criteria": {
+          "expectedFailureKinds": [
+            "unsupported-data"
+          ],
+          "thresholds": []
+        },
+        "expected": {
+          "kind": "explicit-refusal"
+        },
+        "input": {
+          "capability": "reconstruction",
+          "kind": "provider-input",
+          "payload": {
+            "captureSetJson": "{\n  \"captureSetId\": \"cap-midrange-bedroom-3frame-low-coverage\",\n  \"frames\": [\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-LC-01\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [\n        \"floor\",\n        \"wall_west\"\n      ],\n      \"pointCount\": 980,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          0.875,\n          2.5,\n          1.275\n        ]\n      },\n      \"station\": \"S1\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-LC-02\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [\n        \"ceiling\",\n        \"wall_east\"\n      ],\n      \"pointCount\": 1010,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0.38268343,\n          0.92387953\n        ],\n        \"position\": [\n          2.625,\n          1.5,\n          1.275\n        ]\n      },\n      \"station\": \"S2\"\n    },\n    {\n      \"evidenceRevision\": \"r2\",\n      \"frameId\": \"FR-LC-03\",\n      \"intrinsics\": {\n        \"cx\": 640,\n        \"cy\": 360,\n        \"fx\": 1040,\n        \"fy\": 1040\n      },\n      \"observedSurfaceIds\": [\n        \"wall_north\",\n        \"wall_south\",\n        \"box_cabinet::xmin\",\n        \"box_cabinet::xmax\",\n        \"box_cabinet::ymin\"\n      ],\n      \"pointCount\": 770,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.75,\n          0.5,\n          1.275\n        ]\n      },\n      \"station\": \"S3\"\n    }\n  ],\n  \"note\": \"three midrange frames covering nine of the twelve canonical surfaces (75% coverage, below the declared 80% minimum; box_cabinet::ymax, box_cabinet::zmin and box_cabinet::zmax are uncaptured)\",\n  \"purpose\": \"multi-image-reconstruction\"\n}\n",
+            "deviceClass": "midrange_no_depth",
+            "fixtureId": "fixture-midrange-bedroom-001",
+            "sceneTag": "interior-bedroom",
+            "task": "multi-image-reconstruction"
+          }
+        },
+        "kind": "reality-eval-scenario",
+        "providerReference": {
+          "providerId": "mapanything",
+          "technologyVersion": "eval-doubles-1"
+        },
+        "scenarioClass": "negative",
+        "scenarioId": "recon-multiimage-degraded-coverage-006@mapanything",
+        "scenarioVersion": "1.0.0",
+        "schemaVersion": "reality-eval-scenario/1"
+      },
+      "taskId": "recon-multiimage-degraded-coverage-006",
+      "variant": "mapanything"
+    },
+    {
+      "runId": "recon-multiimage-failed-resource-007@mapanything",
+      "scenario": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "criteria": {
+          "expectedFailureKinds": [
+            "resource-exhaustion"
+          ],
+          "thresholds": []
+        },
+        "expected": {
+          "kind": "explicit-refusal"
+        },
+        "input": {
+          "capability": "reconstruction",
+          "kind": "provider-input",
+          "payload": {
+            "captureSetJson": "{\n  \"captureSetId\": \"cap-flagship-livingroom-12frame-oversized\",\n  \"frames\": [\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-BIG-01\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"floor\"\n      ],\n      \"pointCount\": 4800,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.05,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SB1\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-BIG-02\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"ceiling\"\n      ],\n      \"pointCount\": 4800,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.25,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SB2\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-BIG-03\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"wall_west\"\n      ],\n      \"pointCount\": 4800,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.4500000000000002,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SB3\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-BIG-04\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"wall_east\"\n      ],\n      \"pointCount\": 4800,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.6500000000000001,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SB4\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-BIG-05\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"wall_north\"\n      ],\n      \"pointCount\": 4800,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.85,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SB5\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-BIG-06\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"wall_south\"\n      ],\n      \"pointCount\": 4800,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          2.05,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SB6\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-BIG-07\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"box_storage::xmin\",\n        \"box_storage::xmax\"\n      ],\n      \"pointCount\": 4800,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          2.25,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SB7\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-BIG-08\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"box_storage::ymin\",\n        \"box_storage::ymax\"\n      ],\n      \"pointCount\": 4800,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          2.45,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SB8\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-BIG-09\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"box_storage::zmin\",\n        \"box_storage::zmax\"\n      ],\n      \"pointCount\": 4800,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          2.6500000000000004,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SB9\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-BIG-10\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"floor\",\n        \"ceiling\"\n      ],\n      \"pointCount\": 4800,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          2.85,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SB10\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-BIG-11\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"wall_west\",\n        \"wall_east\"\n      ],\n      \"pointCount\": 4800,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          3.05,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SB11\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-BIG-12\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"wall_north\",\n        \"wall_south\"\n      ],\n      \"pointCount\": 4800,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          3.25,\n          1.8,\n          1.35\n        ]\n      },\n      \"station\": \"SB12\"\n    }\n  ],\n  \"note\": \"twelve high-resolution flagship frames totalling 57600 fused points — above the declared 50000-point resource envelope (the failed-invocation fixture; coverage itself is complete)\",\n  \"purpose\": \"multi-image-reconstruction\"\n}\n",
+            "deviceClass": "flagship_lidar",
+            "fixtureId": "fixture-flagship-livingroom-001",
+            "sceneTag": "interior-livingroom",
+            "task": "multi-image-reconstruction"
+          }
+        },
+        "kind": "reality-eval-scenario",
+        "providerReference": {
+          "providerId": "mapanything",
+          "technologyVersion": "eval-doubles-1"
+        },
+        "scenarioClass": "negative",
+        "scenarioId": "recon-multiimage-failed-resource-007@mapanything",
+        "scenarioVersion": "1.0.0",
+        "schemaVersion": "reality-eval-scenario/1"
+      },
+      "taskId": "recon-multiimage-failed-resource-007",
+      "variant": "mapanything"
+    },
+    {
+      "runId": "recon-unsupported-novelview-008@mapanything",
+      "scenario": {
+        "benchmarkId": "reality-eval-reconstruction/1",
+        "capability": "reconstruction",
+        "criteria": {
+          "expectedFailureKinds": [
+            "unsupported-data"
+          ],
+          "thresholds": []
+        },
+        "expected": {
+          "kind": "explicit-refusal"
+        },
+        "input": {
+          "capability": "reconstruction",
+          "kind": "provider-input",
+          "payload": {
+            "captureSetJson": "{\n  \"captureSetId\": \"cap-flagship-livingroom-2frame-plain\",\n  \"frames\": [\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-PLAIN-01\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"floor\",\n        \"wall_west\",\n        \"wall_north\"\n      ],\n      \"pointCount\": 1240,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0,\n          1\n        ],\n        \"position\": [\n          1.05,\n          3.05,\n          1.35\n        ]\n      },\n      \"station\": \"S1\"\n    },\n    {\n      \"evidenceRevision\": \"r1\",\n      \"frameId\": \"FR-PLAIN-02\",\n      \"intrinsics\": {\n        \"cx\": 960,\n        \"cy\": 540,\n        \"fx\": 1462.5,\n        \"fy\": 1462.5\n      },\n      \"observedSurfaceIds\": [\n        \"ceiling\",\n        \"wall_east\",\n        \"wall_south\"\n      ],\n      \"pointCount\": 1210,\n      \"pose\": {\n        \"orientation\": [\n          0,\n          0,\n          0.38268343,\n          0.92387953\n        ],\n        \"position\": [\n          3.15,\n          1.05,\n          1.35\n        ]\n      },\n      \"station\": \"S2\"\n    }\n  ],\n  \"note\": \"a plain two-frame flagship capture set — well-formed multi-image evidence; the novel-view-synthesis task requested over it is outside the provider's declared task set\",\n  \"purpose\": \"multi-image-reconstruction\"\n}\n",
+            "deviceClass": "flagship_lidar",
+            "fixtureId": "fixture-flagship-livingroom-001",
+            "sceneTag": "interior-livingroom",
+            "task": "novel-view-synthesis"
+          }
+        },
+        "kind": "reality-eval-scenario",
+        "providerReference": {
+          "providerId": "mapanything",
+          "technologyVersion": "eval-doubles-1"
+        },
+        "scenarioClass": "negative",
+        "scenarioId": "recon-unsupported-novelview-008@mapanything",
+        "scenarioVersion": "1.0.0",
+        "schemaVersion": "reality-eval-scenario/1"
+      },
+      "taskId": "recon-unsupported-novelview-008",
+      "variant": "mapanything"
+    }
+  ],
+  "suiteId": "mapanything-recon-benchmark/1",
+  "taskCount": 8,
+  "tasks": [
+    {
+      "behaviorClass": "well-grounded",
+      "capability": "reconstruction",
+      "criteria": {
+        "expectedFailureKinds": [],
+        "thresholds": [
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "plane_fit_rms",
+            "rationale": "mirrors gates-1 flagship_lidar: 2x the 2mm 1-sigma flagship noise envelope",
+            "threshold": 0.004
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "registration_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 2.5x the 2mm flagship noise envelope",
+            "threshold": 0.005
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "scale_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 1% scale error invalidates LiDAR-class dimensional engineering use",
+            "threshold": 0.01
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "dimension_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 20mm absolute dimension error invalidates LiDAR-class work",
+            "threshold": 0.02
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "object_volume_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 5% object volume error invalidates LiDAR-class quantity takeoff",
+            "threshold": 0.05
+          }
+        ]
+      },
+      "evidence": {
+        "captureSet": {
+          "captureSetId": "cap-flagship-livingroom-6frame",
+          "frames": [
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-FLAG-01",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "floor",
+                "wall_west"
+              ],
+              "pointCount": 1240,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.05,
+                  3.05,
+                  1.35
+                ]
+              },
+              "station": "S1"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-FLAG-02",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "floor",
+                "wall_north"
+              ],
+              "pointCount": 1190,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0.38268343,
+                  0.92387953
+                ],
+                "position": [
+                  3.15,
+                  2.05,
+                  1.35
+                ]
+              },
+              "station": "S2"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-FLAG-03",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "ceiling",
+                "wall_east"
+              ],
+              "pointCount": 1250,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.05,
+                  0.55,
+                  1.35
+                ]
+              },
+              "station": "S3"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-FLAG-04",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "ceiling",
+                "wall_south"
+              ],
+              "pointCount": 1180,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0.38268343,
+                  0.92387953
+                ],
+                "position": [
+                  3.15,
+                  1.05,
+                  1.35
+                ]
+              },
+              "station": "S4"
+            },
+            {
+              "evidenceRevision": "r2",
+              "frameId": "FR-FLAG-05",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "box_storage::xmin",
+                "box_storage::xmax",
+                "box_storage::ymin"
+              ],
+              "pointCount": 110,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1,
+                  0.6,
+                  0.4
+                ]
+              },
+              "station": "S5"
+            },
+            {
+              "evidenceRevision": "r2",
+              "frameId": "FR-FLAG-06",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "box_storage::ymax",
+                "box_storage::zmin",
+                "box_storage::zmax"
+              ],
+              "pointCount": 105,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1,
+                  0.6,
+                  0.55
+                ]
+              },
+              "station": "S6"
+            }
+          ],
+          "note": "six posed flagship-class frames (six stations, documented intrinsics) covering all twelve canonical surfaces of the living-room golden fixture — the well-grounded multi-image evidence",
+          "purpose": "multi-image-reconstruction"
+        },
+        "description": "six posed flagship-class frames over the living-room golden fixture (full coverage, one pass)",
+        "deviceClass": "flagship_lidar",
+        "fixtureId": "fixture-flagship-livingroom-001",
+        "gridHeight": null,
+        "gridWidth": null,
+        "samples": null
+      },
+      "evidenceRevisions": [
+        "r1",
+        "r2"
+      ],
+      "expected": {
+        "fixtureId": "fixture-flagship-livingroom-001",
+        "kind": "reconstruction-scene"
+      },
+      "expectedFailureKind": "none",
+      "expectedFallback": null,
+      "expectedVerdict": "pass",
+      "matrixCell": "grounded-pass",
+      "scenarioClass": "positive",
+      "taskId": "recon-multiimage-flagship-grounded-001",
+      "taskKind": "multi-image-reconstruction",
+      "taskVersion": "1.0.0",
+      "uncertainty": {
+        "role": "answer-sigma",
+        "sigmaM": 0.002,
+        "statement": "the flagship capture noise envelope (2mm 1-sigma, the gates-1 flagship_lidar row) propagated as the answer's declared measurement uncertainty",
+        "unit": "m"
+      }
+    },
+    {
+      "behaviorClass": "well-grounded",
+      "capability": "reconstruction",
+      "criteria": {
+        "expectedFailureKinds": [],
+        "thresholds": [
+          {
+            "critical": false,
+            "failureKind": "perception-failure",
+            "metric": "plane_fit_rms",
+            "rationale": "mirrors gates-1 midrange_no_depth: 2x the 8mm midrange noise envelope",
+            "threshold": 0.016
+          },
+          {
+            "critical": false,
+            "failureKind": "perception-failure",
+            "metric": "registration_error",
+            "rationale": "mirrors gates-1 midrange_no_depth: 2.5x the 8mm midrange noise envelope",
+            "threshold": 0.02
+          },
+          {
+            "critical": false,
+            "failureKind": "perception-failure",
+            "metric": "scale_error",
+            "rationale": "mirrors gates-1 midrange_no_depth: photogrammetry-tier scale drift; flagged for review",
+            "threshold": 0.025
+          },
+          {
+            "critical": false,
+            "failureKind": "perception-failure",
+            "metric": "dimension_error",
+            "rationale": "mirrors gates-1 midrange_no_depth: midrange absolute dimension tolerance",
+            "threshold": 0.04
+          },
+          {
+            "critical": false,
+            "failureKind": "perception-failure",
+            "metric": "object_volume_error",
+            "rationale": "mirrors gates-1 midrange_no_depth: midrange object volume tolerance",
+            "threshold": 0.15
+          }
+        ]
+      },
+      "evidence": {
+        "captureSet": {
+          "captureSetId": "cap-midrange-bedroom-4frame",
+          "frames": [
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-MID-01",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [
+                "floor",
+                "wall_west",
+                "wall_north"
+              ],
+              "pointCount": 980,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  0.875,
+                  2.5,
+                  1.275
+                ]
+              },
+              "station": "S1"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-MID-02",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [
+                "floor",
+                "ceiling",
+                "wall_east"
+              ],
+              "pointCount": 1010,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0.38268343,
+                  0.92387953
+                ],
+                "position": [
+                  2.625,
+                  1.5,
+                  1.275
+                ]
+              },
+              "station": "S2"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-MID-03",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [
+                "ceiling",
+                "wall_south",
+                "box_cabinet::xmin",
+                "box_cabinet::xmax"
+              ],
+              "pointCount": 760,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.75,
+                  0.5,
+                  1.275
+                ]
+              },
+              "station": "S3"
+            },
+            {
+              "evidenceRevision": "r2",
+              "frameId": "FR-MID-04",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [
+                "box_cabinet::ymin",
+                "box_cabinet::ymax",
+                "box_cabinet::zmin",
+                "box_cabinet::zmax"
+              ],
+              "pointCount": 90,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  2.85,
+                  0.45,
+                  0.25
+                ]
+              },
+              "station": "S4"
+            }
+          ],
+          "note": "four posed midrange-class frames (four stations, documented intrinsics) covering all twelve canonical surfaces of the bedroom golden fixture",
+          "purpose": "multi-image-reconstruction"
+        },
+        "description": "four posed midrange-class frames over the bedroom golden fixture (full coverage, one pass)",
+        "deviceClass": "midrange_no_depth",
+        "fixtureId": "fixture-midrange-bedroom-001",
+        "gridHeight": null,
+        "gridWidth": null,
+        "samples": null
+      },
+      "evidenceRevisions": [
+        "r1",
+        "r2"
+      ],
+      "expected": {
+        "fixtureId": "fixture-midrange-bedroom-001",
+        "kind": "reconstruction-scene"
+      },
+      "expectedFailureKind": "none",
+      "expectedFallback": null,
+      "expectedVerdict": "pass",
+      "matrixCell": "grounded-pass",
+      "scenarioClass": "positive",
+      "taskId": "recon-multiimage-midrange-grounded-002",
+      "taskKind": "multi-image-reconstruction",
+      "taskVersion": "1.0.0",
+      "uncertainty": {
+        "role": "answer-sigma",
+        "sigmaM": 0.008,
+        "statement": "the midrange capture noise envelope (8mm 1-sigma, the gates-1 midrange_no_depth row) propagated as the answer's declared measurement uncertainty",
+        "unit": "m"
+      }
+    },
+    {
+      "behaviorClass": "well-grounded",
+      "capability": "reconstruction",
+      "criteria": {
+        "expectedFailureKinds": [],
+        "thresholds": [
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "plane_fit_rms",
+            "rationale": "mirrors gates-1 flagship_lidar: 2x the 2mm 1-sigma flagship noise envelope",
+            "threshold": 0.004
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "registration_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 2.5x the 2mm flagship noise envelope",
+            "threshold": 0.005
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "scale_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 1% scale error invalidates LiDAR-class dimensional engineering use",
+            "threshold": 0.01
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "dimension_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 20mm absolute dimension error invalidates LiDAR-class work",
+            "threshold": 0.02
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "object_volume_error",
+            "rationale": "mirrors gates-1 flagship_lidar: 5% object volume error invalidates LiDAR-class quantity takeoff",
+            "threshold": 0.05
+          }
+        ]
+      },
+      "evidence": {
+        "captureSet": {
+          "captureSetId": "cap-flagship-livingroom-2pass",
+          "frames": [
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-PASSA-01",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "floor",
+                "ceiling"
+              ],
+              "pointCount": 1240,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.05,
+                  3.05,
+                  1.35
+                ]
+              },
+              "station": "SA1"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-PASSA-02",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "wall_west",
+                "wall_north"
+              ],
+              "pointCount": 1190,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0.38268343,
+                  0.92387953
+                ],
+                "position": [
+                  0.55,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SA2"
+            },
+            {
+              "evidenceRevision": "r2",
+              "frameId": "FR-PASSA-03",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "box_storage::xmin",
+                "box_storage::xmax"
+              ],
+              "pointCount": 110,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1,
+                  0.6,
+                  0.4
+                ]
+              },
+              "station": "SA3"
+            },
+            {
+              "evidenceRevision": "r2",
+              "frameId": "FR-PASSA-04",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "box_storage::ymin",
+                "box_storage::zmin"
+              ],
+              "pointCount": 105,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1,
+                  0.6,
+                  0.55
+                ]
+              },
+              "station": "SA4"
+            },
+            {
+              "evidenceRevision": "r3",
+              "frameId": "FR-PASSB-01",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "floor",
+                "ceiling",
+                "wall_west"
+              ],
+              "pointCount": 1250,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  2.1,
+                  3.05,
+                  1.35
+                ]
+              },
+              "station": "SB1"
+            },
+            {
+              "evidenceRevision": "r3",
+              "frameId": "FR-PASSB-02",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "wall_east",
+                "wall_south"
+              ],
+              "pointCount": 1180,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0.38268343,
+                  0.92387953
+                ],
+                "position": [
+                  3.65,
+                  1.05,
+                  1.35
+                ]
+              },
+              "station": "SB2"
+            },
+            {
+              "evidenceRevision": "r3",
+              "frameId": "FR-PASSB-03",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "box_storage::ymin",
+                "box_storage::ymax"
+              ],
+              "pointCount": 108,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.2,
+                  0.6,
+                  0.45
+                ]
+              },
+              "station": "SB3"
+            },
+            {
+              "evidenceRevision": "r3",
+              "frameId": "FR-PASSB-04",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "box_storage::zmin",
+                "box_storage::zmax"
+              ],
+              "pointCount": 102,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.2,
+                  0.6,
+                  0.6
+                ]
+              },
+              "station": "SB4"
+            }
+          ],
+          "note": "two flagship capture passes (four posed frames each, distinct stations and evidence revisions); the passes share five of their twelve union surfaces (41.7% overlap) and cover the fixture fully",
+          "passes": [
+            {
+              "frameIds": [
+                "FR-PASSA-01",
+                "FR-PASSA-02",
+                "FR-PASSA-03",
+                "FR-PASSA-04"
+              ],
+              "passId": "pass-A"
+            },
+            {
+              "frameIds": [
+                "FR-PASSB-01",
+                "FR-PASSB-02",
+                "FR-PASSB-03",
+                "FR-PASSB-04"
+              ],
+              "passId": "pass-B"
+            }
+          ],
+          "purpose": "registration"
+        },
+        "description": "two flagship capture passes (4 posed frames each, 41.7% inter-pass overlap, full union coverage)",
+        "deviceClass": "flagship_lidar",
+        "fixtureId": "fixture-flagship-livingroom-001",
+        "gridHeight": null,
+        "gridWidth": null,
+        "samples": null
+      },
+      "evidenceRevisions": [
+        "r1",
+        "r2",
+        "r3"
+      ],
+      "expected": {
+        "fixtureId": "fixture-flagship-livingroom-001",
+        "kind": "reconstruction-scene"
+      },
+      "expectedFailureKind": "none",
+      "expectedFallback": null,
+      "expectedVerdict": "pass",
+      "matrixCell": "grounded-pass",
+      "scenarioClass": "positive",
+      "taskId": "recon-registration-twopass-grounded-003",
+      "taskKind": "registration",
+      "taskVersion": "1.0.0",
+      "uncertainty": {
+        "role": "answer-sigma",
+        "sigmaM": 0.002,
+        "statement": "the registered two-pass answer's declared measurement uncertainty (the flagship 2mm 1-sigma capture envelope over the shared stations)",
+        "unit": "m"
+      }
+    },
+    {
+      "behaviorClass": "well-grounded",
+      "capability": "depth",
+      "criteria": {
+        "expectedFailureKinds": [],
+        "thresholds": [
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "depth_mae_m",
+            "rationale": "mean absolute depth error above 10mm invalidates the wall-mapping use the depth lane serves",
+            "threshold": 0.01
+          },
+          {
+            "critical": true,
+            "failureKind": "perception-failure",
+            "metric": "depth_max_error_m",
+            "rationale": "maximum absolute depth error above 50mm is a visible wall-position error",
+            "threshold": 0.05
+          }
+        ]
+      },
+      "evidence": {
+        "captureSet": {
+          "captureSetId": "cap-depth-wall-2frame",
+          "frames": [
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-DEPTH-01",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [],
+              "pointCount": 16,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  0,
+                  0,
+                  1.5
+                ]
+              },
+              "station": "SD1"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-DEPTH-02",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [],
+              "pointCount": 16,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  0.35,
+                  0,
+                  1.5
+                ]
+              },
+              "station": "SD2"
+            }
+          ],
+          "note": "two posed depth-sensor frames over the documented 4x4 interior-wall sample grid (16 cells per frame; the grid samples are the evidence, revisions r1)",
+          "purpose": "metric-depth"
+        },
+        "description": "two posed depth-sensor frames over the documented 4x4 interior-wall sample grid",
+        "deviceClass": null,
+        "fixtureId": null,
+        "gridHeight": 4,
+        "gridWidth": 4,
+        "samples": [
+          0,
+          0.2,
+          0.4,
+          0.6,
+          0.8,
+          1,
+          0.9,
+          0.7,
+          0.5,
+          0.3,
+          0.1,
+          0.25,
+          0.75,
+          0.35,
+          0.65,
+          0.15
+        ]
+      },
+      "evidenceRevisions": [
+        "r1"
+      ],
+      "expected": {
+        "gridHeight": 4,
+        "gridWidth": 4,
+        "kind": "depth-grid",
+        "truthM": [
+          1,
+          1.4,
+          1.8,
+          2.2,
+          2.6,
+          3,
+          2.8,
+          2.4,
+          2,
+          1.6,
+          1.2,
+          1.5,
+          2.5,
+          1.7,
+          2.3,
+          1.3
+        ],
+        "unit": "m"
+      },
+      "expectedFailureKind": "none",
+      "expectedFallback": null,
+      "expectedVerdict": "pass",
+      "matrixCell": "grounded-pass",
+      "scenarioClass": "positive",
+      "taskId": "depth-metric-wall-grounded-004",
+      "taskKind": "metric-depth",
+      "taskVersion": "1.0.0",
+      "uncertainty": {
+        "role": "answer-sigma",
+        "sigmaM": 0.005,
+        "statement": "the metric-depth answer's declared measurement uncertainty — the bound of the double's documented deviation profile (+0.1% scale, +2mm offset)",
+        "unit": "m"
+      }
+    },
+    {
+      "behaviorClass": "degraded-evidence",
+      "capability": "reconstruction",
+      "criteria": {
+        "expectedFailureKinds": [
+          "unsupported-data"
+        ],
+        "thresholds": []
+      },
+      "evidence": {
+        "captureSet": {
+          "captureSetId": "cap-midrange-bedroom-2pass-low-overlap",
+          "frames": [
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-LO-A1",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [
+                "floor",
+                "wall_west"
+              ],
+              "pointCount": 980,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  0.875,
+                  2.5,
+                  1.275
+                ]
+              },
+              "station": "SA1"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-LO-A2",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [
+                "ceiling",
+                "wall_east"
+              ],
+              "pointCount": 1010,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0.38268343,
+                  0.92387953
+                ],
+                "position": [
+                  2.625,
+                  1.5,
+                  1.275
+                ]
+              },
+              "station": "SA2"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-LO-A3",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [
+                "wall_north",
+                "wall_south"
+              ],
+              "pointCount": 960,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.75,
+                  0.5,
+                  1.275
+                ]
+              },
+              "station": "SA3"
+            },
+            {
+              "evidenceRevision": "r2",
+              "frameId": "FR-LO-B1",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [
+                "floor",
+                "box_cabinet::xmin",
+                "box_cabinet::xmax",
+                "box_cabinet::ymin"
+              ],
+              "pointCount": 520,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  2.85,
+                  0.45,
+                  0.25
+                ]
+              },
+              "station": "SB1"
+            },
+            {
+              "evidenceRevision": "r2",
+              "frameId": "FR-LO-B2",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [
+                "box_cabinet::ymax",
+                "box_cabinet::zmin",
+                "box_cabinet::zmax"
+              ],
+              "pointCount": 480,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  2.85,
+                  0.45,
+                  0.35
+                ]
+              },
+              "station": "SB2"
+            }
+          ],
+          "note": "two midrange capture passes with only the floor shared between them (overlap 1/12 = 8.3%, below the declared 30% minimum) — the degraded-evidence registration fixture",
+          "passes": [
+            {
+              "frameIds": [
+                "FR-LO-A1",
+                "FR-LO-A2",
+                "FR-LO-A3"
+              ],
+              "passId": "pass-A"
+            },
+            {
+              "frameIds": [
+                "FR-LO-B1",
+                "FR-LO-B2"
+              ],
+              "passId": "pass-B"
+            }
+          ],
+          "purpose": "registration"
+        },
+        "description": "two midrange capture passes sharing only the floor (8.3% inter-pass overlap < the declared 30% minimum)",
+        "deviceClass": "midrange_no_depth",
+        "fixtureId": "fixture-midrange-bedroom-001",
+        "gridHeight": null,
+        "gridWidth": null,
+        "samples": null
+      },
+      "evidenceRevisions": [
+        "r1",
+        "r2"
+      ],
+      "expected": {
+        "kind": "explicit-refusal"
+      },
+      "expectedFailureKind": "unsupported-data",
+      "expectedFallback": null,
+      "expectedVerdict": "pass",
+      "matrixCell": "degraded-evidence",
+      "scenarioClass": "negative",
+      "taskId": "recon-registration-degraded-overlap-005",
+      "taskKind": "registration",
+      "taskVersion": "1.0.0",
+      "uncertainty": {
+        "role": "refusal-bound",
+        "sigmaM": 0.05,
+        "statement": "the bounded lower bound the degraded-evidence refusal must cite: any reconstruction from \" +\n      \"below-minimum evidence would carry sigma >= 0.05 m over the \" +\n      \"uncovered/un-overlapped region — the refusal names it instead of degrading geometry",
+        "unit": "m"
+      }
+    },
+    {
+      "behaviorClass": "degraded-evidence",
+      "capability": "reconstruction",
+      "criteria": {
+        "expectedFailureKinds": [
+          "unsupported-data"
+        ],
+        "thresholds": []
+      },
+      "evidence": {
+        "captureSet": {
+          "captureSetId": "cap-midrange-bedroom-3frame-low-coverage",
+          "frames": [
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-LC-01",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [
+                "floor",
+                "wall_west"
+              ],
+              "pointCount": 980,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  0.875,
+                  2.5,
+                  1.275
+                ]
+              },
+              "station": "S1"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-LC-02",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [
+                "ceiling",
+                "wall_east"
+              ],
+              "pointCount": 1010,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0.38268343,
+                  0.92387953
+                ],
+                "position": [
+                  2.625,
+                  1.5,
+                  1.275
+                ]
+              },
+              "station": "S2"
+            },
+            {
+              "evidenceRevision": "r2",
+              "frameId": "FR-LC-03",
+              "intrinsics": {
+                "cx": 640,
+                "cy": 360,
+                "fx": 1040,
+                "fy": 1040
+              },
+              "observedSurfaceIds": [
+                "wall_north",
+                "wall_south",
+                "box_cabinet::xmin",
+                "box_cabinet::xmax",
+                "box_cabinet::ymin"
+              ],
+              "pointCount": 770,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.75,
+                  0.5,
+                  1.275
+                ]
+              },
+              "station": "S3"
+            }
+          ],
+          "note": "three midrange frames covering nine of the twelve canonical surfaces (75% coverage, below the declared 80% minimum; box_cabinet::ymax, box_cabinet::zmin and box_cabinet::zmax are uncaptured)",
+          "purpose": "multi-image-reconstruction"
+        },
+        "description": "three midrange frames covering nine of twelve canonical surfaces (75% coverage < the declared 80% minimum)",
+        "deviceClass": "midrange_no_depth",
+        "fixtureId": "fixture-midrange-bedroom-001",
+        "gridHeight": null,
+        "gridWidth": null,
+        "samples": null
+      },
+      "evidenceRevisions": [
+        "r1",
+        "r2"
+      ],
+      "expected": {
+        "kind": "explicit-refusal"
+      },
+      "expectedFailureKind": "unsupported-data",
+      "expectedFallback": null,
+      "expectedVerdict": "pass",
+      "matrixCell": "degraded-evidence",
+      "scenarioClass": "negative",
+      "taskId": "recon-multiimage-degraded-coverage-006",
+      "taskKind": "multi-image-reconstruction",
+      "taskVersion": "1.0.0",
+      "uncertainty": {
+        "role": "refusal-bound",
+        "sigmaM": 0.05,
+        "statement": "the bounded lower bound the degraded-evidence refusal must cite: any reconstruction from \" +\n      \"below-minimum evidence would carry sigma >= 0.05 m over the \" +\n      \"uncovered/un-overlapped region — the refusal names it instead of degrading geometry",
+        "unit": "m"
+      }
+    },
+    {
+      "behaviorClass": "failing",
+      "capability": "reconstruction",
+      "criteria": {
+        "expectedFailureKinds": [
+          "resource-exhaustion"
+        ],
+        "thresholds": []
+      },
+      "evidence": {
+        "captureSet": {
+          "captureSetId": "cap-flagship-livingroom-12frame-oversized",
+          "frames": [
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-BIG-01",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "floor"
+              ],
+              "pointCount": 4800,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.05,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SB1"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-BIG-02",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "ceiling"
+              ],
+              "pointCount": 4800,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.25,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SB2"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-BIG-03",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "wall_west"
+              ],
+              "pointCount": 4800,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.4500000000000002,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SB3"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-BIG-04",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "wall_east"
+              ],
+              "pointCount": 4800,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.6500000000000001,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SB4"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-BIG-05",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "wall_north"
+              ],
+              "pointCount": 4800,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.85,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SB5"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-BIG-06",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "wall_south"
+              ],
+              "pointCount": 4800,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  2.05,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SB6"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-BIG-07",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "box_storage::xmin",
+                "box_storage::xmax"
+              ],
+              "pointCount": 4800,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  2.25,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SB7"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-BIG-08",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "box_storage::ymin",
+                "box_storage::ymax"
+              ],
+              "pointCount": 4800,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  2.45,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SB8"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-BIG-09",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "box_storage::zmin",
+                "box_storage::zmax"
+              ],
+              "pointCount": 4800,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  2.6500000000000004,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SB9"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-BIG-10",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "floor",
+                "ceiling"
+              ],
+              "pointCount": 4800,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  2.85,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SB10"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-BIG-11",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "wall_west",
+                "wall_east"
+              ],
+              "pointCount": 4800,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  3.05,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SB11"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-BIG-12",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "wall_north",
+                "wall_south"
+              ],
+              "pointCount": 4800,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  3.25,
+                  1.8,
+                  1.35
+                ]
+              },
+              "station": "SB12"
+            }
+          ],
+          "note": "twelve high-resolution flagship frames totalling 57600 fused points — above the declared 50000-point resource envelope (the failed-invocation fixture; coverage itself is complete)",
+          "purpose": "multi-image-reconstruction"
+        },
+        "description": "twelve high-resolution flagship frames totalling 57600 fused points (above the declared 50000-point envelope)",
+        "deviceClass": "flagship_lidar",
+        "fixtureId": "fixture-flagship-livingroom-001",
+        "gridHeight": null,
+        "gridWidth": null,
+        "samples": null
+      },
+      "evidenceRevisions": [
+        "r1"
+      ],
+      "expected": {
+        "kind": "explicit-refusal"
+      },
+      "expectedFailureKind": "resource-exhaustion",
+      "expectedFallback": "fixture-reconstruction-provider 1.0.0-fixture-v1",
+      "expectedVerdict": "pass",
+      "matrixCell": "failed-invocation",
+      "scenarioClass": "negative",
+      "taskId": "recon-multiimage-failed-resource-007",
+      "taskKind": "multi-image-reconstruction",
+      "taskVersion": "1.0.0",
+      "uncertainty": null
+    },
+    {
+      "behaviorClass": "unsupported-task",
+      "capability": "reconstruction",
+      "criteria": {
+        "expectedFailureKinds": [
+          "unsupported-data"
+        ],
+        "thresholds": []
+      },
+      "evidence": {
+        "captureSet": {
+          "captureSetId": "cap-flagship-livingroom-2frame-plain",
+          "frames": [
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-PLAIN-01",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "floor",
+                "wall_west",
+                "wall_north"
+              ],
+              "pointCount": 1240,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "position": [
+                  1.05,
+                  3.05,
+                  1.35
+                ]
+              },
+              "station": "S1"
+            },
+            {
+              "evidenceRevision": "r1",
+              "frameId": "FR-PLAIN-02",
+              "intrinsics": {
+                "cx": 960,
+                "cy": 540,
+                "fx": 1462.5,
+                "fy": 1462.5
+              },
+              "observedSurfaceIds": [
+                "ceiling",
+                "wall_east",
+                "wall_south"
+              ],
+              "pointCount": 1210,
+              "pose": {
+                "orientation": [
+                  0,
+                  0,
+                  0.38268343,
+                  0.92387953
+                ],
+                "position": [
+                  3.15,
+                  1.05,
+                  1.35
+                ]
+              },
+              "station": "S2"
+            }
+          ],
+          "note": "a plain two-frame flagship capture set — well-formed multi-image evidence; the novel-view-synthesis task requested over it is outside the provider's declared task set",
+          "purpose": "multi-image-reconstruction"
+        },
+        "description": "a plain well-formed two-frame flagship capture set — the novel-view-synthesis task asked over it is outside the declared task set",
+        "deviceClass": "flagship_lidar",
+        "fixtureId": "fixture-flagship-livingroom-001",
+        "gridHeight": null,
+        "gridWidth": null,
+        "samples": null
+      },
+      "evidenceRevisions": [
+        "r1"
+      ],
+      "expected": {
+        "kind": "explicit-refusal"
+      },
+      "expectedFailureKind": "unsupported-data",
+      "expectedFallback": null,
+      "expectedVerdict": "pass",
+      "matrixCell": "unsupported-task-combination",
+      "scenarioClass": "negative",
+      "taskId": "recon-unsupported-novelview-008",
+      "taskKind": "novel-view-synthesis",
+      "taskVersion": "1.0.0",
+      "uncertainty": null
+    }
+  ],
+  "version": "1.0.0"
+}
