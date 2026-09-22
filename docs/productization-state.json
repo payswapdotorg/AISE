@@ -27,7 +27,7 @@
     "deployedApplicationCommit": "eb953b2c6dde53711f1b7f536a0fe487e0929cf0",
     "lastVerifiedCommit": "eb953b2",
     "finalGate": "docs/PRODUCTION-READINESS-GATE.md",
-    "lastReconciledAt": "2026-09-22T11:04:12Z"
+    "lastReconciledAt": "2026-09-22T12:59:01Z"
   },
   "execution": {
     "maxConcurrentWorkers": 3,
@@ -515,6 +515,19 @@
         "harvest": "standard staged delivery (28/28, diffstat-exact 28/19799/0)",
         "verify": "5348 pass / 0 fail at base b7c5c63 (5235 + 113); combined main 5373/0 (5260 + 113)",
         "note": "MapAnything Layer-1 universal-reconstruction benchmark (registered candidate profile, deterministic doubles, four-cell behavior matrix, versioning discipline, comparison records vs the reference path) — survived the 06:30 platform drop, revived 07:45, completed 07:46"
+      },
+      {
+        "id": "HFX-204",
+        "status": "finalized",
+        "mergedSha": "4b79296",
+        "mergedAt": "2026-09-22T12:59:01Z",
+        "evidence": {
+          "workerChat": "f972a60a-4e2f-41fe-961e-49fcc0877d5d",
+          "workerCommit": "53220d3c2b6465fc7e1ca6bca6b844ff77bd9941",
+          "harvest": "standard staged delivery (20/20 incl DELIVERY.txt, diffstat-exact 19/10413/0 pure additions)",
+          "verify": "branch 5214/0 (5105+109 exact, boundaries 879); combined 5494/0 (5385+109), boundaries 930; typecheck+lint PASS",
+          "note": "IFC-Bench + BIM-Edit corpus — the HFX lane's Layer-2/3 benchmark surface; two-commit worker history (corpus 745ef6d + evidence 53220d3c); dispatch survived the platform outage (landed-and-dropped at 11:29, revived + adopted 12:36 via the fixed adopt path)"
+        }
       }
     ]
   }
