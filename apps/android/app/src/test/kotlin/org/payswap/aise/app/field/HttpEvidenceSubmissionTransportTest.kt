@@ -1,12 +1,7 @@
 package org.payswap.aise.app.field
 
-import com.sun.net.httpserver.HttpExchange
-import com.sun.net.httpserver.HttpServer
 import java.io.File
-import java.net.InetSocketAddress
-import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
-import java.util.concurrent.ConcurrentLinkedQueue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
@@ -19,6 +14,9 @@ import org.payswap.aise.app.capture.CaptureSessionController
 import org.payswap.aise.app.capture.CaptureRuntimeFixtures
 import org.payswap.aise.app.capture.MutableTestClock
 import org.payswap.aise.app.capture.SequentialSessionIds
+import org.payswap.aise.app.testutil.LoopbackHttpResponse
+import org.payswap.aise.app.testutil.LoopbackHttpServer
+import org.payswap.aise.app.testutil.bodyText
 import org.payswap.aise.core.adapter.NetworkAvailability
 import org.payswap.aise.core.adapter.SubmissionAnswer
 import org.payswap.aise.core.capture.InMemoryLocalCaptureStore
@@ -27,9 +25,9 @@ import org.payswap.aise.core.json.JsonValue
 
 /**
  * HttpEvidenceSubmissionTransport unit tests (PROD-032) against an
- * in-process HTTP server that implements the EXISTING backend/api capture
- * ingestion routes VERBATIM (mirrors backend/api/src/capture/router.ts and
- * the shared-contract SyncBatch/SyncAck family):
+ * in-process loopback HTTP server that implements the EXISTING backend/api
+ * capture ingestion routes VERBATIM (mirrors backend/api/src/capture/router.ts
+ * and the shared-contract SyncBatch/SyncAck family):
  *
  *   POST /v1/capture/assets/:contentId -> raw-body upload; sha-256 of the
  *       bytes MUST equal :contentId (422 CONTENT_ID_MISMATCH otherwise)
@@ -38,136 +36,100 @@ import org.payswap.aise.core.json.JsonValue
  *       scripted rejection answers 422 REJECTED with a stable reasonCode
  *   GET  /healthz                     -> 200
  *
- * The happy-path fixtures are REAL finalized sessions produced by the
- * app's own [CaptureSessionController] (journal + manifest + asset files on
- * disk), so these tests pin the full manifest → transport → route chain —
- * the client's evidence for "the transport adapts to the EXISTING routes".
+ * The happy-path fixtures are REAL finalized sessions produced by the app's
+ * own [CaptureSessionController] (journal + manifest + asset files on disk),
+ * so these tests pin the full manifest → transport → route chain — the
+ * client's evidence for "the transport adapts to the EXISTING routes".
  */
 class HttpEvidenceSubmissionTransportTest {
 
     @TempDir
     lateinit var root: File
 
-    private data class Recorded(
-        val method: String,
-        val path: String,
-        val body: ByteArray,
-        val authorization: String?,
-        val contentType: String?,
-    )
-
-    private val requests = ConcurrentLinkedQueue<Recorded>()
-
     /** Scriptable server state: accepted idempotency keys + stored assets. */
     private val seenIdempotencyKeys = mutableMapOf<String, String>()
     private val storedAssets = mutableMapOf<String, ByteArray>()
     private var rejectNextSync: String? = null
+    private var healthzCode = 200
 
-    private var server: HttpServer? = null
-    private var baseUrl: String = ""
-    private val token = MutableStateFlow<String?>(null)
+    private lateinit var server: LoopbackHttpServer
+    private val baseUrl: String get() = server.baseUrl
+    private val token = MutableStateFlow<String?>("tok-sync-test")
 
     @BeforeEach
     fun startServer() {
-        val s = HttpServer.create(InetSocketAddress(0), 0)
-        s.createContext("/") { exchange -> handle(exchange) }
-        s.start()
-        server = s
-        baseUrl = "http://127.0.0.1:" + s.address.port
-        token.value = "tok-sync-test"
+        server = LoopbackHttpServer { request -> handle(request) }
+        server.start()
     }
 
     @AfterEach
     fun stopServer() {
-        server?.stop(0)
+        server.stop()
     }
 
-    private fun handle(exchange: HttpExchange) {
-        val body = exchange.requestBody.readBytes()
-        requests.add(
-            Recorded(
-                exchange.requestMethod,
-                exchange.requestURI.path,
-                body,
-                exchange.requestHeaders.getFirst("Authorization"),
-                exchange.requestHeaders.getFirst("Content-Type"),
-            ),
-        )
+    private fun handle(request: org.payswap.aise.app.testutil.LoopbackHttpRequest): LoopbackHttpResponse {
+        fun json(code: Int, text: String) = LoopbackHttpResponse(code, text.toByteArray(Charsets.UTF_8))
 
-        fun answer(code: Int, text: String) {
-            val bytes = text.toByteArray(StandardCharsets.UTF_8)
-            exchange.responseHeaders.add("Content-Type", "application/json")
-            exchange.sendResponseHeaders(code, bytes.size.toLong())
-            exchange.responseBody.use { it.write(bytes) }
-        }
+        val path = request.path
+        val method = request.method
 
-        val path = exchange.requestURI.path
-        val method = exchange.requestMethod
-
-        when {
-            path == "/healthz" && method == "GET" -> answer(200, """{"status":"ok"}""")
+        return when {
+            path == "/healthz" && method == "GET" -> json(healthzCode, """{"status":"ok"}""")
 
             path.startsWith("/v1/capture/assets/") && method == "POST" -> {
                 val contentId = path.removePrefix("/v1/capture/assets/")
-                val sha = sha256Hex(body)
+                val sha = sha256Hex(request.body)
                 when {
-                    exchange.requestHeaders.getFirst("Authorization") != "Bearer tok-sync-test" ->
-                        answer(401, """{"error":"authentication_required"}""")
+                    request.headers["authorization"] != "Bearer tok-sync-test" ->
+                        json(401, """{"error":"authentication_required"}""")
 
                     sha != contentId ->
-                        answer(422, """{"outcome":"REJECTED","reasonCode":"CONTENT_ID_MISMATCH"}""")
+                        json(422, """{"outcome":"REJECTED","reasonCode":"CONTENT_ID_MISMATCH"}""")
 
                     else -> {
-                        storedAssets[contentId] = body
-                        answer(200, """{"stored":true,"contentId":"$contentId"}""")
+                        storedAssets[contentId] = request.body
+                        json(200, """{"stored":true,"contentId":"$contentId"}""")
                     }
                 }
             }
 
             path == "/v1/capture/sync" && method == "POST" -> {
                 val parsed = runCatching {
-                    JsonParser.parse(body.toString(StandardCharsets.UTF_8)) as? JsonValue.JsonObject
+                    JsonParser.parse(request.bodyText()) as? JsonValue.JsonObject
                 }.getOrNull()
-                if (parsed == null) {
-                    answer(400, """{"error":"malformed_json"}""")
-                    return
-                }
+                    ?: return json(400, """{"error":"malformed_json"}""")
                 val key = (parsed.members["idempotencyKey"] as? JsonValue.JsonString)?.value
+                    ?: return json(400, """{"error":"missing_idempotency_key"}""")
                 val batchId = (parsed.members["batchId"] as? JsonValue.JsonString)?.value ?: "batch"
-                if (key == null) {
-                    answer(400, """{"error":"missing_idempotency_key"}""")
-                    return
-                }
                 rejectNextSync?.let { reason ->
                     rejectNextSync = null
-                    answer(
+                    return json(
                         422,
                         """{"contractVersion":"1.0.0","batchId":"$batchId","idempotencyKey":"$key","outcome":"REJECTED","reasonCode":"$reason","reasonDetail":"$reason detail","acknowledgedAt":"2026-09-23T00:00:00.000Z"}""",
                     )
-                    return
                 }
                 if (key in seenIdempotencyKeys) {
-                    answer(
+                    json(
                         200,
                         """{"contractVersion":"1.0.0","batchId":"$batchId","idempotencyKey":"$key","outcome":"DUPLICATE","lastAcceptedSequence":0,"acknowledgedAt":"2026-09-23T00:00:00.000Z"}""",
                     )
                 } else {
                     seenIdempotencyKeys[key] = "accepted"
-                    answer(
+                    json(
                         200,
                         """{"contractVersion":"1.0.0","batchId":"$batchId","idempotencyKey":"$key","outcome":"ACCEPTED","lastAcceptedSequence":0,"acknowledgedAt":"2026-09-23T00:00:00.000Z"}""",
                     )
                 }
             }
 
-            else -> answer(404, """{"error":"not_found"}""")
+            else -> json(404, """{"error":"not_found"}""")
         }
     }
 
-    private fun transport(sessionsRoot: File = sessionsRoot()): HttpEvidenceSubmissionTransport =
-        HttpEvidenceSubmissionTransport(baseUrl, token, sessionsRoot)
-
     private fun sessionsRoot(): File = File(root, "sessions")
+
+    private fun transport(): HttpEvidenceSubmissionTransport =
+        HttpEvidenceSubmissionTransport(baseUrl, token, sessionsRoot())
 
     /** Builds a REAL finalized session (journal + assets + manifest) via the app controller. */
     private data class FinalizedSession(val sessionId: String, val manifestText: String)
@@ -226,18 +188,14 @@ class HttpEvidenceSubmissionTransportTest {
         val availability = transport().availability()
         assertTrue(availability is NetworkAvailability.Available)
         assertEquals("aise-http", (availability as NetworkAvailability.Available).transport)
-        assertEquals("GET /healthz", requests.first().let { "${it.method} ${it.path}" })
+        val first = server.requests.first()
+        assertEquals("GET", first.method)
+        assertEquals("/healthz", first.path)
     }
 
     @Test
     fun `availability surfaces a non-200 healthz explicitly`() {
-        val s = server!!
-        s.removeContext("/")
-        s.createContext("/") { exchange ->
-            val bytes = "down".toByteArray(StandardCharsets.UTF_8)
-            exchange.sendResponseHeaders(503, bytes.size.toLong())
-            exchange.responseBody.use { it.write(bytes) }
-        }
+        healthzCode = 503
         val availability = transport().availability()
         assertTrue(availability is NetworkAvailability.Unavailable)
         assertTrue((availability as NetworkAvailability.Unavailable).reason.contains("503"))
@@ -253,7 +211,7 @@ class HttpEvidenceSubmissionTransportTest {
         val answer = transport().submit(payloadText("{}"), "key-1")
         assertTrue(answer is SubmissionAnswer.Rejected)
         assertTrue((answer as SubmissionAnswer.Rejected).reason.contains("authenticated"))
-        assertTrue(requests.isEmpty(), "no request may leave the device unauthenticated")
+        assertTrue(server.requests.isEmpty(), "no request may leave the device unauthenticated")
     }
 
     @Test
@@ -261,36 +219,31 @@ class HttpEvidenceSubmissionTransportTest {
         val session = finalizedSessionWithVideo(video = true)
         val answer = transport().submit(payloadText(session.manifestText), "key-accept-1")
 
-        assertTrue(
-            answer is SubmissionAnswer.Accepted,
-            "expected Accepted, got $answer",
-        )
+        assertTrue(answer is SubmissionAnswer.Accepted, "expected Accepted, got $answer")
         assertEquals(
             "session:" + session.sessionId + ":sequence:0",
             (answer as SubmissionAnswer.Accepted).serverRef,
         )
 
         // Wire order: all asset uploads BEFORE the single sync POST.
-        val paths = requests.map { "${it.method} ${it.path}" }
+        val paths = server.requests.map { "${it.method} ${it.path}" }
         val syncIndex = paths.indexOf("POST /v1/capture/sync")
         assertTrue(syncIndex == paths.size - 1, "sync must be the last request: $paths")
-        val uploads = requests.subList(0, syncIndex).filter { it.path.startsWith("/v1/capture/assets/") }
+        val uploads = server.requests.subList(0, syncIndex).filter { it.path.startsWith("/v1/capture/assets/") }
         assertEquals(2, uploads.size, "still + video assets: $paths")
 
         // Each upload carried the RIGHT content address (server-verified sha-256)…
         for (upload in uploads) {
             val contentId = upload.path.removePrefix("/v1/capture/assets/")
             assertEquals(contentId, sha256Hex(upload.body), "server-verified content address")
-            assertEquals("Bearer tok-sync-test", upload.authorization)
+            assertEquals("Bearer tok-sync-test", upload.headers["authorization"])
         }
         // …and the right media types.
-        assertEquals("image/jpeg", uploads[0].contentType)
-        assertEquals("video/mp4", uploads[1].contentType)
+        assertEquals("image/jpeg", uploads[0].headers["content-type"])
+        assertEquals("video/mp4", uploads[1].headers["content-type"])
 
         // The batch itself: envelope sessionId + manifest parity with the uploads.
-        val batch = JsonParser.parse(
-            requests.last().body.toString(StandardCharsets.UTF_8),
-        ) as JsonValue.JsonObject
+        val batch = JsonParser.parse(server.requests.last().bodyText()) as JsonValue.JsonObject
         assertEquals(session.sessionId, (batch.members["sessionId"] as JsonValue.JsonString).value)
         assertEquals("key-accept-1", (batch.members["idempotencyKey"] as JsonValue.JsonString).value)
         val manifest = (batch.members["manifest"] as JsonValue.JsonArray).items
@@ -326,7 +279,7 @@ class HttpEvidenceSubmissionTransportTest {
         assertTrue(answer is SubmissionAnswer.Rejected, "got $answer")
         val reason = (answer as SubmissionAnswer.Rejected).reason
         assertTrue(
-            reason.contains("MANIFEST_MISMATCH") || reason.contains("MANIFEST_MISMATCH detail"),
+            reason.contains("MANIFEST_MISMATCH"),
             "reason must carry the server's stable code: $reason",
         )
     }
@@ -337,12 +290,12 @@ class HttpEvidenceSubmissionTransportTest {
         // Tamper: change one asset file's size on disk after the manifest froze.
         val assetDir = File(sessionsRoot(), session.sessionId)
         val assetFile = assetDir.walkTopDown().filter { it.isFile && it.extension == "jpg" }.first()
-        assetFile.appendBytes("tampered".toByteArray(StandardCharsets.UTF_8))
-        val before = requests.size
+        assetFile.appendBytes("tampered".toByteArray(Charsets.UTF_8))
+        val before = server.requests.size
         val answer = transport().submit(payloadText(session.manifestText), "key-tamper-1")
         assertTrue(answer is SubmissionAnswer.Rejected, "got $answer")
         assertTrue((answer as SubmissionAnswer.Rejected).reason.contains("byte size"))
-        assertEquals(before, requests.size, "no request may leave after local tamper detection")
+        assertEquals(before, server.requests.size, "no request may leave after local tamper detection")
     }
 
     @Test
@@ -356,14 +309,16 @@ class HttpEvidenceSubmissionTransportTest {
         val members = LinkedHashMap(first.members)
         members["relativePath"] = JsonValue.str("../../escape.jpg")
         val forgedItems = listOf(JsonValue.JsonObject(members)) + assets.items.drop(1)
-        val forged = JsonValue.JsonObject(LinkedHashMap(parsed.members).apply { put("assets", JsonValue.arr(forgedItems)) })
+        val forged = JsonValue.JsonObject(
+            LinkedHashMap(parsed.members).apply { put("assets", JsonValue.arr(forgedItems)) },
+        )
         val forgedText = org.payswap.aise.core.json.JsonWriter.pretty(forged)
 
-        val before = requests.size
+        val before = server.requests.size
         val answer = transport().submit(payloadText(forgedText), "key-escape-1")
         assertTrue(answer is SubmissionAnswer.Rejected, "got $answer")
         assertTrue((answer as SubmissionAnswer.Rejected).reason.contains("escapes"))
-        assertEquals(before, requests.size)
+        assertEquals(before, server.requests.size)
     }
 
     @Test
