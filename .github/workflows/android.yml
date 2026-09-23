@@ -45,13 +45,15 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v3
 
-      - name: Set up Android SDK (command-line tools)
-        uses: android-actions/setup-android@v3
-
-      - name: Accept licenses and install SDK pieces
+      - name: Install Android CLI
         run: |
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0" >/dev/null
+          curl -fsSL https://dl.google.com/android/cli/latest/linux_x86_64/install.sh | bash
+          echo "$HOME/.android/bin" >> "$GITHUB_PATH"
+          android --version
+
+      - name: Provision Android SDK with Android CLI
+        run: |
+          android sdk install platforms/android-35 build-tools/35.0.0 platform-tools
 
       - name: Set up Gradle (dependency cache)
         uses: gradle/actions/setup-gradle@v4
@@ -80,19 +82,21 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Accept licenses and install emulator image
+      - name: Install Android CLI
         run: |
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0" "emulator" "platform-tools" "system-images;android-35;google_apis;x86_64" >/dev/null
-          echo "no" | avdmanager create avd --force --name aise-api35 --package "system-images;android-35;google_apis;x86_64" --device "pixel_6"
-      
+          curl -fsSL https://dl.google.com/android/cli/latest/linux_x86_64/install.sh | bash
+          echo "$HOME/.android/bin" >> "$GITHUB_PATH"
+          android --version
+
+      - name: Provision SDK + emulator tooling
+        run: |
+          android sdk install platforms/android-35 build-tools/35.0.0 platform-tools emulator system-images/android-35/google_apis/x86_64
+          android emulator create --profile medium_phone
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Run real emulator instrumentation
+      - name: Run CLI-provisioned emulator instrumentation
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
