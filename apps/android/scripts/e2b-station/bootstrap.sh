@@ -31,7 +31,7 @@ set -euo pipefail
 
 AISE_REPO_URL="${AISE_REPO_URL:-https://github.com/payswapdotorg/AISE.git}"
 AISE_REPO_SHA="${AISE_REPO_SHA:?AISE_REPO_SHA must be set to the exact pinned commit SHA}"
-AISE_STATION_ROOT="${AISE_STATION_ROOT:-/workspace}"
+AISE_STATION_ROOT="${AISE_STATION_ROOT:-$HOME/aise-station}"
 ANDROID_HOME="${ANDROID_HOME:-$AISE_STATION_ROOT/android-sdk}"
 JDK_HOME="$AISE_STATION_ROOT/jdk-21"
 CMDLINE_TOOLS_BUILD="13114758"   # pinned cmdline-tools build (see fingerprint below)
@@ -44,9 +44,13 @@ cd "$AISE_STATION_ROOT"
 
 # ---------------------------------------------------------------- system ---
 log "system packages"
+APT="apt-get"
+if [ "$(id -u)" != "0" ]; then
+  APT="sudo -n apt-get"   # E2B sandboxes give the default user passwordless sudo
+fi
 if ! command -v git >/dev/null 2>&1 || ! command -v unzip >/dev/null 2>&1; then
-  apt-get update -qq
-  DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \
+  $APT update -qq
+  DEBIAN_FRONTEND=noninteractive $APT install -y -qq \
     ca-certificates curl git unzip xz-utils zip procps less >/dev/null
 fi
 echo "git: $(git --version)"

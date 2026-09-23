@@ -49,7 +49,7 @@ import time
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]  # apps/android/scripts/e2b-station
 STATION_SCRIPTS_DIR = pathlib.Path(__file__).resolve().parent
 
-STATION_ROOT = "/workspace"
+STATION_ROOT = "/home/user/aise-station"  # $HOME is writable on every E2B sandbox
 SCRIPTS = {
     "bootstrap": "bootstrap.sh",
     "gradle-trio": "gradle-trio.sh",

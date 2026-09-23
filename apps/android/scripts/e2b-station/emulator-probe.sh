@@ -21,14 +21,32 @@
 
 set -uo pipefail
 
-STATION_ROOT="${AISE_STATION_ROOT:-/workspace}"
+STATION_ROOT="${AISE_STATION_ROOT:-$HOME/aise-station}"
 # shellcheck source=/dev/null
 source "$STATION_ROOT/station-env.sh"
+
+# A read-only preinstalled SDK root (e.g. the aise-android-station template)
+# cannot host the on-demand emulator/system-image install; fall back to a
+# user-owned SDK root (the bootstrap's install path, repeated here so the
+# probe is self-contained on plain sandboxes too).
+if [ ! -w "$ANDROID_HOME" ]; then
+  echo "[emulator-probe] $ANDROID_HOME is not writable — using a user-owned SDK root"
+  export ANDROID_HOME="$STATION_ROOT/android-sdk"
+  export ANDROID_SDK_ROOT="$ANDROID_HOME"
+  mkdir -p "$ANDROID_HOME/cmdline-tools"
+  if [ ! -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" ]; then
+    curl -fsSL "https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip" \
+      -o /tmp/cmdline-tools.zip
+    unzip -q -o /tmp/cmdline-tools.zip -d "$ANDROID_HOME/cmdline-tools"
+    rm -rf "$ANDROID_HOME/cmdline-tools/latest"
+    mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+    rm -f /tmp/cmdline-tools.zip
+  fi
+fi
 
 EMULATOR_BIN="$ANDROID_HOME/emulator/emulator"
 AVD_NAME="aise-api35-probe"
 BOOT_TIMEOUT_SECS="${EMULATOR_BOOT_TIMEOUT_SECS:-240}"
-
 echo "[emulator-probe] layer 1: /dev/kvm"
 if [ -e /dev/kvm ]; then
   echo "  /dev/kvm PRESENT (nested virtualization exposed)"

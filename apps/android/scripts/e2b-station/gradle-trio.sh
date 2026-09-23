@@ -18,7 +18,7 @@
 
 set -euo pipefail
 
-STATION_ROOT="${AISE_STATION_ROOT:-/workspace}"
+STATION_ROOT="${AISE_STATION_ROOT:-$HOME/aise-station}"
 # shellcheck source=/dev/null
 source "$STATION_ROOT/station-env.sh"
 
