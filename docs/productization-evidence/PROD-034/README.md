@@ -1,10 +1,12 @@
-# PROD-034 — Web product discoverability closure (chunk 1: gaps 1, 2, 3)
+# PROD-034 — Web product discoverability closure (chunks 1 + 2: gaps 1, 2, 3, 5, 6 + the cross-route sweep)
 
-Branch `prod-034-closure` (base `c4df5bc`). This directory holds the chunk-1
-evidence for issue #9 gaps 1–3 (first-class capture acquisition, BOQ import
-discoverability, Evidence Envelope explainability). Gaps 5/6 (contextual
-incumbent integration discovery, provider status UX) + cross-route
-discoverability are chunk 2 (a later worker session on the same branch).
+Branch `prod-034-closure` (base `c4df5bc`). This directory holds the evidence
+for issue #9 gaps 1–3 (chunk 1: first-class capture acquisition, BOQ import
+discoverability, Evidence Envelope explainability) and gaps 5–6 + the
+cross-route discoverability sweep (chunk 2: contextual incumbent integration
+discovery, provider status UX, the navigation pass). The per-gap designs are
+below; `browser-journey.md` records the discoverability journey as a
+test-backed table.
 
 ## The exact commands and results
 
@@ -17,6 +19,17 @@ bun test apps/web/src/app/evidence-envelope.test.tsx  # 11 pass / 0 fail (69 exp
 bun test apps/web/src                                # 859 pass / 0 fail (4305 expects, 51 files)
 bunx tsc --noEmit -p apps/web/tsconfig.json           # PASS (no output)
 bun run lint                                          # VERIFY: PASS (eslint .)
+```
+
+Run at the chunk-2 tip (the item's final worker tip):
+
+```text
+bun test apps/web/src/app/contextual-integrations.test.tsx  # 14 pass / 0 fail (44 expects)
+bun test apps/web/src/app/provider-status.test.tsx         # 14 pass / 0 fail (44 expects)
+bun test apps/web/src/app/discoverability.test.tsx         # 10 pass / 0 fail (25 expects)
+bun test apps/web/src                                      # 897 pass / 0 fail (4418 expects, 54 files)
+bunx tsc --noEmit -p apps/web/tsconfig.json                # PASS (no output)
+bun run lint                                               # VERIFY: PASS (eslint .)
 ```
 
 No full `bun run verify` in the worker lane (the memory-constrained box
@@ -151,3 +164,109 @@ non-authoritative. All writes go through the app's gated same-origin fetch
 - The browser-journey evidence capture for the whole item (per the
   acceptance: browser journey evidence; the Lead's Gate F will also replay
   it).
+
+## Gap 5 — contextual incumbent integration discovery (chunk 2)
+
+**The problem.** Integrations lived only on the Settings surface — to learn
+that the current scope came from the ERP (and that the ERP connector is
+broken), a user had to know to look in Settings ("archaeology").
+
+**The design** (`app/contextual-integrations.tsx`):
+
+- **Discovery from the current task's own records** (no new authority, no
+  new metadata): `incumbentSourceRefs` projects the task-flow bundle's
+  BOQContext — its `sourceSystem` + the VERBATIM `sourceRecordRef` — as the
+  incumbent reference; internal sources (`aise-internal`) are honestly
+  excluded from the INCUMBENT list (an AISE record is not an incumbent
+  system).
+- **The binding join is a presentation join over the recorded vocabulary**:
+  a connector binding matches when its declared system class IS the recorded
+  system family (`erp` ↔ `erp-procurement`, over the frozen SYSTEM_CLASSES
+  vocabulary); the basis line states the join. Nothing is invented; a
+  non-matching system honestly joins to nothing.
+- **The card** ("The incumbent systems behind this scope"): each reference
+  renders REFERENCE-ONLY ("the incumbent system stays the system of record
+  for its own scope — AISE displays the reference, it does not own it"),
+  followed by the matching binding with its honest status — connected /
+  unavailable (the ERP adapter's typed `AUTHENTICATION_EXPIRED` detail,
+  verbatim) / unknown-last-sync (first-class unknown) — plus the external
+  record refs and the incumbent deep links.
+- **Explicit states:** not-configured (no binding for the system — "the
+  reference stays reference-only; there is nothing to sync and nothing was
+  lost"), unavailable, unknown-last-sync, live not-readable (the integration
+  registry has no readable same-origin endpoint in this build — the same
+  statement Settings makes; the references still render), and the honest
+  empty (no incumbent refs on the records).
+- **Actions stay brokered:** authorized actions resolve per principal at the
+  authorization broker — the card links the brokered panel; it never decides
+  (no second authority; integration metadata is never a new authority).
+- **Placed at the contextual points:** the BOQ Lens surface (where the
+  incumbent's scope is inspected) and the task-first landing (via
+  `TaskFirstLanding`). Settings' `BindingStatusBadge` is exported and reused
+  so the status vocabulary stays ONE vocabulary.
+
+## Gap 6 — provider status UX (chunk 2)
+
+**The problem.** Provider readiness already flowed through `/readyz` (the
+backend's readiness contract answers an optional-provider statuses map —
+statuses ONLY, never credential material), but the app's probe discarded
+it; provider-gated surfaces explained their own blocked state without
+showing WHICH layer was unavailable, and there was no shared vocabulary.
+
+**The design** (`app/provider-status.tsx` + the `api.ts` probe extension):
+
+- **The seam:** `probeApi` now extracts `/readyz`'s `providers` map onto an
+  additive `ApiStatus.providers` field — the readiness contract's OWN
+  vocabulary (`available | disabled | unavailable`); values outside the
+  vocabulary are dropped (never coerced); null when absent or the API is
+  unavailable.
+- **ONE consistent, calm vocabulary:** `describeProviderStatus` gives each
+  recorded word exactly one user-facing meaning — available = "ready —
+  configured on this deployment…"; disabled = "not configured — a deliberate
+  deployment choice, cleanly off… never an error"; unavailable = "not usable
+  — the readiness check reports it as misconfigured…". `ProviderStatusBadge`
+  renders the recorded word VERBATIM with one visual per word; the badge/word
+  tests pin the no-noise discipline (no env-var names, no SDK identifiers
+  beyond the deployment's own provider ids, no raw errors).
+- **Two presentations:** `ProviderStatusList` (the Settings API-connection
+  section — the full provider list when live, or the honest
+  none-reported line) and `ProviderStatusNote` (the compact strip for
+  provider-gated surfaces: the API mode chip + the providers inline, or the
+  honest none-reported / not-probeable lines).
+- **Wired where provider gating bites:** the task-flow UNAVAILABLE view (via
+  an additive optional `unavailableNote` on `ResourceView`, so the blocked
+  view names the layer), the capture upload entry, the solution
+  engine-unavailable rung, and Settings. The note deliberately does NOT
+  render in loading/error/ready states (calm, not noise) — test-pinned.
+
+## The cross-route discoverability sweep (chunk 2)
+
+`app/discoverability.test.tsx` — one navigation pass over a 16-render
+corpus (AppShell nav, NotFound guidance, canonical action bar, project
+surface nav, the task-flow panel/strip/composed-journey bodies, the capture
+mission + upload + limits bodies, the BOQ import body, the contextual
+integrations body, the case body, the landing, and the capture + boq-lens
+surfaces, wrapped in the app environment):
+
+1. **No dead pointers** — every `#/` hash link parses to a real route (the
+   SiteTwin/Outcomes bodies were verified clean in the same pass).
+2. **No orphaned surfaces** — all 11 route families are pointed-to; the
+   capture mission is threaded from ≥6 points.
+3. **The new elements are threaded where they belong** — the landing
+   composes the task-flow panel AND the integrations panel; the lens surface
+   mounts the import + integrations panels; the envelope renders at BOTH
+   consequential decisions; the provider note renders at the gated capture
+   entry; the strip threads back to the landing.
+
+Findings: none structural — the sweep verified the chunk-1/2 threading is
+complete (the NotFound guidance's capture link targets the pilot project;
+confirmed by the any-project matcher).
+
+## Item status
+
+All five assigned gaps (1, 2, 3, 5, 6) are closed with real, tested product
+surfaces + honest states, and the cross-route sweep passes. The
+`browser-journey.md` recording classifies every step honestly: deterministic
+test-backed (static render / stubbed seam), NOT walked in a live browser in
+this worker lane — the Lead's Gate F / PROD-033 W-journey replay covers the
+live walk at the final merged SHA.
