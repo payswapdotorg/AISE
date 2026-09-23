@@ -101,8 +101,9 @@ class FieldJourneyRuntime(
         evidenceJob = scope.launch {
             activeSession.collect { record ->
                 val current = _phase.value as? FieldJourneyPhase.MissionActive ?: return@collect
+                val session = record ?: return@collect // no open session — nothing to fold
                 var updated = current
-                for (asset in record.assets.filterNot { it.corrupted }) {
+                for (asset in session.assets.filterNot { it.corrupted }) {
                     if (asset.assetId in seenAssetIds) continue
                     seenAssetIds.add(asset.assetId)
                     val openStep = updated.gaps.firstOrNull { gap ->
