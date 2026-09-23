@@ -29,6 +29,12 @@
  *
  *  1. `createHttpSolutionAgentPort` — the same-origin HTTP binding over the
  *     PROD-023 route factory's paths (fetch INJECTED; PROD-001 contract).
+ *  PROD-031 (the browser-safe cut): the constructor import comes from the
+ *  `@aise/solution-contract/browser` subpath (the crypto-free cut of the
+ *  contract — the barrel re-exports the node:crypto-dependent identity
+ *  derivations, which a plain-browser bundle externalizes), so this seam
+ *  is part of the browser mount's chunk graph (the HTTP agent port is the
+ *  browser mount's LIVE assistant binding).
  *  2. `createScriptedSolutionAgentPort` — a CLEARLY-LABELED DETERMINISTIC
  *     TEST DOUBLE for the co-located tests (the PROD-023 discipline of
  *     `createInMemorySolutionToolDouble`): it replays fixed scripted
@@ -43,7 +49,7 @@ import {
   type EngineeringOperationIntent,
   type OperationTarget,
   type TypedOperationParameter,
-} from "../../../../../packages/solution-contract/src/index";
+} from "../../../../../packages/solution-contract/src/browser";
 
 /* ------------------------------------------------------------------ */
 /* Structural mirrors of the PROD-023 compiler shapes                  */

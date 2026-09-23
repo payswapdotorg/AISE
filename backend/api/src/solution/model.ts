@@ -36,6 +36,7 @@ import type {
   OperationApplicationResult,
   StateQuantityInventory,
 } from "@aise/solution-engine";
+import type { ReviseVersionResult } from "@aise/solution-engine";
 import type {
   ProposedState,
   SolutionValidationSnapshot,
@@ -103,6 +104,44 @@ export interface QuantitiesRequest {
   readonly stateIndex?: number;
 }
 
+/**
+ * POST /v1/solutions/baseline (PROD-031) — materialize the solution-creation
+ * baseline overlay (layer 0). The engine's own input shape: the state's
+ * identity derivations need `node:crypto`, so the BROWSER workspace mount
+ * materializes layer 0 through this route (the engine executes server-side).
+ */
+export interface BaselineRequest {
+  readonly solutionId: string;
+  readonly versionNumber: number;
+  readonly baselineRealityVersionId: string;
+  readonly materializedAt: string;
+}
+
+/**
+ * The serializable stepped materialization clock of the revision leg: layer
+ * N materializes at `base + N × stepMs` (the engine's own
+ * `steppedMaterializeClock` arithmetic; the caller pins both values — this
+ * surface never reads a clock).
+ */
+export interface ReviseClockSpec {
+  readonly base: string;
+  readonly stepMs: number;
+}
+
+/** POST /v1/solutions/revise (PROD-031) — the engine's revision (undo) leg. */
+export interface ReviseRequest {
+  readonly version: unknown;
+  readonly revertOperationId: string;
+  readonly capabilityProfile?: unknown;
+  readonly createdAt: string;
+  readonly materializeClock: ReviseClockSpec;
+  readonly revisionProvenance: {
+    readonly authoredBy: string;
+    readonly reason: string;
+    readonly authoredAt: string;
+  };
+}
+
 /* ------------------------------------------------------------------ */
 /* Response shapes                                                      */
 /* ------------------------------------------------------------------ */
@@ -144,6 +183,16 @@ export interface InspectResponse {
 
 export interface QuantitiesResponse {
   readonly inventory: StateQuantityInventory;
+}
+
+/** POST /v1/solutions/baseline response — the engine's layer-0 state verbatim. */
+export interface BaselineResponse {
+  readonly state: ProposedState;
+}
+
+/** POST /v1/solutions/revise response — the engine's typed revision outcome. */
+export interface ReviseResponse {
+  readonly result: ReviseVersionResult;
 }
 
 /* ------------------------------------------------------------------ */
@@ -281,6 +330,131 @@ export function parseQuantitiesRequest(payload: unknown): QuantitiesRequest {
     ...(payload["stateIndex"] === undefined
       ? {}
       : { stateIndex: parseStateIndex(payload["stateIndex"]) }),
+  };
+}
+
+/** Parses the POST /v1/solutions/baseline request body (fail closed). */
+export function parseBaselineRequest(payload: unknown): BaselineRequest {
+  if (!isRecord(payload)) {
+    throw new SolutionError("invalid_request", "expected a JSON object body");
+  }
+  const solutionId = payload["solutionId"];
+  if (!isNonEmptyString(solutionId)) {
+    throw new SolutionError(
+      "invalid_request",
+      "solutionId is required and must be a non-empty string (the solution the baseline overlay opens)",
+    );
+  }
+  const versionNumber = payload["versionNumber"];
+  if (
+    typeof versionNumber !== "number" ||
+    !Number.isInteger(versionNumber) ||
+    versionNumber < 1
+  ) {
+    throw new SolutionError(
+      "invalid_request",
+      "versionNumber is required and must be a positive integer (the version the baseline overlay opens)",
+    );
+  }
+  const baselineRealityVersionId = payload["baselineRealityVersionId"];
+  if (!isNonEmptyString(baselineRealityVersionId)) {
+    throw new SolutionError(
+      "invalid_request",
+      "baselineRealityVersionId is required and must be a non-empty string (the pinned read-only Reality-Graph version)",
+    );
+  }
+  const materializedAt = payload["materializedAt"];
+  if (!isIsoTimestamp(materializedAt)) {
+    throw new SolutionError(
+      "invalid_timestamp",
+      "materializedAt is required and must be an ISO-8601 UTC instant " +
+        "(milliseconds) — the caller pins the deterministic materialization " +
+        "instant; this surface never reads a clock",
+    );
+  }
+  return { solutionId, versionNumber, baselineRealityVersionId, materializedAt };
+}
+
+/** Parses the POST /v1/solutions/revise request body (fail closed). */
+export function parseReviseRequest(payload: unknown): ReviseRequest {
+  if (!isRecord(payload)) {
+    throw new SolutionError("invalid_request", "expected a JSON object body");
+  }
+  const version = payload["version"];
+  if (!isRecord(version)) {
+    throw new SolutionError(
+      "invalid_version",
+      "version must be a SolutionVersion-shaped object (the version to revise, consumed read-only)",
+    );
+  }
+  const revertOperationId = payload["revertOperationId"];
+  if (!isNonEmptyString(revertOperationId)) {
+    throw new SolutionError(
+      "invalid_request",
+      "revertOperationId is required and must be a non-empty string (the recorded operation whose effect to revert)",
+    );
+  }
+  const createdAt = payload["createdAt"];
+  if (!isIsoTimestamp(createdAt)) {
+    throw new SolutionError(
+      "invalid_timestamp",
+      "createdAt is required and must be an ISO-8601 UTC instant " +
+        "(milliseconds) — the deterministic creation instant of the new version",
+    );
+  }
+  const clock = payload["materializeClock"];
+  if (!isRecord(clock) || !isIsoTimestamp(clock["base"])) {
+    throw new SolutionError(
+      "invalid_request",
+      "materializeClock is required and must be { base, stepMs } — the " +
+        "serializable stepped clock of the new version's states (base: an " +
+        "ISO-8601 UTC instant, layer N materializes at base + N × stepMs)",
+    );
+  }
+  const stepMs = clock["stepMs"];
+  if (typeof stepMs !== "number" || !Number.isInteger(stepMs) || stepMs < 0) {
+    throw new SolutionError(
+      "invalid_request",
+      "materializeClock.stepMs must be a non-negative integer (milliseconds per state layer)",
+    );
+  }
+  const provenance = payload["revisionProvenance"];
+  if (!isRecord(provenance)) {
+    throw new SolutionError(
+      "invalid_request",
+      "revisionProvenance is required (the undo act's attribution is never optional)",
+    );
+  }
+  const authoredBy = provenance["authoredBy"];
+  if (!isNonEmptyString(authoredBy)) {
+    throw new SolutionError(
+      "invalid_request",
+      "revisionProvenance.authoredBy is required and must be a non-empty string",
+    );
+  }
+  const reason = provenance["reason"];
+  if (!isNonEmptyString(reason)) {
+    throw new SolutionError(
+      "invalid_request",
+      "revisionProvenance.reason is required and must be a non-empty string",
+    );
+  }
+  const authoredAt = provenance["authoredAt"];
+  if (!isIsoTimestamp(authoredAt)) {
+    throw new SolutionError(
+      "invalid_timestamp",
+      "revisionProvenance.authoredAt is required and must be an ISO-8601 UTC instant (milliseconds)",
+    );
+  }
+  return {
+    version,
+    revertOperationId,
+    ...(payload["capabilityProfile"] === undefined
+      ? {}
+      : { capabilityProfile: payload["capabilityProfile"] }),
+    createdAt,
+    materializeClock: { base: clock["base"] as string, stepMs },
+    revisionProvenance: { authoredBy, reason, authoredAt },
   };
 }
 

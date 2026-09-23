@@ -35,6 +35,22 @@
  *       SolutionVersion, stateIndex? }` → the raw, traced quantity
  *       inventory (per-operation + net totals; the PROD-025 input — NO
  *       BOQ lines are constructed here).
+ *   POST /v1/solutions/baseline (PROD-031)
+ *       Materialize the solution-creation baseline overlay (layer 0).
+ *       Body `{ solutionId, versionNumber, baselineRealityVersionId,
+ *       materializedAt }` → `{ state: ProposedState }` — the engine's own
+ *       `materializeBaselineState` output verbatim (the identity
+ *       derivations execute server-side; the browser workspace mount opens
+ *       its layer 0 through this route).
+ *   POST /v1/solutions/revise (PROD-031)
+ *       The engine's revision (undo) leg. Body `{ version:
+ *       SolutionVersion, revertOperationId, capabilityProfile?, createdAt,
+ *       materializeClock: { base, stepMs }, revisionProvenance }` →
+ *       `{ result }` — the engine's typed `ReviseVersionResult` (a NEW
+ *       version with the kept operations rebuilt; the input version is
+ *       consumed read-only, history is append-only). The wire clock is the
+ *       SERIALIZABLE stepped spec; the engine's own
+ *       `steppedMaterializeClock` builds the function server-side.
  *
  * HTTP STATUS MAPPING (the single authoritative place for this
  * translation; mirrors the execution router's discipline):
@@ -209,6 +225,44 @@ export async function handleSolutionRequest(
         solutionId: response.inventory.solutionId,
         versionNumber: response.inventory.versionNumber,
         stateIndex: response.inventory.stateIndex,
+      });
+      return jsonResponse(200, { ok: true, ...response }, requestId);
+    }
+
+    if (segments.length === 3 && segments[2] === "baseline") {
+      if (request.method !== "POST") {
+        return methodNotAllowed(requestId, "POST");
+      }
+      const body = await readJsonBody(request);
+      if (!body.ok) {
+        return malformedJson(requestId);
+      }
+      const response = service.baseline(body.payload);
+      logger.info("solution_baseline_materialized", {
+        requestId,
+        solutionId: response.state.solutionId,
+        versionNumber: response.state.versionNumber,
+        baselineRealityVersionId: response.state.baselineRealityVersionId,
+      });
+      return jsonResponse(200, { ok: true, ...response }, requestId);
+    }
+
+    if (segments.length === 3 && segments[2] === "revise") {
+      if (request.method !== "POST") {
+        return methodNotAllowed(requestId, "POST");
+      }
+      const body = await readJsonBody(request);
+      if (!body.ok) {
+        return malformedJson(requestId);
+      }
+      const response = service.revise(body.payload);
+      logger.info("solution_revision_evaluated", {
+        requestId,
+        outcome: response.result.outcome,
+        newVersionNumber:
+          response.result.outcome === "revised"
+            ? response.result.newVersion.versionNumber
+            : undefined,
       });
       return jsonResponse(200, { ok: true, ...response }, requestId);
     }

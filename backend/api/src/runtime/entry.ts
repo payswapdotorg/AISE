@@ -43,6 +43,9 @@
 import { resolveDataDir, validateEnv, type EnvRecord, type EnvSource } from "../lib/config";
 import { createLogger, type Logger } from "../lib/log";
 import { createCaptureGateway, type CaptureGateway } from "../capture/gateway";
+import { createSolutionAgentRoutes, createSolutionCommandCompiler } from "../reasoning/solution";
+import { handleSolutionRequest, SolutionService } from "../solution";
+import type { SolutionRouteOptions } from "../solution";
 import { FsCaptureStore, type CaptureStore } from "../capture/store";
 import {
   createAuthLayer,
@@ -120,6 +123,15 @@ import {
 } from "../artifacts/storage";
 import type { ArtifactsRouteOptions } from "../artifacts/router";
 import pkg from "../../package.json" with { type: "json" };
+// PROD-031: the ENGINE's own committed demo wall-world baseline geometry
+// (the canonical read-only table the engine package ships — ONE committed
+// world; imported as DATA so the serverless bundle inlines it, never a
+// runtime fs read that a bundle would drop). Consumed through the engine's
+// own `TableBaselineGeometryResolver` — never a second resolution
+// semantics.
+import engineBaselineGeometryTable from "../../../../packages/solution-engine/fixtures/baseline-geometry.json" with { type: "json" };
+import { TableBaselineGeometryResolver } from "@aise/solution-engine";
+import type { BaselineGeometryResolver, BaselineSurfaceArea } from "@aise/solution-engine";
 
 export interface RuntimeHandlerOptions {
   /** Live environment source (re-checked on every /readyz call). Default: process.env. */
@@ -525,6 +537,21 @@ async function augmentReadiness(
     statusText: response.statusText,
     headers: response.headers,
   });
+}
+
+/**
+ * The read-only demo baseline geometry resolver over the ENGINE's own
+ * committed wall-world table (PROD-031 — the solution routes' wiring): the
+ * same table `packages/solution-engine/fixtures/baseline-geometry.json`
+ * pins, consumed through the engine's `TableBaselineGeometryResolver` (the
+ * only resolution semantics). Coated operations over refs the table does
+ * not pin answer the engine's honest needs-input outcome — never an
+ * invented area.
+ */
+function demoBaselineGeometryResolver(): BaselineGeometryResolver {
+  return new TableBaselineGeometryResolver(
+    engineBaselineGeometryTable as Record<string, BaselineSurfaceArea>,
+  );
 }
 
 /**
@@ -974,6 +1001,36 @@ export function createRuntimeHandler(
     }
   }
 
+  const solutionAgentRoutes = createSolutionAgentRoutes({
+    compiler: createSolutionCommandCompiler({ clock: () => new Date().toISOString() }),
+    logger,
+  });
+
+  // PROD-031: the deterministic solution tool routes (step / validate /
+  // inspect / quantities / baseline / revise — the PROD-022 factory + the
+  // PROD-031 baseline/revision legs). The browser workspace mount executes
+  // the engine through these same-origin routes; the READ-ONLY baseline
+  // geometry is the ENGINE's own committed demo wall world (the canonical
+  // fixture the engine package ships — one committed world, never a second
+  // table). Boot failures degrade to the honest empty resolver (coated
+  // operations then answer the engine's needs-input outcome, never invented
+  // areas) — the artifact-store boot discipline.
+  let solutionRoutes: SolutionRouteOptions;
+  try {
+    solutionRoutes = {
+      service: new SolutionService({
+        baselineGeometry: demoBaselineGeometryResolver(),
+      }),
+      logger,
+    };
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    logger.error("solution baseline geometry fixture unreadable; serving the honest empty resolver", {
+      error: reason,
+    });
+    solutionRoutes = { service: new SolutionService(), logger };
+  }
+
   const core = createRequestHandler({
     envSource,
     version,
@@ -1054,7 +1111,18 @@ export function createRuntimeHandler(
       if (pgBoot.mode === "pg") {
         await pgBoot.ready;
       }
-      let response = await core(forwarded);
+      let response = await solutionAgentRoutes(forwarded, requestId);
+      if (response === null) {
+        response = await handleSolutionRequest(
+          forwarded,
+          new URL(forwarded.url),
+          requestId,
+          solutionRoutes,
+        );
+      }
+      if (response === null) {
+        response = await core(forwarded);
+      }
       if (new URL(request.url).pathname === "/readyz") {
         response = await augmentReadiness(response, envSource(), authReadiness, costBoot.readiness());
       }

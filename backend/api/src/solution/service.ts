@@ -35,18 +35,25 @@ import {
 import {
   applyOperation,
   deriveStateQuantities,
+  materializeBaselineState,
+  reviseVersion,
+  steppedMaterializeClock,
   validateSolutionVersion,
   type BaselineGeometryResolver,
   type OperationApplicationResult,
 } from "@aise/solution-engine";
 import {
   SolutionError,
+  parseBaselineRequest,
   parseInspectRequest,
   parseQuantitiesRequest,
+  parseReviseRequest,
   parseStepRequest,
   parseValidateRequest,
+  type BaselineResponse,
   type InspectResponse,
   type QuantitiesResponse,
+  type ReviseResponse,
   type SolutionErrorCode,
   type StepResponse,
   type ValidateResponse,
@@ -189,6 +196,58 @@ export class SolutionService {
     }
     const inventory = deriveStateQuantities(version, stateIndex);
     return { inventory };
+  }
+
+  /**
+   * POST /v1/solutions/baseline (PROD-031) — materialize the
+   * solution-creation baseline overlay (layer 0): the engine's
+   * `materializeBaselineState` verbatim. The state's identity derivations
+   * need `node:crypto`, so the BROWSER workspace mount opens its layer 0
+   * through this route (the engine executes server-side; the local binding
+   * calls the engine in-process — one semantics, two execution sites).
+   */
+  baseline(payload: unknown): BaselineResponse {
+    const request = parseBaselineRequest(payload);
+    const state = materializeBaselineState({
+      solutionId: request.solutionId,
+      versionNumber: request.versionNumber,
+      baselineRealityVersionId: request.baselineRealityVersionId,
+      materializedAt: request.materializedAt,
+    });
+    return { state };
+  }
+
+  /**
+   * POST /v1/solutions/revise (PROD-031) — the engine's revision (undo)
+   * leg: ONE named recorded operation reverted by producing a NEW version
+   * (the input version is consumed READ-ONLY; history is append-only). The
+   * wire clock is the SERIALIZABLE stepped spec { base, stepMs } — the
+   * engine's own `steppedMaterializeClock` builds the function server-side
+   * (never a second clock semantics).
+   */
+  revise(payload: unknown): ReviseResponse {
+    const request = parseReviseRequest(payload);
+    const version = decodeStrict(
+      "invalid_version",
+      (value) => decodeSolutionVersionStrict(value),
+      request.version,
+    );
+    const capabilityProfile = this.resolveCapabilityProfile(request.capabilityProfile);
+    const result = reviseVersion({
+      version,
+      revertOperationId: request.revertOperationId,
+      capabilityProfile,
+      createdAt: request.createdAt,
+      materializeClock: steppedMaterializeClock(
+        Date.parse(request.materializeClock.base),
+        request.materializeClock.stepMs,
+      ),
+      revisionProvenance: request.revisionProvenance,
+      ...(this.baselineGeometry === undefined
+        ? {}
+        : { baselineGeometry: this.baselineGeometry }),
+    });
+    return { result };
   }
 
   /* ---------------------------------------------------------------- */

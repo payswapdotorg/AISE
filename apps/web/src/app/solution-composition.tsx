@@ -23,6 +23,7 @@
 import type { ReactNode } from "react";
 import { Card, DataBadge, EmptyState } from "./components";
 import { formatRoute } from "./router";
+import type { SolutionQuery } from "./router";
 import { plural, shortId } from "./format";
 import {
   caseToSolutionCrossLink,
@@ -37,7 +38,12 @@ import type {
   ComposedJourneyStep,
   JourneyBoqEcho,
 } from "./solution-journey";
-import { DEMO_SOLUTION_WORLD_PINS } from "./demo";
+// PROD-031 (the browser-safe cut): this composition module stays in BOTH
+// mounts' chunk graphs (the Node rung AND the browser rung render the SAME
+// composed surface; only the workspace binding and the record source
+// differ) — it imports NOTHING from the solution module at value scope
+// (the rungs carry their own bindings).
+import { DEMO_SOLUTION_WORLD_PINS, DEMO_SOLUTION_PROJECT_ID } from "./demo";
 
 /* ------------------------------------------------------------------ */
 /* The recorded world pin (the demo dataset's projection)               */
@@ -94,7 +100,17 @@ export function SolutionCrossLinkList({
   return (
     <ul className="notes-list">
       {links.map((link) => (
-        <SolutionCrossLinkRow key={`${link.kind}:${link.fromId}`} link={link} />
+        // PROD-031 note: the key carries the target too — the inbound card
+        // renders multiple links of one kind from the same source entity
+        // (the recorded world's cross-surface map), and a kind+fromId-only
+        // key collides (React's duplicate-key warning, previously printed
+        // on every render of the solution surface).
+        <SolutionCrossLinkRow
+          key={`${link.kind}:${link.fromId}:${
+            link.target.kind === "route" ? link.target.href : link.target.label
+          }`}
+          link={link}
+        />
       ))}
     </ul>
   );
@@ -635,5 +651,147 @@ export function SolutionWorldEmptyState({
         }
       />
     </Card>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* The composed surface (PROD-031: the rung-neutral body)               */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The composed solution surface — the ONE body both selection-ladder rungs
+ * render (PROD-031): the case header, the inbound cross-links, the recorded
+ * journey steps, the generated BOQ trace panel, the WORKSPACE mount and the
+ * revised-solution record.
+ *
+ * The surface is RUNG-NEUTRAL BY CONSTRUCTION: it takes the journey RECORD
+ * (the Node rung computes it live through the engine; the browser rung
+ * renders the committed record — data, never recomputed client-side), the
+ * case context, the guarded BOQ sync input and the WORKSPACE as an injected
+ * mount (the Node rung mounts the local-engine default; the browser rung
+ * mounts the HTTP service binding). No second composed surface exists —
+ * the two rungs differ ONLY in their bindings, exactly the PROD-024 mount
+ * contract's law.
+ */
+export function ComposedSolutionSurface({
+  projectId,
+  query,
+  record,
+  workspace,
+  workspaceCardTitle,
+  workspaceCardMeta,
+  workspaceCardNote,
+}: {
+  readonly projectId: string;
+  readonly query: SolutionQuery;
+  /** The journey record (live from the engine, or the committed record). */
+  readonly record: ComposedJourneyRecord;
+  /** The rung's workspace mount (the binding-explicit PROD-024 body over
+   *  the rung's record + case context + BOQ seam input). */
+  readonly workspace: ReactNode;
+  readonly workspaceCardTitle: string;
+  readonly workspaceCardMeta: ReactNode;
+  readonly workspaceCardNote: ReactNode;
+}): ReactNode {
+  const addressedCaseMatches =
+    query.case === undefined || query.case === record.world.caseId;
+  return (
+    <>
+      <Card
+        title={record.world.title}
+        meta={
+          <span>
+            case {record.world.caseId} · solution {record.world.solutionId} · the
+            engineering problem
+          </span>
+        }
+        id="solution-case-header"
+      >
+        <p>{record.world.problemStatement}</p>
+        <p className="pane-foot">
+          Branches from the observed building (reality version{" "}
+          <code>{record.world.baselineRealityVersionId}</code>) — proposed work never
+          changes the observed record. Every proposed layer comes from the deterministic
+          solution engine; the generated solution BOQ is a derived projection tied to a
+          declared validation snapshot.
+        </p>
+        {addressedCaseMatches ? null : (
+          <div className="state state-empty" data-case-pin="mismatch">
+            <p className="state-title">The deep-linked case does not pin this solution</p>
+            <p className="state-guidance">
+              The <code className="mono">?case={query.case}</code> deep link names a case
+              this recorded solution world does not pin (its recorded case is{" "}
+              <code className="mono">{record.world.caseId}</code>) — the reference stays
+              visible, never re-keyed.
+            </p>
+          </div>
+        )}
+      </Card>
+
+      <SolutionInboundLinksCard projectId={projectId} record={record} />
+
+      <SolutionJourneyStepsPanel record={record} />
+
+      <SolutionBoqTracePanel
+        projectId={projectId}
+        boq={record.boq}
+        selectedLineId={query.boqLine}
+        addressedStep={query.step}
+      />
+
+      <Card
+        title={workspaceCardTitle}
+        meta={workspaceCardMeta}
+        id="solution-workspace-mount"
+      >
+        {workspaceCardNote}
+      </Card>
+
+      {workspace}
+
+      <Card title="The revised solution (the save/revise leg)" id="solution-revision-record">
+        {record.revisedBoq === null ? null : (
+          <>
+            <p>
+              The save/revise leg produced a NEW version 2 (the demolition undone — the
+              kept rebuild + plaster re-applied through the same engine path; version 1
+              stays in the history untouched). Its own declared validation snapshot
+              generated the revised BOQ:
+            </p>
+            <ul className="notes-list">
+              {record.revisedBoq.lines.map((line) => (
+                <li key={line.boqLineId}>
+                  {line.itemDescription} — {line.quantity.value} {line.quantity.unit} (
+                  {line.contributingSteps
+                    .map(
+                      (contribution) =>
+                        `step ${contribution.operationIndex} (${contribution.contributionKind})`,
+                    )
+                    .join(", ")}
+                  )
+                </li>
+              ))}
+            </ul>
+            <p className="pane-foot">
+              Revised BOQ <code>{record.revisedBoq.boqId.slice(0, 24)}…</code> — version{" "}
+              {record.revisedBoq.versionNumber}, {record.revisedBoq.lineCount} line(s);
+              the observed reality stayed byte-identical across the whole journey (the
+              reality seal).
+            </p>
+          </>
+        )}
+      </Card>
+
+      <p className="pane-foot">
+        The composed golden journey is proven by the deterministic gate
+        (`apps/web/src/app/solution-composition-model.test.ts`): both authoring paths,
+        the equivalence of their operation identities, byte-deterministic replay, and
+        the authoritative-reality seal. Open the{" "}
+        <a href={formatRoute({ name: "solution", projectId: DEMO_SOLUTION_PROJECT_ID, query: {} })}>
+          recorded demo world
+        </a>{" "}
+        any time from the project navigation.
+      </p>
+    </>
   );
 }

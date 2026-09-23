@@ -6,6 +6,7 @@
   "description": "AISE interactive solution graph and engineering operation contract (PROD-021, SHARED): versioned, domain-extensible wire objects for the interactive engineering solution workflow (Solution, SolutionVersion, EngineeringOperation, EngineeringOperationIntent, ProposedState, OperationDependency, OperationTarget, OperationEffect, SolutionValidationSnapshot, solution-to-BOQ trace objects, domain descriptor, operation capability negotiation) per ACR-005/ACR-006. Data + contract logic only — no I/O in the core, no server behavior, no 3D, no agent implementation, NO MUTATION PATH FOR AUTHORITATIVE REALITY (proposals stay separate from observed reality).",
   "exports": {
     ".": "./src/index.ts",
+    "./browser": "./src/browser.ts",
     "./fixtures-loader": "./src/fixtures-loader.ts"
   },
   "scripts": {

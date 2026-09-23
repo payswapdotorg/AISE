@@ -16,8 +16,12 @@
  */
 
 import { useState } from "react";
-import type { ManipulationAction } from "../operations";
-import { manipulationActionsForElement } from "../operations";
+// PROD-031 (the browser-safe cut): the crypto-free CORE, not the Node-side
+// facade — this pane is part of the browser mount's chunk graph, and the
+// facade's imports transitively reach node:crypto (the engine's identity
+// derivations), which a plain-browser bundle externalizes.
+import type { ManipulationAction } from "../operations-core";
+import { manipulationActionsForElement } from "../operations-core";
 import type { SceneElement } from "../viewer/model";
 
 /** One action's parameter draft keyed by slot name. */

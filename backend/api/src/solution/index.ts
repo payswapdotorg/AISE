@@ -15,6 +15,8 @@ export {
   parseValidateRequest,
   parseInspectRequest,
   parseQuantitiesRequest,
+  parseBaselineRequest,
+  parseReviseRequest,
   requireNonEmptyString,
 } from "./model";
 export type {
@@ -23,11 +25,16 @@ export type {
   ValidateRequest,
   InspectRequest,
   QuantitiesRequest,
+  BaselineRequest,
+  ReviseRequest,
+  ReviseClockSpec,
   StepResponse,
   ValidateResponse,
   InspectResponse,
   InspectedOperation,
   QuantitiesResponse,
+  BaselineResponse,
+  ReviseResponse,
 } from "./model";
 
 export { SolutionService } from "./service";

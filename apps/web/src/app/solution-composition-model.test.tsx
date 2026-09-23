@@ -675,8 +675,13 @@ describe("PROD-026 the Solution surface (the integration station)", () => {
     expect(html).toContain('id="solution-inbound-links"');
     expect(html).toContain("The recorded journey (the §3 golden journey)");
     expect(html).toContain("12 steps");
-    // the honest agent-unwired panel of the workspace
-    expect(html).toContain("The assistant is not connected in this session");
+    // the LIVE agent mount (PROD-031): the composed surface binds the
+    // workspace's agent seam to the HTTP solution-agent port — the panel
+    // renders the wired "ready" state (the honest not-connected panel is
+    // now only the ABSENT-seam state, proven by the workspace module's own
+    // tests)
+    expect(html).toContain('id="solution-agent"');
+    expect(html).toContain('data-agent-status="ready"');
   });
 
   test("the deep-linked boq-line selection renders the line's full trace + the step jump", async () => {
