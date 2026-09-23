@@ -21,6 +21,11 @@ android {
 
     defaultConfig {
         applicationId = "org.payswap.aise.app"
+        val apiBaseUrl = providers.environmentVariable("AISE_API_BASE_URL")
+            .orElse("https://aise-tan.vercel.app")
+            .get()
+            .trimEnd('/')
+        buildConfigField("String", "AISE_API_BASE_URL", """ + apiBaseUrl + """)
         minSdk = 26
         targetSdk = 35
         versionCode = 1
