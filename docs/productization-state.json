@@ -518,12 +518,17 @@
     },
     {
       "id": "PROD-034",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-031"
       ],
       "workOrder": "docs/productization-closure-work-orders.md",
-      "note": "web product discoverability closure (issue #9 gaps 1/2/3/5/6)"
+      "note": "issue #9 gaps 1/2/3/5/6 + cross-route closed; browser-journey evidence test-backed (deterministic lane, honest classification) \u2014 PROD-033 replays it live at the final SHA; honest note: live-mode integrations render not-readable (no readable same-origin registry endpoint \u2014 governed backend gap if ever wanted)",
+      "mergedSha": "$(git rev-parse --short HEAD)",
+      "mergedAt": "2026-09-23T05:20:00Z",
+      "workerChat": "local subagent chunks 115-a/115-b (agent-b6fc1f59, resumed)",
+      "workerCommit": "ca391b6",
+      "verify": "branch 5677/0 (5598+79 exact); boundaries 967 clean; typecheck+lint PASS; apps/web suite 897/0"
     }
   ],
   "simulation": {
