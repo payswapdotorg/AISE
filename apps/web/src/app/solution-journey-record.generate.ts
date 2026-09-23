@@ -30,6 +30,7 @@ await Bun.write(
   import.meta.dir + "/solution-journey-record.json",
   JSON.stringify(record, null, 2) + "\n",
 );
+// eslint-disable-next-line no-console -- the generator is a command-line script (the solution-benchmark.ts precedent): its stdout IS its interface
 console.log(
   `wrote solution-journey-record.json (journeyId ${record.journeyId.slice(0, 16)}…, ` +
     `${record.steps.length} steps)`,

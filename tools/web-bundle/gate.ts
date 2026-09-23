@@ -535,6 +535,9 @@ function freePort(): number {
   const server = Bun.serve({ hostname: "127.0.0.1", port: 0, fetch: () => new Response("noop") });
   const port = server.port;
   server.stop(true);
+  if (port === undefined) {
+    throw new Error("web-bundle gate: the loopback port probe reported no port");
+  }
   return port;
 }
 
@@ -558,7 +561,12 @@ export async function startLocalDeploymentStack(options: {
   // documented local-FS mode — the demo stack's own rule; an inherited
   // database URL would make the gate need a live Postgres, which a bundle
   // gate must never require).
-  const env: Record<string, string> = { ...process.env };
+  const env: Record<string, string> = {};
+  for (const [key, value] of Object.entries(process.env)) {
+    if (value !== undefined) {
+      env[key] = value;
+    }
+  }
   delete env.DATABASE_URL;
   const backend = Bun.spawn({
     cmd: [process.execPath, "run", "start"],
@@ -608,7 +616,7 @@ export async function startLocalDeploymentStack(options: {
   const proxy = Bun.serve({
     hostname: "127.0.0.1",
     port: 0,
-    fetch: (request): Response => proxySameOrigin(request, backendOrigin),
+    fetch: (request): Promise<Response> => proxySameOrigin(request, backendOrigin),
   });
   const origin = `http://127.0.0.1:${proxy.port}`;
   const stop = async (): Promise<void> => {
@@ -625,7 +633,7 @@ export async function startLocalDeploymentStack(options: {
  * verbatim; set-cookie passes through so the demo session rides the
  * browser's cookie jar).
  */
-function proxySameOrigin(request: Request, backendOrigin: string): Response {
+function proxySameOrigin(request: Request, backendOrigin: string): Promise<Response> {
   const url = new URL(request.url);
   if (url.pathname === "/healthz" || url.pathname === "/readyz" || url.pathname.startsWith("/v1/")) {
     const forwarded = new Request(`${backendOrigin}${url.pathname}${url.search}`, {
@@ -635,7 +643,7 @@ function proxySameOrigin(request: Request, backendOrigin: string): Response {
     });
     return fetch(forwarded);
   }
-  return serveStatic(request);
+  return Promise.resolve(serveStatic(request));
 }
 
 /* ------------------------------------------------------------------ */

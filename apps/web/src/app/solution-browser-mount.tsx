@@ -42,9 +42,10 @@
  * engine-unavailable panel the LAST.
  */
 
-import { useMemo, use } from "react";
+import { use } from "react";
 import type { ReactNode } from "react";
 import { useAppEnvironment } from "./environment";
+import type { FetchLike } from "./api";
 import type { SolutionQuery } from "./router";
 import type { ComposedJourneyRecord } from "./solution-journey";
 import { ComposedSolutionSurface } from "./solution-composition";
@@ -60,6 +61,8 @@ import {
   type WorkspaceDeps,
 } from "../solution/operations-core";
 import { createHttpSolutionService } from "../solution/service-http";
+import type { SolutionServicePort } from "../solution/service";
+import type { SolutionWorkspaceState } from "../solution/model";
 import { createHttpSolutionAgentPort } from "../solution/agent/port";
 import { DEMO_SOLUTION_WORLD, demoObservedScene } from "../solution/demo-world";
 // The committed journey record (data — the §4.6 "one record" choice).
@@ -67,21 +70,23 @@ import committedRecordJson from "./solution-journey-record.json" with { type: "j
 
 const committedRecord = committedRecordJson as unknown as ComposedJourneyRecord;
 
-/** The browser rung's case context (the crypto-free demo world). */
-export function browserCaseContext(): SolutionCaseContext {
-  return {
-    projectId: DEMO_SOLUTION_WORLD.projectId,
-    caseId: DEMO_SOLUTION_WORLD.caseId,
-    solutionId: DEMO_SOLUTION_WORLD.solutionId,
-    title: DEMO_SOLUTION_WORLD.title,
-    problemStatement: DEMO_SOLUTION_WORLD.problemStatement,
-    baselineRealityVersionId: DEMO_SOLUTION_WORLD.baselineRealityVersionId,
-    observedScene: demoObservedScene(),
-    // No baselineGeometry resolver browser-side: coated operations resolve
-    // baseline geometry SERVER-SIDE through the HTTP service binding (the
-    // backend's mounted resolver over the engine's committed world).
-  };
-}
+/**
+ * The browser rung's case context (the crypto-free demo world) — a MODULE
+ * CONSTANT, computed ONCE (the same discipline as the committed record:
+ * pure data over the frozen world pins, never re-derived per render).
+ */
+export const browserCaseContext: SolutionCaseContext = {
+  projectId: DEMO_SOLUTION_WORLD.projectId,
+  caseId: DEMO_SOLUTION_WORLD.caseId,
+  solutionId: DEMO_SOLUTION_WORLD.solutionId,
+  title: DEMO_SOLUTION_WORLD.title,
+  problemStatement: DEMO_SOLUTION_WORLD.problemStatement,
+  baselineRealityVersionId: DEMO_SOLUTION_WORLD.baselineRealityVersionId,
+  observedScene: demoObservedScene(),
+  // No baselineGeometry resolver browser-side: coated operations resolve
+  // baseline geometry SERVER-SIDE through the HTTP service binding (the
+  // backend's mounted resolver over the engine's committed world).
+};
 
 /**
  * The browser rung's composed body: the SAME surface the first rung
@@ -96,7 +101,6 @@ export function ComposedSolutionBrowserBody({
   readonly projectId: string;
   readonly query: SolutionQuery;
 }): ReactNode {
-  const context = browserCaseContext();
   return (
     <div data-browser-mount="solution-browser-mount">
       <ComposedSolutionSurface
@@ -123,10 +127,61 @@ export function ComposedSolutionBrowserBody({
             SAME engine submission path.
           </p>
         }
-        workspace={<SolutionWorkspaceOverHttp context={context} />}
+        workspace={<SolutionWorkspaceOverHttp context={browserCaseContext} />}
       />
     </div>
   );
+}
+
+/**
+ * The opening leg's memoized outcome (the honest either/or: the engine's
+ * opened state, or the verbatim transport reason).
+ */
+type OpeningOutcome =
+  | { readonly ok: true; readonly openedState: SolutionWorkspaceState }
+  | { readonly ok: false; readonly reason: string };
+
+/**
+ * The OPENING RESOURCE cache — the promise created OUTSIDE render, once
+ * per service instance (the `seededJourneyResource` discipline: React's
+ * `use()` law requires a STABLE promise identity across renders; a promise
+ * created DURING render makes the suspended render's hook state be
+ * discarded on every retry, re-creating the promise and looping the
+ * suspension forever). The service is the cache key: it is memoized on
+ * the environment's stable fetch transport, so the opening runs ONCE per
+ * transport — the deterministic baseline request, never a re-fetch storm.
+ */
+const openingByService = new WeakMap<SolutionServicePort, Promise<OpeningOutcome>>();
+
+function openedThroughService(service: SolutionServicePort): Promise<OpeningOutcome> {
+  let opening = openingByService.get(service);
+  if (opening === undefined) {
+    // The baseline leg: the backend engine materializes layer 0 (the
+    // state's identity derivations need node:crypto, which the browser
+    // graph does not carry). A rejection is CAUGHT here (the honest
+    // not-connected state), never a crash.
+    opening = openWorkspaceThroughService(
+      {
+        projectId: DEMO_SOLUTION_WORLD.projectId,
+        caseId: DEMO_SOLUTION_WORLD.caseId,
+        solutionId: DEMO_SOLUTION_WORLD.solutionId,
+        title: DEMO_SOLUTION_WORLD.title,
+        problemStatement: DEMO_SOLUTION_WORLD.problemStatement,
+        baselineRealityVersionId: DEMO_SOLUTION_WORLD.baselineRealityVersionId,
+        createdAt: DEMO_SOLUTION_WORLD.createdAt,
+        materializedAt: DEMO_SOLUTION_WORLD.baselineMaterializedAt,
+      },
+      { service },
+    ).then(
+      (openedState) => ({ ok: true as const, openedState }),
+      (error: unknown) => ({
+        ok: false as const,
+        reason: error instanceof Error ? error.message : String(error),
+      }),
+    );
+    openingByService.set(service, opening);
+  }
+  return opening;
 }
 
 /**
@@ -142,64 +197,10 @@ function SolutionWorkspaceOverHttp({
   readonly context: SolutionCaseContext;
 }): ReactNode {
   const environment = useAppEnvironment();
-  const service = useMemo(
-    () => createHttpSolutionService({ fetchImpl: environment.fetchImpl }),
-    [environment.fetchImpl],
-  );
-  const deps: WorkspaceDeps = useMemo(
-    () => ({
-      service,
-      clock: defaultWorkspaceClock(),
-      authoredBy: DEMO_SOLUTION_WORLD.userId,
-    }),
-    [service],
-  );
-  const agentPort = useMemo(
-    () =>
-      createHttpSolutionAgentPort({
-        fetchImpl: environment.fetchImpl,
-        agentId: "aise-solution-agent",
-      }),
-    [environment.fetchImpl],
-  );
-  const agent = useMemo(
-    () => ({
-      port: agentPort,
-      sessionId: `solution:${context.projectId}:${context.solutionId}`,
-      agentId: agentPort.descriptor.agentId,
-      userId: DEMO_SOLUTION_WORLD.userId,
-    }),
-    [agentPort, context.projectId, context.solutionId],
-  );
-  // The opening leg: the baseline overlay materialized by the BACKEND
-  // engine (layer 0 — the state's identity derivations need node:crypto,
-  // which the browser graph does not carry). The promise memoizes per
-  // service instance; a rejection is CAUGHT here (the honest not-connected
-  // state — the panel below), never a crash.
-  const opening = useMemo(
-    () =>
-      openWorkspaceThroughService(
-        {
-          projectId: context.projectId,
-          caseId: context.caseId,
-          solutionId: context.solutionId,
-          title: context.title,
-          problemStatement: context.problemStatement,
-          baselineRealityVersionId: context.baselineRealityVersionId,
-          createdAt: DEMO_SOLUTION_WORLD.createdAt,
-          materializedAt: DEMO_SOLUTION_WORLD.baselineMaterializedAt,
-        },
-        { service },
-      ).then(
-        (openedState) => ({ ok: true as const, openedState }),
-        (error: unknown) => ({
-          ok: false as const,
-          reason: error instanceof Error ? error.message : String(error),
-        }),
-      ),
-    [context, service],
-  );
-  const outcome = use(opening);
+  const binding = browserBindingFor(environment.fetchImpl);
+  // The opening leg: the memoized per-service resource (see
+  // openedThroughService — a stable promise, never render-created).
+  const outcome = use(openedThroughService(binding.service));
   if (!outcome.ok) {
     return (
       <section
@@ -228,13 +229,72 @@ function SolutionWorkspaceOverHttp({
   }
   return (
     <SolutionWorkspaceBody
-      agent={agent}
+      agent={binding.agent}
       boq={{ kind: "trace-set", traceSet: committedRecord.boqTraceSet }}
       context={context}
-      deps={deps}
+      deps={binding.deps}
       openedState={outcome.openedState}
     />
   );
+}
+
+/* ------------------------------------------------------------------ */
+/* The cached HTTP binding set (one per fetch transport)               */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The browser rung's ENGINE BINDING SET: the HTTP service port, the
+ * workspace deps (the serializable default clock + the demo author) and
+ * the live agent binding — a pure function of the fetch transport.
+ */
+interface BrowserEngineBinding {
+  readonly service: SolutionServicePort;
+  readonly deps: WorkspaceDeps;
+  readonly agent: {
+    readonly port: ReturnType<typeof createHttpSolutionAgentPort>;
+    readonly sessionId: string;
+    readonly agentId: string;
+    readonly userId: string;
+  };
+}
+
+/**
+ * The BINDING cache — ONE binding per fetch transport, created OUTSIDE
+ * render (the same React `use()` law that governs the opening resource: a
+ * suspended render's hook state is DISCARDED on retry, so a useMemo-held
+ * service re-created per retry re-keys the opening cache and re-fires the
+ * baseline POST forever — the defect the run's console evidence captured:
+ * dozens of `POST /v1/solutions/baseline` under one mount). The app's
+ * transport is the App-level memoized `gatedFetch` (stable identity), so
+ * exactly ONE binding — and ONE baseline request — exists per transport.
+ */
+const bindingByFetch = new WeakMap<FetchLike, BrowserEngineBinding>();
+
+function browserBindingFor(fetchImpl: FetchLike): BrowserEngineBinding {
+  let binding = bindingByFetch.get(fetchImpl);
+  if (binding === undefined) {
+    const service = createHttpSolutionService({ fetchImpl });
+    const agentPort = createHttpSolutionAgentPort({
+      fetchImpl,
+      agentId: "aise-solution-agent",
+    });
+    binding = {
+      service,
+      deps: {
+        service,
+        clock: defaultWorkspaceClock(),
+        authoredBy: DEMO_SOLUTION_WORLD.userId,
+      },
+      agent: {
+        port: agentPort,
+        sessionId: `solution:${browserCaseContext.projectId}:${browserCaseContext.solutionId}`,
+        agentId: agentPort.descriptor.agentId,
+        userId: DEMO_SOLUTION_WORLD.userId,
+      },
+    };
+    bindingByFetch.set(fetchImpl, binding);
+  }
+  return binding;
 }
 
 export default ComposedSolutionBrowserBody;

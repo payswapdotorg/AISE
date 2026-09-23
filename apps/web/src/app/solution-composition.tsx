@@ -100,7 +100,17 @@ export function SolutionCrossLinkList({
   return (
     <ul className="notes-list">
       {links.map((link) => (
-        <SolutionCrossLinkRow key={`${link.kind}:${link.fromId}`} link={link} />
+        // PROD-031 note: the key carries the target too — the inbound card
+        // renders multiple links of one kind from the same source entity
+        // (the recorded world's cross-surface map), and a kind+fromId-only
+        // key collides (React's duplicate-key warning, previously printed
+        // on every render of the solution surface).
+        <SolutionCrossLinkRow
+          key={`${link.kind}:${link.fromId}:${
+            link.target.kind === "route" ? link.target.href : link.target.label
+          }`}
+          link={link}
+        />
       ))}
     </ul>
   );

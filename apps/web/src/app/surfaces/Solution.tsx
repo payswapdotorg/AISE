@@ -91,6 +91,7 @@ function solutionEngineResource(): Promise<SolutionEngineMount | null> {
       .catch((error: unknown) => {
         // The rung's outcome, logged non-blockingly (the honest ladder
         // trace — PROD-031's evidence channel; never a crash).
+        // eslint-disable-next-line no-console -- the ladder's non-blocking outcome channel (the documented PROD-026 precedent: surface-module diagnostics, never the structured logger's domain)
         console.info(
           "[solution-surface] rung 1 (the local engine mount) is unavailable — " +
             "falling to the browser mount",
@@ -130,6 +131,7 @@ function solutionBrowserMountResource(): Promise<SolutionBrowserMount | null> {
     browserMountResource = import("../solution-browser-mount")
       .then((module) => ({ ComposedSolutionBrowserBody: module.ComposedSolutionBrowserBody }))
       .catch((error: unknown) => {
+        // eslint-disable-next-line no-console -- the ladder's non-blocking outcome channel (see rung 1 above)
         console.info(
           "[solution-surface] rung 2 (the browser mount) is unavailable — " +
             "rendering the honest engine-unavailable composition",

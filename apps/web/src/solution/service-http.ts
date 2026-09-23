@@ -26,7 +26,6 @@
  */
 
 import type {
-  BaselineServiceInput,
   BaselineServiceResult,
   InspectServiceResult,
   QuantitiesServiceResult,
