@@ -43,8 +43,33 @@ import type { OpenWorkspaceInput } from "./operations-core";
 import type { SolutionWorkspaceState } from "./model";
 import type { EngineeringOperationIntent } from "../../../../packages/solution-contract/src/index";
 
-/* The full controller surface (the crypto-free core, re-exported). */
-export * from "./operations-core";
+/* The full controller surface (the crypto-free core, re-exported BY NAME —
+ * a star re-export here made the bundler merge this facade into the chunk
+ * shared with the browser mount, dragging the engine/identity derivations
+ * into the browser graph's chunk; the explicit names keep this facade in
+ * the Node-side chunk where its crypto-dependent imports belong). */
+export {
+  steppedWorkspaceClock,
+  defaultWorkspaceClock,
+  manipulationActionsForElement,
+  buildDirectManipulationIntent,
+  targetOfElement,
+  openWorkspaceThroughService,
+  submitIntent,
+  stepTimeline,
+  reviseOperation,
+  validateCurrentVersion,
+  agentSessionContextOf,
+  applyAgentDecision,
+} from "./operations-core";
+export type {
+  WorkspaceClock,
+  WorkspaceDeps,
+  ManipulationAction,
+  ManipulationParameterField,
+  ManipulationDraft,
+  OpenWorkspaceInput,
+} from "./operations-core";
 
 /* ------------------------------------------------------------------ */
 /* Opening the workspace (the Node default: the local engine baseline)  */
