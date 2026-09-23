@@ -46,7 +46,10 @@ fi
 
 EMULATOR_BIN="$ANDROID_HOME/emulator/emulator"
 AVD_NAME="aise-api35-probe"
-BOOT_TIMEOUT_SECS="${EMULATOR_BOOT_TIMEOUT_SECS:-240}"
+BOOT_TIMEOUT_SECS="${EMULATOR_BOOT_TIMEOUT_SECS:-600}"
+# Software-mode boot attempts (no KVM) need a much wider window than
+# accelerated boots; 600s is the honest attempt window before declaring the
+# boot "not completed at usable fidelity".
 echo "[emulator-probe] layer 1: /dev/kvm"
 if [ -e /dev/kvm ]; then
   echo "  /dev/kvm PRESENT (nested virtualization exposed)"
@@ -73,16 +76,31 @@ echo "  accel-check exit code: $ACCEL_RC"
 
 echo
 echo "[emulator-probe] layer 3: real headless AVD boot attempt (timeout ${BOOT_TIMEOUT_SECS}s)"
+# One CONSISTENT AVD home for both avdmanager (create/list) and the emulator
+# (boot) — a mismatch here once produced a bogus "Unknown AVD name" layer-3
+# failure that said nothing about KVM (found on the 2026-09-23 station).
+export ANDROID_SDK_ROOT="$ANDROID_HOME"
+export ANDROID_AVD_HOME="$HOME/.config/.android/avd"
+mkdir -p "$ANDROID_AVD_HOME"
 AVDMAKER="$ANDROID_HOME/cmdline-tools/latest/bin/avdmanager"
 if ! "$AVDMAKER" list avd 2>/dev/null | grep -q "Name: $AVD_NAME"; then
   echo "no" | "$AVDMAKER" create avd -n "$AVD_NAME" -k "system-images;android-35;google_apis;x86_64" \
     --device "pixel_6" >/tmp/avd-create.log 2>&1 || true
   cat /tmp/avd-create.log
 fi
+# NOTE on data-partition sizing (empirical, emulator 37.1.11 + API-35
+# google_apis x86_64, 2026-09-23 station): the image ships encrypted
+# userdata ("EncryptUserData = on"; encryptionkey.img present), so the
+# emulator pre-allocates the FULL 6GiB data partition (+20% headroom =
+# 7372.80 MB) before QEMU starts. Attempts to shrink it were ALL ineffective:
+#   * config.ini disk.dataPartition.size=2G  -> emulator rewrites 6442450944
+#   * userdata.useQcow2=yes                  -> still demands full allocation
+#   * removing the hw.device.* profile       -> still 7372.80 MB
+#   * -partition-size 2048                   -> still 7372.80 MB
+# A 12GB-disk sandbox with SDK+JDK+repo+Gradle caches (~3.1GB free) can
+# never satisfy it; no config workaround exists, so the probe attempts the
+# stock boot and records the FATAL verbatim.
 
-export ANDROID_SDK_ROOT="$ANDROID_HOME"
-export ANDROID_AVD_HOME="$HOME/.config/.android/avd"
-mkdir -p "$ANDROID_AVD_HOME"
 "$EMULATOR_BIN" -avd "$AVD_NAME" -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect \
   -accel off -memory 1024 >/tmp/emulator-boot.log 2>&1 &
 EMU_PID=$!

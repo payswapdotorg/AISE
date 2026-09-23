@@ -384,6 +384,9 @@ def main() -> None:
             )
             sys.exit(rc)
         station.connect()
+        # always refresh the in-sandbox copies so `script X` runs EXACTLY the
+        # committed script (small files; idempotent; no drift possible)
+        station.upload_scripts()
         envs = {"AISE_STATION_ROOT": STATION_ROOT}
         script_cmd = f"bash {STATION_ROOT}/station-scripts/{SCRIPTS[opts.name]}"
         if opts.name in LONG_SCRIPTS and not opts.stream:
