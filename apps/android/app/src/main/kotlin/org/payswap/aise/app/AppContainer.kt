@@ -2,6 +2,7 @@ package org.payswap.aise.app
 
 import java.io.File
 import java.time.Clock
+import org.payswap.aise.app.auth.MobileAuthClient
 import org.payswap.aise.app.capture.CaptureEnvironment
 import org.payswap.aise.app.capture.CaptureSessionController
 import org.payswap.aise.app.capture.DeviceIdentityProvider
@@ -42,6 +43,12 @@ class AppContainer(
 ) {
     val localCaptureStore: LocalCaptureStore = FileBackedLocalCaptureStore(File(rootDir, "store"))
 
+    /** Same-origin AISE API target, overridable via AISE_API_BASE_URL at build time. */
+    val apiBaseUrl: String = BuildConfig.AISE_API_BASE_URL
+
+    /** Passwordless/session adapter; server remains the authentication authority. */
+    val authClient: MobileAuthClient = MobileAuthClient(apiBaseUrl)
+
     val captureController: CaptureSessionController = CaptureSessionController(
         sessionsRoot = File(rootDir, "sessions"),
         store = localCaptureStore,
@@ -77,7 +84,11 @@ class AppContainer(
         scope = kotlinx.coroutines.MainScope(),
         activeSession = captureController.activeSession,
         deviceSnapshot = { deviceCapabilitySnapshot() },
-        transport = org.payswap.aise.app.field.OfflineUntilSyncTransport,
+        transport = org.payswap.aise.app.field.HttpEvidenceSubmissionTransport(
+            baseUrl = apiBaseUrl,
+            sessionToken = authClient.sessionToken,
+            sessionsRoot = File(rootDir, "sessions"),
+        ),
         nowUtcMillis = { clock.millis() },
         profileId = "profile-android-mobile-field-current",
     )
