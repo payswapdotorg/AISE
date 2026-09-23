@@ -40,13 +40,30 @@ export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>
 /* API mode (the health probe)                                         */
 /* ------------------------------------------------------------------ */
 
-/** The app-level API availability (drives the demo-mode badge). */
+/**
+ * The app-level API availability (drives the demo-mode badge).
+ *
+ * PROD-034 (additive): `providers` carries `/readyz`'s OPTIONAL-PROVIDER
+ * STATUSES when the deployment reports them — statuses ONLY (the backend's
+ * readiness contract never sends credential material or raw provider
+ * errors, and neither does this seam); null when the deployment reports
+ * no providers map (or the API is unavailable — nothing is guessed).
+ */
 export interface ApiStatus {
   readonly mode: "available" | "unavailable";
   readonly healthz: "ok" | "failed";
   readonly readyz: "ok" | "failed" | "skipped";
   readonly detail: string;
+  /**
+   * The /readyz optional-provider statuses (`{ [id]: status }`), statuses
+   * only; null when absent. Values outside the readiness vocabulary are
+   * dropped, never coerced.
+   */
+  readonly providers: Readonly<Record<string, ProviderStatusWord>> | null;
 }
+
+/** The /readyz optional-provider status vocabulary (statuses only). */
+export type ProviderStatusWord = "available" | "disabled" | "unavailable";
 
 async function ping(fetchImpl: FetchLike, path: string): Promise<"ok" | "failed"> {
   const result = await fetchJson(fetchImpl, path);
@@ -55,21 +72,52 @@ async function ping(fetchImpl: FetchLike, path: string): Promise<"ok" | "failed"
   }
   // The API's own health envelope is { ok: true, … } — anything else (a
   // proxy error page, a non-JSON body) is an honest failure.
-  if (
-    typeof result.value !== "object" ||
-    result.value === null ||
-    Array.isArray(result.value) ||
-    (result.value as Record<string, unknown>).ok !== true
-  ) {
+  if (!isOkEnvelope(result.value)) {
     return "failed";
   }
   return "ok";
 }
 
+/** True when a body is the API's own `{ ok: true, … }` health envelope. */
+function isOkEnvelope(value: unknown): boolean {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value) &&
+    (value as Record<string, unknown>).ok === true
+  );
+}
+
+/**
+ * Extract `/readyz`'s optional-provider statuses — the readiness contract's
+ * OWN vocabulary only (`available | disabled | unavailable`); anything else
+ * in the map is dropped (never coerced, never guessed). Null when the body
+ * carries no providers map or the map is empty.
+ */
+function providerStatuses(body: unknown): Readonly<Record<string, ProviderStatusWord>> | null {
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    return null;
+  }
+  const providers = (body as Record<string, unknown>).providers;
+  if (typeof providers !== "object" || providers === null || Array.isArray(providers)) {
+    return null;
+  }
+  const out: Record<string, ProviderStatusWord> = {};
+  for (const [id, status] of Object.entries(providers as Record<string, unknown>)) {
+    if (status === "available" || status === "disabled" || status === "unavailable") {
+      out[id] = status;
+    }
+  }
+  return Object.keys(out).length === 0 ? null : out;
+}
+
 /**
  * Probe the same-origin health endpoints. `readyz` is only consulted when
  * `healthz` answered — an API that fails its liveness probe is unavailable,
- * and the readiness detail is not going to change that.
+ * and the readiness detail is not going to change that. PROD-034: when
+ * `/readyz` answers OK, its optional-provider statuses are extracted
+ * (statuses only) and carried on the status for the consistent
+ * provider-status presentation.
  */
 export async function probeApi(fetchImpl: FetchLike): Promise<ApiStatus> {
   const healthz = await ping(fetchImpl, "/healthz");
@@ -79,22 +127,25 @@ export async function probeApi(fetchImpl: FetchLike): Promise<ApiStatus> {
       healthz,
       readyz: "skipped",
       detail: "the API did not answer /healthz on this origin — showing demo data",
+      providers: null,
     };
   }
-  const readyz = await ping(fetchImpl, "/readyz");
-  if (readyz === "failed") {
+  const readyzResult = await fetchJson(fetchImpl, "/readyz");
+  if (!readyzResult.ok || !isOkEnvelope(readyzResult.value)) {
     return {
       mode: "unavailable",
       healthz,
-      readyz,
+      readyz: "failed",
       detail: "the API answered /healthz but is not ready (/readyz failed) — showing demo data",
+      providers: null,
     };
   }
   return {
     mode: "available",
     healthz,
-    readyz,
+    readyz: "ok",
     detail: "live API on this origin",
+    providers: providerStatuses(readyzResult.value),
   };
 }
 

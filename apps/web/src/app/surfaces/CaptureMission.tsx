@@ -49,6 +49,7 @@ import {
 } from "../api";
 import { Card, DataBadge, EmptyState, ProjectSurfaceNav } from "../components";
 import { TaskFlowStrip } from "../task-first";
+import { ProviderStatusNote } from "../provider-status";
 import { formatRoute } from "../router";
 import { BROWSER_IMPLEMENTED_INTERACTION_MODES } from "../adapter-profile";
 import { plural } from "../format";
@@ -409,6 +410,7 @@ export function CaptureUploadCardBody({
           <p className="mono pane-foot">{outcome.endpoint}</p>
         </div>
       )}
+      <ProviderStatusNote subject="the capture upload" />
     </Card>
   );
 }

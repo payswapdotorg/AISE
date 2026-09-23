@@ -70,6 +70,7 @@ import {
   readinessEvidenceEnvelope,
 } from "./evidence-envelope";
 import { ContextualIntegrationsPanel } from "./contextual-integrations";
+import { ProviderStatusNote } from "./provider-status";
 import { formatRoute } from "./router";
 import {
   CanonicalActionBar,
@@ -422,6 +423,7 @@ export function TaskFlowResourceView({
       loadingLabel="Loading the task-first flow…"
       onRetry={onRetry}
       render={render}
+      unavailableNote={<ProviderStatusNote subject="the task-first flow" />}
     />
   );
 }

@@ -16,7 +16,7 @@ import {
   bindingsForSourceRef,
   incumbentSourceRefs,
 } from "./contextual-integrations";
-import { allBindings, bimBinding, erpBinding, pmBinding } from "../shell/fixtures";
+import { allBindings, bimBinding, erpBinding } from "../shell/fixtures";
 import { demoTaskFlowBundle, DEMO_TASK_PROJECT_ID } from "./task-dataset";
 import type { TaskFlowResourceData } from "./task-first";
 
