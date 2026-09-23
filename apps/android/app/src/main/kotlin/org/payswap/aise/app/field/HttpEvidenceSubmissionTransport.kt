@@ -78,7 +78,7 @@ class HttpEvidenceSubmissionTransport(
                 "sessionId" to JsonValue.str(sessionId),
                 "sequence" to JsonValue.num(0L),
                 "idempotencyKey" to JsonValue.str(submissionKey),
-                "envelope" to envelope,
+                "envelope" to canonicalEnvelope(envelope),
                 "manifest" to JsonValue.arr(manifestEntries),
             )
             val response = request(
@@ -106,6 +106,46 @@ class HttpEvidenceSubmissionTransport(
         }.getOrElse {
             SubmissionAnswer.Rejected(it.message ?: "mobile evidence sync failed")
         }
+    }
+
+    /**
+     * Projects the app's finalized session manifest onto the CANONICAL wire
+     * `CaptureSessionEnvelope` (shared-contracts family `sync`): only
+     * contract-declared fields ride the wire. The manifest's local-only keys
+     * — per-asset `relativePath` (file-store addressing) and the top-level
+     * `recovery` audit — are NOT wire fields: the backend's canonical strict
+     * decode (`decodeSyncBatchStrict`) rejects unrecognized keys, observed
+     * empirically as HTTP 400 `schema_invalid` on the 2026-09-23 E2B station
+     * journey against the REAL backend/api.
+     */
+    private fun canonicalEnvelope(manifest: JsonValue.JsonObject): JsonValue.JsonObject {
+        fun required(name: String): JsonValue =
+            manifest.members[name] ?: error("finalized session manifest has no $name")
+
+        val out = LinkedHashMap<String, JsonValue>()
+        out["contractVersion"] = required("contractVersion")
+        out["sessionId"] = required("sessionId")
+        manifest.members["missionRef"]?.let { out["missionRef"] = it }
+        out["deviceIdentity"] = required("deviceIdentity")
+        out["capabilityProfile"] = required("capabilityProfile")
+        out["startedAt"] = required("startedAt")
+        manifest.members["endedAt"]?.let { out["endedAt"] = it }
+        val assets = manifest.members["assets"] as? JsonValue.JsonArray
+            ?: error("finalized session manifest has no assets")
+        out["assets"] = JsonValue.arr(
+            assets.items.map { value ->
+                val asset = value as? JsonValue.JsonObject ?: error("manifest asset is not an object")
+                val wireAsset = LinkedHashMap<String, JsonValue>()
+                for (key in listOf(
+                    "contractVersion", "contentId", "byteSize", "mediaType",
+                    "capturedAt", "acquisitionMethod", "acquisitionMetadata",
+                )) {
+                    wireAsset[key] = asset.members[key] ?: error("manifest asset has no $key")
+                }
+                JsonValue.JsonObject(wireAsset)
+            },
+        )
+        return JsonValue.JsonObject(out)
     }
 
     private fun requestAsset(token: String, rawSha: String, mediaType: String, file: File): ResponseData {

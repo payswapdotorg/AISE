@@ -101,6 +101,29 @@ class HttpEvidenceSubmissionTransportTest {
                 val key = (parsed.members["idempotencyKey"] as? JsonValue.JsonString)?.value
                     ?: return json(400, """{"error":"missing_idempotency_key"}""")
                 val batchId = (parsed.members["batchId"] as? JsonValue.JsonString)?.value ?: "batch"
+                // Canonical strict-decode gate (mirrors the REAL gateway's
+                // decodeSyncBatchStrict, pinned after the 2026-09-23 station
+                // journey caught the transport sending local-only manifest
+                // keys on the wire): the envelope may carry ONLY
+                // contract-declared keys.
+                val envelope = parsed.members["envelope"] as? JsonValue.JsonObject
+                    ?: return json(400, """{"error":"missing_envelope"}""")
+                val issues = mutableListOf<String>()
+                for (forbidden in listOf("recovery")) {
+                    if (forbidden in envelope.members) issues.add("envelope/$forbidden")
+                }
+                (envelope.members["assets"] as? JsonValue.JsonArray)?.items?.forEachIndexed { index, asset ->
+                    if (asset is JsonValue.JsonObject && "relativePath" in asset.members) {
+                        issues.add("envelope/assets/$index/relativePath")
+                    }
+                }
+                if (issues.isNotEmpty()) {
+                    val issueJson = issues.joinToString(",") { """{"path":"$it","code":"unrecognized_keys"}""" }
+                    return json(
+                        400,
+                        """{"error":{"code":"schema_invalid","message":"Schema invalid."},"detail":"request body does not satisfy the SyncBatch wire contract","issues":[$issueJson]}""",
+                    )
+                }
                 rejectNextSync?.let { reason ->
                     rejectNextSync = null
                     return json(
@@ -255,6 +278,22 @@ class HttpEvidenceSubmissionTransportTest {
         }
         val envelope = batch.members["envelope"] as JsonValue.JsonObject
         assertEquals(session.sessionId, (envelope.members["sessionId"] as JsonValue.JsonString).value)
+        // The wire envelope is CANONICAL: local-only manifest keys must never
+        // ride the wire (the real gateway's strict decode rejects them).
+        assertTrue("recovery" !in envelope.members, "recovery is a local audit field, not a wire field")
+        val wireAssets = (envelope.members["assets"] as JsonValue.JsonArray).items
+        for ((index, asset) in wireAssets.withIndex()) {
+            assertTrue(
+                "relativePath" !in (asset as JsonValue.JsonObject).members,
+                "wire asset $index must not carry the local-only relativePath",
+            )
+            for (required in listOf(
+                "contractVersion", "contentId", "byteSize", "mediaType",
+                "capturedAt", "acquisitionMethod", "acquisitionMetadata",
+            )) {
+                assertTrue(required in asset.members, "wire asset $index must carry $required")
+            }
+        }
     }
 
     @Test

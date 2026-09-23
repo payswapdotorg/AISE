@@ -104,7 +104,9 @@ export AISE_STATION_JOURNAL_PATH="$JOURNAL"
 
 echo "[field-journey] running FieldJourneyStationSyncTest via Gradle"
 set +e
-./gradlew :app:test --tests "org.payswap.aise.app.field.FieldJourneyStationSyncTest" --rerun-tasks
+# :app:test is an AGP lifecycle task and rejects --tests; the concrete
+# unit-test task is required (found on the 2026-09-23 station run).
+./gradlew :app:testDebugUnitTest --tests "org.payswap.aise.app.field.FieldJourneyStationSyncTest" --rerun-tasks
 RC=$?
 set -e
 
