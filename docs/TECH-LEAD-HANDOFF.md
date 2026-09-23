@@ -35,6 +35,34 @@ problem → EngineeringOperation → proposed states → validation → solution
 
 The canonical authorities remain Reality Graph, Evidence Graph, Assurance Engine, Verification Engine, BOQ Graph and Solution Graph as defined by `spec/architecture-lock.md`. Clients, agents, renderers and external providers are never authorities.
 
+## CURRENT HANDOFF OVERRIDE — 2026-09-23
+
+The authoritative current main tip is **8969d0f77997f67cfa7e2c78cfe52f2ed4f57e3d**.
+
+Machine-state facts supersede older narrative statements in this file:
+
+- Productization remains **not_ready**.
+- **PROD-001 through PROD-014** are finalized.
+- **PROD-016 through PROD-030** are finalized.
+- **PROD-015** is the only remaining productization declaration gate.
+- HFX finalized: **HFX-000, HFX-101, HFX-201, HFX-204, HFX-301**.
+- **HFX-302** is currently dispatch-eligible; later HFX eligibility must be recomputed from live state.
+- **PROD-030** fixed the browser-bundle module-evaluation defect; its evidence includes real-Chromium mount verification and zero page errors on the fixed tree.
+- Known user-facing gaps at this handoff include first-class browser capture acquisition, BOQ import discoverability, compact Evidence Envelope explanation, contextual integration discovery, and complete cross-adapter deployed journey proof.
+- The solution AgentPanel exists, but the current user-facing solution mount does not yet pass a live agent handle; natural-language authoring therefore requires closure before final readiness.
+- Recorded deployment facts in `docs/productization-state.json` are not proof that the latest main tip is deployed. Final declaration requires deployment of the exact final merged SHA and independent browser/device replay.
+
+**Canonical execution mandate:** GitHub issue **#9 — EXECUTION MANDATE — close remaining gaps, E2B Android station, and prove web/mobile/combined production readiness**.
+
+Treat issue #9 as the active closure directive. It requires:
+1. closure of the known product/discoverability gaps;
+2. a reproducible E2B-based Android development/test station, with the E2B credential handled only as a secret;
+3. a maximum of three concurrent workers with disjoint protected surfaces;
+4. formal Web-only, Android-only, and Web+Android combined journey proof;
+5. Gates A–I in `docs/PRODUCTION-READINESS-GATE.md` all passing on one merged lineage before PROD-015 can be finalized.
+
+Do not infer completion from this override. Recompute machine-state eligibility and independently reproduce evidence before accepting any worker claim.
+
 ## Architecture records and mandatory technology rule
 
 Read:
@@ -55,34 +83,34 @@ The repository is the source of truth. Always read the current main tip, then `d
 
 Core implementation: `b9b031a85016ac50caba6cd669daf6695ea2938a` is NOT a valid core SHA; the authoritative core completion SHA is `b9b031a85016ac50caba6cd66990707f7815b179`.
 
-Current productization remains `not_ready`. The provisional deployment is `https://aise-tan.vercel.app`; its last separately evidenced deployed application commit is `693fc38fecddbd30c1ba3ac688daf6695ea2938a`.
+Current productization remains `not_ready`. The provisional deployment is `https://aise-tan.vercel.app`. The deployment facts recorded in `docs/productization-state.json` are historical until independently revalidated against the exact final merged SHA.
 
-`docs/productization-state.json` is the machine-readable eligibility source and currently extends through `PROD-029`.
+`docs/productization-state.json` is the machine-readable eligibility source and currently extends through `PROD-030` plus the HFX hardening inventory.
 
 ## Current frontier
 
 ```text
-✅ PROD-001 … PROD-011
-✅ PROD-011b
-✅ PROD-013
-⬜ PROD-012
-⬜ PROD-014
-⬜ PROD-015
-⬜ PROD-016
-⬜ PROD-017
-⬜ PROD-018
-⬜ PROD-019
-⬜ PROD-020
-⬜ PROD-021
-⬜ PROD-022
-⬜ PROD-023
-⬜ PROD-024
-⬜ PROD-025
-⬜ PROD-026
-⬜ PROD-027
-⬜ PROD-028
-⬜ PROD-029
+✅ PROD-001 … PROD-014
+✅ PROD-016 … PROD-030
+⬜ PROD-015  ← only remaining productization declaration gate
+
+HFX
+✅ HFX-000
+✅ HFX-101
+✅ HFX-201
+✅ HFX-204
+✅ HFX-301
+⬜ HFX-102
+⬜ HFX-103
+⬜ HFX-104
+⬜ HFX-202
+⬜ HFX-203
+⬜ HFX-302
+⬜ HFX-303
+⬜ HFX-401
 ```
+
+The HFX entries above are the current known program inventory, not blanket dispatch authorization. Recompute eligibility from the machine state and HFX execution plan before every dispatch.
 
 Do not infer completion from documentation. Recompute from machine state after every accepted merge.
 
