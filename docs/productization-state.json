@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-23T01:20:00Z",
+  "lastReconciledAt": "2026-09-23T04:40:00Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -475,13 +475,19 @@
     },
     {
       "id": "PROD-031",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-026",
         "PROD-030"
       ],
       "workOrder": "docs/productization-closure-work-orders.md",
-      "note": "solution workspace browser execution + live solution assistant (issue #9 gap 4; starting contribution branch work/prod-031-web-product-closure)"
+      "note": "issue #9 gap 4 closed: the solution workspace EXECUTES in a plain browser through the live HTTP routes (selection ladder rung-2 browser mount); direct manipulation + NL agent commands reach the same deterministic engine; the @aise/solution-contract/browser crypto-free subpath (PROD-030 pattern); PROD-034 now dispatch-eligible",
+      "mergedSha": "e43efc7",
+      "mergedAt": "2026-09-23T04:40:00Z",
+      "workerChat": "local subagent chunks 110-a/111-a/112-a/113-a (prior-session starting contribution 19cbbb6+4297ef6)",
+      "workerCommit": "5def563",
+      "harvest": "local-subagent delivery via work branch (5 worker commits + prior 2); gate branch tree-identical merge",
+      "verify": "branch 5598/0 (5564+34 exact), 75532 expects; boundaries 956 clean; typecheck+lint PASS; Chromium journey gate 2/0 (live agent leg clarification->proposal->confirm, validation 7/7, BOQ 7 lines, deep-link round-trip, observed scene byte-identical, zero pageerror)"
     },
     {
       "id": "PROD-032",
