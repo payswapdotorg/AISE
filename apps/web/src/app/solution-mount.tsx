@@ -16,11 +16,14 @@
  * The default export is the composed body (React.lazy-compatible).
  */
 
+import { useMemo } from "react";
 import type { ReactNode } from "react";
 import { Card } from "./components";
 import { formatRoute } from "./router";
 import type { SolutionQuery } from "./router";
 import { DEMO_SOLUTION_PROJECT_ID } from "./demo";
+import { useAppEnvironment } from "./environment";
+import { createHttpSolutionAgentPort } from "../solution";
 import type { ComposedJourneyResult } from "./solution-journey";
 import {
   SolutionBoqTracePanel,
@@ -43,6 +46,24 @@ export function ComposedSolutionBody({
   readonly composed: ComposedJourneyResult;
 }): ReactNode {
   const record = composed.record;
+  const environment = useAppEnvironment();
+  const agentPort = useMemo(
+    () =>
+      createHttpSolutionAgentPort({
+        fetchImpl: environment.fetchImpl,
+        agentId: "aise-solution-agent",
+      }),
+    [environment.fetchImpl],
+  );
+  const agent = useMemo(
+    () => ({
+      port: agentPort,
+      sessionId: `solution:${projectId}:${record.world.solutionId}`,
+      agentId: agentPort.descriptor.agentId,
+      userId: "user-demo-engineer",
+    }),
+    [agentPort, projectId, record.world.solutionId],
+  );
   const addressedCaseMatches =
     query.case === undefined || query.case === record.world.caseId;
   return (
@@ -110,7 +131,12 @@ export function ComposedSolutionBody({
         </p>
       </Card>
 
-      <SolutionWorkspace context={composed.caseContext} boq={composed.boqSyncInput} />
+      <SolutionWorkspace
+        context={composed.caseContext}
+        boq={composed.boqSyncInput}
+        agent={agent}
+        userId={agent.userId}
+      />
 
       <Card title="The revised solution (the save/revise leg)" id="solution-revision-record">
         {record.revisedBoq === null ? null : (
