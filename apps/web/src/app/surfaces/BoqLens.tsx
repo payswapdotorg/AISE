@@ -23,6 +23,7 @@ import { useResource, type ResourceOutcome } from "../resource";
 import { isDemoMode, useAppEnvironment } from "../environment";
 import { describeApiFailure, loadBoqImportsLive, loadBoqLensLive } from "../api";
 import { demoLensInput } from "../demo";
+import { BoqImportPanel } from "./BoqImport";
 import type { BoqLensInput, BoqLensItem } from "../../boqlens";
 import {
   computeBoqHealth,
@@ -116,6 +117,7 @@ export function BoqLensSurface({ projectId }: { readonly projectId: string }): R
       </div>
       <TaskFlowStrip projectId={projectId} />
       <ProjectSurfaceNav projectId={projectId} current="boq-lens" />
+      <BoqImportPanel projectId={projectId} onImported={reload} />
       <ResourceView
         state={state}
         loadingLabel="Loading the BOQ Lens…"
@@ -166,7 +168,7 @@ export function BoqLensBody({
         ) : (
           <EmptyState
             title="No BOQ import recorded on this deployment"
-            guidance="The lens renders one imported BOQ document (its verbatim rows, the derived normalization view and the mapping join — GET /v1/boq/imports/:id/lens). This deployment carries no imports yet; once one is ingested its lens renders here."
+            guidance="The lens renders one imported BOQ document (its verbatim rows, the derived normalization view and the mapping join — GET /v1/boq/imports/:id/lens). This deployment carries no imports yet; import a SOURCE BOQ with the panel above — once one is ingested its lens renders here."
           />
         )}
       </Card>
