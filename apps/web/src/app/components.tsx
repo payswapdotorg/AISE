@@ -63,6 +63,7 @@ export function ProjectSurfaceNav({
   readonly projectId: string;
   readonly current:
     | "overview"
+    | "capture"
     | "sitetwin"
     | "boq-lens"
     | "case"
@@ -350,18 +351,24 @@ export function UnavailableState({
 /**
  * Render a resource machine state through the matching state component.
  * `render` is only called for `ready`; the surface owns empty detection
- * inside `render` (guidance + next action).
+ * inside `render` (guidance + next action). PROD-034 (additive): the
+ * optional `unavailableNote` renders UNDER the unavailable state — the
+ * consistent provider-status note the provider-gated surfaces pass, so a
+ * blocked view also shows WHICH layer is unavailable.
  */
 export function ResourceView<T>({
   state,
   loadingLabel,
   onRetry,
   render,
+  unavailableNote,
 }: {
   readonly state: ResourceState<T>;
   readonly loadingLabel: string;
   readonly onRetry?: () => void;
   readonly render: (data: T) => ReactNode;
+  /** Rendered under the unavailable state only (the provider-status note). */
+  readonly unavailableNote?: ReactNode;
 }): ReactNode {
   switch (state.status) {
     case "loading":
@@ -370,7 +377,10 @@ export function ResourceView<T>({
       return <ErrorState message={state.message} onRetry={onRetry} attempt={state.attempt} />;
     case "unavailable":
       return (
-        <UnavailableState reason={state.reason} impact={state.impact} onRetry={onRetry} />
+        <>
+          <UnavailableState reason={state.reason} impact={state.impact} onRetry={onRetry} />
+          {unavailableNote === undefined ? null : unavailableNote}
+        </>
       );
     case "ready":
       return render(state.data);

@@ -65,6 +65,12 @@ import {
 import { SemanticObjectsAudit } from "./contract-objects";
 import { BROWSER_ADAPTER_PROFILE } from "./adapter-profile";
 import type { TaskFlowBundle } from "./task-contract";
+import {
+  EvidenceEnvelopeCard,
+  readinessEvidenceEnvelope,
+} from "./evidence-envelope";
+import { ContextualIntegrationsPanel } from "./contextual-integrations";
+import { ProviderStatusNote } from "./provider-status";
 import { formatRoute } from "./router";
 import {
   CanonicalActionBar,
@@ -417,6 +423,7 @@ export function TaskFlowResourceView({
       loadingLabel="Loading the task-first flow…"
       onRetry={onRetry}
       render={render}
+      unavailableNote={<ProviderStatusNote subject="the task-first flow" />}
     />
   );
 }
@@ -442,12 +449,41 @@ export function TaskFlowPanelBody({ data }: { readonly data: TaskFlowResourceDat
     <div className="grid grid-2">
       <NextBestActionPanel view={data.view} mode={data.mode} />
       <TaskJourneyView view={data.view} />
+      <ReadinessEnvelopeCard data={data} />
       <TaskCompositionPanelBody data={data} />
       <AuthorizationPanel view={data.view} />
       <NegotiationPanel view={data.view} />
       <BrowserAdapterCard />
       <SemanticObjectsCard data={data} />
     </div>
+  );
+}
+
+/**
+ * PROD-034 — the READINESS decision's Evidence Envelope ("Why is readiness
+ * what it is?"): the same task-flow data the panel already renders,
+ * projected through {@link readinessEvidenceEnvelope} — the readiness
+ * authority's own status/detail, the evidence ids, the declared gaps and
+ * the server's next action, with every unrecorded section explicit.
+ */
+export function ReadinessEnvelopeCard({
+  data,
+}: {
+  readonly data: TaskFlowResourceData;
+}): ReactNode {
+  if (data.bundle === null) {
+    return null;
+  }
+  const envelope = readinessEvidenceEnvelope(data.bundle);
+  if (envelope === null) {
+    return null;
+  }
+  return (
+    <EvidenceEnvelopeCard
+      view={envelope}
+      mode={data.mode}
+      title="Why this readiness verdict?"
+    />
   );
 }
 
@@ -876,6 +912,7 @@ export function TaskFirstLanding(): ReactNode {
       <CanonicalActionBar projectId={DEMO_TASK_PROJECT_ID} />
       <TaskIntentForm initialProjectId={DEMO_TASK_PROJECT_ID} />
       <TaskFlowPanel projectId={DEMO_TASK_PROJECT_ID} />
+      <ContextualIntegrationsPanel projectId={DEMO_TASK_PROJECT_ID} />
     </>
   );
 }

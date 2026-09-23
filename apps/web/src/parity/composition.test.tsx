@@ -62,7 +62,9 @@ describe("PROD-018 the canonical action bar (the four-journey vocabulary)", () =
     expect(html).toContain("Investigate");
     expect(html).toContain("Build solution");
     expect(html).toContain("Review outcome");
-    expect(html).toContain(`#/projects/${projectId}/sitetwin`);
+    // PROD-034: the Capture action opens the first-class capture mission
+    // surface; the other three keep their PROD-018 destinations.
+    expect(html).toContain(`#/projects/${projectId}/capture`);
     expect(html).toContain(`#/projects/${projectId}/case`);
     expect(html).toContain(`#/projects/${projectId}/intervention`);
     expect(html).toContain(`#/projects/${projectId}/outcomes`);

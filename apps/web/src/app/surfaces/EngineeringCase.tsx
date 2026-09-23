@@ -61,6 +61,11 @@ import { formatRoute } from "../router";
 import { plural, shortId } from "../format";
 import { CaseCrossLinksCard } from "../../parity/components";
 import { CaseToSolutionCard } from "../solution-composition";
+import {
+  EvidenceEnvelopeCard,
+  caseEvidenceEnvelopeFromDetail,
+  caseEvidenceEnvelopeFromPane,
+} from "../evidence-envelope";
 import { demoLensInput } from "../demo";
 
 /** What the Engineering Case surface renders once loaded. */
@@ -202,6 +207,13 @@ function CaseDemo({ data }: { readonly data: CaseData }): ReactNode {
           missingEvidenceCount={caseView.missingEvidenceCount}
           source={caseView.source}
           mode={data.mode}
+        />
+      )}
+      {caseView === null ? null : (
+        <EvidenceEnvelopeCard
+          view={caseEvidenceEnvelopeFromPane(caseView)}
+          mode={data.mode}
+          title="What is this case based on?"
         />
       )}
       <ScenarioReviewCard scenario={demo.scenario} mode={data.mode} />
@@ -507,6 +519,13 @@ function CaseLive({ data }: { readonly data: CaseData }): ReactNode {
           <CaseDetailRecordView record={live.detail} />
         )}
       </Card>
+      {live.detail === null ? null : (
+        <EvidenceEnvelopeCard
+          view={caseEvidenceEnvelopeFromDetail(live.detail)}
+          mode={data.mode}
+          title="What is this case based on?"
+        />
+      )}
       {live.detail === null ? null : (
         <CaseToSolutionCard
           projectId={data.projectId}

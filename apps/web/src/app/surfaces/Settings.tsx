@@ -40,6 +40,7 @@ import {
 } from "../../shell";
 import type { ConnectorBindingView } from "../../shell";
 import { Card, DataBadge, Instant, ResourceView, UnavailableState } from "../components";
+import { ProviderStatusList } from "../provider-status";
 import { plural } from "../format";
 
 /** One connector surface: the binding + its resolved action offers. */
@@ -207,6 +208,24 @@ function ApiConnectionCard({ onReprobe }: { readonly onReprobe: () => void }): R
               <dd>{status.readyz}</dd>
             </div>
           </dl>
+          {status.mode === "available" ? (
+            status.providers === null ? (
+              <p className="pane-foot" data-providers="none-reported">
+                This deployment&apos;s readiness check reports no optional
+                providers — nothing on this deployment is provider-gated
+                beyond the API itself.
+              </p>
+            ) : (
+              <>
+                <h3 className="pane-head">Optional providers (the readiness check&apos;s own report)</h3>
+                <ProviderStatusList providers={status.providers} />
+                <p className="pane-foot">
+                  Statuses only, exactly as the readiness check reports them —
+                  never credential material, never raw provider errors.
+                </p>
+              </>
+            )
+          ) : null}
           <div className="toolbar">
             <button type="button" className="button" onClick={onReprobe}>
               Check again
@@ -314,7 +333,7 @@ function ConnectorCard({ surface }: { readonly surface: ConnectorSurface }): Rea
   );
 }
 
-function BindingStatusBadge({ status }: { readonly status: string }): ReactNode {
+export function BindingStatusBadge({ status }: { readonly status: string }): ReactNode {
   const className =
     status === "connected"
       ? "tag tag-mapping-mapped"

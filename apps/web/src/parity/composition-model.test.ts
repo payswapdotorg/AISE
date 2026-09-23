@@ -240,7 +240,9 @@ describe("PROD-018 canonical action labels (the four-journey vocabulary)", () =>
 
   test("each canonical action routes to its surface through the REAL router", () => {
     const capture = canonicalAction("capture")!;
-    expect(canonicalActionHref(capture, projectId)).toBe(`#/projects/${projectId}/sitetwin`);
+    // PROD-034: the Capture action opens the first-class capture mission
+    // surface (guided mission + upload entry), not SiteTwin inspection.
+    expect(canonicalActionHref(capture, projectId)).toBe(`#/projects/${projectId}/capture`);
     const investigate = canonicalAction("investigate")!;
     expect(canonicalActionHref(investigate, projectId)).toBe(`#/projects/${projectId}/case`);
     const solution = canonicalAction("build-solution")!;
@@ -305,7 +307,9 @@ describe("PROD-018 canonical action labels (the four-journey vocabulary)", () =>
     expect(gaps.map((gap) => gap.state)).toEqual(["gap-missing", "gap-weak"]);
     for (const gap of gaps) {
       expect(gap.action.label).toBe("Capture");
-      expect(gap.href).toBe(`#/projects/${DEMO_TASK_PROJECT_ID}/sitetwin`);
+      // PROD-034: a declared gap's capture suggestion opens the capture
+      // mission surface (the guided what-and-why + the upload entry).
+      expect(gap.href).toBe(`#/projects/${DEMO_TASK_PROJECT_ID}/capture`);
     }
   });
 

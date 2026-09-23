@@ -42,6 +42,7 @@ import { Suspense, use } from "react";
 import type { ReactNode } from "react";
 import { ProjectSurfaceNav } from "../components";
 import { TaskFlowStrip } from "../task-first";
+import { ProviderStatusNote } from "../provider-status";
 import type { SolutionQuery } from "../router";
 import {
   DEMO_SOLUTION_WORLD_PINS,
@@ -187,24 +188,27 @@ function EngineAwareSolutionBody({
     const browser = use(solutionBrowserMountResource());
     if (browser === null) {
       return (
-        <SolutionEngineUnavailablePanel
-          reason={
-            "The deterministic solution engine cannot execute in this browser build — " +
-            "its identity derivations require node:crypto, which the browser bundle " +
-            "externalizes, and the browser engine mount (the live same-origin " +
-            "/v1/solutions/* routes) did not load. The interactive workspace and the " +
-            "recorded journey record are composed where the engine runs."
-          }
-          world={{
-            projectId,
-            caseId: DEMO_SOLUTION_WORLD_PINS.caseId,
-            solutionId: DEMO_SOLUTION_WORLD_PINS.solutionId,
-            title: DEMO_SOLUTION_WORLD_PINS.title,
-            problemStatement: DEMO_SOLUTION_WORLD_PINS.problemStatement,
-            baselineRealityVersionId: DEMO_SOLUTION_WORLD_PINS.baselineRealityVersionId,
-          }}
-          observedFacts={demoSolutionObservedFacts()}
-        />
+        <>
+          <SolutionEngineUnavailablePanel
+            reason={
+              "The deterministic solution engine cannot execute in this browser build — " +
+              "its identity derivations require node:crypto, which the browser bundle " +
+              "externalizes, and the browser engine mount (the live same-origin " +
+              "/v1/solutions/* routes) did not load. The interactive workspace and the " +
+              "recorded journey record are composed where the engine runs."
+            }
+            world={{
+              projectId,
+              caseId: DEMO_SOLUTION_WORLD_PINS.caseId,
+              solutionId: DEMO_SOLUTION_WORLD_PINS.solutionId,
+              title: DEMO_SOLUTION_WORLD_PINS.title,
+              problemStatement: DEMO_SOLUTION_WORLD_PINS.problemStatement,
+              baselineRealityVersionId: DEMO_SOLUTION_WORLD_PINS.baselineRealityVersionId,
+            }}
+            observedFacts={demoSolutionObservedFacts()}
+          />
+          <ProviderStatusNote subject="the interactive solution workspace" />
+        </>
       );
     }
     return <browser.ComposedSolutionBrowserBody projectId={projectId} query={query} />;

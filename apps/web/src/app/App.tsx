@@ -34,6 +34,7 @@ import { Dashboard } from "./surfaces/Dashboard";
 import { Projects } from "./surfaces/Projects";
 import { ProjectOverview } from "./surfaces/ProjectOverview";
 import { SiteTwin } from "./surfaces/SiteTwin";
+import { CaptureMission } from "./surfaces/CaptureMission";
 import { BoqLensSurface } from "./surfaces/BoqLens";
 import { EngineeringCase } from "./surfaces/EngineeringCase";
 import { InterventionStudio } from "./surfaces/InterventionStudio";
@@ -258,6 +259,8 @@ function RoutedSurface({
       return <Projects />;
     case "project":
       return <ProjectOverview projectId={route.projectId} />;
+    case "capture":
+      return <CaptureMission projectId={route.projectId} />;
     case "sitetwin":
       return <SiteTwin projectId={route.projectId} />;
     case "boq-lens":
@@ -318,6 +321,13 @@ export function NotFound({ hash }: { readonly hash: string }): ReactNode {
           </li>
           <li>
             <a href={formatRoute({ name: "projects" })}>Projects</a> — open a project
+          </li>
+          <li>
+            <a href={formatRoute({ name: "capture", projectId: "proj-riverside-refit" })}>
+              Capture / Upload
+            </a>{" "}
+            — the guided capture mission + the browser upload entry (per
+            project)
           </li>
           <li>
             <a href={formatRoute({ name: "sitetwin", projectId: "proj-riverside-refit" })}>

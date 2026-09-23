@@ -40,13 +40,30 @@ export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>
 /* API mode (the health probe)                                         */
 /* ------------------------------------------------------------------ */
 
-/** The app-level API availability (drives the demo-mode badge). */
+/**
+ * The app-level API availability (drives the demo-mode badge).
+ *
+ * PROD-034 (additive): `providers` carries `/readyz`'s OPTIONAL-PROVIDER
+ * STATUSES when the deployment reports them — statuses ONLY (the backend's
+ * readiness contract never sends credential material or raw provider
+ * errors, and neither does this seam); null when the deployment reports
+ * no providers map (or the API is unavailable — nothing is guessed).
+ */
 export interface ApiStatus {
   readonly mode: "available" | "unavailable";
   readonly healthz: "ok" | "failed";
   readonly readyz: "ok" | "failed" | "skipped";
   readonly detail: string;
+  /**
+   * The /readyz optional-provider statuses (`{ [id]: status }`), statuses
+   * only; null when absent. Values outside the readiness vocabulary are
+   * dropped, never coerced.
+   */
+  readonly providers: Readonly<Record<string, ProviderStatusWord>> | null;
 }
+
+/** The /readyz optional-provider status vocabulary (statuses only). */
+export type ProviderStatusWord = "available" | "disabled" | "unavailable";
 
 async function ping(fetchImpl: FetchLike, path: string): Promise<"ok" | "failed"> {
   const result = await fetchJson(fetchImpl, path);
@@ -55,21 +72,52 @@ async function ping(fetchImpl: FetchLike, path: string): Promise<"ok" | "failed"
   }
   // The API's own health envelope is { ok: true, … } — anything else (a
   // proxy error page, a non-JSON body) is an honest failure.
-  if (
-    typeof result.value !== "object" ||
-    result.value === null ||
-    Array.isArray(result.value) ||
-    (result.value as Record<string, unknown>).ok !== true
-  ) {
+  if (!isOkEnvelope(result.value)) {
     return "failed";
   }
   return "ok";
 }
 
+/** True when a body is the API's own `{ ok: true, … }` health envelope. */
+function isOkEnvelope(value: unknown): boolean {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value) &&
+    (value as Record<string, unknown>).ok === true
+  );
+}
+
+/**
+ * Extract `/readyz`'s optional-provider statuses — the readiness contract's
+ * OWN vocabulary only (`available | disabled | unavailable`); anything else
+ * in the map is dropped (never coerced, never guessed). Null when the body
+ * carries no providers map or the map is empty.
+ */
+function providerStatuses(body: unknown): Readonly<Record<string, ProviderStatusWord>> | null {
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    return null;
+  }
+  const providers = (body as Record<string, unknown>).providers;
+  if (typeof providers !== "object" || providers === null || Array.isArray(providers)) {
+    return null;
+  }
+  const out: Record<string, ProviderStatusWord> = {};
+  for (const [id, status] of Object.entries(providers as Record<string, unknown>)) {
+    if (status === "available" || status === "disabled" || status === "unavailable") {
+      out[id] = status;
+    }
+  }
+  return Object.keys(out).length === 0 ? null : out;
+}
+
 /**
  * Probe the same-origin health endpoints. `readyz` is only consulted when
  * `healthz` answered — an API that fails its liveness probe is unavailable,
- * and the readiness detail is not going to change that.
+ * and the readiness detail is not going to change that. PROD-034: when
+ * `/readyz` answers OK, its optional-provider statuses are extracted
+ * (statuses only) and carried on the status for the consistent
+ * provider-status presentation.
  */
 export async function probeApi(fetchImpl: FetchLike): Promise<ApiStatus> {
   const healthz = await ping(fetchImpl, "/healthz");
@@ -79,22 +127,25 @@ export async function probeApi(fetchImpl: FetchLike): Promise<ApiStatus> {
       healthz,
       readyz: "skipped",
       detail: "the API did not answer /healthz on this origin — showing demo data",
+      providers: null,
     };
   }
-  const readyz = await ping(fetchImpl, "/readyz");
-  if (readyz === "failed") {
+  const readyzResult = await fetchJson(fetchImpl, "/readyz");
+  if (!readyzResult.ok || !isOkEnvelope(readyzResult.value)) {
     return {
       mode: "unavailable",
       healthz,
-      readyz,
+      readyz: "failed",
       detail: "the API answered /healthz but is not ready (/readyz failed) — showing demo data",
+      providers: null,
     };
   }
   return {
     mode: "available",
     healthz,
-    readyz,
+    readyz: "ok",
     detail: "live API on this origin",
+    providers: providerStatuses(readyzResult.value),
   };
 }
 
@@ -2098,4 +2149,363 @@ export async function submitTaskIntentLive(
 /** True when a typed failure is an HTTP 404 (a route this build does not serve). */
 export function isNotFoundHttp(failure: ApiFailure): boolean {
   return failure.kind === "http" && failure.status === 404;
+}
+
+/* ------------------------------------------------------------------ */
+/* PROD-034 — the capture-acquisition + BOQ-import seams (issue #9      */
+/* gaps 1 + 2: first-class browser ingestion over the EXISTING server  */
+/* routes, consumed read-only — the gateway stays the authority)        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A sha-256 content-address implementation. The browser build uses Web
+ * Crypto (`crypto.subtle.digest`); tests inject deterministic stubs. The
+ * digest is a TRANSPORT step only — the capture gateway re-computes the
+ * hash over the received bytes and rejects a mismatch (CONTENT_ID_MISMATCH),
+ * so a wrong client digest can never corrupt the store.
+ */
+export type AssetDigest = (bytes: Uint8Array) => Promise<string>;
+
+/** Hex-encode a digest buffer (lowercase, 64 chars for sha-256). */
+function toHex(buffer: ArrayBuffer): string {
+  return [...new Uint8Array(buffer)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+/**
+ * The browser platform's sha-256 digest, or NULL when the platform does not
+ * expose one (Web Crypto is absent — e.g. an insecure context). NULL is the
+ * honest unavailable state: the surface renders it, never a fallback hash.
+ */
+export function webCryptoSha256(): AssetDigest | null {
+  const subtle = globalThis.crypto?.subtle;
+  if (subtle === undefined || subtle === null) {
+    return null;
+  }
+  return async (bytes: Uint8Array): Promise<string> => {
+    const digest = await subtle.digest("SHA-256", bytes.slice().buffer as ArrayBuffer);
+    return toHex(digest);
+  };
+}
+
+/** The capture gateway's asset-ingest answer (verbatim fields). */
+export interface CaptureAssetUploadRecord {
+  /** STORED (new bytes) or DUPLICATE (identical bytes already stored). */
+  readonly outcome: "STORED" | "DUPLICATE";
+  readonly contentId: string;
+  readonly byteSize: number;
+  readonly mediaType: string;
+}
+
+/**
+ * Extract the capture surface's OWN rejection envelope. The asset route's
+ * typed rejections carry `{ ok:false, reasonCode, reasonDetail }` — a
+ * DIFFERENT shape from the standard `{ error, detail }` envelope — so the
+ * codes surface here as additive fields, bounded, never coerced.
+ */
+async function captureRejection(path: string, response: Response): Promise<ApiFailure> {
+  const failure: {
+    kind: "http";
+    status: number;
+    detail: string;
+    code?: string;
+    reason?: string;
+  } = {
+    kind: "http",
+    status: response.status,
+    detail: `${path} answered HTTP ${String(response.status)}`,
+  };
+  let text: string;
+  try {
+    text = await response.text();
+  } catch {
+    return failure;
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text) as unknown;
+  } catch {
+    return failure;
+  }
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    return failure;
+  }
+  const envelope = parsed as Record<string, unknown>;
+  if (typeof envelope.reasonCode === "string" && envelope.reasonCode.length > 0) {
+    failure.code = boundedText(envelope.reasonCode, CODE_BOUND);
+  }
+  if (typeof envelope.error === "string" && envelope.error.length > 0) {
+    failure.code = boundedText(envelope.error, CODE_BOUND);
+  }
+  const detailSource =
+    typeof envelope.reasonDetail === "string" && envelope.reasonDetail.length > 0
+      ? envelope.reasonDetail
+      : typeof envelope.detail === "string" && envelope.detail.length > 0
+        ? envelope.detail
+        : null;
+  if (detailSource !== null) {
+    failure.reason = boundedText(detailSource, REASON_BOUND);
+  }
+  return failure;
+}
+
+/**
+ * Upload ONE asset to the server-side content-addressed store — `POST
+ * /v1/capture/assets/:contentId` with the RAW file bytes as the body and
+ * the file's media type as Content-Type (the capture gateway's exact
+ * contract, consumed read-only). The declared content id is the client's
+ * sha-256 of the same bytes; the SERVER re-computes and verifies it
+ * (422 CONTENT_ID_MISMATCH), stores the bytes immutably and answers
+ * idempotently (STORED | DUPLICATE). This is the browser-appropriate
+ * acquisition entry: authoritative evidence ingestion stays entirely
+ * server-side.
+ */
+export async function uploadCaptureAssetLive(
+  fetchImpl: FetchLike,
+  digest: AssetDigest,
+  bytes: Uint8Array,
+  mediaType: string,
+): Promise<WriteOutcome<CaptureAssetUploadRecord>> {
+  const contentId = await digest(bytes);
+  const endpoint = `/v1/capture/assets/${contentId}`;
+  let response: Response;
+  try {
+    response = await fetchImpl(endpoint, {
+      method: "POST",
+      headers: { "content-type": mediaType },
+      body: bytes as unknown as BodyInit,
+    });
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "network",
+        detail: error instanceof Error ? error.message : "network request failed",
+      },
+    };
+  }
+  if (!response.ok) {
+    return { ok: false, failure: await captureRejection(endpoint, response) };
+  }
+  let parsed: unknown;
+  try {
+    parsed = await response.json();
+  } catch {
+    return {
+      ok: false,
+      failure: { kind: "invalid", detail: `${endpoint} did not return valid JSON` },
+    };
+  }
+  const payload = parsed as Record<string, unknown>;
+  if (
+    !isRecord(payload) ||
+    payload.ok !== true ||
+    (payload.outcome !== "STORED" && payload.outcome !== "DUPLICATE") ||
+    typeof payload.contentId !== "string" ||
+    typeof payload.byteSize !== "number" ||
+    typeof payload.mediaType !== "string"
+  ) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: `${endpoint} did not return the expected { ok: true, outcome, contentId, byteSize, mediaType } answer`,
+      },
+    };
+  }
+  return {
+    ok: true,
+    record: {
+      outcome: payload.outcome,
+      contentId: payload.contentId,
+      byteSize: payload.byteSize,
+      mediaType: payload.mediaType,
+    },
+    endpoint,
+  };
+}
+
+/** The BOQ import answer's structural mirror (the fields the import card renders). */
+export interface BoqImportRecord {
+  readonly importId: string;
+  readonly format: string;
+  readonly mediaType: string;
+  readonly byteSize: number;
+  readonly importedAt: string | null;
+  /** parsed | unsupported_format (the route's own two-status vocabulary). */
+  readonly parseStatus: string | null;
+  /** Total source rows across sheets, when the document is present. */
+  readonly rowCount: number | null;
+  /** The recorded reason when the source is stored but not parsed (PDF). */
+  readonly parseReason: string | null;
+}
+
+/**
+ * Structurally validate one BOQ import envelope (the route answers
+ * `{ ok: true, import: BoqImport }` — the mirror of `backend/boq/model.ts`,
+ * typed defects, never coerced).
+ */
+function validateBoqImport(value: unknown): BoqImportRecord {
+  if (!isRecord(value)) {
+    throw new Error("import envelope must be an object");
+  }
+  const record = value as Record<string, unknown>;
+  if (typeof record.importId !== "string" || record.importId.length === 0) {
+    throw new Error("import.importId must be a non-empty string");
+  }
+  if (typeof record.format !== "string") {
+    throw new Error("import.format must be a string");
+  }
+  const source = record.source;
+  if (!isRecord(source)) {
+    throw new Error("import.source must be an object");
+  }
+  if (typeof source.mediaType !== "string") {
+    throw new Error("import.source.mediaType must be a string");
+  }
+  if (typeof source.byteSize !== "number") {
+    throw new Error("import.source.byteSize must be a number");
+  }
+  const importedAt = source.importedAt;
+  if (typeof importedAt !== "string") {
+    throw new Error("import.source.importedAt must be a string");
+  }
+  let parseStatus: string | null = null;
+  let rowCount: number | null = null;
+  let parseReason: string | null = null;
+  const parse = record.parse;
+  if (isRecord(parse)) {
+    if (parse.status !== undefined && typeof parse.status !== "string") {
+      throw new Error("import.parse.status must be a string");
+    }
+    parseStatus = typeof parse.status === "string" ? parse.status : null;
+    if (typeof parse.reason === "string") {
+      parseReason = parse.reason;
+    }
+    const document = parse.document;
+    if (isRecord(document) && Array.isArray(document.sheets)) {
+      let rows = 0;
+      for (const sheet of document.sheets) {
+        if (isRecord(sheet) && Array.isArray(sheet.rows)) {
+          rows += (sheet.rows as unknown[]).length;
+        }
+      }
+      rowCount = rows;
+    }
+  }
+  return {
+    importId: record.importId,
+    format: record.format,
+    mediaType: source.mediaType,
+    byteSize: source.byteSize,
+    importedAt,
+    parseStatus,
+    rowCount,
+    parseReason,
+  };
+}
+
+/** The supported source-BOQ formats (the ingestion route's own vocabulary). */
+export const BOQ_IMPORT_FORMATS: readonly {
+  readonly format: "csv" | "xlsx" | "pdf";
+  readonly label: string;
+  readonly mediaType: string;
+  readonly extensions: readonly string[];
+}[] = Object.freeze([
+  Object.freeze({
+    format: "csv",
+    label: "CSV (comma-separated)",
+    mediaType: "text/csv",
+    extensions: Object.freeze([".csv"]),
+  } as const),
+  Object.freeze({
+    format: "xlsx",
+    label: "XLSX (Excel workbook)",
+    mediaType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    extensions: Object.freeze([".xlsx"]),
+  } as const),
+  Object.freeze({
+    format: "pdf",
+    label: "PDF (stored verbatim; not parsed — the route's honest known limit)",
+    mediaType: "application/pdf",
+    extensions: Object.freeze([".pdf"]),
+  } as const),
+] as const);
+
+/** The media type of one import format (the route's own mapping). */
+export function boqImportMediaType(format: string): string | null {
+  const entry = BOQ_IMPORT_FORMATS.find((candidate) => candidate.format === format);
+  return entry === undefined ? null : entry.mediaType;
+}
+
+/**
+ * Import ONE SOURCE BOQ — `POST /v1/boq/imports?format=<format>` with the
+ * RAW source bytes as the body (the explicit format override is the route's
+ * own authoritative resolution — it WINS over any content-type sniffing, so
+ * the operator's declared format is what the server parses). The source
+ * bytes are stored content-addressed BEFORE parsing (the route's own
+ * contract); a parse failure keeps the bytes and answers 422
+ * `boq_parse_failed` with the failing part. Identical bytes are idempotent
+ * (identical importId). The SOURCE BOQ is never overwritten by anything the
+ * browser does — derived normalization/mapping are separate server-owned
+ * projections.
+ */
+export async function importBoqSourceLive(
+  fetchImpl: FetchLike,
+  bytes: Uint8Array,
+  format: "csv" | "xlsx" | "pdf",
+): Promise<WriteOutcome<BoqImportRecord>> {
+  const mediaType = boqImportMediaType(format);
+  if (mediaType === null) {
+    return {
+      ok: false,
+      failure: { kind: "invalid", detail: `unknown BOQ import format ${format}` },
+    };
+  }
+  const endpoint = `/v1/boq/imports?format=${format}`;
+  let response: Response;
+  try {
+    response = await fetchImpl(endpoint, {
+      method: "POST",
+      headers: { "content-type": mediaType },
+      body: bytes as unknown as BodyInit,
+    });
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "network",
+        detail: error instanceof Error ? error.message : "network request failed",
+      },
+    };
+  }
+  if (!response.ok) {
+    return { ok: false, failure: await httpFailure(endpoint, response) };
+  }
+  let parsed: unknown;
+  try {
+    parsed = await response.json();
+  } catch {
+    return {
+      ok: false,
+      failure: { kind: "invalid", detail: `${endpoint} did not return valid JSON` },
+    };
+  }
+  const payload = parsed as Record<string, unknown>;
+  // The route answers the import envelope directly (canonical JSON) or the
+  // standard { ok: true, import } wrapper — both are accepted structurally,
+  // never guessed beyond the recorded shapes.
+  const candidate = isRecord(payload) && payload.ok === true && isRecord(payload.import)
+    ? payload.import
+    : payload;
+  try {
+    return { ok: true, record: validateBoqImport(candidate), endpoint };
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: error instanceof Error ? error.message : "import envelope failed validation",
+      },
+    };
+  }
 }

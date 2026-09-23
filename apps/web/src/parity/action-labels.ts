@@ -59,9 +59,10 @@ export const CANONICAL_ACTIONS: readonly CanonicalActionDefinition[] = Object.fr
     action: "capture",
     label: "Capture",
     oneLiner: "Bring field evidence in — photos, scans, documents, measurements.",
-    routeName: "sitetwin",
+    routeName: "capture",
     href: "#/projects",
-    honestStates: "resumable/offline capture is the mobile adapter's field journey; the blocked states name the depth-capable device or specialist instrument escalation",
+    honestStates:
+      "the guided mission + the browser upload entry (server-side ingestion); resumable/offline field capture is the mobile adapter's journey; the blocked states name the depth-capable device or specialist instrument escalation",
   },
   {
     action: "investigate",
@@ -102,6 +103,8 @@ export function canonicalActionRoute(
   projectId: string,
 ): Route {
   switch (action.routeName) {
+    case "capture":
+      return { name: "capture", projectId };
     case "sitetwin":
       return { name: "sitetwin", projectId };
     case "case":
