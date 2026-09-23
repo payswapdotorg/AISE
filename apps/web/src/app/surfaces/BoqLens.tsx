@@ -24,6 +24,7 @@ import { isDemoMode, useAppEnvironment } from "../environment";
 import { describeApiFailure, loadBoqImportsLive, loadBoqLensLive } from "../api";
 import { demoLensInput } from "../demo";
 import { BoqImportPanel } from "./BoqImport";
+import { ContextualIntegrationsPanel } from "../contextual-integrations";
 import type { BoqLensInput, BoqLensItem } from "../../boqlens";
 import {
   computeBoqHealth,
@@ -118,6 +119,7 @@ export function BoqLensSurface({ projectId }: { readonly projectId: string }): R
       <TaskFlowStrip projectId={projectId} />
       <ProjectSurfaceNav projectId={projectId} current="boq-lens" />
       <BoqImportPanel projectId={projectId} onImported={reload} />
+      <ContextualIntegrationsPanel projectId={projectId} />
       <ResourceView
         state={state}
         loadingLabel="Loading the BOQ Lens…"

@@ -69,6 +69,7 @@ import {
   EvidenceEnvelopeCard,
   readinessEvidenceEnvelope,
 } from "./evidence-envelope";
+import { ContextualIntegrationsPanel } from "./contextual-integrations";
 import { formatRoute } from "./router";
 import {
   CanonicalActionBar,
@@ -909,6 +910,7 @@ export function TaskFirstLanding(): ReactNode {
       <CanonicalActionBar projectId={DEMO_TASK_PROJECT_ID} />
       <TaskIntentForm initialProjectId={DEMO_TASK_PROJECT_ID} />
       <TaskFlowPanel projectId={DEMO_TASK_PROJECT_ID} />
+      <ContextualIntegrationsPanel projectId={DEMO_TASK_PROJECT_ID} />
     </>
   );
 }

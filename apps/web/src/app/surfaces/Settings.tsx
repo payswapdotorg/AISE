@@ -314,7 +314,7 @@ function ConnectorCard({ surface }: { readonly surface: ConnectorSurface }): Rea
   );
 }
 
-function BindingStatusBadge({ status }: { readonly status: string }): ReactNode {
+export function BindingStatusBadge({ status }: { readonly status: string }): ReactNode {
   const className =
     status === "connected"
       ? "tag tag-mapping-mapped"
