@@ -168,8 +168,9 @@ class HttpEvidenceSubmissionTransport(
                 if (read > 0) digest.update(buffer, 0, read)
             }
         }
-        val hex = StringBuilder(digest.digest().size * 2)
-        for (byte in digest.digest()) {
+        val bytes = digest.digest()
+        val hex = StringBuilder(bytes.size * 2)
+        for (byte in bytes) {
             hex.append("%02x".format(byte.toInt() and 0xff))
         }
         return hex.toString()
