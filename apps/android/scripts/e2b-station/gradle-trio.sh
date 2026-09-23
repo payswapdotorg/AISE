@@ -62,8 +62,26 @@ run_gate() {
 
 echo "gradle wrapper: $(./gradlew --version | grep -E '^Gradle' | head -1)"
 
+# Per-suite JUnit XML summary (tests/failures/errors/skipped per class) —
+# the empirical test-count record for the evidence transcripts.
+summarize_results() {
+  local dir="$1"
+  find "$dir" -name 'TEST-*.xml' -print0 2>/dev/null | sort -z | while IFS= read -r -d '' f; do
+    local name tests failures errors skipped
+    name="$(basename "$f" .xml)"
+    tests="$(sed -n 's/.*<testsuite[^>]*\btests="\([0-9]*\)".*/\1/p' "$f" | head -1)"
+    failures="$(sed -n 's/.*<testsuite[^>]*\bfailures="\([0-9]*\)".*/\1/p' "$f" | head -1)"
+    errors="$(sed -n 's/.*<testsuite[^>]*\berrors="\([0-9]*\)".*/\1/p' "$f" | head -1)"
+    skipped="$(sed -n 's/.*<testsuite[^>]*\bskipped="\([0-9]*\)".*/\1/p' "$f" | head -1)"
+    echo "[gradle-trio] suite $name tests=$tests failures=$failures errors=$errors skipped=$skipped"
+  done
+}
+
 run_gate ":core:test"          ./gradlew :core:test
+summarize_results "$AISE_ANDROID_DIR/core/build/test-results/test"
 run_gate ":app:test"           ./gradlew :app:test
+summarize_results "$AISE_ANDROID_DIR/app/build/test-results/testDebugUnitTest"
+summarize_results "$AISE_ANDROID_DIR/app/build/test-results/testReleaseUnitTest"
 run_gate ":app:assembleDebug"  ./gradlew :app:assembleDebug
 
 echo
