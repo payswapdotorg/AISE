@@ -97,6 +97,9 @@ class FieldJourneyRuntimeTest {
         fun tearDownMain() {
             Dispatchers.resetMain()
         }
+
+        private const val CONTENT_ID = "f08d256aa75518620f5814c1ab6639876b8d3dc50028bc567ba3c4c39c225712"
+        private const val HEAD_SAMPLE = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
     }
 
     @Test
@@ -254,9 +257,4 @@ class FieldJourneyRuntimeTest {
             assets = assets,
             reopenAudits = emptyList(),
         )
-
-    private companion object {
-        const val CONTENT_ID = "f08d256aa75518620f5814c1ab6639876b8d3dc50028bc567ba3c4c39c225712"
-        const val HEAD_SAMPLE = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-    }
 }

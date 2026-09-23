@@ -60,7 +60,7 @@ class MobileAuthClientTest {
                 if (setCookie != null) put("Set-Cookie", setCookie)
             })
 
-        when {
+        return when {
             failWithOkFalse -> json(200, """{"ok":false}""")
 
             path == "/v1/auth/demo" && method == "POST" -> {
