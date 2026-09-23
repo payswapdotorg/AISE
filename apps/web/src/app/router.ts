@@ -49,6 +49,10 @@ export type Route =
   | { readonly name: "projects" }
   | { readonly name: "project"; readonly projectId: string }
   | {
+      readonly name: "capture";
+      readonly projectId: string;
+    }
+  | {
       readonly name: "sitetwin";
       readonly projectId: string;
     }
@@ -72,6 +76,7 @@ export type Route =
 export type SurfaceName =
   | "dashboard"
   | "projects"
+  | "capture"
   | "sitetwin"
   | "boq-lens"
   | "case"
@@ -82,6 +87,7 @@ export type SurfaceName =
 
 /** The per-project surfaces (everything under `#/projects/:id/…`). */
 export type ProjectSurface =
+  | "capture"
   | "sitetwin"
   | "boq-lens"
   | "case"
@@ -94,6 +100,7 @@ export const PROJECT_SURFACES: readonly {
   readonly surface: ProjectSurface;
   readonly label: string;
 }[] = Object.freeze([
+  Object.freeze({ surface: "capture", label: "Capture / Upload" } as const),
   Object.freeze({ surface: "sitetwin", label: "SiteTwin / Evidence" } as const),
   Object.freeze({ surface: "boq-lens", label: "BOQ Lens" } as const),
   Object.freeze({ surface: "case", label: "Engineering Case" } as const),
@@ -108,6 +115,8 @@ export function projectSurfaceRoute(
   projectId: string,
 ): Route {
   switch (surface) {
+    case "capture":
+      return { name: "capture", projectId };
     case "sitetwin":
       return { name: "sitetwin", projectId };
     case "boq-lens":
@@ -136,6 +145,8 @@ export function routeSurface(route: Route): SurfaceName | "projects-overview" | 
     case "projects":
     case "project":
       return "projects";
+    case "capture":
+      return "capture";
     case "sitetwin":
       return "sitetwin";
     case "boq-lens":
@@ -214,6 +225,7 @@ export function parseHash(hash: string): Route {
     if (segments.length === 3) {
       const surface = segments[2];
       if (
+        surface === "capture" ||
         surface === "sitetwin" ||
         surface === "boq-lens" ||
         surface === "case" ||
@@ -382,6 +394,8 @@ export function formatRoute(route: Route): string {
       return "#/projects";
     case "project":
       return `#/projects/${encodeURIComponent(route.projectId)}`;
+    case "capture":
+      return `#/projects/${encodeURIComponent(route.projectId)}/capture`;
     case "sitetwin":
       return `#/projects/${encodeURIComponent(route.projectId)}/sitetwin`;
     case "boq-lens":

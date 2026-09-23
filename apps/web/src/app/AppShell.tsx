@@ -48,6 +48,10 @@ const PRIMARY_NAV: readonly NavEntry[] = [
     target: { name: "projects" },
     subs: [
       {
+        label: "Corpus — Capture / Upload (demo journey)",
+        target: { name: "capture", projectId: "proj-7f3a2b" },
+      },
+      {
         label: "Pilot — SiteTwin / Evidence",
         target: { name: "sitetwin", projectId: "proj-riverside-refit" },
       },
@@ -208,6 +212,7 @@ function routeSurfaceGroup(route: Route): SurfaceName | "projects" {
       return "dashboard";
     case "projects":
     case "project":
+    case "capture":
     case "sitetwin":
     case "boq-lens":
     case "case":

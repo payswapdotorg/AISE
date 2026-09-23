@@ -63,6 +63,7 @@ export function ProjectSurfaceNav({
   readonly projectId: string;
   readonly current:
     | "overview"
+    | "capture"
     | "sitetwin"
     | "boq-lens"
     | "case"

@@ -240,7 +240,9 @@ describe("PROD-018 golden journey replay (evidence → understanding → interve
     expect(html).toContain("Depth capture cannot start");
     expect(html).toContain("gap-4471");
     expect(html).toContain("gap-4472");
-    expect(html).toContain("#/projects/proj-7f3a2b/sitetwin");
+    // PROD-034: the Capture step + the gap suggestions open the first-class
+    // capture mission surface.
+    expect(html).toContain("#/projects/proj-7f3a2b/capture");
   });
 
   test("1b. a capture opens the issue derived from it (the recorded relatedCaseIds join)", () => {
