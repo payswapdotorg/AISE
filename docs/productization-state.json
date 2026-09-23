@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-22T07:20:00Z",
+  "lastReconciledAt": "2026-09-23T01:20:00Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -194,7 +194,7 @@
       "headSha": "b242e10",
       "mergedSha": "eb953b2",
       "finalizedAt": "2026-09-20T20:04:00Z",
-      "evidence": "evidence/PROD-011B/ — deployed session-stability walk on production (20/20 cross-instance whoami; Upstash record/index/TTL ground truth; exact meter math; logout lifecycle). The walk exposed and the Lead fixed two production defects: the Upstash REST {result|error} envelope was never unwrapped (writes landed but misreported; reads fail-closed 401) and the pipelined INCR/EXPIRE form is rejected by the live endpoint (d6691da); the deploy shape depended on build-cache luck — the gitignored catch-all bundle is now a committed deploy beacon (05a9fa3+eb953b2), the standard server-side deploy path verified end-to-end."
+      "evidence": "evidence/PROD-011B/ \u2014 deployed session-stability walk on production (20/20 cross-instance whoami; Upstash record/index/TTL ground truth; exact meter math; logout lifecycle). The walk exposed and the Lead fixed two production defects: the Upstash REST {result|error} envelope was never unwrapped (writes landed but misreported; reads fail-closed 401) and the pipelined INCR/EXPIRE form is rejected by the live endpoint (d6691da); the deploy shape depended on build-cache luck \u2014 the gitignored catch-all bundle is now a committed deploy beacon (05a9fa3+eb953b2), the standard server-side deploy path verified end-to-end."
     },
     {
       "id": "PROD-012",
@@ -205,7 +205,7 @@
       ],
       "mergedSha": "b34e809",
       "finalizedAt": "2026-09-21T00:00:00Z",
-      "evidence": "docs/productization-evidence/PROD-012/run-2026-09-20.txt — deployed-browser verification vs https://aise-tan.vercel.app: 5 PASS (availability, shell-renders, session-lifecycle fail-closed 401, responsive-desktop, console/runtime clean) / 2 honest FAIL root-caused for remediation (79px mobile horizontal overflow @390x844 signed-in shell; WCAG 1.4.3 serious contrast 3.64:1 on .journey-hint, 4 nodes). Suite: tools/deployed-check.ts (seven checks, tools/smoke.ts doctrine). Lead gates: verify baseline-identical, typecheck+lint PASS.",
+      "evidence": "docs/productization-evidence/PROD-012/run-2026-09-20.txt \u2014 deployed-browser verification vs https://aise-tan.vercel.app: 5 PASS (availability, shell-renders, session-lifecycle fail-closed 401, responsive-desktop, console/runtime clean) / 2 honest FAIL root-caused for remediation (79px mobile horizontal overflow @390x844 signed-in shell; WCAG 1.4.3 serious contrast 3.64:1 on .journey-hint, 4 nodes). Suite: tools/deployed-check.ts (seven checks, tools/smoke.ts doctrine). Lead gates: verify baseline-identical, typecheck+lint PASS.",
       "remediation": {
         "status": "finalized",
         "mergedSha": "667d22e",
@@ -262,7 +262,11 @@
       "status": "planned",
       "dependencies": [
         "PROD-014",
-        "PROD-030"
+        "PROD-030",
+        "PROD-031",
+        "PROD-032",
+        "PROD-033",
+        "PROD-034"
       ]
     },
     {
@@ -307,7 +311,7 @@
       ],
       "mergedSha": "91886e9",
       "finalizedAt": "2026-09-21T07:30:12Z",
-      "evidence": "apps/android :core adapter (11 main sources + 9 test sources incl. conformance corpus; 64 new Gradle tests) + :app field runtime/journey wiring + evidence docs (conformance-report, field-journey, gradle-trace). Lead gates: root VERIFY 3718/0 (unchanged), Gradle :core:test 387/0 re-run at integration station (portable Temurin JDK 21), typecheck+lint PASS. Honest notes: :app:test/:app:assembleDebug require Android SDK (not run — integration-station debt); declared profile omits voice/depth/lidar/deep-links per facts-exercised rule (depth+lidar negotiate BLOCKED, surfaced verbatim). Worker commit 0429c51."
+      "evidence": "apps/android :core adapter (11 main sources + 9 test sources incl. conformance corpus; 64 new Gradle tests) + :app field runtime/journey wiring + evidence docs (conformance-report, field-journey, gradle-trace). Lead gates: root VERIFY 3718/0 (unchanged), Gradle :core:test 387/0 re-run at integration station (portable Temurin JDK 21), typecheck+lint PASS. Honest notes: :app:test/:app:assembleDebug require Android SDK (not run \u2014 integration-station debt); declared profile omits voice/depth/lidar/deep-links per facts-exercised rule (depth+lidar negotiate BLOCKED, surfaced verbatim). Worker commit 0429c51."
     },
     {
       "id": "PROD-020",
@@ -341,7 +345,7 @@
       ],
       "mergedSha": "baa4d3f",
       "finalizedAt": "2026-09-21T15:02:38Z",
-      "evidence": "packages/solution-engine (28 files: pure deterministic engine — apply/replay/revise with byte-identical canonical version bytes, engine-version pinning, committed golden fixture reproduction, quantity-models + units + validation snapshots; BaselineGeometryResolver the ONLY read-only window into the Reality Graph (structural no-write-path, mutation protection), undo via new solution versions never destructive mutation) + backend/api/src/solution (model/router/service tool endpoints, end-to-end response-body determinism, fail-closed states) + 4 evidence docs (determinism, mutation-protection, quantity-tests, engine-artifacts). Lead gates: VERIFY 4220/0 (+168 exact), typecheck+lint PASS, boundaries clean, root bun.lock regenerated (solution-engine workspace edge). Worker commit edc0749."
+      "evidence": "packages/solution-engine (28 files: pure deterministic engine \u2014 apply/replay/revise with byte-identical canonical version bytes, engine-version pinning, committed golden fixture reproduction, quantity-models + units + validation snapshots; BaselineGeometryResolver the ONLY read-only window into the Reality Graph (structural no-write-path, mutation protection), undo via new solution versions never destructive mutation) + backend/api/src/solution (model/router/service tool endpoints, end-to-end response-body determinism, fail-closed states) + 4 evidence docs (determinism, mutation-protection, quantity-tests, engine-artifacts). Lead gates: VERIFY 4220/0 (+168 exact), typecheck+lint PASS, boundaries clean, root bun.lock regenerated (solution-engine workspace edge). Worker commit edc0749."
     },
     {
       "id": "PROD-023",
@@ -351,7 +355,7 @@
       ],
       "mergedSha": "e711c07",
       "finalizedAt": "2026-09-21T15:06:35Z",
-      "evidence": "backend/api/src/reasoning/solution (16 src files: NL→EngineeringOperationIntent compiler over the contract's dual-origin createOperationIntent surface; operation identity excludes provenance — phrasing-equivalence sets proven by identity derivation; clarification-slot + refusal taxonomy; interaction loop; SolutionToolPort tools with typed failures; 1024-line command corpus + open vocabulary; router/service/model) + 4 evidence docs (command-corpus, compiler-artifacts, equivalence-and-refusal, tool-trace). Lead gates: VERIFY 4323/0 (+103 exact on the combined 022+023 tree), typecheck+lint PASS, boundaries clean; package.json superset merge (PROD-022's solution-engine dep retained). Worker commit 8a27af8."
+      "evidence": "backend/api/src/reasoning/solution (16 src files: NL\u2192EngineeringOperationIntent compiler over the contract's dual-origin createOperationIntent surface; operation identity excludes provenance \u2014 phrasing-equivalence sets proven by identity derivation; clarification-slot + refusal taxonomy; interaction loop; SolutionToolPort tools with typed failures; 1024-line command corpus + open vocabulary; router/service/model) + 4 evidence docs (command-corpus, compiler-artifacts, equivalence-and-refusal, tool-trace). Lead gates: VERIFY 4323/0 (+103 exact on the combined 022+023 tree), typecheck+lint PASS, boundaries clean; package.json superset merge (PROD-022's solution-engine dep retained). Worker commit 8a27af8."
     },
     {
       "id": "PROD-024",
@@ -466,8 +470,48 @@
         "workerCommit": "873aeec31511679fdefbc6a9f815473d48d26fdf",
         "harvest": "standard staged delivery (24/24, diffstat-exact 23/1288/30)",
         "verify": "branch 5272/0 (5260+12 exact); combined 5385/0 (5373+12); boundaries 893 branch / 915 combined, clean; typecheck+lint PASS; the web-bundle gate (real-Chromium mount, zero pageerror) + negative control on pristine base ran inside verify",
-        "note": "the PROD-026-escalated module-evaluation defect (barrel re-export of Node-only fixtures-loader -> blank browser bundle) fixed via subpath exports; report posted with a Chinese-translated headline (PROD-030 完成报告) — the English-headline watch missed it, Lead-verified the filled gate manually"
+        "note": "the PROD-026-escalated module-evaluation defect (barrel re-export of Node-only fixtures-loader -> blank browser bundle) fixed via subpath exports; report posted with a Chinese-translated headline (PROD-030 \u5b8c\u6210\u62a5\u544a) \u2014 the English-headline watch missed it, Lead-verified the filled gate manually"
       }
+    },
+    {
+      "id": "PROD-031",
+      "status": "planned",
+      "dependencies": [
+        "PROD-026",
+        "PROD-030"
+      ],
+      "workOrder": "docs/productization-closure-work-orders.md",
+      "note": "solution workspace browser execution + live solution assistant (issue #9 gap 4; starting contribution branch work/prod-031-web-product-closure)"
+    },
+    {
+      "id": "PROD-032",
+      "status": "planned",
+      "dependencies": [
+        "PROD-019",
+        "PROD-016"
+      ],
+      "workOrder": "docs/productization-closure-work-orders.md",
+      "note": "Android CLI + E2B station + field sync (issue #9 Worker B; starting contribution branch work/prod-032-android-station; E2B credential secret-handled)"
+    },
+    {
+      "id": "PROD-033",
+      "status": "planned",
+      "dependencies": [
+        "PROD-031",
+        "PROD-032",
+        "PROD-034"
+      ],
+      "workOrder": "docs/productization-closure-work-orders.md",
+      "note": "production journey proof W/M/X + Gates A-I + final-SHA deployment evidence + narrative reconciliation (issue #9 Worker C)"
+    },
+    {
+      "id": "PROD-034",
+      "status": "planned",
+      "dependencies": [
+        "PROD-031"
+      ],
+      "workOrder": "docs/productization-closure-work-orders.md",
+      "note": "web product discoverability closure (issue #9 gaps 1/2/3/5/6)"
     }
   ],
   "simulation": {
@@ -492,7 +536,7 @@
         "workerCommit": "50e752e655b770873c625253d4ad0fb40324a263",
         "harvest": "standard staged delivery (43/43, diffstat-exact 42/10343/0)",
         "verify": "4742 pass / 0 fail (baseline 4568 + 174)",
-        "note": "provider evaluation control plane — HF-0 critical path; layer-hardening wave (PROD-027/028/029) now dispatch-eligible"
+        "note": "provider evaluation control plane \u2014 HF-0 critical path; layer-hardening wave (PROD-027/028/029) now dispatch-eligible"
       },
       {
         "id": "HFX-201",
@@ -503,7 +547,7 @@
         "workerCommit": "1401f056b49595bc2c16b8ee625968b78ac7dc1f",
         "harvest": "standard staged delivery (28/28, diffstat-exact 27/11029/0)",
         "verify": "5235 pass / 0 fail (baseline 5105 + 130); runner 22/22",
-        "note": "Qwen3-VL provider benchmark (8B + 30B-A3B separate profiles, deterministic doubles, behavior matrix + hallucination catch) — VLM eval wave"
+        "note": "Qwen3-VL provider benchmark (8B + 30B-A3B separate profiles, deterministic doubles, behavior matrix + hallucination catch) \u2014 VLM eval wave"
       },
       {
         "id": "HFX-101",
@@ -514,7 +558,7 @@
         "workerCommit": "2a920f71360871560b4f38bb5bac6bdceedc0b42",
         "harvest": "standard staged delivery (28/28, diffstat-exact 28/19799/0)",
         "verify": "5348 pass / 0 fail at base b7c5c63 (5235 + 113); combined main 5373/0 (5260 + 113)",
-        "note": "MapAnything Layer-1 universal-reconstruction benchmark (registered candidate profile, deterministic doubles, four-cell behavior matrix, versioning discipline, comparison records vs the reference path) — survived the 06:30 platform drop, revived 07:45, completed 07:46"
+        "note": "MapAnything Layer-1 universal-reconstruction benchmark (registered candidate profile, deterministic doubles, four-cell behavior matrix, versioning discipline, comparison records vs the reference path) \u2014 survived the 06:30 platform drop, revived 07:45, completed 07:46"
       },
       {
         "id": "HFX-204",
@@ -526,7 +570,7 @@
           "workerCommit": "53220d3c2b6465fc7e1ca6bca6b844ff77bd9941",
           "harvest": "standard staged delivery (20/20 incl DELIVERY.txt, diffstat-exact 19/10413/0 pure additions)",
           "verify": "branch 5214/0 (5105+109 exact, boundaries 879); combined 5494/0 (5385+109), boundaries 930; typecheck+lint PASS",
-          "note": "IFC-Bench + BIM-Edit corpus — the HFX lane's Layer-2/3 benchmark surface; two-commit worker history (corpus 745ef6d + evidence 53220d3c); dispatch survived the platform outage (landed-and-dropped at 11:29, revived + adopted 12:36 via the fixed adopt path)"
+          "note": "IFC-Bench + BIM-Edit corpus \u2014 the HFX lane's Layer-2/3 benchmark surface; two-commit worker history (corpus 745ef6d + evidence 53220d3c); dispatch survived the platform outage (landed-and-dropped at 11:29, revived + adopted 12:36 via the fixed adopt path)"
         }
       },
       {
@@ -538,8 +582,8 @@
           "workerChat": "e35dca56-331b-4051-8194-0907f1713545",
           "workerCommit": "4689df927508d5e6c2525ab7d709baf4bfdaa585",
           "harvest": "standard staged delivery (DELIVERY.txt + 19 files, diffstat-exact 19/11865/0 pure additions)",
-          "verify": "branch 5564/0 (5494+70 exact, boundaries 943); combined 5564/0 tree-identical (branch cut from main HEAD dc35eaf — merge tree = gated branch tree f88c53aa); typecheck+lint PASS",
-          "note": "NL/direct-manipulation equivalence benchmark — four-cell behavior matrix (equivalent / declared-different / agent-refused / agent-clarification) over paired corpora, both authoring paths through the SAME engine, projections onto PROD-029's canonical comparison kinds; HFX-302 (geometry/validation substitution) now dispatch-eligible"
+          "verify": "branch 5564/0 (5494+70 exact, boundaries 943); combined 5564/0 tree-identical (branch cut from main HEAD dc35eaf \u2014 merge tree = gated branch tree f88c53aa); typecheck+lint PASS",
+          "note": "NL/direct-manipulation equivalence benchmark \u2014 four-cell behavior matrix (equivalent / declared-different / agent-refused / agent-clarification) over paired corpora, both authoring paths through the SAME engine, projections onto PROD-029's canonical comparison kinds; HFX-302 (geometry/validation substitution) now dispatch-eligible"
         }
       }
     ]
