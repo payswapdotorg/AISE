@@ -43,6 +43,7 @@
 import { resolveDataDir, validateEnv, type EnvRecord, type EnvSource } from "../lib/config";
 import { createLogger, type Logger } from "../lib/log";
 import { createCaptureGateway, type CaptureGateway } from "../capture/gateway";
+import { createSolutionAgentRoutes, createSolutionCommandCompiler } from "../reasoning/solution";
 import { FsCaptureStore, type CaptureStore } from "../capture/store";
 import {
   createAuthLayer,
@@ -974,6 +975,11 @@ export function createRuntimeHandler(
     }
   }
 
+  const solutionAgentRoutes = createSolutionAgentRoutes({
+    compiler: createSolutionCommandCompiler({ clock: () => new Date().toISOString() }),
+    logger,
+  });
+
   const core = createRequestHandler({
     envSource,
     version,
@@ -1054,7 +1060,10 @@ export function createRuntimeHandler(
       if (pgBoot.mode === "pg") {
         await pgBoot.ready;
       }
-      let response = await core(forwarded);
+      let response = await solutionAgentRoutes(forwarded, requestId);
+      if (response === null) {
+        response = await core(forwarded);
+      }
       if (new URL(request.url).pathname === "/readyz") {
         response = await augmentReadiness(response, envSource(), authReadiness, costBoot.readiness());
       }
