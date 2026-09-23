@@ -1,0 +1,16 @@
+journey-step	step=server-health	fidelity=REAL	detail=/healthz HTTP 200
+journey-step	step=auth	fidelity=REAL	detail=demo principal 'Demo Evaluator' (demo); token held in memory only
+journey-step	step=capability-assessment	fidelity=DETERMINISTIC	detail=negotiation=PERMITTED; mission=mission-2026-000042; gaps=3
+journey-step	step=session-start	fidelity=DETERMINISTIC	detail=session opened with honest baseline (imuActive=false)
+journey-step	step=guided-still-capture	fidelity=SYNTHETIC	detail=12 KB deterministic still bytes (no physical camera)
+journey-step	step=guided-video-capture	fidelity=SYNTHETIC	detail=24 KB deterministic video bytes (no physical camera)
+journey-step	step=sensor-capture	fidelity=UNAVAILABLE-ON-STATION	detail=no IMU/rotation-vector hardware in an E2B sandbox; the baseline snapshot records imuActive=false (never conflated with supported)
+journey-step	step=guided-capture-progress	fidelity=DETERMINISTIC	detail=evidenceByStep=[step-stills, step-video]
+journey-step	step=pause-resume	fidelity=DETERMINISTIC	detail=CAPTURING→PAUSED→CAPTURING journaled transitions
+journey-step	step=recovery	fidelity=DETERMINISTIC	detail=journal replay recovered session=f99b5cfb-c369-333b-952c-83fd7de7234f assets=2
+journey-step	step=finalize	fidelity=DETERMINISTIC	detail=manifest exported (3550 chars)
+journey-step	step=submit-blocked	fidelity=DETERMINISTIC	detail=unauthenticated transport defers explicitly: sign in to AISE on the mobile client before syncing evidence
+journey-step	step=submit	fidelity=REAL	detail=server accepted: session:f99b5cfb-c369-333b-952c-83fd7de7234f:sequence:0
+journey-step	step=submit-idempotent	fidelity=REAL	detail=same idempotency key re-accepted (server DUPLICATE semantics)
+journey-step	step=server-verification	fidelity=REAL	detail=GET /v1/capture/sessions/f99b5cfb-c369-333b-952c-83fd7de7234f HTTP 200
+journey-step	step=mark-synced	fidelity=DETERMINISTIC	detail=local session f99b5cfb-c369-333b-952c-83fd7de7234f FINALIZED→SYNCED after server acceptance

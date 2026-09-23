@@ -78,6 +78,7 @@ object SessionManifestExporter {
                 "capturedAt" to JsonValue.str(IsoTimestamps.format(asset.capturedAtUtcMillis)),
                 "acquisitionMethod" to JsonValue.str(asset.acquisitionMethod.name),
                 "acquisitionMetadata" to JsonValue.JsonObject(acquisitionMetadata),
+                "relativePath" to JsonValue.str(asset.relativePath),
             )
         }
 

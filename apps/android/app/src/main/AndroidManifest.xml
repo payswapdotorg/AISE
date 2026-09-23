@@ -12,6 +12,7 @@
     -->
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Capability-aware: camera-less devices can still install the app
          (manual measurements arrive with AISE-009); capture is simply

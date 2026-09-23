@@ -371,6 +371,37 @@ class CaptureSessionController(
         }
     }
 
+    /**
+     * Appends the transport fact FINALIZED -> SYNCED for the most recent finalized
+     * session. The local journal remains authoritative for lifecycle facts; the
+     * server is authoritative for engineering readiness.
+     */
+    suspend fun markLatestFinalizedSynced(): CaptureSessionRecord = withIo {
+        mutex.withLock {
+            val candidate = SessionDirectory.scan(sessionsRoot)
+                .mapNotNull { dir ->
+                    val read = JsonlSessionJournal(dir.journalFile).read()
+                    if (read.events.isEmpty()) return@mapNotNull null
+                    val record = runCatching { SessionReplaySession(read.events) }.getOrNull()
+                        ?: return@mapNotNull null
+                    if (record.status == CaptureSessionStatus.FINALIZED) record to dir else null
+                }
+                .maxByOrNull { (record, _) -> record.endedAtUtcMillis ?: record.startedAtUtcMillis }
+                ?: throw IllegalStateException("no finalized capture session is available to mark synced")
+            val (record, dir) = candidate
+            val journal = JsonlSessionJournal(dir.journalFile)
+            journal.append(
+                SessionStateChanged(
+                    journal.nextSequence(),
+                    clock.millis(),
+                    CaptureSessionStatus.FINALIZED,
+                    CaptureSessionStatus.SYNCED,
+                ),
+            )
+            SessionReplaySession(journal.read().events)
+        }
+    }
+
     /** Internal: discards the open video writer's tmp file (recording failed / cancelled). */
     internal suspend fun discardVideoAsset(writer: VideoAssetWriter) = withIo {
         mutex.withLock {

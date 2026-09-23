@@ -1,0 +1,43 @@
+# AISE Android E2B development station template (PROD-032).
+# Preinstalled: git + Temurin JDK 21 + Android cmdline-tools + SDK packages.
+# The committed bootstrap script (apps/android/scripts/e2b-station/bootstrap.sh)
+# re-provisions everything on a plain debian sandbox too — this template only
+# shortens cold-start; it is NOT required for reproduction.
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl git unzip xz-utils zip openssh-client procps \
+      bash-completion build-essential file less vim-tiny sudo \
+    && rm -rf /var/lib/apt/lists/*
+
+# Temurin JDK 21 (Adoptium)
+RUN curl -fsSL "https://api.adoptium.net/v3/binary/latest/21/ga/linux/x64/jdk/hotspot/normal/eclipse" \
+      -o /tmp/jdk21.tar.gz \
+    && mkdir -p /opt/java \
+    && tar -xzf /tmp/jdk21.tar.gz -C /opt/java --strip-components=1 \
+    && rm /tmp/jdk21.tar.gz
+ENV JAVA_HOME=/opt/java
+ENV PATH="/opt/java/bin:${PATH}"
+
+# Android SDK: cmdline-tools + platform 35 + build-tools 35.0.0 + platform-tools (adb)
+ENV ANDROID_HOME=/opt/android-sdk
+ENV ANDROID_SDK_ROOT=/opt/android-sdk
+RUN mkdir -p ${ANDROID_HOME}/cmdline-tools \
+    && curl -fsSL "https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip" \
+         -o /tmp/cmdline-tools.zip \
+    && unzip -q /tmp/cmdline-tools.zip -d ${ANDROID_HOME}/cmdline-tools \
+    && mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest \
+    && rm /tmp/cmdline-tools.zip \
+    && yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null \
+    && ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager \
+         "platform-tools" "platforms;android-35" "build-tools;35.0.0" > /dev/null \
+    && rm -rf ${ANDROID_HOME}/.temp
+ENV PATH="${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${PATH}"
+
+# Bun (for booting the AISE backend/api field-sync counterpart on the station)
+RUN curl -fsSL https://bun.sh/install | bash \
+    && mv /root/.bun/bin/bun /usr/local/bin/bun \
+    && mv /root/.bun/bin/bunx /usr/local/bin/bunx
+
+WORKDIR /workspace

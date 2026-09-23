@@ -1,9 +1,10 @@
 # AISE Android CI (AISE-002) — self-contained gate for the field client.
 #
-# Runs the exact same verification path documented in apps/android/README.md:
+# Runs the Android integration-station verification path:
 #   1. wrapper integrity,
-#   2. pure-JVM unit tests for :core and :app (offline-safe at execution time),
-#   3. full Android debug build (:app:assembleDebug).
+#   2. JVM unit tests for :core and :app,
+#   3. full Android debug build,
+#   4. real API-35 emulator instrumentation (navigation + capture surface).
 #
 # The Android SDK is provisioned per-job; nothing is cached across machines
 # except Gradle dependencies (via setup-gradle).
@@ -44,13 +45,15 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v3
 
-      - name: Set up Android SDK (command-line tools)
-        uses: android-actions/setup-android@v3
-
-      - name: Accept licenses and install SDK pieces
+      - name: Install Android CLI
         run: |
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0" >/dev/null
+          curl -fsSL https://dl.google.com/android/cli/latest/linux_x86_64/install.sh | bash
+          echo "$HOME/.android/bin" >> "$GITHUB_PATH"
+          android --version
+
+      - name: Provision Android SDK with Android CLI
+        run: |
+          android sdk install platforms/android-35 build-tools/35.0.0 platform-tools
 
       - name: Set up Gradle (dependency cache)
         uses: gradle/actions/setup-gradle@v4
@@ -60,3 +63,66 @@ jobs:
 
       - name: Assemble debug APK
         run: ./gradlew :app:assembleDebug
+
+  instrumentation:
+    name: Emulator instrumentation (API 35)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: android
+    defaults:
+      run:
+        working-directory: apps/android
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install Android CLI
+        run: |
+          curl -fsSL https://dl.google.com/android/cli/latest/linux_x86_64/install.sh | bash
+          echo "$HOME/.android/bin" >> "$GITHUB_PATH"
+          android --version
+
+      - name: Provision SDK + emulator tooling
+        run: |
+          android sdk install platforms/android-35 build-tools/35.0.0 platform-tools emulator system-images/android-35/google_apis/x86_64
+          android emulator create --profile medium_phone
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Start emulator from the Android CLI
+        run: |
+          android emulator start medium_phone --headless > /tmp/aise-emulator.log 2>&1 &
+          echo $! > /tmp/aise-emulator.pid
+          for i in $(seq 1 60); do
+            if adb wait-for-device shell getprop sys.boot_completed 2>/dev/null | grep -q "1"; then
+              break
+            fi
+            sleep 2
+          done
+          adb devices
+          adb wait-for-device shell getprop sys.boot_completed
+
+      - name: Run instrumentation through Gradle/ADB
+        run: ./gradlew :app:connectedDebugAndroidTest --stacktrace
+
+      - name: Stop emulator
+        if: always()
+        run: |
+          if [ -f /tmp/aise-emulator.pid ]; then
+            kill "$(cat /tmp/aise-emulator.pid)" || true
+          fi
+
+      - name: Upload Android test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aise-android-instrumentation
+          path: apps/android/app/build/reports/androidTests/connected/
+          if-no-files-found: warn

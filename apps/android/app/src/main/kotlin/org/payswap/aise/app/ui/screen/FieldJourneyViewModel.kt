@@ -50,8 +50,10 @@ class FieldJourneyViewModel(
             is FieldJourneyPhase.DeferredOffline ->
                 _message.value = "Offline — submission deferred: ${phase.submission.reason}"
 
-            is FieldJourneyPhase.Submitted ->
-                _message.value = "Submitted — server ref ${phase.submission.serverRef}"
+            is FieldJourneyPhase.Submitted -> {
+                captureController.markLatestFinalizedSynced()
+                _message.value = "Submitted — server ref ${phase.submission.serverRef}; local session marked synced"
+            }
 
             is FieldJourneyPhase.SubmissionFailed ->
                 _message.value = "Submission rejected: ${phase.submission.reason}"
