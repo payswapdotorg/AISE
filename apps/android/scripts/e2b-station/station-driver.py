@@ -6,12 +6,32 @@ Runs on the Tech Lead's machine and operates the E2B development station:
     up        create a sandbox, upload the committed station scripts and run
               bootstrap.sh (full from-scratch provisioning, transcript saved)
     script    run one of the committed in-sandbox scripts
-              (bootstrap | gradle-trio | emulator-probe | field-journey)
+              (bootstrap | gradle-trio | emulator-probe | field-journey);
+              the three LONG scripts default to background+follow mode
+              (immune to the ~60s streaming silence timeout; see below)
+    poll      re-attach to a background script run started earlier (follows
+              its sandbox-side log until the BG_EXIT sentinel, refreshing the
+              local transcript on every tick)
     run       run an arbitrary command inside the station (streamed, timed)
     pty       run a command through a real PTY (TTY-sensitive tooling)
     fetch     download a file from the station to the local machine
+    extend    re-arm the sandbox lifetime (one-shot; service max observed 3600s)
+    keep-alive  re-arm the lifetime on a loop so long phases outlive the cap
     status    show the persisted station state
     kill      kill the station sandbox
+
+E2B quota/limit behavior (observed 2026-09-23, free tier):
+    * `create` with timeout > 3600s is REJECTED ("Timeout cannot be
+      greater than 1 hours"); the driver defaults to 55-minute sandboxes
+      and `keep-alive` re-arms the lifetime every 10 minutes.
+    * a sandbox that hits its timeout PAUSES, and a paused sandbox was NOT
+      resumable afterwards ("Paused sandbox ... not found") — all evidence
+      is fetched back BEFORE the sandbox can die.
+    * a streaming `commands.run` whose command stays SILENT for ~60s dies
+      with connectrpc "error reading a body from connection: timed out"
+      (killed the first gradle-trio attempt during dependency resolution);
+      long scripts therefore run sandbox-side as background processes
+      writing their own log, which the driver follows with short polls.
 
 SECURITY / SECRET DISCIPLINE (binding):
     The E2B API key is read from the E2B_API_KEY environment variable ONLY
@@ -43,6 +63,8 @@ import datetime as _dt
 import json
 import os
 import pathlib
+import re
+import shlex
 import sys
 import time
 
@@ -59,6 +81,14 @@ SCRIPTS = {
 DEFAULT_TEMPLATE = "aise-android-station"
 DEFAULT_REPO_URL = "https://github.com/payswapdotorg/AISE.git"
 STATE_FILE = pathlib.Path(".aise-e2b-station.json")
+
+# Long-running in-sandbox scripts follow the BACKGROUND pattern by default:
+# the E2B streaming command connection times out when a command stays SILENT
+# for ~60s (observed: a Gradle dependency-resolution pause killed the stream
+# with connectrpc "error reading a body from connection: timed out"), so the
+# script is started as an envd-supervised background process writing its own
+# log file sandbox-side, and the driver follows that file with short polls.
+LONG_SCRIPTS = {"gradle-trio", "emulator-probe", "field-journey"}
 
 
 def _now() -> str:
@@ -191,6 +221,69 @@ class Station:
         target.write_bytes(data)
         _log(f"fetched {remote} -> {target} ({len(data)} bytes)")
 
+    def start_bg(self, label: str, command: str, envs: dict[str, str] | None = None) -> tuple[int, str]:
+        """Start `command` as an envd-supervised background process.
+
+        The process writes its own log file sandbox-side and appends a
+        BG_EXIT=<rc> sentinel when it finishes, so the run survives driver
+        restarts and connection drops; the log is the durable record.
+        """
+        sb = self.require()
+        outfile = f"{STATION_ROOT}/logs/{label}.out"
+        sb.commands.run(f"mkdir -p {STATION_ROOT}/logs", timeout=30)
+        wrapped = (
+            f"echo BG_START {label} > {shlex.quote(outfile)}; "
+            f"date -u +%Y-%m-%dT%H:%M:%SZ >> {shlex.quote(outfile)}; "
+            f"{command} >> {shlex.quote(outfile)} 2>&1; "
+            f"rc=$?; echo BG_EXIT=$rc >> {shlex.quote(outfile)}"
+        )
+        handle = sb.commands.run(wrapped, background=True, envs=envs)
+        pid = handle.pid
+        handle.disconnect()  # the process keeps running under envd supervision
+        _log(f"[{label}] background pid {pid}, log {outfile}")
+        return pid, outfile
+
+    def follow_bg(
+        self,
+        label: str,
+        outfile: str,
+        every_seconds: float = 20,
+        max_seconds: float = 7200,
+    ) -> int:
+        """Follow a background run until its BG_EXIT sentinel appears.
+
+        Every tick re-reads the WHOLE sandbox-side log into the local
+        transcript (overwriting with the always-current full copy — evidence
+        capture is incremental and survives a driver death), printing the tail.
+        """
+        transcript = self.transcript_dir / f"{label}.log"
+        deadline = time.time() + max_seconds
+        while True:
+            time.sleep(every_seconds)
+            if time.time() > deadline:
+                _log(f"[{label}] follow deadline ({max_seconds:.0f}s) exceeded — process may still run; poll again later")
+                return 124
+            try:
+                result = self.require().commands.run(
+                    f"cat {shlex.quote(outfile)}", timeout=120
+                )
+                text = result.stdout
+            except Exception as exc:  # noqa: BLE001 - transient drops: reconnect
+                _log(f"[{label}] poll failed ({type(exc).__name__}: {exc}); reconnecting…")
+                try:
+                    self.connect()
+                except Exception:  # noqa: BLE001 - keep trying until deadline
+                    pass
+                continue
+            transcript.write_text(text, encoding="utf-8")
+            print(text[-1200:], flush=True)
+            print(f"[{label}] …following ({len(text)} bytes so far)", flush=True)
+            m = re.search(r"^BG_EXIT=(-?\d+)$", text, re.M)
+            if m:
+                code = int(m.group(1))
+                _log(f"[{label}] background finished exit={code} ({len(text)} bytes captured)")
+                return code
+
     def kill(self) -> None:
         sb = self.require()
         sb.kill()
@@ -229,7 +322,8 @@ def main() -> None:
         p = argparse.ArgumentParser(prog="up")
         p.add_argument("--template", default=DEFAULT_TEMPLATE,
                        help=f"E2B template (default {DEFAULT_TEMPLATE}; use --template base for the plain 512MB default)")
-        p.add_argument("--timeout-minutes", type=int, default=180)
+        p.add_argument("--timeout-minutes", type=int, default=55,
+                       help="sandbox lifetime cap in minutes (service max observed: 60; use keep-alive for longer phases)")
         p.add_argument("--repo-url", default=DEFAULT_REPO_URL)
         p.add_argument("--repo-sha", required=True,
                        help="the EXACT pinned commit SHA the station checks out")
@@ -269,6 +363,10 @@ def main() -> None:
         p = argparse.ArgumentParser(prog="script")
         p.add_argument("name", choices=list(SCRIPTS))
         p.add_argument("--timeout-seconds", type=float, default=5400)
+        p.add_argument("--every", type=float, default=20,
+                       help="background-mode poll interval seconds")
+        p.add_argument("--stream", action="store_true",
+                       help="force the old streaming mode (risky on long silent commands)")
         opts = p.parse_args(rest)
         if opts.name == "bootstrap":
             sha = state.get("repo_sha") or sys.exit("ERROR: no repo_sha in state — run `up --repo-sha <sha>` first")
@@ -286,30 +384,56 @@ def main() -> None:
             )
             sys.exit(rc)
         station.connect()
-        rc = station.run(
-            opts.name,
-            f"bash {STATION_ROOT}/station-scripts/{SCRIPTS[opts.name]}",
-            envs={"AISE_STATION_ROOT": STATION_ROOT},
-            timeout_seconds=opts.timeout_seconds,
-        )
+        envs = {"AISE_STATION_ROOT": STATION_ROOT}
+        script_cmd = f"bash {STATION_ROOT}/station-scripts/{SCRIPTS[opts.name]}"
+        if opts.name in LONG_SCRIPTS and not opts.stream:
+            # background mode: immune to the ~60s-silence streaming timeout
+            _, outfile = station.start_bg(opts.name, script_cmd, envs=envs)
+            procs = dict(state.get("procs") or {})
+            procs[opts.name] = {"outfile": outfile, "started_at": _now()}
+            save_state({**state, "procs": procs})
+            rc = station.follow_bg(
+                opts.name, outfile,
+                every_seconds=opts.every, max_seconds=opts.timeout_seconds,
+            )
+        else:
+            rc = station.run(opts.name, script_cmd, envs=envs,
+                             timeout_seconds=opts.timeout_seconds)
         if opts.name == "emulator-probe":
             station.fetch(f"{STATION_ROOT}/station-fingerprint.txt", str(transcript_dir))
         if opts.name == "field-journey":
             station.fetch(f"{STATION_ROOT}/field-journey-record.txt", str(transcript_dir))
         sys.exit(rc)
 
+    elif command == "poll":
+        p = argparse.ArgumentParser(prog="poll")
+        p.add_argument("label", help="background label from `script`/`bg` state")
+        p.add_argument("--every", type=float, default=20)
+        p.add_argument("--timeout-seconds", type=float, default=7200)
+        opts = p.parse_args(rest)
+        proc = (state.get("procs") or {}).get(opts.label) \
+            or sys.exit(f"ERROR: no background run '{opts.label}' in state")
+        station.connect()
+        sys.exit(station.follow_bg(
+            opts.label, proc["outfile"],
+            every_seconds=opts.every, max_seconds=opts.timeout_seconds,
+        ))
+
     elif command == "run":
+        if not rest:
+            sys.exit("run needs: <label> [options] <cmd…>  (options may precede the command)")
+        # NOTE: parse_known_args (not REMAINDER) so `--timeout-seconds 90 cmd…`
+        # works — argparse.REMAINDER swallows the options into the command.
+        label, raw = rest[0], rest[1:]
         p = argparse.ArgumentParser(prog="run")
-        p.add_argument("label")
         p.add_argument("--timeout-seconds", type=float, default=3600)
         p.add_argument("--cwd", default=None)
         p.add_argument("--pty", action="store_true")
-        p.add_argument("cmd", nargs=argparse.REMAINDER)
-        opts = p.parse_args(rest)
-        cmd = " ".join(opts.cmd) if opts.cmd else "true"
+        opts, cmd_args = p.parse_known_args(raw)
+        cmd = " ".join(cmd_args) if cmd_args else "true"
         station.connect()
         envs = {"AISE_STATION_ROOT": STATION_ROOT}
-        sys.exit(station.run(opts.label, cmd, envs=envs, cwd=opts.cwd,
+        sys.exit(station.run(label, cmd, envs=envs, cwd=opts.cwd,
                              timeout_seconds=opts.timeout_seconds, pty=opts.pty))
 
     elif command == "fetch":
@@ -319,6 +443,32 @@ def main() -> None:
         opts = p.parse_args(rest)
         station.connect()
         station.fetch(opts.remote, opts.local)
+
+    elif command == "extend":
+        p = argparse.ArgumentParser(prog="extend")
+        p.add_argument("--seconds", type=int, default=3600,
+                       help="new sandbox lifetime in seconds (service max observed: 3600)")
+        opts = p.parse_args(rest)
+        station.connect()
+        station.require().set_timeout(opts.seconds)
+        _log(f"sandbox {station.sandbox_id} timeout extended to {opts.seconds}s")
+
+    elif command == "keep-alive":
+        p = argparse.ArgumentParser(prog="keep-alive")
+        p.add_argument("--every", type=int, default=600,
+                       help="seconds between extensions (default 600)")
+        p.add_argument("--seconds", type=int, default=3600,
+                       help="lifetime re-armed on each tick (default 3600)")
+        opts = p.parse_args(rest)
+        station.connect()
+        _log(f"keep-alive: extending sandbox {station.sandbox_id} to {opts.seconds}s every {opts.every}s (Ctrl-C to stop)")
+        try:
+            while True:
+                station.require().set_timeout(opts.seconds)
+                _log(f"extended to {opts.seconds}s")
+                time.sleep(opts.every)
+        except KeyboardInterrupt:
+            _log("keep-alive stopped")
 
     elif command == "status":
         print(json.dumps(state, indent=2))
