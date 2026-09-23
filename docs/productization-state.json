@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-23T04:40:00Z",
+  "lastReconciledAt": "2026-09-23T04:50:00Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -491,13 +491,19 @@
     },
     {
       "id": "PROD-032",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-019",
         "PROD-016"
       ],
       "workOrder": "docs/productization-closure-work-orders.md",
-      "note": "Android CLI + E2B station + field sync (issue #9 Worker B; starting contribution branch work/prod-032-android-station; E2B credential secret-handled)"
+      "note": "issue #9 Worker B closed: reproducible E2B Android station (template + bootstrap.sh, E2B_API_KEY env-only secret discipline proven across 30 transcripts); emulator honestly BLOCKED_NO_KVM (E2B = build/CLI/test station, NOT emulator fidelity); field journey 16 steps honestly classified (5 REAL incl. server submit round-trip + idempotency / 8 DETERMINISTIC / 2 SYNTHETIC / 1 UNAVAILABLE-ON-STATION, imuActive=false never conflated); physical-device lane documented awaiting execution; station caught + fixed a wire schema drift (6728c3b)",
+      "mergedSha": "5fb7e9d",
+      "mergedAt": "2026-09-23T04:50:00Z",
+      "workerChat": "local subagent chunks 110-b/111-b/112-b/113-b (prior-session starting contribution 20 commits e631ef5..14ff034)",
+      "workerCommit": "cdd0cf3",
+      "harvest": "local-subagent delivery via pushed work branch (13 worker commits incl. prior 20); gate branch tree-identical merge",
+      "verify": "branch 5598/0 unchanged (Android outside bun suites), boundaries 956 clean, typecheck+lint PASS; Lead-executed independent E2B station reproduction at delivery SHA cdd0cf3 (from-scratch template bootstrap 17.9s; trio ALL PASS: :core:test+:app:test 56 suites/0 failures, :app:assembleDebug APK 18443762B sha256 676a6eda)"
     },
     {
       "id": "PROD-033",
