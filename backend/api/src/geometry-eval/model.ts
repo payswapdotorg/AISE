@@ -80,11 +80,7 @@ import type {
 import { isFailureKind } from "@aise/provider-registry";
 import type { FailureKind } from "@aise/provider-registry";
 import { DIVERGENCE_KIND_BY_POINT } from "../solution-eval/model";
-import type {
-  CanonicalBoqLine,
-  CanonicalQuantity,
-  CanonicalValidationCheck,
-} from "../solution-eval/model";
+import type { CanonicalQuantity, CanonicalValidationCheck } from "../solution-eval/model";
 
 /* ------------------------------------------------------------------ */
 /* Error codes (transport-level, frozen closed registry)                */
@@ -523,8 +519,6 @@ export interface ExecutedLaneProjection {
     readonly checks: readonly CanonicalValidationCheck[];
   };
   readonly topology: readonly CanonicalTopologyConstraint[];
-  /** The lane's canonical BOQ-line rows (the harness's BOQ leg, PROD-029 shape). */
-  readonly boqLines: readonly CanonicalBoqLine[];
 }
 
 /**

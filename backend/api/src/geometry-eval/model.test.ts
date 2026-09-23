@@ -76,10 +76,12 @@ function validSequence(): SubstitutionSequence {
           { name: "length", value: 503, unit: "cm" },
         ],
         target: {
+          contractVersion: "1.0.0",
           selectorKind: "volume",
           nodeRefs: ["node-site-001"],
           geometryRefs: [{ kind: "polygon", ref: "geo-pit-outline-001" }],
           units: { linear: "m", angular: "rad" },
+          description: "the test pit area",
         },
       },
     ],
@@ -465,7 +467,7 @@ describe("HFX-302 model: the substitution sequence validator", () => {
     for (const target of [
       { ...base.target, nodeRefs: [] },
       { ...base.target, geometryRefs: [] },
-      { ...base.target, units: { linear: "m" } },
+      { ...base.target, units: { linear: "m", angular: "" } },
     ]) {
       const validation = validateSubstitutionSequence({
         ...validSequence(),
