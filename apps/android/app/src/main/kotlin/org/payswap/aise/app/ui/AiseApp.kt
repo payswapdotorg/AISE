@@ -90,7 +90,11 @@ fun AiseApp(container: AppContainer, modifier: Modifier = Modifier) {
                 )
             }
             composable(AppDestination.SETTINGS.route) {
-                SettingsScreen(modifier = Modifier.padding(innerPadding))
+                SettingsScreen(
+                    authClient = container.authClient,
+                    apiBaseUrl = container.apiBaseUrl,
+                    modifier = Modifier.padding(innerPadding),
+                )
             }
             composable(AppDestination.ABOUT.route) {
                 AboutScreen(modifier = Modifier.padding(innerPadding))
