@@ -125,9 +125,10 @@ export function ComposedSolutionBody({
           (version 1, empty draft). The recorded reference journey&apos;s generated BOQ
           (version 1) is supplied through the guarded BOQ seam — the pane renders its
           lines as pinned history of the same solution&apos;s version 1, keyed by the
-          contract&apos;s trace identities. The agent panel is honestly not connected in
-          this session (the compiler routes are the Lead&apos;s server-side wiring);
-          author the same operations through the direct-manipulation controls.
+          contract&apos;s trace identities. The assistant is LIVE in this session
+          (PROD-031: the HTTP solution-agent port, same-origin — natural-language
+          commands and direct manipulation flow through the SAME engine submission
+          path).
         </p>
       </Card>
 

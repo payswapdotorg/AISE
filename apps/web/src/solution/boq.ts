@@ -11,6 +11,12 @@
  * (`resolveOperationsForLine` / `resolveLinesForOperation` of
  * `@aise/solution-contract` trace.ts) — never a second trace semantics.
  *
+ * PROD-031 (the browser-safe cut): the resolvers import from the
+ * `@aise/solution-contract/browser` subpath — the crypto-free cut of the
+ * contract (the barrel re-exports the node:crypto-dependent identity
+ * derivations, which a plain-browser bundle externalizes) — so this seam
+ * is part of the browser mount's chunk graph.
+ *
  * GUARDED BEHAVIOR:
  *
  *  - no BOQ data in the case context → the honest "none available" pane
@@ -29,7 +35,7 @@ import {
   resolveOperationsForLine,
   type SolutionBoqLineTrace,
   type SolutionBoqTraceSet,
-} from "../../../../packages/solution-contract/src/index";
+} from "../../../../packages/solution-contract/src/browser";
 import type { SolutionWorkspaceState } from "./model";
 
 /* ------------------------------------------------------------------ */

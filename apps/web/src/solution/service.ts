@@ -4,11 +4,12 @@
  * The ONE server-facing port through which every workspace mutation and
  * inspection flows. It mirrors the request/response shapes of the backend
  * solution tool surface (PROD-022, `backend/api/src/solution/` — the
- * stateless deterministic `/v1/solutions/*` endpoints the Tech Lead mounts):
- * same field names, same JSON shapes, defined locally as STRUCTURAL MIRRORS
- * (the apps/web boundary discipline of `workspace/model.ts`: apps may not
- * import backend sources, so the wire shapes are mirrored, and a genuine
- * backend response satisfies these types as-is).
+ * stateless deterministic `/v1/solutions/*` endpoints the runtime entry
+ * mounts): same field names, same JSON shapes, defined locally as
+ * STRUCTURAL MIRRORS (the apps/web boundary discipline of
+ * `workspace/model.ts`: apps may not import backend sources, so the wire
+ * shapes are mirrored, and a genuine backend response satisfies these
+ * types as-is).
  *
  * TWO implementations ship with the module:
  *
@@ -21,10 +22,22 @@
  *     calls. Deterministic, offline, no clock of its own (instants are
  *     caller-injected per the engine's determinism pin).
  *  2. `createHttpSolutionService` — the same-origin HTTP binding over the
- *     backend routes (`POST /v1/solutions/step|validate|inspect|quantities`
- *     + the revision leg), for the Lead's production wiring. Fetch is
+ *     backend routes (`POST /v1/solutions/step|validate|inspect|quantities
+ *     |revise|baseline`), for the Lead's production wiring. Fetch is
  *     INJECTED (tests pass stubs; the browser passes the global) — the
  *     PROD-001 same-origin contract, no configurable origin.
+ *
+ * PROD-031 (the browser-safe cut): the HTTP binding now lives in its own
+ * crypto-free module (`./service-http`) and is re-exported here so every
+ * existing consumer keeps importing `./service` — the LOCAL binding's
+ * engine imports transitively reach `node:crypto` (the identity
+ * derivations), which a plain-browser bundle externalizes, so the
+ * browser mount's chunk graph imports `./service-http` only. The BASELINE
+ * LEG (`baseline`) is new with PROD-031: the workspace's
+ * `materializeBaselineState` call (the solution-creation baseline
+ * overlay) is crypto-dependent, so it routes through the service port
+ * too — the local binding calls the engine directly, the HTTP binding
+ * posts `POST /v1/solutions/baseline` (the runtime-mounted route).
  *
  * NO CLIENT-SIDE AUTHORITY: the workspace renders engine-computed states
  * only; every refusal here is the ENGINE's typed outcome (200-data, not a
@@ -49,7 +62,9 @@ import {
 import {
   applyOperation,
   deriveStateQuantities,
+  materializeBaselineState,
   reviseVersion,
+  steppedMaterializeClock,
   validateSolutionVersion,
   type BaselineGeometryResolver,
 } from "../../../../packages/solution-engine/src/index";
@@ -72,13 +87,17 @@ export interface StepServiceResult {
   readonly result: OperationApplicationResult;
 }
 
-/** The revision ("undo") leg — the engine's `reviseVersion` over HTTP. */
+/** The revision ("undo") leg — the engine's `reviseVersion` over HTTP.
+ *  The materialization clock crosses the wire as the SERIALIZABLE stepped
+ *  spec { base, stepMs } (a function cannot cross HTTP); the bindings
+ *  rebuild it through the engine's own `steppedMaterializeClock` — the
+ *  same numbers, never a second clock semantics. */
 export interface ReviseServiceInput {
   readonly version: SolutionVersion;
   readonly revertOperationId: string;
   readonly capabilityProfile?: OperationCapabilityProfile;
   readonly createdAt: string;
-  readonly materializeClock: (stateIndex: number) => string;
+  readonly materializeClock: Readonly<{ readonly base: string; readonly stepMs: number }>;
   readonly revisionProvenance: {
     readonly authoredBy: string;
     readonly reason: string;
@@ -134,6 +153,23 @@ export interface QuantitiesServiceResult {
   readonly inventory: StateQuantityInventory;
 }
 
+/** POST /v1/solutions/baseline (PROD-031) — the solution-creation baseline
+ *  overlay (layer 0): the engine's own input shape, the engine's
+ *  `ProposedState` output verbatim. Crypto-dependent client-side (the
+ *  state identity derivations), so the browser mount materializes it
+ *  through the service port — the backend engine executes it. */
+export interface BaselineServiceInput {
+  readonly solutionId: string;
+  readonly versionNumber: number;
+  readonly baselineRealityVersionId: string;
+  /** Caller-pinned deterministic materialization instant (ISO-8601 UTC). */
+  readonly materializedAt: string;
+}
+
+export interface BaselineServiceResult {
+  readonly state: ProposedState;
+}
+
 /* ------------------------------------------------------------------ */
 /* The port                                                            */
 /* ------------------------------------------------------------------ */
@@ -158,6 +194,9 @@ export interface SolutionServicePort {
   validate(input: ValidateServiceInput): Promise<ValidateServiceResult>;
   inspect(input: InspectServiceInput): Promise<InspectServiceResult>;
   quantities(input: QuantitiesServiceInput): Promise<QuantitiesServiceResult>;
+  /** The baseline overlay materialization (PROD-031) — the engine's
+   *  `materializeBaselineState` through the port. */
+  baseline(input: BaselineServiceInput): Promise<BaselineServiceResult>;
 }
 
 /* ------------------------------------------------------------------ */
@@ -208,7 +247,13 @@ export function createLocalSolutionService(
         revertOperationId: input.revertOperationId,
         capabilityProfile: input.capabilityProfile ?? REFERENCE_BUILDING_OPERATION_PROFILE,
         createdAt: input.createdAt,
-        materializeClock: input.materializeClock,
+        // The wire's SERIALIZABLE stepped spec, rebuilt through the ENGINE's
+        // own clock builder (the same numbers the workspace clock's
+        // materializeAt produces — never a second clock semantics).
+        materializeClock: steppedMaterializeClock(
+          Date.parse(input.materializeClock.base),
+          input.materializeClock.stepMs,
+        ),
         revisionProvenance: input.revisionProvenance,
         ...engineOptions,
       }),
@@ -245,6 +290,9 @@ export function createLocalSolutionService(
     quantities: async (input) => ({
       inventory: deriveStateQuantities(input.version, input.stateIndex),
     }),
+    baseline: async (input) => ({
+      state: materializeBaselineState(input),
+    }),
   };
 }
 
@@ -252,61 +300,11 @@ export function createLocalSolutionService(
 /* The HTTP binding (the Lead's production wiring)                      */
 /* ------------------------------------------------------------------ */
 
-/** A fetch-like transport (the browser global, or a test stub). */
-export type SolutionFetchLike = (
-  input: string,
-  init?: { readonly method?: string; readonly body?: string },
-) => Promise<{ readonly ok: boolean; readonly status: number; readonly text: () => Promise<string> }>;
-
-interface HttpSolutionServiceOptions {
-  /** INJECTED fetch (tests stub it; the browser passes the global). */
-  readonly fetchImpl: SolutionFetchLike;
-  /**
-   * Base path prefix of the solution routes (default `/v1/solutions`). The
-   * PROD-002 same-origin contract: requests are always same-origin relative
-   * paths — never an absolute URL, never another origin.
-   */
-  readonly basePath?: string;
-}
-
-async function postJson(
-  fetchImpl: SolutionFetchLike,
-  path: string,
-  body: unknown,
-): Promise<unknown> {
-  const response = await fetchImpl(path, { method: "POST", body: JSON.stringify(body) });
-  const text = await response.text();
-  if (!response.ok) {
-    throw new Error(`solution service ${path} answered HTTP ${response.status}: ${text}`);
-  }
-  return JSON.parse(text) as unknown;
-}
-
-/**
- * The same-origin HTTP binding over the backend solution routes
- * (`handleSolutionRequest` — the PROD-022 route factory the Tech Lead
- * mounts). Request/response bodies are the backend's own shapes verbatim.
- */
-export function createHttpSolutionService(
-  options: HttpSolutionServiceOptions,
-): SolutionServicePort {
-  const base = options.basePath ?? "/v1/solutions";
-  const fetchImpl = options.fetchImpl;
-  return {
-    descriptor: {
-      serviceId: "solution-service-http",
-      engineKind: "aise-solution-engine",
-      engineVersion: "1.0.0",
-    },
-    step: async (input) =>
-      postJson(fetchImpl, `${base}/step`, input) as Promise<StepServiceResult>,
-    revise: async (input) =>
-      postJson(fetchImpl, `${base}/revise`, input) as Promise<ReviseServiceResult>,
-    validate: async (input) =>
-      postJson(fetchImpl, `${base}/validate`, input) as Promise<ValidateServiceResult>,
-    inspect: async (input) =>
-      postJson(fetchImpl, `${base}/inspect`, input) as Promise<InspectServiceResult>,
-    quantities: async (input) =>
-      postJson(fetchImpl, `${base}/quantities`, input) as Promise<QuantitiesServiceResult>,
-  };
-}
+/* The HTTP binding lives in its own crypto-free module (./service-http —
+ * PROD-031's browser-safe cut: this module's local engine binding
+ * transitively imports node:crypto, which a plain-browser bundle
+ * externalizes) and is re-exported here so every existing consumer keeps
+ * importing `./service` with the same surface. */
+export { createHttpSolutionService } from "./service-http";
+export type { HttpSolutionServiceOptions } from "./service-http";
+export type { SolutionFetchLike } from "./service-http";

@@ -26,7 +26,14 @@ import type {
   SolutionVersion,
   TargetGeometryRef,
 } from "../../../../../packages/solution-contract/src/index";
-import { resolveNumericParameter } from "../../../../../packages/solution-engine/src/index";
+// PROD-031 (the browser-safe cut): `resolveNumericParameter` is imported
+// from the engine's OWN units module (the module that defines it) rather
+// than the engine barrel — the barrel re-exports the crypto-dependent
+// state/identity derivations (node:crypto at module scope), which a
+// plain-browser bundle externalizes, while `units.ts` is pure typed-unit
+// arithmetic. SAME function, SAME module it is defined in — never a
+// second unit semantics.
+import { resolveNumericParameter } from "../../../../../packages/solution-engine/src/units";
 
 /** A 3D world point in metres (x east, y north, z up). */
 export type Vec3 = readonly [number, number, number];
