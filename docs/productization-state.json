@@ -9,7 +9,7 @@
   "spec/governance/architecture-change-record-006.md"
  ],
  "technologySubstitutionContract": "spec/technology-substitution-contract.md",
- "lastReconciledAt": "2026-09-25T06:20:00Z",
+ "lastReconciledAt": "2026-09-25T07:05:00Z",
  "implementationCampaign": {
   "status": "complete",
   "workItemsFinalized": 41,
@@ -507,14 +507,16 @@
   },
   {
    "id": "PROD-033",
-   "status": "planned",
+   "status": "finalized",
    "dependencies": [
     "PROD-031",
     "PROD-032",
     "PROD-034"
    ],
    "workOrder": "docs/productization-closure-work-orders.md",
-   "note": "production journey proof W/M/X + Gates A-I + final-SHA deployment evidence + narrative reconciliation (issue #9 Worker C)"
+   "note": "production journey proof W/M/X + Gates A-I + final-SHA deployment evidence + narrative reconciliation (issue #9 Worker C)",
+   "mergedSha": "484bc26",
+   "verify": "5766/0 exact (standalone harness); Lead journey run 06:40Z: W 25/25 live-Chromium, M 19+1 BLOCKED_NO_KVM honest, X 13/13"
   },
   {
    "id": "PROD-034",
@@ -613,6 +615,17 @@
     "harvest": "direct sandbox harvest (25 files 0 fail; report message capacity-blocked, delivery independently verified)",
     "verify": "5766 pass / 0 fail (baseline 5677 + 89); boundaries 984 clean; typecheck+lint PASS; standalone runner RUNNER: PASS",
     "note": "geometry/validation technology substitution benchmark — provider-neutral adapter (fail-closed capability gate + canonical-boundary guard via PROD-029 projections), reference oracle + discretized reimplementation lanes, three-cell corpus all ten families (22/5/4), provider-removal historical replay, content-addressed goldens both lanes"
+   },
+   {
+    "id": "HFX-303",
+    "status": "finalized",
+    "mergedSha": "96a9a2e",
+    "mergedAt": "2026-09-25T07:05:00Z",
+    "workerChat": "7700fb4d-6a5c-468d-a157-c4b9f741ebe2",
+    "workerCommit": "9cc72b27cf26bb8e54221ca54b1dad5deea16904",
+    "harvest": "direct sandbox harvest (40 files 0 fail)",
+    "verify": "5859/0 (5766+93); boundaries 1017 clean; visual-eval RUNNER PASS; Lead real-user browser verification of the composed pane",
+    "note": "bounded visual-solution provider lane — visual-render port + reference/alternate/failing providers + viewer generated pane (bit-identity goldens) + swap/noninterference/fallback drills"
    }
   ]
  }
