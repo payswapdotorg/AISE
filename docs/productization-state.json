@@ -17,17 +17,17 @@
     "commit": "b9b031a85016ac50caba6cd66990707f7815b179"
   },
   "productization": {
-    "status": "not_ready",
-    "installable": "partial-plus",
+    "status": "ready",
+    "installable": "yes",
     "freeTierDeployed": "yes",
-    "deploymentStatus": "redis-backed-deployment; deployed session-stability walk passed (2026-09-20, PROD-011b finalized)",
-    "userFriendlyInterface": "partial",
+    "deploymentStatus": "final-SHA production deployment (dpl_9G5gsVbGzpbWGBewyQUE4QhgadFY, 2026-09-25); DEPLOYED: PASS 7/7; JOURNEY HARNESS: PASS against the deployed URL",
+    "userFriendlyInterface": "yes",
     "publicUrl": "https://aise-tan.vercel.app",
-    "vercelDeploymentId": "dpl_35T9rEJpH2BEyKCU5xUgReU1ghfv",
-    "deployedApplicationCommit": "eb953b2c6dde53711f1b7f536a0fe487e0929cf0",
-    "lastVerifiedCommit": "eb953b2",
+    "vercelDeploymentId": "dpl_9G5gsVbGzpbWGBewyQUE4QhgadFY",
+    "deployedApplicationCommit": "91f1b449d6ea5cafd6a4e58e8533fea8d24ed5b7",
+    "lastVerifiedCommit": "91f1b44",
     "finalGate": "docs/PRODUCTION-READINESS-GATE.md",
-    "lastReconciledAt": "2026-09-22T12:59:01Z"
+    "lastReconciledAt": "2026-09-25T08:23:01Z"
   },
   "execution": {
     "maxConcurrentWorkers": 3,
@@ -259,7 +259,7 @@
     },
     {
       "id": "PROD-015",
-      "status": "planned",
+      "status": "finalized",
       "dependencies": [
         "PROD-014",
         "PROD-030",
@@ -267,7 +267,17 @@
         "PROD-032",
         "PROD-033",
         "PROD-034"
-      ]
+      ],
+      "evidence": {
+        "finalSha": "91f1b449d6ea5cafd6a4e58e8533fea8d24ed5b7",
+        "finalizedAt": "2026-09-25T08:23:01Z",
+        "declaration": "docs/productization-evidence/PROD-015/README.md",
+        "deploy": "dpl_9G5gsVbGzpbWGBewyQUE4QhgadFY (Production, Ready) at https://aise-tan.vercel.app (alias re-pointed from the stale Sep-23 deployment)",
+        "verify": "5944/0 + boundaries 1035 clean + typecheck + lint + BUILD: PASS at the final SHA",
+        "deployedCheck": "DEPLOYED: PASS (7/7) at 2026-09-25T08:2xZ",
+        "journey": "JOURNEY HARNESS: PASS against the deployed URL (W 24/24 product steps + demolition identity exact; M 19+1 BLOCKED_NO_KVM honest; X 12/12; local-serve teardown rows N/A by structure)",
+        "gates": "A-I all PASS at the final SHA (Gate B closed by this run)"
+      }
     },
     {
       "id": "PROD-016",
