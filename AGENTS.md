@@ -10,6 +10,8 @@ AISE is implemented by replaceable coding workers under an independent Tech Lead
 - HFX-000, HFX-101, HFX-201, HFX-204, HFX-301, HFX-302, HFX-303 and HFX-401 are finalized.
 - The next user-facing hardening directive is docs/post-production-discoverability-and-device-validation-plan-2026-09-25.md.
 - A separate architect-authorized R&D track is active: docs/geometry-bim-technology-spike-2026-09-25.md, with GBIM-001/002/003 in issues #11/#12/#13 under parent #10.
+- The post-production hardening track is active: docs/post-production-discoverability-and-device-validation-plan-2026-09-25.md, with POST-001/002/003 in issues #15/#16/#17 under parent #14, followed by POST-004/005/006 in #18/#19/#20.
+- Track R (post-production evidence freshness/device validation) is the immediate orchestration priority. Track G (Geometry/BIM) is separately authorized and must not consume capacity in a way that bypasses the release/evidence gates.
 - The Geometry/BIM spike is exploratory evidence collection. It does not reopen PROD-015, create a new authority, select a default provider, or authorize an external-platform fork.
 - Always resolve the current branch HEAD directly from the repository before dispatching or accepting work.
 
@@ -175,7 +177,7 @@ The baseline product must not require paid GPU inference or a particular LLM/rec
 
 A newly spawned worker must be able to identify exactly one authorized Work Item and its required evidence from the repository alone.
 
-A newly spawned Tech Lead must be able to identify the current frontier, three-worker waves, protected surfaces, technology substitution rules, post-production directives, Geometry/BIM G0 wave, external verification limits and final readiness gate without chat history.
+A newly spawned Tech Lead must be able to identify the current frontier, Track R and Track G worker issues, protected surfaces, technology substitution rules, post-production directives, Geometry/BIM G0 wave, external verification limits and final readiness gate without chat history.
 
 
 ## Post-readiness R&D rule
