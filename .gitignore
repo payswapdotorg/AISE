@@ -26,3 +26,5 @@ data/
 # deploy beacon Vercel's zero-config/functions scan needs PRE-build; every
 # build regenerates it deterministically (tools/build.ts).
 .vercel/
+.vercel
+.env*
