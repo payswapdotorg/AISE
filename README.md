@@ -35,6 +35,8 @@ AISE therefore does not pretend that every phone can produce the same quality of
 
 The implementation campaign and productization declaration are complete. AISE is **PRODUCT-READY for the exact PROD-015 declaration SHA** recorded in `docs/productization-state.json`, with the public deployment at [`https://aise-tan.vercel.app`](https://aise-tan.vercel.app). Main has advanced after that declaration, so the current branch tip must not be described as deployed until the exact current SHA is deployed and replayed.
 
+The successor orchestration handoff is [docs/TECH-LEAD-HANDOFF.md](docs/TECH-LEAD-HANDOFF.md). The immediate post-readiness worker program is tracked by GitHub issue #14; the separately authorized Geometry/BIM R&D program is tracked by issue #10.
+
 The productization program is governed by:
 
 - `docs/productization-roadmap.md`
