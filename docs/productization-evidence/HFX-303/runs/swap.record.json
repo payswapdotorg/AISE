@@ -1,0 +1,418 @@
+{
+  "cases": [
+    {
+      "alternate": {
+        "artifactId": "12b94800f63bec091d9788189e6e87338dc863187134eea09bef6c6dc68334d3",
+        "canonicalComparison": {
+          "canonicalShapeCount": 4,
+          "excessRegionCount": 1,
+          "renderedCanonicalShapeCount": 4,
+          "statement": "every canonical shape of the plan projection is drawn verbatim in the blueprint style; the labeled context-sketch margin is the only content beyond deterministic geometry"
+        },
+        "content": {
+          "mediaType": "image/svg+xml",
+          "svg": "<svg height=\"26.24\" viewBox=\"-10 -10 200 46.24\" width=\"190\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect data-region-id=\"alt-ground\" fill=\"#0f172a\" height=\"46.24\" width=\"200\" x=\"-10\" y=\"-10\"/>\n<text data-region-id=\"alt-legend-title\" fill=\"#e0f2fe\" font-family=\"ui-monospace, monospace\" font-size=\"11\" font-weight=\"700\" x=\"10\" y=\"22\">BLUEPRINT ALTERNATE</text>\n<text data-region-id=\"alt-legend-banner\" fill=\"#e0f2fe\" font-family=\"ui-monospace, monospace\" font-size=\"10\" x=\"10\" y=\"38\">HYPOTHETICAL VISUAL —</text>\n<text data-region-id=\"alt-legend-banner-2\" fill=\"#e0f2fe\" font-family=\"ui-monospace, monospace\" font-size=\"10\" x=\"10\" y=\"52\">NOT ENGINEERING GEOMETRY</text>\n<line data-region-id=\"alt-legend-rule\" stroke=\"#1e293b\" stroke-width=\"1\" x1=\"10\" x2=\"140\" y1=\"62\" y2=\"62\"/>\n<text data-region-id=\"alt-legend-observed\" fill=\"#a5f3fc\" font-family=\"ui-monospace, monospace\" font-size=\"10\" x=\"10\" y=\"78\">solid: observed geometry</text>\n<text data-region-id=\"alt-legend-proposed\" fill=\"#67e8f9\" font-family=\"ui-monospace, monospace\" font-size=\"10\" x=\"10\" y=\"92\">dotted: proposed change</text>\n<text data-region-id=\"alt-legend-margin\" fill=\"#fbbf24\" font-family=\"ui-monospace, monospace\" font-size=\"10\" x=\"10\" y=\"106\">framed: sketch margin</text>\n<g data-region-id=\"alt-drawing\" transform=\"translate(182,10.24)\">\n<polygon data-node-id=\"node-wall-002\" fill=\"none\" points=\"0,0 5,0 5,0 0,0\" stroke=\"#a5f3fc\" stroke-width=\"1.25\"/>\n<polygon data-node-id=\"geo-wall-line-003\" fill=\"none\" points=\"0,0 5,0 5,-0.24 0,-0.24\" stroke=\"#a5f3fc\" stroke-width=\"1.25\"/>\n<polygon data-node-id=\"node-slab-003\" fill=\"none\" points=\"0,4 5,4 5,0 0,0\" stroke=\"#a5f3fc\" stroke-width=\"1.25\"/>\n<polygon data-node-id=\"node-site-001\" fill=\"none\" points=\"-2,1 8,1 8,6 -2,6\" stroke=\"#a5f3fc\" stroke-width=\"1.25\"/>\n<rect data-region-id=\"alt-context-sketch-margin\" fill=\"none\" height=\"26.24\" stroke=\"#fbbf24\" stroke-dasharray=\"1 4\" stroke-width=\"2\" width=\"30\" x=\"-12\" y=\"-10.24\"/>\n</g>\n</svg>\n"
+        },
+        "kind": "visual-artifact",
+        "labels": [
+          {
+            "basis": "beyond-deterministic-geometry",
+            "detail": "an illustrative surroundings hypothesis framed around the canonical extents — no deterministic record describes this context; it is presentation only and implies no quantity, material or validation",
+            "label": "GENERATED — context sketch margin (beyond deterministic geometry)",
+            "regionId": "alt-context-sketch-margin",
+            "regionKind": "hypothesized-context"
+          }
+        ],
+        "provenance": {
+          "appliedOperationIds": [],
+          "laneStatement": "presentation-only hypothesis rendering — a generated visual is never engineering geometry authority and can never change quantities, validation or canonical Solution Graph state",
+          "provider": {
+            "descriptorDigest": "7e3483798dd1efced279c7b930c56258390173eac8e5baaa332378a7f57f6147",
+            "providerId": "visual-blueprint-alternate",
+            "technologyVersion": "1.0.0-inrepo-v1"
+          },
+          "solutionId": "solution-demo-001",
+          "stateContentDigest": "01057ab2b0111d0eea3661fa064b34a87acdf0f7043338a003267ef794b670f6",
+          "stateId": "ce0f5133d8a0097d7a53766687cf145c43448ac54a1b9e01c66bbe498a0e0dd2",
+          "stateIndex": 0,
+          "versionRef": "v1"
+        },
+        "schemaVersion": "visual-artifact/1",
+        "visualClass": "elevation-hypothesis"
+      },
+      "caseId": "demo-world-baseline",
+      "comparisonPoints": [
+        {
+          "baselineValue": "c9f04852a00070e5be34f4ecd2fe16f4d10f2aa31c4386e4bb9ebf2f380011f1",
+          "detail": "the serialized Solution Graph STATE must be byte-identical before and after both renders",
+          "equal": true,
+          "pointKind": "canonical-state-bytes",
+          "subjectId": "demo-world-baseline",
+          "substitutedValue": "c9f04852a00070e5be34f4ecd2fe16f4d10f2aa31c4386e4bb9ebf2f380011f1"
+        },
+        {
+          "baselineValue": "02377a9a18e9f228ab686b2a0d27cb01f53f5118cf378b9f801c01872e63c997",
+          "detail": "the serialized SOLUTION VERSION must be byte-identical before and after both renders",
+          "equal": true,
+          "pointKind": "canonical-version-bytes",
+          "subjectId": "demo-world-baseline",
+          "substitutedValue": "02377a9a18e9f228ab686b2a0d27cb01f53f5118cf378b9f801c01872e63c997"
+        },
+        {
+          "baselineValue": "f5290f42655e4f0c0e5767a8355600c798713e29253b46b2ca0bcf45df7e23d9",
+          "detail": "the canonical deterministic PLAN projection must be identical — swap changed presentation only",
+          "equal": true,
+          "pointKind": "canonical-projection-bytes",
+          "subjectId": "demo-world-baseline#plan",
+          "substitutedValue": "f5290f42655e4f0c0e5767a8355600c798713e29253b46b2ca0bcf45df7e23d9"
+        },
+        {
+          "baselineValue": "e166d0d050351502e8305286cdff23416a0c4187166278a819df99c8aa5be775",
+          "detail": "the canonical deterministic AXONOMETRIC projection must be identical — swap changed presentation only",
+          "equal": true,
+          "pointKind": "canonical-projection-bytes",
+          "subjectId": "demo-world-baseline#axonometric",
+          "substitutedValue": "e166d0d050351502e8305286cdff23416a0c4187166278a819df99c8aa5be775"
+        },
+        {
+          "baselineValue": "4734cdf9c468d252bd6b7e71705386d67a6e59df7fe96ed6228f415e8bbd9a80",
+          "detail": "the two providers' RENDERINGS must DIFFER — provider replacement changed the presentation",
+          "equal": false,
+          "pointKind": "presentation-bytes",
+          "subjectId": "demo-world-baseline",
+          "substitutedValue": "576457a2fd645dcd070300bddc4f5683f1615d86b1c5fa06ebae1c1cbb0180c6"
+        }
+      ],
+      "reference": {
+        "artifactId": "d77b8b632fb7f79682bd0fb62da645d31411fd3e5c9f477f5d98daf9f7d88d70",
+        "canonicalComparison": {
+          "canonicalShapeCount": 4,
+          "excessRegionCount": 1,
+          "renderedCanonicalShapeCount": 4,
+          "statement": "every canonical shape of the plan projection is drawn verbatim; the labeled hypothesized-finish band is the only content beyond deterministic geometry"
+        },
+        "content": {
+          "mediaType": "image/svg+xml",
+          "svg": "<svg height=\"56.24\" viewBox=\"-14 -38.24 34 56.24\" width=\"34\" xmlns=\"http://www.w3.org/2000/svg\">\n<defs>\n<pattern data-region-id=\"reference-hatch-pattern\" height=\"6\" patternUnits=\"userSpaceOnUse\" width=\"6\">\n<path d=\"M0 6 L6 0\" stroke=\"#b45309\" stroke-width=\"1\"/>\n</pattern>\n</defs>\n<rect data-region-id=\"reference-ground\" fill=\"#fffdf5\" height=\"56.24\" width=\"34\" x=\"-14\" y=\"-38.24\"/>\n<text data-region-id=\"reference-banner\" fill=\"#92400e\" font-family=\"system-ui, sans-serif\" font-size=\"12\" font-weight=\"600\" text-anchor=\"start\" x=\"-2\" y=\"-22.24\">REFERENCE HYPOTHESIS RENDER — NOT ENGINEERING GEOMETRY</text>\n<polygon data-node-id=\"node-wall-002\" fill=\"none\" points=\"0,0 5,0 5,0 0,0\" stroke=\"#292524\" stroke-width=\"1.5\"/>\n<polygon data-node-id=\"geo-wall-line-003\" fill=\"none\" points=\"0,0 5,0 5,-0.24 0,-0.24\" stroke=\"#292524\" stroke-width=\"1.5\"/>\n<polygon data-node-id=\"node-slab-003\" fill=\"none\" points=\"0,4 5,4 5,0 0,0\" stroke=\"#292524\" stroke-width=\"1.5\"/>\n<polygon data-node-id=\"node-site-001\" fill=\"none\" points=\"-2,1 8,1 8,6 -2,6\" stroke=\"#292524\" stroke-width=\"1.5\"/>\n<rect data-region-id=\"reference-hypothesized-finish-band\" fill=\"url(#reference-hatch)\" height=\"4.7424\" stroke=\"#b45309\" stroke-dasharray=\"2 3\" stroke-width=\"1\" width=\"7.6\" x=\"-0.8\" y=\"0.5088\"/>\n</svg>\n"
+        },
+        "kind": "visual-artifact",
+        "labels": [
+          {
+            "basis": "beyond-deterministic-geometry",
+            "detail": "an illustrative finish hypothesis drawn inside the canonical extents — no deterministic record describes this zone; it is presentation only and implies no quantity, material or validation",
+            "label": "GENERATED — hypothesized finish zone (beyond deterministic geometry)",
+            "regionId": "reference-hypothesized-finish-band",
+            "regionKind": "hypothesized-finish"
+          }
+        ],
+        "provenance": {
+          "appliedOperationIds": [],
+          "laneStatement": "presentation-only hypothesis rendering — a generated visual is never engineering geometry authority and can never change quantities, validation or canonical Solution Graph state",
+          "provider": {
+            "descriptorDigest": "52c0a229df84fd1552bd941bef47d73795a5497e5c132fe5819f9731156e9b5a",
+            "providerId": "visual-hypothesis-reference",
+            "technologyVersion": "1.0.0-inrepo-v1"
+          },
+          "solutionId": "solution-demo-001",
+          "stateContentDigest": "01057ab2b0111d0eea3661fa064b34a87acdf0f7043338a003267ef794b670f6",
+          "stateId": "ce0f5133d8a0097d7a53766687cf145c43448ac54a1b9e01c66bbe498a0e0dd2",
+          "stateIndex": 0,
+          "versionRef": "v1"
+        },
+        "schemaVersion": "visual-artifact/1",
+        "visualClass": "elevation-hypothesis"
+      },
+      "stateIdentity": {
+        "appliedOperationIds": [],
+        "solutionId": "solution-demo-001",
+        "stateContentDigest": "01057ab2b0111d0eea3661fa064b34a87acdf0f7043338a003267ef794b670f6",
+        "stateId": "ce0f5133d8a0097d7a53766687cf145c43448ac54a1b9e01c66bbe498a0e0dd2",
+        "stateIndex": 0,
+        "versionRef": "v1"
+      },
+      "verdict": "substitution-proven"
+    },
+    {
+      "alternate": {
+        "artifactId": "82925931f95446afe6ed4ee60ac6b41a8ce4440d5d8afb411878dbddd346ff18",
+        "canonicalComparison": {
+          "canonicalShapeCount": 8,
+          "excessRegionCount": 1,
+          "renderedCanonicalShapeCount": 8,
+          "statement": "every canonical shape of the plan projection is drawn verbatim in the blueprint style; the labeled context-sketch margin is the only content beyond deterministic geometry"
+        },
+        "content": {
+          "mediaType": "image/svg+xml",
+          "svg": "<svg height=\"26.24\" viewBox=\"-10 -10 200 46.24\" width=\"190\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect data-region-id=\"alt-ground\" fill=\"#0f172a\" height=\"46.24\" width=\"200\" x=\"-10\" y=\"-10\"/>\n<text data-region-id=\"alt-legend-title\" fill=\"#e0f2fe\" font-family=\"ui-monospace, monospace\" font-size=\"11\" font-weight=\"700\" x=\"10\" y=\"22\">BLUEPRINT ALTERNATE</text>\n<text data-region-id=\"alt-legend-banner\" fill=\"#e0f2fe\" font-family=\"ui-monospace, monospace\" font-size=\"10\" x=\"10\" y=\"38\">HYPOTHETICAL VISUAL —</text>\n<text data-region-id=\"alt-legend-banner-2\" fill=\"#e0f2fe\" font-family=\"ui-monospace, monospace\" font-size=\"10\" x=\"10\" y=\"52\">NOT ENGINEERING GEOMETRY</text>\n<line data-region-id=\"alt-legend-rule\" stroke=\"#1e293b\" stroke-width=\"1\" x1=\"10\" x2=\"140\" y1=\"62\" y2=\"62\"/>\n<text data-region-id=\"alt-legend-observed\" fill=\"#a5f3fc\" font-family=\"ui-monospace, monospace\" font-size=\"10\" x=\"10\" y=\"78\">solid: observed geometry</text>\n<text data-region-id=\"alt-legend-proposed\" fill=\"#67e8f9\" font-family=\"ui-monospace, monospace\" font-size=\"10\" x=\"10\" y=\"92\">dotted: proposed change</text>\n<text data-region-id=\"alt-legend-margin\" fill=\"#fbbf24\" font-family=\"ui-monospace, monospace\" font-size=\"10\" x=\"10\" y=\"106\">framed: sketch margin</text>\n<g data-region-id=\"alt-drawing\" transform=\"translate(182,10.24)\">\n<polygon data-node-id=\"node-wall-002\" fill=\"none\" points=\"0,0 5,0 5,0 0,0\" stroke=\"#a5f3fc\" stroke-width=\"1.25\"/>\n<polygon data-node-id=\"geo-wall-line-003\" fill=\"none\" points=\"0,0 5,0 5,-0.24 0,-0.24\" stroke=\"#a5f3fc\" stroke-width=\"1.25\"/>\n<polygon data-node-id=\"node-slab-003\" fill=\"none\" points=\"0,4 5,4 5,0 0,0\" stroke=\"#a5f3fc\" stroke-width=\"1.25\"/>\n<polygon data-node-id=\"node-site-001\" fill=\"none\" points=\"-2,1 8,1 8,6 -2,6\" stroke=\"#a5f3fc\" stroke-width=\"1.25\"/>\n<polygon data-node-id=\"78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9\" fill=\"none\" points=\"0,0 5,0 5,0 0,0\" stroke=\"#67e8f9\" stroke-width=\"1.25\" stroke-dasharray=\"1 3\"/>\n<polygon data-node-id=\"281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea\" fill=\"none\" points=\"0,0 5,0 5,0.1 0,0.1\" stroke=\"#67e8f9\" stroke-width=\"1.25\" stroke-dasharray=\"1 3\"/>\n<polygon data-node-id=\"281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea#1\" fill=\"none\" points=\"0,0 5,0 5,0.1 0,0.1\" stroke=\"#67e8f9\" stroke-width=\"1.25\" stroke-dasharray=\"1 3\"/>\n<polygon data-node-id=\"84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e\" fill=\"none\" points=\"0,0.03 5,0.03 5,0.03 0,0.03\" stroke=\"#67e8f9\" stroke-width=\"1.25\" stroke-dasharray=\"1 3\"/>\n<rect data-region-id=\"alt-context-sketch-margin\" fill=\"none\" height=\"26.24\" stroke=\"#fbbf24\" stroke-dasharray=\"1 4\" stroke-width=\"2\" width=\"30\" x=\"-12\" y=\"-10.24\"/>\n</g>\n</svg>\n"
+        },
+        "kind": "visual-artifact",
+        "labels": [
+          {
+            "basis": "beyond-deterministic-geometry",
+            "detail": "an illustrative surroundings hypothesis framed around the canonical extents — no deterministic record describes this context; it is presentation only and implies no quantity, material or validation",
+            "label": "GENERATED — context sketch margin (beyond deterministic geometry)",
+            "regionId": "alt-context-sketch-margin",
+            "regionKind": "hypothesized-context"
+          }
+        ],
+        "provenance": {
+          "appliedOperationIds": [
+            "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+            "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+            "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+          ],
+          "laneStatement": "presentation-only hypothesis rendering — a generated visual is never engineering geometry authority and can never change quantities, validation or canonical Solution Graph state",
+          "provider": {
+            "descriptorDigest": "7e3483798dd1efced279c7b930c56258390173eac8e5baaa332378a7f57f6147",
+            "providerId": "visual-blueprint-alternate",
+            "technologyVersion": "1.0.0-inrepo-v1"
+          },
+          "solutionId": "solution-demo-001",
+          "stateContentDigest": "36eecf9f9d3d74281d195c5e0c197ced355d70b7f244c5513d92fa102a0f3e5b",
+          "stateId": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8",
+          "stateIndex": 3,
+          "versionRef": "v1"
+        },
+        "schemaVersion": "visual-artifact/1",
+        "visualClass": "elevation-hypothesis"
+      },
+      "caseId": "demo-world-multi-operation",
+      "comparisonPoints": [
+        {
+          "baselineValue": "c57d7e4daaee25939e2a8f254d04794f6b5882dd980ca54e51599f0811d5def2",
+          "detail": "the serialized Solution Graph STATE must be byte-identical before and after both renders",
+          "equal": true,
+          "pointKind": "canonical-state-bytes",
+          "subjectId": "demo-world-multi-operation",
+          "substitutedValue": "c57d7e4daaee25939e2a8f254d04794f6b5882dd980ca54e51599f0811d5def2"
+        },
+        {
+          "baselineValue": "02377a9a18e9f228ab686b2a0d27cb01f53f5118cf378b9f801c01872e63c997",
+          "detail": "the serialized SOLUTION VERSION must be byte-identical before and after both renders",
+          "equal": true,
+          "pointKind": "canonical-version-bytes",
+          "subjectId": "demo-world-multi-operation",
+          "substitutedValue": "02377a9a18e9f228ab686b2a0d27cb01f53f5118cf378b9f801c01872e63c997"
+        },
+        {
+          "baselineValue": "9f5ce19f2891c81bf4aa5cc7b216f94cd777acac8e17284f811f34d14f7f7500",
+          "detail": "the canonical deterministic PLAN projection must be identical — swap changed presentation only",
+          "equal": true,
+          "pointKind": "canonical-projection-bytes",
+          "subjectId": "demo-world-multi-operation#plan",
+          "substitutedValue": "9f5ce19f2891c81bf4aa5cc7b216f94cd777acac8e17284f811f34d14f7f7500"
+        },
+        {
+          "baselineValue": "c042e75c0d518032bb32b46cbd5c9cd4563758939edaf80e0c23990cb8f1f0d7",
+          "detail": "the canonical deterministic AXONOMETRIC projection must be identical — swap changed presentation only",
+          "equal": true,
+          "pointKind": "canonical-projection-bytes",
+          "subjectId": "demo-world-multi-operation#axonometric",
+          "substitutedValue": "c042e75c0d518032bb32b46cbd5c9cd4563758939edaf80e0c23990cb8f1f0d7"
+        },
+        {
+          "baselineValue": "8e943f3c16a910c2be822a3f625401dee5457e576f1c03b5fd78d5d7a700cb79",
+          "detail": "the two providers' RENDERINGS must DIFFER — provider replacement changed the presentation",
+          "equal": false,
+          "pointKind": "presentation-bytes",
+          "subjectId": "demo-world-multi-operation",
+          "substitutedValue": "17d01e8a8e8149bbb837c9e95f43c4d21765072354385b74b5f7d99dbd34974a"
+        }
+      ],
+      "reference": {
+        "artifactId": "a15c7c18de6ddd10b1cba929ffefdaa2d6cffae1271a4a8bc7b28e580f87ca75",
+        "canonicalComparison": {
+          "canonicalShapeCount": 8,
+          "excessRegionCount": 1,
+          "renderedCanonicalShapeCount": 8,
+          "statement": "every canonical shape of the plan projection is drawn verbatim; the labeled hypothesized-finish band is the only content beyond deterministic geometry"
+        },
+        "content": {
+          "mediaType": "image/svg+xml",
+          "svg": "<svg height=\"56.24\" viewBox=\"-14 -38.24 34 56.24\" width=\"34\" xmlns=\"http://www.w3.org/2000/svg\">\n<defs>\n<pattern data-region-id=\"reference-hatch-pattern\" height=\"6\" patternUnits=\"userSpaceOnUse\" width=\"6\">\n<path d=\"M0 6 L6 0\" stroke=\"#b45309\" stroke-width=\"1\"/>\n</pattern>\n</defs>\n<rect data-region-id=\"reference-ground\" fill=\"#fffdf5\" height=\"56.24\" width=\"34\" x=\"-14\" y=\"-38.24\"/>\n<text data-region-id=\"reference-banner\" fill=\"#92400e\" font-family=\"system-ui, sans-serif\" font-size=\"12\" font-weight=\"600\" text-anchor=\"start\" x=\"-2\" y=\"-22.24\">REFERENCE HYPOTHESIS RENDER — NOT ENGINEERING GEOMETRY</text>\n<polygon data-node-id=\"node-wall-002\" fill=\"none\" points=\"0,0 5,0 5,0 0,0\" stroke=\"#292524\" stroke-width=\"1.5\"/>\n<polygon data-node-id=\"geo-wall-line-003\" fill=\"none\" points=\"0,0 5,0 5,-0.24 0,-0.24\" stroke=\"#292524\" stroke-width=\"1.5\"/>\n<polygon data-node-id=\"node-slab-003\" fill=\"none\" points=\"0,4 5,4 5,0 0,0\" stroke=\"#292524\" stroke-width=\"1.5\"/>\n<polygon data-node-id=\"node-site-001\" fill=\"none\" points=\"-2,1 8,1 8,6 -2,6\" stroke=\"#292524\" stroke-width=\"1.5\"/>\n<polygon data-node-id=\"78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9\" fill=\"none\" points=\"0,0 5,0 5,0 0,0\" stroke=\"#57534e\" stroke-width=\"1.5\" stroke-dasharray=\"4 2\"/>\n<polygon data-node-id=\"281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea\" fill=\"none\" points=\"0,0 5,0 5,0.1 0,0.1\" stroke=\"#57534e\" stroke-width=\"1.5\" stroke-dasharray=\"4 2\"/>\n<polygon data-node-id=\"281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea#1\" fill=\"none\" points=\"0,0 5,0 5,0.1 0,0.1\" stroke=\"#57534e\" stroke-width=\"1.5\" stroke-dasharray=\"4 2\"/>\n<polygon data-node-id=\"84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e\" fill=\"none\" points=\"0,0.03 5,0.03 5,0.03 0,0.03\" stroke=\"#57534e\" stroke-width=\"1.5\" stroke-dasharray=\"4 2\"/>\n<rect data-region-id=\"reference-hypothesized-finish-band\" fill=\"url(#reference-hatch)\" height=\"4.7424\" stroke=\"#b45309\" stroke-dasharray=\"2 3\" stroke-width=\"1\" width=\"7.6\" x=\"-0.8\" y=\"0.5088\"/>\n</svg>\n"
+        },
+        "kind": "visual-artifact",
+        "labels": [
+          {
+            "basis": "beyond-deterministic-geometry",
+            "detail": "an illustrative finish hypothesis drawn inside the canonical extents — no deterministic record describes this zone; it is presentation only and implies no quantity, material or validation",
+            "label": "GENERATED — hypothesized finish zone (beyond deterministic geometry)",
+            "regionId": "reference-hypothesized-finish-band",
+            "regionKind": "hypothesized-finish"
+          }
+        ],
+        "provenance": {
+          "appliedOperationIds": [
+            "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+            "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+            "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+          ],
+          "laneStatement": "presentation-only hypothesis rendering — a generated visual is never engineering geometry authority and can never change quantities, validation or canonical Solution Graph state",
+          "provider": {
+            "descriptorDigest": "52c0a229df84fd1552bd941bef47d73795a5497e5c132fe5819f9731156e9b5a",
+            "providerId": "visual-hypothesis-reference",
+            "technologyVersion": "1.0.0-inrepo-v1"
+          },
+          "solutionId": "solution-demo-001",
+          "stateContentDigest": "36eecf9f9d3d74281d195c5e0c197ced355d70b7f244c5513d92fa102a0f3e5b",
+          "stateId": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8",
+          "stateIndex": 3,
+          "versionRef": "v1"
+        },
+        "schemaVersion": "visual-artifact/1",
+        "visualClass": "elevation-hypothesis"
+      },
+      "stateIdentity": {
+        "appliedOperationIds": [
+          "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+          "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+          "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+        ],
+        "solutionId": "solution-demo-001",
+        "stateContentDigest": "36eecf9f9d3d74281d195c5e0c197ced355d70b7f244c5513d92fa102a0f3e5b",
+        "stateId": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8",
+        "stateIndex": 3,
+        "versionRef": "v1"
+      },
+      "verdict": "substitution-proven"
+    },
+    {
+      "alternate": {
+        "artifactId": "b85ee186654255bf714af9d91de2ab00f808038e74019c9e547a7f1a423fc110",
+        "canonicalComparison": {
+          "canonicalShapeCount": 0,
+          "excessRegionCount": 0,
+          "renderedCanonicalShapeCount": 0,
+          "statement": "no canonical shapes arrived — the alternate renders its honest empty notice and no illustrative margin"
+        },
+        "content": {
+          "mediaType": "image/svg+xml",
+          "svg": "<svg height=\"130\" viewBox=\"0 0 340 130\" width=\"340\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect data-region-id=\"alt-ground\" fill=\"#0f172a\" height=\"130\" width=\"340\" x=\"0\" y=\"0\"/>\n<text data-region-id=\"alt-empty-note\" fill=\"#a5f3fc\" font-family=\"ui-monospace, monospace\" font-size=\"12\" text-anchor=\"middle\" x=\"170\" y=\"65\">EMPTY STATE — no deterministic geometry, nothing sketched</text>\n</svg>\n"
+        },
+        "kind": "visual-artifact",
+        "labels": [],
+        "provenance": {
+          "appliedOperationIds": [
+            "414da68efc997447ec7a28968ee4ceae0d1caceaeafcf967d03d9949dfaacb96"
+          ],
+          "laneStatement": "presentation-only hypothesis rendering — a generated visual is never engineering geometry authority and can never change quantities, validation or canonical Solution Graph state",
+          "provider": {
+            "descriptorDigest": "7e3483798dd1efced279c7b930c56258390173eac8e5baaa332378a7f57f6147",
+            "providerId": "visual-blueprint-alternate",
+            "technologyVersion": "1.0.0-inrepo-v1"
+          },
+          "solutionId": "solution-visual-edge-001",
+          "stateContentDigest": "cf4e05a43f3b17be2e0ea6aa93790ee4855c525c38e3fc5232df6f9da542d752",
+          "stateId": "cb21959cfde2a53d03ce62d29798061a30ae3e8d21b8721bab1b3475e26037f4",
+          "stateIndex": 1,
+          "versionRef": "v1"
+        },
+        "schemaVersion": "visual-artifact/1",
+        "visualClass": "context-sketch"
+      },
+      "caseId": "edge-empty-projection",
+      "comparisonPoints": [
+        {
+          "baselineValue": "bf72df8f166fde35c0a150dc6ec6e244710639c59f6f630c5861e37cb802643d",
+          "detail": "the serialized Solution Graph STATE must be byte-identical before and after both renders",
+          "equal": true,
+          "pointKind": "canonical-state-bytes",
+          "subjectId": "edge-empty-projection",
+          "substitutedValue": "bf72df8f166fde35c0a150dc6ec6e244710639c59f6f630c5861e37cb802643d"
+        },
+        {
+          "baselineValue": "90ac3ea2fa671415d79220e5dab7aa7ffb11d4ae347f6f984f2cdd7f6dbb6db8",
+          "detail": "the serialized SOLUTION VERSION must be byte-identical before and after both renders",
+          "equal": true,
+          "pointKind": "canonical-version-bytes",
+          "subjectId": "edge-empty-projection",
+          "substitutedValue": "90ac3ea2fa671415d79220e5dab7aa7ffb11d4ae347f6f984f2cdd7f6dbb6db8"
+        },
+        {
+          "baselineValue": "cb0cae9911e23438bccb9b9f6811381f250f6e038ebe061aee04b745c4855540",
+          "detail": "the canonical deterministic PLAN projection must be identical — swap changed presentation only",
+          "equal": true,
+          "pointKind": "canonical-projection-bytes",
+          "subjectId": "edge-empty-projection#plan",
+          "substitutedValue": "cb0cae9911e23438bccb9b9f6811381f250f6e038ebe061aee04b745c4855540"
+        },
+        {
+          "baselineValue": "31872b664a740195bdcae5e256eb5feb51b8d8749eeb723d9c6863e2a48858a4",
+          "detail": "the canonical deterministic AXONOMETRIC projection must be identical — swap changed presentation only",
+          "equal": true,
+          "pointKind": "canonical-projection-bytes",
+          "subjectId": "edge-empty-projection#axonometric",
+          "substitutedValue": "31872b664a740195bdcae5e256eb5feb51b8d8749eeb723d9c6863e2a48858a4"
+        },
+        {
+          "baselineValue": "e8af11ccb91a3930922d76d53dbb9bf04a31aeef18efb1df9428f328370b538b",
+          "detail": "the two providers' RENDERINGS must DIFFER — provider replacement changed the presentation",
+          "equal": false,
+          "pointKind": "presentation-bytes",
+          "subjectId": "edge-empty-projection",
+          "substitutedValue": "30ab89ad041cf2a0d83b9dde558b71d1837ad52ba593f4eb4ef4c4962db493bd"
+        }
+      ],
+      "reference": {
+        "artifactId": "931a14708f8654ea07fd134cf9a5b8cb3282c714f04920c97ce11ca7fdc39721",
+        "canonicalComparison": {
+          "canonicalShapeCount": 0,
+          "excessRegionCount": 0,
+          "renderedCanonicalShapeCount": 0,
+          "statement": "the canonical projections carry no shapes — the visual renders the honest empty notice and no illustrative additions"
+        },
+        "content": {
+          "mediaType": "image/svg+xml",
+          "svg": "<svg height=\"120\" viewBox=\"-12 -12 344 144\" width=\"320\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect data-region-id=\"reference-ground\" fill=\"#fffdf5\" height=\"144\" width=\"344\" x=\"-12\" y=\"-12\"/>\n<text data-region-id=\"reference-empty-note\" fill=\"#1c1917\" font-family=\"system-ui, sans-serif\" font-size=\"13\" text-anchor=\"middle\" x=\"160\" y=\"60\">No deterministic geometry in this state — nothing is hypothesized.</text>\n</svg>\n"
+        },
+        "kind": "visual-artifact",
+        "labels": [],
+        "provenance": {
+          "appliedOperationIds": [
+            "414da68efc997447ec7a28968ee4ceae0d1caceaeafcf967d03d9949dfaacb96"
+          ],
+          "laneStatement": "presentation-only hypothesis rendering — a generated visual is never engineering geometry authority and can never change quantities, validation or canonical Solution Graph state",
+          "provider": {
+            "descriptorDigest": "52c0a229df84fd1552bd941bef47d73795a5497e5c132fe5819f9731156e9b5a",
+            "providerId": "visual-hypothesis-reference",
+            "technologyVersion": "1.0.0-inrepo-v1"
+          },
+          "solutionId": "solution-visual-edge-001",
+          "stateContentDigest": "cf4e05a43f3b17be2e0ea6aa93790ee4855c525c38e3fc5232df6f9da542d752",
+          "stateId": "cb21959cfde2a53d03ce62d29798061a30ae3e8d21b8721bab1b3475e26037f4",
+          "stateIndex": 1,
+          "versionRef": "v1"
+        },
+        "schemaVersion": "visual-artifact/1",
+        "visualClass": "context-sketch"
+      },
+      "stateIdentity": {
+        "appliedOperationIds": [
+          "414da68efc997447ec7a28968ee4ceae0d1caceaeafcf967d03d9949dfaacb96"
+        ],
+        "solutionId": "solution-visual-edge-001",
+        "stateContentDigest": "cf4e05a43f3b17be2e0ea6aa93790ee4855c525c38e3fc5232df6f9da542d752",
+        "stateId": "cb21959cfde2a53d03ce62d29798061a30ae3e8d21b8721bab1b3475e26037f4",
+        "stateIndex": 1,
+        "versionRef": "v1"
+      },
+      "verdict": "substitution-proven"
+    }
+  ],
+  "committedAt": "2026-09-25T06:40:44Z",
+  "comparisonPointKinds": [
+    "canonical-state-bytes",
+    "canonical-version-bytes",
+    "canonical-projection-bytes",
+    "presentation-bytes"
+  ],
+  "generatedBy": "bun tools/visual-eval/run.ts swap",
+  "overall": "PASS",
+  "recordKind": "hfx-303-visual-swap-trace",
+  "repoSha": "484bc2672b46d57ed774d17a0a8fe5ffc5d56d37",
+  "schemaVersion": "hfx-303-visual-eval/1",
+  "totals": {
+    "substitution-proven": 3,
+    "total": 3
+  }
+}

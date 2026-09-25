@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AISE intervention viewer — scenario-office-refit</title>
+<style>main.panes,header,footer,.layer-nav,.step-strip{max-width:64rem;margin:0 auto;padding:0 1rem}
+.panes{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.pane,.layer-nav,.step-strip,header,footer{font:14px/1.45 system-ui,sans-serif;color:#1c1917}
+.pane{border:1px solid #d6d3d1;border-radius:6px;padding:.75rem;background:#fff}
+.pane svg{width:100%;height:auto;display:block}
+.pane-note,.scenario-pin,.viewer-footer{color:#57534e;font-size:12px}
+.pane-empty{color:#57534e;font-style:italic}
+.omissions,.layer-strip,.step-list,.boq-removals{list-style:none;padding-left:0;margin:.25rem 0}
+.omissions li,.boq-removals li{padding:.15rem 0;border-bottom:1px dotted #e7e5e4;color:#57534e}
+.boq-removals li{color:#9a3412}
+.layer-nav{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin:.5rem auto}
+.nav-link{border:1px solid #d6d3d1;border-radius:6px;padding:.25rem .6rem;text-decoration:none;color:#1c1917}
+.nav-link[data-disabled=true]{color:#a8a29e;border-style:dashed;cursor:default}
+.layer-strip{display:flex;gap:.5rem;flex-wrap:wrap}
+.layer-strip li{border:1px solid #e7e5e4;border-radius:4px;padding:.1rem .4rem;font-size:12px;color:#57534e}
+.layer-strip li[data-current=true]{border-color:#c2410c;color:#c2410c;font-weight:600}
+.step-list li{padding:.15rem 0;border-bottom:1px dotted #e7e5e4}
+table.boq{border-collapse:collapse;width:100%;font-size:13px}
+table.boq th,table.boq td{border:1px solid #e7e5e4;padding:.2rem .4rem;text-align:left;vertical-align:top}
+table.boq th{background:#f5f5f4}
+table.boq tr[data-selected=true] td{background:#fff7ed}
+.approval-banner{border:1px solid #d97706;background:#fffbeb;border-radius:6px;padding:.5rem .75rem;margin:.5rem 1rem}
+code{background:#f5f5f4;padding:0 .25rem;border-radius:3px}
+</style>
+</head>
+<body class="aise-intervention-viewer" data-generator="aise-intervention-viewer/1.0" data-scenario-id="scenario-office-refit" data-project-id="project-zurich-hq" data-baseline-version-id="v001" data-state-id="e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0" data-state-index="0" data-state-count="4" data-applied-step-ids="" data-scenario-status="draft">
+<header class="viewer-header">
+<h1>AISE intervention viewer</h1>
+<p class="scenario-pin">Scenario <code>scenario-office-refit</code> — Office refit — fire upgrade, partition and demolition — status <code>draft</code> — pinned to baseline <code>v001</code> — layer 0 of 3 (state <code>e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0</code>). All panes are PROPOSED content.</p>
+</header>
+<nav class="layer-nav" aria-label="Layer navigation" data-state-count="4" data-current-state-index="0" data-current-state-id="e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0">
+<span class="nav-link" data-nav-direction="previous" data-disabled="true" aria-disabled="true">← Previous — at first layer</span>
+<ol class="layer-strip">
+<li data-state-index="0" data-state-id="e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0" data-current="true">Layer 0 — <code>e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0</code></li>
+<li data-state-index="1" data-state-id="e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1">Layer 1 — <code>e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1</code></li>
+<li data-state-index="2" data-state-id="e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2">Layer 2 — <code>e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2e2</code></li>
+<li data-state-index="3" data-state-id="e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3">Layer 3 — <code>e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3</code></li>
+</ol>
+<a class="nav-link" data-nav-direction="next" data-target-state-index="1" data-target-state-id="e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1" href="?state=1">Next — layer 1 →</a>
+</nav>
+<main class="panes">
+<section class="pane" id="pane-3d" aria-label="3D wireframe of the proposed state" data-scenario-id="scenario-office-refit" data-baseline-version-id="v001" data-state-id="e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0" data-state-index="0" data-applied-step-ids="">
+<h2>3D — proposed state wireframe</h2>
+<p class="pane-note">Orthographic axonometric wireframe of the layer's plane boundary polygons (azimuth 45°, elevation 30°). PROPOSED geometry only — full 3D rendering is out of scope; this is an engineering wireframe.</p>
+<svg height="4.332309" viewBox="-2.375878 -1.532166 5.600285 4.332309" width="5.600285" xmlns="http://www.w3.org/2000/svg">
+<polygon data-node-id="door-101" data-origin="baseline" fill="none" points="-1.767767,1.237437 -1.131371,1.555635 -1.131371,-0.263018 -1.767767,-0.581216" stroke="#000000" stroke-width="1.5"/>
+<polygon data-node-id="floor-slab-101" data-origin="baseline" fill="none" points="0,0 2.969848,1.484924 0.848528,2.545584 -2.12132,1.06066" stroke="#000000" stroke-width="1.5"/>
+<polygon data-node-id="wall-east" data-origin="baseline" fill="none" points="2.969848,1.484924 0.848528,2.545584 0.848528,0.207316 2.969848,-0.853344" stroke="#000000" stroke-width="1.5"/>
+<polygon data-node-id="wall-north" data-origin="baseline" fill="none" points="-2.12132,1.06066 0.848528,2.545584 0.848528,0.207316 -2.12132,-1.277608" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<ul class="omissions">
+<li data-omitted-node-id="ceiling-1" data-reason="boundary-absent">ceiling-1 — boundary-absent</li>
+<li data-omitted-node-id="column-mesh-1" data-reason="geometry-kind-not-projectable">column-mesh-1 — geometry-kind-not-projectable</li>
+<li data-omitted-node-id="paint-1" data-reason="geometry-ref-absent">paint-1 — geometry-ref-absent</li>
+<li data-omitted-node-id="railing-1" data-reason="geometry-unresolved">railing-1 — geometry-unresolved</li>
+<li data-omitted-node-id="skirting-1" data-reason="degenerate-projection">skirting-1 — degenerate-projection</li>
+</ul>
+</section>
+<section class="pane" id="pane-2d" aria-label="2D plan of the proposed state" data-scenario-id="scenario-office-refit" data-baseline-version-id="v001" data-state-id="e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0" data-state-index="0" data-applied-step-ids="">
+<h2>2D — proposed state plan</h2>
+<p class="pane-note">Plan (XY) projection of the layer's boundary polygons — the height axis is dropped by the plan projection. PROPOSED geometry only; removed nodes are absent from this layer (see the BOQ pane's proposed removals).</p>
+<svg height="3.42" viewBox="-0.21 -0.21 4.62 3.42" width="4.62" xmlns="http://www.w3.org/2000/svg">
+<polygon data-node-id="door-101" data-origin="baseline" fill="none" points="0.5,3 1.4,3 1.4,3 0.5,3" stroke="#000000" stroke-width="1.5"/>
+<polygon data-node-id="floor-slab-101" data-origin="baseline" fill="none" points="0,0 4.2,0 4.2,3 0,3" stroke="#000000" stroke-width="1.5"/>
+<polygon data-node-id="wall-east" data-origin="baseline" fill="none" points="4.2,0 4.2,3 4.2,3 4.2,0" stroke="#000000" stroke-width="1.5"/>
+<polygon data-node-id="wall-north" data-origin="baseline" fill="none" points="0,3 4.2,3 4.2,3 0,3" stroke="#000000" stroke-width="1.5"/>
+</svg>
+<ul class="omissions">
+<li data-omitted-node-id="ceiling-1" data-reason="boundary-absent">ceiling-1 — boundary-absent</li>
+<li data-omitted-node-id="column-mesh-1" data-reason="geometry-kind-not-projectable">column-mesh-1 — geometry-kind-not-projectable</li>
+<li data-omitted-node-id="paint-1" data-reason="geometry-ref-absent">paint-1 — geometry-ref-absent</li>
+<li data-omitted-node-id="railing-1" data-reason="geometry-unresolved">railing-1 — geometry-unresolved</li>
+<li data-omitted-node-id="skirting-1" data-reason="degenerate-projection">skirting-1 — degenerate-projection</li>
+</ul>
+</section>
+<section class="pane" id="pane-boq" aria-label="BOQ of the proposed state" data-scenario-id="scenario-office-refit" data-baseline-version-id="v001" data-state-id="e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0" data-state-index="0" data-applied-step-ids="">
+<h2>BOQ — proposed quantities</h2>
+<p class="pane-note">The layer's PROPOSED property assertions, verbatim (every value PROPOSED — the scenario's epistemic seal). Quantity and cost impact computation is out of scope here (AISE-028); no number is derived, converted or summed by this viewer.</p>
+<table class="boq">
+<thead><tr><th>Node</th><th>Kind</th><th>Origin</th><th>Proposed quantities (verbatim)</th><th>Steps</th></tr></thead>
+<tbody>
+<tr data-node-id="building-a" data-origin="baseline"><td>building-a</td><td>building</td><td>baseline</td><td>no proposed quantities</td><td>—</td></tr>
+<tr data-node-id="ceiling-1" data-origin="baseline"><td>ceiling-1</td><td>element</td><td>baseline</td><td>semantic.kind = ceiling (PROPOSED)</td><td>—</td></tr>
+<tr data-node-id="column-mesh-1" data-origin="baseline"><td>column-mesh-1</td><td>element</td><td>baseline</td><td>semantic.kind = column (PROPOSED)</td><td>—</td></tr>
+<tr data-node-id="door-101" data-origin="baseline"><td>door-101</td><td>opening</td><td>baseline</td><td>width = 0.9 m (PROPOSED)</td><td>—</td></tr>
+<tr data-node-id="floor-slab-101" data-origin="baseline"><td>floor-slab-101</td><td>element</td><td>baseline</td><td>thickness = 260 mm (PROPOSED)</td><td>—</td></tr>
+<tr data-node-id="paint-1" data-origin="baseline"><td>paint-1</td><td>element</td><td>baseline</td><td>semantic.kind = paint (PROPOSED)</td><td>—</td></tr>
+<tr data-node-id="project-zurich-hq" data-origin="baseline"><td>project-zurich-hq</td><td>project</td><td>baseline</td><td>no proposed quantities</td><td>—</td></tr>
+<tr data-node-id="railing-1" data-origin="baseline"><td>railing-1</td><td>element</td><td>baseline</td><td>semantic.kind = railing (PROPOSED)</td><td>—</td></tr>
+<tr data-node-id="site-north" data-origin="baseline"><td>site-north</td><td>site</td><td>baseline</td><td>no proposed quantities</td><td>—</td></tr>
+<tr data-node-id="skirting-1" data-origin="baseline"><td>skirting-1</td><td>element</td><td>baseline</td><td>semantic.kind = skirting (PROPOSED)</td><td>—</td></tr>
+<tr data-node-id="space-office-101" data-origin="baseline"><td>space-office-101</td><td>space</td><td>baseline</td><td>area = 42.5 m2 (PROPOSED)</td><td>—</td></tr>
+<tr data-node-id="storey-01" data-origin="baseline"><td>storey-01</td><td>storey</td><td>baseline</td><td>level = 4.2 m (PROPOSED)</td><td>—</td></tr>
+<tr data-node-id="wall-east" data-origin="baseline"><td>wall-east</td><td>element</td><td>baseline</td><td>thickness = 180 mm (PROPOSED)</td><td>—</td></tr>
+<tr data-node-id="wall-north" data-origin="baseline"><td>wall-north</td><td>element</td><td>baseline</td><td>thickness = 240 mm (PROPOSED); fireRating = REI60 (PROPOSED)</td><td>—</td></tr>
+</tbody>
+</table>
+</section>
+</main>
+<section class="step-strip" id="step-strip" aria-label="Applied steps" data-state-id="e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0" data-scenario-id="scenario-office-refit" data-applied-step-ids="">
+<h2>Applied steps (1..0)</h2>
+<ol class="step-list">
+<li class="empty">No steps applied — layer 0 is the pure baseline overlay (all content PROPOSED, origin baseline).</li>
+</ol>
+</section>
+<footer class="viewer-footer">Read-only, synchronized projection of ONE proposed intervention state — the 3D, 2D and BOQ panes are driven by the same state id. The viewer holds no authority: it never fetches, never materializes states, never records steps and never mutates the Reality Graph or the scenario record. States are PROPOSED until execution evidence is recorded. Generator aise-intervention-viewer/1.0.</footer>
+</body>
+</html>

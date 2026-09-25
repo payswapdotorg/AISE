@@ -1,0 +1,21 @@
+{
+  "name": "@aise/visual-render",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE bounded visual-solution provider lane (HFX-303): the provider-neutral visual-rendering PORT where image/3D-generation technologies (Apple SHARP, TRELLIS.2 and future occupants) render solution states for inspection/presentation ONLY — never engineering geometry authority. Generated visuals are presentation: they can never change quantities, validation or canonical Solution Graph state (proven by tests); every artifact carries provenance binding the exact solution/state revision plus the provider profile; provider swap changes presentation only; missing/failed generation falls back to the canonical deterministic 2D/3D views; generated details beyond deterministic geometry are labeled. Evidenced with in-repo deterministic providers (reference + alternate + failing fixture) — no external model, no network, no new dependencies.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./corpus": "./src/corpus.ts",
+    "./lane": "./src/lane.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/provider-registry": "workspace:*",
+    "@aise/shared-contracts": "workspace:*",
+    "@aise/solution-contract": "workspace:*",
+    "@aise/solution-engine": "workspace:*"
+  }
+}
