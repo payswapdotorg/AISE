@@ -649,5 +649,40 @@
         "note": "provider scorecard, promotion and rollback gate — ten-gate closed vocabulary with evidence pointers, evaluatePromotion the sole approved-decision constructor (strong benchmark + failed mandatory gate → refusal naming every failed gate, no override), rollback replay interpretability (44 records), per-layer checklist, promotion-vocabulary mapping onto the control-plane machine; HFX lane COMPLETE"
       }
     ]
+  },
+  "followOnPrograms": {
+    "postProductionHardening": {
+      "status": "active",
+      "authority": "docs/post-production-discoverability-and-device-validation-plan-2026-09-25.md",
+      "parentIssue": 14,
+      "waves": {
+        "R0": [
+          "#15 POST-001",
+          "#16 POST-002",
+          "#17 POST-003"
+        ],
+        "R1": [
+          "#18 POST-004",
+          "#19 POST-005",
+          "#20 POST-006"
+        ],
+        "R2": [
+          "Tech Lead final exact-SHA W/M/X replay and reconciliation"
+        ]
+      }
+    },
+    "geometryBimRAndD": {
+      "status": "active",
+      "exploratory": true,
+      "authority": "docs/geometry-bim-technology-spike-2026-09-25.md",
+      "parentIssue": 10,
+      "waveG0": [
+        "#11 GBIM-001",
+        "#12 GBIM-002",
+        "#13 GBIM-003"
+      ],
+      "forkAuthorization": false,
+      "defaultProviderSelection": false
+    }
   }
 }
