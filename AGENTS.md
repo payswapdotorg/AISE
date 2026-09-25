@@ -2,6 +2,17 @@
 
 AISE is implemented by replaceable coding workers under an independent Tech Lead/Architect. The repository is the sole durable source of implementation truth. No worker may require prior conversation history.
 
+## CURRENT STATE — 2026-09-25
+
+- The original 41-item implementation campaign is complete.
+- PROD-001 through PROD-034 are finalized.
+- PROD-015 is finalized and declared product readiness for its exact recorded final SHA; later commits require fresh deployment/replay evidence.
+- HFX-000, HFX-101, HFX-201, HFX-204, HFX-301, HFX-302, HFX-303 and HFX-401 are finalized.
+- The next user-facing hardening directive is docs/post-production-discoverability-and-device-validation-plan-2026-09-25.md.
+- A separate architect-authorized R&D track is active: docs/geometry-bim-technology-spike-2026-09-25.md, with GBIM-001/002/003 in issues #11/#12/#13 under parent #10.
+- The Geometry/BIM spike is exploratory evidence collection. It does not reopen PROD-015, create a new authority, select a default provider, or authorize an external-platform fork.
+- Always resolve the current branch HEAD directly from the repository before dispatching or accepting work.
+
 ## Mandatory reading order
 
 1. `README.md`
@@ -154,7 +165,7 @@ Every worker must report Work Item ID, exact base/head SHA, protected surfaces, 
 
 ## Productization and readiness
 
-The original 41-item implementation campaign is complete. Productization now extends through PROD-029. Do not reopen AISE-001…041 for polish unless a governed finding demonstrates a real architectural defect.
+The original 41-item implementation campaign is complete and productization has reached the PROD-015 declaration gate. Do not reopen AISE-001…041 or the finalized productization items for polish unless a governed finding demonstrates a real architectural defect. Post-readiness work is separately governed by its current charter.
 
 `docs/PRODUCTION-READINESS-GATE.md` is binding. Only PROD-015 may declare PRODUCT-READY after all product, adapter, layered-solution and technology-substitution evidence passes.
 
@@ -164,7 +175,7 @@ The baseline product must not require paid GPU inference or a particular LLM/rec
 
 A newly spawned worker must be able to identify exactly one authorized Work Item and its required evidence from the repository alone.
 
-A newly spawned Tech Lead must be able to identify the current frontier, three-worker waves, protected surfaces, technology substitution rules, external verification limits and final readiness gate without chat history.
+A newly spawned Tech Lead must be able to identify the current frontier, three-worker waves, protected surfaces, technology substitution rules, post-production directives, Geometry/BIM G0 wave, external verification limits and final readiness gate without chat history.
 
 
 ## Post-readiness R&D rule
