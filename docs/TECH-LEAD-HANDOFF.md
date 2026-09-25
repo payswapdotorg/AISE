@@ -90,7 +90,7 @@ claim.
 
 This section supersedes all older frontier/deployment statements later in this handoff.
 
-Current main at this handoff refresh: **aa12474a80a999ec6655cd62756b2594cffe4053**
+Current main: **resolve from the live default-branch HEAD before every dispatch; the SHA printed here is intentionally not authoritative**
 
 Productization:
 - **PROD-001 … PROD-034: ✅ finalized**
@@ -101,7 +101,7 @@ Productization:
 - declared deployment: **dpl_9G5gsVbGzpbWGBewyQUE4QhgadFY**
 - declared deployment SHA: **91f1b449d6ea5cafd6a4e58e8533fea8d24ed5b7**
 
-Main has advanced after the declaration and now also contains the Geometry/BIM R&D charter and execution material. Do not claim the current tip is deployed until the current exact SHA is independently deployed and replayed.
+Main has advanced after the declaration and now contains the post-production and Geometry/BIM R&D material. Do not claim the current tip is deployed until the current exact SHA is independently deployed and replayed.
 
 The successor Tech Lead must now execute:
 `docs/post-production-discoverability-and-device-validation-plan-2026-09-25.md`
