@@ -108,6 +108,22 @@ The successor Tech Lead must now execute:
 
 The plan is the authoritative follow-on implementation directive for three workers. It is not permission to weaken PROD-015 or the frozen architecture.
 
+A separate architect-authorized strategic R&D track is now active:
+`docs/geometry-bim-technology-spike-2026-09-25.md`
+with work orders in:
+`docs/geometry-bim-spike-work-orders-2026-09-25.md`
+and common acceptance in:
+`docs/geometry-bim-spike-scorecard-2026-09-25.md`
+
+The G0 geometry/BIM wave is exactly three workers:
+- GBIM-001 — exact geometry kernel: OCCT + CadQuery/OCP + FreeCAD.
+- GBIM-002 — IFC/OpenBIM: IfcOpenShell + IFC + Bonsai/Blender.
+- GBIM-003 — browser spatial UX: Three.js + That Open/web-ifc + Atelier-derived Spatial Studio.
+
+GitHub execution issue: #10, with worker issues #11, #12 and #13.
+
+This R&D track does not alter PROD-015 meaning, does not promote a provider, and does not authorize a fork. It must use the technology-substitution contract and independently reproduced evidence.
+
 ## Architecture records and mandatory technology rule
 
 Read:
@@ -358,3 +374,5 @@ The post-simulation plan in docs/post-simulation-implementation-and-deployment-p
 
 
 The 30-day sprint calendar in docs/30-day-productization-sprint-plan-2026-09-21.md is the day-by-day dispatch plan. It is subordinate to machine-state eligibility: a day may not authorize a dependency that is still planned, and the Tech Lead must reflow later days after any accepted merge or blocker.
+
+Post-readiness R&D is separately governed by its own charter. The geometry/BIM spike is exploratory evidence collection, not a product-readiness gate and not a permission to fork an external platform.
