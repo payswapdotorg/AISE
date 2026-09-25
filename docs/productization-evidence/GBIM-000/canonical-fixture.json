@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "GBIM-000-building-001",
+  "domain": "building",
+  "units": "SI",
+  "canonicalAuthority": "AISE",
+  "geometry": {
+    "room": {
+      "id": "room-001",
+      "length_m": 8,
+      "width_m": 6,
+      "height_m": 3
+    },
+    "wall": {
+      "id": "wall-001",
+      "thickness_m": 0.2,
+      "host": "room-001"
+    },
+    "doorOpening": {
+      "id": "opening-door-001",
+      "hostWall": "wall-001",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "sill_m": 0
+    },
+    "windowOpening": {
+      "id": "opening-window-001",
+      "hostWall": "wall-001",
+      "width_m": 1.2,
+      "height_m": 1.2,
+      "sill_m": 0.9
+    },
+    "column": {
+      "id": "column-001",
+      "width_m": 0.3,
+      "depth_m": 0.3
+    },
+    "slab": {
+      "id": "slab-001",
+      "thickness_m": 0.2
+    },
+    "footing": {
+      "id": "footing-001",
+      "width_m": 0.4,
+      "depth_m": 0.4,
+      "height_m": 0.3
+    },
+    "beam": {
+      "id": "beam-001",
+      "width_m": 0.25,
+      "depth_m": 0.4
+    },
+    "partition": {
+      "id": "partition-001",
+      "thickness_m": 0.15
+    },
+    "roof": {
+      "id": "roof-001",
+      "type": "plane"
+    }
+  },
+  "operations": [
+    {
+      "id": "op-001",
+      "type": "create-wall",
+      "target": "wall-001"
+    },
+    {
+      "id": "op-002",
+      "type": "create-opening",
+      "target": "opening-door-001",
+      "host": "wall-001"
+    },
+    {
+      "id": "op-003",
+      "type": "create-door",
+      "target": "opening-door-001"
+    },
+    {
+      "id": "op-004",
+      "type": "create-window",
+      "target": "opening-window-001"
+    },
+    {
+      "id": "op-005",
+      "type": "create-column",
+      "target": "column-001"
+    },
+    {
+      "id": "op-006",
+      "type": "create-footing",
+      "target": "footing-001"
+    },
+    {
+      "id": "op-007",
+      "type": "create-slab",
+      "target": "slab-001"
+    },
+    {
+      "id": "op-008",
+      "type": "create-beam",
+      "target": "beam-001"
+    },
+    {
+      "id": "op-009",
+      "type": "create-partition",
+      "target": "partition-001"
+    },
+    {
+      "id": "op-010",
+      "type": "revise-opening",
+      "target": "opening-window-001",
+      "changes": {
+        "width_m": 1.5,
+        "height_m": 1.2
+      }
+    }
+  ],
+  "invariants": [
+    "All dimensions are finite and strictly positive unless an operation explicitly permits zero.",
+    "All dimensions crossing the provider boundary are expressed in SI units.",
+    "Every operation has stable AISE-owned operation identity independent of provider IDs.",
+    "Every door/window opening references an existing host wall.",
+    "Invalid operations fail closed and may not create canonical proposed state.",
+    "Provider-specific object, mesh and topology handles do not cross the canonical AISE contract.",
+    "Surface-area, volume and quantity differences are recorded exactly and compared using scenario-declared tolerances only.",
+    "Rendering-only differences do not alter operation identity, quantities or validation.",
+    "The fixture is replayable with deterministic inputs and recorded provider provenance."
+  ],
+  "negativeCases": [
+    {
+      "id": "neg-001",
+      "kind": "impossible-wall-thickness",
+      "change": {
+        "wallThickness_m": 8.1
+      }
+    },
+    {
+      "id": "neg-002",
+      "kind": "opening-outside-host-wall",
+      "change": {
+        "openingHost": "wall-missing"
+      }
+    },
+    {
+      "id": "neg-003",
+      "kind": "negative-dimension",
+      "change": {
+        "width_m": -0.5
+      }
+    },
+    {
+      "id": "neg-004",
+      "kind": "disconnected-footing",
+      "change": {
+        "supportRelation": "none"
+      }
+    },
+    {
+      "id": "neg-005",
+      "kind": "duplicate-operation-identity",
+      "change": {
+        "operationId": "op-001"
+      }
+    },
+    {
+      "id": "neg-006",
+      "kind": "unsupported-operation",
+      "change": {
+        "type": "make-portal"
+      }
+    },
+    {
+      "id": "neg-007",
+      "kind": "malformed-provider-response",
+      "change": {
+        "unknownField": true
+      }
+    }
+  ]
+}
