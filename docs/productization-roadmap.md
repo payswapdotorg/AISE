@@ -8,6 +8,26 @@ This roadmap is intentionally separate from `spec/work-items.md`. The 41 AISE wo
 
 The repository records the post-implementation architecture correction that **browser, mobile and desktop are adapters over one shared AISE product/domain core** and ACR-005's **interactive engineering solution workflow**. No client becomes a second product or engineering authority.
 
+## CURRENT STATE OVERRIDE — 2026-09-25
+
+The productization program has completed.
+
+- **PROD-001 … PROD-034: ✅ finalized**
+- **PROD-015: ✅ finalized**
+- **HFX-000, HFX-101, HFX-201, HFX-204, HFX-301, HFX-302, HFX-303, HFX-401: ✅ finalized**
+- Current machine state: `productization.status = "ready"`
+- Final declared deployment: `https://aise-tan.vercel.app`, deployment `dpl_9G5gsVbGzpbWGBewyQUE4QhgadFY`
+- PROD-015's declared final deployment SHA: `91f1b449d6ea5cafd6a4e58e8533fea8d24ed5b7`
+- Current main has subsequently advanced to `d231287f0a1a90521d74be8cccea4c196736f286`.
+
+Therefore this roadmap's original pre-readiness paragraphs and waves are historical. The next implementation program is the **post-production hardening plan**:
+
+`docs/post-production-discoverability-and-device-validation-plan-2026-09-25.md`
+
+That plan covers the simulation findings: task-first vocabulary cleanup, explicit web↔Android task handoff, BOQ import/revision selection, missing-evidence→capture bridges, progressive intervention stages, specialist-detail disclosure, physical Android validation, and exact-current-SHA deployment/replay.
+
+**Release freshness rule:** the PROD-015 declaration is evidence for its stated final SHA. It must not be silently applied to a later main SHA. The post-production plan therefore begins with current-tip verification and redeployment.
+
 ## Three product promises
 
 AISE may be declared product-ready only when all three are true:
