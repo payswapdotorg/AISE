@@ -33,7 +33,7 @@ AISE therefore does not pretend that every phone can produce the same quality of
 
 **Implementation campaign: complete — 41/41 governed v2 Work Items finalized.**
 
-The implementation layer is complete, but the repository is in a **post-implementation productization phase**. A provisional free-tier deployment has been evidenced at [`https://aise-tan.vercel.app`](https://aise-tan.vercel.app), but AISE is **not yet product-ready**. The latest evidenced deployed application commit is recorded in `docs/productization-state.json`; later repository changes do not imply that the public deployment contains those changes.
+The implementation campaign and productization declaration are complete. AISE is **PRODUCT-READY for the exact PROD-015 declaration SHA** recorded in `docs/productization-state.json`, with the public deployment at [`https://aise-tan.vercel.app`](https://aise-tan.vercel.app). Main has advanced after that declaration, so the current branch tip must not be described as deployed until the exact current SHA is deployed and replayed.
 
 The productization program is governed by:
 
@@ -45,7 +45,7 @@ The productization program is governed by:
 - `docs/productization-state.json`
 - `docs/TECH-LEAD-HANDOFF.md`
 
-Only `PROD-015` may change the productization declaration to PRODUCT-READY.
+Only `PROD-015` may declare PRODUCT-READY. Post-readiness hardening and R&D do not weaken or reopen that declaration.
 
 ## Product promises
 
