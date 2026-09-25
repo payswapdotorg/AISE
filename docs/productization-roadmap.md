@@ -26,6 +26,12 @@ Therefore this roadmap's original pre-readiness paragraphs and waves are histori
 
 That plan covers the simulation findings: task-first vocabulary cleanup, explicit web↔Android task handoff, BOQ import/revision selection, missing-evidence→capture bridges, progressive intervention stages, specialist-detail disclosure, physical Android validation, and exact-current-SHA deployment/replay.
 
+A separate post-readiness **Geometry / BIM technology spike** is now authorized by
+`docs/geometry-bim-technology-spike-2026-09-25.md`. It is deliberately outside the PROD-015
+readiness declaration. The spike compares exact geometry, IFC/OpenBIM and browser spatial
+technologies behind AISE provider boundaries and includes the Atelier-derived Spatial Studio
+interaction proof. It must not be treated as a provider-selection or fork mandate.
+
 **Release freshness rule:** the PROD-015 declaration is evidence for its stated final SHA. It must not be silently applied to a later main SHA. The post-production plan therefore begins with current-tip verification and redeployment.
 
 ## Three product promises
@@ -366,3 +372,24 @@ AISE should differentiate through the continuity of evidence → engineering und
 - exact commit SHA and environment/configuration fingerprint.
 
 No worker narrative alone can satisfy the gate.
+
+
+## Post-readiness geometry / BIM R&D
+
+The current geometry strategy is **adapt before fork**. The repository does not adopt Blender,
+Bonsai, FreeCAD, OpenCASCADE, OpenSCAD or another external platform as a new AISE authority.
+
+The authorized G0 work is:
+- GBIM-001 — exact geometry kernel spike.
+- GBIM-002 — IFC/OpenBIM spike.
+- GBIM-003 — browser spatial UX + Atelier proof.
+
+Canonical charter: `docs/geometry-bim-technology-spike-2026-09-25.md`.
+Work orders: `docs/geometry-bim-spike-work-orders-2026-09-25.md`.
+Scorecard: `docs/geometry-bim-spike-scorecard-2026-09-25.md`.
+GitHub orchestration: #10 with #11/#12/#13.
+
+The spike is evidence collection only. A subsequent implementation recommendation must pass the
+technology-substitution contract, preserve AISE authority/provenance/uncertainty, and state
+whether the next action is adapter implementation, a new shared geometry contract Work Item,
+an Architecture Change Record, or deferment.
