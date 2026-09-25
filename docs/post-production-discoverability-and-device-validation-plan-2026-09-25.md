@@ -1,5 +1,22 @@
 # AISE — Post-Production Discoverability & Device Validation Implementation Plan
 
+## CURRENT EXECUTION OVERRIDE — 2026-09-25
+
+This plan is the governing post-production hardening document, but its original baseline section is historical.
+
+- PROD-001 … PROD-034 are finalized.
+- PROD-015 is finalized; its declaration applies to final SHA 91f1b449d6ea5cafd6a4e58e8533fea8d24ed5b7.
+- Productization state is ready.
+- Current main has advanced after the declaration; resolve live HEAD before every deployment/evidence decision.
+- Parent orchestration issue: #14 POST-000.
+- R0 workers: #15 POST-001, #16 POST-002, #17 POST-003.
+- R1 workers: #18 POST-004, #19 POST-005, #20 POST-006.
+- Final authority for successor orchestration: docs/TECH-LEAD-HANDOFF.md.
+
+Do not interpret the historical baseline below as the current HEAD or as evidence that the current tip is deployed.
+
+---
+
 **Date:** 2026-09-25  
 **Audience:** successor Tech Lead / Architect + up to 3 concurrent workers  
 **Authority:** repository state + `docs/PRODUCTION-READINESS-GATE.md`  
