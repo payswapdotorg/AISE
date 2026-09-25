@@ -20,6 +20,19 @@ Heavy reconstruction/GPU providers are optional accelerators. They must never be
 
 ## Productization work items
 
+Machine truth (reconciled by PROD-033 from `docs/productization-state.json`
+through PROD-034): **PROD-001 through PROD-034 are finalized EXCEPT
+PROD-015 and PROD-033** — PROD-033 (the production journey proof W/M/X, the
+Gates A–I evidence assembly and the narrative reconciliation) is delivered by
+this item, and **PROD-015 remains the only declaration gate**. On the HFX
+lane, HFX-000/101/201/204/301 are finalized and **HFX-302 is in flight**.
+The remaining path is exactly: PROD-033 → the Lead's final deployment of the
+final merged SHA + the Gate F replay (the runbook in `docs/DEPLOYMENT.md`
+§9) → PROD-015 declares. The recorded deployment facts (public URL, Vercel
+deployment id, deployed application commit) are historical until
+independently revalidated against the exact final merged SHA. No new
+promises are made here — the table below remains the item inventory.
+
 | ID | Depends on | Scope | Completion gate |
 |---|---|---|---|
 | PROD-001 | — | Runtime/build audit and executable local product entrypoints | Fresh-machine install and deterministic local start documented and verified |

@@ -35,33 +35,56 @@ problem → EngineeringOperation → proposed states → validation → solution
 
 The canonical authorities remain Reality Graph, Evidence Graph, Assurance Engine, Verification Engine, BOQ Graph and Solution Graph as defined by `spec/architecture-lock.md`. Clients, agents, renderers and external providers are never authorities.
 
-## CURRENT HANDOFF OVERRIDE — 2026-09-23
+## CURRENT HANDOFF OVERRIDE — 2026-09-23 (reconciled by PROD-033)
 
-The authoritative current main tip is **8969d0f77997f67cfa7e2c78cfe52f2ed4f57e3d**.
-
-Machine-state facts supersede older narrative statements in this file:
+Machine-state facts supersede older narrative statements in this file
+(`docs/productization-state.json` reconciled through PROD-034 at SHA
+`d11d03e44dbebb2b2cea069bffa7c7fb57ab6d2c`):
 
 - Productization remains **not_ready**.
-- **PROD-001 through PROD-014** are finalized.
-- **PROD-016 through PROD-030** are finalized.
-- **PROD-015** is the only remaining productization declaration gate.
+- **PROD-001 through PROD-034 are finalized EXCEPT PROD-015 and PROD-033**
+  (PROD-033 — the production journey proof, Gates A–I evidence and narrative
+  reconciliation — is delivered by this item; PROD-015 remains the only
+  productization declaration gate).
 - HFX finalized: **HFX-000, HFX-101, HFX-201, HFX-204, HFX-301**.
-- **HFX-302** is currently dispatch-eligible; later HFX eligibility must be recomputed from live state.
-- **PROD-030** fixed the browser-bundle module-evaluation defect; its evidence includes real-Chromium mount verification and zero page errors on the fixed tree.
-- Known user-facing gaps at this handoff include first-class browser capture acquisition, BOQ import discoverability, compact Evidence Envelope explanation, contextual integration discovery, and complete cross-adapter deployed journey proof.
-- The solution AgentPanel exists, but the current user-facing solution mount does not yet pass a live agent handle; natural-language authoring therefore requires closure before final readiness.
-- Recorded deployment facts in `docs/productization-state.json` are not proof that the latest main tip is deployed. Final declaration requires deployment of the exact final merged SHA and independent browser/device replay.
+- **HFX-302 is in flight** (a concurrent worker lane — Layer-3
+  geometry/validation substitution benchmark; expected evidence path
+  `docs/productization-evidence/HFX-302/**`). Later HFX eligibility must be
+  recomputed from live state.
+- The deployed facts: public URL <https://aise-tan.vercel.app>, Vercel
+  deployment `dpl_35T9rEJpH2BEyKCU5xUgReU1ghfv`, deployed application commit
+  `eb953b2c6dde53711f1b7f536a0fe487e0929cf0` — **recorded facts, not proof:
+  recorded deployment facts in `docs/productization-state.json` are not
+  proof that any particular main tip is deployed until independently
+  revalidated against the exact final merged SHA.** Final declaration
+  requires deployment of the exact final merged SHA and independent
+  browser/device replay.
+- The remaining path is exactly: **PROD-033 (this item) → the Lead's final
+  deployment of the final merged SHA + the Gate F replay (`bun
+  tools/deployed-check.ts` + `bun tools/journey/run.ts all --base-url <url>` —
+  the runbook in `docs/DEPLOYMENT.md` §9) → PROD-015 declares.** The
+  Gates A–I evidence assembly with per-gate honest gaps is
+  `docs/productization-evidence/PROD-033/gates.md`.
+- The user-facing closure gaps of the previous override (browser capture
+  acquisition, BOQ import discoverability, compact Evidence Envelope
+  explanation, contextual integration discovery, cross-adapter deployed
+  journey proof, the live agent handle in the solution mount) were closed by
+  PROD-031/032/034 — the local journey proof is PROD-033's; the DEPLOYED
+  replay at the final SHA is the Lead's.
 
 **Canonical execution mandate:** GitHub issue **#9 — EXECUTION MANDATE — close remaining gaps, E2B Android station, and prove web/mobile/combined production readiness**.
 
-Treat issue #9 as the active closure directive. It requires:
-1. closure of the known product/discoverability gaps;
-2. a reproducible E2B-based Android development/test station, with the E2B credential handled only as a secret;
-3. a maximum of three concurrent workers with disjoint protected surfaces;
-4. formal Web-only, Android-only, and Web+Android combined journey proof;
-5. Gates A–I in `docs/PRODUCTION-READINESS-GATE.md` all passing on one merged lineage before PROD-015 can be finalized.
+Issue #9's worker lanes: Worker A (PROD-031/032, the browser execution path
++ the E2B Android station) and Worker B (PROD-034, the discoverability
+closure) are finalized; Worker C (PROD-033 — this item) delivers the journey
+harness W/M/X, the Gates A–I evidence and the narrative reconciliation. The
+formal Web-only, Android-only and Web+Android combined journey proofs are
+the committed journey records under `docs/productization-evidence/
+PROD-033/runs/`; the deployed-URL leg belongs to the Lead's finalization.
 
-Do not infer completion from this override. Recompute machine-state eligibility and independently reproduce evidence before accepting any worker claim.
+Do not infer completion from this override. Recompute machine-state
+eligibility and independently reproduce evidence before accepting any worker
+claim.
 
 ## Architecture records and mandatory technology rule
 
@@ -85,14 +108,18 @@ Core implementation: `b9b031a85016ac50caba6cd669daf6695ea2938a` is NOT a valid c
 
 Current productization remains `not_ready`. The provisional deployment is `https://aise-tan.vercel.app`. The deployment facts recorded in `docs/productization-state.json` are historical until independently revalidated against the exact final merged SHA.
 
-`docs/productization-state.json` is the machine-readable eligibility source and currently extends through `PROD-030` plus the HFX hardening inventory.
+`docs/productization-state.json` is the machine-readable eligibility source and currently extends through `PROD-034` plus the HFX hardening inventory (PROD-031/032/034 finalized 2026-09-23; PROD-033 delivered by issue #9 Worker C — the Lead records its finalization in the machine state after harvest).
 
 ## Current frontier
 
 ```text
 ✅ PROD-001 … PROD-014
-✅ PROD-016 … PROD-030
+✅ PROD-016 … PROD-034   (PROD-033 delivered by issue #9 Worker C — the
+                          journey harness, Gates A–I evidence, narrative
+                          reconciliation; PROD-015 declares)
 ⬜ PROD-015  ← only remaining productization declaration gate
+              (final-SHA deployment + Gate F replay → declare — the
+              runbook: docs/DEPLOYMENT.md §9)
 
 HFX
 ✅ HFX-000
@@ -100,12 +127,13 @@ HFX
 ✅ HFX-201
 ✅ HFX-204
 ✅ HFX-301
+⬜ HFX-302   ← IN FLIGHT (concurrent worker lane; expected evidence path
+              docs/productization-evidence/HFX-302/**)
 ⬜ HFX-102
 ⬜ HFX-103
 ⬜ HFX-104
 ⬜ HFX-202
 ⬜ HFX-203
-⬜ HFX-302
 ⬜ HFX-303
 ⬜ HFX-401
 ```
