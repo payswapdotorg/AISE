@@ -1,0 +1,1467 @@
+{
+  "benchmarkId": "geometry-eval-suite/1",
+  "codeVersion": "hfx-302/geometry-eval/1",
+  "pins": {
+    "corpusDigest": "a2c70e4831bcfa74f7a5a04404b39e9e2fec8f619cc145b08f18c1f0ad7ffe22",
+    "engineCodeVersion": "1.0.0",
+    "engineKind": "aise-solution-engine",
+    "substituteImplementationVersion": "geometry-substitute/discretized-accumulation/1",
+    "toleranceModelVersion": "hfx-302/quantity-tolerance/1"
+  },
+  "scene": {
+    "authoredAt": "2026-09-16T09:00:00.000Z",
+    "baselineGeometry": {
+      "geo-pit-outline-001": {
+        "unit": "m2",
+        "value": 6
+      },
+      "geo-slab-region-005": {
+        "unit": "m2",
+        "value": 12
+      },
+      "geo-wall-faces-002": {
+        "unit": "m2",
+        "value": 12.5
+      },
+      "geo-wall-line-003": {
+        "unit": "m2",
+        "value": 5
+      }
+    },
+    "baselineRealityVersionId": "rgv-demo-0007",
+    "createdAt": "2026-09-16T08:00:00.000Z",
+    "materializedAt": "2026-09-16T10:00:00.000Z",
+    "problemStatement": "Rising damp has damaged the ground-floor masonry wall; the damaged section must be removed, rebuilt with concrete blocks and re-plastered — the demo world every substitution sequence executes against (derived from the HFX-301 equivalence scene).",
+    "projectId": "proj-demo-001",
+    "sceneId": "geometry-substitution-scene/1",
+    "solutionId": "solution-demo-001",
+    "title": "Ground-floor wall upgrade substitution world",
+    "validatedAt": "2026-09-16T10:30:00.000Z",
+    "versionNumber": 1
+  },
+  "sequenceCount": 31,
+  "sequences": [
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "derived from HFX-301 eq-excavation-core (the REP-EXC-001 compiler baseline utterance; the contract's canonical excavation command) — grid-aligned dimensions (1.5/2/3 m are exact multiples of the fine 0.05 m macro cell): the discretized accumulation is exact",
+      "operations": [
+        {
+          "operationType": "excavation",
+          "parameters": [
+            {
+              "name": "depth",
+              "unit": "m",
+              "value": 1.5
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 2
+            },
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-pit-outline-001"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-site-001"
+          ],
+          "targetSelectorKind": "volume"
+        }
+      ],
+      "sequenceId": "gs-excavation-core",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The canonical excavation (grid-aligned)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "derived from HFX-301 eq-excavation-units-mixed — the unit-canonicalization discipline (mm/cm/m → canonical metres through each lane's own unit table)",
+      "operations": [
+        {
+          "operationType": "excavation",
+          "parameters": [
+            {
+              "name": "depth",
+              "unit": "mm",
+              "value": 1500
+            },
+            {
+              "name": "width",
+              "unit": "cm",
+              "value": 200
+            },
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-pit-outline-001"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-site-001"
+          ],
+          "targetSelectorKind": "volume"
+        }
+      ],
+      "sequenceId": "gs-excavation-units",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The unit-mix excavation (mm/cm/m parameters)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "non-grid-aligned length (3.02 m — 60.4 cells → 60 counted): the discretized volume 9.0 m3 vs the closed-form 9.06 m3 sits INSIDE the declared volume tolerance (abs 0.05 ⊕ rel 1 % ⇒ allowed 0.0906 m3) — the declared tolerance demonstrably absorbs the discretization residual",
+      "operations": [
+        {
+          "operationType": "excavation",
+          "parameters": [
+            {
+              "name": "depth",
+              "unit": "m",
+              "value": 1.5
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 2
+            },
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3.02
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-pit-outline-001"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-site-001"
+          ],
+          "targetSelectorKind": "volume"
+        }
+      ],
+      "sequenceId": "gs-excavation-nonaligned",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The non-grid-aligned excavation (the tolerance at work)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "the earthworks counterpart family at grid-aligned dimensions (exact accumulation)",
+      "operations": [
+        {
+          "operationType": "backfill",
+          "parameters": [
+            {
+              "name": "depth",
+              "unit": "m",
+              "value": 0.9
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 1.8
+            },
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 2.7
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-pit-outline-001"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-site-001"
+          ],
+          "targetSelectorKind": "volume"
+        }
+      ],
+      "sequenceId": "gs-backfill",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The backfill (grid-aligned)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "derived from HFX-301 eq-backfill-sequenced (the sequencing clause with the committed prerequisite journey) — the multi-operation TOPOLOGY case: the backfill pairs the prior excavation over the shared pit geometry (backfill-pairs-excavation), and the dependency edge rides BOTH lanes' dependency gating",
+      "operations": [
+        {
+          "operationType": "excavation",
+          "parameters": [
+            {
+              "name": "depth",
+              "unit": "m",
+              "value": 1.5
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 2
+            },
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-pit-outline-001"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-site-001"
+          ],
+          "targetSelectorKind": "volume"
+        },
+        {
+          "dependsOn": [
+            {
+              "dependencyKind": "completion-before",
+              "dependsOnOperationIndex": 1
+            }
+          ],
+          "operationType": "backfill",
+          "parameters": [
+            {
+              "name": "depth",
+              "unit": "m",
+              "value": 0.5
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 2
+            },
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-pit-outline-001"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-site-001"
+          ],
+          "targetSelectorKind": "volume"
+        }
+      ],
+      "sequenceId": "gs-excavation-backfill-pair",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "Excavation then backfill over the same pit (the earthworks pairing)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "the damaged-section removal of the demo world's problem statement (derived from the HFX-301 wall-upgrade journey context) — grid-aligned dimensions",
+      "operations": [
+        {
+          "operationType": "demolition-removal",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 4
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.4
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.1
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gs-demolition",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The demolition removal (grid-aligned)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "non-grid-aligned length (4.01 m): volume delta 0.0024 m3 and area delta 0.024 m2 sit well inside the declared tolerances (abs 0.05 dominates)",
+      "operations": [
+        {
+          "operationType": "demolition-removal",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 4.01
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.4
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.1
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gs-demolition-nonaligned",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The non-grid-aligned demolition removal"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "the footing family at grid-aligned dimensions (exact accumulation)",
+      "operations": [
+        {
+          "operationType": "foundation-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 0.8
+            },
+            {
+              "name": "depth",
+              "unit": "m",
+              "value": 0.45
+            },
+            {
+              "name": "material",
+              "value": "reinforced-concrete"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-pit-outline-001"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-site-001"
+          ],
+          "targetSelectorKind": "volume"
+        }
+      ],
+      "sequenceId": "gs-foundation",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The foundation placement (grid-aligned)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "the ground-bearing slab family at grid-aligned dimensions",
+      "operations": [
+        {
+          "operationType": "slab-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 4
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 3
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.15
+            },
+            {
+              "name": "material",
+              "value": "plain-concrete"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-slab-region-005"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-slab-001"
+          ],
+          "targetSelectorKind": "surface-region"
+        }
+      ],
+      "sequenceId": "gs-slab",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The slab placement (grid-aligned)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "non-grid-aligned length (4.02 m): the area delta 0.06 m2 sits inside the relative tolerance term (1 % of 12.06 m2 = 0.1206 m2) — the relative term demonstrably governs larger references",
+      "operations": [
+        {
+          "operationType": "slab-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 4.02
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 3
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.15
+            },
+            {
+              "name": "material",
+              "value": "plain-concrete"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-slab-region-005"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-slab-001"
+          ],
+          "targetSelectorKind": "surface-region"
+        }
+      ],
+      "sequenceId": "gs-slab-nonaligned",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The non-grid-aligned slab placement"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "derived from HFX-301 eq-block-wall-core — the rebuilt wall of the demo world: continuous quantities exact at grid alignment AND the integer block count (156 = 12 courses × 13 modules) matching the covering-module accumulation exactly (count admits NO tolerance)",
+      "operations": [
+        {
+          "operationType": "block-wall-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 5
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.4
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.2
+            },
+            {
+              "name": "material",
+              "value": "concrete-block"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gs-block-wall",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The block wall (grid-aligned, block count exact)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "derived from HFX-301 eq-block-wall-units — the unit-canonicalization discipline over the structural family (500 cm / 240 cm / 200 mm → 5 / 2.4 / 0.2 m)",
+      "operations": [
+        {
+          "operationType": "block-wall-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "cm",
+              "value": 500
+            },
+            {
+              "name": "height",
+              "unit": "cm",
+              "value": 240
+            },
+            {
+              "name": "thickness",
+              "unit": "mm",
+              "value": 200
+            },
+            {
+              "name": "material",
+              "value": "concrete-block"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gs-block-wall-units",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The unit-mix block wall (cm/cm/mm parameters)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "the multi-operation TOPOLOGY case: the wall element HOSTS the two openings (opening-hosted-by-element, count 2) and the three-operation chain exercises the append-only accumulation and the BOQ grouping across operations",
+      "operations": [
+        {
+          "operationType": "block-wall-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 5
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.4
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.2
+            },
+            {
+              "name": "material",
+              "value": "concrete-block"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        },
+        {
+          "dependsOn": [
+            {
+              "dependencyKind": "completion-before",
+              "dependsOnOperationIndex": 1
+            }
+          ],
+          "operationType": "opening-creation",
+          "parameters": [
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 1.2
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 1.5
+            },
+            {
+              "name": "material",
+              "value": "timber-door"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        },
+        {
+          "dependsOn": [
+            {
+              "dependencyKind": "completion-before",
+              "dependsOnOperationIndex": 1
+            }
+          ],
+          "operationType": "opening-creation",
+          "parameters": [
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 0.8
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 1
+            },
+            {
+              "name": "material",
+              "value": "timber-door"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gs-block-wall-openings",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The wall with two openings (the hosting topology)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "the opening family standalone (a door-sized opening in the rebuilt wall)",
+      "operations": [
+        {
+          "operationType": "opening-creation",
+          "parameters": [
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 1.2
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 1.5
+            },
+            {
+              "name": "material",
+              "value": "timber-door"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gs-opening",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The single opening (grid-aligned)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "derived from HFX-301 eq-plaster-core (the REP-PLASTER-001 compiler baseline utterance) — the COATED-SURFACE discipline: the area (12.5 m2) is the READ-ONLY baseline fact over geo-wall-faces-002 (both lanes resolve the same pinned table); the thickness (15 mm = 3 coat cells) discretizes exactly; the TOPOLOGY case coat-anchors-baseline-surface",
+      "operations": [
+        {
+          "operationType": "plaster-application",
+          "parameters": [
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.015
+            },
+            {
+              "name": "material",
+              "value": "cement-plaster"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-002"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "face-set"
+        }
+      ],
+      "sequenceId": "gs-plaster-baseline",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The coat-over-baseline plaster (aligned thickness)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "derived from HFX-301 eq-plaster-units-coats — the millimetre unit mix over the coat family (15 mm → 0.015 m canonical)",
+      "operations": [
+        {
+          "operationType": "plaster-application",
+          "parameters": [
+            {
+              "name": "thickness",
+              "unit": "mm",
+              "value": 15
+            },
+            {
+              "name": "material",
+              "value": "cement-plaster"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-002"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "face-set"
+        }
+      ],
+      "sequenceId": "gs-plaster-mm",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The millimetre-parameterized plaster"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "non-grid-aligned thickness (12 mm — 2.4 coat cells → 2 counted → 10 mm): the volume delta 0.025 m3 (12.5 × 0.002) sits INSIDE the ABSOLUTE tolerance term (0.05 m3) — the declared absolute term demonstrably absorbs small-reference discretization residuals where the relative term cannot (16.7 % relative)",
+      "operations": [
+        {
+          "operationType": "plaster-application",
+          "parameters": [
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.012
+            },
+            {
+              "name": "material",
+              "value": "gypsum-plaster"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-002"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "face-set"
+        }
+      ],
+      "sequenceId": "gs-plaster-nonaligned",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The non-aligned plaster thickness (the absolute term at work)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "derived from HFX-301 eq-finish-decimal — the finish family over the slab region's baseline surface fact (12 m2), thickness 10 mm = 2 coat cells exactly",
+      "operations": [
+        {
+          "operationType": "finish-application",
+          "parameters": [
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.01
+            },
+            {
+              "name": "material",
+              "value": "emulsion-paint"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-slab-region-005"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-slab-001"
+          ],
+          "targetSelectorKind": "surface-region"
+        }
+      ],
+      "sequenceId": "gs-finish-baseline",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The finish coat over the slab region (aligned thickness)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "the service-run family at a grid-aligned length (130 macro cells exactly)",
+      "operations": [
+        {
+          "operationType": "building-service-installation",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 6.5
+            },
+            {
+              "name": "diameter",
+              "unit": "m",
+              "value": 0.05
+            },
+            {
+              "name": "material",
+              "value": "pvc-conduit"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gs-service-run",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The building service run (grid-aligned)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "non-grid-aligned length (7.03 m — 140.6 cells → 141 counted → 7.05 m): the 0.02 m delta sits inside the declared length tolerance (abs 0.05)",
+      "operations": [
+        {
+          "operationType": "building-service-installation",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 7.03
+            },
+            {
+              "name": "diameter",
+              "unit": "m",
+              "value": 0.05
+            },
+            {
+              "name": "material",
+              "value": "pvc-conduit"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gs-service-run-nonaligned",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The non-grid-aligned service run"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "the structural chain: footing then slab over the pit — the multi-operation quantity accumulation and the BOQ grouping across two additive families (no topology relation applies: the empty topology projection compares equal)",
+      "operations": [
+        {
+          "operationType": "foundation-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 0.8
+            },
+            {
+              "name": "depth",
+              "unit": "m",
+              "value": 0.45
+            },
+            {
+              "name": "material",
+              "value": "reinforced-concrete"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-pit-outline-001"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-site-001"
+          ],
+          "targetSelectorKind": "volume"
+        },
+        {
+          "dependsOn": [
+            {
+              "dependencyKind": "completion-before",
+              "dependsOnOperationIndex": 1
+            }
+          ],
+          "operationType": "slab-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 4
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 3
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.15
+            },
+            {
+              "name": "material",
+              "value": "plain-concrete"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-slab-region-005"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-slab-001"
+          ],
+          "targetSelectorKind": "surface-region"
+        }
+      ],
+      "sequenceId": "gs-foundation-slab",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The foundation-then-slab chain (multi-operation accumulation)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "compatible",
+      "notes": "non-grid-aligned length (5.02 m): volume delta 0.0096 m3 and area delta 0.048 m2 inside the declared tolerances, while the block count (156) stays EXACT — the covering-module accumulation is resolution-independent",
+      "operations": [
+        {
+          "operationType": "block-wall-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 5.02
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.4
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.2
+            },
+            {
+              "name": "material",
+              "value": "concrete-block"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gs-block-wall-nonaligned",
+      "substituteProfileId": "geometry-substitute-fine",
+      "title": "The non-grid-aligned block wall (count still exact)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "declaredDifferenceKind": "operation-semantic-failure",
+      "expectation": "declared-incompatible",
+      "notes": "the DESIGNED divergence: the coarse profile (0.25 m macro cell) on the non-aligned 3.1 m length counts 12 cells (3.0 m) — the volume delta 0.3 m3 BREACHES the declared volume tolerance (allowed 0.093 m3) and the footprint delta 0.2 m2 breaches the area tolerance (allowed 0.062 m2); the BOQ volume line diverges with the same kind — the comparison DISCRIMINATES",
+      "operations": [
+        {
+          "operationType": "excavation",
+          "parameters": [
+            {
+              "name": "depth",
+              "unit": "m",
+              "value": 1.5
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 2
+            },
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3.1
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-pit-outline-001"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-site-001"
+          ],
+          "targetSelectorKind": "volume"
+        }
+      ],
+      "sequenceId": "gdi-excavation-coarse",
+      "substituteProfileId": "geometry-substitute-coarse",
+      "title": "The coarse-grid excavation breach (volume + footprint)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "declaredDifferenceKind": "operation-semantic-failure",
+      "expectation": "declared-incompatible",
+      "notes": "the DESIGNED divergence: at the coarse macro cell the 0.15 m thickness axis counts a single 0.25 m cell — the slab volume diverges by 1.2525 m3 (3.1875 vs 1.935 m3) and the plan area by 0.15 m2, both far beyond the declared tolerances",
+      "operations": [
+        {
+          "operationType": "slab-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 4.3
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 3
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.15
+            },
+            {
+              "name": "material",
+              "value": "plain-concrete"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-slab-region-005"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-slab-001"
+          ],
+          "targetSelectorKind": "surface-region"
+        }
+      ],
+      "sequenceId": "gdi-slab-coarse",
+      "substituteProfileId": "geometry-substitute-coarse",
+      "title": "The coarse-grid slab breach (the thickness axis over-discretized)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "declaredDifferenceKind": "operation-semantic-failure",
+      "expectation": "declared-incompatible",
+      "notes": "the DESIGNED divergence: the coarse coat cell (0.02 m) over-counts the 12 mm thickness as one full cell (20 mm) — the volume diverges by 0.1 m3 (0.25 vs 0.15 m3) while the AREA stays equal (the same read-only baseline fact): the breach is isolated to the computed quantity, exactly the discrimination the tolerance wrap exists for",
+      "operations": [
+        {
+          "operationType": "plaster-application",
+          "parameters": [
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.012
+            },
+            {
+              "name": "material",
+              "value": "gypsum-plaster"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-wall-faces-002"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "face-set"
+        }
+      ],
+      "sequenceId": "gdi-plaster-coarse",
+      "substituteProfileId": "geometry-substitute-coarse",
+      "title": "The coarse-grid plaster breach (the coat cell too coarse)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "declaredDifferenceKind": "operation-semantic-failure",
+      "expectation": "declared-incompatible",
+      "notes": "the DESIGNED divergence: the coarse grid over-approximates every axis (5.0/2.5/0.25 m) — the volume diverges by 0.677 m3 and the face area by 0.26 m2, while the BLOCK COUNT stays exactly 156 (the covering-module accumulation is resolution-independent): the integer semantics hold even where the continuous discretization breaches",
+      "operations": [
+        {
+          "operationType": "block-wall-placement",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 5.1
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.4
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.2
+            },
+            {
+              "name": "material",
+              "value": "concrete-block"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gdi-block-wall-coarse",
+      "substituteProfileId": "geometry-substitute-coarse",
+      "title": "The coarse-grid block wall breach (continuous quantities only)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "declaredDifferenceKind": "operation-semantic-failure",
+      "expectation": "declared-incompatible",
+      "notes": "the DESIGNED divergence: the coarse grid counts 24 cells (6.0 m) for the 6.1 m run — the 0.1 m delta BREACHES the declared length tolerance (allowed max(0.05, 0.061) m)",
+      "operations": [
+        {
+          "operationType": "building-service-installation",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 6.1
+            },
+            {
+              "name": "diameter",
+              "unit": "m",
+              "value": 0.05
+            },
+            {
+              "name": "material",
+              "value": "pvc-conduit"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gdi-service-run-coarse",
+      "substituteProfileId": "geometry-substitute-coarse",
+      "title": "The coarse-grid service-run breach (the length tolerance)"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "unsupported-by-substitute",
+      "notes": "the restricted profile deliberately omits demolition-removal — the fail-closed gate answers with the typed unsupported naming the family BEFORE execution; the reference oracle still executes (the engine governs both lanes equally)",
+      "operations": [
+        {
+          "operationType": "demolition-removal",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 4
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.4
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.1
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gus-demolition-unsupported",
+      "substituteProfileId": "geometry-substitute-restricted",
+      "title": "The demolition the restricted substitute does not declare"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "unsupported-by-substitute",
+      "notes": "the restricted profile deliberately omits finish-application — the typed unsupported outcome records the family explicitly, never a computed guess",
+      "operations": [
+        {
+          "operationType": "finish-application",
+          "parameters": [
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.01
+            },
+            {
+              "name": "material",
+              "value": "emulsion-paint"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-slab-region-005"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-slab-001"
+          ],
+          "targetSelectorKind": "surface-region"
+        }
+      ],
+      "sequenceId": "gus-finish-unsupported",
+      "substituteProfileId": "geometry-substitute-restricted",
+      "title": "The finish coat the restricted substitute does not declare"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "unsupported-by-substitute",
+      "notes": "the restricted profile deliberately omits building-service-installation — the typed unsupported outcome records the family explicitly",
+      "operations": [
+        {
+          "operationType": "building-service-installation",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 6.5
+            },
+            {
+              "name": "diameter",
+              "unit": "m",
+              "value": 0.05
+            },
+            {
+              "name": "material",
+              "value": "pvc-conduit"
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gus-service-unsupported",
+      "substituteProfileId": "geometry-substitute-restricted",
+      "title": "The service run the restricted substitute does not declare"
+    },
+    {
+      "baselineSceneId": "geometry-substitution-scene/1",
+      "expectation": "unsupported-by-substitute",
+      "notes": "the restricted profile's gate scans IN SEQUENCE ORDER and answers with the FIRST undeclared family (demolition-removal at index 2, after the declared excavation at index 1) — nothing is computed, not even the declared prefix",
+      "operations": [
+        {
+          "operationType": "excavation",
+          "parameters": [
+            {
+              "name": "depth",
+              "unit": "m",
+              "value": 1.5
+            },
+            {
+              "name": "width",
+              "unit": "m",
+              "value": 2
+            },
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 3
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "polygon",
+              "ref": "geo-pit-outline-001"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-site-001"
+          ],
+          "targetSelectorKind": "volume"
+        },
+        {
+          "operationType": "demolition-removal",
+          "parameters": [
+            {
+              "name": "length",
+              "unit": "m",
+              "value": 4
+            },
+            {
+              "name": "height",
+              "unit": "m",
+              "value": 2.4
+            },
+            {
+              "name": "thickness",
+              "unit": "m",
+              "value": 0.1
+            }
+          ],
+          "targetGeometryRefs": [
+            {
+              "kind": "plane",
+              "ref": "geo-wall-line-003"
+            }
+          ],
+          "targetNodeRefs": [
+            "node-wall-002"
+          ],
+          "targetSelectorKind": "line-extent"
+        }
+      ],
+      "sequenceId": "gus-mixed-unsupported",
+      "substituteProfileId": "geometry-substitute-restricted",
+      "title": "The mixed sequence whose SECOND operation is undeclared"
+    }
+  ],
+  "suiteId": "geometry-eval-suite/1",
+  "version": "1.0.0"
+}
