@@ -149,3 +149,75 @@ The same env vars are configured for both scopes; preview deployments get
 per-deployment URLs (`<hash>-<project>.vercel.app`) and never receive the
 production alias. `vercel.json` applies identically. Rollback affects production
 only.
+
+## 9. The final-SHA deployment + replay runbook (PROD-033)
+
+The exact ordered commands for the Tech Lead's finalization (PROD-015's
+deployment leg): merge the final lineage, deploy it, and replay BOTH the
+deployed-browser check and the full production journey harness against the
+deployed URL, pinning the evidence. Every expected output below is taken from
+PROD-033's own local runs (the harness's committed records under
+`docs/productization-evidence/PROD-033/runs/`), so the Lead can diff the
+deployed replay against them.
+
+```bash
+# 0. the final merged SHA (the one every later record must cite)
+git checkout main && git pull
+FINAL_SHA=$(git rev-parse HEAD)
+
+# 1. the full deterministic gate at the final SHA (the Lead's own gate)
+bun install --frozen-lockfile
+bun run verify          # expected: 5677+ pass / 0 fail, VERIFY: PASS
+                         # (PROD-033's branch run: 5677/0 — the harness adds no
+                         #  bun test suites; it runs STANDALONE, never in verify)
+
+# 2. build + deploy the final SHA (the §4 sequence)
+bun run build            # expected: BUILD: PASS (apps/web/dist/index.html, api/[...path].mjs)
+bunx vercel deploy --prod
+
+# 3. the deployed-browser check against the deployed URL
+AISE_DEPLOYED_URL=https://<your-alias>.vercel.app bun tools/deployed-check.ts
+# expected: the seven §4.3 checks PASS (availability, shell-renders,
+#  session-lifecycle, responsive-desktop, responsive-mobile, accessibility,
+#  console-runtime-errors) and the final line `DEPLOYED: PASS` (exit 0)
+
+# 4. the FULL production journey harness against the deployed URL
+bun tools/journey/run.ts all --base-url https://<your-alias>.vercel.app
+# expected, per journey (diff against PROD-033's local records under
+#  docs/productization-evidence/PROD-033/runs/):
+#   journey w — 25 steps PASS (W1's 14 + W2's 10 + the teardown row; with
+#     Chromium the legs are live; over https the session cookie's Secure flag
+#     is asserted where the local plain-http run recorded it not-applicable)
+#   journey m — 19 PASS + 1 BLOCKED_NO_KVM (the emulator row, recorded honestly)
+#   journey x — 13 steps PASS (the field-to-office composition; the demolition
+#     identity 78be478643fcbb4a… reproduces — the composition anchor)
+#  final line: `JOURNEY HARNESS: PASS` (exit 0). Each run appends its
+#  timestamped record under docs/productization-evidence/PROD-033/runs/ with
+#  the repo SHA and the deployed base URL — commit those records.
+
+# 5. (optional, the mobile lane's fresh-run option) the E2B station at the
+#    final SHA — apps/android/scripts/e2b-station/README.md quick start
+#    (E2B_API_KEY env-only secret; never committed):
+python3 station-driver.py up --repo-sha $FINAL_SHA
+python3 station-driver.py script gradle-trio        # :core:test 387/0, :app:test 176/0, APK digest recorded
+python3 station-driver.py script field-journey      # the 16-step field journey at the final SHA
+python3 station-driver.py kill
+# transcripts land wherever the driver streams them — commit the fresh ones
+# under docs/productization-evidence/PROD-033/runs/m-e2b/ if this leg runs
+
+# 6. the evidence pin
+git add docs/productization-evidence/PROD-033/runs/ docs/productization-state.json
+git commit -m "PROD-015: final-SHA deployment + replay evidence pinned at $FINAL_SHA"
+```
+
+Honesty laws for this runbook (binding):
+
+- The replay records are only evidence at the SHA their records cite — a
+  record recorded at any other SHA says so VERBATIM and is not finalization
+  evidence.
+- The journey harness's `--base-url` treats the deployed URL identically to
+  the local serve (same-origin fetch, no privileged access); the harness never
+  needs secrets.
+- If the deployed journey surfaces a FAIL step, the finalization stops there —
+  the failing step is named by the harness; no step may be weakened, skipped
+  or re-classified to make the replay pass.

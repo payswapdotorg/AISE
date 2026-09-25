@@ -168,3 +168,18 @@ productization.status = "PRODUCT-READY"
 ```
 
 and publish the public URL and installation instructions in the root README.
+
+## Gate → evidence index (PROD-033)
+
+The per-gate evidence assembly for this gate document lives in
+[`docs/productization-evidence/PROD-033/gates.md`](productization-evidence/PROD-033/gates.md)
+— for each gate A–I: the verdict, the committed evidence pointers (test
+names, harness outputs, documents) and the honest gap that only the Lead's
+final-SHA finalization (PROD-015) can close. The gate DEFINITIONS in this
+document remain the authority; the index only points at evidence and never
+restates or weakens a definition. The production journey harness that
+produces the Gate F journey evidence is `tools/journey/` (STANDALONE —
+never wired into `bun run verify`); the final-SHA deployment + replay
+runbook is
+[`docs/DEPLOYMENT.md`](DEPLOYMENT.md) §"The final-SHA deployment + replay
+runbook".
