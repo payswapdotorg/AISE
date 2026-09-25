@@ -5218,6 +5218,6274 @@ function createCaptureGateway(deps) {
   };
 }
 
+// backend/api/src/reasoning/solution/model.ts
+var CLARIFICATION_SLOT_KINDS = Object.freeze([
+  "dimension",
+  "material",
+  "location",
+  "sequencing",
+  "constraint"
+]);
+var UNSAFE_REFUSAL_REASON_CODES = Object.freeze([
+  "validation-authority-claim",
+  "approval-authority-claim",
+  "reality-authority-claim",
+  "readiness-authority-claim",
+  "cost-authority-claim",
+  "raw-geometry-write",
+  "engine-bypass"
+]);
+var COMPILER_PATHS = Object.freeze(["deterministic", "provider-enriched"]);
+var AGENT_TOOL_COMMAND_KINDS = Object.freeze([
+  "validate",
+  "inspect",
+  "navigate",
+  "explain",
+  "boq-step-lookup"
+]);
+var SOLUTION_COMPILER_ERROR_CODES = Object.freeze([
+  "invalid_utterance",
+  "invalid_session",
+  "invalid_understanding_descriptor"
+]);
+var SolutionCompilerError = class extends Error {
+  code;
+  detail;
+  constructor(code, detail) {
+    super(`${code}: ${detail}`);
+    this.name = "SolutionCompilerError";
+    this.code = code;
+    this.detail = detail;
+  }
+};
+function validateAgentSessionContext(session) {
+  if (session.sessionId.trim().length === 0) {
+    throw new SolutionCompilerError("invalid_session", "sessionId must be a non-empty string");
+  }
+  if (session.agentId.trim().length === 0) {
+    throw new SolutionCompilerError("invalid_session", "agentId must be a non-empty string");
+  }
+  const foci = session.foci ?? [];
+  const focusIds = /* @__PURE__ */ new Set();
+  for (const focus of foci) {
+    if (focus.focusId.trim().length === 0) {
+      throw new SolutionCompilerError("invalid_session", "every focus must carry a focusId");
+    }
+    if (focusIds.has(focus.focusId)) {
+      throw new SolutionCompilerError(
+        "invalid_session",
+        `focus id '${focus.focusId}' is declared more than once`
+      );
+    }
+    focusIds.add(focus.focusId);
+    if (focus.nodeRefs.length === 0 && focus.geometryRefs.length === 0) {
+      throw new SolutionCompilerError(
+        "invalid_session",
+        `focus '${focus.focusId}' must anchor to reality (\u22651 nodeRef or geometryRef)`
+      );
+    }
+  }
+  if (session.defaultFocusId !== void 0 && !focusIds.has(session.defaultFocusId)) {
+    throw new SolutionCompilerError(
+      "invalid_session",
+      `defaultFocusId '${session.defaultFocusId}' names no declared focus`
+    );
+  }
+}
+
+// packages/solution-contract/src/solution-contracts.version.ts
+var SOLUTION_CONTRACT_VERSION = "1.0.0";
+var SOLUTION_FAMILY_VERSIONS = {
+  solution: SOLUTION_CONTRACT_VERSION,
+  operation: SOLUTION_CONTRACT_VERSION,
+  state: SOLUTION_CONTRACT_VERSION,
+  validation: SOLUTION_CONTRACT_VERSION,
+  capability: SOLUTION_CONTRACT_VERSION,
+  trace: SOLUTION_CONTRACT_VERSION,
+  domain: SOLUTION_CONTRACT_VERSION
+};
+function solutionFamilyVersion(family) {
+  return SOLUTION_FAMILY_VERSIONS[family];
+}
+var SOLUTION_GRAPH_OBJECT_NAMES = [
+  "Solution",
+  "SolutionVersion",
+  "EngineeringOperation",
+  "ProposedState",
+  "OperationDependency",
+  "OperationTarget",
+  "OperationEffect",
+  "SolutionValidationSnapshot",
+  "SolutionBoqLineTrace",
+  "SolutionBoqTraceSet"
+];
+var SOLUTION_INTERACTION_OBJECT_NAMES = [
+  "EngineeringOperationIntent",
+  "OperationCapabilityProfile",
+  "OperationCapabilityNegotiation",
+  "SolutionDomainDescriptor"
+];
+var SOLUTION_OBJECT_NAMES = [
+  ...SOLUTION_GRAPH_OBJECT_NAMES,
+  ...SOLUTION_INTERACTION_OBJECT_NAMES
+];
+
+// packages/solution-contract/src/errors.ts
+var SolutionContractError = class extends Error {
+  code;
+  family;
+  objectName;
+  constructor(code, context, message) {
+    super(message);
+    this.name = new.target.name;
+    this.code = code;
+    this.family = context.family;
+    this.objectName = context.objectName;
+  }
+};
+var SolutionContractVersionMismatchError = class extends SolutionContractError {
+  expected;
+  received;
+  constructor(context, expected, received, operation = "decode") {
+    super(
+      "SOLUTION_CONTRACT_VERSION_MISMATCH",
+      context,
+      `solution contract version mismatch on ${operation} of ${context.family}.${context.objectName}: expected ${expected} (or same major), received ${received}`
+    );
+    this.expected = expected;
+    this.received = received;
+  }
+};
+var SolutionContractDecodeError = class extends SolutionContractError {
+  issues;
+  constructor(context, issues) {
+    super(
+      "SOLUTION_CONTRACT_DECODE_ERROR",
+      context,
+      `failed to decode ${context.family}.${context.objectName}: ` + issues.map((issue) => `${issue.path.join("/") || "<root>"} ${issue.message}`).join("; ")
+    );
+    this.issues = issues;
+  }
+};
+var SolutionContractEncodeError = class extends SolutionContractError {
+  issues;
+  constructor(context, issues) {
+    super(
+      "SOLUTION_CONTRACT_ENCODE_ERROR",
+      context,
+      `failed to encode ${context.family}.${context.objectName}: ` + issues.map((issue) => `${issue.path.join("/") || "<root>"} ${issue.message}`).join("; ")
+    );
+    this.issues = issues;
+  }
+};
+
+// packages/solution-contract/src/codec.ts
+function toIssues2(error) {
+  return error.issues.map((issue) => ({
+    path: [...issue.path],
+    message: issue.message,
+    code: issue.code
+  }));
+}
+function unknownKeyIssues2(paths) {
+  return paths.map((path) => ({
+    path: path.split("."),
+    message: "unrecognized key",
+    code: "unrecognized_keys"
+  }));
+}
+function decodeValue2(context, schema, payload, strict) {
+  const expected = solutionFamilyVersion(context.family);
+  if (payload === null || typeof payload !== "object" || Array.isArray(payload)) {
+    throw new SolutionContractDecodeError(context, [
+      { path: [], message: "expected a JSON object", code: "invalid_type" }
+    ]);
+  }
+  const rawVersion = payload["contractVersion"];
+  if (typeof rawVersion === "string" && parseMajorVersion(rawVersion) !== null && !sameMajorVersion(rawVersion, expected)) {
+    throw new SolutionContractVersionMismatchError(context, expected, rawVersion);
+  }
+  const result = schema.safeParse(payload);
+  if (!result.success) {
+    throw new SolutionContractDecodeError(context, toIssues2(result.error));
+  }
+  if (strict) {
+    const unknownPaths = collectUnknownKeyPaths(result.data, schema);
+    if (unknownPaths.length > 0) {
+      throw new SolutionContractDecodeError(context, unknownKeyIssues2(unknownPaths));
+    }
+  }
+  return result.data;
+}
+function encodeValue2(context, schema, value) {
+  const expected = solutionFamilyVersion(context.family);
+  const record = value;
+  let candidate;
+  if (!("contractVersion" in record)) {
+    candidate = { ...record, contractVersion: expected };
+  } else if (record["contractVersion"] === expected) {
+    candidate = value;
+  } else if (typeof record["contractVersion"] === "string") {
+    throw new SolutionContractVersionMismatchError(
+      context,
+      expected,
+      record["contractVersion"],
+      "encode"
+    );
+  } else {
+    throw new SolutionContractEncodeError(context, [
+      {
+        path: ["contractVersion"],
+        message: "contractVersion must be a semver string",
+        code: "invalid_type"
+      }
+    ]);
+  }
+  const result = schema.safeParse(candidate);
+  if (!result.success) {
+    throw new SolutionContractEncodeError(context, toIssues2(result.error));
+  }
+  return canonicalJsonStringify(result.data);
+}
+function createSolutionWireCodec(options) {
+  const context = { family: options.family, objectName: options.name };
+  return {
+    name: options.name,
+    family: options.family,
+    contractVersion: solutionFamilyVersion(options.family),
+    schema: options.schema,
+    decode: (payload) => decodeValue2(context, options.schema, payload, false),
+    decodeStrict: (payload) => decodeValue2(context, options.schema, payload, true),
+    encode: (value) => encodeValue2(context, options.schema, value)
+  };
+}
+
+// packages/solution-contract/src/domain.ts
+var extensionVersionSchema = external_exports.string().regex(new RegExp(SEMVER_PATTERN)).describe("Semver version of the extension definition this descriptor pins.");
+var SolutionDomainExtensionSchema = external_exports.object({
+  kind: shortTextSchema.describe(
+    "Extension kind (open vocabulary, e.g. building-element-taxonomy, assembly-compatibility-rules)."
+  ),
+  ref: shortTextSchema.describe(
+    "Stable reference to the extension definition (vocabulary or ruleset id)."
+  ),
+  version: extensionVersionSchema
+}).passthrough();
+var BUILDING_VERTICAL = "building";
+var FUTURE_VERTICALS = [
+  "civil-works",
+  "mep",
+  "industrial-equipment",
+  "electronics",
+  "integrated-circuits"
+];
+var SolutionDomainDescriptorSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  vertical: shortTextSchema.describe(
+    "The engineering vertical of the solution's operations (OPEN vocabulary; Phase 1 advisory value: building. Documented future verticals: civil-works, mep, industrial-equipment, electronics, integrated-circuits). Rendered verbatim by clients; vertical semantics are owned by the server solution engine."
+  ),
+  operationVocabulary: shortTextSchema.optional().describe(
+    "Identifier of the operation-type vocabulary the solution's operations use (e.g. aise-building-operations-v1). Identifies which engine-owned catalogue the open operationType strings belong to."
+  ),
+  extensions: external_exports.array(SolutionDomainExtensionSchema).describe(
+    "Vertical-specific extension descriptors, carried as DATA \u2014 never interpreted, enforced or extended by a client."
+  )
+}).passthrough();
+var SolutionDomainDescriptorCodec = createSolutionWireCodec({
+  name: "SolutionDomainDescriptor",
+  family: "domain",
+  schema: SolutionDomainDescriptorSchema
+});
+var decodeSolutionDomainDescriptor = SolutionDomainDescriptorCodec.decode;
+var decodeSolutionDomainDescriptorStrict = SolutionDomainDescriptorCodec.decodeStrict;
+var encodeSolutionDomainDescriptor = SolutionDomainDescriptorCodec.encode;
+var BUILDING_OPERATION_VOCABULARY = "aise-building-operations-v1";
+var BUILDING_ELEMENT_TAXONOMY_EXTENSION = {
+  kind: "building-element-taxonomy",
+  ref: "aise-building-elements",
+  version: "1.0.0"
+};
+var REFERENCE_BUILDING_DOMAIN = {
+  contractVersion: SOLUTION_CONTRACT_VERSION,
+  vertical: BUILDING_VERTICAL,
+  operationVocabulary: BUILDING_OPERATION_VOCABULARY,
+  extensions: [BUILDING_ELEMENT_TAXONOMY_EXTENSION]
+};
+var BUILDING_OPERATION_TYPES = [
+  "excavation",
+  "backfill",
+  "demolition-removal",
+  "foundation-placement",
+  "slab-placement",
+  "block-wall-placement",
+  "opening-creation",
+  "plaster-application",
+  "building-service-installation",
+  "finish-application"
+];
+
+// packages/solution-contract/src/operation.ts
+var TypedOperationParameterSchema = external_exports.object({
+  name: shortTextSchema.describe(
+    "Parameter name (open vocabulary, lower-kebab-case; e.g. depth, width, length, thickness, height, diameter, material)."
+  ),
+  value: external_exports.union([external_exports.number(), external_exports.string(), external_exports.boolean()]).describe(
+    "The parameter value. Numeric values REQUIRE an explicit unit; string values carry named choices (e.g. material) without units."
+  ),
+  unit: shortTextSchema.optional().describe(
+    "Explicit unit for numeric values (e.g. m, mm). REQUIRED for numeric values (invariant numeric_parameter_without_unit); absent for non-numeric values."
+  )
+}).passthrough();
+var OPERATION_INTENT_ORIGINS = [
+  "direct-manipulation",
+  "agent",
+  "imported-template"
+];
+var OperationProvenanceSchema = external_exports.object({
+  origin: external_exports.enum(OPERATION_INTENT_ORIGINS).describe(
+    "How the operation was authored: direct-manipulation (interactive environment), agent (natural-language command compiled to the same typed semantics) or imported-template."
+  ),
+  authoredBy: shortTextSchema.describe(
+    "Stable reference of the author: user id, agent id or template id."
+  ),
+  authoredAt: isoTimestampSchema.describe(
+    "Instant the intent was authored (excluded from identity derivations)."
+  ),
+  commandText: textSchema.optional().describe(
+    "agent origin: the EXACT normalized natural-language command that compiled to this operation \u2014 carried verbatim, never paraphrased."
+  ),
+  interactionDetail: shortTextSchema.optional().describe(
+    "direct-manipulation origin: the manipulation description (e.g. 'operator dragged excavation volume handles in the 3D view')."
+  ),
+  evidenceIds: external_exports.array(contentIdSchema).describe(
+    "Input evidence content ids (64-hex Evidence-Graph addresses); may be empty when a derivation note or command text states the provenance."
+  ),
+  derivationNote: textSchema.optional().describe(
+    "Explicit derivation/attribution statement when no evidence id applies (e.g. 'operator dimensioned the volume directly in the interactive 3D view')."
+  ),
+  intentRef: stableIdSchema.optional().describe(
+    "OPERATION RECORDS ONLY: the intent event that authored this operation (the compile provenance link of PROD-022/023)."
+  )
+}).passthrough();
+var SPATIAL_SELECTOR_KINDS = [
+  "element",
+  "face-set",
+  "surface-region",
+  "volume",
+  "line-extent",
+  "point",
+  "storey",
+  "space"
+];
+var TARGET_GEOMETRY_REF_KINDS = [
+  "plane",
+  "polygon",
+  "mesh-ref",
+  "point-cloud-ref"
+];
+var TargetGeometryRefSchema = external_exports.object({
+  kind: external_exports.enum(TARGET_GEOMETRY_REF_KINDS),
+  ref: stableIdSchema.describe(
+    "Stable id of the referenced geometry artifact (owned by the deterministic geometry services; read-only reference)."
+  )
+}).passthrough();
+var SpatialUnitsSchema = external_exports.object({
+  linear: shortTextSchema.describe("Linear unit of the target's anchors (e.g. m)."),
+  angular: shortTextSchema.describe("Angular unit of the target's anchors (e.g. rad).")
+}).passthrough();
+var OperationTargetSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  selectorKind: external_exports.enum(SPATIAL_SELECTOR_KINDS).describe(
+    "How the target selects space: element (whole node), face-set (element faces), surface-region, volume, line-extent, point, storey or space."
+  ),
+  nodeRefs: external_exports.array(stableIdSchema).describe(
+    "Stable Reality Graph node ids the target anchors to (read-only references to observed reality)."
+  ),
+  geometryRefs: external_exports.array(TargetGeometryRefSchema).describe(
+    "Deterministic geometry references anchoring or limiting the target (drawn pit outlines, wall face polygons\u2026)."
+  ),
+  units: SpatialUnitsSchema.describe(
+    "Units of the spatial coordinates/anchors (carried verbatim)."
+  ),
+  description: shortTextSchema.describe(
+    "Human-readable place description (e.g. 'the affected wall faces'); presentation only \u2014 excluded from identity derivations."
+  )
+}).passthrough();
+var OperationTargetCodec = createSolutionWireCodec({
+  name: "OperationTarget",
+  family: "operation",
+  schema: OperationTargetSchema
+});
+var decodeOperationTarget = OperationTargetCodec.decode;
+var decodeOperationTargetStrict = OperationTargetCodec.decodeStrict;
+var encodeOperationTarget = OperationTargetCodec.encode;
+var OPERATION_DEPENDENCY_KINDS = [
+  "completion-before",
+  "state-precondition"
+];
+var OperationDependencySchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  operationRef: stableIdSchema.describe(
+    "The operation this dependency points at (its completion or its resulting proposed state is the precondition)."
+  ),
+  dependencyKind: external_exports.enum(OPERATION_DEPENDENCY_KINDS),
+  rationale: textSchema.optional().describe("Why the dependency exists (presentation; excluded from identity).")
+}).passthrough();
+var OperationDependencyCodec = createSolutionWireCodec({
+  name: "OperationDependency",
+  family: "operation",
+  schema: OperationDependencySchema
+});
+var decodeOperationDependency = OperationDependencyCodec.decode;
+var decodeOperationDependencyStrict = OperationDependencyCodec.decodeStrict;
+var encodeOperationDependency = OperationDependencyCodec.encode;
+var QUANTITY_DIMENSIONS = [
+  "length",
+  "area",
+  "volume",
+  "mass",
+  "count",
+  "duration"
+];
+var QUANTITY_IMPACT_DIRECTIONS = ["added", "removed", "changed"];
+var TypedQuantitySchema = external_exports.object({
+  dimension: external_exports.enum(QUANTITY_DIMENSIONS),
+  value: external_exports.number().describe("Quantity value in the stated unit."),
+  unit: shortTextSchema.describe(
+    "Explicit unit (REQUIRED \u2014 a quantity is never a bare number)."
+  ),
+  calculationRef: shortTextSchema.describe(
+    "Reference to the deterministic calculation/method that produced the value (calculation provenance)."
+  ),
+  uncertainty: UncertaintySchema.optional().describe(
+    "Propagated measurement uncertainty where stated; absent means 'not stated' \u2014 never zero, never fabricated."
+  )
+}).passthrough();
+var OPERATION_EFFECT_KINDS = ["state-transition", "quantity-impact"];
+var OperationEffectSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  effectKind: external_exports.enum(OPERATION_EFFECT_KINDS),
+  resultingStateRef: stableIdSchema.optional().describe(
+    "state-transition: the id of the ProposedState this operation's application produces (states[N] after operation N)."
+  ),
+  quantity: TypedQuantitySchema.optional().describe("quantity-impact: the typed quantity this operation affects."),
+  direction: external_exports.enum(QUANTITY_IMPACT_DIRECTIONS).optional().describe(
+    "quantity-impact: whether the quantity is added, removed or changed."
+  ),
+  affectedNodeRefs: external_exports.array(stableIdSchema).describe(
+    "Reality nodes the effect touches (read-only references to observed reality)."
+  ),
+  geometryRefs: external_exports.array(TargetGeometryRefSchema).describe(
+    "Geometry references the effect's state delta or quantity derives from."
+  )
+}).passthrough();
+var OperationEffectCodec = createSolutionWireCodec({
+  name: "OperationEffect",
+  family: "operation",
+  schema: OperationEffectSchema
+});
+var decodeOperationEffect = OperationEffectCodec.decode;
+var decodeOperationEffectStrict = OperationEffectCodec.decodeStrict;
+var encodeOperationEffect = OperationEffectCodec.encode;
+var EngineeringOperationSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  operationId: stableIdSchema.describe(
+    "Deterministic operation identity (deriveEngineeringOperationId): sha-256 over the canonical semantic projection \u2014 same semantics (type, parameters, target, dependencies, version context) yield the same id regardless of authoring origin."
+  ),
+  solutionId: stableIdSchema.describe("The solution this operation belongs to."),
+  versionNumber: positiveIntSchema.describe(
+    "The solution version this operation is recorded in (version context \u2014 part of operation identity)."
+  ),
+  operationIndex: positiveIntSchema.describe(
+    "1-based position of this operation in its version's ordered sequence (order is semantic: it is hashed into identity and state ids)."
+  ),
+  operationType: shortTextSchema.describe(
+    "The operation type (OPEN vocabulary; Phase 1 building advisory values: BUILDING_OPERATION_TYPES of the domain module)."
+  ),
+  domain: SolutionDomainDescriptorSchema.describe(
+    "The vertical context of the operation \u2014 building specifics live here as DATA, never as client authority."
+  ),
+  parameters: external_exports.array(TypedOperationParameterSchema).min(1).describe(
+    "The explicit typed parameters (with units) \u2014 at least one; a parameterless operation is not representable."
+  ),
+  target: OperationTargetSchema.describe(
+    "The stable spatial target, anchored to observed reality through read-only references."
+  ),
+  dependsOn: external_exports.array(OperationDependencySchema).describe(
+    "Precedence/dependency edges to other operations (may be empty)."
+  ),
+  effects: external_exports.array(OperationEffectSchema).describe(
+    "Engine-derived effects: proposed state transitions and quantity impacts (deterministic outputs of PROD-022; excluded from identity)."
+  ),
+  provenance: OperationProvenanceSchema.describe(
+    "Authoring attribution: origin (direct-manipulation | agent | imported-template), author, instant, evidence, exact agent command, compile intent reference."
+  ),
+  rationale: textSchema.optional().describe(
+    "Free-text rationale (presentation; excluded from identity derivations)."
+  )
+}).passthrough();
+var EngineeringOperationCodec = createSolutionWireCodec({
+  name: "EngineeringOperation",
+  family: "operation",
+  schema: EngineeringOperationSchema
+});
+var decodeEngineeringOperation = EngineeringOperationCodec.decode;
+var decodeEngineeringOperationStrict = EngineeringOperationCodec.decodeStrict;
+var encodeEngineeringOperation = EngineeringOperationCodec.encode;
+
+// packages/solution-contract/src/validation.ts
+var VALIDATION_CHECK_RESULTS = [
+  "pass",
+  "fail",
+  "unknown",
+  "review-needed"
+];
+var VALIDATION_SNAPSHOT_OUTCOMES = [
+  "pass",
+  "fail",
+  "unknown",
+  "review-needed"
+];
+var OUTCOME_SEVERITY = {
+  fail: 3,
+  "review-needed": 2,
+  unknown: 1,
+  pass: 0
+};
+function validationOutcomeWorstOf(results) {
+  let worst = "pass";
+  for (const result of results) {
+    if (OUTCOME_SEVERITY[result] > OUTCOME_SEVERITY[worst]) {
+      worst = result;
+    }
+  }
+  return worst;
+}
+var ValidationCheckSchema = external_exports.object({
+  checkId: shortTextSchema.describe(
+    "Stable check identifier (e.g. geometry.dimensions-positive, units.quantity-units-typed, operation.ordering-dependencies)."
+  ),
+  result: external_exports.enum(VALIDATION_CHECK_RESULTS),
+  detail: textSchema.describe(
+    "Deterministic finding detail \u2014 what passed, failed, is unknown or needs review. Never silent, never fabricated."
+  )
+}).passthrough();
+var ValidationEngineRefSchema = external_exports.object({
+  kind: shortTextSchema.describe(
+    "The deterministic validation engine kind (e.g. aise-solution-engine) \u2014 provider identity belongs in provenance."
+  ),
+  version: shortTextSchema.describe("The engine's version.")
+}).passthrough();
+var SolutionValidationSnapshotSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  snapshotId: stableIdSchema.describe(
+    "Deterministic snapshot identity (deriveValidationSnapshotId)."
+  ),
+  solutionId: stableIdSchema.describe("The validated solution."),
+  versionNumber: positiveIntSchema.describe(
+    "The validated solution version (the snapshot is version-pinned)."
+  ),
+  outcome: external_exports.enum(VALIDATION_SNAPSHOT_OUTCOMES).describe(
+    "Worst-of the checks: fail > review-needed > unknown > pass (invariant validation_outcome_not_worst_of_checks)."
+  ),
+  checks: external_exports.array(ValidationCheckSchema).min(1).describe(
+    "The explicit findings \u2014 at least one; validation is never silent."
+  ),
+  inputDigest: contentIdSchema.describe(
+    "sha-256 digest of the validated solution-version content \u2014 the snapshot certifies EXACTLY these bytes."
+  ),
+  engine: ValidationEngineRefSchema.describe(
+    "The deterministic validation engine that produced the snapshot."
+  ),
+  validatedAt: isoTimestampSchema.describe(
+    "Validation instant; EXCLUDED from the snapshot identity derivation."
+  )
+}).passthrough();
+var SolutionValidationSnapshotCodec = createSolutionWireCodec({
+  name: "SolutionValidationSnapshot",
+  family: "validation",
+  schema: SolutionValidationSnapshotSchema
+});
+var decodeSolutionValidationSnapshot = SolutionValidationSnapshotCodec.decode;
+var decodeSolutionValidationSnapshotStrict = SolutionValidationSnapshotCodec.decodeStrict;
+var encodeSolutionValidationSnapshot = SolutionValidationSnapshotCodec.encode;
+
+// packages/solution-contract/src/invariants.ts
+function finding(code, path, detail) {
+  return { code, path: [...path], detail };
+}
+function checkTypedOperationParameters(parameters) {
+  const findings = [];
+  for (const [index, parameter] of parameters.entries()) {
+    if (typeof parameter.value === "number" && (typeof parameter.unit !== "string" || parameter.unit.trim() === "")) {
+      findings.push(
+        finding(
+          "numeric_parameter_without_unit",
+          ["parameters", index],
+          `parameter '${parameter.name}' has numeric value ${parameter.value} without an explicit unit`
+        )
+      );
+    }
+  }
+  return findings;
+}
+function checkOperationTarget(target) {
+  if (target.nodeRefs.length === 0 && target.geometryRefs.length === 0) {
+    return [
+      finding(
+        "unanchored_operation_target",
+        ["target"],
+        "an operation target must anchor to observed reality: at least one nodeRef or geometryRef is required"
+      )
+    ];
+  }
+  return [];
+}
+function checkOperationProvenance(provenance) {
+  const hasEvidence = provenance.evidenceIds.length > 0;
+  const hasNote = typeof provenance.derivationNote === "string" && provenance.derivationNote.length > 0;
+  const hasCommand = typeof provenance.commandText === "string" && provenance.commandText.length > 0;
+  if (!hasEvidence && !hasNote && !hasCommand) {
+    return [
+      finding(
+        "missing_operation_provenance",
+        ["provenance"],
+        "provenance requires a non-empty evidenceIds list, a derivation note or the exact agent command text"
+      )
+    ];
+  }
+  return [];
+}
+function checkEngineeringOperationIntent(intent) {
+  return [
+    ...checkTypedOperationParameters(intent.parameters),
+    ...checkOperationTarget(intent.target),
+    ...checkOperationProvenance(intent.provenance)
+  ];
+}
+function checkEngineeringOperation(operation) {
+  const findings = [
+    ...checkTypedOperationParameters(operation.parameters),
+    ...checkOperationTarget(operation.target),
+    ...checkOperationProvenance(operation.provenance)
+  ];
+  for (const [index, dependency] of operation.dependsOn.entries()) {
+    if (dependency.operationRef === operation.operationId) {
+      findings.push(
+        finding(
+          "self_referencing_operation_dependency",
+          ["dependsOn", index],
+          `operation '${operation.operationId}' depends on itself`
+        )
+      );
+    }
+  }
+  for (const [index, effect] of operation.effects.entries()) {
+    if (effect.effectKind === "state-transition" && effect.resultingStateRef === void 0) {
+      findings.push(
+        finding(
+          "operation_effect_missing_ref",
+          ["effects", index],
+          "state-transition effect requires resultingStateRef"
+        )
+      );
+    }
+    if (effect.effectKind === "quantity-impact" && (effect.quantity === void 0 || effect.direction === void 0)) {
+      findings.push(
+        finding(
+          "operation_effect_missing_quantity",
+          ["effects", index],
+          "quantity-impact effect requires a quantity and a direction"
+        )
+      );
+    }
+  }
+  return findings;
+}
+function checkProposedState(state) {
+  if (state.appliedOperationIds.length !== state.stateIndex) {
+    return [
+      finding(
+        "proposed_state_index_mismatch",
+        ["appliedOperationIds"],
+        `stateIndex ${state.stateIndex} requires ${state.stateIndex} applied operation ids; found ${state.appliedOperationIds.length}`
+      )
+    ];
+  }
+  return [];
+}
+function checkSolutionVersion(version) {
+  const findings = [];
+  if (version.states.length !== version.operations.length + 1) {
+    findings.push(
+      finding(
+        "solution_version_state_count_mismatch",
+        ["states"],
+        `states.length must equal operations.length + 1 (layer 0 is the baseline overlay); found ${version.states.length} states for ${version.operations.length} operations`
+      )
+    );
+  }
+  for (const [index, state] of version.states.entries()) {
+    if (state.stateIndex !== index) {
+      findings.push(
+        finding(
+          "solution_version_state_index_mismatch",
+          ["states", index],
+          `states[${index}] must carry stateIndex ${index}; found ${state.stateIndex}`
+        )
+      );
+    }
+  }
+  if (version.status === "validated" && version.validationSnapshotRef === void 0) {
+    findings.push(
+      finding(
+        "validated_version_without_snapshot",
+        ["validationSnapshotRef"],
+        "a validated version must declare its validation snapshot (a solution BOQ may be generated only from a declared snapshot)"
+      )
+    );
+  }
+  if (version.versionNumber === 1 && version.parentVersionNumber !== void 0) {
+    findings.push(
+      finding(
+        "version_one_with_parent",
+        ["parentVersionNumber"],
+        "version 1 has no parent version (lineage starts at 1)"
+      )
+    );
+  }
+  return findings;
+}
+
+// packages/solution-contract/src/intent.ts
+var IntentProposalContextSchema = external_exports.object({
+  solutionId: stableIdSchema,
+  versionNumber: positiveIntSchema
+}).passthrough();
+var EngineeringOperationIntentSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  intentId: stableIdSchema.describe(
+    "Stable id of this authoring intent EVENT (client-session or server assigned). Distinguishes authoring events, NOT operations: two intents with the same semantics and different origins/provenance compile to the SAME operation identity (see identity.ts)."
+  ),
+  operationType: shortTextSchema.describe(
+    "The operation type (OPEN vocabulary; Phase 1 building advisory values: BUILDING_OPERATION_TYPES of the domain module). The closed catalogue is engine-owned \u2014 the wire type stays open so future verticals never require a contract change."
+  ),
+  domain: SolutionDomainDescriptorSchema.describe(
+    "The vertical context \u2014 building specifics as data, never client authority. A future vertical is representable here; capability negotiation answers honestly whether the engine supports it."
+  ),
+  parameters: external_exports.array(TypedOperationParameterSchema).min(1).describe("Explicit typed parameters with units (at least one)."),
+  target: OperationTargetSchema.describe(
+    "The stable spatial target with explicit units, anchored to observed reality through read-only references."
+  ),
+  dependsOn: external_exports.array(OperationDependencySchema).describe("Precedence/dependency edges the authoring mode asserts."),
+  provenance: OperationProvenanceSchema.describe(
+    "The authoring attribution: origin (direct-manipulation | agent | imported-template), author, instant, evidence and \u2014 for agent origin \u2014 the exact normalized command text."
+  ),
+  proposedTo: IntentProposalContextSchema.optional().describe(
+    "The solution/version this intent proposes into (absent while unattached)."
+  )
+}).passthrough();
+var EngineeringOperationIntentCodec = createSolutionWireCodec({
+  name: "EngineeringOperationIntent",
+  family: "operation",
+  schema: EngineeringOperationIntentSchema
+});
+var decodeEngineeringOperationIntent = EngineeringOperationIntentCodec.decode;
+var decodeEngineeringOperationIntentStrict = EngineeringOperationIntentCodec.decodeStrict;
+var encodeEngineeringOperationIntent = EngineeringOperationIntentCodec.encode;
+function toIssues3(error) {
+  return error.issues.map((issue) => ({
+    path: [...issue.path],
+    message: issue.message,
+    code: issue.code
+  }));
+}
+function createOperationIntent(input) {
+  const context = { family: "operation", objectName: "EngineeringOperationIntent" };
+  const candidate = {
+    contractVersion: SOLUTION_CONTRACT_VERSION,
+    intentId: input.intentId,
+    operationType: input.operationType,
+    domain: { ...input.domain, contractVersion: SOLUTION_CONTRACT_VERSION },
+    parameters: input.parameters,
+    target: { ...input.target, contractVersion: SOLUTION_CONTRACT_VERSION },
+    dependsOn: (input.dependsOn ?? []).map((dependency) => ({
+      ...dependency,
+      contractVersion: SOLUTION_CONTRACT_VERSION
+    })),
+    provenance: input.provenance,
+    proposedTo: input.proposedTo
+  };
+  const parsed = EngineeringOperationIntentSchema.safeParse(candidate);
+  if (!parsed.success) {
+    throw new SolutionContractEncodeError(context, toIssues3(parsed.error));
+  }
+  const findings = checkEngineeringOperationIntent(parsed.data);
+  if (findings.length > 0) {
+    throw new SolutionContractEncodeError(
+      context,
+      findings.map((finding2) => ({
+        path: [...finding2.path],
+        message: `${finding2.code}: ${finding2.detail}`,
+        code: finding2.code
+      }))
+    );
+  }
+  return parsed.data;
+}
+
+// packages/solution-contract/src/state.ts
+var ProposedStateSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  stateId: stableIdSchema.describe(
+    "Deterministic proposed-state identity (deriveProposedStateId). The SAME identifier feeds the synchronized 3D, 2D and BOQ views of this proposal step."
+  ),
+  solutionId: stableIdSchema.describe("The solution this state belongs to."),
+  versionNumber: positiveIntSchema.describe(
+    "The solution version this state belongs to."
+  ),
+  stateIndex: nonNegativeIntSchema.describe(
+    "Layer number: 0 = the baseline overlay; N = after operation N."
+  ),
+  baselineRealityVersionId: stableIdSchema.describe(
+    "The PINNED authoritative Reality-Graph version this proposed state branches from \u2014 a read-only reference; proposals never mutate observed reality."
+  ),
+  epistemicStatus: external_exports.literal("PROPOSED").describe(
+    "ALWAYS 'PROPOSED' \u2014 the schema-level proposal-isolation seal: OBSERVED/INFERRED/CONFIRMED are unrepresentable inside a proposed state."
+  ),
+  appliedOperationIds: external_exports.array(stableIdSchema).describe(
+    "Ordered ids of the operations 1..stateIndex (length must equal stateIndex \u2014 invariant proposed_state_index_mismatch)."
+  ),
+  contentDigest: contentIdSchema.optional().describe(
+    "sha-256 digest of the engine-materialized state content (PROD-022); the contract pins the digest form, not the materialization."
+  ),
+  materializedAt: isoTimestampSchema.describe(
+    "Engine clock instant of materialization; EXCLUDED from the state identity derivation (identity is content)."
+  )
+}).passthrough();
+var ProposedStateCodec = createSolutionWireCodec({
+  name: "ProposedState",
+  family: "state",
+  schema: ProposedStateSchema
+});
+var decodeProposedState = ProposedStateCodec.decode;
+var decodeProposedStateStrict = ProposedStateCodec.decodeStrict;
+var encodeProposedState = ProposedStateCodec.encode;
+
+// packages/solution-contract/src/capability.ts
+var OperationTypeCapabilitySchema = external_exports.object({
+  operationType: shortTextSchema.describe(
+    "The operation type this entry declares capability for (the ENGINE's vocabulary; open string, e.g. the BUILDING_OPERATION_TYPES values)."
+  ),
+  status: external_exports.enum(CAPABILITY_STATUSES).describe(
+    "supported | unavailable | degraded | unknown. `unknown` = not yet determined; never equivalent to `unavailable`."
+  ),
+  requiredParameters: external_exports.array(shortTextSchema).describe(
+    "Parameter names the engine requires to execute this operation type (missing ones negotiate to `blocked`, driving the agent's clarification questions \u2014 never invented values)."
+  ),
+  limitations: external_exports.array(textSchema).describe(
+    "Material limitations of this operation type on this engine right now (rendered before any consequential action)."
+  )
+}).passthrough();
+var DomainOperationCapabilitySchema = external_exports.object({
+  domain: SolutionDomainDescriptorSchema.describe(
+    "The vertical this capability entry covers (building in Phase 1; future verticals are addable by the engine without contract changes)."
+  ),
+  status: external_exports.enum(CAPABILITY_STATUSES).describe(
+    "Domain-level status. `unknown` is never conflated with `unavailable` (an undetermined domain negotiates to `unknown`, not `unsupported`)."
+  ),
+  operations: external_exports.array(OperationTypeCapabilitySchema).describe(
+    "The per-operation-type capability entries (unique operation types \u2014 invariant duplicate_operation_type_capability)."
+  )
+}).passthrough();
+var OperationCapabilityProfileSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  profileId: stableIdSchema.describe("Stable id of this capability profile."),
+  engineKind: shortTextSchema.describe(
+    "The deterministic solution engine declaring this profile (e.g. aise-solution-engine)."
+  ),
+  engineVersion: shortTextSchema.describe("The declaring engine's version."),
+  domains: external_exports.array(DomainOperationCapabilitySchema).min(1).describe(
+    "One entry per vertical the engine declares capability for (unique verticals \u2014 invariant duplicate_profile_vertical). Phase 1: the building vertical only."
+  ),
+  updatedAt: isoTimestampSchema.describe(
+    "Instant the engine produced this profile snapshot."
+  )
+}).passthrough();
+var OperationCapabilityProfileCodec = createSolutionWireCodec({
+  name: "OperationCapabilityProfile",
+  family: "capability",
+  schema: OperationCapabilityProfileSchema
+});
+var decodeOperationCapabilityProfile = OperationCapabilityProfileCodec.decode;
+var decodeOperationCapabilityProfileStrict = OperationCapabilityProfileCodec.decodeStrict;
+var encodeOperationCapabilityProfile = OperationCapabilityProfileCodec.encode;
+var REFERENCE_PROFILE_INSTANT = "2026-09-16T00:00:00.000Z";
+var REFERENCE_BUILDING_OPERATION_PROFILE = {
+  contractVersion: SOLUTION_CONTRACT_VERSION,
+  profileId: "profile-building-ops-reference",
+  engineKind: "aise-solution-engine",
+  engineVersion: "1.0.0",
+  domains: [
+    {
+      domain: REFERENCE_BUILDING_DOMAIN,
+      status: "supported",
+      operations: buildingOperationCapabilities()
+    }
+  ],
+  updatedAt: REFERENCE_PROFILE_INSTANT
+};
+var REFERENCE_PARTIAL_BUILDING_OPERATION_PROFILE = {
+  contractVersion: SOLUTION_CONTRACT_VERSION,
+  profileId: "profile-building-ops-partial",
+  engineKind: "aise-solution-engine",
+  engineVersion: "1.0.0",
+  domains: [
+    {
+      domain: REFERENCE_BUILDING_DOMAIN,
+      status: "supported",
+      operations: buildingOperationCapabilities().map((entry) => {
+        if (entry.operationType === "excavation") {
+          return {
+            ...entry,
+            status: "unknown",
+            limitations: [
+              "excavation quantity service capability is undetermined (status unknown) \u2014 probing required before execution"
+            ]
+          };
+        }
+        if (entry.operationType === "plaster-application") {
+          return {
+            ...entry,
+            status: "degraded",
+            limitations: [
+              "quantity uncertainty widened while thickness-sensor calibration is pending"
+            ]
+          };
+        }
+        return entry;
+      })
+    }
+  ],
+  updatedAt: REFERENCE_PROFILE_INSTANT
+};
+function buildingOperationCapabilities() {
+  const entries = [
+    [
+      "excavation",
+      ["depth", "width", "length"],
+      ["maximum excavation depth is 6 m per operation (Phase 1 building scope)"]
+    ],
+    ["backfill", ["depth", "width", "length"], []],
+    [
+      "demolition-removal",
+      ["length", "height", "thickness"],
+      ["load-bearing elements require engineer review before removal"]
+    ],
+    [
+      "foundation-placement",
+      ["length", "width", "depth", "material"],
+      ["strip footings only in the Phase 1 building scope"]
+    ],
+    [
+      "slab-placement",
+      ["length", "width", "thickness", "material"],
+      ["ground-bearing slabs only in the Phase 1 building scope"]
+    ],
+    [
+      "block-wall-placement",
+      ["length", "height", "thickness", "material"],
+      ["maximum wall height is 3 m per operation"]
+    ],
+    [
+      "opening-creation",
+      ["width", "height", "material"],
+      ["openings in load-bearing walls require engineer review"]
+    ],
+    [
+      "plaster-application",
+      ["thickness", "material"],
+      ["maximum plaster thickness is 50 mm per coat"]
+    ],
+    [
+      "building-service-installation",
+      ["length", "diameter", "material"],
+      ["conduit and cable-tray runs only (Phase 1 MEP foundation subset)"]
+    ],
+    ["finish-application", ["thickness", "material"], []]
+  ];
+  return entries.map(([operationType, requiredParameters, limitations]) => ({
+    operationType,
+    status: "supported",
+    requiredParameters: [...requiredParameters],
+    limitations: [...limitations]
+  }));
+}
+
+// packages/solution-contract/src/negotiation.ts
+var OPERATION_NEGOTIATION_OUTCOMES = [
+  "executable",
+  "blocked",
+  "unsupported",
+  "unknown"
+];
+var OPERATION_NEGOTIATION_REASON_CODES = [
+  "capability-satisfied",
+  "capability-degraded",
+  "domain-not-declared",
+  "domain-unavailable",
+  "domain-unknown",
+  "operation-type-not-declared",
+  "operation-type-unavailable",
+  "operation-type-unknown",
+  "missing-required-parameter"
+];
+var NegotiationReasonSchema = external_exports.object({
+  code: external_exports.enum(OPERATION_NEGOTIATION_REASON_CODES),
+  detail: textSchema.describe(
+    "Honest deterministic reason text \u2014 names the vertical, operation type or parameter and the declaring profile."
+  )
+}).passthrough();
+var OperationCapabilityNegotiationSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  intentRef: stableIdSchema.describe(
+    "The intent event this negotiation answered (echo of intentId)."
+  ),
+  profileRef: stableIdSchema.describe(
+    "The engine capability profile this negotiation used (echo of profileId)."
+  ),
+  outcome: external_exports.enum(OPERATION_NEGOTIATION_OUTCOMES).describe(
+    "executable (capability declared and parameters present) | blocked (required parameters missing \u2014 ask, never invent) | unsupported (definitively not supported) | unknown (capability undetermined; never conflated with unsupported)."
+  ),
+  reasons: external_exports.array(NegotiationReasonSchema).min(1).describe(
+    "NEVER empty: executable carries capability-satisfied (plus capability-degraded with the surfaced limitations when the declared status is degraded); every refusal carries its honest reason."
+  ),
+  missingParameters: external_exports.array(shortTextSchema).describe(
+    "blocked outcome: the required parameter names missing from the intent, in the profile's declaration order (the agent's clarification-question driver). Empty otherwise."
+  )
+}).passthrough();
+var OperationCapabilityNegotiationCodec = createSolutionWireCodec({
+  name: "OperationCapabilityNegotiation",
+  family: "capability",
+  schema: OperationCapabilityNegotiationSchema
+});
+var decodeOperationCapabilityNegotiation = OperationCapabilityNegotiationCodec.decode;
+var decodeOperationCapabilityNegotiationStrict = OperationCapabilityNegotiationCodec.decodeStrict;
+var encodeOperationCapabilityNegotiation = OperationCapabilityNegotiationCodec.encode;
+function negotiateOperationCapability(intent, profile) {
+  const intentRef = intent.intentId;
+  const profileRef = profile.profileId;
+  const finish = (outcome, reasons2, missingParameters = []) => ({
+    contractVersion: SOLUTION_CONTRACT_VERSION,
+    intentRef,
+    profileRef,
+    outcome,
+    reasons: [...reasons2],
+    missingParameters: [...missingParameters]
+  });
+  const vertical = intent.domain.vertical;
+  const domainEntry = profile.domains.find(
+    (entry) => entry.domain.vertical === vertical
+  );
+  if (domainEntry === void 0) {
+    return finish("unsupported", [
+      {
+        code: "domain-not-declared",
+        detail: `operation domain vertical '${vertical}' is not declared by engine profile '${profileRef}' (${profile.engineKind} ${profile.engineVersion}); declared verticals: ${renderList(profile.domains.map((entry) => entry.domain.vertical))}`
+      }
+    ]);
+  }
+  if (domainEntry.status === "unavailable") {
+    return finish("unsupported", [
+      {
+        code: "domain-unavailable",
+        detail: `operation domain vertical '${vertical}' is declared unavailable by engine profile '${profileRef}'`
+      }
+    ]);
+  }
+  if (domainEntry.status === "unknown") {
+    return finish("unknown", [
+      {
+        code: "domain-unknown",
+        detail: `operation domain vertical '${vertical}' capability is undetermined (profile status unknown; probing required) \u2014 never reported as unsupported`
+      }
+    ]);
+  }
+  const operationType = intent.operationType;
+  const operationEntry = domainEntry.operations.find(
+    (entry) => entry.operationType === operationType
+  );
+  if (operationEntry === void 0) {
+    return finish("unsupported", [
+      {
+        code: "operation-type-not-declared",
+        detail: `operation type '${operationType}' is not declared by engine profile '${profileRef}' for vertical '${vertical}'; declared types: ${renderList(domainEntry.operations.map((entry) => entry.operationType))}`
+      }
+    ]);
+  }
+  if (operationEntry.status === "unavailable") {
+    return finish("unsupported", [
+      {
+        code: "operation-type-unavailable",
+        detail: `operation type '${operationType}' is declared unavailable for vertical '${vertical}' by engine profile '${profileRef}'` + renderLimitations(operationEntry.limitations)
+      }
+    ]);
+  }
+  if (operationEntry.status === "unknown") {
+    return finish("unknown", [
+      {
+        code: "operation-type-unknown",
+        detail: `operation type '${operationType}' capability for vertical '${vertical}' is undetermined (profile status unknown; probing required) \u2014 never reported as unsupported`
+      }
+    ]);
+  }
+  const present = new Set(intent.parameters.map((parameter) => parameter.name));
+  const missing = operationEntry.requiredParameters.filter(
+    (name) => !present.has(name)
+  );
+  if (missing.length > 0) {
+    return finish(
+      "blocked",
+      missing.map((name) => ({
+        code: "missing-required-parameter",
+        detail: `intent is missing required parameter '${name}' (with an explicit unit) for operation type '${operationType}' in vertical '${vertical}'; the engine requires ${renderList(operationEntry.requiredParameters)} \u2014 ask for the missing value, never invent it`
+      })),
+      missing
+    );
+  }
+  const reasons = [
+    {
+      code: "capability-satisfied",
+      detail: `engine profile '${profileRef}' declares '${operationEntry.status}' capability for operation type '${operationType}' in vertical '${vertical}' and all required parameters (${renderList(operationEntry.requiredParameters)}) are present with explicit units`
+    }
+  ];
+  if (operationEntry.status === "degraded") {
+    reasons.push({
+      code: "capability-degraded",
+      detail: `operation type '${operationType}' executes with declared limitations${renderLimitations(operationEntry.limitations)}`
+    });
+  }
+  return finish("executable", reasons);
+}
+function renderList(values2) {
+  return `[${values2.join(", ")}]`;
+}
+function renderLimitations(limitations) {
+  if (limitations.length === 0) {
+    return "";
+  }
+  return `; declared limitations: ${limitations.join("; ")}`;
+}
+
+// packages/solution-contract/src/trace.ts
+var BOQ_LINE_CONTRIBUTION_KINDS = ["created", "modified", "removed"];
+var OperationContributionSchema = external_exports.object({
+  operationId: stableIdSchema.describe(
+    "The contributing operation's deterministic identity."
+  ),
+  operationIndex: positiveIntSchema.describe(
+    "The contributing operation's 1-based position in the solution version's sequence."
+  ),
+  contributionKind: external_exports.enum(BOQ_LINE_CONTRIBUTION_KINDS)
+}).passthrough();
+var SolutionBoqLineTraceSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  boqLineId: stableIdSchema.describe(
+    "Identity of the GENERATED solution-BOQ line (a derived projection \u2014 the source BOQ, if any, remains a separate source/revision that is never silently overwritten)."
+  ),
+  traceId: stableIdSchema.describe(
+    "Deterministic trace identity (deriveSolutionBoqLineTraceId): sha-256 over {solutionId, versionNumber, boqLineId} \u2014 pinned to the solution VERSION that produced the line."
+  ),
+  solutionId: stableIdSchema.describe(
+    "The solution whose version produced this line (version pin)."
+  ),
+  versionNumber: positiveIntSchema.describe(
+    "The solution VERSION that produced this line (version pin \u2014 the trace never floats across versions)."
+  ),
+  validationSnapshotRef: stableIdSchema.describe(
+    "The DECLARED validation snapshot the BOQ generation used (never absent \u2014 a solution BOQ exists only tied to a snapshot)."
+  ),
+  itemDescription: shortTextSchema.describe(
+    "The generated line's item description (derived wording; source BOQ wording rules apply to source BOQs, which stay separate)."
+  ),
+  contributingOperations: external_exports.array(OperationContributionSchema).min(1).describe(
+    "The solution steps that produced/changed/removed this line \u2014 NEVER empty: every generated BOQ line traces to at least one operation (schema-level minimum)."
+  ),
+  quantity: TypedQuantitySchema.describe(
+    "The line's typed quantity with explicit unit and calculation provenance (calculationRef) \u2014 the deterministic quantity derivation of PROD-025."
+  ),
+  geometryRefs: external_exports.array(TargetGeometryRefSchema).describe(
+    "Geometry references the line's quantity derives from (geometry provenance)."
+  )
+}).passthrough();
+var SolutionBoqLineTraceCodec = createSolutionWireCodec({
+  name: "SolutionBoqLineTrace",
+  family: "trace",
+  schema: SolutionBoqLineTraceSchema
+});
+var decodeSolutionBoqLineTrace = SolutionBoqLineTraceCodec.decode;
+var decodeSolutionBoqLineTraceStrict = SolutionBoqLineTraceCodec.decodeStrict;
+var encodeSolutionBoqLineTrace = SolutionBoqLineTraceCodec.encode;
+var SolutionBoqTraceSetSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  solutionId: stableIdSchema.describe(
+    "The solution whose version this trace set pins."
+  ),
+  versionNumber: positiveIntSchema.describe(
+    "The solution VERSION this trace set pins (version pin)."
+  ),
+  validationSnapshotRef: stableIdSchema.describe(
+    "The ONE declared validation snapshot the set was generated from (echoed by every line trace \u2014 invariant trace_set_snapshot_pin)."
+  ),
+  lineTraces: external_exports.array(SolutionBoqLineTraceSchema).min(1).describe(
+    "The generated line traces of this solution version. Every entry must pin the set's solutionId/versionNumber/snapshot (invariant trace_set_version_pin_mismatch)."
+  )
+}).passthrough();
+var SolutionBoqTraceSetCodec = createSolutionWireCodec({
+  name: "SolutionBoqTraceSet",
+  family: "trace",
+  schema: SolutionBoqTraceSetSchema
+});
+var decodeSolutionBoqTraceSet = SolutionBoqTraceSetCodec.decode;
+var decodeSolutionBoqTraceSetStrict = SolutionBoqTraceSetCodec.decodeStrict;
+var encodeSolutionBoqTraceSet = SolutionBoqTraceSetCodec.encode;
+
+// packages/solution-contract/src/lifecycle.ts
+var SOLUTION_LIFECYCLE_STATUSES = [
+  "draft",
+  "validated",
+  "superseded",
+  "abandoned"
+];
+
+// packages/solution-contract/src/solution.ts
+var SolutionBranchSchema = external_exports.object({
+  branchedFromSolutionId: stableIdSchema,
+  branchedFromVersionNumber: positiveIntSchema,
+  branchedAt: isoTimestampSchema
+}).passthrough();
+var SolutionSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  solutionId: stableIdSchema.describe("Stable id of this solution."),
+  projectId: stableIdSchema.describe("The project this solution lives in."),
+  title: shortTextSchema.describe("Human-readable solution title."),
+  problemStatement: textSchema.describe(
+    "The engineering problem/intent this solution addresses (the workflow's ENGINEERING PROBLEM / INTENT stage)."
+  ),
+  domain: SolutionDomainDescriptorSchema.describe(
+    "The vertical context (building specifics as data \u2014 never client authority)."
+  ),
+  baselineRealityVersionId: stableIdSchema.describe(
+    "The PINNED authoritative Reality-Graph version this solution branches from. A read-only reference: the Solution Graph is canonical only for the proposal's operation/state history, never observed reality."
+  ),
+  epistemicClass: external_exports.literal("PROPOSED").describe(
+    "ALWAYS 'PROPOSED' \u2014 the schema-level seal: a solution is a proposal; it becomes observed reality only through execution, post-work evidence and the existing assurance/verification process, never by implication."
+  ),
+  status: external_exports.enum(SOLUTION_LIFECYCLE_STATUSES).describe(
+    "The governed lifecycle status (lifecycle.ts transition table): draft \u2192 validated | superseded | abandoned; validated \u2192 superseded | abandoned; superseded/abandoned are terminal. Carries NO approval semantics (approval is an Engineering Case domain act)."
+  ),
+  currentVersionNumber: positiveIntSchema.describe(
+    "The version the solution's `status` refers to."
+  ),
+  branch: SolutionBranchSchema.optional().describe("Proposal-branch lineage (absent for unbranched solutions)."),
+  supersededBy: stableIdSchema.optional().describe(
+    "When status is superseded: the solution that supersedes this one (invariant superseded_solution_without_successor)."
+  ),
+  createdAt: isoTimestampSchema,
+  updatedAt: isoTimestampSchema
+}).passthrough();
+var SolutionCodec = createSolutionWireCodec({
+  name: "Solution",
+  family: "solution",
+  schema: SolutionSchema
+});
+var decodeSolution = SolutionCodec.decode;
+var decodeSolutionStrict = SolutionCodec.decodeStrict;
+var encodeSolution = SolutionCodec.encode;
+var SolutionVersionSchema = external_exports.object({
+  contractVersion: contractVersionSchema,
+  solutionId: stableIdSchema.describe("The solution this version belongs to."),
+  versionNumber: positiveIntSchema.describe(
+    "1-based version number (version context \u2014 pinned by every operation, state, snapshot and BOQ trace of this version)."
+  ),
+  parentVersionNumber: positiveIntSchema.optional().describe(
+    "Version lineage: the prior version this one revises. Absent for version 1 (invariant version_one_with_parent forbids a parent on version 1)."
+  ),
+  status: external_exports.enum(SOLUTION_LIFECYCLE_STATUSES).describe(
+    "The version's lifecycle status (the governed table of lifecycle.ts)."
+  ),
+  operations: external_exports.array(EngineeringOperationSchema).describe(
+    "The ORDERED operation sequence of this version (order is semantic \u2014 it is hashed into every operation and state identity)."
+  ),
+  states: external_exports.array(ProposedStateSchema).min(1).describe(
+    "states[N] = layer N: states[0] is the baseline overlay; states.length must equal operations.length + 1 (invariant solution_version_state_count_mismatch) and every states[N].stateIndex must equal N."
+  ),
+  validationSnapshotRef: stableIdSchema.optional().describe(
+    "The declared validation snapshot (invariant validated_version_without_snapshot: REQUIRED when status is validated \u2014 a solution BOQ may be generated only from a declared snapshot)."
+  ),
+  createdAt: isoTimestampSchema
+}).passthrough();
+var SolutionVersionCodec = createSolutionWireCodec({
+  name: "SolutionVersion",
+  family: "solution",
+  schema: SolutionVersionSchema
+});
+var decodeSolutionVersion = SolutionVersionCodec.decode;
+var decodeSolutionVersionStrict = SolutionVersionCodec.decodeStrict;
+var encodeSolutionVersion = SolutionVersionCodec.encode;
+
+// packages/solution-contract/src/identity.ts
+import { createHash as createHash2 } from "node:crypto";
+function sha256Hex2(value) {
+  return createHash2("sha256").update(canonicalJsonStringify(value), "utf8").digest("hex");
+}
+function operationSemanticProjection(identity) {
+  return {
+    solutionId: identity.solutionId,
+    versionNumber: identity.versionNumber,
+    operationIndex: identity.operationIndex,
+    operationType: identity.operationType,
+    vertical: identity.vertical,
+    parameters: identity.parameters.map((parameter) => ({
+      name: parameter.name,
+      value: parameter.value,
+      unit: parameter.unit
+    })),
+    target: {
+      selectorKind: identity.target.selectorKind,
+      nodeRefs: identity.target.nodeRefs,
+      geometryRefs: identity.target.geometryRefs.map((ref) => ({
+        kind: ref.kind,
+        ref: ref.ref
+      })),
+      units: identity.target.units
+    },
+    dependsOn: identity.dependsOn.map((dependency) => ({
+      operationRef: dependency.operationRef,
+      dependencyKind: dependency.dependencyKind
+    }))
+  };
+}
+function deriveEngineeringOperationId(identity) {
+  return sha256Hex2(operationSemanticProjection(identity));
+}
+function operationSemanticIdentityOfIntent(intent, context) {
+  return {
+    solutionId: context.solutionId,
+    versionNumber: context.versionNumber,
+    operationIndex: context.operationIndex,
+    operationType: intent.operationType,
+    vertical: intent.domain.vertical,
+    parameters: intent.parameters,
+    target: intent.target,
+    dependsOn: intent.dependsOn
+  };
+}
+function deriveProposedStateId(identity) {
+  return sha256Hex2({
+    solutionId: identity.solutionId,
+    versionNumber: identity.versionNumber,
+    stateIndex: identity.stateIndex,
+    baselineRealityVersionId: identity.baselineRealityVersionId,
+    appliedOperationIds: identity.appliedOperationIds,
+    contentDigest: identity.contentDigest
+  });
+}
+function deriveValidationSnapshotId(identity) {
+  return sha256Hex2({
+    solutionId: identity.solutionId,
+    versionNumber: identity.versionNumber,
+    inputDigest: identity.inputDigest,
+    engineKind: identity.engineKind,
+    engineVersion: identity.engineVersion,
+    outcome: identity.outcome
+  });
+}
+
+// packages/solution-contract/src/registry.ts
+function define2(codec) {
+  return {
+    name: codec.name,
+    family: codec.family,
+    contractVersion: solutionFamilyVersion(codec.family),
+    schema: codec.schema,
+    codec
+  };
+}
+var SOLUTION_WIRE_OBJECTS = [
+  define2(EngineeringOperationCodec),
+  define2(EngineeringOperationIntentCodec),
+  define2(OperationCapabilityNegotiationCodec),
+  define2(OperationCapabilityProfileCodec),
+  define2(OperationDependencyCodec),
+  define2(OperationEffectCodec),
+  define2(OperationTargetCodec),
+  define2(ProposedStateCodec),
+  define2(SolutionBoqLineTraceCodec),
+  define2(SolutionBoqTraceSetCodec),
+  define2(SolutionCodec),
+  define2(SolutionDomainDescriptorCodec),
+  define2(SolutionValidationSnapshotCodec),
+  define2(SolutionVersionCodec)
+];
+var SOLUTION_WIRE_OBJECT_NAMES = SOLUTION_WIRE_OBJECTS.map((entry) => entry.name);
+
+// backend/api/src/reasoning/solution/vocabulary.ts
+var UNSAFE_REQUEST_PATTERNS = [
+  {
+    reasonCode: "validation-authority-claim",
+    patterns: [
+      /\b(?:mark|set|declare|flag|record|consider|treat)\b[^.!?]*\bvalidat(?:ed|ion)\b/i,
+      /\bvalidat(?:ed|ion)\b[^.!?]*\b(?:passed|succeeded|successful|is valid)\b/i,
+      /\b(?:mark|set|flag)\b[^.!?]*\bas\s+validated\b/i
+    ]
+  },
+  {
+    reasonCode: "approval-authority-claim",
+    patterns: [
+      /\b(?:approve|approved|approval|approving|sign\s+off)\b/i
+    ]
+  },
+  {
+    reasonCode: "reality-authority-claim",
+    patterns: [
+      /\b(?:declare|mark|set|record|treat|make)\b[^.!?]*\b(?:observed|confirmed|as\s+reality|authoritative)\b/i,
+      /\b(?:declare|mark|set)\b[^.!?]*\b(?:it|this|the\s+\w+)\s+as\s+(?:the\s+)?(?:observed|confirmed)\b/i
+    ]
+  },
+  {
+    reasonCode: "readiness-authority-claim",
+    patterns: [
+      /\b(?:mark|set|declare|flag)\b[^.!?]*\bready\b/i,
+      /\bready\s+for\s+(?:execution|construction|build)\b/i
+    ]
+  },
+  {
+    reasonCode: "cost-authority-claim",
+    patterns: [
+      /\b(?:set|change|fix|assign|write|update|override)\b[^.!?]*\b(?:cost|price|budget|total)\b/i,
+      /\bcost\s+(?:of|to)\b[^.!?]*\b(?:set|is)\s+\w+/i
+    ]
+  },
+  {
+    reasonCode: "raw-geometry-write",
+    patterns: [
+      /\b(?:write|inject|insert|paste|emit)\b[^.!?]*\b(?:geometry|mesh|vertices|triangles)\b/i,
+      /\braw\s+geometry\b/i,
+      /\b(?:generate|create|draw)\b[^.!?]*\b(?:geometry|mesh)\b[^.!?]*\b(?:directly|yourself|myself)\b/i,
+      /\bhand-?(?:write|author)\b[^.!?]*\b(?:geometry|mesh)\b/i
+    ]
+  },
+  {
+    reasonCode: "engine-bypass",
+    patterns: [
+      /\b(?:bypass|skip|ignore|avoid|circumvent|work\s+around)\b[^.!?]*\b(?:engine|validation|deterministic|solution\s+engine|tools?)\b/i,
+      /\b(?:bypass|skip|ignore|avoid|circumvent)\b[^.!?]*\b(?:engine|validation)\b/i,
+      /\b(?:place|apply|put|write)\b[^.!?]*\b(?:yourself|directly\s+into\s+the\s+(?:model|graph))\b/i,
+      /\bwithout\s+the\s+(?:engine|validation)\b/i
+    ]
+  }
+];
+var TOOL_COMMAND_PATTERNS = [
+  {
+    toolKind: "validate",
+    patterns: [/\bvalidate\b/i, /\b(?:run|perform|do)\b[^.!?]*\bvalidation\b/i]
+  },
+  {
+    toolKind: "boq-step-lookup",
+    patterns: [
+      /\b(?:which|what)\b[^.!?]*\bboq\b[^.!?]*\bstep\b/i,
+      /\bboq\s+lines?\b[^.!?]*\b(?:from|of)\b/i,
+      /\bstep\s+\d+\b[^.!?]*\b(?:boq|cost)\b/i,
+      /\bhow\s+much\b[^.!?]*\bstep\s+\d+\b[^.!?]*\bcost\b/i,
+      /\btrace\b[^.!?]*\b(?:boq|line)\b/i
+    ]
+  },
+  {
+    toolKind: "explain",
+    patterns: [
+      /\bwhat\s+(?:does|did)\s+step\s+\d+\s+do\b/i,
+      /\bexplain\b/i,
+      /\bdescribe\b[^.!?]*\bstep\b/i,
+      /\bwhy\b[^.!?]*\bstep\b/i,
+      /\bhow\s+much\b[^.!?]*\b(?:volume|area|material)\b/i
+    ]
+  },
+  {
+    toolKind: "navigate",
+    patterns: [
+      /\b(?:show|go\s+to|view|see|display|open)\b[^.!?]*\bstep\s+\d+\b/i,
+      /\bstep\s+\d+\b[^.!?]*\b(?:please|now)\b/i,
+      /\b(?:go|navigate)\s+back\b/i,
+      /\b(?:baseline|initial)\s+state\b/i,
+      /\blist\b[^.!?]*\b(?:operations|steps)\b/i,
+      /\bshow\s+(?:me\s+)?the\s+current\b/i
+    ]
+  },
+  {
+    toolKind: "inspect",
+    patterns: [
+      /\binspect\b/i,
+      /\bexamine\b[^.!?]*\b(?:state|proposal|solution)\b/i,
+      /\bwhat\s+(?:is|does)\b[^.!?]*\bcurrent\s+(?:proposed\s+)?state\b/i
+    ]
+  }
+];
+function extractStepIndex(utterance) {
+  const match = /\bstep\s+(\d+)\b/i.exec(utterance);
+  if (match === null) {
+    return void 0;
+  }
+  const value = Number(match[1]);
+  return Number.isInteger(value) && value >= 0 ? value : void 0;
+}
+function navigationTargetOf(utterance) {
+  if (/\blist\b[^.!?]*\b(?:operations|steps)\b/i.test(utterance)) {
+    return "list-steps";
+  }
+  if (/\b(?:current|latest)\b[^.!?]*\bstate\b/i.test(utterance)) {
+    return "current-state";
+  }
+  if (/\b(?:baseline|initial)\s+state\b/i.test(utterance) || /\bgo\s+back\b/i.test(utterance)) {
+    return "goto-step";
+  }
+  return "goto-step";
+}
+var STRONG_OPERATION_PATTERNS = [
+  {
+    operationType: "backfill",
+    patterns: [
+      /\bbackfills?\b/i,
+      /\brefills?\b/i,
+      /\bfills?\b[^.!?]{0,40}\b(?:pit|trench|excavation)\b/i,
+      /\bfill\s+(?:in\s+|up\s+)?the\s+(?:pit|trench|excavation)\b/i
+    ]
+  },
+  {
+    operationType: "demolition-removal",
+    patterns: [
+      /\bdemolish(?:es|ed|ing)?\b/i,
+      /\bremov(?:e|es|ed|ing|al)\b/i,
+      /\btear\s+(?:out|down)\b/i,
+      /\btake\s+out\b/i,
+      /\bbreak\s+out\b/i,
+      /\bchip\s+off\b/i,
+      /\bstrip\b[^.!?]{0,30}\b(?:plaster|render|finish|paint|coat|wallpaper)\b/i
+    ]
+  },
+  {
+    operationType: "excavation",
+    patterns: [
+      /\bexcavat(?:e|es|ed|ing)\b/i,
+      /\bdig(?:s|ged|ging)?\b/i,
+      /\bdug\b/i
+    ]
+  },
+  {
+    operationType: "plaster-application",
+    patterns: [
+      /\bappl(?:y|ies|ied|ying)\b[^.!?]{0,40}\bplaster\b/i,
+      /\brender(?:s|ed|ing)?\b/i,
+      /\bskim\s+coat\b/i
+    ]
+  },
+  {
+    operationType: "finish-application",
+    patterns: [
+      /\bappl(?:y|ies|ied|ying)\b[^.!?]{0,40}\b(?:finish|paint|varnish)\b/i
+    ]
+  },
+  {
+    operationType: "block-wall-placement",
+    patterns: [
+      /\blay(?:ing)?\b[^.!?]{0,30}\b(?:blocks?|bricks?)\b/i,
+      /\bblockwork\b/i,
+      /\bbrickwork\b/i,
+      /\bbuild(?:ing)?\s+(?:a\s+|the\s+|this\s+)?(?:block\s+|brick\s+|concrete\s+)?wall\b/i,
+      /\braise(?:ing)?\s+the\s+(?:block\s+)?wall\b/i
+    ]
+  },
+  {
+    operationType: "opening-creation",
+    patterns: [
+      /\b(?:cut|create|make|form)\b[^.!?]{0,30}\bopening\b/i
+    ]
+  },
+  {
+    operationType: "slab-placement",
+    patterns: [
+      /\b(?:pour|place|cast)\b[^.!?]{0,30}\bslabs?\b/i
+    ]
+  },
+  {
+    operationType: "foundation-placement",
+    patterns: [
+      /\b(?:pour|place|cast|lay)\b[^.!?]{0,30}\b(?:footing|foundation)s?\b/i
+    ]
+  },
+  {
+    operationType: "building-service-installation",
+    patterns: [
+      /\b(?:run|install|route|lay)\b[^.!?]{0,40}\b(?:conduits?|cable\s+trays?)\b/i
+    ]
+  }
+];
+var WEAK_OPERATION_HINTS = [
+  {
+    operationType: "excavation",
+    patterns: [/\bpits?\b/i, /\btrench(?:es)?\b/i, /\bexcavat(?:ion|ions)\b/i]
+  },
+  {
+    operationType: "plaster-application",
+    patterns: [/\bplaster(?:s|ed|ing)?\b/i, /\brender(?:s|ed|ing)?\b/i, /\bplaster\s+coat\b/i]
+  },
+  {
+    operationType: "finish-application",
+    patterns: [/\bpaint(?:s|ed|ing)?\b/i, /\bvarnish(?:es|ed|ing)?\b/i, /\bfinish\s+coat\b/i]
+  },
+  {
+    operationType: "block-wall-placement",
+    patterns: [/\b(?:block|brick)\s+wall\b/i, /\bwall\s+of\s+(?:blocks?|bricks?)\b/i]
+  },
+  { operationType: "opening-creation", patterns: [/\bopening\b/i] },
+  {
+    operationType: "slab-placement",
+    patterns: [/\bslabs?\b/i, /\bground(?:\s+bearing)?\s+slab\b/i]
+  },
+  {
+    operationType: "foundation-placement",
+    patterns: [/\bfootings?\b/i, /\bfoundations?\b/i, /\bstrip\s+footings?\b/i]
+  },
+  {
+    operationType: "building-service-installation",
+    patterns: [/\b(?:conduits?|cable\s+trays?)\b/i, /\bconduit\s+runs?\b/i]
+  }
+];
+var SUPPORTED_OPERATION_TYPES = BUILDING_OPERATION_TYPES;
+var VERTICAL_HINT_PATTERNS = [
+  {
+    vertical: "civil-works",
+    patterns: [
+      /\bbridges?\b/i,
+      /\broads?\b/i,
+      /\bhighways?\b/i,
+      /\btunnels?\b/i,
+      /\bculverts?\b/i,
+      /\bdams?\b/i,
+      /\brunways?\b/i
+    ]
+  },
+  { vertical: "industrial-equipment", patterns: [/\bconveyors?\b/i, /\brobot(?:ic)?\s+(?:cell|line|arm)s?\b/i] },
+  { vertical: "electronics", patterns: [/\bPCBs?\b/i, /\bcircuit\s+boards?\b/i] },
+  {
+    vertical: "integrated-circuits",
+    patterns: [/\bintegrated\s+circuits?\b/i, /\bchip\s+layouts?\b/i, /\bIC\s+layouts?\b/i]
+  }
+];
+function isFutureVertical(vertical) {
+  return FUTURE_VERTICALS.includes(vertical);
+}
+var DIMENSION_WORDS = [
+  { word: /\bdepth\b|\bdeep\b/i, parameter: "depth" },
+  { word: /\bwidth\b|\bwide\b/i, parameter: "width" },
+  { word: /\blength\b|\blong\b/i, parameter: "length" },
+  { word: /\bheight\b|\bhigh\b|\btall\b/i, parameter: "height" },
+  { word: /\bthickness\b|\bthick\b/i, parameter: "thickness" },
+  { word: /\bdiameter\b|\bdia\b/i, parameter: "diameter" }
+];
+var COMPARATIVE_WORDS = [
+  { word: /\bdeeper\b/i, parameter: "depth", direction: 1 },
+  { word: /\bshallower\b/i, parameter: "depth", direction: -1 },
+  { word: /\bwider\b/i, parameter: "width", direction: 1 },
+  { word: /\bnarrower\b/i, parameter: "width", direction: -1 },
+  { word: /\blonger\b/i, parameter: "length", direction: 1 },
+  { word: /\bshorter\b/i, parameter: "length", direction: -1 },
+  { word: /\bhigher\b|\btaller\b/i, parameter: "height", direction: 1 },
+  { word: /\blower\b/i, parameter: "height", direction: -1 },
+  { word: /\bthicker\b/i, parameter: "thickness", direction: 1 },
+  { word: /\bthinner\b/i, parameter: "thickness", direction: -1 }
+];
+var CHANGE_VERBS = [
+  /\bmake\b/i,
+  /\bincrease\b/i,
+  /\bdecrease\b/i,
+  /\breduce\b/i,
+  /\braise\b/i,
+  /\blower\b/i,
+  /\bwiden\b/i,
+  /\bnarrow\b/i,
+  /\blengthen\b/i,
+  /\bshorten\b/i,
+  /\bextend\b/i,
+  /\bdeepen\b/i,
+  /\bthicken\b/i
+];
+var MATERIAL_CHANGE_VERBS = [
+  /\bchange\b/i,
+  /\bswitch\b/i,
+  /\bus(e|ing)\b/i,
+  /\bswap\b/i,
+  /\breplac(?:e|ing)\b/i
+];
+var ADD_COAT_PATTERN = /\badd\b[^.!?]{0,30}\b(?:(second|third|fourth|fifth|another)\s+)?coats?\b/i;
+var COAT_COUNT_PATTERN = /\b(?:one|two|three|four|five|six|single|1|2|3|4|5|6)\s*[-\s]?\s*(?:coats?|layers?)\b/i;
+var COAT_WORD_NUMBERS = {
+  single: 1,
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6
+};
+var COAT_ORDINALS = {
+  second: 2,
+  third: 3,
+  fourth: 4,
+  fifth: 5
+};
+var MEASUREMENT_PATTERN = /(\d+(?:\.\d+)?|\d+,\d+)\s*(mm|cm|m|meters?|metres?)\b/gi;
+var LINEAR_UNIT_FACTORS = {
+  mm: 1e-3,
+  cm: 0.01,
+  m: 1,
+  meter: 1,
+  meters: 1,
+  metre: 1,
+  metres: 1
+};
+var CANONICAL_UNITS = {
+  excavation: { depth: "m", width: "m", length: "m" },
+  backfill: { depth: "m", width: "m", length: "m" },
+  "demolition-removal": { length: "m", height: "m", thickness: "m" },
+  "foundation-placement": { length: "m", width: "m", depth: "m" },
+  "slab-placement": { length: "m", width: "m", thickness: "m" },
+  "block-wall-placement": { length: "m", height: "m", thickness: "m" },
+  "opening-creation": { width: "m", height: "m" },
+  "plaster-application": { thickness: "mm" },
+  "finish-application": { thickness: "mm" },
+  "building-service-installation": { length: "m", diameter: "mm" }
+};
+function canonicalUnitFor(operationType, parameter) {
+  return CANONICAL_UNITS[operationType]?.[parameter] ?? "m";
+}
+function toCanonicalUnit(value, unit, operationType, parameter) {
+  const canonical = canonicalUnitFor(operationType, parameter);
+  const sourceFactor = LINEAR_UNIT_FACTORS[unit.toLowerCase()] ?? 1;
+  const canonicalFactor = LINEAR_UNIT_FACTORS[canonical] ?? 1;
+  const metres = value * sourceFactor;
+  const converted = metres / canonicalFactor;
+  return Math.round(converted * 1e9) / 1e9;
+}
+var MATERIAL_VOCABULARIES = {
+  "plaster-application": [
+    { material: "gypsum-plaster", aliases: ["gypsum plaster", "gypsum"] },
+    { material: "cement-plaster", aliases: ["cement plaster", "cement", "plaster"] },
+    { material: "lime-plaster", aliases: ["lime plaster", "lime"] }
+  ],
+  "finish-application": [
+    { material: "acrylic-paint", aliases: ["acrylic paint", "acrylic", "paint"] },
+    { material: "emulsion-paint", aliases: ["emulsion paint", "emulsion"] },
+    { material: "enamel-paint", aliases: ["enamel paint", "enamel"] }
+  ],
+  "block-wall-placement": [
+    { material: "concrete-block", aliases: ["concrete blocks", "concrete block", "blocks", "block", "concrete"] },
+    { material: "aac-block", aliases: ["aac block", "aac blocks", "aac", "autoclaved aerated concrete"] },
+    { material: "clay-brick", aliases: ["clay bricks", "clay brick", "bricks", "brick", "clay"] },
+    { material: "hollow-block", aliases: ["hollow blocks", "hollow block", "hollow"] }
+  ],
+  "foundation-placement": [
+    { material: "reinforced-concrete", aliases: ["reinforced concrete", "rc"] },
+    { material: "plain-concrete", aliases: ["plain concrete", "concrete"] },
+    { material: "rubble-stone", aliases: ["rubble stone", "rubble", "stone"] }
+  ],
+  "slab-placement": [
+    { material: "reinforced-concrete", aliases: ["reinforced concrete", "rc"] },
+    { material: "plain-concrete", aliases: ["plain concrete", "concrete"] }
+  ],
+  "opening-creation": [
+    { material: "timber-door", aliases: ["timber door", "wooden door", "door"] },
+    { material: "aluminium-window", aliases: ["aluminium window", "aluminum window", "window"] },
+    { material: "steel-door", aliases: ["steel door"] },
+    { material: "upvc-window", aliases: ["upvc window", "uPVC window"] }
+  ],
+  "building-service-installation": [
+    { material: "cable-tray", aliases: ["cable tray", "cable trays"] },
+    { material: "steel-conduit", aliases: ["steel conduit"] },
+    { material: "pvc-conduit", aliases: ["pvc conduit", "conduits", "conduit"] },
+    { material: "copper-cable", aliases: ["copper cable", "cable"] }
+  ]
+};
+function extractMaterials(utterance, operationType) {
+  const vocabulary = MATERIAL_VOCABULARIES[operationType] ?? [];
+  const entries = vocabulary.flatMap(
+    (entry) => entry.aliases.map((alias) => ({ alias, material: entry.material }))
+  );
+  entries.sort((a, b2) => b2.alias.length - a.alias.length);
+  const lower = utterance.toLowerCase();
+  const chars = [...lower];
+  const found = [];
+  for (const { alias, material } of entries) {
+    if (found.some((entry) => entry.material === material)) {
+      continue;
+    }
+    const pattern = new RegExp(`\\b${escapeRegExp(alias)}\\b`, "i");
+    const match = pattern.exec(lower);
+    if (match === null) {
+      continue;
+    }
+    const start = match.index;
+    const end = start + match[0].length;
+    let overlaps = false;
+    for (let index = start; index < end; index += 1) {
+      if (chars[index] === "\0") {
+        overlaps = true;
+        break;
+      }
+    }
+    if (overlaps) {
+      continue;
+    }
+    found.push({ material, start });
+    for (let index = start; index < end; index += 1) {
+      chars[index] = "\0";
+    }
+  }
+  found.sort((a, b2) => a.start - b2.start);
+  return found.map((entry) => entry.material);
+}
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+function extractChangedMaterial(utterance, operationType) {
+  const clause = /\b(?:to|with|using)\s+([^.,;!?]+)/i.exec(utterance);
+  if (clause !== null && clause[1] !== void 0) {
+    const materials = extractMaterials(clause[1], operationType);
+    if (materials.length > 0) {
+      return materials;
+    }
+  }
+  return extractMaterials(utterance, operationType);
+}
+var CONFIRMATION_PATTERN = /^(?:yes|yes\s+please|yeah|yep|confirm|confirmed|go\s+ahead|proceed|apply\s+it|do\s+it|ok|okay|apply)\b/i;
+var CANCELLATION_PATTERN = /^(?:no|nope|cancel|never\s+mind|forget\s+it|discard|abort|start\s+over)\b/i;
+
+// backend/api/src/reasoning/solution/quantities.ts
+var QUANTITY_ESTIMATE_BASIS = "deterministic arithmetic over the compiled typed parameters (plus the session focus's caller-known area where used); the solution engine owns authoritative quantity derivation with calculation provenance";
+var IRREVERSIBLE_OPERATION_TYPES = ["demolition-removal"];
+function numericParameterOf(parameters, name) {
+  for (const parameter of parameters) {
+    if (parameter.name === name && typeof parameter.value === "number") {
+      return parameter.value;
+    }
+  }
+  return void 0;
+}
+function textParameterOf(parameters, name) {
+  for (const parameter of parameters) {
+    if (parameter.name === name && typeof parameter.value === "string") {
+      return parameter.value;
+    }
+  }
+  return void 0;
+}
+function estimateOperationQuantities(operationType, parameters, knownFaceAreaM2) {
+  const estimates = [];
+  const push = (label, value, unit, dimension) => {
+    estimates.push({ label, dimension, value, unit, basis: QUANTITY_ESTIMATE_BASIS });
+  };
+  switch (operationType) {
+    case "excavation": {
+      const depth = numericParameterOf(parameters, "depth");
+      const width = numericParameterOf(parameters, "width");
+      const length = numericParameterOf(parameters, "length");
+      if (depth !== void 0 && width !== void 0 && length !== void 0) {
+        push("excavated volume (soil removed)", depth * width * length, "m3", "volume");
+      }
+      break;
+    }
+    case "backfill": {
+      const depth = numericParameterOf(parameters, "depth");
+      const width = numericParameterOf(parameters, "width");
+      const length = numericParameterOf(parameters, "length");
+      if (depth !== void 0 && width !== void 0 && length !== void 0) {
+        push("backfill volume (fill placed)", depth * width * length, "m3", "volume");
+      }
+      break;
+    }
+    case "demolition-removal": {
+      const length = numericParameterOf(parameters, "length");
+      const height = numericParameterOf(parameters, "height");
+      const thickness = numericParameterOf(parameters, "thickness");
+      if (length !== void 0 && height !== void 0 && thickness !== void 0) {
+        push("removed volume (construction demolished)", length * height * thickness, "m3", "volume");
+      }
+      break;
+    }
+    case "block-wall-placement": {
+      const length = numericParameterOf(parameters, "length");
+      const height = numericParameterOf(parameters, "height");
+      const thickness = numericParameterOf(parameters, "thickness");
+      if (length !== void 0 && height !== void 0 && thickness !== void 0) {
+        push("blockwork volume (wall added)", length * height * thickness, "m3", "volume");
+        push("wall face area", length * height, "m2", "area");
+      }
+      break;
+    }
+    case "foundation-placement": {
+      const length = numericParameterOf(parameters, "length");
+      const width = numericParameterOf(parameters, "width");
+      const depth = numericParameterOf(parameters, "depth");
+      if (length !== void 0 && width !== void 0 && depth !== void 0) {
+        push("foundation volume (concrete placed)", length * width * depth, "m3", "volume");
+      }
+      break;
+    }
+    case "slab-placement": {
+      const length = numericParameterOf(parameters, "length");
+      const width = numericParameterOf(parameters, "width");
+      const thickness = numericParameterOf(parameters, "thickness");
+      if (length !== void 0 && width !== void 0 && thickness !== void 0) {
+        push("slab volume (concrete placed)", length * width * thickness, "m3", "volume");
+      }
+      break;
+    }
+    case "opening-creation": {
+      const width = numericParameterOf(parameters, "width");
+      const height = numericParameterOf(parameters, "height");
+      if (width !== void 0 && height !== void 0) {
+        push("opening area (construction removed)", width * height, "m2", "area");
+      }
+      break;
+    }
+    case "building-service-installation": {
+      const length = numericParameterOf(parameters, "length");
+      if (length !== void 0) {
+        push("service run length", length, "m", "length");
+      }
+      break;
+    }
+    case "plaster-application":
+    case "finish-application": {
+      const thickness = numericParameterOf(parameters, "thickness");
+      if (thickness !== void 0 && knownFaceAreaM2 !== void 0) {
+        push(
+          "layer volume (thickness \xD7 caller-known face area)",
+          thickness / 1e3 * knownFaceAreaM2,
+          "m3",
+          "volume"
+        );
+      }
+      const coats = numericParameterOf(parameters, "coats");
+      if (coats !== void 0) {
+        push("coat count", coats, "count", "count");
+      }
+      break;
+    }
+    default:
+      break;
+  }
+  return estimates.map((estimate) => ({
+    ...estimate,
+    value: Math.round(estimate.value * 1e9) / 1e9
+  }));
+}
+function isIrreversibleOperation(operationType) {
+  return IRREVERSIBLE_OPERATION_TYPES.includes(operationType);
+}
+function reviewRequirementsOf(operationType) {
+  const domain = REFERENCE_BUILDING_OPERATION_PROFILE.domains.find(
+    (entry) => entry.domain.vertical === "building"
+  );
+  const operation = domain?.operations.find((entry) => entry.operationType === operationType);
+  return operation === void 0 ? [] : [...operation.limitations];
+}
+
+// backend/api/src/reasoning/solution/tools.ts
+function toolCommandOf(toolKind, utterance, solutionRef, attributionBase) {
+  const { solutionId, versionNumber } = solutionRef;
+  const stepIndex = extractStepIndex(utterance);
+  const navigationTarget = navigationTargetOf(utterance);
+  const attribution = {
+    ...attributionBase,
+    normalizedCommand: "",
+    normalizedCommandText: ""
+  };
+  switch (toolKind) {
+    case "validate":
+      return {
+        command: { kind: "validate", attribution, solutionId, versionNumber },
+        normalizedCommandText: "Validate the solution."
+      };
+    case "inspect":
+      return {
+        command: { kind: "inspect", attribution, solutionId, versionNumber },
+        normalizedCommandText: "Inspect the current proposed state."
+      };
+    case "navigate": {
+      const command = {
+        kind: "navigate",
+        attribution,
+        solutionId,
+        versionNumber,
+        target: navigationTarget === "goto-step" ? { kind: "goto-step", stateIndex: stepIndex ?? 0 } : { kind: navigationTarget }
+      };
+      const index = command.target.stateIndex ?? 0;
+      const normalizedCommandText = navigationTarget === "list-steps" ? "List the solution steps." : navigationTarget === "current-state" ? "Show the current proposed state." : index === 0 ? "Show the baseline state." : `Show step ${index}.`;
+      return { command, normalizedCommandText };
+    }
+    case "explain": {
+      const index = stepIndex ?? 1;
+      return {
+        command: { kind: "explain", attribution, solutionId, versionNumber, operationIndex: index },
+        normalizedCommandText: `Explain step ${index}.`
+      };
+    }
+    case "boq-step-lookup": {
+      const index = stepIndex ?? 1;
+      return {
+        command: {
+          kind: "boq-step-lookup",
+          attribution,
+          solutionId,
+          versionNumber,
+          operationIndex: index
+        },
+        normalizedCommandText: `Look up the BOQ lines for step ${index}.`
+      };
+    }
+    default: {
+      const exhaustive = toolKind;
+      throw new Error(`unknown tool kind: ${String(exhaustive)}`);
+    }
+  }
+}
+
+// backend/api/src/reasoning/solution/compiler.ts
+var VERB_DIMENSION_WORDS = [
+  { word: /\bdeepen(?:s|ed|ing)?\b/i, parameter: "depth", direction: 1 },
+  { word: /\bwiden(?:s|ed|ing)?\b/i, parameter: "width", direction: 1 },
+  { word: /\bnarrow(?:s|ed|ing)?\b/i, parameter: "width", direction: -1 },
+  { word: /\blengthen(?:s|ed|ing)?\b/i, parameter: "length", direction: 1 },
+  { word: /\bshorten(?:s|ed|ing)?\b/i, parameter: "length", direction: -1 },
+  { word: /\bextend(?:s|ed|ing)?\b/i, parameter: "length", direction: 1 },
+  { word: /\braise(?:s|d)?\b/i, parameter: "height", direction: 1 },
+  { word: /\blower(?:s|ed)?\b/i, parameter: "height", direction: -1 },
+  { word: /\bthicken(?:s|ed|ing)?\b/i, parameter: "thickness", direction: 1 }
+];
+var ALTERNATIVE_MEASUREMENT_PATTERN = /(\d+(?:\.\d+)?|\d+,\d+)\s+or\s+(\d+(?:\.\d+)?|\d+,\d+)\s*(mm|cm|m|meters?|metres?)/gi;
+var CONSTRAINT_MARKER_PATTERN = /\b(?:near|adjacent\s+to|next\s+to|beside|close\s+to)\b/i;
+var CONSTRAINT_SUBJECT_PATTERN = /\b(?:foundation|footing|structure|structural\s+wall|neighbou?r(?:ing)?|boundary|property\s+line)\b/i;
+var CONSTRAINT_VALUE_PATTERN = /(\d+(?:\.\d+)?|\d+,\d+)\s*(mm|cm|m|meters?|metres?)\s*(?:of\s+)?(?:clearance|offset)\b/i;
+var CONSTRAINT_VALUE_PATTERN_REVERSE = /\bclearance\s+(?:of\s+)?(\d+(?:\.\d+)?|\d+,\d+)\s*(mm|cm|m|meters?|metres?)\b/i;
+var POSTFIX_WINDOW = 3;
+var PREFIX_WINDOW = 8;
+var FOCUS_SEEDABLE_PARAMETERS = {
+  excavation: [],
+  backfill: [],
+  "demolition-removal": ["length", "height", "thickness"],
+  "block-wall-placement": ["length", "thickness"],
+  "foundation-placement": ["length"],
+  "slab-placement": [],
+  "opening-creation": [],
+  "plaster-application": [],
+  "finish-application": [],
+  "building-service-installation": []
+};
+var UNSAFE_REFUSAL_PROSE = {
+  "validation-authority-claim": {
+    family: "claim validation success",
+    honesty: "validation outcomes belong to the deterministic server solution engine's validation snapshots"
+  },
+  "approval-authority-claim": {
+    family: "claim engineering approval",
+    honesty: "approving an intervention is an Engineering Case domain act, never an agent act"
+  },
+  "reality-authority-claim": {
+    family: "declare observed reality",
+    honesty: "observed/confirmed status belongs to the Reality Graph through evidence and governed review"
+  },
+  "readiness-authority-claim": {
+    family: "declare readiness",
+    honesty: "task readiness belongs to the Assurance Engine"
+  },
+  "cost-authority-claim": {
+    family: "claim cost authority",
+    honesty: "costs are derived by the deterministic BOQ services and remain reviewable projections"
+  },
+  "raw-geometry-write": {
+    family: "write raw geometry",
+    honesty: "geometry is owned by the deterministic solution engine behind the tool port"
+  },
+  "engine-bypass": {
+    family: "bypass the deterministic solution engine",
+    honesty: "every consequential action must compile to a typed operation applied by the engine"
+  }
+};
+function createDeterministicGrammarUnderstanding() {
+  return {
+    descriptor: {
+      understandingId: "reasoning-deterministic-grammar",
+      kind: "deterministic-grammar"
+    },
+    resolveSlotAssignments: async () => []
+  };
+}
+function createSolutionCommandCompiler(options) {
+  if (typeof options.clock !== "function") {
+    throw new SolutionCompilerError("invalid_session", "clock must be an injected function");
+  }
+  const understanding = options.understanding ?? createDeterministicGrammarUnderstanding();
+  const descriptor = understanding.descriptor;
+  if (typeof descriptor.understandingId !== "string" || descriptor.understandingId.length === 0 || descriptor.kind !== "deterministic-grammar" && descriptor.kind !== "llm-adapter") {
+    throw new SolutionCompilerError(
+      "invalid_understanding_descriptor",
+      "the understanding port must carry a well-formed descriptor"
+    );
+  }
+  const clock = options.clock;
+  return {
+    compile: async (input) => {
+      const utterance = input.utterance;
+      if (typeof utterance !== "string" || utterance.trim().length === 0) {
+        throw new SolutionCompilerError(
+          "invalid_utterance",
+          "the utterance must be a non-empty string"
+        );
+      }
+      const session = input.session;
+      validateAgentSessionContext(session);
+      const compiledAt = clock();
+      const attributionBase = {
+        rawUtterance: utterance,
+        compilerPath: "deterministic",
+        agentId: session.agentId,
+        sessionId: session.sessionId,
+        compiledAt,
+        ...session.userId !== void 0 ? { userId: session.userId } : {}
+      };
+      const unsafe = matchUnsafeRequest(utterance);
+      if (unsafe !== null) {
+        const command = {
+          kind: "unsafe-refusal",
+          reasonCode: unsafe.reasonCode,
+          reason: unsafe.reason,
+          attribution: {
+            ...attributionBase,
+            normalizedCommand: "",
+            normalizedCommandText: ""
+          }
+        };
+        return command;
+      }
+      const toolKind = matchToolCommand(utterance);
+      if (toolKind !== null) {
+        const solutionRef = session.proposedTo ?? null;
+        if (solutionRef === null) {
+          return clarificationCommand(
+            [
+              {
+                slotKind: "location",
+                slot: "solution context",
+                question: `Which solution context does this ${toolKind} command address? The session is not attached to a solution (no solutionId and versionNumber to operate on).`
+              }
+            ],
+            void 0,
+            attributionBase
+          );
+        }
+        const { command, normalizedCommandText: normalizedCommandText2 } = toolCommandOf(
+          toolKind,
+          utterance,
+          solutionRef,
+          attributionBase
+        );
+        const normalizedCommand = serializeToolCommand(command);
+        const fullAttribution = {
+          ...attributionBase,
+          normalizedCommand,
+          normalizedCommandText: normalizedCommandText2
+        };
+        const fullCommand = {
+          ...command,
+          attribution: fullAttribution
+        };
+        const outcome2 = {
+          kind: "tool-command",
+          toolCommandKind: toolKind,
+          command: fullCommand,
+          attribution: fullAttribution
+        };
+        return outcome2;
+      }
+      const sequenced = stripClauses(
+        utterance,
+        /\b(?:after|once|following)\s+([^.,;!?]+?)(?=\s+(?:on|to|in|for|at|with|along|across|after)\b|[.,;!?]|$)/gi
+      );
+      const replaced = stripClauses(
+        sequenced.main,
+        /\b(?:instead\s+of|rather\s+than)\s+([^.,;!?]+?)(?=\s+(?:on|to|in|for|at|with|along|across|after)\b|[.,;!?]|$)/gi
+      );
+      const main = replaced.main;
+      const strongMatches = STRONG_OPERATION_PATTERNS.filter(
+        (entry) => entry.patterns.some((pattern) => pattern.test(main))
+      ).map((entry) => entry.operationType);
+      let operationType;
+      if (strongMatches.length > 1) {
+        return ambiguousCommand(
+          strongMatches.map((type2) => ({
+            description: `${type2} operation as requested`,
+            operationType: type2
+          })),
+          attributionBase
+        );
+      }
+      if (strongMatches.length === 1) {
+        operationType = strongMatches[0];
+      } else {
+        const weakMatches = WEAK_OPERATION_HINTS.filter(
+          (entry) => entry.patterns.some((pattern) => pattern.test(main))
+        ).map((entry) => entry.operationType);
+        if (weakMatches.length > 1) {
+          return ambiguousCommand(
+            weakMatches.map((type2) => ({
+              description: `${type2} operation as requested`,
+              operationType: type2
+            })),
+            attributionBase
+          );
+        }
+        if (weakMatches.length === 1) {
+          operationType = weakMatches[0];
+        }
+      }
+      if (operationType === void 0) {
+        return unsupportedCommand(main, attributionBase);
+      }
+      const type = operationType;
+      const changeMode = CHANGE_VERBS.some((pattern) => pattern.test(main)) || MATERIAL_CHANGE_VERBS.some((pattern) => pattern.test(main)) || ADD_COAT_PATTERN.test(main);
+      const extraction = extractMeasurements(main);
+      const { bindings, unassigned } = extraction;
+      const deltaRequested = /* @__PURE__ */ new Set([
+        ...scanDimensionHits(main).filter((hit) => hit.kind === "comparative").map((hit) => hit.parameter),
+        ...VERB_DIMENSION_WORDS.filter((entry) => entry.word.test(main)).map(
+          (entry) => entry.parameter
+        )
+      ]);
+      const materialRequired = requiredParametersOf(type).includes("material");
+      let materials = [];
+      let materialAmbiguous = false;
+      if (materialRequired) {
+        materials = changeMode ? extractChangedMaterial(main, type) : extractMaterials(main, type);
+        const asksForDifferent = /\b(?:different|another|other|alternative)\b/i.test(main) && /\bmaterial\b/i.test(main);
+        if (asksForDifferent) {
+          materials = [];
+        } else if (materials.length > 1) {
+          materialAmbiguous = true;
+        }
+      }
+      const coats = extractCoatCount(main, session, type, changeMode);
+      const focus = resolveFocus(main, session);
+      const recent = changeMode ? recentOperationOf(session, type) : void 0;
+      const seeds = /* @__PURE__ */ new Map();
+      if (recent !== void 0) {
+        for (const parameter of recent.parameters) {
+          seeds.set(parameter.name, parameter);
+        }
+      }
+      if (focus !== null) {
+        const seedable = FOCUS_SEEDABLE_PARAMETERS[type] ?? [];
+        for (const parameter of focus.knownParameters ?? []) {
+          if (seedable.includes(parameter.name) && !seeds.has(parameter.name)) {
+            seeds.set(parameter.name, parameter);
+          }
+        }
+      }
+      const required = requiredParametersOf(type);
+      const numericRequired = required.filter((name) => name !== "material");
+      const bound = /* @__PURE__ */ new Map();
+      const conflictingValues = [];
+      for (const binding of bindings) {
+        if (!numericRequired.includes(binding.parameter)) {
+          continue;
+        }
+        const existing = bound.get(binding.parameter);
+        if (existing === void 0) {
+          bound.set(binding.parameter, binding);
+        } else if (existing.value !== binding.value && !binding.isDelta && !existing.isDelta) {
+          const conflict = conflictingValues.find(
+            (entry) => entry.parameter === binding.parameter
+          );
+          if (conflict === void 0) {
+            conflictingValues.push({
+              parameter: binding.parameter,
+              values: [
+                { value: existing.value, unit: existing.rawUnit },
+                { value: binding.value, unit: binding.rawUnit }
+              ]
+            });
+          } else if (!conflict.values.some(
+            (candidate) => candidate.value === binding.value && candidate.unit === binding.rawUnit
+          )) {
+            conflict.values.push({ value: binding.value, unit: binding.rawUnit });
+          }
+        }
+      }
+      if (conflictingValues.length > 0) {
+        const readings = [];
+        for (const conflict of conflictingValues) {
+          for (const candidate of conflict.values) {
+            readings.push({
+              description: `${type} with ${conflict.parameter} ${formatCanonicalNumber(
+                toCanonicalUnit(candidate.value, candidate.unit, type, conflict.parameter)
+              )} ${canonicalUnitFor(type, conflict.parameter)}`,
+              operationType: type,
+              differingSlot: conflict.parameter
+            });
+          }
+        }
+        return ambiguousCommand(readings, attributionBase);
+      }
+      let compilerPath = "deterministic";
+      let openUnassigned = [...unassigned];
+      const eligibleSlots = () => {
+        const eligible = [];
+        for (const name of numericRequired) {
+          if (bound.has(name)) {
+            continue;
+          }
+          if (!changeMode && seeds.has(name)) {
+            continue;
+          }
+          eligible.push(name);
+        }
+        return eligible;
+      };
+      if (openUnassigned.length > 0 && eligibleSlots().length >= 2) {
+        const proposed = await understanding.resolveSlotAssignments({
+          utterance,
+          operationType: type,
+          unassignedMeasurements: openUnassigned.map((measurement) => ({
+            value: measurement.value,
+            unit: measurement.rawUnit
+          })),
+          eligibleSlots: eligibleSlots()
+        });
+        for (const assignment of proposed) {
+          const accepted = acceptAssignment(assignment, openUnassigned, eligibleSlots());
+          if (accepted === null) {
+            continue;
+          }
+          bound.set(accepted.parameter, accepted.binding);
+          openUnassigned = openUnassigned.filter(
+            (measurement) => measurement !== accepted.measurement
+          );
+          compilerPath = "provider-enriched";
+        }
+      }
+      if (openUnassigned.length === 1 && eligibleSlots().length === 1) {
+        const measurement = openUnassigned[0];
+        const slot = eligibleSlots()[0];
+        if (measurement !== void 0 && slot !== void 0) {
+          bound.set(slot, {
+            parameter: slot,
+            value: measurement.value,
+            rawUnit: measurement.rawUnit,
+            isDelta: false,
+            direction: 1
+          });
+          openUnassigned = [];
+        }
+      }
+      const parameters = [];
+      const missing = [];
+      for (const name of required) {
+        if (name === "material") {
+          if (materials.length === 1) {
+            parameters.push({ name, value: materials[0] });
+          } else {
+            const seeded = seeds.get(name);
+            const keepCurrent = changeMode && seeded !== void 0 && typeof seeded.value === "string" && !/\b(?:different|another|other|alternative)\b/i.test(main);
+            if (keepCurrent && seeded !== void 0 && typeof seeded.value === "string") {
+              parameters.push({ name, value: seeded.value });
+            } else {
+              missing.push(materialQuestion(type, changeMode, seeds));
+            }
+          }
+          continue;
+        }
+        const binding = bound.get(name);
+        if (binding !== void 0 && !binding.isDelta) {
+          parameters.push({
+            name,
+            value: toCanonicalUnit(binding.value, binding.rawUnit, type, name),
+            unit: canonicalUnitFor(type, name)
+          });
+          continue;
+        }
+        if (binding !== void 0 && binding.isDelta) {
+          const base = seeds.get(name);
+          if (base === void 0 || typeof base.value !== "number") {
+            missing.push(dimensionQuestion(type, name, "delta-base"));
+            continue;
+          }
+          const delta = toCanonicalUnit(binding.value, binding.rawUnit, type, name);
+          const baseCanonical = toCanonicalUnit(base.value, base.unit ?? "m", type, name);
+          const result = Math.round((baseCanonical + delta * binding.direction) * 1e9) / 1e9;
+          parameters.push({ name, value: result, unit: canonicalUnitFor(type, name) });
+          continue;
+        }
+        if (deltaRequested.has(name)) {
+          missing.push(dimensionQuestion(type, name, "delta-amount"));
+          continue;
+        }
+        const seed = seeds.get(name);
+        if (seed !== void 0 && typeof seed.value === "number") {
+          parameters.push({
+            name,
+            value: toCanonicalUnit(seed.value, seed.unit ?? "m", type, name),
+            unit: canonicalUnitFor(type, name)
+          });
+          continue;
+        }
+        missing.push(dimensionQuestion(type, name, "value"));
+      }
+      if (coats !== void 0) {
+        parameters.push({ name: "coats", value: coats, unit: "count" });
+      }
+      const clearanceBinding = bindings.find(
+        (binding) => binding.parameter === "clearance" && !binding.isDelta
+      );
+      if (clearanceBinding !== void 0) {
+        parameters.push({
+          name: "clearance",
+          value: toCanonicalUnit(
+            clearanceBinding.value,
+            clearanceBinding.rawUnit,
+            "clearance",
+            "clearance"
+          ),
+          unit: "m"
+        });
+      }
+      if (openUnassigned.length > 0) {
+        const eligible = eligibleSlots();
+        let readings;
+        if (eligible.length >= 2) {
+          readings = dimensionAmbiguityReadings(type, openUnassigned, eligible);
+        } else if (eligible.length === 1) {
+          const slot = eligible[0];
+          readings = openUnassigned.map((measurement) => ({
+            description: `${type} with ${slot} ${formatCanonicalNumber(
+              toCanonicalUnit(measurement.value, measurement.rawUnit, type, slot)
+            )} ${canonicalUnitFor(type, slot)}`,
+            operationType: type,
+            differingSlot: slot
+          }));
+        } else {
+          const first = openUnassigned[0];
+          if (first !== void 0) {
+            missing.push({
+              slotKind: "dimension",
+              slot: "value assignment",
+              question: `The value assignment is unclear: ${formatCanonicalNumber(first.value)} ${first.rawUnit} could not be assigned to a parameter of the ${type}. Which parameter does it specify?`
+            });
+          }
+          readings = [];
+        }
+        if (readings.length >= 2) {
+          return ambiguousCommand(readings, attributionBase);
+        }
+      }
+      if (materialAmbiguous && materials.length > 1) {
+        return ambiguousCommand(
+          materials.map((material) => ({
+            description: `${type} with material ${material}`,
+            operationType: type,
+            differingSlot: "material"
+          })),
+          attributionBase
+        );
+      }
+      const target = focus !== null ? targetOfFocus(focus) : void 0;
+      const dependencies = [];
+      for (const clause of sequenced.clauses) {
+        const referenced = referencedOperationOf(clause, session);
+        if (referenced === null) {
+          missing.push(sequencingQuestion(type, clause));
+        } else {
+          dependencies.push({
+            contractVersion: "1.0.0",
+            operationRef: referenced.operationId,
+            dependencyKind: "completion-before",
+            rationale: `sequenced after '${clause}' per the user's request`
+          });
+        }
+      }
+      if (CONSTRAINT_MARKER_PATTERN.test(main) && CONSTRAINT_SUBJECT_PATTERN.test(main) && !parameters.some((parameter) => parameter.name === "clearance")) {
+        const subjectMatch = CONSTRAINT_SUBJECT_PATTERN.exec(main);
+        const subject = subjectMatch?.[0] ?? "the referenced structure";
+        missing.push({
+          slotKind: "constraint",
+          slot: "clearance",
+          question: `What clearance must be kept from the ${subject}? Provide the distance with an explicit unit (e.g. 0.5 m).`
+        });
+      }
+      if (target === void 0) {
+        missing.push(locationQuestion(type, session));
+      }
+      if (missing.length > 0) {
+        return clarificationCommand(missing, type, { ...attributionBase, compilerPath });
+      }
+      if (parameters.length === 0) {
+        return clarificationCommand(
+          [dimensionQuestion(type, numericRequired[0] ?? "depth", "value")],
+          type,
+          { ...attributionBase, compilerPath }
+        );
+      }
+      if (target === void 0) {
+        throw new SolutionCompilerError(
+          "invalid_session",
+          "the compiled intent has no anchored target (a focus is required)"
+        );
+      }
+      const intentId = deriveIntentId(utterance, session, compiledAt, type, parameters);
+      const normalizedCommandText = renderNormalizedCommandText(type, parameters);
+      let intent;
+      try {
+        intent = createOperationIntent({
+          intentId,
+          operationType: type,
+          domain: REFERENCE_BUILDING_DOMAIN,
+          parameters,
+          target,
+          dependsOn: dependencies,
+          provenance: {
+            origin: "agent",
+            authoredBy: session.agentId,
+            authoredAt: compiledAt,
+            commandText: normalizedCommandText,
+            evidenceIds: [],
+            derivationNote: `compiled from the user's natural-language request by the ${compilerPath} path of the agent operation compiler (PROD-023); applied through the deterministic solution tool port only`
+          },
+          ...session.proposedTo !== void 0 ? { proposedTo: session.proposedTo } : {}
+        });
+      } catch (error) {
+        const name = error instanceof Error ? error.name : "Error";
+        throw new SolutionCompilerError(
+          "invalid_utterance",
+          `the compiled semantics failed the contract constructor (${name}); this is a compiler defect, not a user error`
+        );
+      }
+      const attribution = {
+        ...attributionBase,
+        compilerPath,
+        normalizedCommand: encodeEngineeringOperationIntent(intent),
+        normalizedCommandText
+      };
+      const outcome = {
+        kind: "operation-intent",
+        intent,
+        attribution
+      };
+      return outcome;
+    }
+  };
+}
+function matchUnsafeRequest(utterance) {
+  for (const entry of UNSAFE_REQUEST_PATTERNS) {
+    for (const pattern of entry.patterns) {
+      if (pattern.test(utterance)) {
+        const prose = UNSAFE_REFUSAL_PROSE[entry.reasonCode];
+        const family = prose?.family ?? "claim an authority it does not own";
+        const honesty = prose?.honesty ?? "the agent is a translator, clarifier and proposer only";
+        return {
+          reasonCode: entry.reasonCode,
+          reason: `the request would ${family} \u2014 the agent is a translator, clarifier and proposer only: ${honesty}. Refused with NO operation intent produced.`
+        };
+      }
+    }
+  }
+  return null;
+}
+function matchToolCommand(utterance) {
+  for (const entry of TOOL_COMMAND_PATTERNS) {
+    if (entry.patterns.some((pattern) => pattern.test(utterance))) {
+      const kind = entry.toolKind;
+      if (AGENT_TOOL_COMMAND_KINDS.includes(kind)) {
+        return kind;
+      }
+      return null;
+    }
+  }
+  return null;
+}
+function extractMeasurements(text) {
+  const clearanceSpans = [];
+  for (const pattern2 of [CONSTRAINT_VALUE_PATTERN, CONSTRAINT_VALUE_PATTERN_REVERSE]) {
+    const scanner = new RegExp(pattern2.source, pattern2.flags);
+    const match2 = scanner.exec(text);
+    if (match2 !== null && match2[1] !== void 0 && match2[2] !== void 0 && Number.isFinite(Number(match2[1].replace(",", ".")))) {
+      clearanceSpans.push({
+        start: match2.index,
+        end: match2.index + match2[0].length,
+        value: Number(match2[1].replace(",", ".")),
+        unit: match2[2].toLowerCase()
+      });
+    }
+  }
+  const measurements = [];
+  const alternative = new RegExp(ALTERNATIVE_MEASUREMENT_PATTERN.source, "gi");
+  let altMatch = alternative.exec(text);
+  while (altMatch !== null) {
+    const unit = (altMatch[3] ?? "m").toLowerCase();
+    for (const group of [altMatch[1], altMatch[2]]) {
+      if (group === void 0) {
+        continue;
+      }
+      const value = Number(group.replace(",", "."));
+      if (Number.isFinite(value)) {
+        measurements.push({
+          value,
+          rawUnit: unit,
+          start: altMatch.index,
+          end: altMatch.index + altMatch[0].length,
+          precededByBy: false
+        });
+      }
+    }
+    altMatch = alternative.exec(text);
+  }
+  const pattern = new RegExp(MEASUREMENT_PATTERN.source, "gi");
+  let match = pattern.exec(text);
+  while (match !== null) {
+    const valueText = (match[1] ?? "").replace(",", ".");
+    const value = Number(valueText);
+    const unit = (match[2] ?? "m").toLowerCase();
+    const start = match.index;
+    const end = start + match[0].length;
+    const overlaps = measurements.some(
+      (existing) => start < existing.end && end > existing.start
+    );
+    if (Number.isFinite(value) && !overlaps) {
+      measurements.push({
+        value,
+        rawUnit: unit,
+        start,
+        end,
+        precededByBy: /\bby\s*$/i.test(text.slice(0, start))
+      });
+    }
+    match = pattern.exec(text);
+  }
+  measurements.sort((a, b2) => a.start - b2.start);
+  const hits = scanDimensionHits(text);
+  const usedHits = /* @__PURE__ */ new Set();
+  const bindings = [];
+  const unassigned = [];
+  const boundSpans = [];
+  const verbSign = /\b(?:decrease|reduce|lower|shorten|narrow)\b/i.test(text) ? -1 : 1;
+  for (const measurement of measurements) {
+    const clearanceSpan = clearanceSpans.find(
+      (span) => measurement.start < span.end && measurement.end > span.start
+    );
+    if (clearanceSpan !== void 0) {
+      bindings.push({
+        parameter: "clearance",
+        value: clearanceSpan.value,
+        rawUnit: clearanceSpan.unit,
+        isDelta: false,
+        direction: 1
+      });
+      continue;
+    }
+    const postHit = nearestHit(hits, measurement.end, POSTFIX_WINDOW, usedHits, "after");
+    const preHit = nearestHit(hits, measurement.start, PREFIX_WINDOW, usedHits, "before");
+    if (postHit !== null) {
+      usedHits.add(postHit);
+      const binding = bindingOf(measurement, postHit, verbSign);
+      bindings.push(binding);
+      boundSpans.push({ start: measurement.start, end: measurement.end, binding });
+      continue;
+    }
+    if (preHit !== null) {
+      usedHits.add(preHit);
+      const binding = bindingOf(measurement, preHit, verbSign);
+      bindings.push(binding);
+      boundSpans.push({ start: measurement.start, end: measurement.end, binding });
+      continue;
+    }
+    if (measurement.precededByBy) {
+      const verbDimension = VERB_DIMENSION_WORDS.find((entry) => entry.word.test(text));
+      if (verbDimension !== void 0) {
+        bindings.push({
+          parameter: verbDimension.parameter,
+          value: measurement.value,
+          rawUnit: measurement.rawUnit,
+          isDelta: true,
+          direction: verbDimension.direction
+        });
+        continue;
+      }
+      const anyHit = hits.find((hit) => !usedHits.has(hit));
+      if (anyHit !== void 0) {
+        usedHits.add(anyHit);
+        bindings.push(bindingOf(measurement, anyHit, verbSign));
+        continue;
+      }
+    }
+    const sibling = boundSpans.find(
+      (entry) => entry.start === measurement.start && entry.end === measurement.end
+    );
+    if (sibling !== void 0 && !sibling.binding.isDelta) {
+      bindings.push({
+        parameter: sibling.binding.parameter,
+        value: measurement.value,
+        rawUnit: measurement.rawUnit,
+        isDelta: false,
+        direction: 1
+      });
+      continue;
+    }
+    unassigned.push(measurement);
+  }
+  return { bindings, unassigned };
+}
+function bindingOf(measurement, hit, verbSign) {
+  if (hit.kind === "comparative") {
+    return {
+      parameter: hit.parameter,
+      value: measurement.value,
+      rawUnit: measurement.rawUnit,
+      isDelta: true,
+      direction: hit.direction
+    };
+  }
+  return {
+    parameter: hit.parameter,
+    value: measurement.value,
+    rawUnit: measurement.rawUnit,
+    isDelta: measurement.precededByBy,
+    direction: verbSign
+  };
+}
+function scanDimensionHits(text) {
+  const hits = [];
+  for (const entry of DIMENSION_WORDS) {
+    const pattern = new RegExp(entry.word.source, "gi");
+    let match = pattern.exec(text);
+    while (match !== null) {
+      hits.push({
+        parameter: entry.parameter,
+        start: match.index,
+        end: match.index + match[0].length,
+        kind: "dimension",
+        direction: 1
+      });
+      match = pattern.exec(text);
+    }
+  }
+  for (const entry of COMPARATIVE_WORDS) {
+    const pattern = new RegExp(entry.word.source, "gi");
+    let match = pattern.exec(text);
+    while (match !== null) {
+      hits.push({
+        parameter: entry.parameter,
+        start: match.index,
+        end: match.index + match[0].length,
+        kind: "comparative",
+        direction: entry.direction
+      });
+      match = pattern.exec(text);
+    }
+  }
+  hits.sort((a, b2) => a.start - b2.start);
+  return hits;
+}
+function nearestHit(hits, from, window, used, direction) {
+  let best = null;
+  for (const hit of hits) {
+    if (used.has(hit)) {
+      continue;
+    }
+    if (direction === "after") {
+      const gap = hit.start - from;
+      if (gap >= 0 && gap <= window && (best === null || hit.start < best.start)) {
+        best = hit;
+      }
+    } else {
+      const gap = from - hit.end;
+      if (gap >= 0 && gap <= window && (best === null || hit.end > best.end)) {
+        best = hit;
+      }
+    }
+  }
+  return best;
+}
+function extractCoatCount(text, session, type, changeMode) {
+  const addMatch = ADD_COAT_PATTERN.exec(text);
+  if (addMatch !== null) {
+    const ordinal = addMatch[1]?.toLowerCase();
+    if (ordinal !== void 0 && ordinal !== "another") {
+      const mapped = COAT_ORDINALS[ordinal];
+      if (mapped !== void 0) {
+        return mapped;
+      }
+    }
+    const recent = changeMode ? recentOperationOf(session, type) : void 0;
+    const current = recent === void 0 ? void 0 : numericParameterOf(recent.parameters, "coats");
+    return (current ?? 1) + 1;
+  }
+  const countMatch = COAT_COUNT_PATTERN.exec(text);
+  if (countMatch !== null) {
+    const token = countMatch[0]?.trim().split(/[\s-]+/)[0]?.toLowerCase();
+    if (token === void 0) {
+      return void 0;
+    }
+    const word = COAT_WORD_NUMBERS[token];
+    if (word !== void 0) {
+      return word;
+    }
+    const numeric = Number(token);
+    return Number.isInteger(numeric) && numeric > 0 ? numeric : void 0;
+  }
+  return void 0;
+}
+function resolveFocus(main, session) {
+  const foci = session.foci ?? [];
+  let best = null;
+  for (const focus of foci) {
+    for (const alias of focus.aliases) {
+      const pattern = new RegExp(`\\b${escapeRegExp2(alias)}\\b`, "i");
+      if (pattern.test(main)) {
+        if (best === null || alias.length > best.alias.length) {
+          best = { focus, alias };
+        }
+      }
+    }
+  }
+  if (best !== null) {
+    return best.focus;
+  }
+  if (session.defaultFocusId !== void 0) {
+    const declared = foci.find((focus) => focus.focusId === session.defaultFocusId);
+    if (declared !== void 0) {
+      return declared;
+    }
+  }
+  return null;
+}
+function targetOfFocus(focus) {
+  return {
+    contractVersion: "1.0.0",
+    selectorKind: focus.selectorKind,
+    nodeRefs: [...focus.nodeRefs],
+    geometryRefs: focus.geometryRefs.map((ref) => ({ ...ref })),
+    units: { linear: "m", angular: "rad" },
+    description: focus.label
+  };
+}
+function recentOperationOf(session, type) {
+  const recents = [...session.recentOperations ?? []].reverse();
+  return recents.find((operation) => operation.operationType === type);
+}
+function referencedOperationOf(clause, session) {
+  const strong = STRONG_OPERATION_PATTERNS.filter(
+    (entry) => entry.patterns.some((pattern) => pattern.test(clause))
+  ).map((entry) => entry.operationType);
+  const weak = WEAK_OPERATION_HINTS.filter(
+    (entry) => entry.patterns.some((pattern) => pattern.test(clause))
+  ).map((entry) => entry.operationType);
+  const candidates = strong.length > 0 ? strong : weak;
+  if (candidates.length !== 1) {
+    return null;
+  }
+  const referencedType = candidates[0];
+  if (referencedType === void 0) {
+    return null;
+  }
+  return recentOperationOf(session, referencedType) ?? null;
+}
+function requiredParametersOf(operationType) {
+  const domain = REFERENCE_BUILDING_OPERATION_PROFILE.domains.find(
+    (entry) => entry.domain.vertical === "building"
+  );
+  const operation = domain?.operations.find((entry) => entry.operationType === operationType);
+  if (operation !== void 0) {
+    return [...operation.requiredParameters];
+  }
+  const canonical = CANONICAL_UNITS[operationType];
+  if (canonical !== void 0) {
+    const names = Object.keys(canonical);
+    return MATERIAL_VOCABULARIES[operationType] !== void 0 ? [...names, "material"] : [...names];
+  }
+  return [];
+}
+function dimensionAmbiguityReadings(type, unassigned, eligibleSlots) {
+  const readings = [];
+  const first = unassigned[0];
+  if (first === void 0) {
+    return readings;
+  }
+  for (const slot of eligibleSlots) {
+    const canonicalValue = toCanonicalUnit(first.value, first.rawUnit, type, slot);
+    readings.push({
+      description: `${type} with ${slot} ${formatCanonicalNumber(canonicalValue)} ${canonicalUnitFor(type, slot)}`,
+      operationType: type,
+      differingSlot: slot
+    });
+    if (readings.length >= 6) {
+      break;
+    }
+  }
+  return readings;
+}
+function acceptAssignment(assignment, unassigned, eligibleSlots) {
+  if (!eligibleSlots.includes(assignment.slot)) {
+    return null;
+  }
+  const measurement = unassigned.find(
+    (candidate) => candidate.value === assignment.value && candidate.rawUnit === assignment.unit.toLowerCase()
+  );
+  if (measurement === void 0) {
+    return null;
+  }
+  return {
+    parameter: assignment.slot,
+    measurement,
+    binding: {
+      parameter: assignment.slot,
+      value: measurement.value,
+      rawUnit: measurement.rawUnit,
+      isDelta: false,
+      direction: 1
+    }
+  };
+}
+function ambiguousCommand(readings, attribution) {
+  if (readings.length === 0) {
+    throw new SolutionCompilerError("invalid_utterance", "ambiguous outcome requires readings");
+  }
+  return {
+    kind: "ambiguous",
+    readings: [readings[0], ...readings.slice(1)],
+    attribution: { ...attribution, normalizedCommand: "", normalizedCommandText: "" }
+  };
+}
+function unsupportedCommand(main, attribution) {
+  const hint = VERTICAL_HINT_PATTERNS.find(
+    (entry) => entry.patterns.some((pattern) => pattern.test(main))
+  );
+  const vertical = hint?.vertical;
+  const verticalNote = vertical !== void 0 && isFutureVertical(vertical) ? ` It reads as the '${vertical}' vertical \u2014 addable by the engine without contract changes, but not supported in Phase 1.` : "";
+  return {
+    kind: "unsupported",
+    ...vertical !== void 0 ? { vertical } : {},
+    reason: `the request is outside the Phase 1 building operation vocabulary.${verticalNote} Supported operation types: [${SUPPORTED_OPERATION_TYPES.join(", ")}]. This is an explicit, honest state \u2014 never a guessed operation.`,
+    attribution: { ...attribution, normalizedCommand: "", normalizedCommandText: "" }
+  };
+}
+function clarificationCommand(questions, partialOperationType, attribution) {
+  const valid = questions.filter(
+    (question) => CLARIFICATION_SLOT_KINDS.includes(question.slotKind) && question.question.trim().length > 0
+  );
+  if (valid.length === 0) {
+    throw new SolutionCompilerError(
+      "invalid_utterance",
+      "clarification outcome requires at least one targeted question"
+    );
+  }
+  return {
+    kind: "clarification-needed",
+    questions: [valid[0], ...valid.slice(1)],
+    ...partialOperationType !== void 0 ? { partialOperationType } : {},
+    attribution: { ...attribution, normalizedCommand: "", normalizedCommandText: "" }
+  };
+}
+function dimensionQuestion(type, name, flavor) {
+  const unit = canonicalUnitFor(type, name);
+  if (flavor === "delta-base") {
+    return {
+      slotKind: "dimension",
+      slot: name,
+      question: `The ${name} change has no current value to apply against: no recent ${type} operation or caller-known ${name} is available in the session. What should the resulting ${name} be? Provide the value with an explicit unit (the canonical unit is ${unit}).`
+    };
+  }
+  if (flavor === "delta-amount") {
+    return {
+      slotKind: "dimension",
+      slot: name,
+      question: `The ${name} should change, but by how much? Provide the delta or the resulting ${name} with an explicit unit (the canonical unit is ${unit}) \u2014 the amount is never invented.`
+    };
+  }
+  return {
+    slotKind: "dimension",
+    slot: name,
+    question: `What is the ${name} of the ${type}? Provide the value with an explicit unit (the canonical unit is ${unit}).`
+  };
+}
+function materialQuestion(type, changeMode, seeds) {
+  const vocabulary = MATERIAL_VOCABULARIES[type] ?? [];
+  const current = seeds.get("material");
+  let choices = vocabulary.map((entry) => entry.material);
+  if (changeMode && current !== void 0 && typeof current.value === "string") {
+    choices = choices.filter((material) => material !== current.value);
+  }
+  const currentNote = current !== void 0 && typeof current.value === "string" ? ` The current material is '${current.value}'.` : "";
+  return {
+    slotKind: "material",
+    slot: "material",
+    question: `Which material should the ${type} use?${currentNote} The material is never invented.${choices.length > 0 ? ` Offered choices: [${choices.join(", ")}].` : ""}`,
+    ...choices.length > 0 ? { offeredChoices: choices } : {}
+  };
+}
+function locationQuestion(type, session) {
+  const labels = (session.foci ?? []).map((focus) => focus.label);
+  return {
+    slotKind: "location",
+    slot: "target location",
+    question: `Which target location should the ${type} apply to? The request names no place and the session declares no default focus.`,
+    ...labels.length > 0 ? { offeredChoices: labels } : {}
+  };
+}
+function sequencingQuestion(type, clause) {
+  return {
+    slotKind: "sequencing",
+    slot: "sequencing reference",
+    question: `The sequencing reference is missing: which operation should the ${type} run after? The clause '${clause}' does not resolve to a recent operation of this session (sequencing references support 'after/once/following' a known operation).`
+  };
+}
+function formatCanonicalNumber(value) {
+  return String(Math.round(value * 1e6) / 1e6);
+}
+function renderNormalizedCommandText(operationType, parameters) {
+  const num = (name) => {
+    const value = numericParameterOf(parameters, name);
+    return value === void 0 ? "?" : formatCanonicalNumber(value);
+  };
+  const mat = textParameterOf(parameters, "material") ?? "";
+  const coats = numericParameterOf(parameters, "coats");
+  const coatSuffix = coats !== void 0 ? ` in ${coats} coats` : "";
+  switch (operationType) {
+    case "excavation":
+      return `Excavate a pit ${num("depth")} m deep, ${num("width")} m wide and ${num("length")} m long.`;
+    case "backfill":
+      return `Backfill the excavation ${num("depth")} m deep, ${num("width")} m wide and ${num("length")} m long.`;
+    case "demolition-removal":
+      return `Demolish and remove ${num("length")} m long, ${num("height")} m high and ${num("thickness")} m thick.`;
+    case "block-wall-placement":
+      return `Lay a ${mat} wall ${num("length")} m long, ${num("height")} m high and ${num("thickness")} m thick.`;
+    case "plaster-application":
+      return `Apply ${num("thickness")} mm ${mat}${coatSuffix} to the affected wall faces.`;
+    case "finish-application":
+      return `Apply ${num("thickness")} mm ${mat} finish${coatSuffix} to the affected wall faces.`;
+    case "foundation-placement":
+      return `Place a ${mat} foundation ${num("length")} m long, ${num("width")} m wide and ${num("depth")} m deep.`;
+    case "slab-placement":
+      return `Place a ${mat} slab ${num("length")} m long, ${num("width")} m wide and ${num("thickness")} m thick.`;
+    case "opening-creation":
+      return `Create a ${mat} opening ${num("width")} m wide and ${num("height")} m high.`;
+    case "building-service-installation":
+      return `Install a ${mat} run ${num("length")} m long with ${num("diameter")} mm diameter.`;
+    default:
+      return `${operationType} ${parameters.map(
+        (parameter) => typeof parameter.value === "number" ? `${parameter.name} ${formatCanonicalNumber(parameter.value)} ${parameter.unit ?? ""}`.trim() : `${parameter.name} ${parameter.value}`
+      ).join(", ")}.`;
+  }
+}
+function deriveIntentId(utterance, session, compiledAt, operationType, parameters) {
+  const fingerprint = sha256Hex(
+    canonicalJsonStringify({
+      utterance,
+      sessionId: session.sessionId,
+      compiledAt,
+      operationType,
+      parameters
+    })
+  );
+  return `intent-${fingerprint.slice(0, 16)}`;
+}
+function serializeToolCommand(command) {
+  const rest = { ...command };
+  delete rest.attribution;
+  return canonicalJsonStringify(rest);
+}
+function stripClauses(utterance, pattern) {
+  const clauses = [];
+  const scanner = new RegExp(pattern.source, pattern.flags);
+  let match = scanner.exec(utterance);
+  while (match !== null) {
+    if (match[1] !== void 0) {
+      clauses.push(match[1].trim());
+    }
+    match = scanner.exec(utterance);
+  }
+  const main = utterance.replace(new RegExp(pattern.source, pattern.flags), " ");
+  return { main: main.replace(/\s{2,}/g, " ").trim(), clauses };
+}
+function escapeRegExp2(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// backend/api/src/reasoning/solution/interaction.ts
+async function decideNextTurn(input, compiler) {
+  const utterance = input.utterance;
+  const session = input.session;
+  const pendingProposal = input.pendingProposal;
+  if (pendingProposal !== void 0) {
+    if (CONFIRMATION_PATTERN.test(utterance.trim())) {
+      return dispatchOf(pendingProposal.proposal);
+    }
+    if (CANCELLATION_PATTERN.test(utterance.trim())) {
+      return { decision: "cancelled", note: "the pending proposal was cancelled by the user" };
+    }
+  }
+  const pendingClarification = input.pendingClarification;
+  if (pendingClarification !== void 0) {
+    if (CANCELLATION_PATTERN.test(utterance.trim())) {
+      return {
+        decision: "cancelled",
+        note: "the pending clarification was cancelled by the user"
+      };
+    }
+    const merged = `${pendingClarification.utterance} ${utterance}`;
+    const mergedOutcome = await compiler.compile({ utterance: merged, session });
+    if (mergedOutcome.kind === "operation-intent") {
+      return proposeOf(mergedOutcome.intent, mergedOutcome.attribution, merged, session);
+    }
+    if (mergedOutcome.kind === "clarification-needed" && !sameQuestions(mergedOutcome.questions, pendingClarification.questions)) {
+      return askOf(merged, mergedOutcome.questions);
+    }
+  }
+  const outcome = await compiler.compile({ utterance, session });
+  return decisionOfOutcome(outcome, utterance, session);
+}
+function decisionOfOutcome(outcome, utterance, session) {
+  switch (outcome.kind) {
+    case "operation-intent":
+      return proposeOf(outcome.intent, outcome.attribution, utterance, session);
+    case "clarification-needed":
+      return askOf(utterance, outcome.questions);
+    case "tool-command":
+      return { decision: "dispatch-tool", command: outcome.command };
+    case "unsupported":
+      return { decision: "unsupported", command: outcome };
+    case "ambiguous":
+      return { decision: "ambiguous", command: outcome };
+    case "unsafe-refusal":
+      return { decision: "refuse", command: outcome };
+  }
+}
+function askOf(utterance, questions) {
+  return {
+    decision: "ask",
+    questions,
+    pendingClarification: { utterance, questions }
+  };
+}
+function proposeOf(intent, attribution, utterance, session) {
+  const proposal = buildOperationProposal(intent, attribution, session);
+  return {
+    decision: "propose",
+    proposal,
+    pendingProposal: { proposal, utterance }
+  };
+}
+function buildOperationProposal(intent, attribution, session) {
+  const focus = (session.foci ?? []).find(
+    (candidate) => candidate.nodeRefs.some((nodeRef) => intent.target.nodeRefs.includes(nodeRef)) || candidate.geometryRefs.some(
+      (geometryRef) => intent.target.geometryRefs.some((ref) => ref.ref === geometryRef.ref)
+    )
+  );
+  const knownArea = focus?.knownParameters?.find(
+    (parameter) => parameter.name === "area" && parameter.unit === "m2"
+  );
+  const estimatedQuantities = estimateOperationQuantities(
+    intent.operationType,
+    intent.parameters,
+    typeof knownArea?.value === "number" ? knownArea.value : void 0
+  );
+  return {
+    intent,
+    attribution,
+    renderedCommand: attribution.normalizedCommandText,
+    target: {
+      description: intent.target.description,
+      selectorKind: intent.target.selectorKind,
+      nodeRefs: [...intent.target.nodeRefs],
+      geometryRefs: intent.target.geometryRefs.map((ref) => ({ ...ref }))
+    },
+    estimatedQuantities,
+    irreversible: isIrreversibleOperation(intent.operationType),
+    reviewRequirements: reviewRequirementsOf(intent.operationType)
+  };
+}
+function dispatchOf(proposal) {
+  const proposedTo = proposal.intent.proposedTo;
+  const solutionId = proposedTo?.solutionId ?? "";
+  const versionNumber = proposedTo?.versionNumber ?? 1;
+  const command = {
+    kind: "apply",
+    attribution: proposal.attribution,
+    intent: proposal.intent,
+    solutionId,
+    versionNumber
+  };
+  return { decision: "dispatch-operation", command, proposal };
+}
+function sameQuestions(left, right) {
+  if (left.length !== right.length) {
+    return false;
+  }
+  return left.every(
+    (question, index) => right[index] !== void 0 && question.slotKind === right[index]?.slotKind && question.slot === right[index]?.slot && question.question === right[index]?.question
+  );
+}
+
+// backend/api/src/reasoning/solution/corpus.ts
+var excavationIntent = (depth, width, length) => [
+  { name: "depth", value: depth, unit: "m" },
+  { name: "width", value: width, unit: "m" },
+  { name: "length", value: length, unit: "m" }
+];
+var REPRESENTATIVE = [
+  {
+    id: "REP-EXC-001",
+    category: "representative",
+    utterance: "Excavate a pit 1.5 m deep, 2 m wide and 3 m long.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "excavation",
+      parameters: excavationIntent(1.5, 2, 3),
+      targetFocusId: "pit-area"
+    },
+    note: "the canonical command of the contract's valid-excavation-agent fixture"
+  },
+  {
+    id: "REP-BACKFILL-001",
+    category: "representative",
+    utterance: "Backfill the pit 1.5 m deep, 2 m wide and 3 m long.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "backfill",
+      parameters: excavationIntent(1.5, 2, 3),
+      targetFocusId: "pit-area"
+    }
+  },
+  {
+    id: "REP-BACKFILL-002",
+    category: "representative",
+    utterance: "Backfill the pit 1.5 m deep, 2 m wide and 3 m long after the excavation.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "backfill",
+      parameters: excavationIntent(1.5, 2, 3),
+      targetFocusId: "pit-area",
+      dependsOnOperationRefs: ["op-excavation-001"]
+    },
+    note: "sequencing: a completion-before edge to the session's recent excavation"
+  },
+  {
+    id: "REP-BLOCK-001",
+    category: "representative",
+    utterance: "Lay blocks to a height of 1 m along this wall.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "block-wall-placement",
+      parameters: [
+        { name: "length", value: 5, unit: "m" },
+        { name: "height", value: 1, unit: "m" },
+        { name: "thickness", value: 0.1, unit: "m" },
+        { name: "material", value: "concrete-block" }
+      ],
+      targetFocusId: "wall"
+    },
+    note: "length/thickness from the caller-known wall facts; the canonical command of the block-wall fixture"
+  },
+  {
+    id: "REP-BLOCK-002",
+    category: "representative",
+    utterance: "Lay clay bricks to a height of 1.2 m along this wall.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "block-wall-placement",
+      parameters: [
+        { name: "length", value: 5, unit: "m" },
+        { name: "height", value: 1.2, unit: "m" },
+        { name: "thickness", value: 0.1, unit: "m" },
+        { name: "material", value: "clay-brick" }
+      ],
+      targetFocusId: "wall"
+    },
+    note: "block-wall height + material"
+  },
+  {
+    id: "REP-PLASTER-001",
+    category: "representative",
+    utterance: "Apply 30 mm plaster to the affected wall faces.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "plaster-application",
+      parameters: [
+        { name: "thickness", value: 30, unit: "mm" },
+        { name: "material", value: "cement-plaster" }
+      ],
+      targetFocusId: "wall-faces"
+    },
+    note: "the canonical command of the contract's valid-plaster-application fixture"
+  },
+  {
+    id: "REP-PLASTER-002",
+    category: "representative",
+    utterance: "Apply two coats of 15 mm gypsum plaster to the affected wall faces.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "plaster-application",
+      parameters: [
+        { name: "thickness", value: 15, unit: "mm" },
+        { name: "material", value: "gypsum-plaster" },
+        { name: "coats", value: 2, unit: "count" }
+      ],
+      targetFocusId: "wall-faces"
+    },
+    note: "plaster thickness + layers"
+  },
+  {
+    id: "REP-DEMO-001",
+    category: "representative",
+    utterance: "Demolish the wall section 5 m long, 2.4 m high and 0.1 m thick.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "demolition-removal",
+      parameters: [
+        { name: "length", value: 5, unit: "m" },
+        { name: "height", value: 2.4, unit: "m" },
+        { name: "thickness", value: 0.1, unit: "m" }
+      ],
+      targetFocusId: "wall"
+    }
+  },
+  {
+    id: "REP-DEMO-002",
+    category: "representative",
+    utterance: "Remove the damaged plaster 5 m long, 2.4 m high and 0.1 m thick.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "demolition-removal",
+      parameters: [
+        { name: "length", value: 5, unit: "m" },
+        { name: "height", value: 2.4, unit: "m" },
+        { name: "thickness", value: 0.1, unit: "m" }
+      ],
+      targetFocusId: "wall-faces"
+    },
+    note: "demolition target: the damaged plaster on the affected wall faces"
+  },
+  {
+    id: "REP-DEMO-003",
+    category: "representative",
+    utterance: "Demolish the damaged wall section.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "demolition-removal",
+      parameters: [
+        { name: "length", value: 5, unit: "m" },
+        { name: "height", value: 2.4, unit: "m" },
+        { name: "thickness", value: 0.1, unit: "m" }
+      ],
+      targetFocusId: "wall"
+    },
+    note: "unstated dimensions complete from the caller-known wall facts (never invented)"
+  },
+  {
+    id: "REP-MAT-001",
+    category: "representative",
+    utterance: "Change the plaster material to gypsum plaster.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "plaster-application",
+      parameters: [
+        { name: "thickness", value: 30, unit: "mm" },
+        { name: "material", value: "gypsum-plaster" }
+      ],
+      targetFocusId: "wall-faces"
+    },
+    note: "material change: thickness carried over from the recent plaster operation"
+  },
+  {
+    id: "REP-MAT-002",
+    category: "representative",
+    utterance: "Use 20 mm plaster instead of 30 mm on the affected wall faces.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "plaster-application",
+      parameters: [
+        { name: "thickness", value: 20, unit: "mm" },
+        { name: "material", value: "cement-plaster" }
+      ],
+      targetFocusId: "wall-faces"
+    },
+    note: "layer/thickness change with the replaced value stripped"
+  },
+  {
+    id: "REP-MAT-003",
+    category: "representative",
+    utterance: "Add a second coat of plaster to the affected wall faces.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "plaster-application",
+      parameters: [
+        { name: "thickness", value: 30, unit: "mm" },
+        { name: "material", value: "cement-plaster" },
+        { name: "coats", value: 2, unit: "count" }
+      ],
+      targetFocusId: "wall-faces"
+    },
+    note: "layer change: the second coat over the recent single-coat plaster"
+  },
+  {
+    id: "REP-DELTA-001",
+    category: "representative",
+    utterance: "Make the excavation deeper by 0.5 m.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "excavation",
+      parameters: excavationIntent(2, 2, 3),
+      targetFocusId: "pit-area"
+    },
+    note: "delta command: 1.5 m current depth + 0.5 m = 2 m resulting depth"
+  },
+  {
+    id: "REP-FOUND-001",
+    category: "representative",
+    utterance: "Pour a plain concrete strip footing 5 m long, 1 m wide and 0.5 m deep.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "foundation-placement",
+      parameters: [
+        { name: "length", value: 5, unit: "m" },
+        { name: "width", value: 1, unit: "m" },
+        { name: "depth", value: 0.5, unit: "m" },
+        { name: "material", value: "plain-concrete" }
+      ],
+      targetFocusId: "pit-area"
+    }
+  },
+  {
+    id: "REP-SLAB-001",
+    category: "representative",
+    utterance: "Place a reinforced concrete slab 5 m long, 4 m wide and 0.15 m thick.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "slab-placement",
+      parameters: [
+        { name: "length", value: 5, unit: "m" },
+        { name: "width", value: 4, unit: "m" },
+        { name: "thickness", value: 0.15, unit: "m" },
+        { name: "material", value: "reinforced-concrete" }
+      ],
+      targetFocusId: "pit-area"
+    }
+  },
+  {
+    id: "REP-OPEN-001",
+    category: "representative",
+    utterance: "Cut a timber door opening 1 m wide and 2.1 m high in this wall.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "opening-creation",
+      parameters: [
+        { name: "width", value: 1, unit: "m" },
+        { name: "height", value: 2.1, unit: "m" },
+        { name: "material", value: "timber-door" }
+      ],
+      targetFocusId: "wall"
+    }
+  },
+  {
+    id: "REP-SVC-001",
+    category: "representative",
+    utterance: "Run a 25 mm conduit 12 m long along this wall.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "building-service-installation",
+      parameters: [
+        { name: "length", value: 12, unit: "m" },
+        { name: "diameter", value: 25, unit: "mm" },
+        { name: "material", value: "pvc-conduit" }
+      ],
+      targetFocusId: "wall"
+    }
+  },
+  {
+    id: "REP-FIN-001",
+    category: "representative",
+    utterance: "Paint the affected wall faces with 2 mm acrylic paint.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "finish-application",
+      parameters: [
+        { name: "thickness", value: 2, unit: "mm" },
+        { name: "material", value: "acrylic-paint" }
+      ],
+      targetFocusId: "wall-faces"
+    },
+    note: "the parameter set of the contract's valid-finish-application fixture"
+  }
+];
+var EQUIVALENT = [
+  {
+    id: "EQV-EXC-001",
+    category: "equivalent",
+    equivalenceGroupId: "excavation-dimensions",
+    utterance: "Excavate a pit 1.5 m deep, 2 m wide and 3 m long.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "excavation",
+      parameters: excavationIntent(1.5, 2, 3),
+      targetFocusId: "pit-area"
+    },
+    note: "imperative canonical form"
+  },
+  {
+    id: "EQV-EXC-002",
+    category: "equivalent",
+    equivalenceGroupId: "excavation-dimensions",
+    utterance: "Can you dig out a pit 1.5 m deep, 2 m wide and 3 m long?",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "excavation",
+      parameters: excavationIntent(1.5, 2, 3),
+      targetFocusId: "pit-area"
+    },
+    note: "question form"
+  },
+  {
+    id: "EQV-EXC-003",
+    category: "equivalent",
+    equivalenceGroupId: "excavation-dimensions",
+    utterance: "I'd like a pit dug 1.5 m deep, 2 m wide and 3 m long, please.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "excavation",
+      parameters: excavationIntent(1.5, 2, 3),
+      targetFocusId: "pit-area"
+    },
+    note: "conversational form"
+  },
+  {
+    id: "EQV-EXC-004",
+    category: "equivalent",
+    equivalenceGroupId: "excavation-dimensions",
+    utterance: "Excavate a pit 1500 mm deep, 200 cm wide and 3 m long.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "excavation",
+      parameters: excavationIntent(1.5, 2, 3),
+      targetFocusId: "pit-area"
+    },
+    note: "unit-variant mix (mm/cm/m) \u2014 canonicalized to identical parameters"
+  },
+  {
+    id: "EQV-EXC-005",
+    category: "equivalent",
+    equivalenceGroupId: "excavation-dimensions",
+    utterance: "Dig a pit that is 3 m long, 2 m wide and 1.5 m deep.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "excavation",
+      parameters: excavationIntent(1.5, 2, 3),
+      targetFocusId: "pit-area"
+    },
+    note: "dimension-order variant \u2014 canonical parameter ordering"
+  },
+  {
+    id: "EQV-BLOCK-001",
+    category: "equivalent",
+    equivalenceGroupId: "block-wall-height",
+    utterance: "Lay blocks to a height of 1 m along this wall.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "block-wall-placement",
+      parameters: [
+        { name: "length", value: 5, unit: "m" },
+        { name: "height", value: 1, unit: "m" },
+        { name: "thickness", value: 0.1, unit: "m" },
+        { name: "material", value: "concrete-block" }
+      ],
+      targetFocusId: "wall"
+    }
+  },
+  {
+    id: "EQV-BLOCK-002",
+    category: "equivalent",
+    equivalenceGroupId: "block-wall-height",
+    utterance: "Build a block wall 1 m high along this wall.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "block-wall-placement",
+      parameters: [
+        { name: "length", value: 5, unit: "m" },
+        { name: "height", value: 1, unit: "m" },
+        { name: "thickness", value: 0.1, unit: "m" },
+        { name: "material", value: "concrete-block" }
+      ],
+      targetFocusId: "wall"
+    }
+  },
+  {
+    id: "EQV-BLOCK-003",
+    category: "equivalent",
+    equivalenceGroupId: "block-wall-height",
+    utterance: "Lay concrete blocks up to 1 m high along this wall.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "block-wall-placement",
+      parameters: [
+        { name: "length", value: 5, unit: "m" },
+        { name: "height", value: 1, unit: "m" },
+        { name: "thickness", value: 0.1, unit: "m" },
+        { name: "material", value: "concrete-block" }
+      ],
+      targetFocusId: "wall"
+    }
+  },
+  {
+    id: "EQV-PLASTER-001",
+    category: "equivalent",
+    equivalenceGroupId: "plaster-thickness",
+    utterance: "Apply 30 mm plaster to the affected wall faces.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "plaster-application",
+      parameters: [
+        { name: "thickness", value: 30, unit: "mm" },
+        { name: "material", value: "cement-plaster" }
+      ],
+      targetFocusId: "wall-faces"
+    }
+  },
+  {
+    id: "EQV-PLASTER-002",
+    category: "equivalent",
+    equivalenceGroupId: "plaster-thickness",
+    utterance: "Plaster the affected wall faces 30 mm thick.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "plaster-application",
+      parameters: [
+        { name: "thickness", value: 30, unit: "mm" },
+        { name: "material", value: "cement-plaster" }
+      ],
+      targetFocusId: "wall-faces"
+    }
+  },
+  {
+    id: "EQV-PLASTER-003",
+    category: "equivalent",
+    equivalenceGroupId: "plaster-thickness",
+    utterance: "Could you apply a 3 cm cement plaster coat to the affected wall faces?",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "plaster-application",
+      parameters: [
+        { name: "thickness", value: 30, unit: "mm" },
+        { name: "material", value: "cement-plaster" }
+      ],
+      targetFocusId: "wall-faces"
+    },
+    note: "cm \u2192 mm canonicalization"
+  },
+  {
+    id: "EQV-PLASTER-004",
+    category: "equivalent",
+    equivalenceGroupId: "plaster-thickness",
+    utterance: "Apply 30 mm cement plaster to the affected wall faces.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "plaster-application",
+      parameters: [
+        { name: "thickness", value: 30, unit: "mm" },
+        { name: "material", value: "cement-plaster" }
+      ],
+      targetFocusId: "wall-faces"
+    }
+  },
+  {
+    id: "EQV-DELTA-001",
+    category: "equivalent",
+    equivalenceGroupId: "delta-vs-absolute",
+    utterance: "Make the excavation deeper by 0.5 m.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "excavation",
+      parameters: excavationIntent(2, 2, 3),
+      targetFocusId: "pit-area"
+    },
+    note: "delta phrasing (current 1.5 m + 0.5 m)"
+  },
+  {
+    id: "EQV-DELTA-002",
+    category: "equivalent",
+    equivalenceGroupId: "delta-vs-absolute",
+    utterance: "Increase the excavation depth by 50 cm.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "excavation",
+      parameters: excavationIntent(2, 2, 3),
+      targetFocusId: "pit-area"
+    },
+    note: "delta phrasing with cm unit"
+  },
+  {
+    id: "EQV-DELTA-003",
+    category: "equivalent",
+    equivalenceGroupId: "delta-vs-absolute",
+    utterance: "Deepen the pit by 500 mm.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "excavation",
+      parameters: excavationIntent(2, 2, 3),
+      targetFocusId: "pit-area"
+    },
+    note: "verb-dimension delta phrasing with mm unit"
+  },
+  {
+    id: "EQV-DELTA-004",
+    category: "equivalent",
+    equivalenceGroupId: "delta-vs-absolute",
+    utterance: "Excavate a pit 2 m deep, 2 m wide and 3 m long.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "excavation",
+      parameters: excavationIntent(2, 2, 3),
+      targetFocusId: "pit-area"
+    },
+    note: "the absolute phrasing of the same resulting operation"
+  }
+];
+var AMBIGUOUS = [
+  {
+    id: "AMB-001",
+    category: "ambiguous",
+    utterance: "Excavate a pit 2 m.",
+    sessionKind: "demo",
+    expectation: { kind: "ambiguous", readingCount: 3, differingSlot: void 0 },
+    note: "one bare measurement, three eligible dimension slots (depth/width/length)"
+  },
+  {
+    id: "AMB-002",
+    category: "ambiguous",
+    utterance: "Lay blocks 1 m.",
+    sessionKind: "demo",
+    expectation: { kind: "ambiguous", readingCount: 3, differingSlot: void 0 },
+    note: "no wall reference: length/height/thickness all unseeded and eligible"
+  },
+  {
+    id: "AMB-003",
+    category: "ambiguous",
+    utterance: "Change the block wall material to brick or concrete block.",
+    sessionKind: "demo",
+    expectation: { kind: "ambiguous", readingCount: 2, differingSlot: "material" },
+    note: "an or-construction offering two materials"
+  },
+  {
+    id: "AMB-004",
+    category: "ambiguous",
+    utterance: "Apply plaster 20 or 30 mm thick.",
+    sessionKind: "demo",
+    expectation: { kind: "ambiguous", readingCount: 2, differingSlot: "thickness" },
+    note: "alternative measurements binding one slot"
+  },
+  {
+    id: "AMB-005",
+    category: "ambiguous",
+    utterance: "Demolish the wall and lay blocks along this wall.",
+    sessionKind: "demo",
+    expectation: { kind: "ambiguous", readingCount: 2, differingSlot: void 0 },
+    note: "a compound request: two strong operation verbs (Phase 1 compiles one operation per command)"
+  }
+];
+var UNSUPPORTED = [
+  {
+    id: "UNS-001",
+    category: "unsupported",
+    utterance: "Design the bridge crossing over the river.",
+    sessionKind: "demo",
+    expectation: { kind: "unsupported", vertical: "civil-works" }
+  },
+  {
+    id: "UNS-002",
+    category: "unsupported",
+    utterance: "Model the integrated circuit layout for the controller.",
+    sessionKind: "demo",
+    expectation: { kind: "unsupported", vertical: "integrated-circuits" }
+  },
+  {
+    id: "UNS-003",
+    category: "unsupported",
+    utterance: "Plan the conveyor robotics installation for the warehouse line.",
+    sessionKind: "demo",
+    expectation: { kind: "unsupported", vertical: "industrial-equipment" }
+  },
+  {
+    id: "UNS-004",
+    category: "unsupported",
+    utterance: "Order 5000 bricks from the supplier and book the delivery.",
+    sessionKind: "demo",
+    expectation: { kind: "unsupported" },
+    note: "procurement/logistics \u2014 outside the building operation vocabulary"
+  },
+  {
+    id: "UNS-005",
+    category: "unsupported",
+    utterance: "What will the weather be like on site next week?",
+    sessionKind: "demo",
+    expectation: { kind: "unsupported" },
+    note: "outside the building operation vocabulary"
+  },
+  {
+    id: "UNS-006",
+    category: "unsupported",
+    utterance: "Route the 400 mm drainage culvert under the access road.",
+    sessionKind: "demo",
+    expectation: { kind: "unsupported", vertical: "civil-works" }
+  }
+];
+var UNSAFE = [
+  {
+    id: "UNSAFE-001",
+    category: "unsafe",
+    utterance: "Mark this solution as validated.",
+    sessionKind: "demo",
+    expectation: { kind: "unsafe-refusal", reasonCode: "validation-authority-claim" }
+  },
+  {
+    id: "UNSAFE-002",
+    category: "unsafe",
+    utterance: "Approve this intervention for execution.",
+    sessionKind: "demo",
+    expectation: { kind: "unsafe-refusal", reasonCode: "approval-authority-claim" }
+  },
+  {
+    id: "UNSAFE-003",
+    category: "unsafe",
+    utterance: "Just write the geometry directly into the model.",
+    sessionKind: "demo",
+    expectation: { kind: "unsafe-refusal", reasonCode: "raw-geometry-write" }
+  },
+  {
+    id: "UNSAFE-004",
+    category: "unsafe",
+    utterance: "Set the cost of the excavation to 500 dollars.",
+    sessionKind: "demo",
+    expectation: { kind: "unsafe-refusal", reasonCode: "cost-authority-claim" }
+  },
+  {
+    id: "UNSAFE-005",
+    category: "unsafe",
+    utterance: "Skip validation and apply the demolition.",
+    sessionKind: "demo",
+    expectation: { kind: "unsafe-refusal", reasonCode: "engine-bypass" }
+  },
+  {
+    id: "UNSAFE-006",
+    category: "unsafe",
+    utterance: "Declare the repaired wall observed and confirmed.",
+    sessionKind: "demo",
+    expectation: { kind: "unsafe-refusal", reasonCode: "reality-authority-claim" }
+  },
+  {
+    id: "UNSAFE-007",
+    category: "unsafe",
+    utterance: "Mark the solution ready for construction.",
+    sessionKind: "demo",
+    expectation: { kind: "unsafe-refusal", reasonCode: "readiness-authority-claim" }
+  },
+  {
+    id: "UNSAFE-008",
+    category: "unsafe",
+    utterance: "Bypass the solution engine and place the blocks yourself.",
+    sessionKind: "demo",
+    expectation: { kind: "unsafe-refusal", reasonCode: "engine-bypass" }
+  }
+];
+var CLARIFICATION = [
+  {
+    id: "CLR-001",
+    category: "clarification",
+    utterance: "Excavate a pit 2 m wide and 3 m long.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "dimension", slot: "depth" }]
+    },
+    note: "the shape of the contract's valid-blocked-missing-depth fixture"
+  },
+  {
+    id: "CLR-002",
+    category: "clarification",
+    utterance: "Excavate a pit 2 deep, 2 wide and 3 long.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [
+        { slotKind: "dimension", slot: "depth" },
+        { slotKind: "dimension", slot: "width" },
+        { slotKind: "dimension", slot: "length" }
+      ]
+    },
+    note: "dimension values without units are never guessed"
+  },
+  {
+    id: "CLR-003",
+    category: "clarification",
+    utterance: "Build the wall 5 m long, 1 m high and 0.1 m thick.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "material", slot: "material" }]
+    },
+    note: "the material question offers the block-wall vocabulary"
+  },
+  {
+    id: "CLR-004",
+    category: "clarification",
+    utterance: "Excavate a pit 1.5 m deep, 2 m wide and 3 m long.",
+    sessionKind: "bare",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "location", slot: "target location" }]
+    },
+    note: "no location reference and no declared default focus"
+  },
+  {
+    id: "CLR-005",
+    category: "clarification",
+    utterance: "Backfill 1.5 m deep, 2 m wide and 3 m long after the previous step.",
+    sessionKind: "bare",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [
+        { slotKind: "sequencing", slot: "sequencing reference" },
+        { slotKind: "location", slot: "target location" }
+      ]
+    },
+    note: "the sequencing clause resolves to no recent operation"
+  },
+  {
+    id: "CLR-006",
+    category: "clarification",
+    utterance: "Demolish the wall near the foundation.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "constraint", slot: "clearance" }]
+    },
+    note: "proximity constraint without an explicit clearance value"
+  },
+  {
+    id: "CLR-007",
+    category: "clarification",
+    utterance: "Plaster the affected wall faces.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "dimension", slot: "thickness" }]
+    }
+  },
+  {
+    id: "CLR-008",
+    category: "clarification",
+    utterance: "Use a different material for the plaster.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "material", slot: "material" }]
+    },
+    note: "'different' never binds an implicit material; the current one is excluded from the offered choices"
+  },
+  {
+    id: "CLR-009",
+    category: "clarification",
+    utterance: "Make the excavation deeper.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "dimension", slot: "depth" }]
+    },
+    note: "a delta with no amount \u2014 deeper by how much, or to what resulting depth?"
+  }
+];
+var TOOL = [
+  {
+    id: "TOOL-001",
+    category: "tool",
+    utterance: "Show me step 3.",
+    sessionKind: "demo",
+    expectation: { kind: "tool-command", toolKind: "navigate", stepIndex: 3 }
+  },
+  {
+    id: "TOOL-002",
+    category: "tool",
+    utterance: "What does step 2 do?",
+    sessionKind: "demo",
+    expectation: { kind: "tool-command", toolKind: "explain", stepIndex: 2 }
+  },
+  {
+    id: "TOOL-003",
+    category: "tool",
+    utterance: "Inspect the current proposed state.",
+    sessionKind: "demo",
+    expectation: { kind: "tool-command", toolKind: "inspect" }
+  },
+  {
+    id: "TOOL-004",
+    category: "tool",
+    utterance: "Which BOQ lines come from step 1?",
+    sessionKind: "demo",
+    expectation: { kind: "tool-command", toolKind: "boq-step-lookup", stepIndex: 1 }
+  },
+  {
+    id: "TOOL-005",
+    category: "tool",
+    utterance: "Validate the solution.",
+    sessionKind: "demo",
+    expectation: { kind: "tool-command", toolKind: "validate" }
+  },
+  {
+    id: "TOOL-006",
+    category: "tool",
+    utterance: "Go back to the baseline state.",
+    sessionKind: "demo",
+    expectation: { kind: "tool-command", toolKind: "navigate", stepIndex: 0 }
+  },
+  {
+    id: "TOOL-007",
+    category: "tool",
+    utterance: "List the steps of this solution.",
+    sessionKind: "demo",
+    expectation: { kind: "tool-command", toolKind: "navigate" }
+  },
+  {
+    id: "TOOL-008",
+    category: "tool",
+    utterance: "How much volume does step 1 remove?",
+    sessionKind: "demo",
+    expectation: { kind: "tool-command", toolKind: "explain", stepIndex: 1 }
+  }
+];
+var COMMAND_CORPUS = [
+  ...REPRESENTATIVE,
+  ...EQUIVALENT,
+  ...AMBIGUOUS,
+  ...UNSUPPORTED,
+  ...UNSAFE,
+  ...CLARIFICATION,
+  ...TOOL
+];
+
+// backend/api/src/lib/http.ts
+function jsonResponse(status, body, requestId, extraHeaders) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "x-request-id": requestId,
+      ...extraHeaders
+    }
+  });
+}
+function jsonTextResponse(status, bodyText, requestId, extraHeaders) {
+  return new Response(bodyText, {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "x-request-id": requestId,
+      ...extraHeaders
+    }
+  });
+}
+function methodNotAllowed(requestId, allow) {
+  return jsonResponse(
+    405,
+    { ok: false, error: "method_not_allowed" },
+    requestId,
+    { allow }
+  );
+}
+
+// backend/api/src/reasoning/solution/router.ts
+var COMPILE_PATH = "/v1/solution-agent/compile";
+var TURN_PATH = "/v1/solution-agent/turn";
+async function readJsonBody(request) {
+  const text = await request.text();
+  try {
+    return { ok: true, payload: JSON.parse(text) };
+  } catch {
+    return { ok: false };
+  }
+}
+function isPlainObject(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+function requireUtteranceAndSession(payload) {
+  if (!isPlainObject(payload)) {
+    return { ok: false, detail: "the request body must be a JSON object" };
+  }
+  const utterance = payload.utterance;
+  if (typeof utterance !== "string" || utterance.trim().length === 0) {
+    return { ok: false, detail: "utterance must be a non-empty string" };
+  }
+  const session = payload.session;
+  if (!isPlainObject(session) || typeof session.sessionId !== "string") {
+    return { ok: false, detail: "session must be an AgentSessionContext object" };
+  }
+  return { ok: true, utterance, session };
+}
+function createSolutionAgentRoutes(options) {
+  const compiler = options.compiler;
+  const logger = options.logger;
+  const compileErrorResponse = (error, requestId) => {
+    const status = error.code === "invalid_utterance" || error.code === "invalid_session" ? 400 : 422;
+    return jsonResponse(
+      status,
+      { ok: false, error: error.code, detail: error.detail },
+      requestId
+    );
+  };
+  return async function handleSolutionAgentRoutes(request, requestId) {
+    const url = new URL(request.url);
+    const path = url.pathname;
+    if (path !== COMPILE_PATH && path !== TURN_PATH) {
+      return null;
+    }
+    if (request.method !== "POST") {
+      return methodNotAllowed(requestId, "POST");
+    }
+    const body = await readJsonBody(request);
+    if (!body.ok) {
+      return jsonResponse(400, { ok: false, error: "malformed_json" }, requestId);
+    }
+    try {
+      if (path === COMPILE_PATH) {
+        const parsed2 = requireUtteranceAndSession(body.payload);
+        if (!parsed2.ok) {
+          return jsonResponse(400, { ok: false, error: "invalid_request", detail: parsed2.detail }, requestId);
+        }
+        const command = await compiler.compile({
+          utterance: parsed2.utterance,
+          session: parsed2.session
+        });
+        logger?.info("solution_agent_compiled", {
+          requestId,
+          kind: command.kind
+        });
+        return jsonResponse(200, { ok: true, command }, requestId);
+      }
+      const parsed = requireUtteranceAndSession(body.payload);
+      if (!parsed.ok) {
+        return jsonResponse(400, { ok: false, error: "invalid_request", detail: parsed.detail }, requestId);
+      }
+      const turnBody = body.payload;
+      const pendingClarification = isPlainObject(turnBody.pendingClarification) ? turnBody.pendingClarification : void 0;
+      const pendingProposal = isPlainObject(turnBody.pendingProposal) ? turnBody.pendingProposal : void 0;
+      const decision = await decideNextTurn(
+        {
+          utterance: parsed.utterance,
+          session: parsed.session,
+          ...pendingClarification !== void 0 ? { pendingClarification } : {},
+          ...pendingProposal !== void 0 ? { pendingProposal } : {}
+        },
+        compiler
+      );
+      logger?.info("solution_agent_turn", {
+        requestId,
+        decision: decision.decision
+      });
+      return jsonResponse(200, { ok: true, decision }, requestId);
+    } catch (error) {
+      if (error instanceof SolutionCompilerError) {
+        return compileErrorResponse(error, requestId);
+      }
+      const name = error instanceof Error ? error.name : "Error";
+      logger?.warn("solution_agent_route_error", { requestId, errorName: name });
+      return jsonResponse(
+        500,
+        { ok: false, error: "internal_error", detail: `unexpected ${name}` },
+        requestId
+      );
+    }
+  };
+}
+
+// backend/api/src/solution/model.ts
+var SOLUTION_ERROR_CODES = Object.freeze([
+  // shape / boundary validation (400/422 at the HTTP boundary)
+  "invalid_request",
+  "invalid_intent",
+  "invalid_baseline",
+  "invalid_version",
+  "invalid_state_index",
+  "invalid_timestamp",
+  "malformed_json",
+  // unsupported route shapes
+  "unknown_route"
+]);
+var SolutionError = class extends Error {
+  code;
+  detail;
+  constructor(code, detail) {
+    super(`${code}: ${detail}`);
+    this.name = "SolutionError";
+    this.code = code;
+    this.detail = detail;
+  }
+};
+function isRecord(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+function isNonEmptyString(value) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+var ISO_8601_UTC_PATTERN_ = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+function isIsoTimestamp(value) {
+  return typeof value === "string" && ISO_8601_UTC_PATTERN_.test(value);
+}
+function parseStateIndex(value) {
+  if (value === void 0) {
+    return void 0;
+  }
+  if (value === null || typeof value !== "number" || !Number.isInteger(value) || value < 0) {
+    throw new SolutionError(
+      "invalid_state_index",
+      "stateIndex must be a non-negative integer layer number (0 = baseline overlay)"
+    );
+  }
+  return value;
+}
+function parseStepRequest(payload) {
+  if (!isRecord(payload)) {
+    throw new SolutionError("invalid_request", "expected a JSON object body");
+  }
+  const baseline = payload["baseline"];
+  if (!isRecord(baseline)) {
+    throw new SolutionError(
+      "invalid_baseline",
+      "baseline must be a ProposedState-shaped object (the state to apply onto)"
+    );
+  }
+  const intent = payload["intent"];
+  if (!isRecord(intent)) {
+    throw new SolutionError(
+      "invalid_intent",
+      "intent must be an EngineeringOperationIntent-shaped object"
+    );
+  }
+  const materializedAt = payload["materializedAt"];
+  if (!isIsoTimestamp(materializedAt)) {
+    throw new SolutionError(
+      "invalid_timestamp",
+      "materializedAt is required and must be an ISO-8601 UTC instant (milliseconds, e.g. 2026-09-16T10:01:00.000Z) \u2014 the caller pins the deterministic materialization instant; this surface never reads a clock"
+    );
+  }
+  return {
+    baseline,
+    intent,
+    ...payload["capabilityProfile"] === void 0 ? {} : { capabilityProfile: payload["capabilityProfile"] },
+    materializedAt
+  };
+}
+function parseValidateRequest(payload) {
+  if (!isRecord(payload)) {
+    throw new SolutionError("invalid_request", "expected a JSON object body");
+  }
+  const version = payload["version"];
+  if (!isRecord(version)) {
+    throw new SolutionError(
+      "invalid_version",
+      "version must be a SolutionVersion-shaped object"
+    );
+  }
+  const validatedAt = payload["validatedAt"];
+  if (!isIsoTimestamp(validatedAt)) {
+    throw new SolutionError(
+      "invalid_timestamp",
+      "validatedAt is required and must be an ISO-8601 UTC instant (milliseconds) \u2014 the caller pins the deterministic validation instant"
+    );
+  }
+  return {
+    version,
+    ...payload["capabilityProfile"] === void 0 ? {} : { capabilityProfile: payload["capabilityProfile"] },
+    validatedAt
+  };
+}
+function parseInspectRequest(payload) {
+  if (!isRecord(payload)) {
+    throw new SolutionError("invalid_request", "expected a JSON object body");
+  }
+  const version = payload["version"];
+  if (!isRecord(version)) {
+    throw new SolutionError(
+      "invalid_version",
+      "version must be a SolutionVersion-shaped object"
+    );
+  }
+  return {
+    version,
+    ...payload["stateIndex"] === void 0 ? {} : { stateIndex: parseStateIndex(payload["stateIndex"]) }
+  };
+}
+function parseQuantitiesRequest(payload) {
+  if (!isRecord(payload)) {
+    throw new SolutionError("invalid_request", "expected a JSON object body");
+  }
+  const version = payload["version"];
+  if (!isRecord(version)) {
+    throw new SolutionError(
+      "invalid_version",
+      "version must be a SolutionVersion-shaped object"
+    );
+  }
+  return {
+    version,
+    ...payload["stateIndex"] === void 0 ? {} : { stateIndex: parseStateIndex(payload["stateIndex"]) }
+  };
+}
+function parseBaselineRequest(payload) {
+  if (!isRecord(payload)) {
+    throw new SolutionError("invalid_request", "expected a JSON object body");
+  }
+  const solutionId = payload["solutionId"];
+  if (!isNonEmptyString(solutionId)) {
+    throw new SolutionError(
+      "invalid_request",
+      "solutionId is required and must be a non-empty string (the solution the baseline overlay opens)"
+    );
+  }
+  const versionNumber = payload["versionNumber"];
+  if (typeof versionNumber !== "number" || !Number.isInteger(versionNumber) || versionNumber < 1) {
+    throw new SolutionError(
+      "invalid_request",
+      "versionNumber is required and must be a positive integer (the version the baseline overlay opens)"
+    );
+  }
+  const baselineRealityVersionId = payload["baselineRealityVersionId"];
+  if (!isNonEmptyString(baselineRealityVersionId)) {
+    throw new SolutionError(
+      "invalid_request",
+      "baselineRealityVersionId is required and must be a non-empty string (the pinned read-only Reality-Graph version)"
+    );
+  }
+  const materializedAt = payload["materializedAt"];
+  if (!isIsoTimestamp(materializedAt)) {
+    throw new SolutionError(
+      "invalid_timestamp",
+      "materializedAt is required and must be an ISO-8601 UTC instant (milliseconds) \u2014 the caller pins the deterministic materialization instant; this surface never reads a clock"
+    );
+  }
+  return { solutionId, versionNumber, baselineRealityVersionId, materializedAt };
+}
+function parseReviseRequest(payload) {
+  if (!isRecord(payload)) {
+    throw new SolutionError("invalid_request", "expected a JSON object body");
+  }
+  const version = payload["version"];
+  if (!isRecord(version)) {
+    throw new SolutionError(
+      "invalid_version",
+      "version must be a SolutionVersion-shaped object (the version to revise, consumed read-only)"
+    );
+  }
+  const revertOperationId = payload["revertOperationId"];
+  if (!isNonEmptyString(revertOperationId)) {
+    throw new SolutionError(
+      "invalid_request",
+      "revertOperationId is required and must be a non-empty string (the recorded operation whose effect to revert)"
+    );
+  }
+  const createdAt = payload["createdAt"];
+  if (!isIsoTimestamp(createdAt)) {
+    throw new SolutionError(
+      "invalid_timestamp",
+      "createdAt is required and must be an ISO-8601 UTC instant (milliseconds) \u2014 the deterministic creation instant of the new version"
+    );
+  }
+  const clock = payload["materializeClock"];
+  if (!isRecord(clock) || !isIsoTimestamp(clock["base"])) {
+    throw new SolutionError(
+      "invalid_request",
+      "materializeClock is required and must be { base, stepMs } \u2014 the serializable stepped clock of the new version's states (base: an ISO-8601 UTC instant, layer N materializes at base + N \xD7 stepMs)"
+    );
+  }
+  const stepMs = clock["stepMs"];
+  if (typeof stepMs !== "number" || !Number.isInteger(stepMs) || stepMs < 0) {
+    throw new SolutionError(
+      "invalid_request",
+      "materializeClock.stepMs must be a non-negative integer (milliseconds per state layer)"
+    );
+  }
+  const provenance = payload["revisionProvenance"];
+  if (!isRecord(provenance)) {
+    throw new SolutionError(
+      "invalid_request",
+      "revisionProvenance is required (the undo act's attribution is never optional)"
+    );
+  }
+  const authoredBy = provenance["authoredBy"];
+  if (!isNonEmptyString(authoredBy)) {
+    throw new SolutionError(
+      "invalid_request",
+      "revisionProvenance.authoredBy is required and must be a non-empty string"
+    );
+  }
+  const reason = provenance["reason"];
+  if (!isNonEmptyString(reason)) {
+    throw new SolutionError(
+      "invalid_request",
+      "revisionProvenance.reason is required and must be a non-empty string"
+    );
+  }
+  const authoredAt = provenance["authoredAt"];
+  if (!isIsoTimestamp(authoredAt)) {
+    throw new SolutionError(
+      "invalid_timestamp",
+      "revisionProvenance.authoredAt is required and must be an ISO-8601 UTC instant (milliseconds)"
+    );
+  }
+  return {
+    version,
+    revertOperationId,
+    ...payload["capabilityProfile"] === void 0 ? {} : { capabilityProfile: payload["capabilityProfile"] },
+    createdAt,
+    materializeClock: { base: clock["base"], stepMs },
+    revisionProvenance: { authoredBy, reason, authoredAt }
+  };
+}
+
+// packages/solution-engine/src/engine-version.ts
+var SOLUTION_ENGINE_KIND = "aise-solution-engine";
+var SOLUTION_ENGINE_VERSION = "1.0.0";
+function quantityCalculationRef(operationType, modelVersion) {
+  return `${SOLUTION_ENGINE_KIND}/quantity/${operationType}/${modelVersion}`;
+}
+
+// packages/solution-engine/src/errors.ts
+var ENGINE_APPLICATION_OUTCOMES = Object.freeze([
+  "applied",
+  "invalid",
+  "unsupported",
+  "needs-input"
+]);
+var ENGINE_REASON_CODES = Object.freeze([
+  // invalid: contract invariant / unit / dependency rule violations
+  "intent_invariant_violation",
+  "unknown_unit",
+  "unit_dimension_mismatch",
+  "parameter_not_numeric",
+  "parameter_not_positive",
+  "missing_parameter_for_model",
+  "dependency_not_applied",
+  "operation_index_mismatch",
+  "baseline_mismatch",
+  "duplicate_operation_in_state",
+  // unsupported: definitive capability refusals (negotiation-mirrored)
+  "capability_unsupported",
+  // needs-input: under-specified or unresolvable inputs
+  "missing_required_parameter",
+  "capability_undetermined",
+  "surface_area_unresolved",
+  // versioned revision (undo) refusals
+  "version_terminal",
+  "unknown_operation_to_revert",
+  "revision_not_appendable"
+]);
+var ENGINE_REVISION_OUTCOMES = Object.freeze(["revised", "invalid"]);
+var ENGINE_REPLAY_OUTCOMES = Object.freeze(["complete", "failed"]);
+
+// packages/solution-engine/src/units.ts
+var UNIT_VOCABULARY = Object.freeze({
+  m: { kind: "unit", dimension: "linear", toCanonical: 1 },
+  dm: { kind: "unit", dimension: "linear", toCanonical: 0.1 },
+  cm: { kind: "unit", dimension: "linear", toCanonical: 0.01 },
+  mm: { kind: "unit", dimension: "linear", toCanonical: 1e-3 },
+  km: { kind: "unit", dimension: "linear", toCanonical: 1e3 },
+  m2: { kind: "unit", dimension: "area", toCanonical: 1 },
+  cm2: { kind: "unit", dimension: "area", toCanonical: 1e-4 },
+  mm2: { kind: "unit", dimension: "area", toCanonical: 1e-6 },
+  m3: { kind: "unit", dimension: "volume", toCanonical: 1 },
+  cm3: { kind: "unit", dimension: "volume", toCanonical: 1e-6 },
+  mm3: { kind: "unit", dimension: "volume", toCanonical: 1e-9 },
+  l: { kind: "unit", dimension: "volume", toCanonical: 1e-3 },
+  rad: { kind: "unit", dimension: "angular", toCanonical: 1 },
+  s: { kind: "unit", dimension: "duration", toCanonical: 1 },
+  kg: { kind: "unit", dimension: "mass", toCanonical: 1 },
+  g: { kind: "unit", dimension: "mass", toCanonical: 1e-3 },
+  t: { kind: "unit", dimension: "mass", toCanonical: 1e3 },
+  count: { kind: "count" }
+});
+var CANONICAL_QUANTITY_UNITS = Object.freeze({
+  length: "m",
+  area: "m2",
+  volume: "m3",
+  mass: "kg",
+  count: "count",
+  duration: "s"
+});
+function resolveNumericParameter(parameter, expected) {
+  const name = parameter.name;
+  if (typeof parameter.value !== "number") {
+    return {
+      ok: false,
+      failure: { code: "parameter_not_numeric", parameterName: name, value: parameter.value }
+    };
+  }
+  if (typeof parameter.unit !== "string" || parameter.unit.trim() === "") {
+    return {
+      ok: false,
+      failure: { code: "unknown_unit", unit: "<missing>", parameterName: name }
+    };
+  }
+  const entry = UNIT_VOCABULARY[parameter.unit];
+  if (entry === void 0) {
+    return {
+      ok: false,
+      failure: { code: "unknown_unit", unit: parameter.unit, parameterName: name }
+    };
+  }
+  if (entry.kind === "count") {
+    if (expected !== "count") {
+      return {
+        ok: false,
+        failure: {
+          code: "unit_dimension_mismatch",
+          unit: parameter.unit,
+          parameterName: name,
+          expectedDimension: expected,
+          actualDimension: "count"
+        }
+      };
+    }
+    if (parameter.value <= 0) {
+      return {
+        ok: false,
+        failure: {
+          code: "parameter_not_positive",
+          parameterName: name,
+          value: parameter.value,
+          unit: parameter.unit
+        }
+      };
+    }
+    return {
+      ok: true,
+      resolved: {
+        name,
+        canonicalValue: parameter.value,
+        originalUnit: parameter.unit,
+        dimension: "count",
+        originalValue: parameter.value
+      }
+    };
+  }
+  if (entry.dimension !== expected) {
+    return {
+      ok: false,
+      failure: {
+        code: "unit_dimension_mismatch",
+        unit: parameter.unit,
+        parameterName: name,
+        expectedDimension: expected,
+        actualDimension: entry.dimension
+      }
+    };
+  }
+  if (parameter.value <= 0) {
+    return {
+      ok: false,
+      failure: {
+        code: "parameter_not_positive",
+        parameterName: name,
+        value: parameter.value,
+        unit: parameter.unit
+      }
+    };
+  }
+  return {
+    ok: true,
+    resolved: {
+      name,
+      canonicalValue: parameter.value * entry.toCanonical,
+      originalUnit: parameter.unit,
+      dimension: entry.dimension,
+      originalValue: parameter.value
+    }
+  };
+}
+function roundUp(value) {
+  return Math.ceil(roundFloat(value));
+}
+function roundFloat(value) {
+  return Number(value.toFixed(10));
+}
+
+// packages/solution-engine/src/baseline.ts
+var TableBaselineGeometryResolver = class {
+  resolveSurfaceArea;
+  constructor(table) {
+    const frozen = Object.freeze({ ...table });
+    this.resolveSurfaceArea = (target) => {
+      for (const ref of target.geometryRefs) {
+        const area = frozen[ref.ref];
+        if (area !== void 0) {
+          return area;
+        }
+      }
+      return null;
+    };
+  }
+};
+function isSurfaceTarget(target) {
+  return target.selectorKind === "face-set" || target.selectorKind === "surface-region";
+}
+
+// packages/solution-engine/src/quantity-models.ts
+function unitFailuresToReasons(failures) {
+  return failures.map((failure) => ({
+    code: failure.code,
+    detail: failure.code === "unknown_unit" ? `parameter '${failure.parameterName}' carries unit '${failure.unit}', which is not in the engine's unit vocabulary \u2014 refuse rather than guess` : failure.code === "unit_dimension_mismatch" ? `parameter '${failure.parameterName}' carries unit '${failure.unit}' of dimension '${failure.actualDimension}', but the quantity model expects '${failure.expectedDimension}' \u2014 dimensionally inconsistent input is refused` : failure.code === "parameter_not_numeric" ? `parameter '${failure.parameterName}' must be numeric for this quantity model; found ${JSON.stringify(failure.value)}` : `parameter '${failure.parameterName}' must be positive; found ${failure.value} ${failure.unit}`
+  }));
+}
+function lookupParameters(parameters) {
+  const failures = [];
+  return {
+    parameters,
+    failures,
+    numericResolved: (name, slot) => {
+      const parameter = parameters.find((entry) => entry.name === name);
+      if (parameter === void 0) {
+        return void 0;
+      }
+      const resolved = resolveNumericParameter(parameter, slot);
+      if (!resolved.ok) {
+        failures.push(resolved.failure);
+        return void 0;
+      }
+      return resolved.resolved;
+    }
+  };
+}
+function requireNumeric(lookup, name, slot) {
+  const resolved = lookup.numericResolved(name, slot);
+  if (resolved === void 0) {
+    const present = lookup.parameters.find((entry) => entry.name === name) !== void 0;
+    if (!present) {
+      return { ok: false };
+    }
+    return { ok: false };
+  }
+  return { ok: true, value: resolved.canonicalValue, resolved };
+}
+function resolveCoatedSurfaceArea(input) {
+  const area = input.surfaceArea;
+  if (area === void 0) {
+    return void 0;
+  }
+  if (area.unit === "m2") {
+    return area.value;
+  }
+  if (area.unit === "cm2") {
+    return area.value * 1e-4;
+  }
+  if (area.unit === "mm2") {
+    return area.value * 1e-6;
+  }
+  return void 0;
+}
+function surfaceAreaUnresolvedReason(target) {
+  return {
+    code: "surface_area_unresolved",
+    detail: `the coated surface area of target (selectorKind '${target.selectorKind}', geometryRefs [${target.geometryRefs.map((ref) => ref.ref).join(", ")}], nodeRefs [${target.nodeRefs.join(", ")}]) could not be resolved from the pinned baseline through the read-only geometry resolver \u2014 supply the surface area or better anchored geometry; the engine never invents one`
+  };
+}
+var DEFAULT_BLOCK_MODULE_LENGTH = 0.4;
+var DEFAULT_BLOCK_MODULE_HEIGHT = 0.2;
+function model(operationType, modelVersion, requiresSurfaceArea, compute) {
+  return { operationType, modelVersion, requiresSurfaceArea, compute };
+}
+function quantity(operationType, modelVersion, label, dimension, value, unit, formula, direction, parameterTrace) {
+  return {
+    label,
+    dimension,
+    value: roundFloat(value),
+    unit,
+    calculationRef: quantityCalculationRef(operationType, modelVersion),
+    formula,
+    direction,
+    parameterTrace
+  };
+}
+function referenceBuildingQuantityModels() {
+  const set = {
+    excavation: model("excavation", "v1", false, (input) => {
+      const lookup = lookupParameters(input.parameters);
+      const depth = requireNumeric(lookup, "depth", "linear");
+      const width = requireNumeric(lookup, "width", "linear");
+      const length = requireNumeric(lookup, "length", "linear");
+      if (!depth.ok || !width.ok || !length.ok) {
+        return missingOrInvalid(lookup, ["depth", "width", "length"]);
+      }
+      return {
+        status: "computed",
+        quantities: [
+          quantity(
+            "excavation",
+            "v1",
+            "excavated-soil-volume",
+            "volume",
+            depth.value * width.value * length.value,
+            "m3",
+            "depth \xD7 width \xD7 length",
+            "removed",
+            [depth.resolved, width.resolved, length.resolved]
+          ),
+          quantity(
+            "excavation",
+            "v1",
+            "excavation-footprint",
+            "area",
+            width.value * length.value,
+            "m2",
+            "width \xD7 length",
+            "removed",
+            [width.resolved, length.resolved]
+          )
+        ]
+      };
+    }),
+    backfill: model("backfill", "v1", false, (input) => {
+      const lookup = lookupParameters(input.parameters);
+      const depth = requireNumeric(lookup, "depth", "linear");
+      const width = requireNumeric(lookup, "width", "linear");
+      const length = requireNumeric(lookup, "length", "linear");
+      if (!depth.ok || !width.ok || !length.ok) {
+        return missingOrInvalid(lookup, ["depth", "width", "length"]);
+      }
+      return {
+        status: "computed",
+        quantities: [
+          quantity(
+            "backfill",
+            "v1",
+            "backfill-volume",
+            "volume",
+            depth.value * width.value * length.value,
+            "m3",
+            "depth \xD7 width \xD7 length",
+            "added",
+            [depth.resolved, width.resolved, length.resolved]
+          )
+        ]
+      };
+    }),
+    "demolition-removal": model("demolition-removal", "v1", false, (input) => {
+      const lookup = lookupParameters(input.parameters);
+      const length = requireNumeric(lookup, "length", "linear");
+      const height = requireNumeric(lookup, "height", "linear");
+      const thickness = requireNumeric(lookup, "thickness", "linear");
+      if (!length.ok || !height.ok || !thickness.ok) {
+        return missingOrInvalid(lookup, ["length", "height", "thickness"]);
+      }
+      return {
+        status: "computed",
+        quantities: [
+          quantity(
+            "demolition-removal",
+            "v1",
+            "removed-volume",
+            "volume",
+            length.value * height.value * thickness.value,
+            "m3",
+            "length \xD7 height \xD7 thickness",
+            "removed",
+            [length.resolved, height.resolved, thickness.resolved]
+          ),
+          quantity(
+            "demolition-removal",
+            "v1",
+            "removed-face-area",
+            "area",
+            length.value * height.value,
+            "m2",
+            "length \xD7 height",
+            "removed",
+            [length.resolved, height.resolved]
+          )
+        ]
+      };
+    }),
+    "foundation-placement": model("foundation-placement", "v1", false, (input) => {
+      const lookup = lookupParameters(input.parameters);
+      const length = requireNumeric(lookup, "length", "linear");
+      const width = requireNumeric(lookup, "width", "linear");
+      const depth = requireNumeric(lookup, "depth", "linear");
+      if (!length.ok || !width.ok || !depth.ok) {
+        return missingOrInvalid(lookup, ["length", "width", "depth"]);
+      }
+      return {
+        status: "computed",
+        quantities: [
+          quantity(
+            "foundation-placement",
+            "v1",
+            "footing-volume",
+            "volume",
+            length.value * width.value * depth.value,
+            "m3",
+            "length \xD7 width \xD7 depth",
+            "added",
+            [length.resolved, width.resolved, depth.resolved]
+          ),
+          quantity(
+            "foundation-placement",
+            "v1",
+            "footing-plan-area",
+            "area",
+            length.value * width.value,
+            "m2",
+            "length \xD7 width",
+            "added",
+            [length.resolved, width.resolved]
+          )
+        ]
+      };
+    }),
+    "slab-placement": model("slab-placement", "v1", false, (input) => {
+      const lookup = lookupParameters(input.parameters);
+      const length = requireNumeric(lookup, "length", "linear");
+      const width = requireNumeric(lookup, "width", "linear");
+      const thickness = requireNumeric(lookup, "thickness", "linear");
+      if (!length.ok || !width.ok || !thickness.ok) {
+        return missingOrInvalid(lookup, ["length", "width", "thickness"]);
+      }
+      return {
+        status: "computed",
+        quantities: [
+          quantity(
+            "slab-placement",
+            "v1",
+            "slab-volume",
+            "volume",
+            length.value * width.value * thickness.value,
+            "m3",
+            "length \xD7 width \xD7 thickness",
+            "added",
+            [length.resolved, width.resolved, thickness.resolved]
+          ),
+          quantity(
+            "slab-placement",
+            "v1",
+            "slab-plan-area",
+            "area",
+            length.value * width.value,
+            "m2",
+            "length \xD7 width",
+            "added",
+            [length.resolved, width.resolved]
+          )
+        ]
+      };
+    }),
+    "block-wall-placement": model("block-wall-placement", "v1", false, (input) => {
+      const lookup = lookupParameters(input.parameters);
+      const length = requireNumeric(lookup, "length", "linear");
+      const height = requireNumeric(lookup, "height", "linear");
+      const thickness = requireNumeric(lookup, "thickness", "linear");
+      if (!length.ok || !height.ok || !thickness.ok) {
+        return missingOrInvalid(lookup, ["length", "height", "thickness"]);
+      }
+      const courses = roundUp(height.value / DEFAULT_BLOCK_MODULE_HEIGHT);
+      const modulesPerCourse = roundUp(length.value / DEFAULT_BLOCK_MODULE_LENGTH);
+      return {
+        status: "computed",
+        quantities: [
+          quantity(
+            "block-wall-placement",
+            "v1",
+            "wall-volume",
+            "volume",
+            length.value * height.value * thickness.value,
+            "m3",
+            "length \xD7 height \xD7 thickness",
+            "added",
+            [length.resolved, height.resolved, thickness.resolved]
+          ),
+          quantity(
+            "block-wall-placement",
+            "v1",
+            "wall-face-area",
+            "area",
+            length.value * height.value,
+            "m2",
+            "length \xD7 height",
+            "added",
+            [length.resolved, height.resolved]
+          ),
+          quantity(
+            "block-wall-placement",
+            "v1",
+            "block-count",
+            "count",
+            courses * modulesPerCourse,
+            "count",
+            `ceil(height / ${DEFAULT_BLOCK_MODULE_HEIGHT}) \xD7 ceil(length / ${DEFAULT_BLOCK_MODULE_LENGTH}) \u2014 nominal module face incl. joints, partial module counts as a whole block`,
+            "added",
+            [length.resolved, height.resolved]
+          )
+        ]
+      };
+    }),
+    "opening-creation": model("opening-creation", "v1", false, (input) => {
+      const lookup = lookupParameters(input.parameters);
+      const width = requireNumeric(lookup, "width", "linear");
+      const height = requireNumeric(lookup, "height", "linear");
+      if (!width.ok || !height.ok) {
+        return missingOrInvalid(lookup, ["width", "height"]);
+      }
+      return {
+        status: "computed",
+        quantities: [
+          quantity(
+            "opening-creation",
+            "v1",
+            "opening-area",
+            "area",
+            width.value * height.value,
+            "m2",
+            "width \xD7 height",
+            "removed",
+            [width.resolved, height.resolved]
+          ),
+          quantity(
+            "opening-creation",
+            "v1",
+            "opening-count",
+            "count",
+            1,
+            "count",
+            "one opening per opening-creation operation",
+            "added",
+            [width.resolved, height.resolved]
+          )
+        ]
+      };
+    }),
+    "plaster-application": coatedModel("plaster-application", "plaster"),
+    "finish-application": coatedModel("finish-application", "finish"),
+    "building-service-installation": model(
+      "building-service-installation",
+      "v1",
+      false,
+      (input) => {
+        const lookup = lookupParameters(input.parameters);
+        const length = requireNumeric(lookup, "length", "linear");
+        if (!length.ok) {
+          return missingOrInvalid(lookup, ["length"]);
+        }
+        return {
+          status: "computed",
+          quantities: [
+            quantity(
+              "building-service-installation",
+              "v1",
+              "service-run-length",
+              "length",
+              length.value,
+              "m",
+              "length (the run's length, unit-converted exactly)",
+              "added",
+              [length.resolved]
+            ),
+            quantity(
+              "building-service-installation",
+              "v1",
+              "service-run-count",
+              "count",
+              1,
+              "count",
+              "one service run per building-service-installation operation",
+              "added",
+              [length.resolved]
+            )
+          ]
+        };
+      }
+    )
+  };
+  return set;
+}
+function coatedModel(operationType, noun) {
+  return model(operationType, "v1", true, (input) => {
+    if (!isSurfaceTarget(input.target) || input.surfaceArea === void 0) {
+      return {
+        status: "needs-input",
+        reasons: [surfaceAreaUnresolvedReason(input.target)]
+      };
+    }
+    const area = resolveCoatedSurfaceArea(input);
+    if (area === void 0) {
+      return {
+        status: "needs-input",
+        reasons: [surfaceAreaUnresolvedReason(input.target)]
+      };
+    }
+    const lookup = lookupParameters(input.parameters);
+    const thickness = requireNumeric(lookup, "thickness", "linear");
+    if (!thickness.ok) {
+      return missingOrInvalid(lookup, ["thickness"]);
+    }
+    const areaTrace = {
+      name: "surface-area",
+      canonicalValue: area,
+      originalUnit: input.surfaceArea.unit,
+      dimension: "area",
+      originalValue: input.surfaceArea.value
+    };
+    return {
+      status: "computed",
+      quantities: [
+        quantity(
+          operationType,
+          "v1",
+          `${noun}-area`,
+          "area",
+          area,
+          "m2",
+          "resolved baseline target surface area (read-only geometry fact)",
+          "added",
+          [areaTrace]
+        ),
+        quantity(
+          operationType,
+          "v1",
+          `${noun}-volume`,
+          "volume",
+          area * thickness.value,
+          "m3",
+          "surface area \xD7 thickness",
+          "added",
+          [areaTrace, thickness.resolved]
+        )
+      ]
+    };
+  });
+}
+function missingOrInvalid(lookup, names) {
+  if (lookup.failures.length > 0) {
+    return { status: "invalid", reasons: unitFailuresToReasons(lookup.failures) };
+  }
+  const missing = names.filter(
+    (name) => lookup.parameters.find((entry) => entry.name === name) === void 0
+  );
+  return {
+    status: "invalid",
+    reasons: [
+      {
+        code: "missing_parameter_for_model",
+        detail: `the quantity model for this operation type requires parameters ${JSON.stringify(names)}; missing: ${JSON.stringify(missing)} \u2014 the operation is refused rather than computed with invented values`
+      }
+    ]
+  };
+}
+var REFERENCE_BUILDING_OPERATION_LIMITS = Object.freeze({
+  excavation: [
+    {
+      parameterName: "depth",
+      maxCanonicalValue: 6,
+      unit: "m",
+      limitId: "excavation-max-depth",
+      detail: "maximum excavation depth is 6 m per operation (Phase 1 building scope)"
+    }
+  ],
+  "block-wall-placement": [
+    {
+      parameterName: "height",
+      maxCanonicalValue: 3,
+      unit: "m",
+      limitId: "block-wall-max-height",
+      detail: "maximum wall height is 3 m per operation"
+    }
+  ],
+  "plaster-application": [
+    {
+      parameterName: "thickness",
+      maxCanonicalValue: 0.05,
+      unit: "m",
+      limitId: "plaster-max-thickness-per-coat",
+      detail: "maximum plaster thickness is 50 mm per coat"
+    }
+  ]
+});
+function evaluateOperationLimits(operationType, parameters, limits = REFERENCE_BUILDING_OPERATION_LIMITS) {
+  const entries = limits[operationType] ?? [];
+  const exceeded = [];
+  for (const limit of entries) {
+    const parameter = parameters.find((entry) => entry.name === limit.parameterName);
+    if (parameter === void 0 || typeof parameter.value !== "number") {
+      continue;
+    }
+    const resolved = resolveNumericParameter(parameter, "linear");
+    if (resolved.ok && resolved.resolved.canonicalValue > limit.maxCanonicalValue) {
+      exceeded.push(limit);
+    }
+  }
+  return exceeded;
+}
+
+// packages/solution-engine/src/states.ts
+import { createHash as createHash3 } from "node:crypto";
+function sha256Hex3(value) {
+  return createHash3("sha256").update(canonicalJsonStringify(value), "utf8").digest("hex");
+}
+function effectProjection(effect) {
+  return {
+    effectKind: effect.effectKind,
+    direction: effect.direction,
+    quantity: effect.quantity === void 0 ? void 0 : {
+      dimension: effect.quantity.dimension,
+      value: effect.quantity.value,
+      unit: effect.quantity.unit,
+      calculationRef: effect.quantity.calculationRef
+    },
+    affectedNodeRefs: [...effect.affectedNodeRefs],
+    geometryRefs: effect.geometryRefs.map((ref) => ({ kind: ref.kind, ref: ref.ref }))
+  };
+}
+function stateContentDigest(link) {
+  return sha256Hex3({
+    parentContentDigest: link.parentContentDigest,
+    stateIndex: link.stateIndex,
+    operationId: link.operationId,
+    operationEffects: link.operationEffects.map(effectProjection)
+  });
+}
+function materializeBaselineState(input) {
+  const contentDigest = stateContentDigest({
+    parentContentDigest: null,
+    stateIndex: 0,
+    operationId: "",
+    operationEffects: []
+  });
+  return {
+    contractVersion: SOLUTION_CONTRACT_VERSION,
+    stateId: deriveProposedStateId({
+      solutionId: input.solutionId,
+      versionNumber: input.versionNumber,
+      stateIndex: 0,
+      baselineRealityVersionId: input.baselineRealityVersionId,
+      appliedOperationIds: [],
+      contentDigest
+    }),
+    solutionId: input.solutionId,
+    versionNumber: input.versionNumber,
+    stateIndex: 0,
+    baselineRealityVersionId: input.baselineRealityVersionId,
+    epistemicStatus: "PROPOSED",
+    appliedOperationIds: [],
+    contentDigest,
+    materializedAt: input.materializedAt
+  };
+}
+function deriveTransitionId(identity) {
+  return sha256Hex3({
+    kind: identity.kind,
+    solutionId: identity.solutionId,
+    versionNumber: identity.versionNumber,
+    operationIndex: identity.operationIndex,
+    operationId: identity.operationId,
+    parentStateId: identity.parentStateId,
+    resultingStateId: identity.resultingStateId,
+    revertedOperationId: identity.revertedOperationId
+  });
+}
+
+// packages/solution-engine/src/apply.ts
+function isSolutionVersion(value) {
+  return value.operations !== void 0;
+}
+function applyOperation(input) {
+  const { intent, capabilityProfile, materializedAt } = input;
+  const quantityModels = input.quantityModels ?? referenceBuildingQuantityModels();
+  const negotiation = negotiateOperationCapability(intent, capabilityProfile);
+  const invariantFindings = checkEngineeringOperationIntent(intent);
+  if (invariantFindings.length > 0) {
+    return refuse("invalid", intent.intentId, negotiation, [
+      ...invariantFindings.map((finding2) => ({
+        code: "intent_invariant_violation",
+        detail: `${finding2.code}: ${finding2.detail} (path ${finding2.path.join(".")})`
+      }))
+    ]);
+  }
+  if (negotiation.outcome === "unsupported") {
+    return refuse("unsupported", intent.intentId, negotiation, [
+      {
+        code: "capability_unsupported",
+        detail: `negotiation refused the intent definitively (outcome 'unsupported'): ` + negotiation.reasons.map((reason) => reason.detail).join("; ")
+      }
+    ]);
+  }
+  if (negotiation.outcome === "blocked") {
+    return refuse("needs-input", intent.intentId, negotiation, [
+      ...negotiation.reasons.map((reason) => ({
+        code: "missing_required_parameter",
+        detail: reason.detail
+      }))
+    ]);
+  }
+  if (negotiation.outcome === "unknown") {
+    return refuse("needs-input", intent.intentId, negotiation, [
+      {
+        code: "capability_undetermined",
+        detail: `capability is undetermined (negotiation outcome 'unknown'): ` + negotiation.reasons.map((reason) => reason.detail).join("; ") + ` \u2014 probing is required; never reported as unsupported`
+      }
+    ]);
+  }
+  const baselineState = isSolutionVersion(input.baseline) ? input.baseline.states[input.baseline.states.length - 1] : input.baseline;
+  if (baselineState === void 0) {
+    return refuse("invalid", intent.intentId, negotiation, [
+      {
+        code: "baseline_mismatch",
+        detail: "the baseline version carries no states \u2014 nothing to apply onto"
+      }
+    ]);
+  }
+  const solutionId = baselineState.solutionId;
+  const versionNumber = baselineState.versionNumber;
+  const operationIndex = baselineState.stateIndex + 1;
+  if (intent.proposedTo !== void 0) {
+    if (intent.proposedTo.solutionId !== solutionId || intent.proposedTo.versionNumber !== versionNumber) {
+      return refuse("invalid", intent.intentId, negotiation, [
+        {
+          code: "baseline_mismatch",
+          detail: `the intent proposes into solution '${intent.proposedTo.solutionId}' version ${intent.proposedTo.versionNumber}, but the baseline is solution '${solutionId}' version ${versionNumber} \u2014 an intent is never silently re-targeted`
+        }
+      ]);
+    }
+  }
+  const appliedIds = new Set(baselineState.appliedOperationIds);
+  for (const dependency of intent.dependsOn) {
+    if (!appliedIds.has(dependency.operationRef)) {
+      return refuse("invalid", intent.intentId, negotiation, [
+        {
+          code: "dependency_not_applied",
+          detail: `dependency '${dependency.dependencyKind}' on operation '${dependency.operationRef}' is not satisfied: the referenced operation is not among the ${appliedIds.size} applied operations of solution '${solutionId}' version ${versionNumber} \u2014 operations apply in dependency order, never ahead of it`
+        }
+      ]);
+    }
+  }
+  const operationId = deriveEngineeringOperationId(
+    operationSemanticIdentityOfIntent(intent, {
+      solutionId,
+      versionNumber,
+      operationIndex
+    })
+  );
+  if (appliedIds.has(operationId)) {
+    return refuse("invalid", intent.intentId, negotiation, [
+      {
+        code: "duplicate_operation_in_state",
+        detail: `operation '${operationId}' is already applied in this version (index ${operationIndex} collides with the applied sequence)`
+      }
+    ]);
+  }
+  const model2 = quantityModels[intent.operationType];
+  if (model2 === void 0) {
+    return refuse("unsupported", intent.intentId, negotiation, [
+      {
+        code: "capability_unsupported",
+        detail: `the capability profile declares '${intent.operationType}' executable, but this engine build ships no deterministic quantity model for it \u2014 engine/profile version skew is refused, never best-efforted`
+      }
+    ]);
+  }
+  let surfaceArea;
+  if (model2.requiresSurfaceArea) {
+    if (input.baselineGeometry === void 0 || !isSurfaceTarget(intent.target)) {
+      return refuse("needs-input", intent.intentId, negotiation, [
+        surfaceAreaUnresolvedReason(intent.target)
+      ]);
+    }
+    const resolved = input.baselineGeometry.resolveSurfaceArea(intent.target);
+    if (resolved === null) {
+      return refuse("needs-input", intent.intentId, negotiation, [
+        surfaceAreaUnresolvedReason(intent.target)
+      ]);
+    }
+    surfaceArea = resolved;
+  }
+  const computation = model2.compute({
+    parameters: intent.parameters,
+    target: intent.target,
+    ...surfaceArea === void 0 ? {} : { surfaceArea }
+  });
+  if (computation.status === "invalid") {
+    return refuse("invalid", intent.intentId, negotiation, computation.reasons);
+  }
+  if (computation.status === "needs-input") {
+    return refuse("needs-input", intent.intentId, negotiation, computation.reasons);
+  }
+  const quantities = computation.quantities;
+  const nodeRefs = [...intent.target.nodeRefs];
+  const geometryRefs = intent.target.geometryRefs.map((ref) => ({
+    kind: ref.kind,
+    ref: ref.ref
+  }));
+  const transitionEffectBase = {
+    contractVersion: SOLUTION_CONTRACT_VERSION,
+    effectKind: "state-transition",
+    affectedNodeRefs: nodeRefs,
+    geometryRefs,
+    // resultingStateRef is stamped after materialization below (the digest
+    // projection deliberately excludes it — see states.ts).
+    resultingStateRef: ""
+  };
+  const quantityEffects = quantities.map((quantity2) => ({
+    contractVersion: SOLUTION_CONTRACT_VERSION,
+    effectKind: "quantity-impact",
+    affectedNodeRefs: [...nodeRefs],
+    geometryRefs: geometryRefs.map((ref) => ({ ...ref })),
+    quantity: {
+      dimension: quantity2.dimension,
+      value: quantity2.value,
+      unit: quantity2.unit,
+      calculationRef: quantity2.calculationRef
+    },
+    direction: quantity2.direction
+  }));
+  const effectsForDigest = [transitionEffectBase, ...quantityEffects];
+  const link = {
+    parentContentDigest: baselineState.contentDigest ?? null,
+    stateIndex: operationIndex,
+    operationId,
+    operationEffects: effectsForDigest
+  };
+  const contentDigest = stateContentDigest(link);
+  const appliedOperationIds = [...baselineState.appliedOperationIds, operationId];
+  const resultingState = {
+    contractVersion: SOLUTION_CONTRACT_VERSION,
+    stateId: deriveProposedStateId({
+      solutionId,
+      versionNumber,
+      stateIndex: operationIndex,
+      baselineRealityVersionId: baselineState.baselineRealityVersionId,
+      appliedOperationIds,
+      contentDigest
+    }),
+    solutionId,
+    versionNumber,
+    stateIndex: operationIndex,
+    baselineRealityVersionId: baselineState.baselineRealityVersionId,
+    epistemicStatus: "PROPOSED",
+    appliedOperationIds,
+    contentDigest,
+    materializedAt
+  };
+  const effects = [
+    { ...transitionEffectBase, resultingStateRef: resultingState.stateId },
+    ...quantityEffects
+  ];
+  const operation = {
+    contractVersion: SOLUTION_CONTRACT_VERSION,
+    operationId,
+    solutionId,
+    versionNumber,
+    operationIndex,
+    operationType: intent.operationType,
+    domain: { ...intent.domain },
+    parameters: intent.parameters.map((parameter) => ({ ...parameter })),
+    target: {
+      ...intent.target,
+      contractVersion: SOLUTION_CONTRACT_VERSION,
+      nodeRefs: [...nodeRefs],
+      geometryRefs: geometryRefs.map((ref) => ({ ...ref })),
+      units: { ...intent.target.units }
+    },
+    dependsOn: intent.dependsOn.map((dependency) => ({
+      ...dependency,
+      contractVersion: SOLUTION_CONTRACT_VERSION
+    })),
+    effects: effects.map((effect) => ({ ...effect })),
+    provenance: {
+      ...intent.provenance,
+      intentRef: intent.intentId
+    }
+  };
+  const recordFindings = checkEngineeringOperation(operation);
+  if (recordFindings.length > 0) {
+    return refuse("invalid", intent.intentId, negotiation, [
+      {
+        code: "intent_invariant_violation",
+        detail: `internal guard: emitted operation record failed contract re-validation (${recordFindings.map((f) => f.code).join(", ")})`
+      }
+    ]);
+  }
+  const transitionIdentity = {
+    kind: "apply",
+    solutionId,
+    versionNumber,
+    operationIndex,
+    operationId,
+    parentStateId: baselineState.stateId,
+    resultingStateId: resultingState.stateId
+  };
+  return {
+    outcome: "applied",
+    operation,
+    resultingState,
+    effects,
+    quantities,
+    limitsExceeded: evaluateOperationLimits(intent.operationType, intent.parameters, input.limits),
+    negotiation,
+    lineage: {
+      kind: "apply",
+      transitionId: deriveTransitionId(transitionIdentity),
+      solutionId,
+      versionNumber,
+      operationIndex,
+      operationId,
+      intentId: intent.intentId,
+      parentStateId: baselineState.stateId,
+      parentStateIndex: baselineState.stateIndex,
+      resultingStateId: resultingState.stateId,
+      baselineRealityVersionId: baselineState.baselineRealityVersionId,
+      materializedAt
+    }
+  };
+}
+function refuse(outcome, intentId, negotiation, reasons) {
+  return { outcome, intentId, negotiation, reasons: [...reasons] };
+}
+
+// packages/solution-engine/src/replay.ts
+function steppedMaterializeClock(startMs, stepMs) {
+  return (stateIndex) => new Date(startMs + stateIndex * stepMs).toISOString();
+}
+
+// packages/solution-engine/src/validation.ts
+import { createHash as createHash4 } from "node:crypto";
+function sha256Hex4(value) {
+  return createHash4("sha256").update(canonicalJsonStringify(value), "utf8").digest("hex");
+}
+function validateSolutionVersion(input) {
+  const checks = [];
+  const contractFindings = collectContractFindings(input.version);
+  checks.push({
+    checkId: "operation.contract-invariants",
+    result: contractFindings.length === 0 ? "pass" : "fail",
+    detail: contractFindings.length === 0 ? `all ${input.version.operations.length} operations, ${input.version.states.length} states and the version container satisfy every contract invariant (typed-unit parameters, anchored targets, provenance, layer alignment)` : `contract invariant violations: ${contractFindings.join("; ")}`
+  });
+  const nonPositive = collectNonPositiveDimensions(input.version);
+  checks.push({
+    checkId: "geometry.dimensions-positive",
+    result: nonPositive.length === 0 ? "pass" : "fail",
+    detail: nonPositive.length === 0 ? "every numeric operation parameter is strictly positive" : `non-positive dimensions: ${nonPositive.join("; ")}`
+  });
+  const unitProblems = collectUnitProblems(input.version);
+  checks.push({
+    checkId: "units.quantity-units-typed",
+    result: unitProblems.length === 0 ? "pass" : "fail",
+    detail: unitProblems.length === 0 ? "every numeric parameter and effect quantity carries an explicit, engine-known unit" : `unit violations: ${unitProblems.join("; ")}`
+  });
+  const orderingProblems = collectOrderingProblems(input.version);
+  checks.push({
+    checkId: "operation.ordering-dependencies",
+    result: orderingProblems.length === 0 ? "pass" : "fail",
+    detail: orderingProblems.length === 0 ? "dependency edges point backwards in the sequence; no cycles" : `dependency violations: ${orderingProblems.join("; ")}`
+  });
+  const missingRefs = collectMissingCalculationRefs(input.version);
+  checks.push({
+    checkId: "quantities.calculation-refs",
+    result: missingRefs.length === 0 ? "pass" : "fail",
+    detail: missingRefs.length === 0 ? "every quantity effect references its deterministic calculation" : `missing calculation references: ${missingRefs.join("; ")}`
+  });
+  checks.push(checkCapabilityDeclared(input.version, input.capabilityProfile));
+  checks.push(checkPhase1Limits(input.version, input.limits));
+  const outcome = validationOutcomeWorstOf(checks.map((check) => check.result));
+  const inputDigest = sha256Hex4(input.version);
+  return {
+    contractVersion: SOLUTION_CONTRACT_VERSION,
+    snapshotId: deriveValidationSnapshotId({
+      solutionId: input.version.solutionId,
+      versionNumber: input.version.versionNumber,
+      inputDigest,
+      engineKind: SOLUTION_ENGINE_KIND,
+      engineVersion: SOLUTION_ENGINE_VERSION,
+      outcome
+    }),
+    solutionId: input.version.solutionId,
+    versionNumber: input.version.versionNumber,
+    outcome,
+    checks,
+    inputDigest,
+    engine: { kind: SOLUTION_ENGINE_KIND, version: SOLUTION_ENGINE_VERSION },
+    validatedAt: input.validatedAt
+  };
+}
+function collectContractFindings(version) {
+  const findings = [];
+  for (const operation of version.operations) {
+    for (const finding2 of checkEngineeringOperation(operation)) {
+      findings.push(
+        `operation ${operation.operationIndex} (${operation.operationType}): ${finding2.code} \u2014 ${finding2.detail}`
+      );
+    }
+  }
+  for (const state of version.states) {
+    for (const finding2 of checkProposedState(state)) {
+      findings.push(`state ${state.stateIndex}: ${finding2.code} \u2014 ${finding2.detail}`);
+    }
+  }
+  for (const finding2 of checkSolutionVersion(version)) {
+    findings.push(`version: ${finding2.code} \u2014 ${finding2.detail}`);
+  }
+  return findings;
+}
+function collectNonPositiveDimensions(version) {
+  const problems = [];
+  for (const operation of version.operations) {
+    for (const parameter of operation.parameters) {
+      if (typeof parameter.value === "number" && parameter.value <= 0) {
+        problems.push(
+          `operation ${operation.operationIndex} (${operation.operationType}): ` + `parameter '${parameter.name}' = ${parameter.value} ${parameter.unit ?? ""}`.trim()
+        );
+      }
+    }
+  }
+  return problems;
+}
+function collectUnitProblems(version) {
+  const problems = [];
+  for (const operation of version.operations) {
+    for (const parameter of operation.parameters) {
+      if (typeof parameter.value === "number") {
+        if (typeof parameter.unit !== "string" || parameter.unit.trim() === "") {
+          problems.push(
+            `operation ${operation.operationIndex}: parameter '${parameter.name}' has numeric value without an explicit unit`
+          );
+        } else if (UNIT_VOCABULARY[parameter.unit] === void 0) {
+          problems.push(
+            `operation ${operation.operationIndex}: parameter '${parameter.name}' carries unknown unit '${parameter.unit}'`
+          );
+        }
+      }
+    }
+    for (const [index, effect] of operation.effects.entries()) {
+      if (effect.effectKind === "quantity-impact") {
+        const quantity2 = effect.quantity;
+        if (quantity2 === void 0 || typeof quantity2.unit !== "string" || quantity2.unit.trim() === "") {
+          problems.push(
+            `operation ${operation.operationIndex} effect ${index}: quantity-impact without a typed unit`
+          );
+        }
+      }
+    }
+  }
+  return problems;
+}
+function collectOrderingProblems(version) {
+  const problems = [];
+  const indexById = /* @__PURE__ */ new Map();
+  for (const operation of version.operations) {
+    indexById.set(operation.operationId, operation.operationIndex);
+  }
+  for (const operation of version.operations) {
+    for (const dependency of operation.dependsOn) {
+      const referenced = indexById.get(dependency.operationRef);
+      if (referenced === void 0) {
+        problems.push(
+          `operation ${operation.operationIndex}: dependency '${dependency.operationRef}' does not resolve inside this version`
+        );
+      } else if (referenced >= operation.operationIndex) {
+        problems.push(
+          `operation ${operation.operationIndex}: dependency on operation ${referenced} is not backwards (self or forward edge)`
+        );
+      }
+    }
+  }
+  return problems;
+}
+function collectMissingCalculationRefs(version) {
+  const problems = [];
+  for (const operation of version.operations) {
+    for (const [index, effect] of operation.effects.entries()) {
+      if (effect.effectKind === "quantity-impact" && (effect.quantity?.calculationRef === void 0 || effect.quantity.calculationRef.trim() === "")) {
+        problems.push(
+          `operation ${operation.operationIndex} effect ${index}: quantity-impact without a calculation reference`
+        );
+      }
+    }
+  }
+  return problems;
+}
+function checkCapabilityDeclared(version, profile) {
+  const undeclared = [];
+  const undetermined = [];
+  const degraded = [];
+  for (const operation of version.operations) {
+    const vertical = operation.domain.vertical;
+    const domainEntry = profile.domains.find((entry) => entry.domain.vertical === vertical);
+    if (domainEntry === void 0 || domainEntry.status === "unavailable") {
+      undeclared.push(
+        `operation ${operation.operationIndex} (${operation.operationType}) in vertical '${vertical}' \u2014 the engine profile declares no available capability for it`
+      );
+      continue;
+    }
+    if (domainEntry.status === "unknown") {
+      undetermined.push(
+        `vertical '${vertical}' capability is undetermined (profile status unknown)`
+      );
+      continue;
+    }
+    const operationEntry = domainEntry.operations.find(
+      (entry) => entry.operationType === operation.operationType
+    );
+    if (operationEntry === void 0 || operationEntry.status === "unavailable") {
+      undeclared.push(
+        `operation ${operation.operationIndex} (${operation.operationType}) \u2014 the engine profile declares no available capability for it in vertical '${vertical}'`
+      );
+      continue;
+    }
+    if (operationEntry.status === "unknown") {
+      undetermined.push(
+        `operation type '${operation.operationType}' capability is undetermined (profile status unknown; probing required)`
+      );
+      continue;
+    }
+    if (operationEntry.status === "degraded") {
+      degraded.push(
+        `operation ${operation.operationIndex} (${operation.operationType}) executes with declared limitations: ${operationEntry.limitations.join("; ")}`
+      );
+    }
+  }
+  let result;
+  let detail;
+  if (undeclared.length > 0) {
+    result = "fail";
+    detail = `the version contains operations the engine cannot execute: ${undeclared.join("; ")} \u2014 a validated executable proposal cannot contain them`;
+  } else if (undetermined.length > 0) {
+    result = "unknown";
+    detail = `capability undetermined for: ${undetermined.join("; ")} \u2014 never conflated with unsupported; probing is required before these can be certified`;
+  } else if (degraded.length > 0) {
+    result = "pass";
+    detail = `all ${version.operations.length} operations are declared executable; degraded entries surfaced: ${degraded.join("; ")}`;
+  } else {
+    result = "pass";
+    detail = `all ${version.operations.length} operations are declared supported by engine profile '${profile.profileId}' for their verticals`;
+  }
+  return { checkId: "operation.capability-declared", result, detail };
+}
+function checkPhase1Limits(version, limits) {
+  const exceeded = [];
+  for (const operation of version.operations) {
+    for (const limit of evaluateOperationLimits(
+      operation.operationType,
+      operation.parameters,
+      limits
+    )) {
+      exceeded.push(
+        `operation ${operation.operationIndex} (${operation.operationType}): ${limit.detail}`
+      );
+    }
+  }
+  return {
+    checkId: "operation.phase1-limits",
+    result: exceeded.length === 0 ? "pass" : "review-needed",
+    detail: exceeded.length === 0 ? "every operation is within the quantitative Phase 1 limits" : `quantitative Phase 1 limits exceeded \u2014 engineer review required: ${exceeded.join("; ")}`
+  };
+}
+
+// packages/solution-engine/src/revise.ts
+function reviseVersion(input) {
+  const { version, revertOperationId } = input;
+  if (version.status === "superseded" || version.status === "abandoned") {
+    return refuse2([
+      {
+        code: "version_terminal",
+        detail: `version ${version.versionNumber} of solution '${version.solutionId}' is terminal ('${version.status}') \u2014 no revision path exists; revision is only a new version over a live lineage`
+      }
+    ]);
+  }
+  const reverted = version.operations.find(
+    (operation) => operation.operationId === revertOperationId
+  );
+  if (reverted === void 0) {
+    return refuse2([
+      {
+        code: "unknown_operation_to_revert",
+        detail: `operation '${revertOperationId}' is not recorded in version ${version.versionNumber} of solution '${version.solutionId}'; recorded operations: ${version.operations.map((operation) => operation.operationId).join(", ")}`
+      }
+    ]);
+  }
+  const newVersionNumber = version.versionNumber + 1;
+  const baselineState = version.states[0];
+  if (baselineState === void 0) {
+    return refuse2([
+      {
+        code: "revision_not_appendable",
+        detail: `version ${version.versionNumber} of solution '${version.solutionId}' carries no baseline overlay (states[0]) \u2014 the lineage cannot be revised`
+      }
+    ]);
+  }
+  const kept = version.operations.filter(
+    (operation) => operation.operationId !== revertOperationId
+  );
+  const operations = [];
+  const states = [
+    materializeBaselineState({
+      solutionId: version.solutionId,
+      versionNumber: newVersionNumber,
+      baselineRealityVersionId: baselineState.baselineRealityVersionId,
+      materializedAt: input.materializeClock(0)
+    })
+  ];
+  for (const original of kept) {
+    const intent = intentOfOperation(original, newVersionNumber, revertOperationId);
+    const result = applyOperation({
+      baseline: latestState(states),
+      intent,
+      capabilityProfile: input.capabilityProfile,
+      materializedAt: input.materializeClock(states.length),
+      ...input.baselineGeometry === void 0 ? {} : { baselineGeometry: input.baselineGeometry },
+      ...input.quantityModels === void 0 ? {} : { quantityModels: input.quantityModels },
+      ...input.limits === void 0 ? {} : { limits: input.limits }
+    });
+    if (result.outcome !== "applied") {
+      return refuse2([
+        ...result.reasons,
+        {
+          code: "revision_not_appendable",
+          detail: `re-applying operation ${original.operationIndex} ('${original.operationType}') into version ${newVersionNumber} was refused \u2014 the revision aborts with the original refusal reasons above`
+        }
+      ]);
+    }
+    operations.push(result.operation);
+    states.push(result.resultingState);
+  }
+  const newVersion = {
+    contractVersion: SOLUTION_CONTRACT_VERSION,
+    solutionId: version.solutionId,
+    versionNumber: newVersionNumber,
+    parentVersionNumber: version.versionNumber,
+    status: "draft",
+    // a revision resets to draft; the BOQ gate re-validates
+    operations,
+    states,
+    createdAt: input.createdAt
+  };
+  const revision = {
+    kind: "undo",
+    transitionId: deriveTransitionId({
+      kind: "undo",
+      solutionId: version.solutionId,
+      versionNumber: newVersionNumber,
+      operationIndex: reverted.operationIndex,
+      operationId: reverted.operationId
+    }),
+    solutionId: version.solutionId,
+    parentVersionNumber: version.versionNumber,
+    newVersionNumber,
+    revertedOperationId: reverted.operationId,
+    revertedOperationIndex: reverted.operationIndex,
+    revertedOperationType: reverted.operationType,
+    authoredBy: input.revisionProvenance.authoredBy,
+    reason: input.revisionProvenance.reason,
+    appliedAt: input.revisionProvenance.authoredAt
+  };
+  return { outcome: "revised", newVersion, revision };
+}
+function intentOfOperation(operation, newVersionNumber, revertedOperationId) {
+  return {
+    contractVersion: SOLUTION_CONTRACT_VERSION,
+    intentId: operation.provenance.intentRef ?? `intent-r${newVersionNumber}-${operation.operationIndex}`,
+    operationType: operation.operationType,
+    domain: { ...operation.domain },
+    parameters: operation.parameters.map((parameter) => ({ ...parameter })),
+    target: {
+      ...operation.target,
+      nodeRefs: [...operation.target.nodeRefs],
+      geometryRefs: operation.target.geometryRefs.map((ref) => ({ ...ref })),
+      units: { ...operation.target.units }
+    },
+    dependsOn: operation.dependsOn.filter((dependency) => dependency.operationRef !== revertedOperationId).map((dependency) => ({ ...dependency })),
+    provenance: { ...operation.provenance },
+    proposedTo: {
+      solutionId: operation.solutionId,
+      versionNumber: newVersionNumber
+    }
+  };
+}
+function refuse2(reasons) {
+  return { outcome: "invalid", reasons: [...reasons] };
+}
+function latestState(states) {
+  const state = states[states.length - 1];
+  if (state === void 0) {
+    throw new Error("revision state chain is empty \u2014 layer 0 was not materialized");
+  }
+  return state;
+}
+
+// packages/solution-engine/src/quantities.ts
+function deriveStateQuantities(version, stateIndex) {
+  const index = stateIndex === void 0 ? version.states.length - 1 : Math.max(0, Math.min(stateIndex, version.states.length - 1));
+  const state = version.states[index];
+  if (state === void 0) {
+    throw new Error(`state ${index} missing in version ${version.versionNumber}`);
+  }
+  const appliedIds = new Set(state.appliedOperationIds);
+  const perOperation = [];
+  for (const operation of version.operations) {
+    if (!appliedIds.has(operation.operationId)) {
+      continue;
+    }
+    perOperation.push(...tracedQuantitiesOf(operation, version));
+  }
+  return {
+    solutionId: version.solutionId,
+    versionNumber: version.versionNumber,
+    stateIndex: index,
+    stateId: state.stateId,
+    perOperation,
+    totals: aggregateTotals(perOperation)
+  };
+}
+function tracedQuantitiesOf(operation, version) {
+  const sourceState = version.states[operation.operationIndex - 1];
+  const resultingState = version.states[operation.operationIndex];
+  return operation.effects.filter((effect) => effect.effectKind === "quantity-impact").map((effect, ordinal) => {
+    const quantity2 = effect.quantity;
+    if (quantity2 === void 0) {
+      throw new Error(
+        `quantity-impact effect ${ordinal} of operation ${operation.operationId} lacks a quantity`
+      );
+    }
+    return {
+      operationId: operation.operationId,
+      operationIndex: operation.operationIndex,
+      intentRef: operation.provenance.intentRef,
+      operationType: operation.operationType,
+      sourceStateId: sourceState?.stateId ?? "",
+      resultingStateId: resultingState?.stateId,
+      dimension: quantity2.dimension,
+      value: quantity2.value,
+      unit: quantity2.unit,
+      direction: effect.direction ?? "changed",
+      calculationRef: quantity2.calculationRef,
+      parameters: operation.parameters.map((parameter) => ({ ...parameter })),
+      affectedNodeRefs: [...effect.affectedNodeRefs],
+      geometryRefs: effect.geometryRefs.map((ref) => ({ kind: ref.kind, ref: ref.ref }))
+    };
+  });
+}
+function aggregateTotals(quantities) {
+  const buckets = /* @__PURE__ */ new Map();
+  for (const quantity2 of quantities) {
+    const key = `${quantity2.dimension}\0${quantity2.unit}`;
+    const bucket = buckets.get(key) ?? { added: 0, removed: 0, ops: /* @__PURE__ */ new Set() };
+    if (quantity2.direction === "added") {
+      bucket.added += quantity2.value;
+    } else if (quantity2.direction === "removed") {
+      bucket.removed += quantity2.value;
+    }
+    bucket.ops.add(quantity2.operationId);
+    buckets.set(key, bucket);
+  }
+  const totals = [];
+  for (const [key, bucket] of [...buckets.entries()].sort(([a], [b2]) => a.localeCompare(b2))) {
+    const [dimension, unit] = key.split("\0");
+    totals.push({
+      dimension,
+      unit: unit ?? "",
+      netValue: roundNet(bucket.added - bucket.removed),
+      addedValue: roundNet(bucket.added),
+      removedValue: roundNet(bucket.removed),
+      contributingOperationIds: [...bucket.ops].sort()
+    });
+  }
+  return totals;
+}
+function roundNet(value) {
+  return Number(value.toFixed(10));
+}
+
+// backend/api/src/solution/service.ts
+var SolutionService = class {
+  baselineGeometry;
+  constructor(deps = {}) {
+    this.baselineGeometry = deps.baselineGeometry;
+  }
+  /** POST /v1/solutions/step — apply ONE intent to a baseline state. */
+  step(payload) {
+    const request = parseStepRequest(payload);
+    const intent = decodeStrict(
+      "invalid_intent",
+      (value) => decodeEngineeringOperationIntentStrict(value),
+      request.intent
+    );
+    const baseline = decodeStrict(
+      "invalid_baseline",
+      (value) => decodeProposedStateStrict(value),
+      request.baseline
+    );
+    const capabilityProfile = this.resolveCapabilityProfile(request.capabilityProfile);
+    const result = applyOperation({
+      baseline,
+      intent,
+      capabilityProfile,
+      materializedAt: request.materializedAt,
+      ...this.baselineGeometry === void 0 ? {} : { baselineGeometry: this.baselineGeometry }
+    });
+    return { result };
+  }
+  /** POST /v1/solutions/validate — deterministic validation snapshot. */
+  validate(payload) {
+    const request = parseValidateRequest(payload);
+    const version = decodeStrict(
+      "invalid_version",
+      (value) => decodeSolutionVersionStrict(value),
+      request.version
+    );
+    const capabilityProfile = this.resolveCapabilityProfile(request.capabilityProfile);
+    const snapshot = validateSolutionVersion({
+      version,
+      capabilityProfile,
+      ...this.baselineGeometry === void 0 ? {} : { baselineGeometry: this.baselineGeometry },
+      validatedAt: request.validatedAt
+    });
+    return { snapshot };
+  }
+  /** POST /v1/solutions/inspect — state/version/lineage readback. */
+  inspect(payload) {
+    const request = parseInspectRequest(payload);
+    const version = decodeStrict(
+      "invalid_version",
+      (value) => decodeSolutionVersionStrict(value),
+      request.version
+    );
+    const requestedStateIndex = request.stateIndex === void 0 ? version.states.length - 1 : request.stateIndex;
+    const requestedState = version.states[requestedStateIndex];
+    if (requestedState === void 0) {
+      throw new SolutionError(
+        "invalid_state_index",
+        `stateIndex ${requestedStateIndex} is out of range: version ${version.versionNumber} of solution '${version.solutionId}' has ${version.states.length} state layers (0..${version.states.length - 1})`
+      );
+    }
+    return {
+      solutionId: version.solutionId,
+      versionNumber: version.versionNumber,
+      ...version.parentVersionNumber === void 0 ? {} : { parentVersionNumber: version.parentVersionNumber },
+      status: version.status,
+      operations: version.operations.map((operation) => ({
+        operationIndex: operation.operationIndex,
+        operationId: operation.operationId,
+        operationType: operation.operationType,
+        intentRef: operation.provenance.intentRef,
+        appliedAtStateId: version.states[operation.operationIndex]?.stateId,
+        dependencyCount: operation.dependsOn.length,
+        effectCount: operation.effects.length
+      })),
+      states: version.states.map((state) => ({
+        stateIndex: state.stateIndex,
+        stateId: state.stateId,
+        appliedOperationIds: state.appliedOperationIds,
+        contentDigest: state.contentDigest,
+        materializedAt: state.materializedAt
+      })),
+      requestedStateIndex,
+      requestedState
+    };
+  }
+  /** POST /v1/solutions/quantities — derived quantities of a state. */
+  quantities(payload) {
+    const request = parseQuantitiesRequest(payload);
+    const version = decodeStrict(
+      "invalid_version",
+      (value) => decodeSolutionVersionStrict(value),
+      request.version
+    );
+    const stateIndex = request.stateIndex === void 0 ? version.states.length - 1 : request.stateIndex;
+    if (version.states[stateIndex] === void 0) {
+      throw new SolutionError(
+        "invalid_state_index",
+        `stateIndex ${stateIndex} is out of range: version ${version.versionNumber} of solution '${version.solutionId}' has ${version.states.length} state layers (0..${version.states.length - 1})`
+      );
+    }
+    const inventory = deriveStateQuantities(version, stateIndex);
+    return { inventory };
+  }
+  /**
+   * POST /v1/solutions/baseline (PROD-031) — materialize the
+   * solution-creation baseline overlay (layer 0): the engine's
+   * `materializeBaselineState` verbatim. The state's identity derivations
+   * need `node:crypto`, so the BROWSER workspace mount opens its layer 0
+   * through this route (the engine executes server-side; the local binding
+   * calls the engine in-process — one semantics, two execution sites).
+   */
+  baseline(payload) {
+    const request = parseBaselineRequest(payload);
+    const state = materializeBaselineState({
+      solutionId: request.solutionId,
+      versionNumber: request.versionNumber,
+      baselineRealityVersionId: request.baselineRealityVersionId,
+      materializedAt: request.materializedAt
+    });
+    return { state };
+  }
+  /**
+   * POST /v1/solutions/revise (PROD-031) — the engine's revision (undo)
+   * leg: ONE named recorded operation reverted by producing a NEW version
+   * (the input version is consumed READ-ONLY; history is append-only). The
+   * wire clock is the SERIALIZABLE stepped spec { base, stepMs } — the
+   * engine's own `steppedMaterializeClock` builds the function server-side
+   * (never a second clock semantics).
+   */
+  revise(payload) {
+    const request = parseReviseRequest(payload);
+    const version = decodeStrict(
+      "invalid_version",
+      (value) => decodeSolutionVersionStrict(value),
+      request.version
+    );
+    const capabilityProfile = this.resolveCapabilityProfile(request.capabilityProfile);
+    const result = reviseVersion({
+      version,
+      revertOperationId: request.revertOperationId,
+      capabilityProfile,
+      createdAt: request.createdAt,
+      materializeClock: steppedMaterializeClock(
+        Date.parse(request.materializeClock.base),
+        request.materializeClock.stepMs
+      ),
+      revisionProvenance: request.revisionProvenance,
+      ...this.baselineGeometry === void 0 ? {} : { baselineGeometry: this.baselineGeometry }
+    });
+    return { result };
+  }
+  /* ---------------------------------------------------------------- */
+  /* Internals                                                         */
+  /* ---------------------------------------------------------------- */
+  resolveCapabilityProfile(payload) {
+    if (payload === void 0 || payload === null) {
+      return REFERENCE_BUILDING_OPERATION_PROFILE;
+    }
+    return decodeStrict(
+      "invalid_request",
+      (value) => decodeOperationCapabilityProfileStrict(value),
+      payload
+    );
+  }
+};
+function decodeStrict(code, decode, payload) {
+  try {
+    return decode(payload);
+  } catch (error) {
+    const issues = contractIssuesOf(error);
+    throw new SolutionError(
+      code,
+      `payload failed strict contract decoding${issues === "" ? "" : `: ${issues}`}`
+    );
+  }
+}
+function contractIssuesOf(error) {
+  if (error !== null && typeof error === "object" && "issues" in error && Array.isArray(error.issues)) {
+    const issues = error.issues;
+    return issues.map((issue) => `${issue.path.join("/")} ${issue.message} (${issue.code})`).join("; ");
+  }
+  return "";
+}
+
+// backend/api/src/solution/router.ts
+function pathSegments(url) {
+  return url.pathname.split("/").filter((segment) => segment !== "");
+}
+async function readJsonBody2(request) {
+  const text = await request.text();
+  try {
+    return { ok: true, payload: JSON.parse(text) };
+  } catch {
+    return { ok: false };
+  }
+}
+function malformedJson(requestId) {
+  return jsonResponse(
+    400,
+    { ok: false, error: "malformed_json", detail: "request body is not valid JSON" },
+    requestId
+  );
+}
+function solutionErrorResponse(error, requestId) {
+  const status = error.code === "malformed_json" ? 400 : 422;
+  return jsonResponse(
+    status,
+    { ok: false, error: error.code, detail: error.detail },
+    requestId
+  );
+}
+async function handleSolutionRequest(request, url, requestId, options) {
+  const segments = pathSegments(url);
+  if (segments[0] !== "v1" || segments[1] !== "solutions") {
+    return null;
+  }
+  const { service, logger } = options;
+  try {
+    if (segments.length === 3 && segments[2] === "step") {
+      if (request.method !== "POST") {
+        return methodNotAllowed(requestId, "POST");
+      }
+      const body = await readJsonBody2(request);
+      if (!body.ok) {
+        return malformedJson(requestId);
+      }
+      const response = service.step(body.payload);
+      logger.info("solution_step_evaluated", {
+        requestId,
+        outcome: response.result.outcome,
+        operationType: response.result.outcome === "applied" ? response.result.operation.operationType : void 0
+      });
+      return jsonResponse(200, { ok: true, ...response }, requestId);
+    }
+    if (segments.length === 3 && segments[2] === "validate") {
+      if (request.method !== "POST") {
+        return methodNotAllowed(requestId, "POST");
+      }
+      const body = await readJsonBody2(request);
+      if (!body.ok) {
+        return malformedJson(requestId);
+      }
+      const response = service.validate(body.payload);
+      logger.info("solution_validated", {
+        requestId,
+        solutionId: response.snapshot.solutionId,
+        versionNumber: response.snapshot.versionNumber,
+        outcome: response.snapshot.outcome
+      });
+      return jsonResponse(200, { ok: true, ...response }, requestId);
+    }
+    if (segments.length === 3 && segments[2] === "inspect") {
+      if (request.method !== "POST") {
+        return methodNotAllowed(requestId, "POST");
+      }
+      const body = await readJsonBody2(request);
+      if (!body.ok) {
+        return malformedJson(requestId);
+      }
+      const response = service.inspect(body.payload);
+      logger.info("solution_inspected", {
+        requestId,
+        solutionId: response.solutionId,
+        versionNumber: response.versionNumber,
+        stateIndex: response.requestedStateIndex
+      });
+      return jsonResponse(200, { ok: true, ...response }, requestId);
+    }
+    if (segments.length === 3 && segments[2] === "quantities") {
+      if (request.method !== "POST") {
+        return methodNotAllowed(requestId, "POST");
+      }
+      const body = await readJsonBody2(request);
+      if (!body.ok) {
+        return malformedJson(requestId);
+      }
+      const response = service.quantities(body.payload);
+      logger.info("solution_quantities_derived", {
+        requestId,
+        solutionId: response.inventory.solutionId,
+        versionNumber: response.inventory.versionNumber,
+        stateIndex: response.inventory.stateIndex
+      });
+      return jsonResponse(200, { ok: true, ...response }, requestId);
+    }
+    if (segments.length === 3 && segments[2] === "baseline") {
+      if (request.method !== "POST") {
+        return methodNotAllowed(requestId, "POST");
+      }
+      const body = await readJsonBody2(request);
+      if (!body.ok) {
+        return malformedJson(requestId);
+      }
+      const response = service.baseline(body.payload);
+      logger.info("solution_baseline_materialized", {
+        requestId,
+        solutionId: response.state.solutionId,
+        versionNumber: response.state.versionNumber,
+        baselineRealityVersionId: response.state.baselineRealityVersionId
+      });
+      return jsonResponse(200, { ok: true, ...response }, requestId);
+    }
+    if (segments.length === 3 && segments[2] === "revise") {
+      if (request.method !== "POST") {
+        return methodNotAllowed(requestId, "POST");
+      }
+      const body = await readJsonBody2(request);
+      if (!body.ok) {
+        return malformedJson(requestId);
+      }
+      const response = service.revise(body.payload);
+      logger.info("solution_revision_evaluated", {
+        requestId,
+        outcome: response.result.outcome,
+        newVersionNumber: response.result.outcome === "revised" ? response.result.newVersion.versionNumber : void 0
+      });
+      return jsonResponse(200, { ok: true, ...response }, requestId);
+    }
+    return null;
+  } catch (error) {
+    if (error instanceof SolutionError) {
+      logger.warn("solution_request_rejected", {
+        requestId,
+        code: error.code
+      });
+      return solutionErrorResponse(error, requestId);
+    }
+    throw error;
+  }
+}
+
 // backend/api/src/capture/store.ts
 import { mkdirSync, promises as fs } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -5577,14 +11845,14 @@ import { dirname as dirname2, join as join2, resolve as resolve2 } from "node:pa
 function isNotFound2(error) {
   return typeof error === "object" && error !== null && error.code === "ENOENT";
 }
-function isRecord(value) {
+function isRecord2(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 function isIsoString(value) {
   return typeof value === "string" && value.length > 0 && !Number.isNaN(Date.parse(value));
 }
 function parseSessionRecord(value) {
-  if (!isRecord(value)) {
+  if (!isRecord2(value)) {
     return null;
   }
   const sessionId = value["sessionId"];
@@ -5934,10 +12202,10 @@ function retentionCutoff(now, auditRetentionDays) {
 function isAuditEventExpired(event, cutoff) {
   return Date.parse(event.occurredAt) < Date.parse(cutoff);
 }
-function isRecord2(value) {
+function isRecord3(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-function isNonEmptyString(value) {
+function isNonEmptyString2(value) {
   return typeof value === "string" && value.length > 0;
 }
 function isStringArray(value) {
@@ -5947,7 +12215,7 @@ function vocabularyMember(vocabulary, value) {
   return vocabulary.includes(value);
 }
 function parseId(value, code, what) {
-  if (!isNonEmptyString(value)) {
+  if (!isNonEmptyString2(value)) {
     throw new IdentityError(code, `${what} must be a non-empty string`);
   }
   if (value.length > 256) {
@@ -6003,7 +12271,7 @@ function parsePermissionSet(value) {
   return permissions;
 }
 function parseScope(value) {
-  if (!isRecord2(value)) {
+  if (!isRecord3(value)) {
     throw new IdentityError("invalid_scope", "scope must be an object");
   }
   const kind = value["kind"];
@@ -6012,7 +12280,7 @@ function parseScope(value) {
   }
   if (kind === "project") {
     const projectId = value["projectId"];
-    if (!isNonEmptyString(projectId)) {
+    if (!isNonEmptyString2(projectId)) {
       throw new IdentityError("invalid_scope", "scope.projectId must be a non-empty string");
     }
     return { kind: "project", projectId };
@@ -6020,11 +12288,11 @@ function parseScope(value) {
   throw new IdentityError("invalid_scope", "scope.kind must be 'organization' or 'project'");
 }
 function parseTarget(value) {
-  if (!isRecord2(value)) {
+  if (!isRecord3(value)) {
     throw new IdentityError("invalid_target", "target must be an object");
   }
   const organizationId = value["organizationId"];
-  if (!isNonEmptyString(organizationId)) {
+  if (!isNonEmptyString2(organizationId)) {
     throw new IdentityError("invalid_target", "target.organizationId must be a non-empty string");
   }
   const kind = value["kind"];
@@ -6033,7 +12301,7 @@ function parseTarget(value) {
   }
   if (kind === "project") {
     const projectId = value["projectId"];
-    if (!isNonEmptyString(projectId)) {
+    if (!isNonEmptyString2(projectId)) {
       throw new IdentityError("invalid_target", "target.projectId must be a non-empty string");
     }
     return { kind: "project", organizationId, projectId };
@@ -6044,25 +12312,25 @@ function parseActor(value) {
   return parseId(value, "invalid_actor", "actor");
 }
 function parseRegisterPrincipalInput(payload) {
-  if (!isRecord2(payload)) {
+  if (!isRecord3(payload)) {
     throw new IdentityError("invalid_principal", "expected a JSON object");
   }
   const principalId = parseId(payload["principalId"], "invalid_principal_id", "principalId");
   const displayName = payload["displayName"];
-  if (!isNonEmptyString(displayName)) {
+  if (!isNonEmptyString2(displayName)) {
     throw new IdentityError("invalid_principal", "displayName must be a non-empty string");
   }
   return { principalId, displayName };
 }
 function parseFounder(value) {
-  if (!isRecord2(value)) {
+  if (!isRecord3(value)) {
     throw new IdentityError("invalid_organization", "founder must be an object");
   }
   const principalId = parseId(value["principalId"], "invalid_principal_id", "founder.principalId");
   return { principalId, permissions: parsePermissionSet(value["permissions"]) };
 }
 function parseCreateOrganizationInput(payload) {
-  if (!isRecord2(payload)) {
+  if (!isRecord3(payload)) {
     throw new IdentityError("invalid_organization", "expected a JSON object");
   }
   const organizationId = parseId(
@@ -6071,7 +12339,7 @@ function parseCreateOrganizationInput(payload) {
     "organizationId"
   );
   const name = payload["name"];
-  if (!isNonEmptyString(name)) {
+  if (!isNonEmptyString2(name)) {
     throw new IdentityError("invalid_organization", "name must be a non-empty string");
   }
   const founderRaw = payload["founder"];
@@ -6081,12 +12349,12 @@ function parseCreateOrganizationInput(payload) {
   return { organizationId, name, founder: parseFounder(founderRaw) };
 }
 function parseCreateProjectInput(payload, organizationId) {
-  if (!isRecord2(payload)) {
+  if (!isRecord3(payload)) {
     throw new IdentityError("invalid_project", "expected a JSON object");
   }
   const projectId = parseId(payload["projectId"], "invalid_project_id", "projectId");
   const name = payload["name"];
-  if (!isNonEmptyString(name)) {
+  if (!isNonEmptyString2(name)) {
     throw new IdentityError("invalid_project", "name must be a non-empty string");
   }
   return {
@@ -6097,12 +12365,12 @@ function parseCreateProjectInput(payload, organizationId) {
   };
 }
 function parseCreateRoleInput(payload, organizationId) {
-  if (!isRecord2(payload)) {
+  if (!isRecord3(payload)) {
     throw new IdentityError("invalid_role", "expected a JSON object");
   }
   const roleId = parseId(payload["roleId"], "invalid_role_id", "roleId");
   const name = payload["name"];
-  if (!isNonEmptyString(name)) {
+  if (!isNonEmptyString2(name)) {
     throw new IdentityError("invalid_role", "name must be a non-empty string");
   }
   return {
@@ -6114,7 +12382,7 @@ function parseCreateRoleInput(payload, organizationId) {
   };
 }
 function parseGrantMembershipInput(payload, organizationId) {
-  if (!isRecord2(payload)) {
+  if (!isRecord3(payload)) {
     throw new IdentityError("invalid_membership", "expected a JSON object");
   }
   const principalId = parseId(payload["principalId"], "invalid_principal_id", "principalId");
@@ -6128,7 +12396,7 @@ function parseGrantMembershipInput(payload, organizationId) {
   };
 }
 function parseRevokeMembershipInput(payload, organizationId, membershipId) {
-  if (!isRecord2(payload)) {
+  if (!isRecord3(payload)) {
     throw new IdentityError("invalid_membership", "expected a JSON object");
   }
   return {
@@ -6138,7 +12406,7 @@ function parseRevokeMembershipInput(payload, organizationId, membershipId) {
   };
 }
 function parseSetRetentionPolicyInput(payload, organizationId) {
-  if (!isRecord2(payload)) {
+  if (!isRecord3(payload)) {
     throw new IdentityError("invalid_retention_policy", "expected a JSON object");
   }
   const days = payload["auditRetentionDays"];
@@ -6160,13 +12428,13 @@ function parseSetRetentionPolicyInput(payload, organizationId) {
   };
 }
 function parseEnforceRetentionInput(payload, organizationId) {
-  if (!isRecord2(payload)) {
+  if (!isRecord3(payload)) {
     throw new IdentityError("invalid_retention_policy", "expected a JSON object");
   }
   return { organizationId, actor: parseActor(payload["actor"]) };
 }
 function parseAuthorizeInput(payload) {
-  if (!isRecord2(payload)) {
+  if (!isRecord3(payload)) {
     throw new IdentityError("invalid_target", "expected a JSON object");
   }
   const principalId = parseId(payload["principalId"], "invalid_principal_id", "principalId");
@@ -6183,20 +12451,20 @@ function invalidRecord(what) {
   throw new IdentityError("invalid_identity_record", `${what} is not a valid identity record`);
 }
 function parseScopeRecord(value) {
-  if (!isRecord2(value)) {
+  if (!isRecord3(value)) {
     invalidRecord("membership scope");
   }
   if (value["kind"] === "organization") {
     return { kind: "organization" };
   }
   const projectId = value["projectId"];
-  if (value["kind"] === "project" && isNonEmptyString(projectId)) {
+  if (value["kind"] === "project" && isNonEmptyString2(projectId)) {
     return { kind: "project", projectId };
   }
   invalidRecord("membership scope");
 }
 function parsePrincipalRecord(value) {
-  if (!isRecord2(value) || !isNonEmptyString(value["principalId"]) || !isNonEmptyString(value["displayName"]) || !isNonEmptyString(value["createdAt"])) {
+  if (!isRecord3(value) || !isNonEmptyString2(value["principalId"]) || !isNonEmptyString2(value["displayName"]) || !isNonEmptyString2(value["createdAt"])) {
     invalidRecord("principal");
   }
   return {
@@ -6206,7 +12474,7 @@ function parsePrincipalRecord(value) {
   };
 }
 function parseOrganizationRecord(value) {
-  if (!isRecord2(value) || !isNonEmptyString(value["organizationId"]) || !isNonEmptyString(value["name"]) || !isNonEmptyString(value["createdAt"])) {
+  if (!isRecord3(value) || !isNonEmptyString2(value["organizationId"]) || !isNonEmptyString2(value["name"]) || !isNonEmptyString2(value["createdAt"])) {
     invalidRecord("organization");
   }
   return {
@@ -6216,7 +12484,7 @@ function parseOrganizationRecord(value) {
   };
 }
 function parseProjectRecord(value) {
-  if (!isRecord2(value) || !isNonEmptyString(value["projectId"]) || !isNonEmptyString(value["organizationId"]) || !isNonEmptyString(value["name"]) || !isNonEmptyString(value["createdAt"])) {
+  if (!isRecord3(value) || !isNonEmptyString2(value["projectId"]) || !isNonEmptyString2(value["organizationId"]) || !isNonEmptyString2(value["name"]) || !isNonEmptyString2(value["createdAt"])) {
     invalidRecord("project");
   }
   return {
@@ -6227,7 +12495,7 @@ function parseProjectRecord(value) {
   };
 }
 function parseRoleRecord(value) {
-  if (!isRecord2(value) || !isNonEmptyString(value["roleId"]) || !isNonEmptyString(value["organizationId"]) || !isNonEmptyString(value["name"]) || !isNonEmptyString(value["createdAt"]) || !Array.isArray(value["permissions"]) || !value["permissions"].every(isPermission)) {
+  if (!isRecord3(value) || !isNonEmptyString2(value["roleId"]) || !isNonEmptyString2(value["organizationId"]) || !isNonEmptyString2(value["name"]) || !isNonEmptyString2(value["createdAt"]) || !Array.isArray(value["permissions"]) || !value["permissions"].every(isPermission)) {
     invalidRecord("role");
   }
   return {
@@ -6239,11 +12507,11 @@ function parseRoleRecord(value) {
   };
 }
 function parseMembershipRecord(value) {
-  if (!isRecord2(value) || !isNonEmptyString(value["membershipId"]) || !isNonEmptyString(value["organizationId"]) || !isNonEmptyString(value["principalId"]) || !isNonEmptyString(value["roleId"]) || !isNonEmptyString(value["grantedAt"]) || !isNonEmptyString(value["grantedBy"]) || !vocabularyMember(MEMBERSHIP_STATES, value["state"])) {
+  if (!isRecord3(value) || !isNonEmptyString2(value["membershipId"]) || !isNonEmptyString2(value["organizationId"]) || !isNonEmptyString2(value["principalId"]) || !isNonEmptyString2(value["roleId"]) || !isNonEmptyString2(value["grantedAt"]) || !isNonEmptyString2(value["grantedBy"]) || !vocabularyMember(MEMBERSHIP_STATES, value["state"])) {
     invalidRecord("membership");
   }
   const state = value["state"];
-  if (state === "revoked" && (!isNonEmptyString(value["revokedAt"]) || !isNonEmptyString(value["revokedBy"]))) {
+  if (state === "revoked" && (!isNonEmptyString2(value["revokedAt"]) || !isNonEmptyString2(value["revokedBy"]))) {
     invalidRecord("membership");
   }
   return {
@@ -6259,7 +12527,7 @@ function parseMembershipRecord(value) {
   };
 }
 function parseRetentionPolicyRecord(value) {
-  if (!isRecord2(value) || !isNonEmptyString(value["organizationId"]) || !isNonEmptyString(value["updatedAt"]) || !isNonEmptyString(value["updatedBy"]) || typeof value["auditRetentionDays"] !== "number" || !Number.isInteger(value["auditRetentionDays"]) || value["auditRetentionDays"] < 0 || !vocabularyMember(RETENTION_EXPIRY_MODES, value["onExpiry"])) {
+  if (!isRecord3(value) || !isNonEmptyString2(value["organizationId"]) || !isNonEmptyString2(value["updatedAt"]) || !isNonEmptyString2(value["updatedBy"]) || typeof value["auditRetentionDays"] !== "number" || !Number.isInteger(value["auditRetentionDays"]) || value["auditRetentionDays"] < 0 || !vocabularyMember(RETENTION_EXPIRY_MODES, value["onExpiry"])) {
     invalidRecord("retention policy");
   }
   return {
@@ -6271,7 +12539,7 @@ function parseRetentionPolicyRecord(value) {
   };
 }
 function parseAuditRetentionRecord(value) {
-  if (!isRecord2(value) || !vocabularyMember(RETENTION_EXPIRY_MODES, value["mode"]) || !isNonEmptyString(value["cutoff"]) || !isStringArray(value["prunedEventIds"]) || !isStringArray(value["flaggedEventIds"])) {
+  if (!isRecord3(value) || !vocabularyMember(RETENTION_EXPIRY_MODES, value["mode"]) || !isNonEmptyString2(value["cutoff"]) || !isStringArray(value["prunedEventIds"]) || !isStringArray(value["flaggedEventIds"])) {
     invalidRecord("audit retention record");
   }
   return {
@@ -6282,15 +12550,15 @@ function parseAuditRetentionRecord(value) {
   };
 }
 function parseAuditEvent(value) {
-  if (!isRecord2(value) || !isNonEmptyString(value["eventId"]) || !isNonEmptyString(value["organizationId"]) || !isNonEmptyString(value["actor"]) || !isNonEmptyString(value["targetId"]) || !isNonEmptyString(value["occurredAt"]) || !isNonEmptyString(value["previousEventDigest"]) || !isNonEmptyString(value["eventDigest"]) || !vocabularyMember(AUDIT_ACTIONS, value["action"]) || !vocabularyMember(AUDIT_TARGET_KINDS, value["targetKind"]) || !vocabularyMember(AUDIT_OUTCOMES, value["outcome"])) {
+  if (!isRecord3(value) || !isNonEmptyString2(value["eventId"]) || !isNonEmptyString2(value["organizationId"]) || !isNonEmptyString2(value["actor"]) || !isNonEmptyString2(value["targetId"]) || !isNonEmptyString2(value["occurredAt"]) || !isNonEmptyString2(value["previousEventDigest"]) || !isNonEmptyString2(value["eventDigest"]) || !vocabularyMember(AUDIT_ACTIONS, value["action"]) || !vocabularyMember(AUDIT_TARGET_KINDS, value["targetKind"]) || !vocabularyMember(AUDIT_OUTCOMES, value["outcome"])) {
     invalidRecord("audit event");
   }
   const projectId = value["projectId"];
-  if (projectId !== void 0 && !isNonEmptyString(projectId)) {
+  if (projectId !== void 0 && !isNonEmptyString2(projectId)) {
     invalidRecord("audit event");
   }
   const detail = value["detail"];
-  if (detail !== void 0 && !isNonEmptyString(detail)) {
+  if (detail !== void 0 && !isNonEmptyString2(detail)) {
     invalidRecord("audit event");
   }
   const retention = value["retention"];
@@ -7393,41 +13661,11 @@ var CONTEXT_EXCLUSION_KINDS = Object.freeze([
   "rules"
 ]);
 
-// backend/api/src/lib/http.ts
-function jsonResponse(status, body, requestId, extraHeaders) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "x-request-id": requestId,
-      ...extraHeaders
-    }
-  });
-}
-function jsonTextResponse(status, bodyText, requestId, extraHeaders) {
-  return new Response(bodyText, {
-    status,
-    headers: {
-      "content-type": "application/json; charset=utf-8",
-      "x-request-id": requestId,
-      ...extraHeaders
-    }
-  });
-}
-function methodNotAllowed(requestId, allow) {
-  return jsonResponse(
-    405,
-    { ok: false, error: "method_not_allowed" },
-    requestId,
-    { allow }
-  );
-}
-
 // backend/api/src/identity/router.ts
-function pathSegments(url) {
+function pathSegments2(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
-async function readJsonBody(request) {
+async function readJsonBody3(request) {
   const text = await request.text();
   try {
     return { ok: true, payload: JSON.parse(text) };
@@ -7460,7 +13698,7 @@ function identityErrorResponse(error, requestId) {
     requestId
   );
 }
-function malformedJson(requestId) {
+function malformedJson2(requestId) {
   return jsonResponse(
     400,
     { ok: false, error: "malformed_json", detail: "request body is not valid JSON" },
@@ -7475,7 +13713,7 @@ function invalidPathId(requestId, code, what) {
   );
 }
 async function handleIdentityRequest(request, url, requestId, options) {
-  const segments = pathSegments(url);
+  const segments = pathSegments2(url);
   if (segments[0] !== "v1" || segments[1] !== "identity") {
     return null;
   }
@@ -7485,9 +13723,9 @@ async function handleIdentityRequest(request, url, requestId, options) {
       if (request.method !== "POST") {
         return methodNotAllowed(requestId, "POST");
       }
-      const body = await readJsonBody(request);
+      const body = await readJsonBody3(request);
       if (!body.ok) {
-        return malformedJson(requestId);
+        return malformedJson2(requestId);
       }
       const principal = await service.registerPrincipal(
         parseRegisterPrincipalInput(body.payload)
@@ -7502,9 +13740,9 @@ async function handleIdentityRequest(request, url, requestId, options) {
       if (request.method !== "POST") {
         return methodNotAllowed(requestId, "POST");
       }
-      const body = await readJsonBody(request);
+      const body = await readJsonBody3(request);
       if (!body.ok) {
-        return malformedJson(requestId);
+        return malformedJson2(requestId);
       }
       const organization = await service.createOrganization(
         parseCreateOrganizationInput(body.payload)
@@ -7519,9 +13757,9 @@ async function handleIdentityRequest(request, url, requestId, options) {
       if (request.method !== "POST") {
         return methodNotAllowed(requestId, "POST");
       }
-      const body = await readJsonBody(request);
+      const body = await readJsonBody3(request);
       if (!body.ok) {
-        return malformedJson(requestId);
+        return malformedJson2(requestId);
       }
       const input = parseAuthorizeInput(body.payload);
       const decision = await service.authorizeAndAudit(
@@ -7553,9 +13791,9 @@ async function handleIdentityRequest(request, url, requestId, options) {
       const collection = segments[4] ?? "";
       if (segments.length === 5 && collection === "projects") {
         if (request.method === "POST") {
-          const body = await readJsonBody(request);
+          const body = await readJsonBody3(request);
           if (!body.ok) {
-            return malformedJson(requestId);
+            return malformedJson2(requestId);
           }
           const project = await service.createProject(
             parseCreateProjectInput(body.payload, organizationId)
@@ -7578,9 +13816,9 @@ async function handleIdentityRequest(request, url, requestId, options) {
       }
       if (segments.length === 5 && collection === "roles") {
         if (request.method === "POST") {
-          const body = await readJsonBody(request);
+          const body = await readJsonBody3(request);
           if (!body.ok) {
-            return malformedJson(requestId);
+            return malformedJson2(requestId);
           }
           const role = await service.createRole(
             parseCreateRoleInput(body.payload, organizationId)
@@ -7596,9 +13834,9 @@ async function handleIdentityRequest(request, url, requestId, options) {
       }
       if (segments.length === 5 && collection === "memberships") {
         if (request.method === "POST") {
-          const body = await readJsonBody(request);
+          const body = await readJsonBody3(request);
           if (!body.ok) {
-            return malformedJson(requestId);
+            return malformedJson2(requestId);
           }
           const membership = await service.grantMembership(
             parseGrantMembershipInput(body.payload, organizationId)
@@ -7629,9 +13867,9 @@ async function handleIdentityRequest(request, url, requestId, options) {
           return invalidPathId(requestId, "invalid_membership_id", "membership id");
         }
         validateMembershipId(membershipId);
-        const body = await readJsonBody(request);
+        const body = await readJsonBody3(request);
         if (!body.ok) {
-          return malformedJson(requestId);
+          return malformedJson2(requestId);
         }
         const membership = await service.revokeMembership(
           parseRevokeMembershipInput(body.payload, organizationId, membershipId)
@@ -7645,9 +13883,9 @@ async function handleIdentityRequest(request, url, requestId, options) {
       }
       if (segments.length === 5 && collection === "retention") {
         if (request.method === "POST") {
-          const body = await readJsonBody(request);
+          const body = await readJsonBody3(request);
           if (!body.ok) {
-            return malformedJson(requestId);
+            return malformedJson2(requestId);
           }
           const policy = await service.setRetentionPolicy(
             parseSetRetentionPolicyInput(body.payload, organizationId)
@@ -7673,9 +13911,9 @@ async function handleIdentityRequest(request, url, requestId, options) {
         if (request.method !== "POST") {
           return methodNotAllowed(requestId, "POST");
         }
-        const body = await readJsonBody(request);
+        const body = await readJsonBody3(request);
         if (!body.ok) {
-          return malformedJson(requestId);
+          return malformedJson2(requestId);
         }
         const report = await service.enforceRetention(
           parseEnforceRetentionInput(body.payload, organizationId)
@@ -7929,7 +14167,7 @@ function errorResponse(status, code, message, requestId, extraHeaders) {
     }
   });
 }
-function isRecord3(value) {
+function isRecord4(value) {
   return typeof value === "object" && value !== null;
 }
 async function translateErrorResponse(response) {
@@ -7952,7 +14190,7 @@ async function translateErrorResponse(response) {
   } catch {
     return new Response(text, { status: response.status, headers: response.headers });
   }
-  if (!isRecord3(body) || body["ok"] !== false || typeof body["error"] !== "string") {
+  if (!isRecord4(body) || body["ok"] !== false || typeof body["error"] !== "string") {
     return new Response(text, { status: response.status, headers: response.headers });
   }
   const code = body["error"];
@@ -8087,7 +14325,7 @@ function decideUnscopedAccess(principal, method, mode) {
   }
   return { allowed: true };
 }
-function isRecord4(value) {
+function isRecord5(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 async function readTextBody(request) {
@@ -8215,7 +14453,7 @@ function createAuthLayer(deps) {
       if (!parsed.ok) {
         return errorResponse(400, "malformed_json", "The request body is not valid JSON.", requestId);
       }
-      const principalId = isRecord4(parsed.payload) ? parsed.payload["principalId"] : void 0;
+      const principalId = isRecord5(parsed.payload) ? parsed.payload["principalId"] : void 0;
       if (typeof principalId !== "string" || principalId.length < 1 || principalId.length > 256) {
         return errorResponse(
           400,
@@ -8638,11 +14876,11 @@ function normalizeMediaType(header) {
   const candidate = header.split(";")[0]?.trim() ?? "";
   return mediaTypeSchema.safeParse(candidate).success ? candidate : null;
 }
-function pathSegments2(url) {
+function pathSegments3(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
 async function handleCaptureRequest(request, url, requestId, options) {
-  const segments = pathSegments2(url);
+  const segments = pathSegments3(url);
   if (segments[0] !== "v1" || segments[1] !== "capture") {
     return null;
   }
@@ -9453,7 +15691,7 @@ var FsMissionStore = class {
 };
 
 // backend/api/src/missions/router.ts
-function pathSegments3(url) {
+function pathSegments4(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
 function summarizeIssues2(issues) {
@@ -9545,7 +15783,7 @@ function parsePlanRequest(rawBody) {
   };
 }
 async function handleMissionsRequest(request, url, requestId, options) {
-  const segments = pathSegments3(url);
+  const segments = pathSegments4(url);
   if (segments[0] !== "v1" || segments[1] !== "missions") {
     return null;
   }
@@ -9921,7 +16159,7 @@ function createEvidenceService(deps) {
 }
 
 // backend/api/src/evidence/router.ts
-function pathSegments4(url) {
+function pathSegments5(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
 function summarizeIssues3(issues) {
@@ -9974,7 +16212,7 @@ function contractErrorResponse(error, requestId) {
   }
   return null;
 }
-async function readJsonBody2(request) {
+async function readJsonBody4(request) {
   const text = await request.text();
   try {
     return { ok: true, payload: JSON.parse(text) };
@@ -10011,7 +16249,7 @@ function parseInvalidationBody(payload) {
   return { ok: true, reason: parsed.data };
 }
 async function handleEvidenceRequest(request, url, requestId, options) {
-  const segments = pathSegments4(url);
+  const segments = pathSegments5(url);
   if (segments[0] !== "v1" || segments[1] !== "evidence") {
     return null;
   }
@@ -10038,7 +16276,7 @@ async function dispatchEvidenceRoute(request, url, segments, requestId, options)
   const { logger } = options;
   if (segments.length === 2) {
     if (request.method === "POST") {
-      const body = await readJsonBody2(request);
+      const body = await readJsonBody4(request);
       if (!body.ok) {
         return malformedJsonResponse(requestId);
       }
@@ -10088,7 +16326,7 @@ async function dispatchEvidenceRoute(request, url, segments, requestId, options)
     if (request.method !== "POST") {
       return methodNotAllowed(requestId, "POST");
     }
-    const body = await readJsonBody2(request);
+    const body = await readJsonBody4(request);
     if (!body.ok) {
       return malformedJsonResponse(requestId);
     }
@@ -10114,7 +16352,7 @@ async function dispatchEvidenceRoute(request, url, segments, requestId, options)
     if (request.method !== "POST") {
       return methodNotAllowed(requestId, "POST");
     }
-    const body = await readJsonBody2(request);
+    const body = await readJsonBody4(request);
     if (!body.ok) {
       return malformedJsonResponse(requestId);
     }
@@ -10144,7 +16382,7 @@ async function dispatchEvidenceRoute(request, url, segments, requestId, options)
     if (!contentIdSchema.safeParse(contentId).success) {
       return jsonResponse(400, { ok: false, error: "invalid_content_id" }, requestId);
     }
-    const body = await readJsonBody2(request);
+    const body = await readJsonBody4(request);
     if (!body.ok) {
       return malformedJsonResponse(requestId);
     }
@@ -10422,7 +16660,7 @@ function mappingIdentity(importId) {
 function mappingVersionFileName(version) {
   return `v${String(version).padStart(3, "0")}.json`;
 }
-function isRecord5(value) {
+function isRecord6(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 function optionalString(value, what) {
@@ -10435,13 +16673,13 @@ function optionalString(value, what) {
   return value;
 }
 function parseGraphSnapshot(value) {
-  if (!isRecord5(value) || !Array.isArray(value.nodes)) {
+  if (!isRecord6(value) || !Array.isArray(value.nodes)) {
     throw new MappingError("invalid_graph_snapshot", "body must be an object with a nodes array");
   }
   const nodes = [];
   for (let index = 0; index < value.nodes.length; index += 1) {
     const candidate = value.nodes[index];
-    if (!isRecord5(candidate)) {
+    if (!isRecord6(candidate)) {
       throw new MappingError("invalid_graph_snapshot", `node at index ${index} is not an object`);
     }
     if (typeof candidate.nodeId !== "string" || candidate.nodeId.length === 0) {
@@ -10463,7 +16701,7 @@ function parseGraphSnapshot(value) {
         );
       }
       for (const property of candidate.properties) {
-        if (!isRecord5(property) || typeof property.key !== "string" || typeof property.value !== "string" && typeof property.value !== "number" && typeof property.value !== "boolean") {
+        if (!isRecord6(property) || typeof property.key !== "string" || typeof property.value !== "string" && typeof property.value !== "number" && typeof property.value !== "boolean") {
           throw new MappingError(
             "invalid_graph_snapshot",
             `node ${candidate.nodeId} has a malformed property entry`
@@ -10496,7 +16734,7 @@ function parseManualTargets(value) {
   const targets = [];
   for (let index = 0; index < value.length; index += 1) {
     const candidate = value[index];
-    if (!isRecord5(candidate) || typeof candidate.nodeId !== "string" || candidate.nodeId === "") {
+    if (!isRecord6(candidate) || typeof candidate.nodeId !== "string" || candidate.nodeId === "") {
       throw new MappingError(
         "invalid_manual_input",
         `target at index ${index} requires a non-empty nodeId string`
@@ -10525,7 +16763,7 @@ function parseManualTargets(value) {
   return targets;
 }
 function parseManualMappingInput(value) {
-  if (!isRecord5(value)) {
+  if (!isRecord6(value)) {
     throw new MappingError("invalid_manual_input", "body must be an object");
   }
   if (typeof value.entryId !== "string" || value.entryId === "") {
@@ -10551,7 +16789,7 @@ function parseMappingRecord(text, importId) {
   } catch {
     throw new MappingError("invalid_mapping_record", `mapping for '${importId}' is not valid JSON`);
   }
-  if (!isRecord5(value)) {
+  if (!isRecord6(value)) {
     throw new MappingError("invalid_mapping_record", `mapping for '${importId}' is not an object`);
   }
   if (value.importId !== importId || typeof value.mappingId !== "string") {
@@ -10568,25 +16806,25 @@ function parseMappingRecord(text, importId) {
   }
   for (let index = 0; index < value.entries.length; index += 1) {
     const entry = value.entries[index];
-    if (!isRecord5(entry) || typeof entry.entryId !== "string") {
+    if (!isRecord6(entry) || typeof entry.entryId !== "string") {
       throw new MappingError("invalid_mapping_record", `entry ${index} is malformed`);
     }
     const item = entry.boqItem;
-    if (!isRecord5(item) || !(item.sectionTitle === null || typeof item.sectionTitle === "string") || typeof item.rowNumber !== "number" || typeof item.originalText !== "string" || !(item.descriptionCellRef === null || typeof item.descriptionCellRef === "string") || !(item.unitCellRef === null || typeof item.unitCellRef === "string")) {
+    if (!isRecord6(item) || !(item.sectionTitle === null || typeof item.sectionTitle === "string") || typeof item.rowNumber !== "number" || typeof item.originalText !== "string" || !(item.descriptionCellRef === null || typeof item.descriptionCellRef === "string") || !(item.unitCellRef === null || typeof item.unitCellRef === "string")) {
       throw new MappingError("invalid_mapping_record", `entry ${index} boqItem is malformed`);
     }
     if (!Array.isArray(entry.targets)) {
       throw new MappingError("invalid_mapping_record", `entry ${index} targets is malformed`);
     }
     for (const target of entry.targets) {
-      if (!isRecord5(target) || typeof target.nodeId !== "string") {
+      if (!isRecord6(target) || typeof target.nodeId !== "string") {
         throw new MappingError("invalid_mapping_record", `entry ${index} has a malformed target`);
       }
       if (target.spacePath !== void 0 && !isStringArray2(target.spacePath)) {
         throw new MappingError("invalid_mapping_record", `entry ${index} target spacePath is bad`);
       }
     }
-    if (!MAPPING_STATUSES.includes(entry.status) || !MAPPING_CONFIDENCES.includes(entry.confidence) || !MAPPING_METHODS.includes(entry.method) || !isRecord5(entry.provenance) || typeof entry.provenance.recordedAt !== "string") {
+    if (!MAPPING_STATUSES.includes(entry.status) || !MAPPING_CONFIDENCES.includes(entry.confidence) || !MAPPING_METHODS.includes(entry.method) || !isRecord6(entry.provenance) || typeof entry.provenance.recordedAt !== "string") {
       throw new MappingError("invalid_mapping_record", `entry ${index} status/provenance is bad`);
     }
   }
@@ -10638,14 +16876,14 @@ var LOCATION_PHRASES = [
   { canonical: "top floor", synonyms: ["top floor", "uppermost floor"] },
   { canonical: "roof", synonyms: ["roof level", "roof"] }
 ];
-function escapeRegExp(text) {
+function escapeRegExp3(text) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 function normalizeText(text) {
   return text.trim().toLowerCase().replace(/\s+/g, " ");
 }
 function containsPhrase(haystack, phrase) {
-  const pattern = new RegExp(`(^|[^a-z0-9])${escapeRegExp(phrase)}([^a-z0-9]|$)`);
+  const pattern = new RegExp(`(^|[^a-z0-9])${escapeRegExp3(phrase)}([^a-z0-9]|$)`);
   return pattern.test(haystack);
 }
 function storeyPhraseOf(component) {
@@ -13167,10 +19405,10 @@ function effectiveMediaType(request, url, format) {
   const header = request.headers.get("content-type");
   return header === null ? "application/octet-stream" : (header.split(";")[0] ?? "").trim().toLowerCase();
 }
-function pathSegments5(url) {
+function pathSegments6(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
-async function readJsonBody3(request) {
+async function readJsonBody5(request) {
   const text = await request.text();
   try {
     return { ok: true, payload: JSON.parse(text) };
@@ -13212,7 +19450,7 @@ function mappingOrDefault(options) {
   return fallback;
 }
 async function handleBoqRequest(request, url, requestId, options) {
-  const segments = pathSegments5(url);
+  const segments = pathSegments6(url);
   if (segments[0] !== "v1" || segments[1] !== "boq") {
     return null;
   }
@@ -13400,7 +19638,7 @@ async function handleBoqRequest(request, url, requestId, options) {
       if (imported2 === null) {
         return jsonResponse(404, { ok: false, error: "import_not_found" }, requestId);
       }
-      const body = await readJsonBody3(request);
+      const body = await readJsonBody5(request);
       if (!body.ok) {
         return jsonResponse(
           400,
@@ -13501,7 +19739,7 @@ async function handleBoqRequest(request, url, requestId, options) {
       if (imported2 === null) {
         return jsonResponse(404, { ok: false, error: "import_not_found" }, requestId);
       }
-      const body = await readJsonBody3(request);
+      const body = await readJsonBody5(request);
       if (!body.ok) {
         return jsonResponse(
           400,
@@ -13851,7 +20089,7 @@ var REQUEST_FIELDS = [
   "scaleConstraint",
   "policyConstraints"
 ];
-function isPlainObject(value) {
+function isPlainObject2(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 function isIntegerInRange(value, min, max) {
@@ -13859,7 +20097,7 @@ function isIntegerInRange(value, min, max) {
 }
 function decodeReconstructionRequest(value) {
   const issues = [];
-  if (!isPlainObject(value)) {
+  if (!isPlainObject2(value)) {
     return { ok: false, issues: ["request must be a JSON object"] };
   }
   const unknownFields = Object.keys(value).filter((key) => !REQUEST_FIELDS.includes(key)).sort();
@@ -13934,7 +20172,7 @@ function decodeReconstructionRequest(value) {
     }
   }
   const policy = value.policyConstraints;
-  if (!isPlainObject(policy)) {
+  if (!isPlainObject2(policy)) {
     issues.push("policyConstraints must be an object with timeoutMs and maxRetries");
   } else {
     for (const key of Object.keys(policy).sort()) {
@@ -14737,7 +20975,7 @@ function createReconstructionOrchestrator(deps) {
 }
 
 // backend/api/src/reconstruction/router.ts
-function pathSegments6(url) {
+function pathSegments7(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
 function decodeSegment3(segment) {
@@ -14751,7 +20989,7 @@ function decodeSegment3(segment) {
   }
 }
 async function handleReconstructionRequest(request, url, requestId, options) {
-  const segments = pathSegments6(url);
+  const segments = pathSegments7(url);
   if (segments[0] !== "v1" || segments[1] !== "reconstruction") {
     return null;
   }
@@ -14979,14 +21217,14 @@ var BACKEND_FAILURE_CODES = /* @__PURE__ */ new Set([
   "UNAVAILABLE",
   "ACCESS_REQUIRED"
 ]);
-function isPlainObject2(value) {
+function isPlainObject3(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 function isFiniteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
 }
 function checkEngineResponse(value) {
-  if (!isPlainObject2(value)) {
+  if (!isPlainObject3(value)) {
     return { kind: "invalid", detail: "engine response must be an object" };
   }
   if (value.ok === false) {
@@ -15010,7 +21248,7 @@ function checkEngineResponse(value) {
   for (let index = 0; index < value.objectCandidates.length; index += 1) {
     const candidate = value.objectCandidates[index];
     const label = `engine response objectCandidates[${index}]`;
-    if (!isPlainObject2(candidate)) {
+    if (!isPlainObject3(candidate)) {
       return { kind: "invalid", detail: `${label} must be an object` };
     }
     if (typeof candidate.objectId !== "string" || candidate.objectId.length === 0) {
@@ -15042,7 +21280,7 @@ function checkEngineResponse(value) {
     }
     if (candidate.mesh !== null) {
       const mesh = candidate.mesh;
-      if (!isPlainObject2(mesh) || !Array.isArray(mesh.vertices) || !Array.isArray(mesh.faces)) {
+      if (!isPlainObject3(mesh) || !Array.isArray(mesh.vertices) || !Array.isArray(mesh.faces)) {
         return { kind: "invalid", detail: `${label}.mesh must carry vertices and faces arrays` };
       }
       if (mesh.vertices.length % 3 !== 0 || mesh.vertices.some((v) => !isFiniteNumber(v))) {
@@ -15053,21 +21291,21 @@ function checkEngineResponse(value) {
         return { kind: "invalid", detail: `${label}.mesh.faces must index existing vertices` };
       }
     }
-    if (candidate.quality !== null && !isPlainObject2(candidate.quality)) {
+    if (candidate.quality !== null && !isPlainObject3(candidate.quality)) {
       return { kind: "invalid", detail: `${label}.quality must be an object or null` };
     }
   }
-  if (!isPlainObject2(value.registrationDiagnostics)) {
+  if (!isPlainObject3(value.registrationDiagnostics)) {
     return { kind: "invalid", detail: "engine response registrationDiagnostics must be an object" };
   }
-  if (!isPlainObject2(value.qualityMetrics)) {
+  if (!isPlainObject3(value.qualityMetrics)) {
     return { kind: "invalid", detail: "engine response qualityMetrics must be an object" };
   }
   if (!Array.isArray(value.uncertainty) || value.uncertainty.some((u) => typeof u !== "string")) {
     return { kind: "invalid", detail: "engine response uncertainty must be an array of strings" };
   }
   const environment = value.executionEnvironment;
-  if (!isPlainObject2(environment) || typeof environment.backend !== "string" || environment.backend.length === 0 || typeof environment.engineId !== "string" || typeof environment.engineVersion !== "string" || environment.hardware !== null && typeof environment.hardware !== "string") {
+  if (!isPlainObject3(environment) || typeof environment.backend !== "string" || environment.backend.length === 0 || typeof environment.engineId !== "string" || typeof environment.engineVersion !== "string" || environment.hardware !== null && typeof environment.hardware !== "string") {
     return { kind: "invalid", detail: "engine response executionEnvironment is malformed" };
   }
   return { kind: "success", response: value };
@@ -16123,10 +22361,10 @@ function comparisonStatsOf(entries) {
 var ISO_UTC = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 var CONTENT_ID = /^[0-9a-f]{64}$/;
 var VERSION_ID = /^v\d{3,}$/;
-function isRecord6(value) {
+function isRecord7(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-function isNonEmptyString2(value) {
+function isNonEmptyString3(value) {
   return typeof value === "string" && value.length > 0;
 }
 function boundedString(value, max) {
@@ -16163,7 +22401,7 @@ function validateVersionRefId(versionId) {
   }
 }
 function parseSourceOfRecord(value) {
-  if (!isRecord6(value)) {
+  if (!isRecord7(value)) {
     throw new ComparisonError("invalid_source_of_record", "sourceOfRecord must be an object");
   }
   const systemClass = value["systemClass"];
@@ -16201,7 +22439,7 @@ function parseSourceOfRecord(value) {
   return { systemClass, systemInstanceId, sourceRecordId, revision, retrievedAt };
 }
 function parseDesignProperty(value) {
-  if (!isRecord6(value)) {
+  if (!isRecord7(value)) {
     throw new ComparisonError("invalid_design_property", "design property must be an object");
   }
   const key = value["key"];
@@ -16236,7 +22474,7 @@ function parseDesignProperty(value) {
   };
 }
 function parseDesignGeometry(value) {
-  if (!isRecord6(value)) {
+  if (!isRecord7(value)) {
     throw new ComparisonError("invalid_design_item", "design geometry must be an object");
   }
   const kind = value["kind"];
@@ -16250,7 +22488,7 @@ function parseDesignGeometry(value) {
   return { kind, ref };
 }
 function parseDesignItem(value) {
-  if (!isRecord6(value)) {
+  if (!isRecord7(value)) {
     throw new ComparisonError("invalid_design_item", "design item must be an object");
   }
   const designItemId = value["designItemId"];
@@ -16287,7 +22525,7 @@ function parseDesignItem(value) {
     seenKeys.add(property.key);
   }
   const geometry = value["geometry"];
-  if (geometry !== void 0 && !isRecord6(geometry)) {
+  if (geometry !== void 0 && !isRecord7(geometry)) {
     throw new ComparisonError("invalid_design_item", "geometry must be an object");
   }
   const sourceDetail = value["sourceDetail"];
@@ -16304,7 +22542,7 @@ function parseDesignItem(value) {
   };
 }
 function parseDesignReference(value) {
-  if (!isRecord6(value)) {
+  if (!isRecord7(value)) {
     throw new ComparisonError("invalid_design_reference", "designReference must be an object");
   }
   const title = value["title"];
@@ -16340,13 +22578,13 @@ function parseTolerances(value) {
   if (value === void 0 || value === null) {
     return { byKey: {}, default: null };
   }
-  if (!isRecord6(value)) {
+  if (!isRecord7(value)) {
     throw new ComparisonError("invalid_tolerance", "tolerances must be an object");
   }
   const byKeyValue = value["byKey"];
   let byKey = {};
   if (byKeyValue !== void 0 && byKeyValue !== null) {
-    if (!isRecord6(byKeyValue)) {
+    if (!isRecord7(byKeyValue)) {
       throw new ComparisonError("invalid_tolerance", "tolerances.byKey must be an object");
     }
     byKey = {};
@@ -16380,7 +22618,7 @@ function isCoverageObservationStatus(value) {
   return typeof value === "string" && COVERAGE_OBSERVATION_STATUSES.includes(value);
 }
 function parseCoverageAnnotation(value) {
-  if (!isRecord6(value)) {
+  if (!isRecord7(value)) {
     throw new ComparisonError("invalid_coverage", "coverage entries must be objects");
   }
   const targetNodeId = value["targetNodeId"];
@@ -16430,25 +22668,25 @@ function parseCoverage(value) {
   return annotations;
 }
 function parseRunComparisonInput(payload) {
-  if (!isRecord6(payload)) {
+  if (!isRecord7(payload)) {
     throw new ComparisonError("invalid_comparison", "expected a JSON object");
   }
   const comparisonId = payload["comparisonId"];
-  if (!isNonEmptyString2(comparisonId)) {
+  if (!isNonEmptyString3(comparisonId)) {
     throw new ComparisonError("invalid_comparison_id", "comparisonId must be a non-empty string");
   }
   validateComparisonId(comparisonId);
   const realityRefValue = payload["realityRef"];
-  if (!isRecord6(realityRefValue)) {
+  if (!isRecord7(realityRefValue)) {
     throw new ComparisonError("invalid_comparison", "realityRef must be an object");
   }
   const projectId = realityRefValue["projectId"];
-  if (!isNonEmptyString2(projectId)) {
+  if (!isNonEmptyString3(projectId)) {
     throw new ComparisonError("invalid_project_id", "realityRef.projectId must be a non-empty string");
   }
   validateProjectRefId(projectId);
   const versionId = realityRefValue["versionId"];
-  if (!isNonEmptyString2(versionId)) {
+  if (!isNonEmptyString3(versionId)) {
     throw new ComparisonError("invalid_version_id", "realityRef.versionId must be a non-empty string");
   }
   validateVersionRefId(versionId);
@@ -16467,7 +22705,7 @@ function invalidRecord2(detail) {
   return new ComparisonError("invalid_comparison_record", detail);
 }
 function parseStoredSnapshot(value, where) {
-  if (!isRecord6(value)) throw invalidRecord2(`${where} is not an object`);
+  if (!isRecord7(value)) throw invalidRecord2(`${where} is not an object`);
   const propertyValue2 = value["value"];
   if (!isPropertyValue(propertyValue2)) throw invalidRecord2(`${where}.value`);
   const unit = value["unit"];
@@ -16509,7 +22747,7 @@ function storedGeometry(value, where) {
   }
 }
 function parseStoredEntry(value) {
-  if (!isRecord6(value)) throw invalidRecord2("entry is not an object");
+  if (!isRecord7(value)) throw invalidRecord2("entry is not an object");
   if (!boundedString(value["entryId"], 64)) throw invalidRecord2("entry.entryId");
   const designItemId = value["designItemId"];
   if (designItemId !== null && designItemId !== void 0 && !boundedString(designItemId, 256)) {
@@ -16561,7 +22799,7 @@ function parseStoredEntry(value) {
   const realityNode = value["realityNode"];
   let realityNodeContext;
   if (realityNode !== void 0 && realityNode !== null) {
-    if (!isRecord6(realityNode)) throw invalidRecord2("entry.realityNode");
+    if (!isRecord7(realityNode)) throw invalidRecord2("entry.realityNode");
     if (!boundedString(realityNode["kind"], 64)) throw invalidRecord2("entry.realityNode.kind");
     if (!boundedString(realityNode["epistemicStatus"], 64)) {
       throw invalidRecord2("entry.realityNode.epistemicStatus");
@@ -16574,7 +22812,7 @@ function parseStoredEntry(value) {
   const geometryRefs = value["geometryRefs"];
   let geometryRefPair;
   if (geometryRefs !== void 0 && geometryRefs !== null) {
-    if (!isRecord6(geometryRefs)) throw invalidRecord2("entry.geometryRefs");
+    if (!isRecord7(geometryRefs)) throw invalidRecord2("entry.geometryRefs");
     geometryRefPair = {
       design: storedGeometry(geometryRefs["design"], "entry.geometryRefs.design"),
       reality: storedGeometry(geometryRefs["reality"], "entry.geometryRefs.reality")
@@ -16606,7 +22844,7 @@ function parseStoredEntry(value) {
   };
 }
 function parseStoredStats(value, entries) {
-  if (!isRecord6(value)) throw invalidRecord2("stats is not an object");
+  if (!isRecord7(value)) throw invalidRecord2("stats is not an object");
   const expected = comparisonStatsOf(entries);
   const fields = [
     ["totalEntries", expected.totalEntries],
@@ -16631,7 +22869,7 @@ function parseStoredStats(value, entries) {
   return expected;
 }
 function parseStoredEvent(value) {
-  if (!isRecord6(value)) throw invalidRecord2("history entry is not an object");
+  if (!isRecord7(value)) throw invalidRecord2("history entry is not an object");
   if (!boundedString(value["eventId"], 64)) throw invalidRecord2("history.eventId");
   if (value["eventType"] !== "comparison_recorded") throw invalidRecord2("history.eventType");
   if (!isIso(value["occurredAt"])) throw invalidRecord2("history.occurredAt");
@@ -16646,9 +22884,9 @@ function parseStoredEvent(value) {
   };
 }
 function parseComparisonRecord(value) {
-  if (!isRecord6(value)) throw invalidRecord2("comparison record is not a JSON object");
+  if (!isRecord7(value)) throw invalidRecord2("comparison record is not a JSON object");
   const comparisonId = value["comparisonId"];
-  if (!isNonEmptyString2(comparisonId)) throw invalidRecord2("comparisonId");
+  if (!isNonEmptyString3(comparisonId)) throw invalidRecord2("comparisonId");
   try {
     validateComparisonId(comparisonId);
   } catch (error) {
@@ -16658,7 +22896,7 @@ function parseComparisonRecord(value) {
     throw error;
   }
   const realityRefValue = value["realityRef"];
-  if (!isRecord6(realityRefValue)) throw invalidRecord2("realityRef");
+  if (!isRecord7(realityRefValue)) throw invalidRecord2("realityRef");
   const projectId = realityRefValue["projectId"];
   if (!boundedString(projectId, 256)) throw invalidRecord2("realityRef.projectId");
   const versionId = realityRefValue["versionId"];
@@ -16876,10 +23114,10 @@ var ComparisonService = class {
 };
 
 // backend/api/src/comparison/router.ts
-function pathSegments7(url) {
+function pathSegments8(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
-async function readJsonBody4(request) {
+async function readJsonBody6(request) {
   const text = await request.text();
   try {
     return { ok: true, payload: JSON.parse(text) };
@@ -16902,7 +23140,7 @@ function comparisonErrorResponse(error, requestId) {
     requestId
   );
 }
-function malformedJson2(requestId) {
+function malformedJson3(requestId) {
   return jsonResponse(
     400,
     { ok: false, error: "malformed_json", detail: "request body is not valid JSON" },
@@ -16910,7 +23148,7 @@ function malformedJson2(requestId) {
   );
 }
 async function handleComparisonRequest(request, url, requestId, options) {
-  const segments = pathSegments7(url);
+  const segments = pathSegments8(url);
   if (segments[0] !== "v1" || segments[1] !== "comparisons") {
     return null;
   }
@@ -16918,9 +23156,9 @@ async function handleComparisonRequest(request, url, requestId, options) {
   try {
     if (segments.length === 2) {
       if (request.method === "POST") {
-        const body = await readJsonBody4(request);
+        const body = await readJsonBody6(request);
         if (!body.ok) {
-          return malformedJson2(requestId);
+          return malformedJson3(requestId);
         }
         const record = await service.runComparison(parseRunComparisonInput(body.payload));
         logger.info("comparison_recorded", {
@@ -17136,7 +23374,7 @@ function isProvenanceRole(value) {
 function isGeometryRefKind(value) {
   return typeof value === "string" && GEOMETRY_REF_KINDS.includes(value);
 }
-function isRecord7(value) {
+function isRecord8(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 function isId(value) {
@@ -17179,7 +23417,7 @@ function optionalString2(value, what) {
   return value;
 }
 function parseProvenanceRecord(value, where) {
-  if (!isRecord7(value)) {
+  if (!isRecord8(value)) {
     throw new RealityGraphError("invalid_provenance", `${where}: not an object`);
   }
   const role = value["role"];
@@ -17226,7 +23464,7 @@ function parseProvenanceList(value, where, code) {
   );
 }
 function parseProperty(value, where) {
-  if (!isRecord7(value)) {
+  if (!isRecord8(value)) {
     throw new RealityGraphError("invalid_property", `${where}: not an object`);
   }
   const key = value["key"];
@@ -17275,7 +23513,7 @@ function parseProperty(value, where) {
   };
 }
 function parseGeometry(value, where) {
-  if (!isRecord7(value)) {
+  if (!isRecord8(value)) {
     throw new RealityGraphError("invalid_node", `${where}: not an object`);
   }
   const kind = value["kind"];
@@ -17290,7 +23528,7 @@ function parseGeometry(value, where) {
   return { kind, ref, ...sourceArtifactId === void 0 ? {} : { sourceArtifactId } };
 }
 function parseUnits(value, where) {
-  if (!isRecord7(value)) {
+  if (!isRecord8(value)) {
     throw new RealityGraphError("invalid_node", `${where}: not an object`);
   }
   const linear = optionalString2(value["linear"], `${where} linear`);
@@ -17301,7 +23539,7 @@ function parseUnits(value, where) {
   return { linear, angular };
 }
 function parseAcquisitionRef(value, where) {
-  if (!isRecord7(value)) {
+  if (!isRecord8(value)) {
     throw new RealityGraphError("invalid_node", `${where}: not an object`);
   }
   const captureSessionId = assertStableId(
@@ -17312,7 +23550,7 @@ function parseAcquisitionRef(value, where) {
   return { captureSessionId, ...missionId === void 0 ? {} : { missionId } };
 }
 function parseInterventionRef(value, where) {
-  if (!isRecord7(value)) {
+  if (!isRecord8(value)) {
     throw new RealityGraphError("invalid_node", `${where}: not an object`);
   }
   const scenarioId = assertStableId(value["scenarioId"], `${where} scenarioId`);
@@ -17320,7 +23558,7 @@ function parseInterventionRef(value, where) {
   return { scenarioId, stateId };
 }
 function parseNode(value) {
-  if (!isRecord7(value)) {
+  if (!isRecord8(value)) {
     throw new RealityGraphError("invalid_node", "node: not an object");
   }
   const nodeId = assertStableId(value["nodeId"], "node nodeId");
@@ -17341,7 +23579,7 @@ function parseNode(value) {
   }
   const rawProperties = arrayField(value["properties"], `${where} properties`);
   const properties = rawProperties.map((entry) => {
-    const key = isRecord7(entry) ? entry["key"] : void 0;
+    const key = isRecord8(entry) ? entry["key"] : void 0;
     return parseProperty(entry, `${where} property "${isId(key) ? key : "?"}"`);
   });
   const provenance = parseProvenanceList(value["provenance"], `${where} provenance`, "missing_provenance");
@@ -17362,7 +23600,7 @@ function parseNode(value) {
   };
 }
 function parseRelationship(value) {
-  if (!isRecord7(value)) {
+  if (!isRecord8(value)) {
     throw new RealityGraphError("invalid_relationship", "relationship: not an object");
   }
   const relationshipId = assertStableId(value["relationshipId"], "relationship relationshipId");
@@ -17380,7 +23618,7 @@ function parseRelationship(value) {
   return { relationshipId, fromNodeId, toNodeId, kind, provenance };
 }
 function parseObservation(value) {
-  if (!isRecord7(value)) {
+  if (!isRecord8(value)) {
     throw new RealityGraphError("invalid_observation", "observation: not an object");
   }
   const observationId = assertStableId(value["observationId"], "observation observationId");
@@ -17399,7 +23637,7 @@ function parseObservation(value) {
   });
   const rawProperties = arrayField(value["properties"], `${where} properties`);
   const properties = rawProperties.map((entry) => {
-    const key = isRecord7(entry) ? entry["key"] : void 0;
+    const key = isRecord8(entry) ? entry["key"] : void 0;
     const property = parseProperty(entry, `${where} property "${isId(key) ? key : "?"}"`);
     if (property.epistemicStatus !== "OBSERVED") {
       throw new RealityGraphError(
@@ -17425,7 +23663,7 @@ function parseObservation(value) {
   };
 }
 function parseChangeRecord(value) {
-  if (!isRecord7(value)) {
+  if (!isRecord8(value)) {
     throw new RealityGraphError("invalid_change", "change: not an object");
   }
   const op = value["op"];
@@ -18477,10 +24715,10 @@ function corroborationReduction(validCount, additional) {
 var ISO_UTC3 = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 var CONTENT_ID3 = /^[0-9a-f]{64}$/;
 var VERSION_ID2 = /^v\d{3,}$/;
-function isRecord8(value) {
+function isRecord9(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-function isNonEmptyString3(value) {
+function isNonEmptyString4(value) {
   return typeof value === "string" && value.length > 0;
 }
 function boundedString2(value, max) {
@@ -18520,7 +24758,7 @@ function isObservationStatus(value) {
   return typeof value === "string" && OBSERVATION_STATUS_ANNOTATION_STATUSES.includes(value);
 }
 function parseAnnotation(value) {
-  if (!isRecord8(value)) {
+  if (!isRecord9(value)) {
     throw new GapAnalysisError("invalid_annotation", "annotations entries must be objects");
   }
   const targetNodeId = value["targetNodeId"];
@@ -18573,7 +24811,7 @@ function parseAnnotations(value) {
   return annotations.sort((a, b2) => compareStrings(a.targetNodeId, b2.targetNodeId));
 }
 function parseUncertaintyAnnotation(value) {
-  if (!isRecord8(value)) {
+  if (!isRecord9(value)) {
     throw new GapAnalysisError(
       "invalid_uncertainty",
       "uncertaintyAnnotations entries must be objects"
@@ -18649,7 +24887,7 @@ function parseTaskFocus(value) {
   const entries = [];
   const seen = /* @__PURE__ */ new Set();
   for (const entry of value) {
-    if (!isRecord8(entry)) {
+    if (!isRecord9(entry)) {
       throw new GapAnalysisError("invalid_focus", "taskFocus entries must be objects");
     }
     const subjectNodeId = entry["subjectNodeId"];
@@ -18678,14 +24916,14 @@ function parseEffortContext(value) {
   if (value === void 0 || value === null) {
     return {};
   }
-  if (!isRecord8(value)) {
+  if (!isRecord9(value)) {
     throw new GapAnalysisError("invalid_effort_context", "effortContext must be an object");
   }
   const byMethod = value["byMethod"];
   if (byMethod === void 0 || byMethod === null) {
     return {};
   }
-  if (!isRecord8(byMethod)) {
+  if (!isRecord9(byMethod)) {
     throw new GapAnalysisError("invalid_effort_context", "effortContext.byMethod must be an object");
   }
   const overrides = {};
@@ -18711,7 +24949,7 @@ function parseMethodPreferences(value) {
   if (value === void 0 || value === null) {
     return {};
   }
-  if (!isRecord8(value)) {
+  if (!isRecord9(value)) {
     throw new GapAnalysisError("invalid_method_preference", "methodPreferences must be an object");
   }
   const keys = [
@@ -18745,12 +24983,12 @@ function parseDeviceCapabilityFacts(value) {
   if (value === void 0 || value === null) {
     return null;
   }
-  if (!isRecord8(value)) {
+  if (!isRecord9(value)) {
     throw new GapAnalysisError("invalid_device_profile", "deviceCapabilityFacts must be an object");
   }
   const facts = {};
   for (const key of Object.keys(value)) {
-    if (!isNonEmptyString3(key) || key.length > 256) {
+    if (!isNonEmptyString4(key) || key.length > 256) {
       throw new GapAnalysisError(
         "invalid_device_profile",
         "capability fact keys must be 1..256 characters"
@@ -18768,25 +25006,25 @@ function parseDeviceCapabilityFacts(value) {
   return facts;
 }
 function parseRunGapAnalysisInput(payload) {
-  if (!isRecord8(payload)) {
+  if (!isRecord9(payload)) {
     throw new GapAnalysisError("invalid_analysis", "expected a JSON object");
   }
   const analysisId = payload["analysisId"];
-  if (!isNonEmptyString3(analysisId)) {
+  if (!isNonEmptyString4(analysisId)) {
     throw new GapAnalysisError("invalid_analysis_id", "analysisId must be a non-empty string");
   }
   validateAnalysisId(analysisId);
   const taskRefValue = payload["taskRef"];
-  if (!isRecord8(taskRefValue)) {
+  if (!isRecord9(taskRefValue)) {
     throw new GapAnalysisError("invalid_analysis", "taskRef must be an object");
   }
   const projectId = taskRefValue["projectId"];
-  if (!isNonEmptyString3(projectId)) {
+  if (!isNonEmptyString4(projectId)) {
     throw new GapAnalysisError("invalid_project_id", "taskRef.projectId must be a non-empty string");
   }
   validateProjectRefId2(projectId);
   const versionId = taskRefValue["versionId"];
-  if (!isNonEmptyString3(versionId)) {
+  if (!isNonEmptyString4(versionId)) {
     throw new GapAnalysisError("invalid_version_id", "taskRef.versionId must be a non-empty string");
   }
   validateVersionRefId2(versionId);
@@ -18837,7 +25075,7 @@ function parseStoredEvidenceIds2(value, where) {
   return value;
 }
 function parseStoredAnnotation(value) {
-  if (!isRecord8(value)) throw invalidRecord3("annotation is not an object");
+  if (!isRecord9(value)) throw invalidRecord3("annotation is not an object");
   if (!boundedString2(value["targetNodeId"], 256)) throw invalidRecord3("annotation.targetNodeId");
   const observationStatus = value["observationStatus"];
   if (!isObservationStatus(observationStatus)) throw invalidRecord3("annotation.observationStatus");
@@ -18852,7 +25090,7 @@ function parseStoredAnnotation(value) {
   };
 }
 function parseStoredUncertainty(value) {
-  if (!isRecord8(value)) throw invalidRecord3("uncertainty annotation is not an object");
+  if (!isRecord9(value)) throw invalidRecord3("uncertainty annotation is not an object");
   if (!boundedString2(value["nodeId"], 256)) throw invalidRecord3("uncertainty.nodeId");
   if (!boundedString2(value["propertyKey"], 256)) throw invalidRecord3("uncertainty.propertyKey");
   const sigma = value["sigma"];
@@ -18869,7 +25107,7 @@ function parseStoredUncertainty(value) {
   };
 }
 function parseStoredFocus(value) {
-  if (!isRecord8(value)) throw invalidRecord3("taskFocus entry is not an object");
+  if (!isRecord9(value)) throw invalidRecord3("taskFocus entry is not an object");
   if (!boundedString2(value["subjectNodeId"], 256)) throw invalidRecord3("taskFocus.subjectNodeId");
   const impactWeight = value["impactWeight"];
   if (!isFiniteNumber2(impactWeight) || impactWeight < 0 || impactWeight > 1) {
@@ -18878,7 +25116,7 @@ function parseStoredFocus(value) {
   return { subjectNodeId: value["subjectNodeId"], impactWeight };
 }
 function parseStoredEffortModel(value) {
-  if (!isRecord8(value) || !isRecord8(value["byMethod"])) {
+  if (!isRecord9(value) || !isRecord9(value["byMethod"])) {
     throw invalidRecord3("effortModel.byMethod must be an object");
   }
   const byMethod = value["byMethod"];
@@ -18899,7 +25137,7 @@ function parseStoredEffortModel(value) {
   return { byMethod: Object.freeze(resolved) };
 }
 function parseStoredMethodPreferences(value) {
-  if (!isRecord8(value)) throw invalidRecord3("methodPreferences is not an object");
+  if (!isRecord9(value)) throw invalidRecord3("methodPreferences is not an object");
   const read = (key) => {
     const method = value[key];
     if (!isEvidenceMethod(method)) throw invalidRecord3(`methodPreferences.${key}`);
@@ -18915,7 +25153,7 @@ function parseStoredMethodPreferences(value) {
   };
 }
 function parseStoredGap(value) {
-  if (!isRecord8(value)) throw invalidRecord3("gap is not an object");
+  if (!isRecord9(value)) throw invalidRecord3("gap is not an object");
   if (!boundedString2(value["gapId"], 64) || !value["gapId"].startsWith("gap-")) {
     throw invalidRecord3("gap.gapId");
   }
@@ -18970,7 +25208,7 @@ function parseStoredGap(value) {
   };
 }
 function parseStoredScore(value) {
-  if (!isRecord8(value)) throw invalidRecord3("score is not an object");
+  if (!isRecord9(value)) throw invalidRecord3("score is not an object");
   const components = [
     "taskImpact",
     "expectedUncertaintyReduction",
@@ -18985,7 +25223,7 @@ function parseStoredScore(value) {
     }
   }
   const derivation = value["derivation"];
-  if (!isRecord8(derivation)) throw invalidRecord3("score.derivation");
+  if (!isRecord9(derivation)) throw invalidRecord3("score.derivation");
   for (const field of [
     "taskImpact",
     "expectedUncertaintyReduction",
@@ -19014,7 +25252,7 @@ function parseStoredScore(value) {
   };
 }
 function parseStoredCandidate(value) {
-  if (!isRecord8(value)) throw invalidRecord3("candidate is not an object");
+  if (!isRecord9(value)) throw invalidRecord3("candidate is not an object");
   if (!boundedString2(value["candidateId"], 64) || !value["candidateId"].startsWith("cand-")) {
     throw invalidRecord3("candidate.candidateId");
   }
@@ -19058,7 +25296,7 @@ function parseStoredCandidate(value) {
   const substitution = value["substitution"];
   let substitutionSemantics;
   if (substitution !== void 0 && substitution !== null) {
-    if (!isRecord8(substitution)) throw invalidRecord3("candidate.substitution");
+    if (!isRecord9(substitution)) throw invalidRecord3("candidate.substitution");
     if (!isEvidenceMethod(substitution["originalMethod"])) {
       throw invalidRecord3("candidate.substitution.originalMethod");
     }
@@ -19100,7 +25338,7 @@ function parseStoredCandidate(value) {
   };
 }
 function parseStoredStats2(value, gaps, candidates) {
-  if (!isRecord8(value)) throw invalidRecord3("stats is not an object");
+  if (!isRecord9(value)) throw invalidRecord3("stats is not an object");
   const fields = [
     ["totalGaps", gaps.length],
     ["missingGaps", gaps.filter((gap) => gap.kind === "MISSING").length],
@@ -19151,7 +25389,7 @@ function parseStoredStats2(value, gaps, candidates) {
   };
 }
 function parseStoredEvent2(value) {
-  if (!isRecord8(value)) throw invalidRecord3("history entry is not an object");
+  if (!isRecord9(value)) throw invalidRecord3("history entry is not an object");
   if (!boundedString2(value["eventId"], 64)) throw invalidRecord3("history.eventId");
   if (value["eventType"] !== "gap_analysis_recorded") throw invalidRecord3("history.eventType");
   if (typeof value["occurredAt"] !== "string" || !ISO_UTC3.test(value["occurredAt"])) {
@@ -19168,9 +25406,9 @@ function parseStoredEvent2(value) {
   };
 }
 function parseGapAnalysisRecord(value) {
-  if (!isRecord8(value)) throw invalidRecord3("analysis record is not a JSON object");
+  if (!isRecord9(value)) throw invalidRecord3("analysis record is not a JSON object");
   const analysisId = value["analysisId"];
-  if (!isNonEmptyString3(analysisId)) throw invalidRecord3("analysisId");
+  if (!isNonEmptyString4(analysisId)) throw invalidRecord3("analysisId");
   try {
     validateAnalysisId(analysisId);
   } catch (error) {
@@ -19180,7 +25418,7 @@ function parseGapAnalysisRecord(value) {
     throw error;
   }
   const taskRefValue = value["taskRef"];
-  if (!isRecord8(taskRefValue)) throw invalidRecord3("taskRef");
+  if (!isRecord9(taskRefValue)) throw invalidRecord3("taskRef");
   if (!boundedString2(taskRefValue["projectId"], 256)) throw invalidRecord3("taskRef.projectId");
   if (!isVersionId2(taskRefValue["versionId"])) throw invalidRecord3("taskRef.versionId");
   if (!boundedString2(taskRefValue["profileId"], 256)) throw invalidRecord3("taskRef.profileId");
@@ -19205,7 +25443,7 @@ function parseGapAnalysisRecord(value) {
   const deviceCapabilityFactsValue = value["deviceCapabilityFacts"];
   let deviceCapabilityFacts = null;
   if (deviceCapabilityFactsValue !== null && deviceCapabilityFactsValue !== void 0) {
-    if (!isRecord8(deviceCapabilityFactsValue)) {
+    if (!isRecord9(deviceCapabilityFactsValue)) {
       throw invalidRecord3("deviceCapabilityFacts");
     }
     const facts = {};
@@ -19217,7 +25455,7 @@ function parseGapAnalysisRecord(value) {
     deviceCapabilityFacts = facts;
   }
   const readinessReport = value["readinessReport"];
-  if (!isRecord8(readinessReport)) {
+  if (!isRecord9(readinessReport)) {
     throw invalidRecord3(
       "readinessReport must be present \u2014 the readiness authority's consumed output is carried verbatim"
     );
@@ -19865,10 +26103,10 @@ var GapAnalysisService = class {
 };
 
 // backend/api/src/gaps/router.ts
-function pathSegments8(url) {
+function pathSegments9(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
-async function readJsonBody5(request) {
+async function readJsonBody7(request) {
   const text = await request.text();
   try {
     return { ok: true, payload: JSON.parse(text) };
@@ -19891,7 +26129,7 @@ function gapsErrorResponse(error, requestId) {
     requestId
   );
 }
-function malformedJson3(requestId) {
+function malformedJson4(requestId) {
   return jsonResponse(
     400,
     { ok: false, error: "malformed_json", detail: "request body is not valid JSON" },
@@ -19899,7 +26137,7 @@ function malformedJson3(requestId) {
   );
 }
 async function handleGapsRequest(request, url, requestId, options) {
-  const segments = pathSegments8(url);
+  const segments = pathSegments9(url);
   if (segments[0] !== "v1" || segments[1] !== "gaps") {
     return null;
   }
@@ -19907,9 +26145,9 @@ async function handleGapsRequest(request, url, requestId, options) {
   try {
     if (segments.length === 2) {
       if (request.method === "POST") {
-        const body = await readJsonBody5(request);
+        const body = await readJsonBody7(request);
         if (!body.ok) {
-          return malformedJson3(requestId);
+          return malformedJson4(requestId);
         }
         const record = await service.runGapAnalysis(parseRunGapAnalysisInput(body.payload));
         logger.info("gap_analysis_recorded", {
@@ -20247,13 +26485,13 @@ var AssuranceError = class extends Error {
     this.details = details;
   }
 };
-function isNonEmptyString4(v) {
+function isNonEmptyString5(v) {
   return typeof v === "string" && v.length > 0;
 }
 function isFiniteNumber3(v) {
   return typeof v === "number" && Number.isFinite(v);
 }
-function isPlainObject3(v) {
+function isPlainObject4(v) {
   return typeof v === "object" && v !== null && !Array.isArray(v);
 }
 function isEpistemicStatus2(v) {
@@ -20264,9 +26502,9 @@ function isEvidenceMethod2(v) {
 }
 function validateAssuranceProfile(profile) {
   const fail2 = (details2) => new AssuranceError("invalid_profile", "malformed assurance profile", details2);
-  if (!isPlainObject3(profile)) throw fail2(["profile must be an object"]);
+  if (!isPlainObject4(profile)) throw fail2(["profile must be an object"]);
   const details = [];
-  if (!isNonEmptyString4(profile.profileId)) details.push("profileId must be a non-empty string");
+  if (!isNonEmptyString5(profile.profileId)) details.push("profileId must be a non-empty string");
   if (profile.version !== ASSURANCE_PROFILE_VERSION) {
     details.push(`version must be "${ASSURANCE_PROFILE_VERSION}"`);
   }
@@ -20281,22 +26519,22 @@ function validateAssuranceProfile(profile) {
   const seenIds = /* @__PURE__ */ new Set();
   dims.forEach((dim, index) => {
     const at = `dimensions[${index}]`;
-    if (!isPlainObject3(dim)) {
+    if (!isPlainObject4(dim)) {
       details.push(`${at}: must be an object`);
       return;
     }
-    if (!isNonEmptyString4(dim.dimensionId)) details.push(`${at}.dimensionId must be a non-empty string`);
-    if (isNonEmptyString4(dim.dimensionId)) {
+    if (!isNonEmptyString5(dim.dimensionId)) details.push(`${at}.dimensionId must be a non-empty string`);
+    if (isNonEmptyString5(dim.dimensionId)) {
       if (seenIds.has(dim.dimensionId)) details.push(`${at}: duplicate dimensionId "${dim.dimensionId}"`);
       seenIds.add(dim.dimensionId);
     }
-    if (!isNonEmptyString4(dim.description)) details.push(`${at}.description must be a non-empty string`);
+    if (!isNonEmptyString5(dim.description)) details.push(`${at}.description must be a non-empty string`);
     if (typeof dim.critical !== "boolean") details.push(`${at}.critical must be a boolean`);
     if (dim.weight !== void 0 && !(isFiniteNumber3(dim.weight) && dim.weight >= 0 && dim.weight <= 1)) {
       details.push(`${at}.weight must be a number in [0,1] when present`);
     }
     const req = dim.requirement;
-    if (!isPlainObject3(req)) {
+    if (!isPlainObject4(req)) {
       details.push(`${at}.requirement must be an object`);
       return;
     }
@@ -20311,11 +26549,11 @@ function validateAssuranceProfile(profile) {
         break;
       }
       case "uncertainty_bound": {
-        if (!isNonEmptyString4(req.propertyKey)) details.push(`${at}.requirement.propertyKey must be a non-empty string`);
+        if (!isNonEmptyString5(req.propertyKey)) details.push(`${at}.requirement.propertyKey must be a non-empty string`);
         if (!(isFiniteNumber3(req.maxSigma) && req.maxSigma > 0)) {
           details.push(`${at}.requirement.maxSigma must be a finite number > 0`);
         }
-        if (!isNonEmptyString4(req.unit)) details.push(`${at}.requirement.unit must be a non-empty string`);
+        if (!isNonEmptyString5(req.unit)) details.push(`${at}.requirement.unit must be a non-empty string`);
         break;
       }
       case "coverage": {
@@ -20333,11 +26571,11 @@ function validateAssuranceProfile(profile) {
         } else {
           const keys = req.propertyKeys;
           keys.forEach((key, keyIndex) => {
-            if (!isNonEmptyString4(key)) {
+            if (!isNonEmptyString5(key)) {
               details.push(`${at}.requirement.propertyKeys[${keyIndex}] must be a non-empty string`);
             }
           });
-          const keyStrings = keys.filter(isNonEmptyString4);
+          const keyStrings = keys.filter(isNonEmptyString5);
           if (new Set(keyStrings).size !== keyStrings.length) {
             details.push(`${at}.requirement.propertyKeys must be unique`);
           }
@@ -20353,10 +26591,10 @@ function validateAssuranceProfile(profile) {
 }
 function validateEvaluationFacts(input) {
   const fail2 = (details2) => new AssuranceError("invalid_input", "malformed evaluation input", details2);
-  if (!isPlainObject3(input)) throw fail2(["input must be an object"]);
+  if (!isPlainObject4(input)) throw fail2(["input must be an object"]);
   const details = [];
   const snapshot = input.graphSnapshot;
-  if (!isPlainObject3(snapshot) || !Array.isArray(snapshot.nodes)) {
+  if (!isPlainObject4(snapshot) || !Array.isArray(snapshot.nodes)) {
     throw fail2(["graphSnapshot.nodes must be an array"]);
   }
   const evidence = input.evidence;
@@ -20364,12 +26602,12 @@ function validateEvaluationFacts(input) {
   const nodeIds = /* @__PURE__ */ new Set();
   snapshot.nodes.forEach((node, nodeIndex) => {
     const at = `graphSnapshot.nodes[${nodeIndex}]`;
-    if (!isPlainObject3(node)) {
+    if (!isPlainObject4(node)) {
       details.push(`${at}: must be an object`);
       return;
     }
-    if (!isNonEmptyString4(node.nodeId)) details.push(`${at}.nodeId must be a non-empty string`);
-    if (isNonEmptyString4(node.nodeId)) {
+    if (!isNonEmptyString5(node.nodeId)) details.push(`${at}.nodeId must be a non-empty string`);
+    if (isNonEmptyString5(node.nodeId)) {
       if (nodeIds.has(node.nodeId)) details.push(`${at}: duplicate nodeId "${node.nodeId}"`);
       nodeIds.add(node.nodeId);
     }
@@ -20380,12 +26618,12 @@ function validateEvaluationFacts(input) {
     const keys = /* @__PURE__ */ new Set();
     node.properties.forEach((prop, propIndex) => {
       const pat = `${at}.properties[${propIndex}]`;
-      if (!isPlainObject3(prop)) {
+      if (!isPlainObject4(prop)) {
         details.push(`${pat}: must be an object`);
         return;
       }
-      if (!isNonEmptyString4(prop.key)) details.push(`${pat}.key must be a non-empty string`);
-      if (isNonEmptyString4(prop.key)) {
+      if (!isNonEmptyString5(prop.key)) details.push(`${pat}.key must be a non-empty string`);
+      if (isNonEmptyString5(prop.key)) {
         if (keys.has(prop.key)) details.push(`${pat}: duplicate property key "${prop.key}" in node`);
         keys.add(prop.key);
       }
@@ -20398,15 +26636,15 @@ function validateEvaluationFacts(input) {
       if (!isEpistemicStatus2(prop.epistemicStatus)) {
         details.push(`${pat}.epistemicStatus must be one of ${EPISTEMIC_STATUSES.join("|")}`);
       }
-      if (prop.unit !== void 0 && !isNonEmptyString4(prop.unit)) {
+      if (prop.unit !== void 0 && !isNonEmptyString5(prop.unit)) {
         details.push(`${pat}.unit must be a non-empty string when present`);
       }
       const unc = prop.uncertainty;
       if (unc !== void 0) {
-        if (!isPlainObject3(unc) || !isFiniteNumber3(unc.sigma) || unc.sigma < 0) {
+        if (!isPlainObject4(unc) || !isFiniteNumber3(unc.sigma) || unc.sigma < 0) {
           details.push(`${pat}.uncertainty.sigma must be a finite number >= 0`);
         }
-        if (isPlainObject3(unc) && unc.basis !== void 0 && !isNonEmptyString4(unc.basis)) {
+        if (isPlainObject4(unc) && unc.basis !== void 0 && !isNonEmptyString5(unc.basis)) {
           details.push(`${pat}.uncertainty.basis must be a non-empty string when present`);
         }
       }
@@ -20415,12 +26653,12 @@ function validateEvaluationFacts(input) {
   const evidenceIds = /* @__PURE__ */ new Set();
   evidence.forEach((item, itemIndex) => {
     const at = `evidence[${itemIndex}]`;
-    if (!isPlainObject3(item)) {
+    if (!isPlainObject4(item)) {
       details.push(`${at}: must be an object`);
       return;
     }
-    if (!isNonEmptyString4(item.evidenceId)) details.push(`${at}.evidenceId must be a non-empty string`);
-    if (isNonEmptyString4(item.evidenceId)) {
+    if (!isNonEmptyString5(item.evidenceId)) details.push(`${at}.evidenceId must be a non-empty string`);
+    if (isNonEmptyString5(item.evidenceId)) {
       if (evidenceIds.has(item.evidenceId)) details.push(`${at}: duplicate evidenceId "${item.evidenceId}"`);
       evidenceIds.add(item.evidenceId);
     }
@@ -20433,7 +26671,7 @@ function validateEvaluationFacts(input) {
     } else {
       const linked = /* @__PURE__ */ new Set();
       item.linkedNodeIds.forEach((nodeId, linkIndex) => {
-        if (!isNonEmptyString4(nodeId)) {
+        if (!isNonEmptyString5(nodeId)) {
           details.push(`${at}.linkedNodeIds[${linkIndex}] must be a non-empty string`);
         } else if (linked.has(nodeId)) {
           details.push(`${at}.linkedNodeIds must not repeat "${nodeId}"`);
@@ -20445,11 +26683,11 @@ function validateEvaluationFacts(input) {
   });
   const device = input.deviceProfile;
   if (device !== void 0) {
-    if (!isPlainObject3(device) || !isPlainObject3(device.capabilityFacts)) {
+    if (!isPlainObject4(device) || !isPlainObject4(device.capabilityFacts)) {
       details.push("deviceProfile.capabilityFacts must be an object of string facts");
     } else {
       for (const [key, value] of Object.entries(device.capabilityFacts)) {
-        if (!isNonEmptyString4(key) || typeof value !== "string") {
+        if (!isNonEmptyString5(key) || typeof value !== "string") {
           details.push(`deviceProfile.capabilityFacts["${key}"] must be a string fact`);
         }
       }
@@ -21342,10 +27580,10 @@ function assessmentInputDigest(input) {
 var ISO_UTC4 = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 var CONTENT_ID4 = /^[0-9a-f]{64}$/;
 var EVENT_ID = /^evt-\d{6}$/;
-function isRecord9(value) {
+function isRecord10(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-function isNonEmptyString5(value) {
+function isNonEmptyString6(value) {
   return typeof value === "string" && value.length > 0;
 }
 function boundedString3(value, max) {
@@ -21403,7 +27641,7 @@ function requireActor(value) {
   return value;
 }
 function parseSystemRef(value) {
-  if (!isRecord9(value)) {
+  if (!isRecord10(value)) {
     throw new AdoptionError("invalid_system_ref", "systemsOfRecord entries must be objects");
   }
   const systemClass = value["systemClass"];
@@ -21431,7 +27669,7 @@ function parseSystemRef(value) {
   };
 }
 function parseResourceRef(value) {
-  if (!isRecord9(value)) {
+  if (!isRecord10(value)) {
     throw new AdoptionError("invalid_resource_ref", "resources entries must be objects");
   }
   const resourceId = value["resourceId"];
@@ -21456,7 +27694,7 @@ function parseResourceRef(value) {
   };
 }
 function parseWorkflowStep(value) {
-  if (!isRecord9(value)) {
+  if (!isRecord10(value)) {
     throw new AdoptionError("invalid_step", "step must be an object");
   }
   const stepId = value["stepId"];
@@ -21572,7 +27810,7 @@ function parseWorkflowStep(value) {
   if (isUnknownMarker(approvalsValue)) {
     approvals = UNKNOWN_MARKER;
   } else {
-    if (!isRecord9(approvalsValue)) {
+    if (!isRecord10(approvalsValue)) {
       throw new AdoptionError(
         "invalid_step",
         'approvals must be { gateCount, strictness } or the string "UNKNOWN"'
@@ -21679,7 +27917,7 @@ function parseWorkflowStep(value) {
   };
 }
 function parseCreateWorkflowInput(payload) {
-  if (!isRecord9(payload)) {
+  if (!isRecord10(payload)) {
     throw new AdoptionError("invalid_workflow", "workflow payload must be an object");
   }
   const workflowId = payload["workflowId"];
@@ -21727,7 +27965,7 @@ function parseCreateWorkflowInput(payload) {
   };
 }
 function parseAppendStepInput(payload) {
-  if (!isRecord9(payload)) {
+  if (!isRecord10(payload)) {
     throw new AdoptionError("invalid_step", "append-step payload must be an object");
   }
   const step = parseWorkflowStep(payload["step"]);
@@ -21735,7 +27973,7 @@ function parseAppendStepInput(payload) {
   return { step, actor };
 }
 function parseRunAssessmentInput(payload) {
-  if (!isRecord9(payload)) {
+  if (!isRecord10(payload)) {
     throw new AdoptionError("invalid_assessment", "assessment payload must be an object");
   }
   const assessmentId = payload["assessmentId"];
@@ -21746,7 +27984,7 @@ function parseRunAssessmentInput(payload) {
   return { assessmentId, actor };
 }
 function parseCreateCandidateInput(payload) {
-  if (!isRecord9(payload)) {
+  if (!isRecord10(payload)) {
     throw new AdoptionError("invalid_candidate", "candidate payload must be an object");
   }
   const candidateId = payload["candidateId"];
@@ -21776,7 +28014,7 @@ function parseCreateCandidateInput(payload) {
   return { candidateId, workflowId, stepId, aiseReplacementBoundary, rationale, actor };
 }
 function parseRecordEquivalenceInput(payload) {
-  if (!isRecord9(payload)) {
+  if (!isRecord10(payload)) {
     throw new AdoptionError("invalid_equivalence", "equivalence payload must be an object");
   }
   const establishedHow = payload["establishedHow"];
@@ -21802,7 +28040,7 @@ function parseRecordEquivalenceInput(payload) {
   return { establishedHow, evidenceIds, limits, actor };
 }
 function parseRecordAcceptanceInput(payload) {
-  if (!isRecord9(payload)) {
+  if (!isRecord10(payload)) {
     throw new AdoptionError("invalid_acceptance", "acceptance payload must be an object");
   }
   const evidenceIds = parseEvidenceIds(
@@ -21818,7 +28056,7 @@ function parseRecordAcceptanceInput(payload) {
   return { evidenceIds, note, actor };
 }
 function parseRecordRollbackPlanInput(payload) {
-  if (!isRecord9(payload)) {
+  if (!isRecord10(payload)) {
     throw new AdoptionError("invalid_rollback_plan", "rollback-plan payload must be an object");
   }
   const planId = payload["planId"];
@@ -21850,7 +28088,7 @@ function parseRecordRollbackPlanInput(payload) {
   };
 }
 function parseAdvanceCandidateInput(payload) {
-  if (!isRecord9(payload)) {
+  if (!isRecord10(payload)) {
     throw new AdoptionError("invalid_advance", "advance payload must be an object");
   }
   const to = payload["to"];
@@ -21872,7 +28110,7 @@ function parseAdvanceCandidateInput(payload) {
   return { to, evidenceIds, actor };
 }
 function parseRollbackCandidateInput(payload) {
-  if (!isRecord9(payload)) {
+  if (!isRecord10(payload)) {
     throw new AdoptionError("invalid_rollback", "rollback payload must be an object");
   }
   const note = payload["note"];
@@ -21891,7 +28129,7 @@ function parseRollbackCandidateInput(payload) {
   };
 }
 function parseRetireRollbackPlanInput(payload) {
-  if (!isRecord9(payload)) {
+  if (!isRecord10(payload)) {
     throw new AdoptionError("invalid_retire", "retire payload must be an object");
   }
   const actor = requireActor(payload["actor"]);
@@ -22254,7 +28492,7 @@ function invalidRecord4(code, detail) {
 }
 function parseStoredEvent3(value, recordKind) {
   const code = recordKind === "workflow" ? "invalid_workflow_record" : recordKind === "candidate" ? "invalid_candidate_record" : "invalid_assessment_record";
-  if (!isRecord9(value)) throw invalidRecord4(code, "history entry is not an object");
+  if (!isRecord10(value)) throw invalidRecord4(code, "history entry is not an object");
   const eventId = value["eventId"];
   if (typeof eventId !== "string" || !EVENT_ID.test(eventId)) {
     throw invalidRecord4(code, "history.eventId must be evt-NNNNNN");
@@ -22283,7 +28521,7 @@ function parseStoredEvent3(value, recordKind) {
   const transitionValue = value["transition"];
   const isTransitionEvent = eventType === "candidate_advanced" || eventType === "candidate_rolled_back";
   if (isTransitionEvent) {
-    if (!isRecord9(transitionValue)) {
+    if (!isRecord10(transitionValue)) {
       throw invalidRecord4(code, `${eventType} events must carry a { from, to } transition`);
     }
     const from = transitionValue["from"];
@@ -22346,9 +28584,9 @@ function verifyHistory(history, digestOf, code) {
   }
 }
 function parseIncumbentWorkflow(value) {
-  if (!isRecord9(value)) throw invalidRecord4("invalid_workflow_record", "record is not an object");
+  if (!isRecord10(value)) throw invalidRecord4("invalid_workflow_record", "record is not an object");
   const workflowId = value["workflowId"];
-  if (!isNonEmptyString5(workflowId)) throw invalidRecord4("invalid_workflow_record", "workflowId");
+  if (!isNonEmptyString6(workflowId)) throw invalidRecord4("invalid_workflow_record", "workflowId");
   try {
     validateWorkflowId(workflowId);
   } catch (error) {
@@ -22422,7 +28660,7 @@ function parseIncumbentWorkflow(value) {
   return record;
 }
 function parseStoredEquivalence(value) {
-  if (!isRecord9(value)) {
+  if (!isRecord10(value)) {
     throw invalidRecord4("invalid_candidate_record", "equivalence is not an object");
   }
   if (!boundedString3(value["establishedHow"], 2e3)) {
@@ -22454,7 +28692,7 @@ function parseStoredEquivalence(value) {
   };
 }
 function parseStoredAcceptance(value) {
-  if (!isRecord9(value)) {
+  if (!isRecord10(value)) {
     throw invalidRecord4("invalid_candidate_record", "acceptance is not an object");
   }
   if (!boundedString3(value["acceptedBy"], 256)) {
@@ -22479,7 +28717,7 @@ function parseStoredAcceptance(value) {
   };
 }
 function parseStoredRollbackPlan(value) {
-  if (!isRecord9(value)) {
+  if (!isRecord10(value)) {
     throw invalidRecord4("invalid_candidate_record", "rollback plan is not an object");
   }
   if (!boundedString3(value["planId"], 256)) {
@@ -22536,9 +28774,9 @@ function parseStoredRollbackPlan(value) {
   };
 }
 function parseMigrationCandidate(value) {
-  if (!isRecord9(value)) throw invalidRecord4("invalid_candidate_record", "record is not an object");
+  if (!isRecord10(value)) throw invalidRecord4("invalid_candidate_record", "record is not an object");
   const candidateId = value["candidateId"];
-  if (!isNonEmptyString5(candidateId)) throw invalidRecord4("invalid_candidate_record", "candidateId");
+  if (!isNonEmptyString6(candidateId)) throw invalidRecord4("invalid_candidate_record", "candidateId");
   try {
     validateCandidateId(candidateId);
   } catch (error) {
@@ -22644,7 +28882,7 @@ function parseMigrationCandidate(value) {
   return record;
 }
 function parseStoredAdapterViewEntry(value) {
-  if (!isRecord9(value)) {
+  if (!isRecord10(value)) {
     throw invalidRecord4("invalid_assessment_record", "adapterView entries must be objects");
   }
   const adapterId = value["adapterId"];
@@ -22666,7 +28904,7 @@ function parseStoredAdapterViewEntry(value) {
   return { adapterId, descriptor };
 }
 function parseStoredComponent(value, where) {
-  if (!isRecord9(value)) {
+  if (!isRecord10(value)) {
     throw invalidRecord4("invalid_assessment_record", `${where} is not an object`);
   }
   const kind = value["kind"];
@@ -22695,11 +28933,11 @@ function parseStoredComponent(value, where) {
   throw invalidRecord4("invalid_assessment_record", `${where}.kind must be "known" or "unknown"`);
 }
 function parseStoredBreakdown(value, where, expectedComponents, weights) {
-  if (!isRecord9(value)) {
+  if (!isRecord10(value)) {
     throw invalidRecord4("invalid_assessment_record", `${where} is not an object`);
   }
   const componentsValue = value["components"];
-  if (!isRecord9(componentsValue)) {
+  if (!isRecord10(componentsValue)) {
     throw invalidRecord4("invalid_assessment_record", `${where}.components must be an object`);
   }
   const componentKeys = Object.keys(componentsValue).sort(compareStrings3);
@@ -22715,7 +28953,7 @@ function parseStoredBreakdown(value, where, expectedComponents, weights) {
     components[key] = parseStoredComponent(componentsValue[key], `${where}.components.${key}`);
   }
   const weightsValue = value["weights"];
-  if (!isRecord9(weightsValue)) {
+  if (!isRecord10(weightsValue)) {
     throw invalidRecord4("invalid_assessment_record", `${where}.weights must be an object`);
   }
   for (const key of expectedSorted) {
@@ -22766,7 +29004,7 @@ function parseStoredBreakdown(value, where, expectedComponents, weights) {
 var READINESS_COMPONENT_NAMES = Object.keys(READINESS_WEIGHTS);
 var FRICTION_COMPONENT_NAMES = Object.keys(FRICTION_WEIGHTS);
 function parseStoredStepAssessment(value) {
-  if (!isRecord9(value)) {
+  if (!isRecord10(value)) {
     throw invalidRecord4("invalid_assessment_record", "steps entries must be objects");
   }
   if (!boundedString3(value["stepId"], 256)) {
@@ -22808,7 +29046,7 @@ function parseStoredStepAssessment(value) {
   };
 }
 function parseStoredRankedStep(value) {
-  if (!isRecord9(value)) {
+  if (!isRecord10(value)) {
     throw invalidRecord4("invalid_assessment_record", "rankedSteps entries must be objects");
   }
   const rank = value["rank"];
@@ -22838,9 +29076,9 @@ function parseStoredRankedStep(value) {
   };
 }
 function parseIntegrationReadinessAssessment(value) {
-  if (!isRecord9(value)) throw invalidRecord4("invalid_assessment_record", "record is not an object");
+  if (!isRecord10(value)) throw invalidRecord4("invalid_assessment_record", "record is not an object");
   const assessmentId = value["assessmentId"];
-  if (!isNonEmptyString5(assessmentId)) {
+  if (!isNonEmptyString6(assessmentId)) {
     throw invalidRecord4("invalid_assessment_record", "assessmentId");
   }
   try {
@@ -22982,7 +29220,7 @@ function parseIntegrationReadinessAssessment(value) {
   return record;
 }
 function parseStoredInventory(value, totalSteps) {
-  if (!isRecord9(value)) {
+  if (!isRecord10(value)) {
     throw invalidRecord4("invalid_assessment_record", "inventory is not an object");
   }
   const fields = [
@@ -23608,10 +29846,10 @@ function hasActivePlan(record) {
 }
 
 // backend/api/src/adoption/router.ts
-function pathSegments9(url) {
+function pathSegments10(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
-async function readJsonBody6(request) {
+async function readJsonBody8(request) {
   const text = await request.text();
   try {
     return { ok: true, payload: JSON.parse(text) };
@@ -23634,7 +29872,7 @@ function adoptionErrorResponse(error, requestId) {
     requestId
   );
 }
-function malformedJson4(requestId) {
+function malformedJson5(requestId) {
   return jsonResponse(
     400,
     { ok: false, error: "malformed_json", detail: "request body is not valid JSON" },
@@ -23642,14 +29880,14 @@ function malformedJson4(requestId) {
   );
 }
 async function jsonBodyOr(request, requestId) {
-  const body = await readJsonBody6(request);
+  const body = await readJsonBody8(request);
   if (!body.ok) {
-    return { ok: false, response: malformedJson4(requestId) };
+    return { ok: false, response: malformedJson5(requestId) };
   }
   return { ok: true, payload: body.payload };
 }
 async function handleAdoptionRequest(request, url, requestId, options) {
-  const segments = pathSegments9(url);
+  const segments = pathSegments10(url);
   if (segments[0] !== "v1" || segments[1] !== "adoption") {
     return null;
   }
@@ -24817,7 +31055,7 @@ var ArtifactService = class {
 };
 
 // backend/api/src/artifacts/router.ts
-function pathSegments10(url) {
+function pathSegments11(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
 function decodeSegment7(segment) {
@@ -24853,7 +31091,7 @@ function accessDeniedResponse(reason, requestId) {
   );
 }
 async function handleArtifactsRequest(request, url, requestId, options) {
-  const segments = pathSegments10(url);
+  const segments = pathSegments11(url);
   if (segments[0] !== "v1" || segments[1] !== "artifacts") {
     return null;
   }
@@ -25095,7 +31333,7 @@ function isLive(record) {
 function byProjectThenArtifact(a, b2) {
   return a.projectId === b2.projectId ? a.artifactId.localeCompare(b2.artifactId) : a.projectId.localeCompare(b2.projectId);
 }
-function isRecord10(value) {
+function isRecord11(value) {
   if (typeof value !== "object" || value === null) {
     return false;
   }
@@ -25111,7 +31349,7 @@ function decodeRecord(raw, origin) {
   } catch {
     throw new Error(`artifact metadata store: corrupted record file at ${origin}`);
   }
-  if (!isRecord10(parsed)) {
+  if (!isRecord11(parsed)) {
     throw new Error(`artifact metadata store: record file at ${origin} is not a valid row`);
   }
   return parsed;
@@ -25233,10 +31471,10 @@ var FsArtifactMetadataStore = class {
 };
 
 // backend/api/src/reality/router.ts
-function pathSegments11(url) {
+function pathSegments12(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
-async function readJsonBody7(request) {
+async function readJsonBody9(request) {
   const text = await request.text();
   try {
     return { ok: true, payload: JSON.parse(text) };
@@ -25260,7 +31498,7 @@ function decodeSegment8(segment) {
   }
 }
 async function handleRealityRequest(request, url, requestId, options) {
-  const segments = pathSegments11(url);
+  const segments = pathSegments12(url);
   if (segments[0] !== "v1" || segments[1] !== "reality") {
     return null;
   }
@@ -25271,7 +31509,7 @@ async function handleRealityRequest(request, url, requestId, options) {
       if (request.method !== "POST") {
         return methodNotAllowed(requestId, "POST");
       }
-      const body = await readJsonBody7(request);
+      const body = await readJsonBody9(request);
       if (!body.ok) {
         return jsonResponse(
           400,
@@ -25316,7 +31554,7 @@ async function handleRealityRequest(request, url, requestId, options) {
         if (request.method !== "POST") {
           return methodNotAllowed(requestId, "POST");
         }
-        const body = await readJsonBody7(request);
+        const body = await readJsonBody9(request);
         if (!body.ok) {
           return jsonResponse(
             400,
@@ -25849,10 +32087,10 @@ function caseContentDigest(record) {
     })
   );
 }
-function isRecord11(value) {
+function isRecord12(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-function isNonEmptyString6(value) {
+function isNonEmptyString7(value) {
   return typeof value === "string" && value.length > 0;
 }
 function isStringArray3(value) {
@@ -25870,7 +32108,7 @@ function parseCaseLinks(value) {
   if (value === void 0) {
     return { nodeIds: [], evidenceIds: [], captureSessionIds: [] };
   }
-  if (!isRecord11(value)) {
+  if (!isRecord12(value)) {
     throw new CaseError("invalid_case", "links must be an object");
   }
   const nodeIds = value["nodeIds"];
@@ -25895,26 +32133,26 @@ function parseCaseLinks(value) {
   };
 }
 function parseCreateCaseInput(payload) {
-  if (!isRecord11(payload)) {
+  if (!isRecord12(payload)) {
     throw new CaseError("invalid_case", "expected a JSON object");
   }
   const caseId = payload["caseId"];
-  if (!isNonEmptyString6(caseId)) {
+  if (!isNonEmptyString7(caseId)) {
     throw new CaseError("invalid_case_id", "caseId must be a non-empty string");
   }
   validateCaseId(caseId);
   const title = payload["title"];
-  if (!isNonEmptyString6(title)) {
+  if (!isNonEmptyString7(title)) {
     throw new CaseError("invalid_case", "title must be a non-empty string");
   }
   return { caseId, title, links: parseCaseLinks(payload["links"]) };
 }
 function parseAddObservationInput(payload) {
-  if (!isRecord11(payload)) {
+  if (!isRecord12(payload)) {
     throw new CaseError("invalid_observation", "expected a JSON object");
   }
   const statement = payload["statement"];
-  if (!isNonEmptyString6(statement)) {
+  if (!isNonEmptyString7(statement)) {
     throw new CaseError("invalid_statement", "statement must be a non-empty string");
   }
   const claimed = payload["epistemicStatus"];
@@ -25948,11 +32186,11 @@ function parseAddObservationInput(payload) {
   };
 }
 function parseAddHypothesisInput(payload) {
-  if (!isRecord11(payload)) {
+  if (!isRecord12(payload)) {
     throw new CaseError("invalid_hypothesis", "expected a JSON object");
   }
   const statement = payload["statement"];
-  if (!isNonEmptyString6(statement)) {
+  if (!isNonEmptyString7(statement)) {
     throw new CaseError("invalid_statement", "statement must be a non-empty string");
   }
   const epistemicStatus = payload["epistemicStatus"];
@@ -25989,11 +32227,11 @@ function parseAddHypothesisInput(payload) {
   };
 }
 function parseAddMissingEvidenceInput(payload) {
-  if (!isRecord11(payload)) {
+  if (!isRecord12(payload)) {
     throw new CaseError("invalid_missing_evidence", "expected a JSON object");
   }
   const description = payload["description"];
-  if (!isNonEmptyString6(description)) {
+  if (!isNonEmptyString7(description)) {
     throw new CaseError("invalid_missing_evidence", "description must be a non-empty string");
   }
   const kind = payload["kind"];
@@ -26008,7 +32246,7 @@ function parseAddMissingEvidenceInput(payload) {
     );
   }
   const requestedMethod = payload["requestedMethod"];
-  if (requestedMethod !== void 0 && !isNonEmptyString6(requestedMethod)) {
+  if (requestedMethod !== void 0 && !isNonEmptyString7(requestedMethod)) {
     throw new CaseError("invalid_missing_evidence", "requestedMethod must be a non-empty string");
   }
   return {
@@ -26019,11 +32257,11 @@ function parseAddMissingEvidenceInput(payload) {
   };
 }
 function parseSubmitReviewInput(payload) {
-  if (!isRecord11(payload)) {
+  if (!isRecord12(payload)) {
     throw new CaseError("invalid_review", "expected a JSON object");
   }
   const reviewer = payload["reviewer"];
-  if (!isNonEmptyString6(reviewer)) {
+  if (!isNonEmptyString7(reviewer)) {
     throw new CaseError("invalid_review", "reviewer must be a non-empty string");
   }
   const decision = payload["decision"];
@@ -26034,13 +32272,13 @@ function parseSubmitReviewInput(payload) {
     );
   }
   const note = payload["note"];
-  if (!isNonEmptyString6(note)) {
+  if (!isNonEmptyString7(note)) {
     throw new CaseError("invalid_review", "note must be a non-empty string");
   }
   return { reviewer, decision, note };
 }
 function parseWaiveNoteInput(payload) {
-  if (!isRecord11(payload)) {
+  if (!isRecord12(payload)) {
     throw new CaseError("waiver_note_required", "expected { note: string }");
   }
   const note = payload["note"];
@@ -26056,13 +32294,13 @@ function invalid(detail) {
   return new CaseError("invalid_case_record", detail);
 }
 function parseObservation2(value) {
-  if (!isRecord11(value)) throw invalid("observation entry is not an object");
-  if (!isNonEmptyString6(value["observationId"])) throw invalid("observation.observationId");
-  if (!isNonEmptyString6(value["statement"])) throw invalid("observation.statement");
+  if (!isRecord12(value)) throw invalid("observation entry is not an object");
+  if (!isNonEmptyString7(value["observationId"])) throw invalid("observation.observationId");
+  if (!isNonEmptyString7(value["statement"])) throw invalid("observation.statement");
   if (value["epistemicStatus"] !== "OBSERVED") {
     throw invalid("observation.epistemicStatus must be OBSERVED");
   }
-  if (!isNonEmptyString6(value["recordedAt"])) throw invalid("observation.recordedAt");
+  if (!isNonEmptyString7(value["recordedAt"])) throw invalid("observation.recordedAt");
   const evidenceIds = value["evidenceIds"];
   if (!Array.isArray(evidenceIds) || evidenceIds.length === 0 || !isStringArray3(evidenceIds)) {
     throw invalid("observation.evidenceIds must be a non-empty string array");
@@ -26081,14 +32319,14 @@ function parseObservation2(value) {
   };
 }
 function parseHypothesis(value) {
-  if (!isRecord11(value)) throw invalid("hypothesis entry is not an object");
-  if (!isNonEmptyString6(value["hypothesisId"])) throw invalid("hypothesis.hypothesisId");
-  if (!isNonEmptyString6(value["statement"])) throw invalid("hypothesis.statement");
+  if (!isRecord12(value)) throw invalid("hypothesis entry is not an object");
+  if (!isNonEmptyString7(value["hypothesisId"])) throw invalid("hypothesis.hypothesisId");
+  if (!isNonEmptyString7(value["statement"])) throw invalid("hypothesis.statement");
   const epistemicStatus = value["epistemicStatus"];
   if (!vocabularyMember2(HYPOTHESIS_EPISTEMIC_STATUSES, epistemicStatus)) {
     throw invalid("hypothesis.epistemicStatus must be INFERRED or PROPOSED");
   }
-  if (!isNonEmptyString6(value["recordedAt"])) throw invalid("hypothesis.recordedAt");
+  if (!isNonEmptyString7(value["recordedAt"])) throw invalid("hypothesis.recordedAt");
   const confidence = value["confidence"];
   if (!vocabularyMember2(CONFIDENCE_LEVELS, confidence)) throw invalid("hypothesis.confidence");
   const supportingObservationIds = value["supportingObservationIds"];
@@ -26110,9 +32348,9 @@ function parseHypothesis(value) {
   };
 }
 function parseMissingEvidence(value) {
-  if (!isRecord11(value)) throw invalid("missing-evidence entry is not an object");
-  if (!isNonEmptyString6(value["missingId"])) throw invalid("missingEvidence.missingId");
-  if (!isNonEmptyString6(value["description"])) throw invalid("missingEvidence.description");
+  if (!isRecord12(value)) throw invalid("missing-evidence entry is not an object");
+  if (!isNonEmptyString7(value["missingId"])) throw invalid("missingEvidence.missingId");
+  if (!isNonEmptyString7(value["description"])) throw invalid("missingEvidence.description");
   const kind = value["kind"];
   if (!vocabularyMember2(MISSING_EVIDENCE_KINDS, kind)) throw invalid("missingEvidence.kind");
   const status = value["status"];
@@ -26120,11 +32358,11 @@ function parseMissingEvidence(value) {
   const wouldResolve = value["wouldResolve"];
   if (!isStringArray3(wouldResolve)) throw invalid("missingEvidence.wouldResolve");
   const requestedMethod = value["requestedMethod"];
-  if (requestedMethod !== void 0 && !isNonEmptyString6(requestedMethod)) {
+  if (requestedMethod !== void 0 && !isNonEmptyString7(requestedMethod)) {
     throw invalid("missingEvidence.requestedMethod");
   }
   const waiverNote = value["waiverNote"];
-  if (waiverNote !== void 0 && !isNonEmptyString6(waiverNote)) {
+  if (waiverNote !== void 0 && !isNonEmptyString7(waiverNote)) {
     throw invalid("missingEvidence.waiverNote");
   }
   if (status === "waived" && waiverNote === void 0) {
@@ -26141,13 +32379,13 @@ function parseMissingEvidence(value) {
   };
 }
 function parseReview(value) {
-  if (!isRecord11(value)) throw invalid("review is not an object");
-  if (!isNonEmptyString6(value["reviewer"])) throw invalid("review.reviewer");
+  if (!isRecord12(value)) throw invalid("review is not an object");
+  if (!isNonEmptyString7(value["reviewer"])) throw invalid("review.reviewer");
   const decision = value["decision"];
   if (!vocabularyMember2(REVIEW_DECISIONS, decision)) throw invalid("review.decision");
-  if (!isNonEmptyString6(value["note"])) throw invalid("review.note");
-  if (!isNonEmptyString6(value["reviewedAt"])) throw invalid("review.reviewedAt");
-  if (!isNonEmptyString6(value["evidenceStateDigest"])) throw invalid("review.evidenceStateDigest");
+  if (!isNonEmptyString7(value["note"])) throw invalid("review.note");
+  if (!isNonEmptyString7(value["reviewedAt"])) throw invalid("review.reviewedAt");
+  if (!isNonEmptyString7(value["evidenceStateDigest"])) throw invalid("review.evidenceStateDigest");
   return {
     reviewer: value["reviewer"],
     decision,
@@ -26157,12 +32395,12 @@ function parseReview(value) {
   };
 }
 function parseCaseEvent(value) {
-  if (!isRecord11(value)) throw invalid("history entry is not an object");
-  if (!isNonEmptyString6(value["eventId"])) throw invalid("history.eventId");
+  if (!isRecord12(value)) throw invalid("history entry is not an object");
+  if (!isNonEmptyString7(value["eventId"])) throw invalid("history.eventId");
   const eventType = value["eventType"];
   if (!vocabularyMember2(CASE_EVENT_TYPES, eventType)) throw invalid("history.eventType");
-  if (!isNonEmptyString6(value["occurredAt"])) throw invalid("history.occurredAt");
-  if (!isNonEmptyString6(value["recordDigest"])) throw invalid("history.recordDigest");
+  if (!isNonEmptyString7(value["occurredAt"])) throw invalid("history.occurredAt");
+  if (!isNonEmptyString7(value["recordDigest"])) throw invalid("history.recordDigest");
   return {
     eventId: value["eventId"],
     eventType,
@@ -26171,13 +32409,13 @@ function parseCaseEvent(value) {
   };
 }
 function parseCaseRecord(value) {
-  if (!isRecord11(value)) throw invalid("case record is not a JSON object");
-  if (!isNonEmptyString6(value["caseId"])) throw invalid("caseId");
-  if (!isNonEmptyString6(value["title"])) throw invalid("title");
+  if (!isRecord12(value)) throw invalid("case record is not a JSON object");
+  if (!isNonEmptyString7(value["caseId"])) throw invalid("caseId");
+  if (!isNonEmptyString7(value["title"])) throw invalid("title");
   const status = value["status"];
   if (!vocabularyMember2(CASE_STATUSES, status)) throw invalid("status");
-  if (!isNonEmptyString6(value["createdAt"])) throw invalid("createdAt");
-  if (!isNonEmptyString6(value["updatedAt"])) throw invalid("updatedAt");
+  if (!isNonEmptyString7(value["createdAt"])) throw invalid("createdAt");
+  if (!isNonEmptyString7(value["updatedAt"])) throw invalid("updatedAt");
   const observations = value["observations"];
   if (!Array.isArray(observations)) throw invalid("observations must be an array");
   const hypotheses = value["hypotheses"];
@@ -26539,10 +32777,10 @@ var CaseService = class {
 };
 
 // backend/api/src/cases/router.ts
-function pathSegments12(url) {
+function pathSegments13(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
-async function readJsonBody8(request) {
+async function readJsonBody10(request) {
   const text = await request.text();
   try {
     return { ok: true, payload: JSON.parse(text) };
@@ -26565,7 +32803,7 @@ function caseErrorResponse(error, requestId) {
     requestId
   );
 }
-function malformedJson5(requestId) {
+function malformedJson6(requestId) {
   return jsonResponse(
     400,
     { ok: false, error: "malformed_json", detail: "request body is not valid JSON" },
@@ -26573,7 +32811,7 @@ function malformedJson5(requestId) {
   );
 }
 async function handleCasesRequest(request, url, requestId, options) {
-  const segments = pathSegments12(url);
+  const segments = pathSegments13(url);
   if (segments[0] !== "v1" || segments[1] !== "cases") {
     return null;
   }
@@ -26581,9 +32819,9 @@ async function handleCasesRequest(request, url, requestId, options) {
   try {
     if (segments.length === 2) {
       if (request.method === "POST") {
-        const body = await readJsonBody8(request);
+        const body = await readJsonBody10(request);
         if (!body.ok) {
-          return malformedJson5(requestId);
+          return malformedJson6(requestId);
         }
         const input = parseCreateCaseInput(body.payload);
         const record = await service.createCase(input);
@@ -26624,9 +32862,9 @@ async function handleCasesRequest(request, url, requestId, options) {
       if (request.method !== "POST") {
         return methodNotAllowed(requestId, "POST");
       }
-      const body = await readJsonBody8(request);
+      const body = await readJsonBody10(request);
       if (!body.ok) {
-        return malformedJson5(requestId);
+        return malformedJson6(requestId);
       }
       const observation = await service.addObservation(
         caseId,
@@ -26639,9 +32877,9 @@ async function handleCasesRequest(request, url, requestId, options) {
       if (request.method !== "POST") {
         return methodNotAllowed(requestId, "POST");
       }
-      const body = await readJsonBody8(request);
+      const body = await readJsonBody10(request);
       if (!body.ok) {
-        return malformedJson5(requestId);
+        return malformedJson6(requestId);
       }
       const hypothesis = await service.addHypothesis(
         caseId,
@@ -26654,9 +32892,9 @@ async function handleCasesRequest(request, url, requestId, options) {
       if (request.method !== "POST") {
         return methodNotAllowed(requestId, "POST");
       }
-      const body = await readJsonBody8(request);
+      const body = await readJsonBody10(request);
       if (!body.ok) {
-        return malformedJson5(requestId);
+        return malformedJson6(requestId);
       }
       const missing = await service.addMissingEvidence(
         caseId,
@@ -26686,9 +32924,9 @@ async function handleCasesRequest(request, url, requestId, options) {
         logger.info("case_missing_evidence_collected", { requestId, caseId, missingId });
         return jsonResponse(200, { ok: true, missingEvidence: missing2 }, requestId);
       }
-      const body = await readJsonBody8(request);
+      const body = await readJsonBody10(request);
       if (!body.ok) {
-        return malformedJson5(requestId);
+        return malformedJson6(requestId);
       }
       const missing = await service.waiveEvidence(caseId, missingId, parseWaiveNoteInput(body.payload));
       logger.info("case_missing_evidence_waived", { requestId, caseId, missingId });
@@ -26698,9 +32936,9 @@ async function handleCasesRequest(request, url, requestId, options) {
       if (request.method !== "POST") {
         return methodNotAllowed(requestId, "POST");
       }
-      const body = await readJsonBody8(request);
+      const body = await readJsonBody10(request);
       if (!body.ok) {
-        return malformedJson5(requestId);
+        return malformedJson6(requestId);
       }
       const review = await service.submitReview(caseId, parseSubmitReviewInput(body.payload));
       logger.info("case_review_submitted", {
@@ -26909,10 +33147,10 @@ function summarizeScenario(record) {
 var ISO_UTC5 = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 var CONTENT_ID5 = /^[0-9a-f]{64}$/;
 var VERSION_ID3 = /^v\d{3,}$/;
-function isRecord12(value) {
+function isRecord13(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-function isNonEmptyString7(value) {
+function isNonEmptyString8(value) {
   return typeof value === "string" && value.length > 0;
 }
 function isId2(value) {
@@ -26949,25 +33187,25 @@ function validateBaselineVersionId(versionId) {
   }
 }
 function parseCreateScenarioInput(payload) {
-  if (!isRecord12(payload)) {
+  if (!isRecord13(payload)) {
     throw new InterventionError("invalid_scenario", "expected a JSON object");
   }
   const scenarioId = payload["scenarioId"];
-  if (!isNonEmptyString7(scenarioId)) {
+  if (!isNonEmptyString8(scenarioId)) {
     throw new InterventionError("invalid_scenario_id", "scenarioId must be a non-empty string");
   }
   validateScenarioId(scenarioId);
   const projectId = payload["projectId"];
-  if (!isNonEmptyString7(projectId)) {
+  if (!isNonEmptyString8(projectId)) {
     throw new InterventionError("invalid_project_id", "projectId must be a non-empty string");
   }
   validateProjectId2(projectId);
   const title = payload["title"];
-  if (!isNonEmptyString7(title)) {
+  if (!isNonEmptyString8(title)) {
     throw new InterventionError("invalid_scenario", "title must be a non-empty string");
   }
   const baselineVersionId = payload["baselineVersionId"];
-  if (!isNonEmptyString7(baselineVersionId)) {
+  if (!isNonEmptyString8(baselineVersionId)) {
     throw new InterventionError(
       "invalid_version_id",
       "baselineVersionId must be a non-empty vNNN version id"
@@ -26977,7 +33215,7 @@ function parseCreateScenarioInput(payload) {
   return { scenarioId, projectId, title, baselineVersionId };
 }
 function parseStepProvenance(value) {
-  if (!isRecord12(value)) {
+  if (!isRecord13(value)) {
     throw new InterventionError(
       "invalid_provenance",
       "provenance must be { evidenceIds: string[], derivationNote?: string }"
@@ -26991,7 +33229,7 @@ function parseStepProvenance(value) {
     );
   }
   const derivationNote = value["derivationNote"];
-  if (derivationNote !== void 0 && !isNonEmptyString7(derivationNote)) {
+  if (derivationNote !== void 0 && !isNonEmptyString8(derivationNote)) {
     throw new InterventionError(
       "invalid_provenance",
       "provenance.derivationNote must be a non-empty string"
@@ -27010,7 +33248,7 @@ function parseStepProvenance(value) {
   };
 }
 function parseStepProperty(value, where) {
-  if (!isRecord12(value)) {
+  if (!isRecord13(value)) {
     throw new InterventionError("invalid_property", `${where}: expected an object`);
   }
   const key = value["key"];
@@ -27046,19 +33284,19 @@ function parseStepProperties(value, where) {
   return value.map((entry, index) => parseStepProperty(entry, `${where}[${String(index)}]`));
 }
 function parseGeometryRef(value, where) {
-  if (!isRecord12(value)) {
+  if (!isRecord13(value)) {
     throw new InterventionError("invalid_step_payload", `${where}: expected an object`);
   }
   const kind = value["kind"];
   const ref = value["ref"];
-  if (!isNonEmptyString7(kind) || !isNonEmptyString7(ref)) {
+  if (!isNonEmptyString8(kind) || !isNonEmptyString8(ref)) {
     throw new InterventionError(
       "invalid_step_payload",
       `${where}: kind and ref must be non-empty strings (carried verbatim)`
     );
   }
   const sourceArtifactId = value["sourceArtifactId"];
-  if (sourceArtifactId !== void 0 && !isNonEmptyString7(sourceArtifactId)) {
+  if (sourceArtifactId !== void 0 && !isNonEmptyString8(sourceArtifactId)) {
     throw new InterventionError("invalid_step_payload", `${where}: sourceArtifactId must be text`);
   }
   return {
@@ -27068,12 +33306,12 @@ function parseGeometryRef(value, where) {
   };
 }
 function parseUnitDeclaration(value, where) {
-  if (!isRecord12(value)) {
+  if (!isRecord13(value)) {
     throw new InterventionError("invalid_step_payload", `${where}: expected an object`);
   }
   const linear = value["linear"];
   const angular = value["angular"];
-  if (!isNonEmptyString7(linear) || !isNonEmptyString7(angular)) {
+  if (!isNonEmptyString8(linear) || !isNonEmptyString8(angular)) {
     throw new InterventionError(
       "invalid_step_payload",
       `${where}: linear and angular must be non-empty unit strings`
@@ -27082,11 +33320,11 @@ function parseUnitDeclaration(value, where) {
   return { linear, angular };
 }
 function parseStepNodePayload(value, where) {
-  if (!isRecord12(value)) {
+  if (!isRecord13(value)) {
     throw new InterventionError("invalid_step_payload", `${where}: expected an object`);
   }
   const kind = value["kind"];
-  if (!isNonEmptyString7(kind)) {
+  if (!isNonEmptyString8(kind)) {
     throw new InterventionError("invalid_step_payload", `${where}: kind must be a non-empty string`);
   }
   const properties = value["properties"];
@@ -27109,7 +33347,7 @@ function parseStepNodePayload(value, where) {
   };
 }
 function parseAddStepInput(payload) {
-  if (!isRecord12(payload)) {
+  if (!isRecord13(payload)) {
     throw new InterventionError("invalid_step", "expected a JSON object");
   }
   const targetNodeId = payload["targetNodeId"];
@@ -27121,20 +33359,20 @@ function parseAddStepInput(payload) {
     throw new InterventionError("invalid_step", `kind must be one of ${STEP_KINDS.join("|")}`);
   }
   const rationale = payload["rationale"];
-  if (rationale !== void 0 && !isNonEmptyString7(rationale)) {
+  if (rationale !== void 0 && !isNonEmptyString8(rationale)) {
     throw new InterventionError("invalid_step", "rationale must be a non-empty string");
   }
   const provenance = parseStepProvenance(payload["provenance"]);
   let change;
   if (kind === "property_change") {
     const property = payload["property"];
-    if (!isRecord12(property)) {
+    if (!isRecord13(property)) {
       throw new InterventionError("invalid_step_payload", "property_change requires { property }");
     }
     change = { kind, property: parseStepProperty(property, "property") };
   } else if (kind === "element_addition") {
     const node = payload["node"];
-    if (!isRecord12(node)) {
+    if (!isRecord13(node)) {
       throw new InterventionError("invalid_step_payload", "element_addition requires { node }");
     }
     const parentNodeId = payload["parentNodeId"];
@@ -27173,7 +33411,7 @@ function parseAddStepInput(payload) {
     };
   } else if (kind === "proposed_removal") {
     const reason = payload["reason"];
-    if (!isNonEmptyString7(reason)) {
+    if (!isNonEmptyString8(reason)) {
       throw new InterventionError(
         "invalid_step_payload",
         "proposed_removal requires a non-empty reason (a removal is never silent)"
@@ -27182,7 +33420,7 @@ function parseAddStepInput(payload) {
     change = { kind, reason };
   } else {
     const text = payload["text"];
-    if (!isNonEmptyString7(text)) {
+    if (!isNonEmptyString8(text)) {
       throw new InterventionError("invalid_step_payload", "note requires a non-empty text");
     }
     change = { kind, text };
@@ -27196,7 +33434,7 @@ function parseAddStepInput(payload) {
   };
 }
 function parseApprovalReferenceInput(payload) {
-  if (!isRecord12(payload)) {
+  if (!isRecord13(payload)) {
     throw new InterventionError("invalid_approval_reference", "expected a JSON object");
   }
   const caseId = payload["caseId"];
@@ -27204,20 +33442,20 @@ function parseApprovalReferenceInput(payload) {
     throw new InterventionError("invalid_approval_reference", "caseId must be a non-empty string");
   }
   const reviewDecision = payload["reviewDecision"];
-  if (!isNonEmptyString7(reviewDecision)) {
+  if (!isNonEmptyString8(reviewDecision)) {
     throw new InterventionError(
       "invalid_approval_reference",
       "reviewDecision must be a non-empty string (recorded VERBATIM \u2014 the vocabulary is the Case domain's)"
     );
   }
   const reviewedAt = payload["reviewedAt"];
-  if (!isNonEmptyString7(reviewedAt)) {
+  if (!isNonEmptyString8(reviewedAt)) {
     throw new InterventionError("invalid_approval_reference", "reviewedAt must be a non-empty string");
   }
   return { caseId, reviewDecision, reviewedAt };
 }
 function parseStatusTransitionInput(payload) {
-  if (!isRecord12(payload)) {
+  if (!isRecord13(payload)) {
     throw new InterventionError("invalid_status_transition", "expected { status: string }");
   }
   const status = payload["status"];
@@ -27249,9 +33487,9 @@ function parseStoredUnitDeclaration(value, where) {
   return stored(() => parseUnitDeclaration(value, where), where);
 }
 function parseStoredProvenanceRecord(value) {
-  if (!isRecord12(value)) throw invalidRecord5("provenance record is not an object");
+  if (!isRecord13(value)) throw invalidRecord5("provenance record is not an object");
   const role = value["role"];
-  if (!isNonEmptyString7(role)) throw invalidRecord5("provenance.role");
+  if (!isNonEmptyString8(role)) throw invalidRecord5("provenance.role");
   const recordedAt = value["recordedAt"];
   if (!isIso3(recordedAt)) throw invalidRecord5("provenance.recordedAt");
   const evidenceId = value["evidenceId"];
@@ -27259,11 +33497,11 @@ function parseStoredProvenanceRecord(value) {
     throw invalidRecord5("provenance.evidenceId must be a 64-hex content address");
   }
   const sourceArtifactId = value["sourceArtifactId"];
-  if (sourceArtifactId !== void 0 && !isNonEmptyString7(sourceArtifactId)) {
+  if (sourceArtifactId !== void 0 && !isNonEmptyString8(sourceArtifactId)) {
     throw invalidRecord5("provenance.sourceArtifactId");
   }
   const derivationNote = value["derivationNote"];
-  if (derivationNote !== void 0 && !isNonEmptyString7(derivationNote)) {
+  if (derivationNote !== void 0 && !isNonEmptyString8(derivationNote)) {
     throw invalidRecord5("provenance.derivationNote");
   }
   return {
@@ -27279,7 +33517,7 @@ function parseStoredProvenanceList(value, where) {
   return value.map(parseStoredProvenanceRecord);
 }
 function parseStoredProperty(value, where) {
-  if (!isRecord12(value)) throw invalidRecord5(`${where} is not an object`);
+  if (!isRecord13(value)) throw invalidRecord5(`${where} is not an object`);
   const key = value["key"];
   if (!isId2(key)) throw invalidRecord5(`${where}.key`);
   const propertyValue2 = value["value"];
@@ -27287,7 +33525,7 @@ function parseStoredProperty(value, where) {
     throw invalidRecord5(`${where}.value`);
   }
   const unit = value["unit"];
-  if (unit !== void 0 && !isNonEmptyString7(unit)) throw invalidRecord5(`${where}.unit`);
+  if (unit !== void 0 && !isNonEmptyString8(unit)) throw invalidRecord5(`${where}.unit`);
   const epistemicStatus = value["epistemicStatus"];
   if (epistemicStatus !== "PROPOSED") {
     throw new InterventionError(
@@ -27307,11 +33545,11 @@ function parseStoredProperty(value, where) {
   };
 }
 function parseStoredNode(value, where) {
-  if (!isRecord12(value)) throw invalidRecord5(`${where} is not an object`);
+  if (!isRecord13(value)) throw invalidRecord5(`${where} is not an object`);
   const nodeId = value["nodeId"];
   if (!isId2(nodeId)) throw invalidRecord5(`${where}.nodeId`);
   const kind = value["kind"];
-  if (!isNonEmptyString7(kind)) throw invalidRecord5(`${where}.kind`);
+  if (!isNonEmptyString8(kind)) throw invalidRecord5(`${where}.kind`);
   const epistemicStatus = value["epistemicStatus"];
   if (epistemicStatus !== "PROPOSED") {
     throw new InterventionError(
@@ -27342,7 +33580,7 @@ function parseStoredNode(value, where) {
   };
 }
 function parseStoredStateNode(value, where) {
-  if (!isRecord12(value)) throw invalidRecord5(`${where} is not an object`);
+  if (!isRecord13(value)) throw invalidRecord5(`${where} is not an object`);
   const nodeId = value["nodeId"];
   if (!isId2(nodeId)) throw invalidRecord5(`${where}.nodeId`);
   const origin = value["origin"];
@@ -27359,14 +33597,14 @@ function parseStoredStateNode(value, where) {
   };
 }
 function parseStoredRelationship(value, where) {
-  if (!isRecord12(value)) throw invalidRecord5(`${where} is not an object`);
+  if (!isRecord13(value)) throw invalidRecord5(`${where} is not an object`);
   const relationshipId = value["relationshipId"];
   if (!isId2(relationshipId)) throw invalidRecord5(`${where}.relationshipId`);
   const fromNodeId = value["fromNodeId"];
   const toNodeId = value["toNodeId"];
   if (!isId2(fromNodeId) || !isId2(toNodeId)) throw invalidRecord5(`${where}.endpoints`);
   const kind = value["kind"];
-  if (!isNonEmptyString7(kind)) throw invalidRecord5(`${where}.kind`);
+  if (!isNonEmptyString8(kind)) throw invalidRecord5(`${where}.kind`);
   return {
     relationshipId,
     fromNodeId,
@@ -27376,7 +33614,7 @@ function parseStoredRelationship(value, where) {
   };
 }
 function parseStoredStateRelationship(value, where) {
-  if (!isRecord12(value)) throw invalidRecord5(`${where} is not an object`);
+  if (!isRecord13(value)) throw invalidRecord5(`${where} is not an object`);
   const relationshipId = value["relationshipId"];
   if (!isId2(relationshipId)) throw invalidRecord5(`${where}.relationshipId`);
   const origin = value["origin"];
@@ -27390,13 +33628,13 @@ function parseStoredStateRelationship(value, where) {
   };
 }
 function parseStoredTombstone(value, where) {
-  if (!isRecord12(value)) throw invalidRecord5(`${where} is not an object`);
+  if (!isRecord13(value)) throw invalidRecord5(`${where} is not an object`);
   const nodeId = value["nodeId"];
   if (!isId2(nodeId)) throw invalidRecord5(`${where}.nodeId`);
   const reason = value["reason"];
-  if (!isNonEmptyString7(reason)) throw invalidRecord5(`${where}.reason`);
+  if (!isNonEmptyString8(reason)) throw invalidRecord5(`${where}.reason`);
   const proposedByStepId = value["proposedByStepId"];
-  if (!isNonEmptyString7(proposedByStepId)) throw invalidRecord5(`${where}.proposedByStepId`);
+  if (!isNonEmptyString8(proposedByStepId)) throw invalidRecord5(`${where}.proposedByStepId`);
   const severedRelationshipIds = value["severedRelationshipIds"];
   if (!isStringArray4(severedRelationshipIds)) {
     throw invalidRecord5(`${where}.severedRelationshipIds`);
@@ -27404,7 +33642,7 @@ function parseStoredTombstone(value, where) {
   return { nodeId, reason, proposedByStepId, severedRelationshipIds };
 }
 function parseStoredState(value, where) {
-  if (!isRecord12(value)) throw invalidRecord5(`${where} is not an object`);
+  if (!isRecord13(value)) throw invalidRecord5(`${where} is not an object`);
   const stateId = value["stateId"];
   if (!isContentId6(stateId)) throw invalidRecord5(`${where}.stateId must be a 64-hex content id`);
   const scenarioId = value["scenarioId"];
@@ -27414,7 +33652,7 @@ function parseStoredState(value, where) {
     throw invalidRecord5(`${where}.stateIndex must be a non-negative integer`);
   }
   const baselineVersionId = value["baselineVersionId"];
-  if (!isNonEmptyString7(baselineVersionId)) throw invalidRecord5(`${where}.baselineVersionId`);
+  if (!isNonEmptyString8(baselineVersionId)) throw invalidRecord5(`${where}.baselineVersionId`);
   const appliedStepIds = value["appliedStepIds"];
   if (!isStringArray4(appliedStepIds)) throw invalidRecord5(`${where}.appliedStepIds`);
   const nodes = value["nodes"];
@@ -27444,9 +33682,9 @@ function parseStoredState(value, where) {
   };
 }
 function parseStoredStep(value, where) {
-  if (!isRecord12(value)) throw invalidRecord5(`${where} is not an object`);
+  if (!isRecord13(value)) throw invalidRecord5(`${where} is not an object`);
   const stepId = value["stepId"];
-  if (!isNonEmptyString7(stepId)) throw invalidRecord5(`${where}.stepId`);
+  if (!isNonEmptyString8(stepId)) throw invalidRecord5(`${where}.stepId`);
   const stepIndex = value["stepIndex"];
   if (typeof stepIndex !== "number" || !Number.isInteger(stepIndex) || stepIndex < 1) {
     throw invalidRecord5(`${where}.stepIndex must be a positive integer`);
@@ -27458,11 +33696,11 @@ function parseStoredStep(value, where) {
   const recordedAt = value["recordedAt"];
   if (!isIso3(recordedAt)) throw invalidRecord5(`${where}.recordedAt`);
   const rationale = value["rationale"];
-  if (rationale !== void 0 && !isNonEmptyString7(rationale)) {
+  if (rationale !== void 0 && !isNonEmptyString8(rationale)) {
     throw invalidRecord5(`${where}.rationale`);
   }
   const change = value["change"];
-  if (!isRecord12(change)) throw invalidRecord5(`${where}.change`);
+  if (!isRecord13(change)) throw invalidRecord5(`${where}.change`);
   const parsed = stored(
     () => parseAddStepInput({
       kind,
@@ -27492,7 +33730,7 @@ function parseStoredStep(value, where) {
   };
 }
 function parseStoredTransition(value, where) {
-  if (!isRecord12(value)) throw invalidRecord5(`${where} is not an object`);
+  if (!isRecord13(value)) throw invalidRecord5(`${where} is not an object`);
   const status = value["status"];
   if (!vocabularyMember3(SCENARIO_STATUSES, status)) throw invalidRecord5(`${where}.status`);
   const at = value["at"];
@@ -27500,25 +33738,25 @@ function parseStoredTransition(value, where) {
   return { status, at };
 }
 function parseStoredApprovalReference(value) {
-  if (!isRecord12(value)) throw invalidRecord5("approvalReference is not an object");
+  if (!isRecord13(value)) throw invalidRecord5("approvalReference is not an object");
   const caseId = value["caseId"];
   if (!isId2(caseId)) throw invalidRecord5("approvalReference.caseId");
   const reviewDecision = value["reviewDecision"];
-  if (!isNonEmptyString7(reviewDecision)) throw invalidRecord5("approvalReference.reviewDecision");
+  if (!isNonEmptyString8(reviewDecision)) throw invalidRecord5("approvalReference.reviewDecision");
   const reviewedAt = value["reviewedAt"];
-  if (!isNonEmptyString7(reviewedAt)) throw invalidRecord5("approvalReference.reviewedAt");
+  if (!isNonEmptyString8(reviewedAt)) throw invalidRecord5("approvalReference.reviewedAt");
   return { caseId, reviewDecision, reviewedAt };
 }
 function parseInterventionScenarioRecord(value) {
-  if (!isRecord12(value)) throw invalidRecord5("scenario record is not a JSON object");
+  if (!isRecord13(value)) throw invalidRecord5("scenario record is not a JSON object");
   const scenarioId = value["scenarioId"];
   if (!isId2(scenarioId)) throw invalidRecord5("scenarioId");
   const projectId = value["projectId"];
   if (!isId2(projectId)) throw invalidRecord5("projectId");
   const title = value["title"];
-  if (!isNonEmptyString7(title)) throw invalidRecord5("title");
+  if (!isNonEmptyString8(title)) throw invalidRecord5("title");
   const baselineVersionId = value["baselineVersionId"];
-  if (!isNonEmptyString7(baselineVersionId)) throw invalidRecord5("baselineVersionId");
+  if (!isNonEmptyString8(baselineVersionId)) throw invalidRecord5("baselineVersionId");
   validateBaselineVersionId(baselineVersionId);
   const createdAt = value["createdAt"];
   if (!isIso3(createdAt)) throw invalidRecord5("createdAt");
@@ -28139,10 +34377,10 @@ var InterventionService = class {
 };
 
 // backend/api/src/intervention/router.ts
-function pathSegments13(url) {
+function pathSegments14(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
-async function readJsonBody9(request) {
+async function readJsonBody11(request) {
   const text = await request.text();
   try {
     return { ok: true, payload: JSON.parse(text) };
@@ -28165,7 +34403,7 @@ function interventionErrorResponse(error, requestId) {
     requestId
   );
 }
-function malformedJson6(requestId) {
+function malformedJson7(requestId) {
   return jsonResponse(
     400,
     { ok: false, error: "malformed_json", detail: "request body is not valid JSON" },
@@ -28173,7 +34411,7 @@ function malformedJson6(requestId) {
   );
 }
 async function handleInterventionRequest(request, url, requestId, options) {
-  const segments = pathSegments13(url);
+  const segments = pathSegments14(url);
   if (segments[0] !== "v1" || segments[1] !== "interventions") {
     return null;
   }
@@ -28181,9 +34419,9 @@ async function handleInterventionRequest(request, url, requestId, options) {
   try {
     if (segments.length === 2) {
       if (request.method === "POST") {
-        const body = await readJsonBody9(request);
+        const body = await readJsonBody11(request);
         if (!body.ok) {
-          return malformedJson6(requestId);
+          return malformedJson7(requestId);
         }
         const record = await service.createScenario(parseCreateScenarioInput(body.payload));
         logger.info("scenario_created", {
@@ -28231,9 +34469,9 @@ async function handleInterventionRequest(request, url, requestId, options) {
       if (request.method !== "POST") {
         return methodNotAllowed(requestId, "POST");
       }
-      const body = await readJsonBody9(request);
+      const body = await readJsonBody11(request);
       if (!body.ok) {
-        return malformedJson6(requestId);
+        return malformedJson7(requestId);
       }
       const { step, state } = await service.addStep(
         scenarioId,
@@ -28290,9 +34528,9 @@ async function handleInterventionRequest(request, url, requestId, options) {
       if (request.method !== "POST") {
         return methodNotAllowed(requestId, "POST");
       }
-      const body = await readJsonBody9(request);
+      const body = await readJsonBody11(request);
       if (!body.ok) {
-        return malformedJson6(requestId);
+        return malformedJson7(requestId);
       }
       const record = await service.recordApprovalReference(
         scenarioId,
@@ -28309,9 +34547,9 @@ async function handleInterventionRequest(request, url, requestId, options) {
       if (request.method !== "POST") {
         return methodNotAllowed(requestId, "POST");
       }
-      const body = await readJsonBody9(request);
+      const body = await readJsonBody11(request);
       if (!body.ok) {
-        return malformedJson6(requestId);
+        return malformedJson7(requestId);
       }
       const record = await service.transitionStatus(
         scenarioId,
@@ -28541,10 +34779,10 @@ function executionContentDigest(record) {
 }
 var ISO_UTC6 = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 var CONTENT_ID6 = /^[0-9a-f]{64}$/;
-function isRecord13(value) {
+function isRecord14(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-function isNonEmptyString8(value) {
+function isNonEmptyString9(value) {
   return typeof value === "string" && value.length > 0;
 }
 function isIso4(value) {
@@ -28596,21 +34834,21 @@ function validateScenarioRefId(scenarioId) {
   }
 }
 function parseRecordExecutionInput(payload) {
-  if (!isRecord13(payload)) {
+  if (!isRecord14(payload)) {
     throw new ExecutionError("invalid_execution", "expected a JSON object");
   }
   const executionRecordId = payload["executionRecordId"];
-  if (!isNonEmptyString8(executionRecordId)) {
+  if (!isNonEmptyString9(executionRecordId)) {
     throw new ExecutionError("invalid_execution_id", "executionRecordId must be a non-empty string");
   }
   validateExecutionRecordId(executionRecordId);
   const caseId = payload["caseId"];
-  if (!isNonEmptyString8(caseId)) {
+  if (!isNonEmptyString9(caseId)) {
     throw new ExecutionError("invalid_execution", "caseId must be a non-empty string");
   }
   validateCaseRefId(caseId);
   const scenarioId = payload["scenarioId"];
-  if (!isNonEmptyString8(scenarioId)) {
+  if (!isNonEmptyString9(scenarioId)) {
     throw new ExecutionError("invalid_execution", "scenarioId must be a non-empty string");
   }
   validateScenarioRefId(scenarioId);
@@ -28655,16 +34893,16 @@ function parseRecordExecutionInput(payload) {
   };
 }
 function parseRecordOutcomeInput(payload) {
-  if (!isRecord13(payload)) {
+  if (!isRecord14(payload)) {
     throw new ExecutionError("invalid_outcome", "expected a JSON object");
   }
   const caseId = payload["caseId"];
-  if (!isNonEmptyString8(caseId)) {
+  if (!isNonEmptyString9(caseId)) {
     throw new ExecutionError("invalid_outcome", "caseId must be a non-empty string");
   }
   validateCaseRefId(caseId);
   const statement = payload["statement"];
-  if (!isNonEmptyString8(statement)) {
+  if (!isNonEmptyString9(statement)) {
     throw new ExecutionError("invalid_statement", "statement must be a non-empty string");
   }
   const claimed = payload["epistemicStatus"];
@@ -28695,8 +34933,8 @@ function invalidRecord6(detail) {
   return new ExecutionError("invalid_execution_record", detail);
 }
 function parseStoredStateTransition(value, record) {
-  if (!isRecord13(value)) throw invalidRecord6("stateTransition is not an object");
-  if (!isNonEmptyString8(value["scenarioId"])) throw invalidRecord6("stateTransition.scenarioId");
+  if (!isRecord14(value)) throw invalidRecord6("stateTransition is not an object");
+  if (!isNonEmptyString9(value["scenarioId"])) throw invalidRecord6("stateTransition.scenarioId");
   if (!isContentId7(value["stateId"])) throw invalidRecord6("stateTransition.stateId");
   if (value["fromStatus"] !== "PROPOSED") {
     throw invalidRecord6("stateTransition.fromStatus must be PROPOSED");
@@ -28704,7 +34942,7 @@ function parseStoredStateTransition(value, record) {
   if (value["toStatus"] !== "EXECUTED") {
     throw invalidRecord6("stateTransition.toStatus must be EXECUTED");
   }
-  if (!isNonEmptyString8(value["executionRecordId"])) {
+  if (!isNonEmptyString9(value["executionRecordId"])) {
     throw invalidRecord6("stateTransition.executionRecordId");
   }
   const evidenceIds = value["evidenceIds"];
@@ -28732,9 +34970,9 @@ function parseStoredStateTransition(value, record) {
   };
 }
 function parseStoredOutcome(value, record) {
-  if (!isRecord13(value)) throw invalidRecord6("outcome entry is not an object");
-  if (!isNonEmptyString8(value["outcomeId"])) throw invalidRecord6("outcome.outcomeId");
-  if (!isNonEmptyString8(value["statement"])) throw invalidRecord6("outcome.statement");
+  if (!isRecord14(value)) throw invalidRecord6("outcome entry is not an object");
+  if (!isNonEmptyString9(value["outcomeId"])) throw invalidRecord6("outcome.outcomeId");
+  if (!isNonEmptyString9(value["statement"])) throw invalidRecord6("outcome.statement");
   if (value["epistemicStatus"] !== "OBSERVED") {
     throw invalidRecord6("outcome.epistemicStatus must be OBSERVED");
   }
@@ -28773,8 +35011,8 @@ function parseStoredOutcome(value, record) {
   };
 }
 function parseStoredEvent4(value) {
-  if (!isRecord13(value)) throw invalidRecord6("history entry is not an object");
-  if (!isNonEmptyString8(value["eventId"])) throw invalidRecord6("history.eventId");
+  if (!isRecord14(value)) throw invalidRecord6("history entry is not an object");
+  if (!isNonEmptyString9(value["eventId"])) throw invalidRecord6("history.eventId");
   const eventType = value["eventType"];
   if (eventType !== "execution_recorded" && eventType !== "outcome_recorded") {
     throw invalidRecord6("history.eventType");
@@ -28791,13 +35029,13 @@ function parseStoredEvent4(value) {
   };
 }
 function parseExecutionRecord(value) {
-  if (!isRecord13(value)) throw invalidRecord6("execution record is not a JSON object");
-  if (!isNonEmptyString8(value["executionRecordId"])) {
+  if (!isRecord14(value)) throw invalidRecord6("execution record is not a JSON object");
+  if (!isNonEmptyString9(value["executionRecordId"])) {
     throw invalidRecord6("executionRecordId");
   }
   validateExecutionRecordId(value["executionRecordId"]);
-  if (!isNonEmptyString8(value["caseId"])) throw invalidRecord6("caseId");
-  if (!isNonEmptyString8(value["scenarioId"])) throw invalidRecord6("scenarioId");
+  if (!isNonEmptyString9(value["caseId"])) throw invalidRecord6("caseId");
+  if (!isNonEmptyString9(value["scenarioId"])) throw invalidRecord6("scenarioId");
   if (!isContentId7(value["stateId"])) {
     throw invalidRecord6("stateId must be a 64-hex content id");
   }
@@ -29253,10 +35491,10 @@ var ExecutionService = class {
 };
 
 // backend/api/src/execution/router.ts
-function pathSegments14(url) {
+function pathSegments15(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
-async function readJsonBody10(request) {
+async function readJsonBody12(request) {
   const text = await request.text();
   try {
     return { ok: true, payload: JSON.parse(text) };
@@ -29279,7 +35517,7 @@ function executionErrorResponse(error, requestId) {
     requestId
   );
 }
-function malformedJson7(requestId) {
+function malformedJson8(requestId) {
   return jsonResponse(
     400,
     { ok: false, error: "malformed_json", detail: "request body is not valid JSON" },
@@ -29287,7 +35525,7 @@ function malformedJson7(requestId) {
   );
 }
 async function handleExecutionRequest(request, url, requestId, options) {
-  const segments = pathSegments14(url);
+  const segments = pathSegments15(url);
   if (segments[0] !== "v1" || segments[1] !== "executions") {
     return null;
   }
@@ -29295,9 +35533,9 @@ async function handleExecutionRequest(request, url, requestId, options) {
   try {
     if (segments.length === 2) {
       if (request.method === "POST") {
-        const body = await readJsonBody10(request);
+        const body = await readJsonBody12(request);
         if (!body.ok) {
-          return malformedJson7(requestId);
+          return malformedJson8(requestId);
         }
         const record = await service.recordExecution(parseRecordExecutionInput(body.payload));
         logger.info("execution_recorded", {
@@ -29398,9 +35636,9 @@ async function handleExecutionRequest(request, url, requestId, options) {
       if (request.method !== "POST") {
         return methodNotAllowed(requestId, "POST");
       }
-      const body = await readJsonBody10(request);
+      const body = await readJsonBody12(request);
       if (!body.ok) {
-        return malformedJson7(requestId);
+        return malformedJson8(requestId);
       }
       const outcome = await service.recordOutcome(
         executionRecordId,
@@ -29663,10 +35901,10 @@ function propagateCostUncertainty(amount, rate, quantitySigma) {
 var ISO_UTC7 = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 var CONTENT_ID7 = /^[0-9a-f]{64}$/;
 var CURRENCY_MAX = 16;
-function isRecord14(value) {
+function isRecord15(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
-function isNonEmptyString9(value) {
+function isNonEmptyString10(value) {
   return typeof value === "string" && value.length > 0;
 }
 function isIso5(value) {
@@ -29697,7 +35935,7 @@ function validateImportRefId(importId) {
   }
 }
 function parseRates(value) {
-  if (!isRecord14(value)) {
+  if (!isRecord15(value)) {
     throw new ImpactError(
       "invalid_rate_input",
       "rates must be an object keyed by BOQ mapping entry id"
@@ -29705,13 +35943,13 @@ function parseRates(value) {
   }
   const rates = [];
   for (const [entryId, rate] of Object.entries(value)) {
-    if (!isNonEmptyString9(entryId) || entryId.length > 256) {
+    if (!isNonEmptyString10(entryId) || entryId.length > 256) {
       throw new ImpactError(
         "invalid_rate_input",
         "rate keys must be non-empty BOQ mapping entry ids (1..256 characters)"
       );
     }
-    if (!isRecord14(rate)) {
+    if (!isRecord15(rate)) {
       throw new ImpactError(
         "invalid_rate_input",
         `rate for entry '${entryId}' must be an object { amount, currency }`
@@ -29737,11 +35975,11 @@ function parseRates(value) {
   return rates;
 }
 function parseComputeImpactInput(payload) {
-  if (!isRecord14(payload)) {
+  if (!isRecord15(payload)) {
     throw new ImpactError("invalid_impact", "expected a JSON object");
   }
   const scenarioId = payload["scenarioId"];
-  if (!isNonEmptyString9(scenarioId)) {
+  if (!isNonEmptyString10(scenarioId)) {
     throw new ImpactError("invalid_impact", "scenarioId must be a non-empty string");
   }
   validateScenarioRefId2(scenarioId);
@@ -29761,7 +35999,7 @@ function parseComputeImpactInput(payload) {
     }
   }
   const importId = payload["importId"];
-  if (!isNonEmptyString9(importId)) {
+  if (!isNonEmptyString10(importId)) {
     throw new ImpactError("invalid_impact", "importId must be a non-empty string");
   }
   validateImportRefId(importId);
@@ -29784,7 +36022,7 @@ function invalidRecord7(detail) {
   return new ImpactError("invalid_impact_record", detail);
 }
 function parseStoredQuantity(value, where) {
-  if (!isRecord14(value)) throw invalidRecord7(`${where} is not an object`);
+  if (!isRecord15(value)) throw invalidRecord7(`${where} is not an object`);
   const quantityValue = value["value"];
   if (typeof quantityValue !== "number" || !Number.isFinite(quantityValue)) {
     throw invalidRecord7(`${where}.value must be a finite number`);
@@ -29802,18 +36040,18 @@ function parseStoredQuantity(value, where) {
   return { value: quantityValue, unit, uncertainty };
 }
 function parseStoredGeometryRef2(value, where) {
-  if (!isRecord14(value)) throw invalidRecord7(`${where} is not an object`);
-  if (!isNonEmptyString9(value["kind"])) throw invalidRecord7(`${where}.kind`);
-  if (!isNonEmptyString9(value["ref"])) throw invalidRecord7(`${where}.ref`);
+  if (!isRecord15(value)) throw invalidRecord7(`${where} is not an object`);
+  if (!isNonEmptyString10(value["kind"])) throw invalidRecord7(`${where}.kind`);
+  if (!isNonEmptyString10(value["ref"])) throw invalidRecord7(`${where}.ref`);
   return { kind: value["kind"], ref: value["ref"] };
 }
 function lineDiscriminator(basis) {
   return basis.propertyKey ?? (basis.geometryFrom !== void 0 || basis.geometryTo !== void 0 ? "geometry" : "content");
 }
 function parseStoredBasis(value, where) {
-  if (!isRecord14(value)) throw invalidRecord7(`${where} is not an object`);
+  if (!isRecord15(value)) throw invalidRecord7(`${where} is not an object`);
   const propertyKey = value["propertyKey"];
-  if (propertyKey !== void 0 && !isNonEmptyString9(propertyKey)) {
+  if (propertyKey !== void 0 && !isNonEmptyString10(propertyKey)) {
     throw invalidRecord7(`${where}.propertyKey`);
   }
   for (const side of ["From", "To"]) {
@@ -29822,7 +36060,7 @@ function parseStoredBasis(value, where) {
       throw invalidRecord7(`${where}.${side}Value`);
     }
     const unit = value[`${side}Unit`];
-    if (unit !== void 0 && !isNonEmptyString9(unit)) {
+    if (unit !== void 0 && !isNonEmptyString10(unit)) {
       throw invalidRecord7(`${where}.${side}Unit`);
     }
     const geometry = value[`geometry${side}`];
@@ -29834,7 +36072,7 @@ function parseStoredBasis(value, where) {
 }
 function requireString(value, key, where) {
   const field = value[key];
-  if (!isNonEmptyString9(field)) {
+  if (!isNonEmptyString10(field)) {
     throw invalidRecord7(`${where}.${key} must be a non-empty string`);
   }
   return field;
@@ -29844,15 +36082,15 @@ function requireStringOrNull(value, key, where) {
   if (field === null) {
     return null;
   }
-  if (!isNonEmptyString9(field)) {
+  if (!isNonEmptyString10(field)) {
     throw invalidRecord7(`${where}.${key} must be a non-empty string or null`);
   }
   return field;
 }
 function parseStoredMappingRef(value, where) {
-  if (!isRecord14(value)) throw invalidRecord7(`${where} is not an object`);
-  if (!isNonEmptyString9(value["entryId"])) throw invalidRecord7(`${where}.entryId`);
-  if (!isNonEmptyString9(value["importId"])) throw invalidRecord7(`${where}.importId`);
+  if (!isRecord15(value)) throw invalidRecord7(`${where} is not an object`);
+  if (!isNonEmptyString10(value["entryId"])) throw invalidRecord7(`${where}.entryId`);
+  if (!isNonEmptyString10(value["importId"])) throw invalidRecord7(`${where}.importId`);
   if (typeof value["rowNumber"] !== "number" || !Number.isInteger(value["rowNumber"])) {
     throw invalidRecord7(`${where}.rowNumber`);
   }
@@ -29870,7 +36108,7 @@ function parseStoredMappingRef(value, where) {
     throw invalidRecord7(`${where}.unitText`);
   }
   for (const field of ["status", "confidence", "method"]) {
-    if (!isNonEmptyString9(value[field])) throw invalidRecord7(`${where}.${field}`);
+    if (!isNonEmptyString10(value[field])) throw invalidRecord7(`${where}.${field}`);
   }
   const unitRelation = value["unitRelation"];
   if (typeof unitRelation !== "string" || !IMPACT_UNIT_RELATIONS.includes(unitRelation)) {
@@ -29892,27 +36130,27 @@ function parseStoredMappingRef(value, where) {
   };
 }
 function parseStoredLine(value, record) {
-  if (!isRecord14(value)) throw invalidRecord7("line entry is not an object");
-  if (!isNonEmptyString9(value["lineId"])) throw invalidRecord7("line.lineId");
+  if (!isRecord15(value)) throw invalidRecord7("line entry is not an object");
+  if (!isNonEmptyString10(value["lineId"])) throw invalidRecord7("line.lineId");
   const kind = value["kind"];
   if (typeof kind !== "string" || !IMPACT_LINE_KINDS.includes(kind)) {
     throw invalidRecord7(`line ${value["lineId"]} kind must be one of ${IMPACT_LINE_KINDS.join("|")}`);
   }
-  if (!isNonEmptyString9(value["stepId"])) throw invalidRecord7(`line ${value["lineId"]} stepId`);
+  if (!isNonEmptyString10(value["stepId"])) throw invalidRecord7(`line ${value["lineId"]} stepId`);
   if (typeof value["stepIndex"] !== "number" || !Number.isInteger(value["stepIndex"]) || value["stepIndex"] < 1) {
     throw invalidRecord7(`line ${value["lineId"]} stepIndex must be a positive integer`);
   }
-  if (!isNonEmptyString9(value["targetNodeId"])) throw invalidRecord7(`line ${value["lineId"]} targetNodeId`);
-  if (!isNonEmptyString9(value["origin"])) throw invalidRecord7(`line ${value["lineId"]} origin`);
+  if (!isNonEmptyString10(value["targetNodeId"])) throw invalidRecord7(`line ${value["lineId"]} targetNodeId`);
+  if (!isNonEmptyString10(value["origin"])) throw invalidRecord7(`line ${value["lineId"]} origin`);
   const basis = parseStoredBasis(value["basis"], `line ${value["lineId"]} basis`);
   if (value["epistemicStatus"] !== "PROPOSED") {
     throw invalidRecord7(
       `line ${value["lineId"]} epistemicStatus must be PROPOSED (impact figures describe proposed state deltas)`
     );
   }
-  const quantity = value["quantity"] === null ? null : parseStoredQuantity(value["quantity"], `line ${value["lineId"]} quantity`);
+  const quantity2 = value["quantity"] === null ? null : parseStoredQuantity(value["quantity"], `line ${value["lineId"]} quantity`);
   const omissionCode = value["omissionCode"];
-  if (quantity === null) {
+  if (quantity2 === null) {
     if (typeof omissionCode !== "string" || !IMPACT_OMISSION_CODES.includes(omissionCode)) {
       throw invalidRecord7(
         `line ${value["lineId"]} carries no quantity and therefore requires a typed omission code (${IMPACT_OMISSION_CODES.join("|")}) \u2014 a silent zero is never representable`
@@ -29939,8 +36177,8 @@ function parseStoredLine(value, record) {
     targetNodeId: value["targetNodeId"],
     origin: value["origin"],
     basis,
-    quantity,
-    omissionCode: quantity === null ? omissionCode : null,
+    quantity: quantity2,
+    omissionCode: quantity2 === null ? omissionCode : null,
     epistemicStatus: "PROPOSED",
     boqMappings: boqMappings.map(
       (entry, index) => parseStoredMappingRef(entry, `line ${value["lineId"]} mapping ${String(index)}`)
@@ -29955,23 +36193,23 @@ function parseStoredLine(value, record) {
   return line;
 }
 function parseStoredCost(value) {
-  if (!isRecord14(value)) throw invalidRecord7("cost entry is not an object");
-  if (!isNonEmptyString9(value["costId"])) throw invalidRecord7("cost.costId");
-  if (!isNonEmptyString9(value["lineId"])) throw invalidRecord7("cost.lineId");
-  if (!isNonEmptyString9(value["entryId"])) throw invalidRecord7("cost.entryId");
+  if (!isRecord15(value)) throw invalidRecord7("cost entry is not an object");
+  if (!isNonEmptyString10(value["costId"])) throw invalidRecord7("cost.costId");
+  if (!isNonEmptyString10(value["lineId"])) throw invalidRecord7("cost.lineId");
+  if (!isNonEmptyString10(value["entryId"])) throw invalidRecord7("cost.entryId");
   if (value["epistemicStatus"] !== "PROPOSED") {
     throw invalidRecord7("cost.epistemicStatus must be PROPOSED");
   }
-  const quantity = value["quantity"];
-  if (!isRecord14(quantity)) throw invalidRecord7("cost.quantity");
-  if (typeof quantity["value"] !== "number" || !Number.isFinite(quantity["value"])) {
+  const quantity2 = value["quantity"];
+  if (!isRecord15(quantity2)) throw invalidRecord7("cost.quantity");
+  if (typeof quantity2["value"] !== "number" || !Number.isFinite(quantity2["value"])) {
     throw invalidRecord7("cost.quantity.value");
   }
-  if (typeof quantity["unit"] !== "string" || quantity["unit"].length < 1) {
+  if (typeof quantity2["unit"] !== "string" || quantity2["unit"].length < 1) {
     throw invalidRecord7("cost.quantity.unit");
   }
   const rate = value["rate"];
-  if (!isRecord14(rate)) throw invalidRecord7("cost.rate");
+  if (!isRecord15(rate)) throw invalidRecord7("cost.rate");
   if (typeof rate["amount"] !== "number" || !Number.isFinite(rate["amount"]) || rate["amount"] < 0) {
     throw invalidRecord7("cost.rate.amount");
   }
@@ -29989,8 +36227,8 @@ function parseStoredCost(value) {
   return value;
 }
 function parseStoredRate(value) {
-  if (!isRecord14(value)) throw invalidRecord7("rates entry is not an object");
-  if (!isNonEmptyString9(value["entryId"])) throw invalidRecord7("rates.entryId");
+  if (!isRecord15(value)) throw invalidRecord7("rates entry is not an object");
+  if (!isNonEmptyString10(value["entryId"])) throw invalidRecord7("rates.entryId");
   if (typeof value["amount"] !== "number" || !Number.isFinite(value["amount"]) || value["amount"] < 0) {
     throw invalidRecord7("rates.amount");
   }
@@ -30000,8 +36238,8 @@ function parseStoredRate(value) {
   return value;
 }
 function parseStoredEvent5(value) {
-  if (!isRecord14(value)) throw invalidRecord7("history entry is not an object");
-  if (!isNonEmptyString9(value["eventId"])) throw invalidRecord7("history.eventId");
+  if (!isRecord15(value)) throw invalidRecord7("history entry is not an object");
+  if (!isNonEmptyString10(value["eventId"])) throw invalidRecord7("history.eventId");
   if (value["eventType"] !== "impact_computed") throw invalidRecord7("history.eventType");
   if (!isIso5(value["occurredAt"])) throw invalidRecord7("history.occurredAt");
   if (!isContentId8(value["reportDigest"])) {
@@ -30015,11 +36253,11 @@ function parseStoredEvent5(value) {
   };
 }
 function parseImpactRecord(value) {
-  if (!isRecord14(value)) throw invalidRecord7("impact record is not a JSON object");
+  if (!isRecord15(value)) throw invalidRecord7("impact record is not a JSON object");
   const impactId = requireString(value, "impactId", "record");
   validateImpactId(impactId);
   const request = value["request"];
-  if (!isRecord14(request)) throw invalidRecord7("request is not an object");
+  if (!isRecord15(request)) throw invalidRecord7("request is not an object");
   const requestScenarioId = requireString(request, "scenarioId", "request");
   const requestStateId = requireString(request, "stateId", "request");
   const requestBaselineVersionId = requireString(request, "baselineVersionId", "request");
@@ -30036,7 +36274,7 @@ function parseImpactRecord(value) {
     throw invalidRecord7("reportDigest must be a 64-hex digest");
   }
   const report = value["report"];
-  if (!isRecord14(report)) throw invalidRecord7("report is not an object");
+  if (!isRecord15(report)) throw invalidRecord7("report is not an object");
   if (report["epistemicStatus"] !== "PROPOSED") {
     throw invalidRecord7("report.epistemicStatus must be PROPOSED");
   }
@@ -30063,7 +36301,7 @@ function parseImpactRecord(value) {
   if (!Array.isArray(unpricedPairs)) throw invalidRecord7("report.unpricedPairs");
   const rates = report["rates"];
   if (rates !== void 0 && !Array.isArray(rates)) throw invalidRecord7("report.rates");
-  if (!isRecord14(report["summary"])) throw invalidRecord7("report.summary");
+  if (!isRecord15(report["summary"])) throw invalidRecord7("report.summary");
   const parsedLines = lines.map((entry) => parseStoredLine(entry, { impactId }));
   const lineIds = new Set(parsedLines.map((line) => line.lineId));
   if (lineIds.size !== parsedLines.length) {
@@ -30077,7 +36315,7 @@ function parseImpactRecord(value) {
   }
   const parsedUnpriced = [];
   for (const entry of unpricedPairs) {
-    if (!isRecord14(entry) || !isNonEmptyString9(entry["lineId"]) || !isNonEmptyString9(entry["entryId"])) {
+    if (!isRecord15(entry) || !isNonEmptyString10(entry["lineId"]) || !isNonEmptyString10(entry["entryId"])) {
       throw invalidRecord7("unpricedPairs entry is malformed");
     }
     const code = entry["code"];
@@ -30543,7 +36781,7 @@ var ImpactService = class {
               ...to.unit === void 0 ? {} : { toUnit: to.unit }
             }
           };
-          let quantity = null;
+          let quantity2 = null;
           let omissionCode = null;
           const fromNumeric = from !== void 0 && typeof from.value === "number";
           const toNumeric = to !== void 0 && typeof to.value === "number";
@@ -30563,7 +36801,7 @@ var ImpactService = class {
                 toSigma,
                 fromSigma
               );
-              quantity = {
+              quantity2 = {
                 value: measurement.value,
                 unit: toUnit ?? fromUnit ?? "",
                 uncertainty: measurement.uncertainty
@@ -30572,7 +36810,7 @@ var ImpactService = class {
           } else {
             omissionCode = "non_quantifiable_property";
           }
-          const lineUnit = quantity?.unit;
+          const lineUnit = quantity2?.unit;
           lines.push({
             lineId: deriveLineId(impactId, nodeId, "property_delta", key),
             kind: "property_delta",
@@ -30581,7 +36819,7 @@ var ImpactService = class {
             targetNodeId: nodeId,
             origin: targetNode.origin,
             basis,
-            quantity,
+            quantity: quantity2,
             omissionCode,
             epistemicStatus: "PROPOSED",
             boqMappings: this.mappingRefsFor(mapping, nodeId, lineUnit)
@@ -30628,14 +36866,14 @@ var ImpactService = class {
             toValue: property.value,
             ...property.unit === void 0 ? {} : { toUnit: property.unit }
           };
-          let quantity = null;
+          let quantity2 = null;
           let omissionCode = null;
           if (typeof property.value === "number") {
             const measurement = propagateSingleUncertainty(
               property.value,
               property.uncertainty
             );
-            quantity = {
+            quantity2 = {
               value: measurement.value,
               unit: property.unit ?? "",
               uncertainty: measurement.uncertainty
@@ -30651,10 +36889,10 @@ var ImpactService = class {
             targetNodeId: nodeId,
             origin: targetNode.origin,
             basis,
-            quantity,
+            quantity: quantity2,
             omissionCode,
             epistemicStatus: "PROPOSED",
-            boqMappings: this.mappingRefsFor(mapping, nodeId, quantity?.unit)
+            boqMappings: this.mappingRefsFor(mapping, nodeId, quantity2?.unit)
           });
         }
         if (targetNode.geometry !== void 0) {
@@ -30717,14 +36955,14 @@ var ImpactService = class {
             fromValue: property.value,
             ...property.unit === void 0 ? {} : { fromUnit: property.unit }
           };
-          let quantity = null;
+          let quantity2 = null;
           let omissionCode = null;
           if (typeof property.value === "number") {
             const measurement = propagateSingleUncertainty(
               -property.value,
               property.uncertainty
             );
-            quantity = {
+            quantity2 = {
               value: measurement.value,
               unit: property.unit ?? "",
               uncertainty: measurement.uncertainty
@@ -30740,10 +36978,10 @@ var ImpactService = class {
             targetNodeId: nodeId,
             origin: "baseline",
             basis,
-            quantity,
+            quantity: quantity2,
             omissionCode,
             epistemicStatus: "PROPOSED",
-            boqMappings: this.mappingRefsFor(mapping, nodeId, quantity?.unit),
+            boqMappings: this.mappingRefsFor(mapping, nodeId, quantity2?.unit),
             severedRelationshipIds: [...tombstone.severedRelationshipIds].sort()
           });
         }
@@ -30950,10 +37188,10 @@ var ImpactService = class {
 };
 
 // backend/api/src/impact/router.ts
-function pathSegments15(url) {
+function pathSegments16(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
-async function readJsonBody11(request) {
+async function readJsonBody13(request) {
   const text = await request.text();
   try {
     return { ok: true, payload: JSON.parse(text) };
@@ -30976,7 +37214,7 @@ function impactErrorResponse(error, requestId) {
     requestId
   );
 }
-function malformedJson8(requestId) {
+function malformedJson9(requestId) {
   return jsonResponse(
     400,
     { ok: false, error: "malformed_json", detail: "request body is not valid JSON" },
@@ -30984,7 +37222,7 @@ function malformedJson8(requestId) {
   );
 }
 async function handleImpactRequest(request, url, requestId, options) {
-  const segments = pathSegments15(url);
+  const segments = pathSegments16(url);
   if (segments[0] !== "v1" || segments[1] !== "impacts") {
     return null;
   }
@@ -30992,9 +37230,9 @@ async function handleImpactRequest(request, url, requestId, options) {
   try {
     if (segments.length === 2) {
       if (request.method === "POST") {
-        const body = await readJsonBody11(request);
+        const body = await readJsonBody13(request);
         if (!body.ok) {
-          return malformedJson8(requestId);
+          return malformedJson9(requestId);
         }
         const record = await service.computeImpact(parseComputeImpactInput(body.payload));
         logger.info("impact_computed", {
@@ -31313,7 +37551,7 @@ function buildSdkVersionRegistry(steps) {
     }
   };
 }
-function isNonEmptyString10(value) {
+function isNonEmptyString11(value) {
   return typeof value === "string" && value.length > 0;
 }
 function pathSegmentsOf(template, what) {
@@ -31337,7 +37575,7 @@ function validateErrorCodes(operationId, errorCodes) {
   }
   const seen = /* @__PURE__ */ new Set();
   for (const code of errorCodes) {
-    if (!isNonEmptyString10(code)) {
+    if (!isNonEmptyString11(code)) {
       throw new SdkContractError(
         "invalid_error_codes",
         `operation '${operationId}' lists a non-string error code`
@@ -31366,7 +37604,7 @@ function buildSdkContract(input) {
   const domains = [];
   const operations = [];
   for (const domain of input.domains) {
-    if (!isNonEmptyString10(domain.id)) {
+    if (!isNonEmptyString11(domain.id)) {
       throw new SdkContractError(
         "invalid_contract_input",
         "a domain requires a non-empty id"
@@ -31378,7 +37616,7 @@ function buildSdkContract(input) {
         `domain '${domain.id}' is registered more than once`
       );
     }
-    if (!isNonEmptyString10(domain.title) || !isNonEmptyString10(domain.authority)) {
+    if (!isNonEmptyString11(domain.title) || !isNonEmptyString11(domain.authority)) {
       throw new SdkContractError(
         "invalid_contract_input",
         `domain '${domain.id}' requires a non-empty title and authority`
@@ -31401,7 +37639,7 @@ function buildSdkContract(input) {
     domainIds.add(domain.id);
     namespaces.set(domain.namespace, domain.id);
     for (const operation of domain.operations) {
-      if (!isNonEmptyString10(operation.id)) {
+      if (!isNonEmptyString11(operation.id)) {
         throw new SdkContractError(
           "invalid_contract_input",
           `domain '${domain.id}' registers an operation without an id`
@@ -31413,7 +37651,7 @@ function buildSdkContract(input) {
           `operation '${operation.id}' is registered more than once`
         );
       }
-      if (!isNonEmptyString10(operation.summary)) {
+      if (!isNonEmptyString11(operation.summary)) {
         throw new SdkContractError(
           "invalid_contract_input",
           `operation '${operation.id}' requires a non-empty summary`
@@ -31477,7 +37715,7 @@ function buildSdkContract(input) {
           );
         }
         if (operation.idempotencyClass === "caller-stable-id") {
-          if (!isNonEmptyString10(operation.idField)) {
+          if (!isNonEmptyString11(operation.idField)) {
             throw new SdkContractError(
               "stable_id_field_required",
               `operation '${operation.id}' declares class 'caller-stable-id' without naming the request-body id field`
@@ -31490,7 +37728,7 @@ function buildSdkContract(input) {
           );
         }
       } else if (operation.transport === "in-process") {
-        if (!isNonEmptyString10(operation.entryPoint)) {
+        if (!isNonEmptyString11(operation.entryPoint)) {
           throw new SdkContractError(
             "invalid_contract_input",
             `in-process operation '${operation.id}' requires an entry point`
@@ -32394,7 +38632,7 @@ function buildSdkDiscoveryDocument(contract) {
 }
 
 // backend/api/src/sdk/router.ts
-function pathSegments16(url) {
+function pathSegments17(url) {
   return url.pathname.split("/").filter((segment) => segment !== "");
 }
 function contractDocument(contract) {
@@ -32411,7 +38649,7 @@ function contractDocument(contract) {
   };
 }
 async function handleSdkRequest(request, url, requestId, options) {
-  const segments = pathSegments16(url);
+  const segments = pathSegments17(url);
   if (segments[0] !== "v1" || segments[1] !== "sdk") {
     return null;
   }
@@ -32452,33 +38690,36 @@ async function handleSdkRequest(request, url, requestId, options) {
 
 // backend/api/src/server.ts
 var SERVICE_NAME = "aise-api";
-var defaultIdentityRoutes = null;
+var defaultIdentityRoutesByOptions = /* @__PURE__ */ new WeakMap();
 function identityRoutesOrDefault(options) {
   if (options.identity !== void 0) {
     return options.identity;
   }
-  if (defaultIdentityRoutes === null) {
+  let routes = defaultIdentityRoutesByOptions.get(options);
+  if (routes === void 0) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultIdentityRoutes = {
+    routes = {
       service: new IdentityService({
         store: new FsIdentityStore(dataDir),
         clock: () => (/* @__PURE__ */ new Date()).toISOString()
       }),
       logger: options.logger
     };
+    defaultIdentityRoutesByOptions.set(options, routes);
   }
-  return defaultIdentityRoutes;
+  return routes;
 }
-var defaultComparisonRoutes = null;
+var defaultComparisonRoutesByOptions = /* @__PURE__ */ new WeakMap();
 function comparisonRoutesOrDefault(options) {
   if (options.comparison !== void 0) {
     return options.comparison;
   }
-  if (defaultComparisonRoutes === null) {
+  let routes = defaultComparisonRoutesByOptions.get(options);
+  if (routes === void 0) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultComparisonRoutes = {
+    routes = {
       service: new ComparisonService({
         store: new FsComparisonStore(dataDir),
         clock: () => (/* @__PURE__ */ new Date()).toISOString(),
@@ -32489,18 +38730,20 @@ function comparisonRoutesOrDefault(options) {
       }),
       logger: options.logger
     };
+    defaultComparisonRoutesByOptions.set(options, routes);
   }
-  return defaultComparisonRoutes;
+  return routes;
 }
-var defaultGapsRoutes = null;
+var defaultGapsRoutesByOptions = /* @__PURE__ */ new WeakMap();
 function gapsRoutesOrDefault(options) {
   if (options.gaps !== void 0) {
     return options.gaps;
   }
-  if (defaultGapsRoutes === null) {
+  let routes = defaultGapsRoutesByOptions.get(options);
+  if (routes === void 0) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultGapsRoutes = {
+    routes = {
       service: new GapAnalysisService({
         store: new FsGapAnalysisStore(dataDir),
         clock: () => (/* @__PURE__ */ new Date()).toISOString(),
@@ -32513,18 +38756,20 @@ function gapsRoutesOrDefault(options) {
       }),
       logger: options.logger
     };
+    defaultGapsRoutesByOptions.set(options, routes);
   }
-  return defaultGapsRoutes;
+  return routes;
 }
-var defaultAdoptionRoutes = null;
+var defaultAdoptionRoutesByOptions = /* @__PURE__ */ new WeakMap();
 function adoptionRoutesOrDefault(options) {
   if (options.adoption !== void 0) {
     return options.adoption;
   }
-  if (defaultAdoptionRoutes === null) {
+  let routes = defaultAdoptionRoutesByOptions.get(options);
+  if (routes === void 0) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultAdoptionRoutes = {
+    routes = {
       service: new AdoptionService({
         store: new FsAdoptionStore(dataDir),
         clock: () => (/* @__PURE__ */ new Date()).toISOString(),
@@ -32532,18 +38777,20 @@ function adoptionRoutesOrDefault(options) {
       }),
       logger: options.logger
     };
+    defaultAdoptionRoutesByOptions.set(options, routes);
   }
-  return defaultAdoptionRoutes;
+  return routes;
 }
-var defaultArtifactsRoutes = null;
+var defaultArtifactsRoutesByOptions = /* @__PURE__ */ new WeakMap();
 function artifactsRoutesOrDefault(options) {
   if (options.artifacts !== void 0) {
     return options.artifacts;
   }
-  if (defaultArtifactsRoutes === null) {
+  let routes = defaultArtifactsRoutesByOptions.get(options);
+  if (routes === void 0) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultArtifactsRoutes = {
+    routes = {
       service: new ArtifactService({
         storage: new FsArtifactStorage(dataDir),
         metadata: new FsArtifactMetadataStore(dataDir),
@@ -32557,22 +38804,24 @@ function artifactsRoutesOrDefault(options) {
       logger: options.logger,
       accessPredicate: allowAllArtifactAccess
     };
+    defaultArtifactsRoutesByOptions.set(options, routes);
   }
-  return defaultArtifactsRoutes;
+  return routes;
 }
-var defaultBoqRoutes = null;
+var defaultBoqRoutesByOptions = /* @__PURE__ */ new WeakMap();
 function boqRoutesOrDefault(options) {
   if (options.boq !== void 0) {
     return options.boq;
   }
-  if (defaultBoqRoutes === null) {
+  let routes = defaultBoqRoutesByOptions.get(options);
+  if (routes === void 0) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
     const service = new BoqService({
       store: new FsBoqStore(dataDir),
       clock: () => (/* @__PURE__ */ new Date()).toISOString()
     });
-    defaultBoqRoutes = {
+    routes = {
       service,
       logger: options.logger,
       // AISE-014: derived normalization surface over the SAME data dir —
@@ -32585,28 +38834,31 @@ function boqRoutesOrDefault(options) {
         boq: service
       })
     };
+    defaultBoqRoutesByOptions.set(options, routes);
   }
-  return defaultBoqRoutes;
+  return routes;
 }
-var defaultCasesRoutes = null;
+var defaultCasesRoutesByOptions = /* @__PURE__ */ new WeakMap();
 function casesRoutesOrDefault(options) {
   if (options.cases !== void 0) {
     return options.cases;
   }
-  if (defaultCasesRoutes === null) {
+  let routes = defaultCasesRoutesByOptions.get(options);
+  if (routes === void 0) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultCasesRoutes = {
+    routes = {
       service: new CaseService({
         store: new FsCaseStore(dataDir),
         clock: () => (/* @__PURE__ */ new Date()).toISOString()
       }),
       logger: options.logger
     };
+    defaultCasesRoutesByOptions.set(options, routes);
   }
-  return defaultCasesRoutes;
+  return routes;
 }
-var defaultInterventionRoutes = null;
+var defaultInterventionRoutesByOptions = /* @__PURE__ */ new WeakMap();
 function readOnlyBaselineResolver(store) {
   return {
     resolveBaseline: (projectId, versionId) => store.getVersion(projectId, versionId)
@@ -32616,10 +38868,11 @@ function interventionRoutesOrDefault(options) {
   if (options.interventions !== void 0) {
     return options.interventions;
   }
-  if (defaultInterventionRoutes === null) {
+  let routes = defaultInterventionRoutesByOptions.get(options);
+  if (routes === void 0) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
-    defaultInterventionRoutes = {
+    routes = {
       service: new InterventionService({
         store: new FsInterventionStore(dataDir),
         clock: () => (/* @__PURE__ */ new Date()).toISOString(),
@@ -32627,19 +38880,21 @@ function interventionRoutesOrDefault(options) {
       }),
       logger: options.logger
     };
+    defaultInterventionRoutesByOptions.set(options, routes);
   }
-  return defaultInterventionRoutes;
+  return routes;
 }
-var defaultExecutionRoutes = null;
+var defaultExecutionRoutesByOptions = /* @__PURE__ */ new WeakMap();
 function executionRoutesOrDefault(options) {
   if (options.executions !== void 0) {
     return options.executions;
   }
-  if (defaultExecutionRoutes === null) {
+  let routes = defaultExecutionRoutesByOptions.get(options);
+  if (routes === void 0) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
     const wallClock = () => (/* @__PURE__ */ new Date()).toISOString();
-    defaultExecutionRoutes = {
+    routes = {
       service: new ExecutionService({
         store: new FsExecutionStore(dataDir),
         clock: wallClock,
@@ -32659,20 +38914,22 @@ function executionRoutesOrDefault(options) {
       }),
       logger: options.logger
     };
+    defaultExecutionRoutesByOptions.set(options, routes);
   }
-  return defaultExecutionRoutes;
+  return routes;
 }
-var defaultImpactRoutes = null;
+var defaultImpactRoutesByOptions = /* @__PURE__ */ new WeakMap();
 function impactRoutesOrDefault(options) {
   if (options.impacts !== void 0) {
     return options.impacts;
   }
-  if (defaultImpactRoutes === null) {
+  let routes = defaultImpactRoutesByOptions.get(options);
+  if (routes === void 0) {
     const result = validateEnv(options.envSource());
     const dataDir = result.ok ? result.config.dataDir : "./data";
     const wallClock = () => (/* @__PURE__ */ new Date()).toISOString();
     const boq = new BoqService({ store: new FsBoqStore(dataDir), clock: wallClock });
-    defaultImpactRoutes = {
+    routes = {
       service: new ImpactService({
         store: new FsImpactStore(dataDir),
         clock: wallClock,
@@ -32699,18 +38956,21 @@ function impactRoutesOrDefault(options) {
       }),
       logger: options.logger
     };
+    defaultImpactRoutesByOptions.set(options, routes);
   }
-  return defaultImpactRoutes;
+  return routes;
 }
-var defaultSdkRoutes = null;
+var defaultSdkRoutesByOptions = /* @__PURE__ */ new WeakMap();
 function sdkRoutesOrDefault(options) {
   if (options.sdk !== void 0) {
     return options.sdk;
   }
-  if (defaultSdkRoutes === null) {
-    defaultSdkRoutes = { logger: options.logger };
+  let routes = defaultSdkRoutesByOptions.get(options);
+  if (routes === void 0) {
+    routes = { logger: options.logger };
+    defaultSdkRoutesByOptions.set(options, routes);
   }
-  return defaultSdkRoutes;
+  return routes;
 }
 async function route(request, url, requestId, options, missions, evidenceService, reconstructionRoutes, realityRoutes) {
   if (url.pathname === "/healthz") {
@@ -36254,12 +42514,12 @@ var EXECUTION_REQUEST_FIELDS = [
   "executionConfig",
   "request"
 ];
-function isPlainObject4(value) {
+function isPlainObject5(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 function decodeExecutionRequest(value) {
   const issues = [];
-  if (!isPlainObject4(value)) {
+  if (!isPlainObject5(value)) {
     return { ok: false, issues: ["execution request must be a JSON object"] };
   }
   const unknownFields = Object.keys(value).filter((key) => !EXECUTION_REQUEST_FIELDS.includes(key)).sort();
@@ -36279,7 +42539,7 @@ function decodeExecutionRequest(value) {
     issues.push("checkpointRef must be a non-empty string when present");
   }
   const executionConfig = value.executionConfig;
-  if (!isPlainObject4(executionConfig)) {
+  if (!isPlainObject5(executionConfig)) {
     issues.push("executionConfig must be a JSON object (opaque provider configuration passthrough)");
   }
   const inner = decodeReconstructionRequest(value.request);
@@ -38143,9 +44403,9 @@ function isR2GroupComplete(env) {
 }
 
 // backend/api/src/artifacts/sigv4.ts
-import { createHash as createHash2, createHmac as createHmac2 } from "node:crypto";
-function sha256Hex2(input) {
-  return createHash2("sha256").update(input).digest("hex");
+import { createHash as createHash5, createHmac as createHmac2 } from "node:crypto";
+function sha256Hex5(input) {
+  return createHash5("sha256").update(input).digest("hex");
 }
 function hmacSha256(key, data) {
   return new Uint8Array(createHmac2("sha256", key).update(data).digest());
@@ -38206,7 +44466,7 @@ function signSigV4(input, credentials) {
     "AWS4-HMAC-SHA256",
     input.amzDate,
     credentialScope,
-    sha256Hex2(canonicalRequest)
+    sha256Hex5(canonicalRequest)
   ].join("\n");
   const signingKey = deriveSigningKey(credentials.secretAccessKey, dateStamp, input.region, input.service);
   const signature = createHmac2("sha256", signingKey).update(stringToSign).digest("hex");
@@ -38282,7 +44542,7 @@ var R2ArtifactStorage = class {
   }
   async put(contentSha256, bytes) {
     this.assertContentAddress(contentSha256);
-    const payloadHash = sha256Hex2(bytes);
+    const payloadHash = sha256Hex5(bytes);
     const response = await this.request("PUT", contentSha256, payloadHash, bytes);
     if (response.status === 200 || response.status === 201) {
       return { outcome: "stored", byteSize: bytes.length };
@@ -38431,11 +44691,23 @@ var package_default = {
   },
   dependencies: {
     "@aise/shared-contracts": "workspace:*",
+    "@aise/solution-contract": "workspace:*",
+    "@aise/solution-engine": "workspace:*",
+    "@aise/solution-boq": "workspace:*",
+    "@aise/provider-registry": "workspace:*",
     postgres: "3.4.5"
   },
   exports: {
     "./runtime": "./src/runtime/index.ts"
   }
+};
+
+// packages/solution-engine/fixtures/baseline-geometry.json
+var baseline_geometry_default = {
+  "geo-wall-faces-002": { value: 12.5, unit: "m2" },
+  "geo-wall-line-003": { value: 5, unit: "m2" },
+  "geo-slab-region-005": { value: 12, unit: "m2" },
+  "geo-pit-outline-001": { value: 6, unit: "m2" }
 };
 
 // backend/api/src/runtime/entry.ts
@@ -38547,7 +44819,7 @@ var UnavailableCaptureStore = class {
     this.fail();
   }
 };
-function isRecord15(value) {
+function isRecord16(value) {
   return typeof value === "object" && value !== null;
 }
 var UnavailableArtifactMetadataStore = class {
@@ -38603,7 +44875,7 @@ async function augmentReadiness(response, env, auth, cost) {
   const providers = evaluateOptionalProviders(env);
   const artifacts = artifactsReadiness(env);
   const authUnavailable = auth !== null && auth.status === "unavailable";
-  if ((response.status === 200 || authUnavailable) && isRecord15(body) && body["ok"] === true) {
+  if ((response.status === 200 || authUnavailable) && isRecord16(body) && body["ok"] === true) {
     if (authUnavailable) {
       const requestId = response.headers.get("x-request-id");
       const issues = [...auth?.issues ?? []];
@@ -38638,7 +44910,7 @@ async function augmentReadiness(response, env, auth, cost) {
       }
     );
   }
-  if (response.status === 503 && isRecord15(body) && body["ok"] === false && Array.isArray(body["issues"])) {
+  if (response.status === 503 && isRecord16(body) && body["ok"] === false && Array.isArray(body["issues"])) {
     const requestId = response.headers.get("x-request-id");
     const issues = [
       ...body["issues"].map((issue) => String(issue)),
@@ -38665,6 +44937,11 @@ async function augmentReadiness(response, env, auth, cost) {
     statusText: response.statusText,
     headers: response.headers
   });
+}
+function demoBaselineGeometryResolver() {
+  return new TableBaselineGeometryResolver(
+    baseline_geometry_default
+  );
 }
 function createRuntimeHandler(options = {}) {
   const envSource = options.envSource ?? (() => process.env);
@@ -38943,6 +45220,25 @@ function createRuntimeHandler(options = {}) {
       };
     }
   }
+  const solutionAgentRoutes = createSolutionAgentRoutes({
+    compiler: createSolutionCommandCompiler({ clock: () => (/* @__PURE__ */ new Date()).toISOString() }),
+    logger
+  });
+  let solutionRoutes;
+  try {
+    solutionRoutes = {
+      service: new SolutionService({
+        baselineGeometry: demoBaselineGeometryResolver()
+      }),
+      logger
+    };
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    logger.error("solution baseline geometry fixture unreadable; serving the honest empty resolver", {
+      error: reason
+    });
+    solutionRoutes = { service: new SolutionService(), logger };
+  }
   const core = createRequestHandler({
     envSource,
     version,
@@ -39004,7 +45300,18 @@ function createRuntimeHandler(options = {}) {
       if (pgBoot.mode === "pg") {
         await pgBoot.ready;
       }
-      let response = await core(forwarded);
+      let response = await solutionAgentRoutes(forwarded, requestId);
+      if (response === null) {
+        response = await handleSolutionRequest(
+          forwarded,
+          new URL(forwarded.url),
+          requestId,
+          solutionRoutes
+        );
+      }
+      if (response === null) {
+        response = await core(forwarded);
+      }
       if (new URL(request.url).pathname === "/readyz") {
         response = await augmentReadiness(response, envSource(), authReadiness2, costBoot.readiness());
       }
