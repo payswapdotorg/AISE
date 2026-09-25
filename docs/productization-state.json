@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-25T09:45:00Z",
+  "lastReconciledAt": "2026-09-25T11:15:41Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
