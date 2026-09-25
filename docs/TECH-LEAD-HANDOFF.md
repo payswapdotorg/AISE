@@ -86,6 +86,28 @@ Do not infer completion from this override. Recompute machine-state
 eligibility and independently reproduce evidence before accepting any worker
 claim.
 
+## CURRENT STATE OVERRIDE — 2026-09-25
+
+This section supersedes all older frontier/deployment statements later in this handoff.
+
+Current main: **d231287f0a1a90521d74be8cccea4c196736f286**
+
+Productization:
+- **PROD-001 … PROD-034: ✅ finalized**
+- **PROD-015: ✅ finalized**
+- **HFX-000/101/201/204/301/302/303/401: ✅ finalized**
+- machine state: **ready**
+- declared production URL: **https://aise-tan.vercel.app**
+- declared deployment: **dpl_9G5gsVbGzpbWGBewyQUE4QhgadFY**
+- declared deployment SHA: **91f1b449d6ea5cafd6a4e58e8533fea8d24ed5b7**
+
+Main has advanced after the declaration. Do not claim the current tip is deployed until the current exact SHA is independently deployed and replayed.
+
+The successor Tech Lead must now execute:
+`docs/post-production-discoverability-and-device-validation-plan-2026-09-25.md`
+
+The plan is the authoritative follow-on implementation directive for three workers. It is not permission to weaken PROD-015 or the frozen architecture.
+
 ## Architecture records and mandatory technology rule
 
 Read:
