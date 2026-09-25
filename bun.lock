@@ -115,6 +115,16 @@
         "@aise/solution-contract": "workspace:*",
       },
     },
+    "packages/visual-render": {
+      "name": "@aise/visual-render",
+      "version": "1.0.0",
+      "dependencies": {
+        "@aise/provider-registry": "workspace:*",
+        "@aise/shared-contracts": "workspace:*",
+        "@aise/solution-contract": "workspace:*",
+        "@aise/solution-engine": "workspace:*",
+      },
+    },
   },
   "packages": {
     "@aise/adapter-contract": ["@aise/adapter-contract@workspace:packages/adapter-contract"],
@@ -132,6 +142,8 @@
     "@aise/solution-contract": ["@aise/solution-contract@workspace:packages/solution-contract"],
 
     "@aise/solution-engine": ["@aise/solution-engine@workspace:packages/solution-engine"],
+
+    "@aise/visual-render": ["@aise/visual-render@workspace:packages/visual-render"],
 
     "@aise/web": ["@aise/web@workspace:apps/web"],
 

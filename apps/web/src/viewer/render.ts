@@ -36,6 +36,15 @@
  * no randomness, canonical number text, fixed attribute order). The
  * current layer defaults to 0 (the pure baseline overlay) when
  * `stateIndex` is absent.
+ *
+ * HFX-303 (OPTIONAL generated-visual composition): when the input carries
+ * `generatedVisual` and/or `generatedVisualFallback`, the corresponding
+ * pane is composed AFTER the canonical panes — read-only presentation
+ * with the always-present GENERATED/HYPOTHETICAL banner, the label
+ * manifest and the provenance block (see generated/pane.ts). ABSENT
+ * fields compose NOTHING: the no-visual render is BIT-IDENTICAL to the
+ * pre-HFX-303 viewer (golden-tested), and the canonical panes' bytes are
+ * identical with and without the generated pane attached (tested).
  */
 
 import { ViewerError } from "./errors";
@@ -53,6 +62,8 @@ import { projectStateBoq, renderBoqTable } from "./paneboq";
 import { DEFAULT_VIEW, projectPane } from "./projection";
 import { emptyPaneLines, omissionLines, renderPaneSvg } from "./svg";
 import { frameOf, stateAt, stateIdsOf, verifyStateAlignment } from "./sync";
+import { generatedPaneLines } from "./generated/pane";
+import { generatedFallbackLines } from "./generated/fallback";
 
 /** Version stamped on every viewer document (determinism pin). */
 export const VIEWER_GENERATOR_VERSION = "aise-intervention-viewer/1.0";
@@ -123,6 +134,33 @@ function requireInput(input: ViewerInput): void {
       throw new ViewerError("invalid_input", "view requires finite azimuthRad/elevationRad");
     }
   }
+  if (input.generatedVisual !== undefined) {
+    const artifact: unknown = input.generatedVisual;
+    const artifactId = isRecord(artifact) ? artifact["artifactId"] : undefined;
+    const content = isRecord(artifact) ? artifact["content"] : undefined;
+    const svg = isRecord(content) ? content["svg"] : undefined;
+    if (
+      typeof artifactId !== "string" ||
+      artifactId.length === 0 ||
+      typeof svg !== "string" ||
+      svg.length === 0
+    ) {
+      throw new ViewerError(
+        "invalid_input",
+        "generatedVisual requires a shaped artifact (artifactId + content.svg)",
+      );
+    }
+  }
+  if (input.generatedVisualFallback !== undefined) {
+    const record: unknown = input.generatedVisualFallback;
+    const fallbackId = isRecord(record) ? record["fallbackId"] : undefined;
+    if (typeof fallbackId !== "string" || fallbackId.length === 0) {
+      throw new ViewerError(
+        "invalid_input",
+        "generatedVisualFallback requires a shaped fallback record (fallbackId)",
+      );
+    }
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -175,6 +213,12 @@ export function renderInterventionViewer(input: ViewerInput): string {
     ...pane3dLines(projection3d, view, input.selectedNodeId, frame),
     ...pane2dLines(projection2d, input.selectedNodeId, frame),
     ...paneBoqLines(boq, input.selectedNodeId, frame),
+    ...(input.generatedVisual === undefined
+      ? []
+      : generatedPaneLines(input.generatedVisual, frame)),
+    ...(input.generatedVisualFallback === undefined
+      ? []
+      : generatedFallbackLines(input.generatedVisualFallback, frame)),
     `</main>`,
     ...stepStripLines(scenario, frame),
     ...footerLines(),

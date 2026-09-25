@@ -1,0 +1,302 @@
+{
+  "cases": [
+    {
+      "caseId": "demo-world-baseline",
+      "comparisonPoints": [
+        {
+          "baselineValue": "c9f04852a00070e5be34f4ecd2fe16f4d10f2aa31c4386e4bb9ebf2f380011f1",
+          "detail": "the serialized Solution Graph state must be byte-identical after every visual render — zero tolerance",
+          "equal": true,
+          "pointKind": "canonical-state-bytes",
+          "subjectId": "demo-world-baseline",
+          "substitutedValue": "c9f04852a00070e5be34f4ecd2fe16f4d10f2aa31c4386e4bb9ebf2f380011f1"
+        },
+        {
+          "baselineValue": "02377a9a18e9f228ab686b2a0d27cb01f53f5118cf378b9f801c01872e63c997",
+          "detail": "the serialized solution version must be byte-identical after every visual render — zero tolerance",
+          "equal": true,
+          "pointKind": "canonical-version-bytes",
+          "subjectId": "demo-world-baseline",
+          "substitutedValue": "02377a9a18e9f228ab686b2a0d27cb01f53f5118cf378b9f801c01872e63c997"
+        },
+        {
+          "baselineValue": "d9f7f6e0a7029bfcee1205d11ed4d2efd4e405bfd87375918cc02b21563ed5a3",
+          "detail": "the canonical engine's derived quantity inventory must be EXACTLY equal — ANY numeric delta is a FAIL (visuals are presentation)",
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "demo-world-baseline",
+          "substitutedValue": "d9f7f6e0a7029bfcee1205d11ed4d2efd4e405bfd87375918cc02b21563ed5a3"
+        },
+        {
+          "baselineValue": "e32f421164b3020764b27c3309a5130c9589bd323c4d6a27a9670d15a55179d4",
+          "detail": "the canonical engine's validation snapshot must be EXACTLY equal — a generated visual can never change a verdict",
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "demo-world-baseline",
+          "substitutedValue": "e32f421164b3020764b27c3309a5130c9589bd323c4d6a27a9670d15a55179d4"
+        },
+        {
+          "baselineValue": "f5290f42655e4f0c0e5767a8355600c798713e29253b46b2ca0bcf45df7e23d9",
+          "detail": "the canonical deterministic plan projection must be byte-identical after every render",
+          "equal": true,
+          "pointKind": "canonical-projection-bytes",
+          "subjectId": "demo-world-baseline#plan",
+          "substitutedValue": "f5290f42655e4f0c0e5767a8355600c798713e29253b46b2ca0bcf45df7e23d9"
+        },
+        {
+          "baselineValue": "e166d0d050351502e8305286cdff23416a0c4187166278a819df99c8aa5be775",
+          "detail": "the canonical deterministic axonometric projection must be byte-identical after every render",
+          "equal": true,
+          "pointKind": "canonical-projection-bytes",
+          "subjectId": "demo-world-baseline#axonometric",
+          "substitutedValue": "e166d0d050351502e8305286cdff23416a0c4187166278a819df99c8aa5be775"
+        }
+      ],
+      "renders": [
+        {
+          "artifactId": "d77b8b632fb7f79682bd0fb62da645d31411fd3e5c9f477f5d98daf9f7d88d70",
+          "ok": true,
+          "providerId": "visual-hypothesis-reference",
+          "providerKey": "reference"
+        },
+        {
+          "artifactId": "12b94800f63bec091d9788189e6e87338dc863187134eea09bef6c6dc68334d3",
+          "ok": true,
+          "providerId": "visual-blueprint-alternate",
+          "providerKey": "alternate"
+        },
+        {
+          "failureKind": "unsupported-data",
+          "ok": false,
+          "providerId": "visual-failing-fixture",
+          "providerKey": "failing"
+        }
+      ],
+      "stateIdentity": {
+        "appliedOperationIds": [],
+        "solutionId": "solution-demo-001",
+        "stateContentDigest": "01057ab2b0111d0eea3661fa064b34a87acdf0f7043338a003267ef794b670f6",
+        "stateId": "ce0f5133d8a0097d7a53766687cf145c43448ac54a1b9e01c66bbe498a0e0dd2",
+        "stateIndex": 0,
+        "versionRef": "v1"
+      },
+      "verdict": "noninterference-proven"
+    },
+    {
+      "caseId": "demo-world-multi-operation",
+      "comparisonPoints": [
+        {
+          "baselineValue": "c57d7e4daaee25939e2a8f254d04794f6b5882dd980ca54e51599f0811d5def2",
+          "detail": "the serialized Solution Graph state must be byte-identical after every visual render — zero tolerance",
+          "equal": true,
+          "pointKind": "canonical-state-bytes",
+          "subjectId": "demo-world-multi-operation",
+          "substitutedValue": "c57d7e4daaee25939e2a8f254d04794f6b5882dd980ca54e51599f0811d5def2"
+        },
+        {
+          "baselineValue": "02377a9a18e9f228ab686b2a0d27cb01f53f5118cf378b9f801c01872e63c997",
+          "detail": "the serialized solution version must be byte-identical after every visual render — zero tolerance",
+          "equal": true,
+          "pointKind": "canonical-version-bytes",
+          "subjectId": "demo-world-multi-operation",
+          "substitutedValue": "02377a9a18e9f228ab686b2a0d27cb01f53f5118cf378b9f801c01872e63c997"
+        },
+        {
+          "baselineValue": "2bc2b0d4ccbd5cde2ff668e28d2c848bf5a6191808fa9fb0acbc1f8adaac36a4",
+          "detail": "the canonical engine's derived quantity inventory must be EXACTLY equal — ANY numeric delta is a FAIL (visuals are presentation)",
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "demo-world-multi-operation",
+          "substitutedValue": "2bc2b0d4ccbd5cde2ff668e28d2c848bf5a6191808fa9fb0acbc1f8adaac36a4"
+        },
+        {
+          "baselineValue": "e32f421164b3020764b27c3309a5130c9589bd323c4d6a27a9670d15a55179d4",
+          "detail": "the canonical engine's validation snapshot must be EXACTLY equal — a generated visual can never change a verdict",
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "demo-world-multi-operation",
+          "substitutedValue": "e32f421164b3020764b27c3309a5130c9589bd323c4d6a27a9670d15a55179d4"
+        },
+        {
+          "baselineValue": "9f5ce19f2891c81bf4aa5cc7b216f94cd777acac8e17284f811f34d14f7f7500",
+          "detail": "the canonical deterministic plan projection must be byte-identical after every render",
+          "equal": true,
+          "pointKind": "canonical-projection-bytes",
+          "subjectId": "demo-world-multi-operation#plan",
+          "substitutedValue": "9f5ce19f2891c81bf4aa5cc7b216f94cd777acac8e17284f811f34d14f7f7500"
+        },
+        {
+          "baselineValue": "c042e75c0d518032bb32b46cbd5c9cd4563758939edaf80e0c23990cb8f1f0d7",
+          "detail": "the canonical deterministic axonometric projection must be byte-identical after every render",
+          "equal": true,
+          "pointKind": "canonical-projection-bytes",
+          "subjectId": "demo-world-multi-operation#axonometric",
+          "substitutedValue": "c042e75c0d518032bb32b46cbd5c9cd4563758939edaf80e0c23990cb8f1f0d7"
+        }
+      ],
+      "renders": [
+        {
+          "artifactId": "a15c7c18de6ddd10b1cba929ffefdaa2d6cffae1271a4a8bc7b28e580f87ca75",
+          "ok": true,
+          "providerId": "visual-hypothesis-reference",
+          "providerKey": "reference"
+        },
+        {
+          "artifactId": "82925931f95446afe6ed4ee60ac6b41a8ce4440d5d8afb411878dbddd346ff18",
+          "ok": true,
+          "providerId": "visual-blueprint-alternate",
+          "providerKey": "alternate"
+        },
+        {
+          "failureKind": "unsupported-data",
+          "ok": false,
+          "providerId": "visual-failing-fixture",
+          "providerKey": "failing"
+        }
+      ],
+      "stateIdentity": {
+        "appliedOperationIds": [
+          "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+          "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+          "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+        ],
+        "solutionId": "solution-demo-001",
+        "stateContentDigest": "36eecf9f9d3d74281d195c5e0c197ced355d70b7f244c5513d92fa102a0f3e5b",
+        "stateId": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8",
+        "stateIndex": 3,
+        "versionRef": "v1"
+      },
+      "verdict": "noninterference-proven"
+    },
+    {
+      "caseId": "edge-empty-projection",
+      "comparisonPoints": [
+        {
+          "baselineValue": "bf72df8f166fde35c0a150dc6ec6e244710639c59f6f630c5861e37cb802643d",
+          "detail": "the serialized Solution Graph state must be byte-identical after every visual render — zero tolerance",
+          "equal": true,
+          "pointKind": "canonical-state-bytes",
+          "subjectId": "edge-empty-projection",
+          "substitutedValue": "bf72df8f166fde35c0a150dc6ec6e244710639c59f6f630c5861e37cb802643d"
+        },
+        {
+          "baselineValue": "90ac3ea2fa671415d79220e5dab7aa7ffb11d4ae347f6f984f2cdd7f6dbb6db8",
+          "detail": "the serialized solution version must be byte-identical after every visual render — zero tolerance",
+          "equal": true,
+          "pointKind": "canonical-version-bytes",
+          "subjectId": "edge-empty-projection",
+          "substitutedValue": "90ac3ea2fa671415d79220e5dab7aa7ffb11d4ae347f6f984f2cdd7f6dbb6db8"
+        },
+        {
+          "baselineValue": "de7a08da768b98c5570075897349409118a3e60de78c0f111fea5d62653ea5bf",
+          "detail": "the canonical engine's derived quantity inventory must be EXACTLY equal — ANY numeric delta is a FAIL (visuals are presentation)",
+          "equal": true,
+          "pointKind": "quantity-value",
+          "subjectId": "edge-empty-projection",
+          "substitutedValue": "de7a08da768b98c5570075897349409118a3e60de78c0f111fea5d62653ea5bf"
+        },
+        {
+          "baselineValue": "745195571a3741a65dab0d8293e36c2dc5d5674a606a64c68cf2f0404a1218ba",
+          "detail": "the canonical engine's validation snapshot must be EXACTLY equal — a generated visual can never change a verdict",
+          "equal": true,
+          "pointKind": "validation-verdict",
+          "subjectId": "edge-empty-projection",
+          "substitutedValue": "745195571a3741a65dab0d8293e36c2dc5d5674a606a64c68cf2f0404a1218ba"
+        },
+        {
+          "baselineValue": "cb0cae9911e23438bccb9b9f6811381f250f6e038ebe061aee04b745c4855540",
+          "detail": "the canonical deterministic plan projection must be byte-identical after every render",
+          "equal": true,
+          "pointKind": "canonical-projection-bytes",
+          "subjectId": "edge-empty-projection#plan",
+          "substitutedValue": "cb0cae9911e23438bccb9b9f6811381f250f6e038ebe061aee04b745c4855540"
+        },
+        {
+          "baselineValue": "31872b664a740195bdcae5e256eb5feb51b8d8749eeb723d9c6863e2a48858a4",
+          "detail": "the canonical deterministic axonometric projection must be byte-identical after every render",
+          "equal": true,
+          "pointKind": "canonical-projection-bytes",
+          "subjectId": "edge-empty-projection#axonometric",
+          "substitutedValue": "31872b664a740195bdcae5e256eb5feb51b8d8749eeb723d9c6863e2a48858a4"
+        }
+      ],
+      "renders": [
+        {
+          "artifactId": "931a14708f8654ea07fd134cf9a5b8cb3282c714f04920c97ce11ca7fdc39721",
+          "ok": true,
+          "providerId": "visual-hypothesis-reference",
+          "providerKey": "reference"
+        },
+        {
+          "artifactId": "b85ee186654255bf714af9d91de2ab00f808038e74019c9e547a7f1a423fc110",
+          "ok": true,
+          "providerId": "visual-blueprint-alternate",
+          "providerKey": "alternate"
+        },
+        {
+          "failureKind": "unsupported-data",
+          "ok": false,
+          "providerId": "visual-failing-fixture",
+          "providerKey": "failing"
+        }
+      ],
+      "stateIdentity": {
+        "appliedOperationIds": [
+          "414da68efc997447ec7a28968ee4ceae0d1caceaeafcf967d03d9949dfaacb96"
+        ],
+        "solutionId": "solution-visual-edge-001",
+        "stateContentDigest": "cf4e05a43f3b17be2e0ea6aa93790ee4855c525c38e3fc5232df6f9da542d752",
+        "stateId": "cb21959cfde2a53d03ce62d29798061a30ae3e8d21b8721bab1b3475e26037f4",
+        "stateIndex": 1,
+        "versionRef": "v1"
+      },
+      "verdict": "noninterference-proven"
+    }
+  ],
+  "committedAt": "2026-09-25T06:40:44Z",
+  "comparisonPointKinds": [
+    "canonical-state-bytes",
+    "canonical-version-bytes",
+    "quantity-value",
+    "validation-verdict",
+    "canonical-projection-bytes"
+  ],
+  "generatedBy": "bun tools/visual-eval/run.ts noninterfere",
+  "overall": "PASS",
+  "recordKind": "hfx-303-visual-noninterference",
+  "repoSha": "484bc2672b46d57ed774d17a0a8fe5ffc5d56d37",
+  "sabotage": [
+    {
+      "caseId": "demo-world-baseline",
+      "directMutation": {
+        "detected": true,
+        "verdict": "detected"
+      },
+      "laneDefended": {
+        "canonicalProjectionsUnchanged": true,
+        "refusedWithKind": "contract-mismatch",
+        "verdict": "defended"
+      },
+      "verdict": "sabotage-caught"
+    },
+    {
+      "caseId": "demo-world-multi-operation",
+      "directMutation": {
+        "detected": true,
+        "verdict": "detected"
+      },
+      "laneDefended": {
+        "canonicalProjectionsUnchanged": true,
+        "refusedWithKind": "contract-mismatch",
+        "verdict": "defended"
+      },
+      "verdict": "sabotage-caught"
+    }
+  ],
+  "schemaVersion": "hfx-303-visual-eval/1",
+  "totals": {
+    "noninterference-proven": 3,
+    "sabotage-caught": 2,
+    "total": 5
+  }
+}

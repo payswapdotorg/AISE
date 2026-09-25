@@ -1,0 +1,243 @@
+{
+  "cases": [
+    {
+      "canonicalProjectionBinding": {
+        "axonometricBound": true,
+        "planBound": true
+      },
+      "caseId": "demo-world-baseline",
+      "failingFallbackRecord": {
+        "canonicalProjectionDigests": {
+          "axonometric": "e166d0d050351502e8305286cdff23416a0c4187166278a819df99c8aa5be775",
+          "plan": "f5290f42655e4f0c0e5767a8355600c798713e29253b46b2ca0bcf45df7e23d9"
+        },
+        "fallbackId": "19f896a75bd68f4d39be57dc3856d1501bae9402ba67775e5a889609516cf70d",
+        "kind": "visual-fallback-record",
+        "reason": {
+          "failure": {
+            "detail": "the failing visual fixture never renders — this typed failure drives the fallback lane (the canonical deterministic views remain the engineering views)",
+            "kind": "unsupported-data"
+          },
+          "reasonKind": "provider-failure"
+        },
+        "schemaVersion": "visual-fallback/1",
+        "state": {
+          "appliedOperationIds": [],
+          "solutionId": "solution-demo-001",
+          "stateContentDigest": "01057ab2b0111d0eea3661fa064b34a87acdf0f7043338a003267ef794b670f6",
+          "stateId": "ce0f5133d8a0097d7a53766687cf145c43448ac54a1b9e01c66bbe498a0e0dd2",
+          "stateIndex": 0,
+          "versionRef": "v1"
+        },
+        "statement": "visual generation unavailable — the canonical deterministic 2D/3D projections remain the engineering views; the fallback itself is recorded, never a silent gap",
+        "visualClass": "elevation-hypothesis"
+      },
+      "failingProvider": {
+        "failureKind": "unsupported-data",
+        "refused": true
+      },
+      "missingProviderRecord": {
+        "canonicalProjectionDigests": {
+          "axonometric": "e166d0d050351502e8305286cdff23416a0c4187166278a819df99c8aa5be775",
+          "plan": "f5290f42655e4f0c0e5767a8355600c798713e29253b46b2ca0bcf45df7e23d9"
+        },
+        "fallbackId": "530ce79cbe441844328fd763979fc2960936e2de3c45f836a5c37a3a1bceaf5e",
+        "kind": "visual-fallback-record",
+        "reason": {
+          "detail": "no visual-generation provider is configured for this request — the canonical deterministic views are shown",
+          "reasonKind": "provider-absent"
+        },
+        "schemaVersion": "visual-fallback/1",
+        "state": {
+          "appliedOperationIds": [],
+          "solutionId": "solution-demo-001",
+          "stateContentDigest": "01057ab2b0111d0eea3661fa064b34a87acdf0f7043338a003267ef794b670f6",
+          "stateId": "ce0f5133d8a0097d7a53766687cf145c43448ac54a1b9e01c66bbe498a0e0dd2",
+          "stateIndex": 0,
+          "versionRef": "v1"
+        },
+        "statement": "visual generation unavailable — the canonical deterministic 2D/3D projections remain the engineering views; the fallback itself is recorded, never a silent gap",
+        "visualClass": "elevation-hypothesis"
+      },
+      "stateIdentity": {
+        "appliedOperationIds": [],
+        "solutionId": "solution-demo-001",
+        "stateContentDigest": "01057ab2b0111d0eea3661fa064b34a87acdf0f7043338a003267ef794b670f6",
+        "stateId": "ce0f5133d8a0097d7a53766687cf145c43448ac54a1b9e01c66bbe498a0e0dd2",
+        "stateIndex": 0,
+        "versionRef": "v1"
+      },
+      "verdict": "fallback-proven"
+    },
+    {
+      "canonicalProjectionBinding": {
+        "axonometricBound": true,
+        "planBound": true
+      },
+      "caseId": "demo-world-multi-operation",
+      "failingFallbackRecord": {
+        "canonicalProjectionDigests": {
+          "axonometric": "c042e75c0d518032bb32b46cbd5c9cd4563758939edaf80e0c23990cb8f1f0d7",
+          "plan": "9f5ce19f2891c81bf4aa5cc7b216f94cd777acac8e17284f811f34d14f7f7500"
+        },
+        "fallbackId": "fb59907848a74e475814428a8d23b01a8b4273de8c9cc6248ade3643466a18cb",
+        "kind": "visual-fallback-record",
+        "reason": {
+          "failure": {
+            "detail": "the failing visual fixture never renders — this typed failure drives the fallback lane (the canonical deterministic views remain the engineering views)",
+            "kind": "unsupported-data"
+          },
+          "reasonKind": "provider-failure"
+        },
+        "schemaVersion": "visual-fallback/1",
+        "state": {
+          "appliedOperationIds": [
+            "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+            "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+            "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+          ],
+          "solutionId": "solution-demo-001",
+          "stateContentDigest": "36eecf9f9d3d74281d195c5e0c197ced355d70b7f244c5513d92fa102a0f3e5b",
+          "stateId": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8",
+          "stateIndex": 3,
+          "versionRef": "v1"
+        },
+        "statement": "visual generation unavailable — the canonical deterministic 2D/3D projections remain the engineering views; the fallback itself is recorded, never a silent gap",
+        "visualClass": "elevation-hypothesis"
+      },
+      "failingProvider": {
+        "failureKind": "unsupported-data",
+        "refused": true
+      },
+      "missingProviderRecord": {
+        "canonicalProjectionDigests": {
+          "axonometric": "c042e75c0d518032bb32b46cbd5c9cd4563758939edaf80e0c23990cb8f1f0d7",
+          "plan": "9f5ce19f2891c81bf4aa5cc7b216f94cd777acac8e17284f811f34d14f7f7500"
+        },
+        "fallbackId": "962c65e2d3aa4648c72676fffd4613b7e9ba69da531d652034b613f237a010f1",
+        "kind": "visual-fallback-record",
+        "reason": {
+          "detail": "no visual-generation provider is configured for this request — the canonical deterministic views are shown",
+          "reasonKind": "provider-absent"
+        },
+        "schemaVersion": "visual-fallback/1",
+        "state": {
+          "appliedOperationIds": [
+            "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+            "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+            "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+          ],
+          "solutionId": "solution-demo-001",
+          "stateContentDigest": "36eecf9f9d3d74281d195c5e0c197ced355d70b7f244c5513d92fa102a0f3e5b",
+          "stateId": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8",
+          "stateIndex": 3,
+          "versionRef": "v1"
+        },
+        "statement": "visual generation unavailable — the canonical deterministic 2D/3D projections remain the engineering views; the fallback itself is recorded, never a silent gap",
+        "visualClass": "elevation-hypothesis"
+      },
+      "stateIdentity": {
+        "appliedOperationIds": [
+          "78be478643fcbb4aad1ba5e9165ab3382199c9165770f50b83a58c431096f2f9",
+          "281417008f64faec1343a222213785066c6d480c1ef07b67120d73bd89d903ea",
+          "84edfbc5221e39787e698800e9847b3fc87c2b83fd1e67d7e4d162265e25045e"
+        ],
+        "solutionId": "solution-demo-001",
+        "stateContentDigest": "36eecf9f9d3d74281d195c5e0c197ced355d70b7f244c5513d92fa102a0f3e5b",
+        "stateId": "607856bb40576d7d552c12aa3ca509f4e0c160b6726cc086c1a7b822c58b06b8",
+        "stateIndex": 3,
+        "versionRef": "v1"
+      },
+      "verdict": "fallback-proven"
+    },
+    {
+      "canonicalProjectionBinding": {
+        "axonometricBound": true,
+        "planBound": true
+      },
+      "caseId": "edge-empty-projection",
+      "failingFallbackRecord": {
+        "canonicalProjectionDigests": {
+          "axonometric": "31872b664a740195bdcae5e256eb5feb51b8d8749eeb723d9c6863e2a48858a4",
+          "plan": "cb0cae9911e23438bccb9b9f6811381f250f6e038ebe061aee04b745c4855540"
+        },
+        "fallbackId": "2ad2dda19f1d06b55842d03c9a38401ca5b48f57c883d97b098ae8b6474347c8",
+        "kind": "visual-fallback-record",
+        "reason": {
+          "failure": {
+            "detail": "the failing visual fixture never renders — this typed failure drives the fallback lane (the canonical deterministic views remain the engineering views)",
+            "kind": "unsupported-data"
+          },
+          "reasonKind": "provider-failure"
+        },
+        "schemaVersion": "visual-fallback/1",
+        "state": {
+          "appliedOperationIds": [
+            "414da68efc997447ec7a28968ee4ceae0d1caceaeafcf967d03d9949dfaacb96"
+          ],
+          "solutionId": "solution-visual-edge-001",
+          "stateContentDigest": "cf4e05a43f3b17be2e0ea6aa93790ee4855c525c38e3fc5232df6f9da542d752",
+          "stateId": "cb21959cfde2a53d03ce62d29798061a30ae3e8d21b8721bab1b3475e26037f4",
+          "stateIndex": 1,
+          "versionRef": "v1"
+        },
+        "statement": "visual generation unavailable — the canonical deterministic 2D/3D projections remain the engineering views; the fallback itself is recorded, never a silent gap",
+        "visualClass": "context-sketch"
+      },
+      "failingProvider": {
+        "failureKind": "unsupported-data",
+        "refused": true
+      },
+      "missingProviderRecord": {
+        "canonicalProjectionDigests": {
+          "axonometric": "31872b664a740195bdcae5e256eb5feb51b8d8749eeb723d9c6863e2a48858a4",
+          "plan": "cb0cae9911e23438bccb9b9f6811381f250f6e038ebe061aee04b745c4855540"
+        },
+        "fallbackId": "e6edb2e9fbe5e6e4dfac83e7ef021c40a784718d1a85cf62dcf4ef9789558c9a",
+        "kind": "visual-fallback-record",
+        "reason": {
+          "detail": "no visual-generation provider is configured for this request — the canonical deterministic views are shown",
+          "reasonKind": "provider-absent"
+        },
+        "schemaVersion": "visual-fallback/1",
+        "state": {
+          "appliedOperationIds": [
+            "414da68efc997447ec7a28968ee4ceae0d1caceaeafcf967d03d9949dfaacb96"
+          ],
+          "solutionId": "solution-visual-edge-001",
+          "stateContentDigest": "cf4e05a43f3b17be2e0ea6aa93790ee4855c525c38e3fc5232df6f9da542d752",
+          "stateId": "cb21959cfde2a53d03ce62d29798061a30ae3e8d21b8721bab1b3475e26037f4",
+          "stateIndex": 1,
+          "versionRef": "v1"
+        },
+        "statement": "visual generation unavailable — the canonical deterministic 2D/3D projections remain the engineering views; the fallback itself is recorded, never a silent gap",
+        "visualClass": "context-sketch"
+      },
+      "stateIdentity": {
+        "appliedOperationIds": [
+          "414da68efc997447ec7a28968ee4ceae0d1caceaeafcf967d03d9949dfaacb96"
+        ],
+        "solutionId": "solution-visual-edge-001",
+        "stateContentDigest": "cf4e05a43f3b17be2e0ea6aa93790ee4855c525c38e3fc5232df6f9da542d752",
+        "stateId": "cb21959cfde2a53d03ce62d29798061a30ae3e8d21b8721bab1b3475e26037f4",
+        "stateIndex": 1,
+        "versionRef": "v1"
+      },
+      "verdict": "fallback-proven"
+    }
+  ],
+  "committedAt": "2026-09-25T06:40:44Z",
+  "comparisonPointKinds": [
+    "canonical-projection-digest-binding",
+    "typed-failure-note"
+  ],
+  "generatedBy": "bun tools/visual-eval/run.ts fallback",
+  "overall": "PASS",
+  "recordKind": "hfx-303-visual-fallback-drill",
+  "repoSha": "484bc2672b46d57ed774d17a0a8fe5ffc5d56d37",
+  "schemaVersion": "hfx-303-visual-eval/1",
+  "totals": {
+    "fallback-proven": 3,
+    "total": 3
+  }
+}

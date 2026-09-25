@@ -277,6 +277,24 @@ export interface ViewerUnitDeclaration {
 }
 
 /* ------------------------------------------------------------------ */
+/* Optional generated-visual inputs (HFX-303 — structural mirrors)      */
+/* ------------------------------------------------------------------ */
+
+/*
+ * The generated-visual pane's wire inputs are STRUCTURAL MIRRORS of the
+ * visual-render lane's artifact/fallback records (same field names, same
+ * JSON shapes, defined locally in generated/model.ts — the AISE-027
+ * mirror discipline; the compat test proves a live package artifact
+ * satisfies them as-is). They are imported TYPE-ONLY: zero runtime
+ * surface, zero effect on renders that do not carry them.
+ */
+import type {
+  GeneratedVisualArtifact,
+  GeneratedVisualFallbackRecord,
+} from "./generated/model";
+export type { GeneratedVisualArtifact, GeneratedVisualFallbackRecord };
+
+/* ------------------------------------------------------------------ */
 /* 3D view parameters (presentation only)                              */
 /* ------------------------------------------------------------------ */
 
@@ -401,6 +419,15 @@ export interface ViewerFrame {
  * deliberately NO field for the baseline `GraphVersion` and NO write
  * surface: the viewer holds proposed states only, and authoritative
  * reality is never in its hands to mutate.
+ *
+ * HFX-303 (OPTIONAL generated-visual fields): `generatedVisual` and
+ * `generatedVisualFallback` are ABSENT in every existing input — a
+ * render without them is BIT-IDENTICAL to the pre-HFX-303 viewer
+ * (golden-tested). When present they attach the visual lane's output as
+ * READ-ONLY presentation: a rendered hypothesis visual (with its
+ * provenance + label manifest) or the honest fallback record. They can
+ * never change the canonical panes, the quantities or any state — the
+ * generated pane is presentation only (see generated/model.ts).
  */
 export interface ViewerInput {
   /** The full AISE-026 scenario record (steps + immutable states). */
@@ -413,4 +440,16 @@ export interface ViewerInput {
   readonly selectedNodeId?: string;
   /** Axonometric view parameters for the 3D pane (default when absent). */
   readonly view?: ViewParams;
+  /**
+   * OPTIONAL (HFX-303): a generated visual artifact for the viewed
+   * state, produced server-side through the visual-rendering provider
+   * port. Presentation only — never authority. Absent = no pane.
+   */
+  readonly generatedVisual?: GeneratedVisualArtifact;
+  /**
+   * OPTIONAL (HFX-303): the honest fallback record when visual
+   * generation failed or no provider was configured. The canonical
+   * panes remain; this adds the recorded notice. Absent = no notice.
+   */
+  readonly generatedVisualFallback?: GeneratedVisualFallbackRecord;
 }
