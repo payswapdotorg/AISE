@@ -1,0 +1,112 @@
+{
+  "codeVersion": "hfx-401/provider-scorecard/1",
+  "controlPlaneTrace": {
+    "appliedDecisionEvent": {
+      "checks": [
+        {
+          "detail": "license 'fixture-research-only-1.0' is evaluation-only (commercialUse: false, intendedUseCleared: false) — the dataset/model-use rule forbids production promotion",
+          "gate": "license-use-clearance",
+          "passed": false
+        },
+        {
+          "detail": "1 benchmark record(s) attached, all referencing this provider+version",
+          "gate": "benchmark-evidence",
+          "passed": true
+        },
+        {
+          "detail": "1 provenance manifest(s) sealed against this profile digest",
+          "gate": "provenance-continuity",
+          "passed": true
+        }
+      ],
+      "decision": "rejected",
+      "kind": "promotion-decided",
+      "providerId": "fixture-depth-provider",
+      "refusals": [
+        {
+          "detail": "provider 'fixture-depth-provider' (1.1.0-fixture-v2) is evaluation-only: licensing/intended-use terms are not explicitly cleared — production promotion is refused (training and evaluation are separate decisions; nothing enters a commercial pipeline silently)",
+          "kind": "license-blocked"
+        }
+      ],
+      "technologyVersion": "1.1.0-fixture-v2"
+    },
+    "counterfactual": null,
+    "entryStateAfter": "rejected",
+    "entryStateBefore": "benchmarked",
+    "eventsDigest": "c5f7dbb4987cff65f730a4af5c6194cd210e326702a68c0fdb80be8279306273",
+    "registryEventCount": 12,
+    "source": "committed-history"
+  },
+  "decision": "refused",
+  "engineDecision": {
+    "outcome": "refused",
+    "refusals": [
+      {
+        "detail": "gate 'semantic-equivalence' FAILED — breaches the documented reference truth deterministically: mean absolute error 0.125 m / max error 0.25 m (the +0.25 m even-index bias) where v1 reproduces the same truth exactly — the committed record is the evidence. A provider that fails any mandatory gate remains non-production, even if its benchmark score is strong",
+        "gate": "semantic-equivalence",
+        "kind": "mandatory-gate-failed"
+      },
+      {
+        "detail": "gate 'dependent-layer-regression' is recorded NA and sits on the layer-1 mandatory checklist — the HFX-000 reference lifecycle is the control plane's own exit-gate fixture (a Layer-1 depth-estimation double) — no Layer-2 consumer regression corpus exists in its committed scope; the Layer-1→Layer-2 regression surface is owned by the HFX-101/102 adapter benchmarks, so this dimension is unevaluable here and blocks production eligibility under the Layer-1 checklist (all gates mandatory). Unevaluated is not passed; a production default must evidence every mandatory dimension",
+        "gate": "dependent-layer-regression",
+        "kind": "mandatory-gate-not-evaluable"
+      },
+      {
+        "detail": "gate 'license-use-clearance' FAILED — license 'fixture-research-only-1.0' is evaluation-only (commercialUse: false, intendedUseCleared: false) — the dataset/model-use rule forbids production promotion; training and evaluation are separate decisions. A provider that fails any mandatory gate remains non-production, even if its benchmark score is strong",
+        "gate": "license-use-clearance",
+        "kind": "mandatory-gate-failed"
+      },
+      {
+        "detail": "the scorecard violates the layer-1 checklist (hfx-401/layer-checklist/1) — an NA sits on a mandatory gate",
+        "gate": "layer-checklist",
+        "kind": "checklist-violation"
+      }
+    ],
+    "statement": "REFUSED: [semantic-equivalence, dependent-layer-regression, license-use-clearance] did not pass — the provider remains non-production (no override path exists; the refusal names every failed/refused gate)"
+  },
+  "gateAssessment": {
+    "failedGates": [
+      "semantic-equivalence",
+      "license-use-clearance"
+    ],
+    "mandatoryGates": [
+      "contract-conformance",
+      "semantic-equivalence",
+      "negative-discrimination-behavior",
+      "provenance-continuity",
+      "uncertainty-behavior",
+      "failure-unsupported-behavior",
+      "dependent-layer-regression",
+      "license-use-clearance",
+      "cost-quota-safety",
+      "historical-interpretability"
+    ],
+    "naGates": [
+      "dependent-layer-regression"
+    ],
+    "nonPassingGates": [
+      "semantic-equivalence",
+      "dependent-layer-regression",
+      "license-use-clearance"
+    ]
+  },
+  "kind": "provider-promotion-record",
+  "layerRegression": {
+    "citations": [],
+    "layer": 1,
+    "requirement": "a Layer-1 production promotion must cite regression evidence for the Layer-2 consumers of Layer-1 outputs (readiness + Evidence Envelope consumers) — the reconstruction/depth adapter benchmarks (HFX-101/102 discipline)"
+  },
+  "mappingVersion": "hfx-401/promotion-vocabulary-mapping/1",
+  "path": "refusal",
+  "provider": {
+    "layer": 1,
+    "profileDigest": "484fd5a05a70b17e2bfea7f0984e2536759213df4d6c42c73bb172e0de9b49c2",
+    "providerClass": "perception",
+    "providerId": "fixture-depth-provider",
+    "role": "control-plane-fixture",
+    "technologyVersion": "1.1.0-fixture-v2"
+  },
+  "recordId": "bc993994ef2552a2cf3c17be302162f43ea74e647ec6c3c8e3d7c084e35e33cd",
+  "schemaVersion": "hfx-401/promotion-record/1",
+  "scorecardId": "0b779c9df16dd8cdb30c2f87e8361e81e9fe6cff3269bc4a19f426ffb053a893"
+}

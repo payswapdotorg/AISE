@@ -1,0 +1,104 @@
+{
+  "codeVersion": "hfx-401/provider-scorecard/1",
+  "controlPlaneTrace": {
+    "appliedDecisionEvent": null,
+    "counterfactual": {
+      "admitted": true,
+      "checks": [
+        {
+          "detail": "license 'fixture-permissive-1.0' clears commercial use and the declared intended use for production",
+          "gate": "license-use-clearance",
+          "passed": true
+        },
+        {
+          "detail": "1 benchmark record(s) attached, all referencing this provider+version",
+          "gate": "benchmark-evidence",
+          "passed": true
+        },
+        {
+          "detail": "1 provenance manifest(s) sealed against this profile digest",
+          "gate": "provenance-continuity",
+          "passed": true
+        }
+      ]
+    },
+    "entryStateAfter": "benchmarked",
+    "entryStateBefore": "benchmarked",
+    "eventsDigest": "ba5b925760ef2069e6590a72be244ea612218b5daa8d03e005fe2ab640902768",
+    "registryEventCount": 9,
+    "source": "drill-registry"
+  },
+  "decision": "refused",
+  "engineDecision": {
+    "outcome": "refused",
+    "refusals": [
+      {
+        "detail": "gate 'semantic-equivalence' FAILED — 5 of 5 corpus cells breach the declared tolerance (observed declared-incompatible with the closed-vocabulary kind(s) [operation-semantic-failure]): gdi-excavation-coarse, gdi-slab-coarse, gdi-plaster-coarse, gdi-block-wall-coarse, gdi-service-run-coarse — provider replacement would change AISE solution semantics. A provider that fails any mandatory gate remains non-production, even if its benchmark score is strong",
+        "gate": "semantic-equivalence",
+        "kind": "mandatory-gate-failed"
+      },
+      {
+        "detail": "gate 'dependent-layer-regression' FAILED — the dependent BOQ projection regresses: 5 of 5 cells carry divergent boq-line comparison points (the substitute's breaching quantities flow into the BOQ derivation) — the Layer-3 consumers would see changed derived quantities. A provider that fails any mandatory gate remains non-production, even if its benchmark score is strong",
+        "gate": "dependent-layer-regression",
+        "kind": "mandatory-gate-failed"
+      }
+    ],
+    "statement": "REFUSED: [semantic-equivalence, dependent-layer-regression] did not pass — the provider remains non-production (no override path exists; the refusal names every failed/refused gate)"
+  },
+  "gateAssessment": {
+    "failedGates": [
+      "semantic-equivalence",
+      "dependent-layer-regression"
+    ],
+    "mandatoryGates": [
+      "contract-conformance",
+      "negative-discrimination-behavior",
+      "provenance-continuity",
+      "uncertainty-behavior",
+      "failure-unsupported-behavior",
+      "dependent-layer-regression",
+      "license-use-clearance",
+      "cost-quota-safety",
+      "historical-interpretability"
+    ],
+    "naGates": [],
+    "nonPassingGates": [
+      "semantic-equivalence",
+      "dependent-layer-regression"
+    ]
+  },
+  "kind": "provider-promotion-record",
+  "layerRegression": {
+    "citations": [
+      {
+        "benchmarkRecordDigest": "893d40726616fa6405235280f75ad7c3d800b9926413bf1f04added6bfed8863",
+        "citationKind": "geometry-eval",
+        "corpusDigest": "a2c70e4831bcfa74f7a5a04404b39e9e2fec8f619cc145b08f18c1f0ad7ffe22",
+        "provenanceManifestDigest": "8518da3b27ae6f8bb6093466648c7c86c39f4db2e4db8e43797ec2be880db97c",
+        "suiteId": "geometry-eval-suite/1"
+      },
+      {
+        "benchmarkRecordDigest": "6943c18b00b878f8ae88c4a18312da5db36a6dc3f7d509de1c929ebc5dae5420",
+        "citationKind": "equivalence-eval",
+        "corpusDigest": "52f099fc3bad7f6f2da0ea9ab88413d4b5fcf99ef82aee1976ee87a1a77c1863",
+        "provenanceManifestDigest": "825699a04420e8dd7dd510bbbe5e4cbbe82ce6a697a5820e24d93386e72f9eac",
+        "suiteId": "equivalence-eval-suite/1"
+      }
+    ],
+    "layer": 3,
+    "requirement": "a Layer-3 production promotion must cite regression evidence for the consumers of Layer-3 geometry/validation outputs: the committed HFX-301 equivalence corpus (the authoring journeys over the same engine) and the committed HFX-302 geometry substitution corpus (the dual-lane quantities/BOQ comparisons)"
+  },
+  "mappingVersion": "hfx-401/promotion-vocabulary-mapping/1",
+  "path": "refusal",
+  "provider": {
+    "layer": 3,
+    "profileDigest": "a296596f524e17be550788b99229ca29aabae7a2ddb2f3c882050ff13b593efc",
+    "providerClass": "geometry",
+    "providerId": "geometry-substitute-coarse",
+    "role": "substitute-lane",
+    "technologyVersion": "1.0.0-discretized"
+  },
+  "recordId": "c37af9bd59d3068c328db4e6001b591ae9641b9d7ad28330c4e6cbbc58d63dc1",
+  "schemaVersion": "hfx-401/promotion-record/1",
+  "scorecardId": "06ff1e5b41d29164b49af3de885bc2faa117f137d84b0892e288950f46ab5cbd"
+}

@@ -1,0 +1,110 @@
+{
+  "codeVersion": "hfx-401/provider-scorecard/1",
+  "controlPlaneTrace": {
+    "appliedDecisionEvent": null,
+    "counterfactual": {
+      "admitted": true,
+      "checks": [
+        {
+          "detail": "license 'fixture-permissive-1.0' clears commercial use and the declared intended use for production",
+          "gate": "license-use-clearance",
+          "passed": true
+        },
+        {
+          "detail": "1 benchmark record(s) attached, all referencing this provider+version",
+          "gate": "benchmark-evidence",
+          "passed": true
+        },
+        {
+          "detail": "1 provenance manifest(s) sealed against this profile digest",
+          "gate": "provenance-continuity",
+          "passed": true
+        }
+      ]
+    },
+    "entryStateAfter": "benchmarked",
+    "entryStateBefore": "benchmarked",
+    "eventsDigest": "a6259a30650f2c18ec2b8175dc8192d261c10cbf1cc8041758114facd1330d1f",
+    "registryEventCount": 8,
+    "source": "drill-registry"
+  },
+  "decision": "refused",
+  "engineDecision": {
+    "outcome": "refused",
+    "refusals": [
+      {
+        "detail": "gate 'contract-conformance' FAILED — declares 7 of 10 required Layer-3 geometry families (omits: demolition-removal, building-service-installation, finish-application); 4 corpus cells were refused by the fail-closed capability gate before execution — a production default must cover the layer's required task surface. A provider that fails any mandatory gate remains non-production, even if its benchmark score is strong",
+        "gate": "contract-conformance",
+        "kind": "mandatory-gate-failed"
+      },
+      {
+        "detail": "gate 'dependent-layer-regression' is recorded NA and sits on the layer-3 mandatory checklist — zero executed corpus cells — the fail-closed gate refuses every cell of this provider's corpus presence, so the dependent-layer (BOQ/equivalence) regression surface is unevaluable; a production default must EVIDENCE its dependent layers, and unevidenced is not passed. Unevaluated is not passed; a production default must evidence every mandatory dimension",
+        "gate": "dependent-layer-regression",
+        "kind": "mandatory-gate-not-evaluable"
+      },
+      {
+        "detail": "the scorecard violates the layer-3 checklist (hfx-401/layer-checklist/1) — an NA sits on a mandatory gate",
+        "gate": "layer-checklist",
+        "kind": "checklist-violation"
+      }
+    ],
+    "statement": "REFUSED: [contract-conformance, dependent-layer-regression] did not pass — the provider remains non-production (no override path exists; the refusal names every failed/refused gate)"
+  },
+  "gateAssessment": {
+    "failedGates": [
+      "contract-conformance"
+    ],
+    "mandatoryGates": [
+      "contract-conformance",
+      "negative-discrimination-behavior",
+      "provenance-continuity",
+      "uncertainty-behavior",
+      "failure-unsupported-behavior",
+      "dependent-layer-regression",
+      "license-use-clearance",
+      "cost-quota-safety",
+      "historical-interpretability"
+    ],
+    "naGates": [
+      "dependent-layer-regression"
+    ],
+    "nonPassingGates": [
+      "contract-conformance",
+      "dependent-layer-regression"
+    ]
+  },
+  "kind": "provider-promotion-record",
+  "layerRegression": {
+    "citations": [
+      {
+        "benchmarkRecordDigest": "893d40726616fa6405235280f75ad7c3d800b9926413bf1f04added6bfed8863",
+        "citationKind": "geometry-eval",
+        "corpusDigest": "a2c70e4831bcfa74f7a5a04404b39e9e2fec8f619cc145b08f18c1f0ad7ffe22",
+        "provenanceManifestDigest": "8518da3b27ae6f8bb6093466648c7c86c39f4db2e4db8e43797ec2be880db97c",
+        "suiteId": "geometry-eval-suite/1"
+      },
+      {
+        "benchmarkRecordDigest": "6943c18b00b878f8ae88c4a18312da5db36a6dc3f7d509de1c929ebc5dae5420",
+        "citationKind": "equivalence-eval",
+        "corpusDigest": "52f099fc3bad7f6f2da0ea9ab88413d4b5fcf99ef82aee1976ee87a1a77c1863",
+        "provenanceManifestDigest": "825699a04420e8dd7dd510bbbe5e4cbbe82ce6a697a5820e24d93386e72f9eac",
+        "suiteId": "equivalence-eval-suite/1"
+      }
+    ],
+    "layer": 3,
+    "requirement": "a Layer-3 production promotion must cite regression evidence for the consumers of Layer-3 geometry/validation outputs: the committed HFX-301 equivalence corpus (the authoring journeys over the same engine) and the committed HFX-302 geometry substitution corpus (the dual-lane quantities/BOQ comparisons)"
+  },
+  "mappingVersion": "hfx-401/promotion-vocabulary-mapping/1",
+  "path": "refusal",
+  "provider": {
+    "layer": 3,
+    "profileDigest": "2e146fe332326065e9da8634b00951208f8012baa2c1c35e66bc8ca38473362e",
+    "providerClass": "geometry",
+    "providerId": "geometry-substitute-restricted",
+    "role": "substitute-lane",
+    "technologyVersion": "1.0.0-discretized"
+  },
+  "recordId": "01655532f91c3cd05083f174591c4301b1fee6ab08cfb9f1974c237d32c2e0f7",
+  "schemaVersion": "hfx-401/promotion-record/1",
+  "scorecardId": "60c6f49ff000d7da18b85cdf5f5ba7bcaf01cc41c0ea7ca89819c4ceacbfd1a4"
+}

@@ -1,0 +1,92 @@
+{
+  "codeVersion": "hfx-401/provider-scorecard/1",
+  "controlPlaneTrace": {
+    "appliedDecisionEvent": {
+      "checks": [
+        {
+          "detail": "license 'fixture-permissive-1.0' clears commercial use and the declared intended use for production",
+          "gate": "license-use-clearance",
+          "passed": true
+        },
+        {
+          "detail": "1 benchmark record(s) attached, all referencing this provider+version",
+          "gate": "benchmark-evidence",
+          "passed": true
+        },
+        {
+          "detail": "1 provenance manifest(s) sealed against this profile digest",
+          "gate": "provenance-continuity",
+          "passed": true
+        }
+      ],
+      "decision": "promoted",
+      "kind": "promotion-decided",
+      "providerId": "fixture-depth-provider",
+      "refusals": [],
+      "technologyVersion": "1.0.0-fixture-v1"
+    },
+    "counterfactual": null,
+    "entryStateAfter": "promoted",
+    "entryStateBefore": "benchmarked",
+    "eventsDigest": "c5f7dbb4987cff65f730a4af5c6194cd210e326702a68c0fdb80be8279306273",
+    "registryEventCount": 12,
+    "source": "committed-history"
+  },
+  "decision": "refused",
+  "engineDecision": {
+    "outcome": "refused",
+    "refusals": [
+      {
+        "detail": "gate 'dependent-layer-regression' is recorded NA and sits on the layer-1 mandatory checklist — the HFX-000 reference lifecycle is the control plane's own exit-gate fixture (a Layer-1 depth-estimation double) — no Layer-2 consumer regression corpus exists in its committed scope; the Layer-1→Layer-2 regression surface is owned by the HFX-101/102 adapter benchmarks, so this dimension is unevaluable here and blocks production eligibility under the Layer-1 checklist (all gates mandatory). Unevaluated is not passed; a production default must evidence every mandatory dimension",
+        "gate": "dependent-layer-regression",
+        "kind": "mandatory-gate-not-evaluable"
+      },
+      {
+        "detail": "the scorecard violates the layer-1 checklist (hfx-401/layer-checklist/1) — an NA sits on a mandatory gate",
+        "gate": "layer-checklist",
+        "kind": "checklist-violation"
+      }
+    ],
+    "statement": "REFUSED: [dependent-layer-regression] did not pass — the provider remains non-production (no override path exists; the refusal names every failed/refused gate)"
+  },
+  "gateAssessment": {
+    "failedGates": [],
+    "mandatoryGates": [
+      "contract-conformance",
+      "semantic-equivalence",
+      "negative-discrimination-behavior",
+      "provenance-continuity",
+      "uncertainty-behavior",
+      "failure-unsupported-behavior",
+      "dependent-layer-regression",
+      "license-use-clearance",
+      "cost-quota-safety",
+      "historical-interpretability"
+    ],
+    "naGates": [
+      "dependent-layer-regression"
+    ],
+    "nonPassingGates": [
+      "dependent-layer-regression"
+    ]
+  },
+  "kind": "provider-promotion-record",
+  "layerRegression": {
+    "citations": [],
+    "layer": 1,
+    "requirement": "a Layer-1 production promotion must cite regression evidence for the Layer-2 consumers of Layer-1 outputs (readiness + Evidence Envelope consumers) — the reconstruction/depth adapter benchmarks (HFX-101/102 discipline)"
+  },
+  "mappingVersion": "hfx-401/promotion-vocabulary-mapping/1",
+  "path": "refusal",
+  "provider": {
+    "layer": 1,
+    "profileDigest": "fb9372e42bef036243800d7938a82f904ca05ac521e912d0a981d01ea98c7994",
+    "providerClass": "perception",
+    "providerId": "fixture-depth-provider",
+    "role": "control-plane-fixture",
+    "technologyVersion": "1.0.0-fixture-v1"
+  },
+  "recordId": "faaf6d8f02aa0c92624908b3d7fdf0bbb2c649fbd9668efccfcdb9ef19d97f51",
+  "schemaVersion": "hfx-401/promotion-record/1",
+  "scorecardId": "199142ff6ae9dc273f4e6fe987199de48f7fc318c2446b7a3806aa9979fbcb2d"
+}

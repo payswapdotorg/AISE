@@ -1,0 +1,239 @@
+{
+  "checklistVersion": "hfx-401/layer-checklist/1",
+  "gateVocabularyVersion": "hfx-401/gate-vocabulary/1",
+  "layers": [
+    {
+      "dependentLayerRegression": {
+        "requiredCitationKinds": [
+          "solution-eval"
+        ],
+        "statement": "a Layer-1 production promotion must cite regression evidence for the Layer-2 consumers of Layer-1 outputs (readiness + Evidence Envelope consumers) — the reconstruction/depth adapter benchmarks (HFX-101/102 discipline)"
+      },
+      "gates": [
+        {
+          "applicability": "mandatory",
+          "gate": "contract-conformance",
+          "title": "contract conformance"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "semantic-equivalence",
+          "title": "semantic equivalence"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "negative-discrimination-behavior",
+          "title": "negative/discrimination behavior"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "provenance-continuity",
+          "title": "provenance continuity"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "uncertainty-behavior",
+          "title": "uncertainty behavior"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "failure-unsupported-behavior",
+          "title": "failure/unsupported behavior"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "dependent-layer-regression",
+          "title": "dependent-layer regression"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "license-use-clearance",
+          "title": "license/use clearance"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "cost-quota-safety",
+          "title": "cost/quota safety"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "historical-interpretability",
+          "title": "historical interpretability"
+        }
+      ],
+      "layer": 1,
+      "providerClasses": [
+        "perception",
+        "reconstruction"
+      ],
+      "requiredCapabilityCoverage": {},
+      "title": "Layer 1 — Reality (perception/reconstruction)"
+    },
+    {
+      "dependentLayerRegression": {
+        "requiredCitationKinds": [
+          "solution-eval"
+        ],
+        "statement": "a Layer-2 production promotion must cite regression evidence for the Layer-3 consumers of Layer-2 Evidence Envelopes (the solution authoring journeys)"
+      },
+      "gates": [
+        {
+          "applicability": "mandatory",
+          "gate": "contract-conformance",
+          "title": "contract conformance"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "semantic-equivalence",
+          "title": "semantic equivalence"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "negative-discrimination-behavior",
+          "title": "negative/discrimination behavior"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "provenance-continuity",
+          "title": "provenance continuity"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "uncertainty-behavior",
+          "title": "uncertainty behavior"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "failure-unsupported-behavior",
+          "title": "failure/unsupported behavior"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "dependent-layer-regression",
+          "title": "dependent-layer regression"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "license-use-clearance",
+          "title": "license/use clearance"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "cost-quota-safety",
+          "title": "cost/quota safety"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "historical-interpretability",
+          "title": "historical interpretability"
+        }
+      ],
+      "layer": 2,
+      "providerClasses": [
+        "document",
+        "retrieval",
+        "bim"
+      ],
+      "requiredCapabilityCoverage": {},
+      "title": "Layer 2 — Understanding (document/retrieval/BIM)"
+    },
+    {
+      "dependentLayerRegression": {
+        "requiredCitationKinds": [
+          "geometry-eval",
+          "equivalence-eval"
+        ],
+        "statement": "a Layer-3 production promotion must cite regression evidence for the consumers of Layer-3 geometry/validation outputs: the committed HFX-301 equivalence corpus (the authoring journeys over the same engine) and the committed HFX-302 geometry substitution corpus (the dual-lane quantities/BOQ comparisons)"
+      },
+      "gates": [
+        {
+          "applicability": "mandatory",
+          "gate": "contract-conformance",
+          "title": "contract conformance"
+        },
+        {
+          "applicability": "na-permitted",
+          "gate": "semantic-equivalence",
+          "naAllowanceCode": "layer3-visual-presentation-only",
+          "naAllowedClasses": [
+            "visual"
+          ],
+          "title": "semantic equivalence"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "negative-discrimination-behavior",
+          "title": "negative/discrimination behavior"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "provenance-continuity",
+          "title": "provenance continuity"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "uncertainty-behavior",
+          "title": "uncertainty behavior"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "failure-unsupported-behavior",
+          "title": "failure/unsupported behavior"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "dependent-layer-regression",
+          "title": "dependent-layer regression"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "license-use-clearance",
+          "title": "license/use clearance"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "cost-quota-safety",
+          "title": "cost/quota safety"
+        },
+        {
+          "applicability": "mandatory",
+          "gate": "historical-interpretability",
+          "title": "historical interpretability"
+        }
+      ],
+      "layer": 3,
+      "providerClasses": [
+        "solution",
+        "geometry",
+        "visual"
+      ],
+      "requiredCapabilityCoverage": {
+        "geometry": [
+          "excavation",
+          "backfill",
+          "demolition-removal",
+          "foundation-placement",
+          "slab-placement",
+          "block-wall-placement",
+          "opening-creation",
+          "plaster-application",
+          "building-service-installation",
+          "finish-application"
+        ],
+        "solution": [
+          "excavation",
+          "backfill",
+          "demolition-removal",
+          "foundation-placement",
+          "slab-placement",
+          "block-wall-placement",
+          "opening-creation",
+          "plaster-application",
+          "building-service-installation",
+          "finish-application"
+        ]
+      },
+      "title": "Layer 3 — Solution (solution/geometry/visual)"
+    }
+  ]
+}
