@@ -31,7 +31,11 @@ AISE is implemented by replaceable coding workers under an independent Tech Lead
 25. `docs/product-journey-simulation.md`
 26. `docs/interactive-engineering-solution-workflow.md`
 27. `docs/layered-competitive-stress-test-2026-09-16.md`
-28. the Work Order for the assigned item
+28. `docs/post-production-discoverability-and-device-validation-plan-2026-09-25.md`
+29. `docs/geometry-bim-technology-spike-2026-09-25.md`
+30. `docs/geometry-bim-spike-work-orders-2026-09-25.md`
+31. `docs/geometry-bim-spike-scorecard-2026-09-25.md`
+32. the Work Order for the assigned item
 
 Also inspect all applicable Architecture Change Records, especially ACR-004, ACR-005 and ACR-006.
 
@@ -161,3 +165,19 @@ The baseline product must not require paid GPU inference or a particular LLM/rec
 A newly spawned worker must be able to identify exactly one authorized Work Item and its required evidence from the repository alone.
 
 A newly spawned Tech Lead must be able to identify the current frontier, three-worker waves, protected surfaces, technology substitution rules, external verification limits and final readiness gate without chat history.
+
+
+## Post-readiness R&D rule
+
+The geometry/BIM spike is an architect-authorized exploratory program. It is subordinate to the
+frozen architecture and technology-substitution contract, and it does not modify the meaning of
+PROD-015.
+
+G0 may use exactly three concurrent workers:
+- GBIM-001 — exact geometry: OCCT + CadQuery/OCP + FreeCAD.
+- GBIM-002 — IFC/OpenBIM: IfcOpenShell + IFC + Bonsai/Blender.
+- GBIM-003 — browser spatial UX: Three.js + That Open/web-ifc + Atelier-derived Spatial Studio.
+
+Do not fork an external project during the spike. Provider-specific IDs/types/formats remain
+outside canonical AISE semantics. A successful spike produces evidence, not an automatic default
+provider.
