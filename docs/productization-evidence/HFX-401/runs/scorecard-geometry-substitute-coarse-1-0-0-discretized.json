@@ -1,0 +1,204 @@
+{
+  "benchmarkCorpus": {
+    "benchmarkId": "geometry-eval-suite/1",
+    "consolidatedRecordDigest": "deef7e7367ff3d943d2ca2a501ecf1570ad4bab7e0eeb075782a7be1af81bb16",
+    "consolidatedRecordId": "95f4224c99eae66b2472a9ed7f0ea8c49967b0bf5db7b5b71b138dee3a7b4425",
+    "corpusDigest": "a2c70e4831bcfa74f7a5a04404b39e9e2fec8f619cc145b08f18c1f0ad7ffe22",
+    "laneManifestIds": [
+      "482c869c078d2d7f018b719ca105768fc8ab8f8f8a746231be66149e73472747",
+      "75ea02546291dd48721f3d8c4dd4a77d37692b63af8c868f8d5dc238bc1c6450",
+      "481f8aa52743590cec8d34fe35ff6f9be2840ff3678cd317c2571be63a312be7",
+      "c6f1d327f9a8934183a66682011970232034637db1bc533f48b4c0dba8f4f871",
+      "61696f5b93e2b199e755d390252407e603fddec206e49a097ec2924807ab45d9"
+    ],
+    "laneRecordIds": [
+      "b285921ecfbcc8cfaf74d367b45c6aff9ebbabfaedb54e6e1b6e32ccaa8a8443",
+      "cc90e511912ba1b565713934cf77cb9af9531f7beb8082ea963397d93cadbe68",
+      "5fc28819a43b659401e8a09d808b7aa77e6c4c0cef3e9d5097865facce115f83",
+      "c52fc86b5a7ab0d8f10dd4f63a0584bf73933bff32b67cf461a068844d2f4c90",
+      "6cc84b3da2b0eb5bc546c00ce8b4401dd445428ae7d46e82c24383e0fc597ebe"
+    ],
+    "sealedManifestId": "e824807f51366132a2d17ce38bb9587954ab99efa9ce462a4e50c4ff4ebcc212",
+    "sequenceCount": 5,
+    "suiteId": "geometry-eval-suite/1",
+    "suiteVersion": "1.0.0"
+  },
+  "codeVersion": "hfx-401/provider-scorecard/1",
+  "controlPlaneMapping": {
+    "controlPlaneState": "benchmarked",
+    "mappingVersion": "hfx-401/promotion-vocabulary-mapping/1",
+    "statement": "the HFX-401 gate refuses production: [semantic-equivalence, dependent-layer-regression] did not pass — a provider that fails any mandatory gate remains non-production even with a strong benchmark score; control-plane state at scoring: 'benchmarked'",
+    "workOrderStage": "rejected"
+  },
+  "gateVocabularyVersion": "hfx-401/gate-vocabulary/1",
+  "gates": [
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "95f4224c99eae66b2472a9ed7f0ea8c49967b0bf5db7b5b71b138dee3a7b4425"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/adapter.test.ts > HFX-302 adapter: the canonical-boundary projection guard (the D26 seam) > the BOUNDARY-SMUGGLE twin is refused: a provider-specific field cannot cross the canonical boundary"
+        }
+      ],
+      "gate": "contract-conformance",
+      "outcome": "pass",
+      "statement": "declares all 10 required Layer-3 geometry families; 5 corpus executions through the common adapter with zero contract-mismatch observations"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "95f4224c99eae66b2472a9ed7f0ea8c49967b0bf5db7b5b71b138dee3a7b4425"
+        },
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "b285921ecfbcc8cfaf74d367b45c6aff9ebbabfaedb54e6e1b6e32ccaa8a8443"
+        }
+      ],
+      "gate": "semantic-equivalence",
+      "outcome": "fail",
+      "statement": "5 of 5 corpus cells breach the declared tolerance (observed declared-incompatible with the closed-vocabulary kind(s) [operation-semantic-failure]): gdi-excavation-coarse, gdi-slab-coarse, gdi-plaster-coarse, gdi-block-wall-coarse, gdi-service-run-coarse — provider replacement would change AISE solution semantics"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "95f4224c99eae66b2472a9ed7f0ea8c49967b0bf5db7b5b71b138dee3a7b4425"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/harness.test.ts > HFX-302 harness: CELL 2 — declared-incompatible (the comparison discriminates) > every coarse-grid breach is caught with the declared kind + the tolerance breach, never hidden"
+        }
+      ],
+      "gate": "negative-discrimination-behavior",
+      "outcome": "pass",
+      "statement": "the designed divergences of this lane are CAUGHT with exactly the declared closed-vocabulary kind on all 5 divergent cells — a benchmark that cannot fail is not a benchmark; this provider's own divergences are the discrimination evidence"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "e824807f51366132a2d17ce38bb9587954ab99efa9ce462a4e50c4ff4ebcc212"
+        },
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "95f4224c99eae66b2472a9ed7f0ea8c49967b0bf5db7b5b71b138dee3a7b4425"
+        }
+      ],
+      "gate": "provenance-continuity",
+      "outcome": "pass",
+      "statement": "5 per-sequence portable manifests sealed (64-hex content addresses) + the consolidated manifest sealed against this profile digest — provider identity, version, configuration and input digests are retained"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-302/tolerance-report.md"
+        },
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-401/runs/lane-registry.json — providers[geometry-substitute-coarse-1-0-0-discretized].uncertainty"
+        }
+      ],
+      "gate": "uncertainty-behavior",
+      "outcome": "pass",
+      "statement": "confidence is declared separate from measurement uncertainty (calibration 'none-declared'); the discretization residual is bounded by the declared grid and recorded as observed deltas in the committed tolerance report — never fabricated into a confidence score"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "95f4224c99eae66b2472a9ed7f0ea8c49967b0bf5db7b5b71b138dee3a7b4425"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/adapter.test.ts > HFX-302 adapter: the fail-closed capability gate (Law 3 — never computed) > an undeclared family is answered with the typed unsupported naming the family, BEFORE execution"
+        }
+      ],
+      "gate": "failure-unsupported-behavior",
+      "outcome": "pass",
+      "statement": "every unsupported/failure state is explicit and typed: 0 fail-closed unsupported-data refusals (recorded BEFORE execution) and 5 closed-vocabulary divergence observations across the corpus — zero fabricated outputs"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "95f4224c99eae66b2472a9ed7f0ea8c49967b0bf5db7b5b71b138dee3a7b4425"
+        },
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-302/tolerance-report.md"
+        }
+      ],
+      "gate": "dependent-layer-regression",
+      "outcome": "fail",
+      "statement": "the dependent BOQ projection regresses: 5 of 5 cells carry divergent boq-line comparison points (the substitute's breaching quantities flow into the BOQ derivation) — the Layer-3 consumers would see changed derived quantities"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "license-declaration",
+          "pointer": "profile license declaration 'fixture-permissive-1.0' — provider geometry-substitute-coarse@1.0.0-discretized; mirrored in docs/productization-evidence/HFX-401/runs/lane-registry.json"
+        }
+      ],
+      "gate": "license-use-clearance",
+      "outcome": "pass",
+      "statement": "license 'fixture-permissive-1.0' clears commercial use and the declared intended use for production (commercialUse: true, intendedUseCleared: true) — the dataset/model-use rule is satisfied"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-401/runs/lane-registry.json — providers[geometry-substitute-coarse-1-0-0-discretized].costProfile"
+        }
+      ],
+      "gate": "cost-quota-safety",
+      "outcome": "pass",
+      "statement": "cost model 'none' at unit cost 0 with the declared quota policy — deterministic local computation, no quota, no spend; the declared fallback is the incumbent reference lane"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-302/historical-replay.md"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/harness.test.ts > HFX-302 harness: the control-plane emission + the HISTORICAL REPLAY > the HISTORICAL REPLAY: the substitute's removal leaves the records interpretable (the work order's criterion)"
+        }
+      ],
+      "gate": "historical-interpretability",
+      "outcome": "pass",
+      "statement": "the provider is covered by the committed removal simulation: retired through the explicit provider-retired event with every historical record, manifest and decision remaining on the entry (replayRegistry reproduces the identical derived state) — the HFX-302 historical-replay evidence + this scorecard's own rollback drill re-prove it"
+    }
+  ],
+  "kind": "provider-scorecard",
+  "layerChecklistVersion": "hfx-401/layer-checklist/1",
+  "provider": {
+    "displayName": "Independent Discretized Geometry Substitute (Coarse Grid)",
+    "layer": 3,
+    "profileDigest": "a296596f524e17be550788b99229ca29aabae7a2ddb2f3c882050ff13b593efc",
+    "providerClass": "geometry",
+    "providerId": "geometry-substitute-coarse",
+    "role": "substitute-lane",
+    "technologyVersion": "1.0.0-discretized"
+  },
+  "schemaVersion": "hfx-401/provider-scorecard/1",
+  "scorecardId": "06ff1e5b41d29164b49af3de885bc2faa117f137d84b0892e288950f46ab5cbd",
+  "verdict": {
+    "checklistConformant": true,
+    "failedGates": [
+      "semantic-equivalence",
+      "dependent-layer-regression"
+    ],
+    "naGates": [],
+    "nonPassingGates": [
+      "semantic-equivalence",
+      "dependent-layer-regression"
+    ],
+    "productionEligible": false
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "benchmarkCorpus": {
+    "benchmarkId": "geometry-eval-suite/1",
+    "consolidatedRecordDigest": "ed980c556b8beed083ea8b4bc7248983d2c53267688fe11318afa476766caf97",
+    "consolidatedRecordId": "d2435ecb369abda51d2c1e56a005e6a05705247a87169035234e5aa8c8b58778",
+    "corpusDigest": "a2c70e4831bcfa74f7a5a04404b39e9e2fec8f619cc145b08f18c1f0ad7ffe22",
+    "laneManifestIds": [
+      "aa3d6b68b0d62cf09fee7d11496e0ee25a6b6c23f7e76a17da3545bf1abc5a0b"
+    ],
+    "laneRecordIds": [
+      "d2435ecb369abda51d2c1e56a005e6a05705247a87169035234e5aa8c8b58778"
+    ],
+    "sealedManifestId": "aa3d6b68b0d62cf09fee7d11496e0ee25a6b6c23f7e76a17da3545bf1abc5a0b",
+    "sequenceCount": 1,
+    "suiteId": "geometry-eval-suite/1",
+    "suiteVersion": "1.0.0"
+  },
+  "codeVersion": "hfx-401/provider-scorecard/1",
+  "controlPlaneMapping": {
+    "controlPlaneState": "promoted",
+    "mappingVersion": "hfx-401/promotion-vocabulary-mapping/1",
+    "statement": "the HFX-401 gate refuses production: [dependent-layer-regression] did not pass — a provider that fails any mandatory gate remains non-production even with a strong benchmark score; control-plane state at scoring: 'promoted' (the committed HFX-000 exit-gate history decided 'promoted' under the control plane's own v1 gate set — the append-only log stays lawful history; the HFX-401 scorecard assesses CURRENT re-promotion eligibility)",
+    "workOrderStage": "rejected"
+  },
+  "gateVocabularyVersion": "hfx-401/gate-vocabulary/1",
+  "gates": [
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "d2435ecb369abda51d2c1e56a005e6a05705247a87169035234e5aa8c8b58778"
+        }
+      ],
+      "gate": "contract-conformance",
+      "outcome": "pass",
+      "statement": "declares all 0 required Layer-1 perception families; 1 corpus executions through the common adapter with zero contract-mismatch observations"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "d2435ecb369abda51d2c1e56a005e6a05705247a87169035234e5aa8c8b58778"
+        }
+      ],
+      "gate": "semantic-equivalence",
+      "outcome": "pass",
+      "statement": "reproduces the documented reference truth exactly: depth mean absolute error 0 m / max error 0 m over the fixed 4×4 fixture input"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "d2435ecb369abda51d2c1e56a005e6a05705247a87169035234e5aa8c8b58778"
+        }
+      ],
+      "gate": "negative-discrimination-behavior",
+      "outcome": "pass",
+      "statement": "the unsupported-scene probe is refused explicitly with the closed-vocabulary unsupported-data failure — no fabricated depth values (the benchmark's hard-negative case); refusal rate 1.0"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "aa3d6b68b0d62cf09fee7d11496e0ee25a6b6c23f7e76a17da3545bf1abc5a0b"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "packages/provider-registry/src/registry.test.ts > retirement (explicit only) > a retired entry's history stays interpretable (records remain in the derived entry)"
+        }
+      ],
+      "gate": "provenance-continuity",
+      "outcome": "pass",
+      "statement": "the committed portable manifest verifies by digest re-derivation and references this profile digest — provider identity, version and input digests are retained"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "packages/provider-registry/fixtures/reference-lifecycle.json — the committed exit-gate lifecycle"
+        }
+      ],
+      "gate": "uncertainty-behavior",
+      "outcome": "pass",
+      "statement": "the fixture emits depth values without confidence scores and without measurement uncertainty — confidence is never fabricated and never substitutes for measurement uncertainty"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "d2435ecb369abda51d2c1e56a005e6a05705247a87169035234e5aa8c8b58778"
+        }
+      ],
+      "gate": "failure-unsupported-behavior",
+      "outcome": "pass",
+      "statement": "the unsupported-scene probe answers the closed-vocabulary unsupported-data refusal (the record's failureObservations) — never fabricated depth values"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "packages/provider-registry/fixtures/reference-lifecycle.json — the committed exit-gate lifecycle"
+        }
+      ],
+      "gate": "dependent-layer-regression",
+      "naReason": "the HFX-000 reference lifecycle is the control plane's own exit-gate fixture (a Layer-1 depth-estimation double) — no Layer-2 consumer regression corpus exists in its committed scope; the Layer-1→Layer-2 regression surface is owned by the HFX-101/102 adapter benchmarks, so this dimension is unevaluable here and blocks production eligibility under the Layer-1 checklist (all gates mandatory)",
+      "outcome": "na",
+      "statement": "unevaluable in the committed fixture scope — recorded NA, which under the Layer-1 checklist blocks production eligibility (the refusal names this gate)"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "license-declaration",
+          "pointer": "profile license declaration 'fixture-permissive-1.0' — provider fixture-depth-provider@1.0.0-fixture-v1; mirrored in docs/productization-evidence/HFX-401/runs/lane-registry.json"
+        }
+      ],
+      "gate": "license-use-clearance",
+      "outcome": "pass",
+      "statement": "license 'fixture-permissive-1.0' clears commercial use and the declared intended use for production (commercialUse: true, intendedUseCleared: true) — the dataset/model-use rule is satisfied"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-401/runs/lane-registry.json — providers[fixture-depth-provider-1-0-0-fixture-v1].costProfile"
+        }
+      ],
+      "gate": "cost-quota-safety",
+      "outcome": "pass",
+      "statement": "cost model 'none' at unit cost 0 with the declared quota policy — deterministic local computation, no quota, no fallback needed"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "packages/provider-registry/fixtures/reference-lifecycle.json — the committed exit-gate lifecycle"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "packages/provider-registry/src/registry.test.ts > retirement (explicit only) > a retired entry's history stays interpretable (records remain in the derived entry)"
+        }
+      ],
+      "gate": "historical-interpretability",
+      "outcome": "pass",
+      "statement": "the append-only registry's replay discipline: replayRegistry over the committed 12-event lifecycle reproduces the identical derived states, and a retired entry's history stays interpretable (the control plane's own proof) — the committed fixtures remain interpretable records forever"
+    }
+  ],
+  "kind": "provider-scorecard",
+  "layerChecklistVersion": "hfx-401/layer-checklist/1",
+  "provider": {
+    "displayName": "Fixture Depth Provider v1",
+    "layer": 1,
+    "profileDigest": "fb9372e42bef036243800d7938a82f904ca05ac521e912d0a981d01ea98c7994",
+    "providerClass": "perception",
+    "providerId": "fixture-depth-provider",
+    "role": "control-plane-fixture",
+    "technologyVersion": "1.0.0-fixture-v1"
+  },
+  "schemaVersion": "hfx-401/provider-scorecard/1",
+  "scorecardId": "199142ff6ae9dc273f4e6fe987199de48f7fc318c2446b7a3806aa9979fbcb2d",
+  "verdict": {
+    "checklistConformant": false,
+    "failedGates": [],
+    "naGates": [
+      "dependent-layer-regression"
+    ],
+    "nonPassingGates": [
+      "dependent-layer-regression"
+    ],
+    "productionEligible": false
+  }
+}

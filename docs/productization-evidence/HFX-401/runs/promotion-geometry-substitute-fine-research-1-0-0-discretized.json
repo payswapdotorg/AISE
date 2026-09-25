@@ -1,0 +1,106 @@
+{
+  "codeVersion": "hfx-401/provider-scorecard/1",
+  "controlPlaneTrace": {
+    "appliedDecisionEvent": {
+      "checks": [
+        {
+          "detail": "license 'fixture-research-only-1.0' is evaluation-only (commercialUse: false, intendedUseCleared: false) — the dataset/model-use rule forbids production promotion",
+          "gate": "license-use-clearance",
+          "passed": false
+        },
+        {
+          "detail": "1 benchmark record(s) attached, all referencing this provider+version",
+          "gate": "benchmark-evidence",
+          "passed": true
+        },
+        {
+          "detail": "1 provenance manifest(s) sealed against this profile digest",
+          "gate": "provenance-continuity",
+          "passed": true
+        }
+      ],
+      "decision": "rejected",
+      "kind": "promotion-decided",
+      "providerId": "geometry-substitute-fine-research",
+      "refusals": [
+        {
+          "detail": "provider 'geometry-substitute-fine-research' (1.0.0-discretized) is evaluation-only: licensing/intended-use terms are not explicitly cleared — production promotion is refused (training and evaluation are separate decisions; nothing enters a commercial pipeline silently)",
+          "kind": "license-blocked"
+        }
+      ],
+      "technologyVersion": "1.0.0-discretized"
+    },
+    "counterfactual": null,
+    "entryStateAfter": "rejected",
+    "entryStateBefore": "benchmarked",
+    "eventsDigest": "e63e23edc3fdf40a157c8a880af44f982af05bead1642429ab633c27352b1f6f",
+    "registryEventCount": 27,
+    "source": "drill-registry"
+  },
+  "decision": "refused",
+  "engineDecision": {
+    "outcome": "refused",
+    "refusals": [
+      {
+        "detail": "gate 'license-use-clearance' FAILED — license 'fixture-research-only-1.0' is evaluation-only (commercialUse: false, intendedUseCleared: false) — the dataset/model-use rule forbids production promotion; training and evaluation are separate decisions. A provider that fails any mandatory gate remains non-production, even if its benchmark score is strong",
+        "gate": "license-use-clearance",
+        "kind": "mandatory-gate-failed"
+      }
+    ],
+    "statement": "REFUSED: [license-use-clearance] did not pass — the provider remains non-production (no override path exists; the refusal names every failed/refused gate)"
+  },
+  "gateAssessment": {
+    "failedGates": [
+      "license-use-clearance"
+    ],
+    "mandatoryGates": [
+      "contract-conformance",
+      "negative-discrimination-behavior",
+      "provenance-continuity",
+      "uncertainty-behavior",
+      "failure-unsupported-behavior",
+      "dependent-layer-regression",
+      "license-use-clearance",
+      "cost-quota-safety",
+      "historical-interpretability"
+    ],
+    "naGates": [],
+    "nonPassingGates": [
+      "license-use-clearance"
+    ]
+  },
+  "kind": "provider-promotion-record",
+  "layerRegression": {
+    "citations": [
+      {
+        "benchmarkRecordDigest": "893d40726616fa6405235280f75ad7c3d800b9926413bf1f04added6bfed8863",
+        "citationKind": "geometry-eval",
+        "corpusDigest": "a2c70e4831bcfa74f7a5a04404b39e9e2fec8f619cc145b08f18c1f0ad7ffe22",
+        "provenanceManifestDigest": "8518da3b27ae6f8bb6093466648c7c86c39f4db2e4db8e43797ec2be880db97c",
+        "suiteId": "geometry-eval-suite/1"
+      },
+      {
+        "benchmarkRecordDigest": "6943c18b00b878f8ae88c4a18312da5db36a6dc3f7d509de1c929ebc5dae5420",
+        "citationKind": "equivalence-eval",
+        "corpusDigest": "52f099fc3bad7f6f2da0ea9ab88413d4b5fcf99ef82aee1976ee87a1a77c1863",
+        "provenanceManifestDigest": "825699a04420e8dd7dd510bbbe5e4cbbe82ce6a697a5820e24d93386e72f9eac",
+        "suiteId": "equivalence-eval-suite/1"
+      }
+    ],
+    "layer": 3,
+    "requirement": "a Layer-3 production promotion must cite regression evidence for the consumers of Layer-3 geometry/validation outputs: the committed HFX-301 equivalence corpus (the authoring journeys over the same engine) and the committed HFX-302 geometry substitution corpus (the dual-lane quantities/BOQ comparisons)"
+  },
+  "mappingVersion": "hfx-401/promotion-vocabulary-mapping/1",
+  "path": "refusal",
+  "provider": {
+    "layer": 3,
+    "profileDigest": "4fabffab7a224f1dbc1eb06b8dc0236d09470c4724b8ad3d4ab6d23a69f8adc5",
+    "providerClass": "geometry",
+    "providerId": "geometry-substitute-fine-research",
+    "role": "engineered-refusal",
+    "technologyVersion": "1.0.0-discretized"
+  },
+  "recordId": "5aecfc4805dba6fa96e449c24e34079dec00d1792ccca7b9afc5a729fcd0a0a0",
+  "schemaVersion": "hfx-401/promotion-record/1",
+  "scorecardId": "8ef0e98e3d949c9e5edc8d23aae828960316e4c76907f658d3e11168053fd74e"
+}

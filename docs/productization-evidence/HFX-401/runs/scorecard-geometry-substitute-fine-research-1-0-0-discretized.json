@@ -1,0 +1,240 @@
+{
+  "benchmarkCorpus": {
+    "benchmarkId": "geometry-eval-suite/1",
+    "consolidatedRecordDigest": "0a125e5c899b0d011e860efd0cd5183cc198a84d6ea4cedc32cca40c3c55b65f",
+    "consolidatedRecordId": "d6668eeceaa96ab5c723404d87c74e93b303d8ebd06d968ab9502ef7f57fb16b",
+    "corpusDigest": "a2c70e4831bcfa74f7a5a04404b39e9e2fec8f619cc145b08f18c1f0ad7ffe22",
+    "laneManifestIds": [
+      "1ef5e0e506f7b567578b50d55ee43d5de7033b0125dbcc3619d4f9a9a4bcaae9",
+      "360492104e2e90ee0ec88d629e882c68ff17352c4db3e7462d348ebdbc65f0aa",
+      "cbeb6e4bb4c1b4da874bc7c20cf3cb346332e4cef9ee4bc5dd4e60e8f2d964b0",
+      "d13f4eb29e24ce7b0a5cab504e84e43920023a3ce60c49eb449e386f669b8512",
+      "e9519add15f7768c905a69a338554a0d682489d4d8f51e16ec828f25695a82ff",
+      "b8098200a9ffbc345c7fc3d8d412f13cc4ff5915fc3b758f7129583b2cf1bb5a",
+      "46925207810117d198bc20fd818bc7c2c56d9cc751c7cc212d09514b8886f843",
+      "fe138b7b65bee3abe3b960a549195e8d10ccc5362b3c4880674f01d5b0569c3b",
+      "c97e26d961429e0c2afe3f05a5016449ec25577c7fccff22c2be8308839cc984",
+      "efc7c62edf7158337e2a99ecb01906584ac363912b8bf1cfd4960901aff90ccc",
+      "9842c4c041f684430b0fb19f860ef6c336d6d73a070d83378826e99ee084f846",
+      "d0e2e8faa01a9372d66895bc1dbd2b183e152d708fcb8c2147d9317479a2efe2",
+      "52e97843ca59d03978d34846eb4640231f1be56bd19809f3188ac1c0d6cc199f",
+      "ed4b8b80d8568e9f733a89867744d28c8444587070d79de4b7fc9237b78eb06b",
+      "c6eac24d68711fb6146e6615810bf4503d995bd49236025e18d34dccd44bb742",
+      "2cdfa6670c6a881e337bf05906c78d661d48d2916c6b1193081d9b48f57800fe",
+      "a4bb4bfb1b47fe6e38f8bb917ce85c780be3a3c12ff74b7348c9ad6937a1c5e2",
+      "73e190e8e31b603658f1b6b849079c7c2093eb46b4184982b83fb14c8894b111",
+      "ebb31751d19eb5b8de55ef332c2cda2bc3d170ca107096d91d7e93fa3e902ade",
+      "2e4c229f1e438e1132e35e657ab3428db5fc1cc41982f3a5c35a5c866d9b8dac",
+      "d6da1f8d6f25b1dae92eb8cae0a6a2c28d15a0a02cd298ad6f7152324162675d",
+      "18af191c41b828c0c13aa03f2a247ddc3c1bafce3836f5e9e41f39055c91c030"
+    ],
+    "laneRecordIds": [
+      "5628c9c4fd5e4ee9659d3053563d4130fcb50560717ea9424e05fd7fd7df4308",
+      "28cfdd4f2e21494b83d57f1ef724364813427bec2ff85461251b2b170d705d26",
+      "2a9e927df058fd3c3a66eb717e67ddec6f1913faf660b30773c91de41e6708c6",
+      "70556f9d0e90a7bb6226c895e17935911724f4932c9c893d73271fc280ddcbfd",
+      "ffb08818f975d1844d48e2ade6f1eaa42ec9e6e359562081b88ecadcc72c5a45",
+      "5b92650ea32e95a83ed7d572da8464914748208e45d362543b4520b9fcde2cab",
+      "f9250d8b8fd4a0b7391db767502bfab742635b956dfbb92668bf4df94a6292c0",
+      "cf3189c9c4cfbbb82cd87589dafabda8c7a4582a35e228affd2611500c5f566e",
+      "b719f722b64c7e9513705281875c5dc21d9f4bfbbd219f1086ad7ab8ff755fc8",
+      "9e150ac68d27e239f89986ed69486eb5b609a80ed7e82842353d8faa9af9a3c4",
+      "4e10e279cf09e376d0f0eea5906ced6276dbd9d40f94624ad2ea785efa91627b",
+      "cc1d0c05d2b33b3d574fb8bd8a493b9e3c9e9dcb8921eb5be539758b50e587b1",
+      "44b58b58165e36ecd4e848da0cd902c6586ad476e1a1e18481bf7ee04b957f54",
+      "78afabcc92c9a718dce3792e2a78d09a369b8b374962b184ced8758a499fa39c",
+      "a2b96d2e697cc13f9eed33df05d32055a494b9642cfec096707852688a94e613",
+      "27fe198fd94ee338077e97183cfbb8ec58dfe130e92130768a0f5cf9ec0a8d2c",
+      "a578ca7d609fb362b56f012cc12266231d7e3b59f3fa859928a3cf5ccd5ad007",
+      "f1ce322cb95af1f047a5fd8dd76f5f1bce9c0f6b0317a493320e530c7ff59a8f",
+      "07e0cc1e9efb972ae66af819d200c1fcc9b284ccd59033bb02d3ee77a14c0d4a",
+      "5534eda952c086219a8692ad0e780145a41749c369764f9d2c0930058ac4d85d",
+      "1abcf942d03704eeab3b3004d405ac7e233ed1aaf24da452589f1a3f0f3fc5e3",
+      "d10a034ac334d34bde362e96414df67c0e520b5b6a33def9d6db8747ff069c1e"
+    ],
+    "sealedManifestId": "0e3cd37c8159f4301826f8602d4ded2d9c0229892fb63e1eb090026683bf93e6",
+    "sequenceCount": 22,
+    "suiteId": "geometry-eval-suite/1",
+    "suiteVersion": "1.0.0"
+  },
+  "codeVersion": "hfx-401/provider-scorecard/1",
+  "controlPlaneMapping": {
+    "controlPlaneState": "benchmarked",
+    "mappingVersion": "hfx-401/promotion-vocabulary-mapping/1",
+    "statement": "the HFX-401 gate refuses production: [license-use-clearance] did not pass — a provider that fails any mandatory gate remains non-production even with a strong benchmark score; control-plane state at scoring: 'benchmarked'",
+    "workOrderStage": "rejected"
+  },
+  "gateVocabularyVersion": "hfx-401/gate-vocabulary/1",
+  "gates": [
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "d6668eeceaa96ab5c723404d87c74e93b303d8ebd06d968ab9502ef7f57fb16b"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/adapter.test.ts > HFX-302 adapter: the canonical-boundary projection guard (the D26 seam) > the BOUNDARY-SMUGGLE twin is refused: a provider-specific field cannot cross the canonical boundary"
+        }
+      ],
+      "gate": "contract-conformance",
+      "outcome": "pass",
+      "statement": "declares all 10 required Layer-3 geometry families; 22 corpus executions through the common adapter with zero contract-mismatch observations"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "d6668eeceaa96ab5c723404d87c74e93b303d8ebd06d968ab9502ef7f57fb16b"
+        },
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-302/tolerance-report.md"
+        }
+      ],
+      "gate": "semantic-equivalence",
+      "outcome": "pass",
+      "statement": "all 22 corpus cells compare compatible across the five canonical comparison kinds within the declared per-dimension tolerances (zero divergent points; integer counts exact)"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/harness.test.ts > HFX-302 harness: the NEGATIVE CONTROLS (the mutation twins) > TOLERANCE-BREACH: a perturbed quantity beyond the declared tolerance is caught with the quantity kind"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/harness.test.ts > HFX-302 harness: the NEGATIVE CONTROLS (the mutation twins) > VERDICT-MUTATION: a flipped validation check outcome is caught with the validation kind (per-check, not only the verdict)"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/adapter.test.ts > HFX-302 adapter: the canonical-boundary projection guard (the D26 seam) > the BOUNDARY-SMUGGLE twin is refused: a provider-specific field cannot cross the canonical boundary"
+        }
+      ],
+      "gate": "negative-discrimination-behavior",
+      "outcome": "pass",
+      "statement": "the four negative-control twins over this provider's engine are all caught: the tolerance breach with the quantity kind, the verdict mutation with the validation kind, the capability over-declaration refused, the boundary smuggle refused with contract-mismatch"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "0e3cd37c8159f4301826f8602d4ded2d9c0229892fb63e1eb090026683bf93e6"
+        },
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "d6668eeceaa96ab5c723404d87c74e93b303d8ebd06d968ab9502ef7f57fb16b"
+        }
+      ],
+      "gate": "provenance-continuity",
+      "outcome": "pass",
+      "statement": "22 per-sequence portable manifests sealed (64-hex content addresses) + the consolidated manifest sealed against this profile digest — provider identity, version, configuration and input digests are retained"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-302/tolerance-report.md"
+        },
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-401/runs/lane-registry.json — providers[geometry-substitute-fine-research-1-0-0-discretized].uncertainty"
+        }
+      ],
+      "gate": "uncertainty-behavior",
+      "outcome": "pass",
+      "statement": "confidence is declared separate from measurement uncertainty (calibration 'none-declared'); the discretization residual is bounded by the declared grid and recorded as observed deltas in the committed tolerance report — never fabricated into a confidence score"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "d6668eeceaa96ab5c723404d87c74e93b303d8ebd06d968ab9502ef7f57fb16b"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/adapter.test.ts > HFX-302 adapter: the fail-closed capability gate (Law 3 — never computed) > an undeclared family is answered with the typed unsupported naming the family, BEFORE execution"
+        }
+      ],
+      "gate": "failure-unsupported-behavior",
+      "outcome": "pass",
+      "statement": "every unsupported/failure state is explicit and typed: 0 fail-closed unsupported-data refusals (recorded BEFORE execution) and 0 closed-vocabulary divergence observations across the corpus — zero fabricated outputs"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "d6668eeceaa96ab5c723404d87c74e93b303d8ebd06d968ab9502ef7f57fb16b"
+        },
+        {
+          "kind": "runner-record",
+          "pointer": "tools/equivalence-eval/fixtures/expected-outcomes.json (suite equivalence-eval-suite/1, benchmarkRecordDigest 6943c18b00b878f8ae88c4a18312da5db36a6dc3f7d509de1c929ebc5dae5420)"
+        }
+      ],
+      "gate": "dependent-layer-regression",
+      "outcome": "pass",
+      "statement": "the Layer-3 consumers regress-free: 22 corpus cells' boq-line comparisons within the declared tolerance (zero divergent boq points) and the HFX-301 equivalence corpus (the authoring journeys over the same engine) passes 33/33 — cited by digest"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "license-declaration",
+          "pointer": "profile license declaration 'fixture-research-only-1.0' — provider geometry-substitute-fine-research@1.0.0-discretized; see docs/productization-evidence/HFX-401/license-declaration.md (the refusal-path demonstration)"
+        }
+      ],
+      "gate": "license-use-clearance",
+      "outcome": "fail",
+      "statement": "license 'fixture-research-only-1.0' is evaluation-only (commercialUse: false, intendedUseCleared: false) — the dataset/model-use rule forbids production promotion; training and evaluation are separate decisions"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-401/runs/lane-registry.json — providers[geometry-substitute-fine-research-1-0-0-discretized].costProfile"
+        }
+      ],
+      "gate": "cost-quota-safety",
+      "outcome": "pass",
+      "statement": "cost model 'none' at unit cost 0 with the declared quota policy — deterministic local computation, no quota, no spend; the declared fallback is the incumbent reference lane"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-302/historical-replay.md"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/harness.test.ts > HFX-302 harness: the control-plane emission + the HISTORICAL REPLAY > the HISTORICAL REPLAY: the substitute's removal leaves the records interpretable (the work order's criterion)"
+        }
+      ],
+      "gate": "historical-interpretability",
+      "outcome": "pass",
+      "statement": "the provider is covered by the committed removal simulation: retired through the explicit provider-retired event with every historical record, manifest and decision remaining on the entry (replayRegistry reproduces the identical derived state) — the HFX-302 historical-replay evidence + this scorecard's own rollback drill re-prove it"
+    }
+  ],
+  "kind": "provider-scorecard",
+  "layerChecklistVersion": "hfx-401/layer-checklist/1",
+  "provider": {
+    "displayName": "Independent Discretized Geometry Substitute (Fine Grid, Research-Only License)",
+    "layer": 3,
+    "profileDigest": "4fabffab7a224f1dbc1eb06b8dc0236d09470c4724b8ad3d4ab6d23a69f8adc5",
+    "providerClass": "geometry",
+    "providerId": "geometry-substitute-fine-research",
+    "role": "engineered-refusal",
+    "technologyVersion": "1.0.0-discretized"
+  },
+  "schemaVersion": "hfx-401/provider-scorecard/1",
+  "scorecardId": "8ef0e98e3d949c9e5edc8d23aae828960316e4c76907f658d3e11168053fd74e",
+  "verdict": {
+    "checklistConformant": true,
+    "failedGates": [
+      "license-use-clearance"
+    ],
+    "naGates": [],
+    "nonPassingGates": [
+      "license-use-clearance"
+    ],
+    "productionEligible": false
+  }
+}

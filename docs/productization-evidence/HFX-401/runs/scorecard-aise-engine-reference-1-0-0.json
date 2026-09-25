@@ -1,0 +1,250 @@
+{
+  "benchmarkCorpus": {
+    "benchmarkId": "geometry-eval-suite/1",
+    "consolidatedRecordDigest": "845b44613bc2e0657cd3829df86bba0f228a6c804af7ca82ee708ff6e9c35f77",
+    "consolidatedRecordId": "7144e3d2b69ea3d97a19b45a5f56f4955c8fcd340cf57151dfce8e25a58c20da",
+    "corpusDigest": "a2c70e4831bcfa74f7a5a04404b39e9e2fec8f619cc145b08f18c1f0ad7ffe22",
+    "laneManifestIds": [
+      "5f71d9e90cacddb485c807e775750b3c5bdecdb31438a20bb3a28a2b2394ff12",
+      "57fe3216ab977cb155f7eca5eabddf0a9ec1f628a5e2819e66b8f9c02090ccde",
+      "2271c2c724e21833867a76b629411f5e9105e358ce3b854ae2f038028f9f62f1",
+      "d2af87bc832daf59f50d125a2fbf4a802ff7a2aed93b6d02ac2c5f1b6dbf3baf",
+      "ef1800a7caff0369f65eb0925643d27e9ff77fb01b53993cd141dabdf7c54423",
+      "7589e9f1abcbd799205850dc6545f2154efd331ea4d45cbf1563c50f0d01f32f",
+      "fdf4bfb5ffbedc45a4fea533920a78ac8f986a664e27145aff8cd365ed853c3d",
+      "973f93c0834f04600d3fd5cbee2a1ff39a82a4fe2f0d3f0dccf4ce7c9b5a8cf4",
+      "d64eecb963d8090dafba8a248ef05881c890723b10358bb7c3a73c017f2d274a",
+      "3f61245b0723857da82c1ae08bdecc965b9c1a633e18f7e6851f316c8a901287",
+      "8f6bf959a5118ae44a6315787b62bb271daba3d648b246447f148bcb2b17631e",
+      "52682731d114143df1b0fcebfe3aef3c198aa7b954c7912b2b8e9b9965b8a5cc",
+      "0620527173e493eb04aa67ecbd59b47421747ec5e10ba0a619c86951cd477195",
+      "cb0ae705b2796b0d3b2caa940452f631fc935de1f4625e07f9b9136f5a090ac8",
+      "8d8d9a7d7c131eea6083d188f110af50dcb31ab2df84f2a5c48993aa1b5a53bc",
+      "98071ae46a14121156e1a5105852fb66efd3a22f6973398f784b999b773ac795",
+      "c2ebbd9c9ddf22b8bfedf47fb9f806be847012d2dde408604987fa87a8581cce",
+      "fc5a0607474729d8b0c8c827387ea4a1a714a6c343e542f247f8e67e5dbbafb1",
+      "cddec68c86543be266e82e0e651fecac58747e29b73d2033e059557a2be44407",
+      "074dbdef74126159254092e5999088ac4646285769a35fd6a3593ec41881e7c1",
+      "09d8acd14bcab31855106f98dea5851771305ee5970f19f613a5372126fb65d8",
+      "59c277079957979a934b8b513efb9099ff93a9247d4d9bdd0158cc41fe3ff934",
+      "4c6bd15025b741a6d4d3ec3e63f498d9b8461a78863646b725787b31c52e1751",
+      "2f58eb9c5285da0475ec4a2c2be8c5f8ff14eed45d98a39d739ec2db0b2e57f1",
+      "b53de93c9bde4947d672c38de50dcf4cea3447145bccf5021d93cd9f61aba348",
+      "967dd5fa4450fae08f6163cadcb3c77ab1e97e8f35b9a908d94800171d1fc66f",
+      "b8ff6be2db01ab93dd49dcf6cbd30d201876b1294c7b8d3b71eb9f83966fb3a0",
+      "8c5fb3fd49fe3ecd1983f969d9266a63645476bdb411b3d28748c485efb85482",
+      "71cf67329d4d85b40c34dfe0a46e1e48850b1c6a553909f80ed5548895a8e486",
+      "58fce9fcb4bd5058e246190acc35a198462587cebd627b6c8066c6489ff377d2",
+      "afbda0039bfa0b5e0b9c86d615cc01242fd4c21b7da78651bac052d263d8cc35"
+    ],
+    "laneRecordIds": [
+      "c3d3c2d2abea2dc2e23ca2d76ef55955f2fb5b113778b94c0ca5c367d8f0be0a",
+      "32a0d6d12593f98b766b664193e34ff7ad8d29443108fcfd89f139b1b7eac2fb",
+      "75c63ac58a252024b4f677d9ee5f6e553843ccd888bca31d7e2cf78c27520c1f",
+      "1a55cdb04eb5640974f05c55080c703af169add89e5efe98636e63dffe040a0c",
+      "857099e4a62ddf816c7ecf6dbc71d91859b37f5112ce5e1716e368a8a4fdd38b",
+      "bfdb29f0e30e304421b8078f47dc4903d07253aa8f9b9ceb28d17bdbe2171c74",
+      "cbae98c6686fad4f26d4227079566e2d748ea13d9168ad07739ebbb9d66aa0c8",
+      "521243775b354544ddb6b63a4422c8f567c98c0f0ca7eda6357b66374e89a14e",
+      "fa436decb07270c4c25d8cf8228643304f25b4a4dec97738da480aa9372fe548",
+      "ca09b66562cdb77c5c9173aa9c55802c02d455f3078717dab0908aa15b1a15ad",
+      "b4d67a8f4b755f7456634fb12451f30c68ac8ac17462b4d2707d3e43e698eb28",
+      "4ff451927a73eec57dbe487a2f25a44234673d16a055fb8cf0916ba754590aa0",
+      "fcfe8be42d27c67977cd6eb974950226f13bdadefe9b034fd6458bdafe82e4b0",
+      "89c14ecd014a46740a7d07eb1a282985206cfe828de6b109b3776065ff607042",
+      "9f30e18171480576608e04de807c506b161b3dc4142181f0a9d5de1833034954",
+      "7fc5d67590b140356aa38a5b926d8707c4d8606cb8cce47896c406fe9389b3f1",
+      "c5cdf2d1e258af0c912de87d5758571cfe3babaab34a368584abddcb6fa93ddc",
+      "94c287c9f15228d8fa0b0e0c6dbb58874b73447b963b9354c89a7b3abcd82428",
+      "fbbb16aa27a854a5cf0255f9ddbc9495ba1a579d3f1012454c31f6889eec328a",
+      "5e334e514391c3434352eff8c043099c84155ad1c2d9946cd6c29f7c91707363",
+      "f6e3b1aa61151741a55bafcff1ec7f12af69a462920d84168fe92d4ce47d32cd",
+      "0e32040935228f03b20f1c753aa1738ceca3ae62a2c5ed76400065925a99b795",
+      "9ae43a38f9b5d512f5c2fd19403d9c9384845762e8c00d3f07423e379169adfc",
+      "bf6349177c596fd561b5a53b492e6764275511fcdbd658f40c13a954158089b8",
+      "1512e3bd3cf3867ce15002d45b0eff1dc872e51f82db95316c676443a0dc37f3",
+      "de45901a95209348104d25c6182ecb24c6ecaa7bd7a4c5594ba4b0343ee0714e",
+      "79958d764252451f1816a9b987744cae903a39dc4a9d954706ca439870c524f8",
+      "f716e396ed7d4bf6c73941100cd72b91c287fef26210c199b5c833a4fc2d54d2",
+      "97e6893bc4128d7e867e5b6dd745434078ec8a41bdad8a95861128e668c58cf1",
+      "979064e19de8cd987d079b59c3370b854255555ac536bd76150e44b3e655716c",
+      "194c876d13888bbe83db8cc029d9c51e649e1dd9fa42d0ac504d8043a833a697"
+    ],
+    "sealedManifestId": "dbc39784e22051640cb199a551ed8115cdc60434494d074a9c6fc47492b02923",
+    "sequenceCount": 31,
+    "suiteId": "geometry-eval-suite/1",
+    "suiteVersion": "1.0.0"
+  },
+  "codeVersion": "hfx-401/provider-scorecard/1",
+  "controlPlaneMapping": {
+    "controlPlaneState": "benchmarked",
+    "mappingVersion": "hfx-401/promotion-vocabulary-mapping/1",
+    "statement": "every layer-3 mandatory gate passed — the provider is a production candidate; approval is the control plane's promotion-decided{promoted} event (the HFX-401 promotion engine emits the payload, the Lead applies it)",
+    "workOrderStage": "production_candidate"
+  },
+  "gateVocabularyVersion": "hfx-401/gate-vocabulary/1",
+  "gates": [
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "7144e3d2b69ea3d97a19b45a5f56f4955c8fcd340cf57151dfce8e25a58c20da"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/adapter.test.ts > HFX-302 adapter: the canonical-boundary projection guard (the D26 seam) > the BOUNDARY-SMUGGLE twin is refused: a provider-specific field cannot cross the canonical boundary"
+        }
+      ],
+      "gate": "contract-conformance",
+      "outcome": "pass",
+      "statement": "declares all 10 required Layer-3 geometry families; 31 corpus executions through the common adapter with zero contract-mismatch observations"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "7144e3d2b69ea3d97a19b45a5f56f4955c8fcd340cf57151dfce8e25a58c20da"
+        },
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-302/historical-replay.md"
+        }
+      ],
+      "gate": "semantic-equivalence",
+      "outcome": "pass",
+      "statement": "the identity authority: the oracle side of every executed comparison; 22 compatible corpus cells agree across all five canonical comparison kinds within the declared tolerances, and the reference projections re-derive byte-identically in the provider-removal replay"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/harness.test.ts > HFX-302 harness: the NEGATIVE CONTROLS (the mutation twins) > TOLERANCE-BREACH: a perturbed quantity beyond the declared tolerance is caught with the quantity kind"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/harness.test.ts > HFX-302 harness: CELL 2 — declared-incompatible (the comparison discriminates) > every coarse-grid breach is caught with the declared kind + the tolerance breach, never hidden"
+        }
+      ],
+      "gate": "negative-discrimination-behavior",
+      "outcome": "pass",
+      "statement": "the negative-control twins (tolerance-breach, verdict-mutation, capability-sabotage, boundary-smuggle) are all caught against the committed corpus, and the designed divergence cells are caught with exactly the declared kind — the oracle governs both lanes equally"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "dbc39784e22051640cb199a551ed8115cdc60434494d074a9c6fc47492b02923"
+        },
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "7144e3d2b69ea3d97a19b45a5f56f4955c8fcd340cf57151dfce8e25a58c20da"
+        }
+      ],
+      "gate": "provenance-continuity",
+      "outcome": "pass",
+      "statement": "31 per-sequence portable manifests sealed (64-hex content addresses) + the consolidated manifest sealed against this profile digest — provider identity, version, configuration and input digests are retained"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-302/tolerance-report.md"
+        },
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-401/runs/lane-registry.json — providers[aise-engine-reference-1-0-0].uncertainty"
+        }
+      ],
+      "gate": "uncertainty-behavior",
+      "outcome": "pass",
+      "statement": "confidence is declared separate from measurement uncertainty (calibration 'none-declared'); the discretization residual is bounded by the declared grid and recorded as observed deltas in the committed tolerance report — never fabricated into a confidence score"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "7144e3d2b69ea3d97a19b45a5f56f4955c8fcd340cf57151dfce8e25a58c20da"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/adapter.test.ts > HFX-302 adapter: the fail-closed capability gate (Law 3 — never computed) > an undeclared family is answered with the typed unsupported naming the family, BEFORE execution"
+        }
+      ],
+      "gate": "failure-unsupported-behavior",
+      "outcome": "pass",
+      "statement": "every unsupported/failure state is explicit and typed: 0 fail-closed unsupported-data refusals (recorded BEFORE execution) and 5 closed-vocabulary divergence observations across the corpus — zero fabricated outputs"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "committed-benchmark-id",
+          "pointer": "7144e3d2b69ea3d97a19b45a5f56f4955c8fcd340cf57151dfce8e25a58c20da"
+        },
+        {
+          "kind": "runner-record",
+          "pointer": "tools/equivalence-eval/fixtures/expected-outcomes.json (suite equivalence-eval-suite/1, benchmarkRecordDigest 6943c18b00b878f8ae88c4a18312da5db36a6dc3f7d509de1c929ebc5dae5420)"
+        }
+      ],
+      "gate": "dependent-layer-regression",
+      "outcome": "pass",
+      "statement": "the Layer-3 consumers regress-free: the BOQ derivation over the oracle's quantities is the committed derivation itself (22 compatible cells' boq lines within tolerance) and the HFX-301 equivalence corpus (the authoring journeys over the same engine) passes 33/33 — both cited by digest"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "license-declaration",
+          "pointer": "profile license declaration 'fixture-permissive-1.0' — provider aise-engine-reference@1.0.0; mirrored in docs/productization-evidence/HFX-401/runs/lane-registry.json"
+        }
+      ],
+      "gate": "license-use-clearance",
+      "outcome": "pass",
+      "statement": "license 'fixture-permissive-1.0' clears commercial use and the declared intended use for production (commercialUse: true, intendedUseCleared: true) — the dataset/model-use rule is satisfied"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-401/runs/lane-registry.json — providers[aise-engine-reference-1-0-0].costProfile"
+        }
+      ],
+      "gate": "cost-quota-safety",
+      "outcome": "pass",
+      "statement": "cost model 'none' at unit cost 0 with the declared quota policy — deterministic local computation, no quota, no spend; the declared fallback is the incumbent reference lane"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "runner-record",
+          "pointer": "docs/productization-evidence/HFX-302/historical-replay.md"
+        },
+        {
+          "kind": "test-name",
+          "pointer": "backend/api/src/geometry-eval/harness.test.ts > HFX-302 harness: the control-plane emission + the HISTORICAL REPLAY > the HISTORICAL REPLAY: the substitute's removal leaves the records interpretable (the work order's criterion)"
+        }
+      ],
+      "gate": "historical-interpretability",
+      "outcome": "pass",
+      "statement": "the reference-only re-derivation proves the canonical projections never depended on any substitute — every committed projection digest re-derives with all substitutes withdrawn; the oracle's own retirement path is the identical retired-provider discipline"
+    }
+  ],
+  "kind": "provider-scorecard",
+  "layerChecklistVersion": "hfx-401/layer-checklist/1",
+  "provider": {
+    "displayName": "AISE Solution Engine (Reference Oracle Lane)",
+    "layer": 3,
+    "profileDigest": "db33abf27fbce12c0ce02e7be06333f12c45e208f1411d46fad80a67ae6626bc",
+    "providerClass": "geometry",
+    "providerId": "aise-engine-reference",
+    "role": "reference-lane",
+    "technologyVersion": "1.0.0"
+  },
+  "schemaVersion": "hfx-401/provider-scorecard/1",
+  "scorecardId": "b78ed9bffd092e0d3e85dafb362a3cec42e9fc2702f6ac44b621988747c60d7f",
+  "verdict": {
+    "checklistConformant": true,
+    "failedGates": [],
+    "naGates": [],
+    "nonPassingGates": [],
+    "productionEligible": true
+  }
+}
