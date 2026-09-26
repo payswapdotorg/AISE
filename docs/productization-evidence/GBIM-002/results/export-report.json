@@ -1,0 +1,29 @@
+{
+ "exports": [
+  {
+   "byteDeterministic": true,
+   "entities": 63,
+   "path": "fixture-v1.ifc",
+   "rebuildSha256": "3ba5e3ead176c5a36429bd74cff2d262344a10008e06ee32e1f313db2b9dc1e9",
+   "seconds": 0.296,
+   "sha256": "3ba5e3ead176c5a36429bd74cff2d262344a10008e06ee32e1f313db2b9dc1e9",
+   "status": "exported",
+   "version": 1
+  },
+  {
+   "byteDeterministic": false,
+   "note": "stock random GlobalIds + wall-clock stamps: two exports of the SAME semantic content differ at byte level \u2014 an IFC file digest is never identity; AISE operation/state IDs are",
+   "paths": [
+    "fixture-v1-raw-a.ifc",
+    "fixture-v1-raw-b.ifc"
+   ],
+   "sha256A": "31c24a3839651bf3c96b031a1181e226571612c19bef14ec2e1dcdfcfcec40ed",
+   "sha256B": "fa10c2f4f9cf3b7bd68c30da21f1c0c3252a7d3bd6a84ab1a2b8a44d664f0073",
+   "status": "exported",
+   "version": "raw-profile-a/b"
+  }
+ ],
+ "toolchain": {
+  "ifcopenshell": "0.8.5"
+ }
+}

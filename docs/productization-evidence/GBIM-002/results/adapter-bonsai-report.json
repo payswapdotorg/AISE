@@ -1,0 +1,117 @@
+{
+ "bonsaiEditSession": {
+  "callSequence": [
+   "pset.edit_pset(Pset_AISE + AISE_DesktopReviewed)",
+   "geometry.edit_object_placement(beam z+0.1, delta-composed)",
+   "root.create_entity(IfcWall 'Wall-Bonsai-Added' \u2014 no AISE mapping)"
+  ],
+  "savedTo": "results/bonsai-edit.ifc",
+  "toolchain": "ifcopenshell.api 0.8.5 (the API core Bonsai's Blender tools drive)"
+ },
+ "evaluationMode": "in-sandbox: install-feasibility measurement + API-level equivalence via ifcopenshell.api (the core Bonsai drives) + docs-level desktop workflow analysis; GUI inspection REFUSED (headless sandbox)",
+ "forkGateAssessment": {
+  "blender": "NOT justified: every capability this spike needed from the desktop surface (pset editing, moving, adding, saving) is delivered by the existing ifcopenshell.api + Blender's native API; no \u00a76(1) required-capability gap was found",
+  "bonsai": "NOT justified: Bonsai's value is the Blender-side UX over the same IfcOpenShell core this spike exercises; the adapter boundary stays at the file/API level"
+ },
+ "installFeasibility": {
+  "bonsaiAddonInstallable": "REFUSED: the Bonsai add-on is not a pip package \u2014 it ships through Blender's extension platform or the IfcOpenShell repository, requiring a Blender installation and a display",
+  "pipInstallBpy": {
+   "classification": "REFUSED (headless Blender not installable on this interpreter)",
+   "command": "pip install bpy",
+   "outcome": "REFUSED: 'No matching distribution found for bpy' \u2014 Blender's bpy wheels target the Python version Blender embeds (3.11 line), not 3.12"
+  },
+  "python3_11Available": false,
+  "pythonInterpreter": "3.12.14 (sandbox default venv)",
+  "timeBoxedTo": "30 minutes per the spike discipline"
+ },
+ "licensePosture": {
+  "blender": {
+   "adapterImplication": "running Blender as a SEPARATE PROCESS (the desktop adapter model) keeps GPL obligations inside the Blender process; embedding bpy in-process would import GPL terms into the host",
+   "evidence": "docs-level citation: https://www.blender.org/about/license/ \u2014 verify before adoption",
+   "license": "GPL-2.0-or-later (GPL-3.0-or-later for newer components)"
+  },
+  "bonsai": {
+   "evidence": "docs-level citation: https://bonsaibim.org/ and the IfcOpenShell repository \u2014 verify the add-on's license block before adoption",
+   "license": "distributed within the IfcOpenShell project (LGPL-3.0-or-later per its repository)"
+  },
+  "ifcopenshell": {
+   "evidence": "installed wheel dist-info METADATA (in-sandbox, verifiable)",
+   "license": "LGPL-3.0-or-later"
+  }
+ },
+ "verificationThroughNeutralReader": {
+  "aiseIdsExpected": 10,
+  "aiseIdsRecovered": 10,
+  "aiseReferencesSurvive": [
+   {
+    "aiseOperationId": "9338a398d3bf72ecf2998be479dac8e88de36ce67d701bfa40b70d61a97beb40",
+    "element": "Beam-001",
+    "operationType": "create-beam"
+   },
+   {
+    "aiseOperationId": "4be1a333b23f59fd179787ceb7fe6ef679c12fdb1fdbfbb8e1a0cade4b354056",
+    "element": "Column-001",
+    "operationType": "create-column"
+   },
+   {
+    "aiseOperationId": "7d7dfb3cd32e84213f261407eed051c58c3fa478bfa540a8b04dd9ddcfd7f2bf",
+    "element": "Door-001",
+    "operationType": "create-door"
+   },
+   {
+    "aiseOperationId": "a40b1352cb018f5a62848429141336e72c9c0a012d3030a6a46e9d7626ba8807",
+    "element": "Footing-001",
+    "operationType": "create-footing"
+   },
+   {
+    "aiseOperationId": "7a71a010f5d7d23a1441cb6f7c183fcbad730a74d43767017aab051279b93e94",
+    "element": "Slab-Floor",
+    "operationType": "create-slab"
+   },
+   {
+    "aiseOperationId": "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c",
+    "element": "Wall-South",
+    "operationType": "create-wall"
+   },
+   {
+    "aiseOperationId": "89234d97f93dd60d3d5fd9fb8b0e656c9af6fbc369368d392f4b5bf62e9c3024",
+    "element": "Wall-Partition",
+    "operationType": "create-partition"
+   },
+   {
+    "aiseOperationId": "3115f0ec3d5e3943ef80c205b327bc3fb18ce48afdcf51af7c5ab4c1c1df9db1",
+    "element": "Window-001",
+    "operationType": "create-window"
+   },
+   {
+    "aiseOperationId": "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410",
+    "element": "Opening-Door",
+    "operationType": "create-opening"
+   },
+   {
+    "aiseOperationId": "ecfbb3221a8a1171a3fa3b2bd7ee17e9ef84f61a4eb4cd05d04140ba2d44f2fa",
+    "element": "Opening-Door",
+    "operationType": "revise-opening"
+   }
+  ],
+  "geometryEditVisible": {
+   "beamZMin": 2.7,
+   "expectedAfterMove": 2.7,
+   "withinTolerance": true
+  },
+  "projectionArtifacts": [
+   {
+    "element": "Opening-Window",
+    "reason": "opening voiding a mapped host / filled by a mapped element (the fenestration op creates its own void)"
+   }
+  ],
+  "readerGate": "the provider-neutral reader flags desktop-authored elements without an AISE mapping as external additions \u2014 they never silently merge into the Reality Graph; an explicit AISE-side decision (import review) is required",
+  "unmappedCount": 1,
+  "unmappedElements": [
+   {
+    "element": "Wall-Bonsai-Added",
+    "reason": "no AISE mapping reference (desktop-authored addition)"
+   }
+  ]
+ }
+}
