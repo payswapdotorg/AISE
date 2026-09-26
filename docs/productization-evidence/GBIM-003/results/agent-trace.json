@@ -1,0 +1,99 @@
+{
+  "generatedAt": "2026-09-25T00:00:00.000Z",
+  "utterance": "Build a new block wall 8 m long, 3 m high and 200 mm thick from concrete blocks in the wall.",
+  "compiledKind": "operation-intent",
+  "normalizedCommandText": "Lay a concrete-block wall 8 m long, 3 m high and 0.2 m thick.",
+  "intent": {
+    "contractVersion": "1.0.0",
+    "intentId": "intent-f85107b8be129479",
+    "operationType": "block-wall-placement",
+    "domain": {
+      "contractVersion": "1.0.0",
+      "vertical": "building",
+      "operationVocabulary": "aise-building-operations-v1",
+      "extensions": [
+        {
+          "kind": "building-element-taxonomy",
+          "ref": "aise-building-elements",
+          "version": "1.0.0"
+        }
+      ]
+    },
+    "parameters": [
+      {
+        "name": "length",
+        "value": 8,
+        "unit": "m"
+      },
+      {
+        "name": "height",
+        "value": 3,
+        "unit": "m"
+      },
+      {
+        "name": "thickness",
+        "value": 0.2,
+        "unit": "m"
+      },
+      {
+        "name": "material",
+        "value": "concrete-block"
+      }
+    ],
+    "target": {
+      "contractVersion": "1.0.0",
+      "selectorKind": "element",
+      "nodeRefs": [
+        "rg:GBIM-000-building-001:wall-001"
+      ],
+      "geometryRefs": [
+        {
+          "kind": "plane",
+          "ref": "geom-fixture:GBIM-000-building-001:wall-001"
+        }
+      ],
+      "units": {
+        "linear": "m",
+        "angular": "rad"
+      },
+      "description": "the wall"
+    },
+    "dependsOn": [],
+    "provenance": {
+      "origin": "agent",
+      "authoredBy": "agent-gbim003-sandbox",
+      "authoredAt": "2026-09-25T00:00:00.000Z",
+      "commandText": "Lay a concrete-block wall 8 m long, 3 m high and 0.2 m thick.",
+      "evidenceIds": [],
+      "derivationNote": "compiled from the user's natural-language request by the deterministic path of the agent operation compiler (PROD-023); applied through the deterministic solution tool port only"
+    },
+    "proposedTo": {
+      "solutionId": "sol-gbim003-spatial-studio-001",
+      "versionNumber": 1
+    }
+  },
+  "derivedOperationId": "cb0ba7c4234e7213ddbc85cb54109c3779b70082cec6b35a97b592f3b57f7163",
+  "directOperationId": "cb0ba7c4234e7213ddbc85cb54109c3779b70082cec6b35a97b592f3b57f7163",
+  "identical": true,
+  "compiledParameters": [
+    {
+      "name": "length",
+      "value": 8,
+      "unit": "m"
+    },
+    {
+      "name": "height",
+      "value": 3,
+      "unit": "m"
+    },
+    {
+      "name": "thickness",
+      "value": 0.2,
+      "unit": "m"
+    },
+    {
+      "name": "material",
+      "value": "concrete-block"
+    }
+  ]
+}

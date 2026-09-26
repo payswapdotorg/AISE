@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "types": [
+      "bun"
+    ],
+    "jsx": "react-jsx",
+    "paths": {
+      "@aise/solution-contract/browser": [
+        "../../packages/solution-contract/src/browser.ts"
+      ]
+    },
+    "baseUrl": "."
+  },
+  "include": [
+    "src"
+  ]
+}
