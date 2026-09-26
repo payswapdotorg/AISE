@@ -1,0 +1,111 @@
+[
+  {
+    "caseId": "neg-001",
+    "expectedReasonFragment": "wall-thickness-impossible",
+    "expectedReasonFragmentFound": true,
+    "failClosed": true,
+    "kind": "impossible-wall-thickness",
+    "noGeometryEmitted": true,
+    "reasonCode": "wall-thickness-impossible",
+    "responseStatus": "executed",
+    "targetOperation": "op-001",
+    "targetStatus": "invalid"
+  },
+  {
+    "caseId": "neg-002",
+    "expectedReasonFragment": "opening-host-unresolved",
+    "expectedReasonFragmentFound": true,
+    "failClosed": true,
+    "kind": "opening-outside-host-wall",
+    "noGeometryEmitted": true,
+    "reasonCode": "opening-host-unresolved",
+    "responseStatus": "executed",
+    "targetOperation": "op-002",
+    "targetStatus": "invalid"
+  },
+  {
+    "caseId": "neg-002b",
+    "expectedReasonFragment": "opening-outside-host-wall",
+    "expectedReasonFragmentFound": true,
+    "failClosed": true,
+    "kind": "opening-outside-host-wall-geometric",
+    "noGeometryEmitted": true,
+    "reasonCode": "opening-outside-host-wall",
+    "responseStatus": "executed",
+    "targetOperation": "op-002",
+    "targetStatus": "invalid"
+  },
+  {
+    "caseId": "neg-003",
+    "expectedReasonFragment": "dimension-not-positive",
+    "expectedReasonFragmentFound": true,
+    "failClosed": true,
+    "kind": "negative-dimension",
+    "noGeometryEmitted": true,
+    "reasonCode": "dimension-not-positive",
+    "responseStatus": "executed",
+    "targetOperation": "op-002",
+    "targetStatus": "invalid"
+  },
+  {
+    "caseId": "neg-004",
+    "expectedReasonFragment": "footing-disconnected",
+    "expectedReasonFragmentFound": true,
+    "failClosed": true,
+    "kind": "disconnected-footing",
+    "noGeometryEmitted": true,
+    "reasonCode": "footing-disconnected",
+    "responseStatus": "executed",
+    "targetOperation": "op-006",
+    "targetStatus": "invalid"
+  },
+  {
+    "caseId": "neg-004b",
+    "expectedReasonFragment": "footing-disconnected",
+    "expectedReasonFragmentFound": true,
+    "failClosed": true,
+    "kind": "disconnected-footing-geometric",
+    "noGeometryEmitted": true,
+    "reasonCode": "footing-disconnected",
+    "responseStatus": "executed",
+    "targetOperation": "op-006",
+    "targetStatus": "invalid"
+  },
+  {
+    "caseId": "neg-005",
+    "expectedReasonFragment": "duplicate-operation-identity",
+    "expectedReasonFragmentFound": true,
+    "failClosed": true,
+    "kind": "duplicate-operation-identity",
+    "noGeometryEmitted": true,
+    "reasonCode": "duplicate-operation-identity",
+    "responseStatus": "refused",
+    "targetOperation": null,
+    "targetStatus": "refused"
+  },
+  {
+    "caseId": "neg-006",
+    "expectedReasonFragment": "unsupported-operation",
+    "expectedReasonFragmentFound": true,
+    "failClosed": true,
+    "kind": "unsupported-operation",
+    "noGeometryEmitted": true,
+    "reasonCode": "unsupported-operation",
+    "responseStatus": "executed",
+    "targetOperation": "op-001",
+    "targetStatus": "unsupported"
+  },
+  {
+    "caseId": "neg-007",
+    "failClosed": true,
+    "guardRefused": true,
+    "kind": "malformed-provider-response",
+    "refusals": [
+      "unknown top-level fields: ['unknownField']",
+      "status must be one of ['executed', 'refused']",
+      "operationResults[0]: unknown fields ['mysteryTopologyHandle'] (provider types/handles may not cross the canonical boundary)",
+      "operationResults[0].measurements.solidVolumeM3: must be a finite number (got 'not-a-number')"
+    ],
+    "responseStatus": "executed-corrupt"
+  }
+]

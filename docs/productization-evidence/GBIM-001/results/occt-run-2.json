@@ -1,0 +1,921 @@
+{
+  "executionId": "gbim001-run-001",
+  "operationResults": [
+    {
+      "executionTimeMs": 2.026,
+      "externalReferences": [
+        {
+          "kind": "provider-shape",
+          "note": "OCCT TopoDS_Shape handle inside the provider process \u2014 external reference only, never AISE canonical identity",
+          "ref": "occt-brep:wall-001#op-001"
+        }
+      ],
+      "hostEffect": null,
+      "measurements": {
+        "boundingBoxM": {
+          "max": [
+            8.0,
+            0.2,
+            3.0
+          ],
+          "min": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "solidVolumeM3": 4.8,
+        "surfaceAreaM2": 52.4,
+        "topology": {
+          "edges": 24,
+          "faces": 6,
+          "isClosedManifold": true,
+          "isValidBRep": true,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 48
+        }
+      },
+      "operationId": "op-001",
+      "operationType": "create-wall",
+      "quantities": [
+        {
+          "basis": "occt-brep-exact",
+          "dimension": "volume",
+          "direction": "added",
+          "label": "wall-volume",
+          "unit": "m3",
+          "value": 4.8
+        },
+        {
+          "basis": "occt-brep-exact-largest-planar-face",
+          "dimension": "area",
+          "direction": "added",
+          "label": "wall-face-area",
+          "unit": "m2",
+          "value": 24.0
+        },
+        {
+          "basis": "one wall per operation",
+          "dimension": "count",
+          "direction": "added",
+          "label": "wall-count",
+          "unit": "count",
+          "value": 1
+        }
+      ],
+      "reasonCode": null,
+      "reasonDetail": null,
+      "status": "applied",
+      "validationChecks": [
+        {
+          "checkId": "topology-validity",
+          "detail": "BRepCheck_Analyzer on the exact solid",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "executionTimeMs": 11.766,
+      "externalReferences": [
+        {
+          "kind": "provider-shape",
+          "note": "OCCT TopoDS_Shape handle inside the provider process \u2014 external reference only, never AISE canonical identity",
+          "ref": "occt-brep:opening-door-001#op-002"
+        }
+      ],
+      "hostEffect": {
+        "hostId": "wall-001",
+        "hostMeasurements": {
+          "boundingBoxM": {
+            "max": [
+              8.0,
+              0.2,
+              3.0
+            ],
+            "min": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "solidVolumeM3": 4.422,
+          "surfaceAreaM2": 49.46,
+          "topology": {
+            "edges": 48,
+            "faces": 10,
+            "isClosedManifold": true,
+            "isValidBRep": true,
+            "shells": 1,
+            "solids": 1,
+            "vertices": 96
+          }
+        },
+        "relation": "boolean-cut-void-in-host"
+      },
+      "measurements": {
+        "boundingBoxM": {
+          "max": [
+            2.45,
+            0.2,
+            2.1
+          ],
+          "min": [
+            1.55,
+            0.0,
+            0.0
+          ]
+        },
+        "solidVolumeM3": 0.378,
+        "surfaceAreaM2": 4.98,
+        "topology": {
+          "edges": 24,
+          "faces": 6,
+          "isClosedManifold": true,
+          "isValidBRep": true,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 48
+        }
+      },
+      "operationId": "op-002",
+      "operationType": "create-opening",
+      "quantities": [
+        {
+          "basis": "occt-brep-exact-void-face",
+          "dimension": "area",
+          "direction": "removed",
+          "label": "opening-area",
+          "unit": "m2",
+          "value": 1.89
+        },
+        {
+          "basis": "occt-brep-exact-boolean-intersection",
+          "dimension": "volume",
+          "direction": "removed",
+          "label": "opening-void-volume",
+          "unit": "m3",
+          "value": 0.378
+        },
+        {
+          "basis": "one opening per operation",
+          "dimension": "count",
+          "direction": "added",
+          "label": "opening-count",
+          "unit": "count",
+          "value": 1
+        }
+      ],
+      "reasonCode": null,
+      "reasonDetail": null,
+      "status": "applied",
+      "validationChecks": [
+        {
+          "checkId": "opening-inside-host-wall",
+          "detail": "opening bbox contained in host wall run and height",
+          "outcome": "pass"
+        },
+        {
+          "checkId": "topology-validity",
+          "detail": "BRepCheck_Analyzer on the net host solid",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "executionTimeMs": 0.882,
+      "externalReferences": [
+        {
+          "kind": "provider-shape",
+          "note": "OCCT TopoDS_Shape handle inside the provider process \u2014 external reference only, never AISE canonical identity",
+          "ref": "occt-brep:opening-door-001#op-003"
+        }
+      ],
+      "hostEffect": null,
+      "measurements": {
+        "boundingBoxM": {
+          "max": [
+            2.45,
+            0.125,
+            2.1
+          ],
+          "min": [
+            1.55,
+            0.075,
+            0.0
+          ]
+        },
+        "solidVolumeM3": 0.0945,
+        "surfaceAreaM2": 4.08,
+        "topology": {
+          "edges": 24,
+          "faces": 6,
+          "isClosedManifold": true,
+          "isValidBRep": true,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 48
+        }
+      },
+      "operationId": "op-003",
+      "operationType": "create-door",
+      "quantities": [
+        {
+          "basis": "occt-brep-exact-panel-face",
+          "dimension": "area",
+          "direction": "added",
+          "label": "door-area",
+          "unit": "m2",
+          "value": 1.89
+        },
+        {
+          "basis": "occt-brep-exact",
+          "dimension": "volume",
+          "direction": "added",
+          "label": "door-volume",
+          "unit": "m3",
+          "value": 0.0945
+        },
+        {
+          "basis": "one door leaf per operation",
+          "dimension": "count",
+          "direction": "added",
+          "label": "door-count",
+          "unit": "count",
+          "value": 1
+        }
+      ],
+      "reasonCode": null,
+      "reasonDetail": null,
+      "status": "applied",
+      "validationChecks": [
+        {
+          "checkId": "opening-exists",
+          "detail": "door installed into existing opening",
+          "outcome": "pass"
+        },
+        {
+          "checkId": "topology-validity",
+          "detail": "BRepCheck_Analyzer",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "executionTimeMs": 16.578,
+      "externalReferences": [
+        {
+          "kind": "provider-shape",
+          "note": "OCCT TopoDS_Shape handle inside the provider process \u2014 external reference only, never AISE canonical identity",
+          "ref": "occt-brep:opening-window-001#op-004"
+        }
+      ],
+      "hostEffect": {
+        "hostId": "wall-001",
+        "hostMeasurements": {
+          "boundingBoxM": {
+            "max": [
+              8.0,
+              0.2,
+              3.0
+            ],
+            "min": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "solidVolumeM3": 4.134,
+          "surfaceAreaM2": 47.54,
+          "topology": {
+            "edges": 72,
+            "faces": 14,
+            "isClosedManifold": true,
+            "isValidBRep": true,
+            "shells": 1,
+            "solids": 1,
+            "vertices": 144
+          }
+        },
+        "relation": "boolean-cut-void-in-host"
+      },
+      "measurements": {
+        "boundingBoxM": {
+          "max": [
+            6.1,
+            0.12,
+            2.1
+          ],
+          "min": [
+            4.9,
+            0.08,
+            0.9
+          ]
+        },
+        "solidVolumeM3": 0.0576,
+        "surfaceAreaM2": 3.072,
+        "topology": {
+          "edges": 24,
+          "faces": 6,
+          "isClosedManifold": true,
+          "isValidBRep": true,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 48
+        }
+      },
+      "operationId": "op-004",
+      "operationType": "create-window",
+      "quantities": [
+        {
+          "basis": "occt-brep-exact-void-face",
+          "dimension": "area",
+          "direction": "removed",
+          "label": "opening-area",
+          "unit": "m2",
+          "value": 1.44
+        },
+        {
+          "basis": "occt-brep-exact-boolean-intersection",
+          "dimension": "volume",
+          "direction": "removed",
+          "label": "opening-void-volume",
+          "unit": "m3",
+          "value": 0.288
+        },
+        {
+          "basis": "occt-brep-exact-panel-face",
+          "dimension": "area",
+          "direction": "added",
+          "label": "glazing-area",
+          "unit": "m2",
+          "value": 1.44
+        },
+        {
+          "basis": "occt-brep-exact",
+          "dimension": "volume",
+          "direction": "added",
+          "label": "glazing-volume",
+          "unit": "m3",
+          "value": 0.0576
+        },
+        {
+          "basis": "one window assembly per operation",
+          "dimension": "count",
+          "direction": "added",
+          "label": "window-count",
+          "unit": "count",
+          "value": 1
+        }
+      ],
+      "reasonCode": null,
+      "reasonDetail": null,
+      "status": "applied",
+      "validationChecks": [
+        {
+          "checkId": "opening-inside-host-wall",
+          "detail": "opening bbox contained in host wall run and height",
+          "outcome": "pass"
+        },
+        {
+          "checkId": "topology-validity",
+          "detail": "BRepCheck_Analyzer on the net host solid",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "executionTimeMs": 0.771,
+      "externalReferences": [
+        {
+          "kind": "provider-shape",
+          "note": "OCCT TopoDS_Shape handle inside the provider process \u2014 external reference only, never AISE canonical identity",
+          "ref": "occt-brep:column-001#op-005"
+        }
+      ],
+      "hostEffect": null,
+      "measurements": {
+        "boundingBoxM": {
+          "max": [
+            4.15,
+            3.15,
+            3.0
+          ],
+          "min": [
+            3.85,
+            2.85,
+            0.0
+          ]
+        },
+        "solidVolumeM3": 0.27,
+        "surfaceAreaM2": 3.78,
+        "topology": {
+          "edges": 24,
+          "faces": 6,
+          "isClosedManifold": true,
+          "isValidBRep": true,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 48
+        }
+      },
+      "operationId": "op-005",
+      "operationType": "create-column",
+      "quantities": [
+        {
+          "basis": "occt-brep-exact",
+          "dimension": "volume",
+          "direction": "added",
+          "label": "column-volume",
+          "unit": "m3",
+          "value": 0.27
+        },
+        {
+          "basis": "occt-brep-exact-total-surface",
+          "dimension": "area",
+          "direction": "added",
+          "label": "column-surface-area",
+          "unit": "m2",
+          "value": 3.78
+        },
+        {
+          "basis": "one column per operation",
+          "dimension": "count",
+          "direction": "added",
+          "label": "column-count",
+          "unit": "count",
+          "value": 1
+        }
+      ],
+      "reasonCode": null,
+      "reasonDetail": null,
+      "status": "applied",
+      "validationChecks": [
+        {
+          "checkId": "topology-validity",
+          "detail": "BRepCheck_Analyzer",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "executionTimeMs": 1.427,
+      "externalReferences": [
+        {
+          "kind": "provider-shape",
+          "note": "OCCT TopoDS_Shape handle inside the provider process \u2014 external reference only, never AISE canonical identity",
+          "ref": "occt-brep:footing-001#op-006"
+        }
+      ],
+      "hostEffect": {
+        "hostId": "column-001",
+        "hostMeasurements": null,
+        "relation": "supports-load-bearing-element"
+      },
+      "measurements": {
+        "boundingBoxM": {
+          "max": [
+            4.2,
+            3.2,
+            0.0
+          ],
+          "min": [
+            3.8,
+            2.8,
+            -0.3
+          ]
+        },
+        "solidVolumeM3": 0.048,
+        "surfaceAreaM2": 0.8,
+        "topology": {
+          "edges": 24,
+          "faces": 6,
+          "isClosedManifold": true,
+          "isValidBRep": true,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 48
+        }
+      },
+      "operationId": "op-006",
+      "operationType": "create-footing",
+      "quantities": [
+        {
+          "basis": "occt-brep-exact",
+          "dimension": "volume",
+          "direction": "added",
+          "label": "footing-volume",
+          "unit": "m3",
+          "value": 0.048
+        },
+        {
+          "basis": "occt-brep-exact-top-face",
+          "dimension": "area",
+          "direction": "added",
+          "label": "footing-plan-area",
+          "unit": "m2",
+          "value": 0.16
+        },
+        {
+          "basis": "one footing per operation",
+          "dimension": "count",
+          "direction": "added",
+          "label": "footing-count",
+          "unit": "count",
+          "value": 1
+        }
+      ],
+      "reasonCode": null,
+      "reasonDetail": null,
+      "status": "applied",
+      "validationChecks": [
+        {
+          "checkId": "footing-support-connected",
+          "detail": "footing top face contacts supported column base with overlapping XY footprints",
+          "outcome": "pass"
+        },
+        {
+          "checkId": "topology-validity",
+          "detail": "BRepCheck_Analyzer",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "executionTimeMs": 1.514,
+      "externalReferences": [
+        {
+          "kind": "provider-shape",
+          "note": "OCCT TopoDS_Shape handle inside the provider process \u2014 external reference only, never AISE canonical identity",
+          "ref": "occt-brep:slab-001#op-007"
+        }
+      ],
+      "hostEffect": null,
+      "measurements": {
+        "boundingBoxM": {
+          "max": [
+            8.0,
+            6.0,
+            3.2
+          ],
+          "min": [
+            0.0,
+            0.0,
+            3.0
+          ]
+        },
+        "solidVolumeM3": 9.6,
+        "surfaceAreaM2": 101.6,
+        "topology": {
+          "edges": 24,
+          "faces": 6,
+          "isClosedManifold": true,
+          "isValidBRep": true,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 48
+        }
+      },
+      "operationId": "op-007",
+      "operationType": "create-slab",
+      "quantities": [
+        {
+          "basis": "occt-brep-exact",
+          "dimension": "volume",
+          "direction": "added",
+          "label": "slab-volume",
+          "unit": "m3",
+          "value": 9.6
+        },
+        {
+          "basis": "occt-brep-exact-top-face",
+          "dimension": "area",
+          "direction": "added",
+          "label": "slab-plan-area",
+          "unit": "m2",
+          "value": 48.0
+        },
+        {
+          "basis": "one slab per operation",
+          "dimension": "count",
+          "direction": "added",
+          "label": "slab-count",
+          "unit": "count",
+          "value": 1
+        }
+      ],
+      "reasonCode": null,
+      "reasonDetail": null,
+      "status": "applied",
+      "validationChecks": [
+        {
+          "checkId": "topology-validity",
+          "detail": "BRepCheck_Analyzer",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "executionTimeMs": 0.847,
+      "externalReferences": [
+        {
+          "kind": "provider-shape",
+          "note": "OCCT TopoDS_Shape handle inside the provider process \u2014 external reference only, never AISE canonical identity",
+          "ref": "occt-brep:beam-001#op-008"
+        }
+      ],
+      "hostEffect": null,
+      "measurements": {
+        "boundingBoxM": {
+          "max": [
+            2.125,
+            6.0,
+            3.0
+          ],
+          "min": [
+            1.875,
+            0.0,
+            2.6
+          ]
+        },
+        "solidVolumeM3": 0.6,
+        "surfaceAreaM2": 8.0,
+        "topology": {
+          "edges": 24,
+          "faces": 6,
+          "isClosedManifold": true,
+          "isValidBRep": true,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 48
+        }
+      },
+      "operationId": "op-008",
+      "operationType": "create-beam",
+      "quantities": [
+        {
+          "basis": "occt-brep-exact",
+          "dimension": "volume",
+          "direction": "added",
+          "label": "beam-volume",
+          "unit": "m3",
+          "value": 0.6
+        },
+        {
+          "basis": "occt-brep-derived-perimeter-times-length",
+          "dimension": "area",
+          "direction": "added",
+          "label": "beam-lateral-area",
+          "unit": "m2",
+          "value": 7.8
+        },
+        {
+          "basis": "one beam per operation",
+          "dimension": "count",
+          "direction": "added",
+          "label": "beam-count",
+          "unit": "count",
+          "value": 1
+        }
+      ],
+      "reasonCode": null,
+      "reasonDetail": null,
+      "status": "applied",
+      "validationChecks": [
+        {
+          "checkId": "topology-validity",
+          "detail": "BRepCheck_Analyzer",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "executionTimeMs": 1.231,
+      "externalReferences": [
+        {
+          "kind": "provider-shape",
+          "note": "OCCT TopoDS_Shape handle inside the provider process \u2014 external reference only, never AISE canonical identity",
+          "ref": "occt-brep:partition-001#op-009"
+        }
+      ],
+      "hostEffect": null,
+      "measurements": {
+        "boundingBoxM": {
+          "max": [
+            6.075,
+            6.0,
+            3.0
+          ],
+          "min": [
+            5.925,
+            0.0,
+            0.0
+          ]
+        },
+        "solidVolumeM3": 2.7,
+        "surfaceAreaM2": 38.7,
+        "topology": {
+          "edges": 24,
+          "faces": 6,
+          "isClosedManifold": true,
+          "isValidBRep": true,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 48
+        }
+      },
+      "operationId": "op-009",
+      "operationType": "create-partition",
+      "quantities": [
+        {
+          "basis": "occt-brep-exact",
+          "dimension": "volume",
+          "direction": "added",
+          "label": "partition-volume",
+          "unit": "m3",
+          "value": 2.7
+        },
+        {
+          "basis": "occt-brep-exact-largest-planar-face",
+          "dimension": "area",
+          "direction": "added",
+          "label": "partition-face-area",
+          "unit": "m2",
+          "value": 18.0
+        },
+        {
+          "basis": "one partition per operation",
+          "dimension": "count",
+          "direction": "added",
+          "label": "partition-count",
+          "unit": "count",
+          "value": 1
+        }
+      ],
+      "reasonCode": null,
+      "reasonDetail": null,
+      "status": "applied",
+      "validationChecks": [
+        {
+          "checkId": "topology-validity",
+          "detail": "BRepCheck_Analyzer",
+          "outcome": "pass"
+        }
+      ]
+    },
+    {
+      "executionTimeMs": 16.794,
+      "externalReferences": [
+        {
+          "kind": "provider-shape",
+          "note": "OCCT TopoDS_Shape handle inside the provider process \u2014 external reference only, never AISE canonical identity",
+          "ref": "occt-brep:opening-window-001#op-010"
+        }
+      ],
+      "hostEffect": {
+        "hostId": "wall-001",
+        "hostMeasurements": {
+          "boundingBoxM": {
+            "max": [
+              8.0,
+              0.2,
+              3.0
+            ],
+            "min": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "solidVolumeM3": 4.062,
+          "surfaceAreaM2": 46.94,
+          "topology": {
+            "edges": 72,
+            "faces": 14,
+            "isClosedManifold": true,
+            "isValidBRep": true,
+            "shells": 1,
+            "solids": 1,
+            "vertices": 144
+          }
+        },
+        "relation": "boolean-cut-void-in-host"
+      },
+      "measurements": {
+        "boundingBoxM": {
+          "max": [
+            6.25,
+            0.12,
+            2.1
+          ],
+          "min": [
+            4.75,
+            0.08,
+            0.9
+          ]
+        },
+        "solidVolumeM3": 0.072,
+        "surfaceAreaM2": 3.816,
+        "topology": {
+          "edges": 24,
+          "faces": 6,
+          "isClosedManifold": true,
+          "isValidBRep": true,
+          "shells": 1,
+          "solids": 1,
+          "vertices": 48
+        }
+      },
+      "operationId": "op-010",
+      "operationType": "revise-opening",
+      "quantities": [
+        {
+          "basis": "occt-brep-exact-void-face",
+          "dimension": "area",
+          "direction": "changed",
+          "label": "opening-area",
+          "previousValue": 1.44,
+          "unit": "m2",
+          "value": 1.8
+        },
+        {
+          "basis": "occt-brep-exact-boolean-intersection",
+          "dimension": "volume",
+          "direction": "changed",
+          "label": "opening-void-volume",
+          "previousValue": 0.288,
+          "unit": "m3",
+          "value": 0.36
+        },
+        {
+          "basis": "occt-brep-exact-panel-face",
+          "dimension": "area",
+          "direction": "changed",
+          "label": "glazing-area",
+          "previousValue": 1.44,
+          "unit": "m2",
+          "value": 1.8
+        },
+        {
+          "basis": "occt-brep-exact",
+          "dimension": "volume",
+          "direction": "changed",
+          "label": "glazing-volume",
+          "previousValue": 0.0576,
+          "unit": "m3",
+          "value": 0.072
+        },
+        {
+          "basis": "occt-brep-exact-boolean-cut",
+          "dimension": "volume",
+          "direction": "changed",
+          "label": "wall-net-volume",
+          "previousValue": 4.134,
+          "unit": "m3",
+          "value": 4.062
+        },
+        {
+          "basis": "one window assembly per operation",
+          "dimension": "count",
+          "direction": "added",
+          "label": "window-count",
+          "unit": "count",
+          "value": 1
+        }
+      ],
+      "reasonCode": null,
+      "reasonDetail": null,
+      "status": "applied",
+      "validationChecks": [
+        {
+          "checkId": "opening-inside-host-wall",
+          "detail": "opening bbox contained in host wall run and height",
+          "outcome": "pass"
+        },
+        {
+          "checkId": "topology-validity",
+          "detail": "BRepCheck_Analyzer on the net host solid",
+          "outcome": "pass"
+        }
+      ]
+    }
+  ],
+  "portVersion": "gbim001-geometry-port/1",
+  "provenance": {
+    "adapterSourceDigest": "sha256:c94851c048021d239dce11e0b6a46e257dbb9987b731bcbfb139e625684c714d",
+    "authoringLayer": "cadquery 2.8.0",
+    "binding": "cadquery-ocp 7.9.3.1.1",
+    "inputDigest": "sha256:3a0c8d2ff1879f4369feca650933eaa7e512edb9c57e499dd43105ef52ca5887",
+    "kernel": "OpenCASCADE Technology (OCCT)",
+    "kernelVersion": "7.9.3",
+    "platform": "Linux x86_64",
+    "portVersion": "gbim001-geometry-port/1",
+    "providerId": "occt-cadquery-spike",
+    "pythonVersion": "3.12.14"
+  },
+  "reasonCode": null,
+  "reasonDetail": null,
+  "sceneStateDigest": "sha256:0c915714275fbbf394519a72e37395ac41daef0230d7732ea44f2b165ce12bc3",
+  "schemaVersion": 1,
+  "status": "executed"
+}

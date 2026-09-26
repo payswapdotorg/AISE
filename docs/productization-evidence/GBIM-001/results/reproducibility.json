@@ -1,0 +1,16 @@
+{
+  "claim": "same canonical input (fixture + placement policy) \u2192 identical deterministic provider projection",
+  "inputDigest": "sha256:3a0c8d2ff1879f4369feca650933eaa7e512edb9c57e499dd43105ef52ca5887",
+  "note": "digests exclude executionId and executionTimeMs (performance observations, not semantics)",
+  "reproducible": true,
+  "run1DeterministicDigest": "sha256:d189ea5aaa251862ce143fdc65f0cfb16e1a0d9de818c3d964846ed3b9f0bed9",
+  "run2DeterministicDigest": "sha256:d189ea5aaa251862ce143fdc65f0cfb16e1a0d9de818c3d964846ed3b9f0bed9",
+  "schemaGuardRun1": {
+    "ok": true,
+    "refusals": []
+  },
+  "schemaGuardRun2": {
+    "ok": true,
+    "refusals": []
+  }
+}

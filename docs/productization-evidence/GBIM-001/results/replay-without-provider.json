@@ -1,0 +1,110 @@
+[
+  {
+    "canonicalCoreReadable": true,
+    "claim": "historical record is readable and validatable with pure stdlib (no provider imports)",
+    "command": "gbim001-venv/bin/python adapter/replay_without_provider.py",
+    "ok": true,
+    "problems": [],
+    "providerModulesImported": false,
+    "step": "A"
+  },
+  {
+    "allSharedQuantitiesExact": true,
+    "claim": "canonical quantities cross-check against the unmodified AISE engine lane",
+    "comparisons": [
+      {
+        "aiseLabel": "block-count",
+        "aiseValue": 300,
+        "occtLabel": null,
+        "occtValue": null,
+        "operationId": "op-001",
+        "relation": "no-occt-counterpart (parametric block-module count)"
+      },
+      {
+        "aiseLabel": "wall-face-area",
+        "aiseValue": 24,
+        "occtLabel": "wall-face-area",
+        "occtValue": 24.0,
+        "operationId": "op-001",
+        "relation": "exact-equality"
+      },
+      {
+        "aiseLabel": "wall-volume",
+        "aiseValue": 4.8,
+        "occtLabel": "wall-volume",
+        "occtValue": 4.8,
+        "operationId": "op-001",
+        "relation": "exact-equality"
+      },
+      {
+        "aiseLabel": "opening-area",
+        "aiseValue": 1.89,
+        "occtLabel": "opening-area",
+        "occtValue": 1.89,
+        "operationId": "op-002",
+        "relation": "exact-equality"
+      },
+      {
+        "aiseLabel": "opening-count",
+        "aiseValue": 1,
+        "occtLabel": "opening-count",
+        "occtValue": 1,
+        "operationId": "op-002",
+        "relation": "exact-equality"
+      },
+      {
+        "aiseLabel": "footing-plan-area",
+        "aiseValue": 0.16,
+        "occtLabel": "footing-plan-area",
+        "occtValue": 0.16,
+        "operationId": "op-006",
+        "relation": "exact-equality"
+      },
+      {
+        "aiseLabel": "footing-volume",
+        "aiseValue": 0.048,
+        "occtLabel": "footing-volume",
+        "occtValue": 0.048,
+        "operationId": "op-006",
+        "relation": "exact-equality"
+      },
+      {
+        "aiseLabel": "slab-plan-area",
+        "aiseValue": 48,
+        "occtLabel": "slab-plan-area",
+        "occtValue": 48.0,
+        "operationId": "op-007",
+        "relation": "exact-equality"
+      },
+      {
+        "aiseLabel": "slab-volume",
+        "aiseValue": 9.6,
+        "occtLabel": "slab-volume",
+        "occtValue": 9.6,
+        "operationId": "op-007",
+        "relation": "exact-equality"
+      }
+    ],
+    "ok": true,
+    "step": "D"
+  },
+  {
+    "canonicalCoreStillReadable": true,
+    "claim": "with the provider physically removed, the historical record remains fully interpretable",
+    "command": "mv adapter/occt_adapter.py adapter/occt_adapter.py.disabled (provider removed)",
+    "ok": true,
+    "problems": [],
+    "providerInvocationDetail": "subprocess exit != 0: /home/z/my-project/gbim001-venv/bin/python: can't open file '/home/z/my-project/AISE/docs/productization-evidence/GBIM-0",
+    "providerInvocationFailed": true,
+    "providerPresent": false,
+    "step": "B"
+  },
+  {
+    "canonicalCoreStillValid": true,
+    "claim": "the externalReferences block is deletable without affecting the canonical core",
+    "externalBlockRemoved": true,
+    "ok": true,
+    "problems": [],
+    "step": "C"
+  }
+]
