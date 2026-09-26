@@ -1,0 +1,391 @@
+{
+  "lane": "aise-reference",
+  "authority": "packages/solution-engine/src/quantity-models.ts (referenceBuildingQuantityModels, unmodified)",
+  "engineVersion": "1.0.0",
+  "productionVocabulary": [
+    "excavation",
+    "backfill",
+    "demolition-removal",
+    "foundation-placement",
+    "slab-placement",
+    "block-wall-placement",
+    "opening-creation",
+    "plaster-application",
+    "building-service-installation",
+    "finish-application"
+  ],
+  "spikeToProductionMapping": {
+    "create-wall": {
+      "productionType": "block-wall-placement",
+      "note": "wall => block wall placement model"
+    },
+    "create-opening": {
+      "productionType": "opening-creation",
+      "note": "generic opening => opening creation model"
+    },
+    "create-door": {
+      "productionType": null,
+      "note": "NO production counterpart: BUILDING_OPERATION_TYPES has no door model; door-as-opening would double-count the void the create-opening op already made"
+    },
+    "create-window": {
+      "productionType": null,
+      "note": "NO production counterpart: no window/glazing model in the Phase-1 vocabulary"
+    },
+    "create-column": {
+      "productionType": null,
+      "note": "NO production counterpart: no column model"
+    },
+    "create-footing": {
+      "productionType": "foundation-placement",
+      "note": "footing => foundation placement model"
+    },
+    "create-slab": {
+      "productionType": "slab-placement",
+      "note": "slab => slab placement model"
+    },
+    "create-beam": {
+      "productionType": null,
+      "note": "NO production counterpart: no beam model"
+    },
+    "create-partition": {
+      "productionType": null,
+      "note": "NO production counterpart: partition would reuse block-wall-placement only by re-declaring it as a wall — not a distinct operation"
+    },
+    "revise-opening": {
+      "productionType": null,
+      "note": "NO direct counterpart: revision in production AISE is reviseVersion() — a NEW solution version (packages/solution-engine/src/revise.ts), not a parameter-revise operation; the opening-creation model would be re-applied with new dimensions"
+    }
+  },
+  "results": [
+    {
+      "operationId": "op-001",
+      "spikeOperationType": "create-wall",
+      "productionOperationType": "block-wall-placement",
+      "status": "computed",
+      "quantities": [
+        {
+          "label": "wall-volume",
+          "dimension": "volume",
+          "value": 4.8,
+          "unit": "m3",
+          "direction": "added",
+          "formula": "length × height × thickness",
+          "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+          "parameterTrace": [
+            {
+              "name": "length",
+              "canonicalValue": 8,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 8
+            },
+            {
+              "name": "height",
+              "canonicalValue": 3,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 3
+            },
+            {
+              "name": "thickness",
+              "canonicalValue": 0.2,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 0.2
+            }
+          ]
+        },
+        {
+          "label": "wall-face-area",
+          "dimension": "area",
+          "value": 24,
+          "unit": "m2",
+          "direction": "added",
+          "formula": "length × height",
+          "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+          "parameterTrace": [
+            {
+              "name": "length",
+              "canonicalValue": 8,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 8
+            },
+            {
+              "name": "height",
+              "canonicalValue": 3,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 3
+            }
+          ]
+        },
+        {
+          "label": "block-count",
+          "dimension": "count",
+          "value": 300,
+          "unit": "count",
+          "direction": "added",
+          "formula": "ceil(height / 0.2) × ceil(length / 0.4) — nominal module face incl. joints, partial module counts as a whole block",
+          "calculationRef": "aise-solution-engine/quantity/block-wall-placement/v1",
+          "parameterTrace": [
+            {
+              "name": "length",
+              "canonicalValue": 8,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 8
+            },
+            {
+              "name": "height",
+              "canonicalValue": 3,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 3
+            }
+          ]
+        }
+      ],
+      "note": "wall => block wall placement model"
+    },
+    {
+      "operationId": "op-002",
+      "spikeOperationType": "create-opening",
+      "productionOperationType": "opening-creation",
+      "status": "computed",
+      "quantities": [
+        {
+          "label": "opening-area",
+          "dimension": "area",
+          "value": 1.89,
+          "unit": "m2",
+          "direction": "removed",
+          "formula": "width × height",
+          "calculationRef": "aise-solution-engine/quantity/opening-creation/v1",
+          "parameterTrace": [
+            {
+              "name": "width",
+              "canonicalValue": 0.9,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 0.9
+            },
+            {
+              "name": "height",
+              "canonicalValue": 2.1,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 2.1
+            }
+          ]
+        },
+        {
+          "label": "opening-count",
+          "dimension": "count",
+          "value": 1,
+          "unit": "count",
+          "direction": "added",
+          "formula": "one opening per opening-creation operation",
+          "calculationRef": "aise-solution-engine/quantity/opening-creation/v1",
+          "parameterTrace": [
+            {
+              "name": "width",
+              "canonicalValue": 0.9,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 0.9
+            },
+            {
+              "name": "height",
+              "canonicalValue": 2.1,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 2.1
+            }
+          ]
+        }
+      ],
+      "note": "generic opening => opening creation model"
+    },
+    {
+      "operationId": "op-003",
+      "spikeOperationType": "create-door",
+      "productionOperationType": null,
+      "status": "no-production-counterpart",
+      "note": "NO production counterpart: BUILDING_OPERATION_TYPES has no door model; door-as-opening would double-count the void the create-opening op already made",
+      "quantities": []
+    },
+    {
+      "operationId": "op-004",
+      "spikeOperationType": "create-window",
+      "productionOperationType": null,
+      "status": "no-production-counterpart",
+      "note": "NO production counterpart: no window/glazing model in the Phase-1 vocabulary",
+      "quantities": []
+    },
+    {
+      "operationId": "op-005",
+      "spikeOperationType": "create-column",
+      "productionOperationType": null,
+      "status": "no-production-counterpart",
+      "note": "NO production counterpart: no column model",
+      "quantities": []
+    },
+    {
+      "operationId": "op-006",
+      "spikeOperationType": "create-footing",
+      "productionOperationType": "foundation-placement",
+      "status": "computed",
+      "quantities": [
+        {
+          "label": "footing-volume",
+          "dimension": "volume",
+          "value": 0.048,
+          "unit": "m3",
+          "direction": "added",
+          "formula": "length × width × depth",
+          "calculationRef": "aise-solution-engine/quantity/foundation-placement/v1",
+          "parameterTrace": [
+            {
+              "name": "length",
+              "canonicalValue": 0.4,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 0.4
+            },
+            {
+              "name": "width",
+              "canonicalValue": 0.4,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 0.4
+            },
+            {
+              "name": "depth",
+              "canonicalValue": 0.3,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 0.3
+            }
+          ]
+        },
+        {
+          "label": "footing-plan-area",
+          "dimension": "area",
+          "value": 0.16,
+          "unit": "m2",
+          "direction": "added",
+          "formula": "length × width",
+          "calculationRef": "aise-solution-engine/quantity/foundation-placement/v1",
+          "parameterTrace": [
+            {
+              "name": "length",
+              "canonicalValue": 0.4,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 0.4
+            },
+            {
+              "name": "width",
+              "canonicalValue": 0.4,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 0.4
+            }
+          ]
+        }
+      ],
+      "note": "footing => foundation placement model"
+    },
+    {
+      "operationId": "op-007",
+      "spikeOperationType": "create-slab",
+      "productionOperationType": "slab-placement",
+      "status": "computed",
+      "quantities": [
+        {
+          "label": "slab-volume",
+          "dimension": "volume",
+          "value": 9.6,
+          "unit": "m3",
+          "direction": "added",
+          "formula": "length × width × thickness",
+          "calculationRef": "aise-solution-engine/quantity/slab-placement/v1",
+          "parameterTrace": [
+            {
+              "name": "length",
+              "canonicalValue": 8,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 8
+            },
+            {
+              "name": "width",
+              "canonicalValue": 6,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 6
+            },
+            {
+              "name": "thickness",
+              "canonicalValue": 0.2,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 0.2
+            }
+          ]
+        },
+        {
+          "label": "slab-plan-area",
+          "dimension": "area",
+          "value": 48,
+          "unit": "m2",
+          "direction": "added",
+          "formula": "length × width",
+          "calculationRef": "aise-solution-engine/quantity/slab-placement/v1",
+          "parameterTrace": [
+            {
+              "name": "length",
+              "canonicalValue": 8,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 8
+            },
+            {
+              "name": "width",
+              "canonicalValue": 6,
+              "originalUnit": "m",
+              "dimension": "linear",
+              "originalValue": 6
+            }
+          ]
+        }
+      ],
+      "note": "slab => slab placement model"
+    },
+    {
+      "operationId": "op-008",
+      "spikeOperationType": "create-beam",
+      "productionOperationType": null,
+      "status": "no-production-counterpart",
+      "note": "NO production counterpart: no beam model",
+      "quantities": []
+    },
+    {
+      "operationId": "op-009",
+      "spikeOperationType": "create-partition",
+      "productionOperationType": null,
+      "status": "no-production-counterpart",
+      "note": "NO production counterpart: partition would reuse block-wall-placement only by re-declaring it as a wall — not a distinct operation",
+      "quantities": []
+    },
+    {
+      "operationId": "op-010",
+      "spikeOperationType": "revise-opening",
+      "productionOperationType": null,
+      "status": "no-production-counterpart",
+      "note": "NO direct counterpart: revision in production AISE is reviseVersion() — a NEW solution version (packages/solution-engine/src/revise.ts), not a parameter-revise operation; the opening-creation model would be re-applied with new dimensions",
+      "quantities": []
+    }
+  ]
+}

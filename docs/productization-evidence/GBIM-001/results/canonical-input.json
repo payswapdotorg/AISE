@@ -1,0 +1,421 @@
+{
+  "authority": "AISE",
+  "executionId": "gbim001-run-001",
+  "fixtureId": "GBIM-000-building-001",
+  "operations": [
+    {
+      "dependsOn": [],
+      "hostId": "room-001",
+      "operationId": "op-001",
+      "operationType": "create-wall",
+      "parameters": [
+        {
+          "name": "length",
+          "unit": "m",
+          "value": 8
+        },
+        {
+          "name": "height",
+          "unit": "m",
+          "value": 3
+        },
+        {
+          "name": "thickness",
+          "unit": "m",
+          "value": 0.2
+        }
+      ],
+      "targetId": "wall-001"
+    },
+    {
+      "dependsOn": [
+        "op-001"
+      ],
+      "hostId": "wall-001",
+      "operationId": "op-002",
+      "operationType": "create-opening",
+      "parameters": [
+        {
+          "name": "width",
+          "unit": "m",
+          "value": 0.9
+        },
+        {
+          "name": "height",
+          "unit": "m",
+          "value": 2.1
+        },
+        {
+          "name": "sill",
+          "unit": "m",
+          "value": 0
+        }
+      ],
+      "targetId": "opening-door-001"
+    },
+    {
+      "dependsOn": [
+        "op-002"
+      ],
+      "hostId": "wall-001",
+      "operationId": "op-003",
+      "operationType": "create-door",
+      "parameters": [
+        {
+          "name": "width",
+          "unit": "m",
+          "value": 0.9
+        },
+        {
+          "name": "height",
+          "unit": "m",
+          "value": 2.1
+        },
+        {
+          "name": "sill",
+          "unit": "m",
+          "value": 0
+        },
+        {
+          "name": "leaf-thickness",
+          "unit": "m",
+          "value": 0.05
+        }
+      ],
+      "targetId": "opening-door-001"
+    },
+    {
+      "dependsOn": [
+        "op-001"
+      ],
+      "hostId": "wall-001",
+      "operationId": "op-004",
+      "operationType": "create-window",
+      "parameters": [
+        {
+          "name": "width",
+          "unit": "m",
+          "value": 1.2
+        },
+        {
+          "name": "height",
+          "unit": "m",
+          "value": 1.2
+        },
+        {
+          "name": "sill",
+          "unit": "m",
+          "value": 0.9
+        },
+        {
+          "name": "glazing-thickness",
+          "unit": "m",
+          "value": 0.04
+        }
+      ],
+      "targetId": "opening-window-001"
+    },
+    {
+      "dependsOn": [],
+      "hostId": "room-001",
+      "operationId": "op-005",
+      "operationType": "create-column",
+      "parameters": [
+        {
+          "name": "width",
+          "unit": "m",
+          "value": 0.3
+        },
+        {
+          "name": "depth",
+          "unit": "m",
+          "value": 0.3
+        },
+        {
+          "name": "height",
+          "unit": "m",
+          "value": 3
+        }
+      ],
+      "targetId": "column-001"
+    },
+    {
+      "dependsOn": [
+        "op-005"
+      ],
+      "hostId": "room-001",
+      "operationId": "op-006",
+      "operationType": "create-footing",
+      "parameters": [
+        {
+          "name": "width",
+          "unit": "m",
+          "value": 0.4
+        },
+        {
+          "name": "depth",
+          "unit": "m",
+          "value": 0.4
+        },
+        {
+          "name": "height",
+          "unit": "m",
+          "value": 0.3
+        },
+        {
+          "name": "supports",
+          "unit": "n/a",
+          "value": "column-001"
+        }
+      ],
+      "targetId": "footing-001"
+    },
+    {
+      "dependsOn": [],
+      "hostId": "room-001",
+      "operationId": "op-007",
+      "operationType": "create-slab",
+      "parameters": [
+        {
+          "name": "length",
+          "unit": "m",
+          "value": 8
+        },
+        {
+          "name": "width",
+          "unit": "m",
+          "value": 6
+        },
+        {
+          "name": "thickness",
+          "unit": "m",
+          "value": 0.2
+        }
+      ],
+      "targetId": "slab-001"
+    },
+    {
+      "dependsOn": [
+        "op-005"
+      ],
+      "hostId": "room-001",
+      "operationId": "op-008",
+      "operationType": "create-beam",
+      "parameters": [
+        {
+          "name": "length",
+          "unit": "m",
+          "value": 6.0
+        },
+        {
+          "name": "width",
+          "unit": "m",
+          "value": 0.25
+        },
+        {
+          "name": "depth",
+          "unit": "m",
+          "value": 0.4
+        }
+      ],
+      "targetId": "beam-001"
+    },
+    {
+      "dependsOn": [],
+      "hostId": "room-001",
+      "operationId": "op-009",
+      "operationType": "create-partition",
+      "parameters": [
+        {
+          "name": "length",
+          "unit": "m",
+          "value": 6.0
+        },
+        {
+          "name": "height",
+          "unit": "m",
+          "value": 3
+        },
+        {
+          "name": "thickness",
+          "unit": "m",
+          "value": 0.15
+        }
+      ],
+      "targetId": "partition-001"
+    },
+    {
+      "dependsOn": [
+        "op-004"
+      ],
+      "hostId": "wall-001",
+      "operationId": "op-010",
+      "operationType": "revise-opening",
+      "parameters": [
+        {
+          "name": "width",
+          "unit": "m",
+          "value": 1.5
+        },
+        {
+          "name": "height",
+          "unit": "m",
+          "value": 1.2
+        },
+        {
+          "name": "sill",
+          "unit": "m",
+          "value": 0.9
+        },
+        {
+          "name": "glazing-thickness",
+          "unit": "m",
+          "value": 0.04
+        }
+      ],
+      "targetId": "opening-window-001"
+    }
+  ],
+  "portVersion": "gbim001-geometry-port/1",
+  "scene": {
+    "elements": {
+      "beam": {
+        "depth_m": 0.4,
+        "id": "beam-001",
+        "width_m": 0.25
+      },
+      "column": {
+        "depth_m": 0.3,
+        "id": "column-001",
+        "width_m": 0.3
+      },
+      "doorOpening": {
+        "height_m": 2.1,
+        "hostWall": "wall-001",
+        "id": "opening-door-001",
+        "sill_m": 0,
+        "width_m": 0.9
+      },
+      "footing": {
+        "depth_m": 0.4,
+        "height_m": 0.3,
+        "id": "footing-001",
+        "width_m": 0.4
+      },
+      "partition": {
+        "id": "partition-001",
+        "thickness_m": 0.15
+      },
+      "roof": {
+        "id": "roof-001",
+        "type": "plane"
+      },
+      "slab": {
+        "id": "slab-001",
+        "thickness_m": 0.2
+      },
+      "wall": {
+        "host": "room-001",
+        "id": "wall-001",
+        "thickness_m": 0.2
+      },
+      "windowOpening": {
+        "height_m": 1.2,
+        "hostWall": "wall-001",
+        "id": "opening-window-001",
+        "sill_m": 0.9,
+        "width_m": 1.2
+      }
+    },
+    "placementPolicy": {
+      "beam001": {
+        "centerX": 2.0,
+        "lengthPolicy": "spans room width (6.0 m) at x=2.0 center, top at z=3.0",
+        "yFrom": 0.0,
+        "yTo": 6.0,
+        "zFrom": 2.6,
+        "zTo": 3.0
+      },
+      "column001": {
+        "centerXY": [
+          4.0,
+          3.0
+        ],
+        "heightPolicy": "full room height (3.0 m)",
+        "zFrom": 0.0,
+        "zTo": 3.0
+      },
+      "doorLeafThicknessM": 0.05,
+      "doorOpeningCenterX": 2.0,
+      "footing001": {
+        "centerXY": [
+          4.0,
+          3.0
+        ],
+        "supports": "column-001",
+        "zFrom": -0.3,
+        "zTo": 0.0
+      },
+      "openingCutMarginM": 0.05,
+      "partition001": {
+        "centerX": 6.0,
+        "thicknessPolicy": "spans room width (6.0 m) at x=6.0 center, full height",
+        "yFrom": 0.0,
+        "yTo": 6.0,
+        "zFrom": 0.0,
+        "zTo": 3.0
+      },
+      "policyId": "gbim001-placement-policy/1",
+      "roomBox": {
+        "max": [
+          8.0,
+          6.0,
+          3.0
+        ],
+        "min": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "roomId": "room-001",
+      "slab001": {
+        "box": {
+          "max": [
+            8.0,
+            6.0,
+            3.2
+          ],
+          "min": [
+            0.0,
+            0.0,
+            3.0
+          ]
+        }
+      },
+      "wall001": {
+        "box": {
+          "max": [
+            8.0,
+            0.2,
+            3.0
+          ],
+          "min": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "runs": "along +x at south face"
+      },
+      "windowGlazingThicknessM": 0.04,
+      "windowOpeningCenterX": 5.5
+    },
+    "roomHeightM": 3,
+    "roomId": "room-001",
+    "roomLengthM": 8,
+    "roomWidthM": 6
+  },
+  "schemaVersion": 1,
+  "units": "SI"
+}
