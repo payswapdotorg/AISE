@@ -192,7 +192,7 @@ export function ProjectsBody({
             title="No projects are known to this organization yet"
             guidance={
               mode === "demo"
-                ? "The demo dataset lists its two fixture projects; an empty demo list would mean the fixtures changed — this is not missing data."
+                ? "The sample dataset lists its recorded projects; an empty demo list would mean the fixtures changed — this is not missing data."
                 : "This organization's registry is empty. The first project can be created right here — the panel below offers the identity API's create-project act through the authorization broker."
             }
             action={

@@ -7,6 +7,22 @@
  * ONE frame, plus the governed outcome loop (approval, execution, OBSERVED
  * outcomes, reality-vs-design comparison).
  *
+ * POST-004 — navigation/interaction hardening (plan §2G, §2H, §2K):
+ *  - the BUILD-SOLUTION ENTRY presentation: the "Build an intervention" vs
+ *    "Build interactively" paths render side by side with the plain-language
+ *    distinction (BuildSolutionPathsCard) — a user arriving here from any
+ *    "Build solution" action sees the interactive workspace ONE CLICK away,
+ *    never as a hidden hop;
+ *  - the STAGED SOLUTION JOURNEY (StageProgressCard): Plan → Validate →
+ *    Approve → Execute → Compare visibly staged with the CURRENT stage and
+ *    the NEXT ALLOWED ACTION derived honestly from the loaded records —
+ *    progressive disclosure for a first-time user over the same technical
+ *    surface (nothing removed, nothing fabricated);
+ *  - SPECIALIST DETAILS BEHIND PROGRESSIVE DISCLOSURE: the step/provenance
+ *    table, the status-audit table and the status timeline render inside
+ *    native <details> disclosures (TechnicalDetails) — plain language first,
+ *    the technical record one click away.
+ *
  * Honesty (the §027 discipline):
  *  - EVERY state layer is a PROPOSED projection over the pinned baseline —
  *    the surface says so, prominently, and every pane is labeled PROPOSED;
@@ -289,9 +305,13 @@ export function InterventionStudio({
         </p>
         <h1>Intervention Studio</h1>
         <p>
-          Step through the scenario&apos;s ordered proposed states — every
+          Plan an intervention and step through it layer by layer — every
           layer is a proposal over the pinned baseline, synchronized across
-          the 3D, 2D and BOQ panes.
+          the 3D, 2D and BOQ panes. Prefer designing the change directly?{" "}
+          <a href={formatRoute({ name: "solution", projectId, query: {} })}>
+            Build it interactively instead
+          </a>
+          .
         </p>
       </div>
       <TaskFlowStrip projectId={projectId} />
@@ -333,6 +353,13 @@ export function StudioBody({
   const demo = data.mode === "demo";
   return (
     <>
+      {/* POST-004: the build-solution entry presentation (both paths, plain
+          language) — FIRST, so a "Build solution" arrival orients before the
+          technical surface. */}
+      <BuildSolutionPathsCard projectId={data.projectId} current="intervention" />
+      {/* POST-004: the staged journey — the current stage + the next allowed
+          action, derived from the loaded records only. */}
+      <StageProgressCard data={data} />
       {data.unknownScenario === null ? null : (
         <Card title="Unknown scenario" badge={<DataBadge mode={data.mode} />}>
           <div className="state state-error" role="alert" data-unknown-scenario={data.unknownScenario}>
@@ -372,11 +399,11 @@ export function StudioBody({
         <>
           <Card title="Intervention scenario" badge={<DataBadge mode={data.mode} />}>
             <EmptyState
-              title="No intervention scenario recorded for this project"
-              guidance="A scenario is an ordered set of recorded steps over a pinned baseline version; its proposed states are materialized per layer. The first scenario can be created right here — the panel below offers the intervention API's create act through the authorization broker."
+              title="No intervention plan recorded for this project yet"
+              guidance="An intervention plan is an ordered set of recorded steps over a pinned baseline version; each accepted step materializes the next proposed layer. The first plan can be created right here — the panel below offers the intervention API's create act through the authorization broker."
               action={
                 <a className="button" href="#create-scenario" onClick={inPageAnchorOnClick}>
-                  Create the first scenario
+                  Create the first plan
                 </a>
               }
             />
@@ -409,6 +436,310 @@ export function StudioBody({
         mode={data.mode}
       />
     </>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* POST-004 — the build-solution entry + the staged journey +           */
+/* progressive disclosure                                              */
+/* ------------------------------------------------------------------ */
+
+/**
+ * POST-004 — the build-solution entry presentation: BOTH paths side by
+ * side with the plain-language distinction (plan §2G). Rendered at the top
+ * of the Intervention Studio — a user arriving from any "Build solution"
+ * action sees the interactive path ONE CLICK away, never a hidden hop —
+ * and on the Solution surface (imported there, same component, no fork).
+ */
+export function BuildSolutionPathsCard({
+  projectId,
+  current,
+}: {
+  readonly projectId: string;
+  /** Which build path this surface is (the other one gets the link). */
+  readonly current: "intervention" | "solution";
+}): ReactNode {
+  return (
+    <Card
+      title="Build solution — two ways"
+      meta={
+        <span>
+          both paths stay proposals until executed — neither touches observed
+          reality
+        </span>
+      }
+    >
+      <ul className="notes-list" data-build-paths="true">
+        <li data-build-path="intervention">
+          <strong>
+            Build an intervention{current === "intervention" ? " — you are here" : ""}.
+          </strong>{" "}
+          Plan the change as recorded, layer-by-layer steps over a pinned
+          baseline — then approve, execute and compare what was actually done.
+          {current === "intervention" ? null : (
+            <>
+              {" "}
+              <a href={formatRoute({ name: "intervention", projectId, query: {} })}>
+                Open the step-by-step path →
+              </a>
+            </>
+          )}
+        </li>
+        <li data-build-path="solution">
+          <strong>
+            Build interactively{current === "solution" ? " — you are here" : ""}.
+          </strong>{" "}
+          Design the change in the live workspace — draw it or describe it in
+          plain words (both resolve to the same typed engineering operations),
+          validate deterministically and generate the solution BOQ.
+          {current === "solution" ? null : (
+            <>
+              {" "}
+              <a href={formatRoute({ name: "solution", projectId, query: {} })}>
+                Open the interactive workspace →
+              </a>
+            </>
+          )}
+        </li>
+      </ul>
+    </Card>
+  );
+}
+
+/** The five stages of the governed solution journey, in order (frozen). */
+const SOLUTION_STAGES = Object.freeze([
+  "Plan",
+  "Validate",
+  "Approve",
+  "Execute",
+  "Compare",
+] as const);
+type SolutionStage = (typeof SOLUTION_STAGES)[number];
+
+/** Where the loaded records honestly place the journey (never a guess). */
+interface StagePosition {
+  /** The stages whose records exist (checked, in journey order). */
+  readonly done: readonly SolutionStage[];
+  /** The current stage (null when complete or terminal). */
+  readonly current: SolutionStage | null;
+  /** True when the scenario status admits no further transitions. */
+  readonly terminal: boolean;
+  /** The next allowed action in plain language (null when terminal). */
+  readonly next:
+    | {
+        readonly id: string;
+        readonly label: string;
+        readonly href: string;
+        readonly inPage: boolean;
+      }
+    | null;
+}
+
+/**
+ * The honest stage derivation (plan §2H): the CURRENT stage and the NEXT
+ * ALLOWED ACTION are PROJECTED from the loaded records only — the scenario
+ * status, the recorded executions and the recorded comparisons. No clock,
+ * no randomness, no invented progress.
+ */
+function solutionStagePosition(data: InterventionData): StagePosition {
+  const scenario = data.scenario;
+  if (scenario === null) {
+    return {
+      done: [],
+      current: "Plan",
+      terminal: false,
+      next: {
+        id: "create-scenario",
+        label: "Create the first intervention plan",
+        href: "#create-scenario",
+        inPage: true,
+      },
+    };
+  }
+  if (scenario.status === "draft") {
+    return {
+      done: [],
+      current: "Plan",
+      terminal: false,
+      next: {
+        id: "append-step",
+        label:
+          scenario.steps.length === 0
+            ? "Append the first step of the plan"
+            : "Append the next step, or submit the plan for review",
+        href: "#append-step",
+        inPage: true,
+      },
+    };
+  }
+  if (scenario.status === "under_review") {
+    return {
+      done: ["Plan"],
+      current: "Validate",
+      terminal: false,
+      next: {
+        id: "scenario-approval",
+        label: "Record the case review and decide (approve or reject)",
+        href: "#scenario-approval",
+        inPage: true,
+      },
+    };
+  }
+  if (scenario.status === "approved") {
+    if (data.executions.length === 0) {
+      return {
+        done: ["Plan", "Validate", "Approve"],
+        current: "Execute",
+        terminal: false,
+        next: {
+          id: "record-execution",
+          label: "Record the execution — what was actually done, with evidence",
+          href: "#record-execution",
+          inPage: true,
+        },
+      };
+    }
+    if (data.comparisons.length === 0) {
+      return {
+        done: ["Plan", "Validate", "Approve", "Execute"],
+        current: "Compare",
+        terminal: false,
+        next: {
+          id: "run-comparison",
+          label: "Run the plan-vs-reality comparison",
+          href: "#run-comparison",
+          inPage: true,
+        },
+      };
+    }
+    return {
+      done: ["Plan", "Validate", "Approve", "Execute", "Compare"],
+      current: null,
+      terminal: false,
+      next: {
+        id: "outcomes",
+        label: "Review the outcome on the Outcomes surface",
+        href: formatRoute({ name: "outcomes", projectId: data.projectId }),
+        inPage: false,
+      },
+    };
+  }
+  // rejected / superseded (terminal): honest — no stage is claimed complete.
+  return { done: [], current: null, terminal: true, next: null };
+}
+
+/**
+ * POST-004 — the staged solution journey, visibly staged (plan §2H): the
+ * five stages as chips (done ✓ / current / upcoming), the CURRENT stage and
+ * the NEXT ALLOWED ACTION in plain language. Progressive disclosure: the
+ * long technical surface stays below — a first-time user reads position +
+ * next action here first.
+ */
+function StageProgressCard({ data }: { readonly data: InterventionData }): ReactNode {
+  const position = solutionStagePosition(data);
+  return (
+    <Card
+      title="Where you are — the staged solution journey"
+      badge={<DataBadge mode={data.mode} />}
+      meta={
+        <span>
+          Plan → Validate → Approve → Execute → Compare — one stage at a time
+        </span>
+      }
+    >
+      <div
+        className="step-strip"
+        aria-label="The staged solution journey"
+        data-stage-strip="true"
+        data-current-stage={
+          position.current === null
+            ? position.terminal
+              ? "terminal"
+              : "complete"
+            : position.current.toLowerCase()
+        }
+      >
+        {SOLUTION_STAGES.map((stage) => {
+          const state = position.done.includes(stage)
+            ? "done"
+            : position.current === stage
+              ? "current"
+              : "upcoming";
+          return (
+            <span
+              key={stage}
+              className="step-chip"
+              data-stage={stage.toLowerCase()}
+              data-stage-state={state}
+              aria-current={state === "current" ? "step" : undefined}
+            >
+              {state === "done" ? "✓ " : ""}
+              {stage}
+            </span>
+          );
+        })}
+      </div>
+      {position.terminal ? (
+        <p
+          className="pane-foot"
+          data-next-action="terminal"
+          data-terminal-status={data.scenario?.status ?? ""}
+        >
+          This plan&apos;s status is <strong>{data.scenario?.status ?? ""}</strong> — a
+          terminal status with no further stages. A superseding proposal is a NEW plan
+          (create one below); this record stays exactly as it is.
+        </p>
+      ) : position.next === null ? (
+        <p className="pane-foot" data-next-action="complete">
+          Every stage of this plan has its records — the staged journey is complete.
+          A further proposal is a NEW plan, never a mutation of this one.
+        </p>
+      ) : (
+        <p className="pane-foot" data-next-action={position.next.id}>
+          You are in the <strong>{position.current}</strong> stage. Next allowed action:{" "}
+          {data.mode === "demo" &&
+          (position.next.id === "record-execution" || position.next.id === "run-comparison") ? (
+            <>
+              {position.next.label} — an API write, honestly unavailable in demo mode
+              (the outcome loop below states what recording it takes).
+            </>
+          ) : position.next.inPage ? (
+            <a href={position.next.href} onClick={inPageAnchorOnClick}>
+              {position.next.label}
+            </a>
+          ) : (
+            <a href={position.next.href}>{position.next.label}</a>
+          )}
+          .
+        </p>
+      )}
+      <p className="pane-foot">
+        The technical record — the recorded steps with their provenance, the status
+        audit and the layer tables — stays one click away in the technical-details
+        sections below (progressive disclosure; nothing is removed).
+      </p>
+    </Card>
+  );
+}
+
+/**
+ * POST-004 — the specialist-details disclosure (plan §2K): plain language
+ * first, the technical record one click away. Native `<details>` —
+ * keyboard-accessible progressive disclosure; the content stays in the
+ * markup (static renders and tests still see it verbatim).
+ */
+function TechnicalDetails({
+  summary,
+  children,
+}: {
+  readonly summary: string;
+  readonly children: ReactNode;
+}): ReactNode {
+  return (
+    <details className="tech-details" data-tech-details="true">
+      <summary className="pane-head">{summary}</summary>
+      {children}
+    </details>
   );
 }
 
@@ -538,7 +869,12 @@ function ScenarioView({
             <Instant iso={scenario.approvalReference.reviewedAt} />.
           </p>
         )}
-        <StatusTimeline scenario={scenario} />
+        {/* POST-004: the status history behind progressive disclosure — the
+            CURRENT status stays visible (the stage card + the approval
+            panel); the audit timeline is one click away. */}
+        <TechnicalDetails summary="Technical details — the recorded status timeline">
+          <StatusTimeline scenario={scenario} />
+        </TechnicalDetails>
       </Card>
 
       <ApprovalPanel
@@ -634,7 +970,11 @@ function ScenarioView({
             );
           })}
         </div>
-        <StepList scenario={scenario} layer={layer} />
+        {/* POST-004: the step/provenance table behind progressive disclosure
+            (plan §2K) — the layer walk above stays the primary interaction. */}
+        <TechnicalDetails summary="Technical details — the recorded steps, kinds and provenance">
+          <StepList scenario={scenario} layer={layer} />
+        </TechnicalDetails>
       </Card>
 
       <Card title="Synchronized panes" meta={<span>projected from ONE frame — they cannot desynchronize</span>}>
@@ -1481,26 +1821,31 @@ export function ApprovalPanel({
           <div className="stat-label">recorded status transitions (audit)</div>
         </div>
       </div>
-      <div className="table-wrap">
-        <table className="data">
-          <thead>
-            <tr>
-              <th>Recorded status</th>
-              <th>At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {scenario.transitions.map((transition, index) => (
-              <tr key={index}>
-                <td>{transition.status}</td>
-                <td>
-                  <Instant iso={transition.at} />
-                </td>
+      {/* POST-004: the status-audit table behind progressive disclosure —
+          the CURRENT status (the stat above) and the approval reference
+          stay visible; the full audit trail is one click away. */}
+      <TechnicalDetails summary="Technical details — the recorded status audit">
+        <div className="table-wrap">
+          <table className="data">
+            <thead>
+              <tr>
+                <th>Recorded status</th>
+                <th>At</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {scenario.transitions.map((transition, index) => (
+                <tr key={index}>
+                  <td>{transition.status}</td>
+                  <td>
+                    <Instant iso={transition.at} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </TechnicalDetails>
       {scenario.approvalReference === null || scenario.approvalReference === undefined ? (
         <p className="pane-foot" data-approval-reference="none">
           No approval reference recorded on this scenario yet.

@@ -530,8 +530,8 @@ function MissingEvidenceLive({
     <>
       <p className="pane-foot">
         {scenarioCount === 0
-          ? "No intervention scenarios are recorded for this project yet."
-          : `${plural(scenarioCount, "intervention scenario")} recorded for this project.`}{" "}
+          ? "No proposed interventions are recorded for this project yet."
+          : `${plural(scenarioCount, "proposed intervention")} recorded for this project.`}{" "}
         Missing-evidence declarations live on engineering cases; this build reads the
         deployment-wide case list on the Engineering Case surface.
       </p>

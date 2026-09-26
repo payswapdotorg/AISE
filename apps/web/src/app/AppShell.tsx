@@ -11,8 +11,14 @@
 
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { formatRoute, parseHash, type Route, type SurfaceName } from "./router";
+import { formatRoute, parseHash, type Route } from "./router";
 import type { ApiStatus } from "./api";
+import {
+  DEMO_PROJECT_ID,
+  DEMO_SCENARIO_PROJECT_ID,
+  DEMO_SOLUTION_PROJECT_ID,
+} from "./demo";
+import { DEMO_TASK_PROJECT_ID } from "./task-dataset";
 
 /** Subscribe to the browser hash (the router's pure codec does the work). */
 export function useHashRoute(): Route {
@@ -31,53 +37,136 @@ export function useHashRoute(): Route {
   return parseHash(hash);
 }
 
+/**
+ * POST-004 — the TASK-FIRST primary navigation.
+ *
+ * The front door speaks the JOURNEY, not the module topology: the five
+ * task verbs (Capture → Investigate → Understand costs → Build solution →
+ * Review outcome) label the primary entries, in journey order, before any
+ * registry/surface grouping. The specialist dataset names (Corpus, Pilot,
+ * Scenario, Demo) are demoted out of the default vocabulary — the sample
+ * deep links under "Projects" carry plain, project-scoped labels instead.
+ *
+ * "Build solution" exposes the INTERACTIVE SOLUTION WORKSPACE DIRECTLY
+ * (its target IS the solution surface — no Intervention-Studio-first hop)
+ * and presents both build paths as its subs with the plain-language
+ * distinction in the labels themselves:
+ *   - "Build an intervention" — plan changes as recorded, layer-by-layer
+ *     steps over a pinned baseline;
+ *   - "Build interactively" — design and validate in the live workspace
+ *     (draw it or describe it; both resolve to the same typed operations).
+ *
+ * Surface names (SiteTwin, BOQ Lens, Engineering Case, Intervention
+ * Studio, Interactive Solution) remain the domain language ON their own
+ * surfaces — the nav labels the journey (the PROD-018 canonical-action
+ * convention; see parity/action-labels.ts).
+ */
+
 /** One primary navigation entry. */
 interface NavEntry {
-  readonly surface: SurfaceName | "projects";
+  readonly surface: NavGroupId;
   readonly label: string;
+  /** Plain-language one-liner (the title tooltip; task language, no jargon). */
+  readonly hint?: string;
   readonly target: Route;
-  /** Deep links to the per-project surfaces (the pilot + scenario projects). */
+  /** Secondary entries (the two build paths; the sample project deep links). */
   readonly subs: readonly { readonly label: string; readonly target: Route }[];
 }
 
+/** The nav groups (task verbs first, then the registry, then settings). */
+type NavGroupId =
+  | "dashboard"
+  | "capture"
+  | "investigate"
+  | "understand-costs"
+  | "build-solution"
+  | "review-outcome"
+  | "projects"
+  | "settings";
+
 const PRIMARY_NAV: readonly NavEntry[] = [
-  { surface: "dashboard", label: "Dashboard", target: { name: "dashboard" }, subs: [] },
   {
-    surface: "projects",
-    label: "Projects",
-    target: { name: "projects" },
+    surface: "dashboard",
+    label: "Dashboard",
+    hint: "Home — start from the task",
+    target: { name: "dashboard" },
+    subs: [],
+  },
+  {
+    surface: "capture",
+    label: "Capture",
+    hint: "Bring field evidence in — photos, scans, documents, measurements",
+    target: { name: "capture", projectId: DEMO_TASK_PROJECT_ID },
+    subs: [],
+  },
+  {
+    surface: "investigate",
+    label: "Investigate",
+    hint: "Understand what the evidence states — cases, quantities, gaps",
+    target: { name: "case", projectId: DEMO_TASK_PROJECT_ID },
+    subs: [],
+  },
+  {
+    surface: "understand-costs",
+    label: "Understand costs",
+    hint: "See the recorded cost scope and what is still unmapped",
+    target: { name: "boq-lens", projectId: DEMO_TASK_PROJECT_ID },
+    subs: [],
+  },
+  {
+    surface: "build-solution",
+    label: "Build solution",
+    hint: "Design the proposed intervention — interactively, or as recorded steps",
+    target: { name: "solution", projectId: DEMO_SOLUTION_PROJECT_ID, query: {} },
     subs: [
       {
-        label: "Corpus — Capture / Upload (demo journey)",
-        target: { name: "capture", projectId: "proj-7f3a2b" },
+        label: "Build interactively — design and validate in the live workspace",
+        target: { name: "solution", projectId: DEMO_SOLUTION_PROJECT_ID, query: {} },
       },
       {
-        label: "Pilot — SiteTwin / Evidence",
-        target: { name: "sitetwin", projectId: "proj-riverside-refit" },
-      },
-      {
-        label: "Pilot — BOQ Lens",
-        target: { name: "boq-lens", projectId: "proj-riverside-refit" },
-      },
-      {
-        label: "Pilot — Engineering Case",
-        target: { name: "case", projectId: "proj-riverside-refit" },
-      },
-      {
-        label: "Scenario — Intervention Studio",
-        target: { name: "intervention", projectId: "project-zurich-hq", query: {} },
-      },
-      {
-        label: "Demo — Interactive Solution",
-        target: { name: "solution", projectId: "proj-demo-001", query: {} },
-      },
-      {
-        label: "Corpus — Outcomes (demo journey)",
-        target: { name: "outcomes", projectId: "proj-7f3a2b" },
+        label: "Build an intervention — plan changes as recorded, layer-by-layer steps",
+        target: { name: "intervention", projectId: DEMO_SCENARIO_PROJECT_ID, query: {} },
       },
     ],
   },
-  { surface: "settings", label: "Settings / Integrations", target: { name: "settings" }, subs: [] },
+  {
+    surface: "review-outcome",
+    label: "Review outcome",
+    hint: "See what executed work changed — before/after and plan vs reality",
+    target: { name: "outcomes", projectId: DEMO_TASK_PROJECT_ID },
+    subs: [],
+  },
+  {
+    surface: "projects",
+    label: "Projects",
+    hint: "Open or create a project — the sample walkthroughs live here",
+    target: { name: "projects" },
+    subs: [
+      {
+        label: "Riverside office refit — project overview",
+        target: { name: "project", projectId: DEMO_PROJECT_ID },
+      },
+      {
+        label: "Riverside office refit — site & evidence",
+        target: { name: "sitetwin", projectId: DEMO_PROJECT_ID },
+      },
+      {
+        label: "Riverside office refit — cost scope",
+        target: { name: "boq-lens", projectId: DEMO_PROJECT_ID },
+      },
+      {
+        label: "Riverside office refit — engineering case",
+        target: { name: "case", projectId: DEMO_PROJECT_ID },
+      },
+    ],
+  },
+  {
+    surface: "settings",
+    label: "Settings / Integrations",
+    hint: "Providers and incumbent connections",
+    target: { name: "settings" },
+    subs: [],
+  },
 ];
 
 /** The API chip: probing / live / demo (the app-level honesty badge). */
@@ -167,6 +256,7 @@ export function AppShell({
                   <a
                     className="nav-link"
                     href={formatRoute(entry.target)}
+                    title={entry.hint}
                     aria-current={activeSurface === entry.surface ? "page" : undefined}
                   >
                     {entry.label}
@@ -205,20 +295,30 @@ export function AppShell({
   );
 }
 
-/** Which primary nav group a route belongs to. */
-function routeSurfaceGroup(route: Route): SurfaceName | "projects" {
+/**
+ * Which primary nav group a route belongs to (POST-004: the task groups —
+ * the task verb whose journey step the surface serves, so `aria-current`
+ * lands on the task entry, not just the registry group).
+ */
+function routeSurfaceGroup(route: Route): NavGroupId {
   switch (route.name) {
     case "dashboard":
       return "dashboard";
-    case "projects":
-    case "project":
     case "capture":
     case "sitetwin":
+      // the evidence path: capturing, then browsing what was captured
+      return "capture";
     case "boq-lens":
+      return "understand-costs";
     case "case":
+      return "investigate";
     case "intervention":
     case "solution":
+      return "build-solution";
     case "outcomes":
+      return "review-outcome";
+    case "projects":
+    case "project":
       return "projects";
     case "settings":
       return "settings";
