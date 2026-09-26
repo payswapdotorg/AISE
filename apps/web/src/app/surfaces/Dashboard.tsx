@@ -24,12 +24,14 @@ import {
 import {
   DEMO_PROJECT_ID,
   DEMO_SCENARIO_PROJECT_ID,
+  DEMO_SOLUTION_PROJECT_ID,
   demoBindings,
   demoEvidenceList,
   demoLensInput,
   demoProjects,
   demoScenario,
 } from "../demo";
+import { DEMO_TASK_PROJECT_ID } from "../task-dataset";
 import { Card, DataBadge, EmptyState, ResourceView } from "../components";
 import { plural } from "../format";
 import { TaskFirstLanding } from "../task-first";
@@ -152,7 +154,7 @@ export function DashboardBody({ data }: { readonly data: DashboardData }): React
       <Card
         title="Start the journey"
         badge={<DataBadge mode={data.mode} />}
-        meta={<span>landing → project → evidence → understanding → intervention → outcome</span>}
+        meta={<span>capture → investigate → understand costs → build solution → review outcome</span>}
       >
         <ol className="journey">
           <li>
@@ -162,8 +164,8 @@ export function DashboardBody({ data }: { readonly data: DashboardData }): React
             <span className="journey-body">
               <a href={formatRoute({ name: "projects" })}>Open a project</a>
               <span className="journey-hint">
-                Create or open the demo project — the pilot world or the
-                intervention scenario project.
+                Create your own, or open a sample project — the registry lists
+                what this deployment holds.
               </span>
             </span>
           </li>
@@ -172,12 +174,12 @@ export function DashboardBody({ data }: { readonly data: DashboardData }): React
               2
             </span>
             <span className="journey-body">
-              <a href={formatRoute({ name: "sitetwin", projectId: DEMO_PROJECT_ID })}>
-                Browse the SiteTwin and its evidence
+              <a href={formatRoute({ name: "capture", projectId: DEMO_PROJECT_ID })}>
+                Capture the evidence
               </a>
               <span className="journey-hint">
-                Synchronized 2D/3D views of the pinned model version, with the
-                reality snapshot and its evidence records.
+                Bring field evidence in — then browse it on the synchronized
+                2D/3D SiteTwin with the reality snapshot and its records.
               </span>
             </span>
           </li>
@@ -187,7 +189,7 @@ export function DashboardBody({ data }: { readonly data: DashboardData }): React
             </span>
             <span className="journey-body">
               <a href={formatRoute({ name: "boq-lens", projectId: DEMO_PROJECT_ID })}>
-                Understand the BOQ scope
+                Understand the cost scope
               </a>
               <span className="journey-hint">
                 Verbatim source rows, derived interpretation and mapping, honest
@@ -200,12 +202,52 @@ export function DashboardBody({ data }: { readonly data: DashboardData }): React
               4
             </span>
             <span className="journey-body">
-              <a href={formatRoute({ name: "intervention", projectId: DEMO_SCENARIO_PROJECT_ID, query: {} })}>
-                Step through an intervention
+              <a href={formatRoute({ name: "case", projectId: DEMO_PROJECT_ID })}>
+                Investigate the case
               </a>
               <span className="journey-hint">
-                Proposed states layer by layer, with synchronized 3D / 2D / BOQ
-                impact inspection.
+                Observations, hypotheses and declared missing evidence stay
+                distinct — with the Evidence Envelope&apos;s plain-language
+                &ldquo;Why this result?&rdquo;.
+              </span>
+            </span>
+          </li>
+          <li>
+            <span className="journey-index" aria-hidden="true">
+              5
+            </span>
+            <span className="journey-body">
+              <a href={formatRoute({ name: "solution", projectId: DEMO_SOLUTION_PROJECT_ID, query: {} })}>
+                Build solution — interactively
+              </a>{" "}
+              or{" "}
+              <a
+                href={formatRoute({
+                  name: "intervention",
+                  projectId: DEMO_SCENARIO_PROJECT_ID,
+                  query: {},
+                })}
+              >
+                as recorded steps
+              </a>
+              <span className="journey-hint">
+                Two ways to build: design the change in the live workspace (draw
+                it or describe it), or plan it as recorded, layer-by-layer
+                steps — both stay proposals until executed.
+              </span>
+            </span>
+          </li>
+          <li>
+            <span className="journey-index" aria-hidden="true">
+              6
+            </span>
+            <span className="journey-body">
+              <a href={formatRoute({ name: "outcomes", projectId: DEMO_TASK_PROJECT_ID })}>
+                Review the outcome
+              </a>
+              <span className="journey-hint">
+                See what executed work changed — before/after and plan vs
+                reality, always from observed evidence.
               </span>
             </span>
           </li>
@@ -257,14 +299,15 @@ function DatasetOverview({ data }: { readonly data: DashboardData }): ReactNode 
             unmapped — ambiguity and gaps stay visible.
           </li>
           <li>
-            {plural(demo.evidence, "evidence record")} in the pilot project,
+            {plural(demo.evidence, "evidence record")} in the sample project,
             including one invalidated record (invalidated is a state, not a
             deletion).
           </li>
           {demo.scenario === null ? null : (
             <li>
-              Intervention scenario “{demo.scenario.title}” — {demo.scenario.steps} steps,{" "}
-              {demo.scenario.layers} proposed layers.
+              Sample intervention “{demo.scenario.title}” — {demo.scenario.steps} steps{" "}
+              across {demo.scenario.layers} proposed layers (the recorded
+              step-by-step walkthrough).
             </li>
           )}
         </ul>

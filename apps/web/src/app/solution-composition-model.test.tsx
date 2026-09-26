@@ -126,7 +126,11 @@ describe("PROD-026 composition wiring (the route, the nav, the app's routing)", 
       </AppShell>,
     );
     expect(shell).toContain(formatRoute({ name: "solution", projectId: PROJECT, query: {} }));
-    expect(shell).toContain("Demo — Interactive Solution");
+    // POST-004 (in-sync label update, same assertion strength): the primary
+    // nav's task-first "Build solution" entry carries the solution surface —
+    // the "Build interactively" sub-label is the composed nav marker for it.
+    expect(shell).toContain("Build solution");
+    expect(shell).toContain("Build interactively");
   });
 
   test("the not-found surface lists the Interactive Solution surface", () => {

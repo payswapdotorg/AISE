@@ -43,7 +43,8 @@ import type { ReactNode } from "react";
 import { ProjectSurfaceNav } from "../components";
 import { TaskFlowStrip } from "../task-first";
 import { ProviderStatusNote } from "../provider-status";
-import type { SolutionQuery } from "../router";
+import { BuildSolutionPathsCard } from "./InterventionStudio";
+import { formatRoute, type SolutionQuery } from "../router";
 import {
   DEMO_SOLUTION_WORLD_PINS,
   demoSolutionObservedFacts,
@@ -161,9 +162,34 @@ export function SolutionSurface({
       <TaskFlowStrip projectId={projectId} />
       <ProjectSurfaceNav projectId={projectId} current="solution" />
       {demoSolutionWorldHeld(projectId) ? (
-        <Suspense fallback={<SolutionComposingPanel />}>
-          <EngineAwareSolutionBody projectId={projectId} query={query} />
-        </Suspense>
+        <>
+          {/* POST-004 — the build-solution entry presentation (plan §2G): the
+              interactive workspace is the DIRECT target of the nav's "Build
+              solution" entry; both build paths render here with the
+              plain-language distinction (the other path is one click away). */}
+          <BuildSolutionPathsCard projectId={projectId} current="solution" />
+          {/* POST-004 — the staged journey position (plan §2H): this workspace
+              covers Plan + Validate (compose, deterministic validation, the
+              solution BOQ); Approve → Execute → Compare continue in the
+              intervention workspace. Honest context — no fabricated current
+              stage (the workspace's own state owns that). */}
+          <div className="callout callout-info" data-stage-context="true">
+            <p>
+              <strong>Where this workspace fits:</strong> Plan → Validate → Approve →
+              Execute → Compare. Composing, deterministic validation and the solution
+              BOQ happen here; approval, execution and the plan-vs-reality
+              comparison continue in the{" "}
+              <a href={formatRoute({ name: "intervention", projectId, query: {} })}>
+                step-by-step intervention workspace
+              </a>
+              , and the executed result lands on the{" "}
+              <a href={formatRoute({ name: "outcomes", projectId })}>Outcomes surface</a>.
+            </p>
+          </div>
+          <Suspense fallback={<SolutionComposingPanel />}>
+            <EngineAwareSolutionBody projectId={projectId} query={query} />
+          </Suspense>
+        </>
       ) : (
         <SolutionWorldEmptyState projectId={projectId} />
       )}
