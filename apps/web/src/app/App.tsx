@@ -18,6 +18,15 @@
  * (the session died mid-flight). When the API is unavailable the app keeps
  * its honest demo-dataset behavior — the gate never blocks the offline
  * fallback.
+ *
+ * POST-004B (additive, POST-003 Defect 3): a signed-in session whose acting
+ * principal is NOT resolved in this tab (no remembered id — a cold already-
+ * authenticated load in a new tab / cleared storage) HOLDS the data surfaces
+ * behind an honest panel instead of letting requester-guarded identity
+ * reads fire with the demo-vocabulary default principal (the observed
+ * transient 422). whoami is display-only by design (AISE-036 — the probe
+ * carries no principal id), so the id is remembered at sign-in, never read
+ * from the probe; the user re-resolves it through the user menu.
  */
 
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
@@ -28,7 +37,7 @@ import { AppEnvironmentContext, type AppEnvironment } from "./environment";
 import { AppShell, useHashRoute } from "./AppShell";
 import { AuthGate, UserMenu, type GateActions } from "./AuthGate";
 import { formatRoute, routeKey, type Route } from "./router";
-import { gateAdmitsSurfaces, gateReducer, initialGateState } from "./gate";
+import { gateAdmitsSurfaces, gateReducer, initialGateState, type GateStatus } from "./gate";
 import { LoadingPanel } from "./components";
 import { Dashboard } from "./surfaces/Dashboard";
 import { Projects } from "./surfaces/Projects";
@@ -142,6 +151,19 @@ export function App(): ReactNode {
   // session (demo mode / auth-inactive).
   const actingPrincipalId = sessionPrincipalId ?? principalId;
 
+  // POST-004B (POST-003 Defect 3): gate the data surfaces on principal
+  // resolution — while the auth layer is active, whoami has answered a
+  // SIGNED-IN session, and no remembered principal exists, the requester-
+  // guarded identity reads must NOT fire with the demo-vocabulary default
+  // (the observed transient 422 on a cold already-authenticated #/projects
+  // load). The honest panel below holds the surfaces until the user
+  // re-signs-in (the user menu), which remembers the principal again.
+  const principalUnresolved = actingPrincipalUnresolved({
+    apiAvailable,
+    gateStatus: gate.status,
+    sessionPrincipalId,
+  });
+
   const environment = useMemo<AppEnvironment>(
     () => ({ apiStatus, fetchImpl: apiAvailable ? gatedFetch : browserFetch, principalId: actingPrincipalId }),
     [apiStatus, apiAvailable, actingPrincipalId, gatedFetch],
@@ -226,6 +248,8 @@ export function App(): ReactNode {
             <LoadingPanel label="Checking the API on this origin…" />
           ) : apiAvailable && gate.status === "probing" ? (
             <LoadingPanel label="Checking your session on this origin…" />
+          ) : principalUnresolved ? (
+            <UnresolvedPrincipalPanel />
           ) : (
             <RoutedSurface
               route={route}
@@ -237,6 +261,67 @@ export function App(): ReactNode {
         </AppShell>
       )}
     </AppEnvironmentContext.Provider>
+  );
+}
+
+/**
+ * POST-004B (POST-003 Defect 3) — the pure predicate behind the principal-
+ * resolution gate: TRUE only when the auth layer is active, whoami has
+ * answered a SIGNED-IN session, and NO remembered session principal exists
+ * (a cold already-authenticated load in a tab without the remembered id —
+ * new tab, restored session, cleared storage). Then the data surfaces are
+ * held (the honest {@link UnresolvedPrincipalPanel} renders) instead of
+ * firing requester-guarded identity reads with the demo-vocabulary default
+ * principal. Every other combination is resolved: demo mode, the auth-
+ * inactive pre-auth contract, a remembered principal, and every not-yet-
+ * settled probe state (the gate / loading panels own those renders).
+ */
+export function actingPrincipalUnresolved(input: {
+  readonly apiAvailable: boolean;
+  readonly gateStatus: GateStatus;
+  readonly sessionPrincipalId: string | null;
+}): boolean {
+  return (
+    input.apiAvailable &&
+    input.gateStatus === "signed-in" &&
+    input.sessionPrincipalId === null
+  );
+}
+
+/**
+ * POST-004B (POST-003 Defect 3) — the honest hold panel for the unresolved
+ * acting principal: the session is authenticated but this tab has not
+ * resolved the principal id it was minted for (whoami is display-only by
+ * design — AISE-036 — so the id is remembered at sign-in, never read from
+ * the probe). Guarded reads are HELD rather than fired with a guessed
+ * default principal; the user resolves the principal through the user
+ * menu's sign-out and the gate's sign-in / "Enter demo".
+ */
+export function UnresolvedPrincipalPanel(): ReactNode {
+  return (
+    <section className="card" aria-labelledby="principal-unresolved-title">
+      <div className="card-head">
+        <h2 id="principal-unresolved-title" className="card-title">
+          Your session is authenticated, but this tab has not resolved the acting
+          principal
+        </h2>
+      </div>
+      <div className="card-body">
+        <p>
+          You are signed in, but the principal id your session was minted for is
+          remembered per tab at sign-in — the session probe is display-only by
+          design and never carries it. This tab does not hold that remembered id
+          (a cold load in a new tab, or session storage that was cleared).
+        </p>
+        <p>
+          Guarded reads (the identity registry, requester-scoped lists) are held
+          until the principal is resolved — they never fire with a guessed
+          default principal. Use the user menu to sign out, then sign in again
+          or enter the demo: the acting principal is remembered for this tab and
+          every surface reloads with the correct requester.
+        </p>
+      </div>
+    </section>
   );
 }
 
