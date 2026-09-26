@@ -107,6 +107,32 @@ describe("evaluateBoundaries", () => {
 });
 
 describe("scanTree", () => {
+  test("skips docs/ evidence trees (frozen worker records are not workspace source — POST-006 BASE-DEFECT V2)", () => {
+    const root = mkdtempSync(join(tmpdir(), "aise-boundaries-"));
+    try {
+      mkdirSync(join(root, "tools", "lib"), { recursive: true });
+      writeFileSync(join(root, "tools", "lib", "kept.ts"), "export {};\n");
+
+      // The real-world regression: docs/productization-evidence/** carries
+      // .ts records of sandbox-executed adapters whose imports target
+      // packages/ — frozen documentation, never built or imported by the
+      // workspace. Scanning them as "root zone source" was a category error.
+      const evidence = join(root, "docs", "productization-evidence", "X-001");
+      mkdirSync(evidence, { recursive: true });
+      writeFileSync(
+        join(evidence, "adapter.ts"),
+        "import { x } from '../../../../packages/solution-contract/src/domain';\n",
+      );
+
+      const files = scanTree(root);
+      const paths = files.map((file) => file.path);
+      expect(paths).toContain("tools/lib/kept.ts");
+      expect(paths.some((path) => path.startsWith("docs/"))).toBe(false);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   test("skips tool-output directories (.vercel, node_modules, dist, build, .cache, .git) and non-source extensions", () => {
     const root = mkdtempSync(join(tmpdir(), "aise-boundaries-"));
     try {

@@ -53,7 +53,7 @@ import {
 } from "./router";
 import { AppShell } from "./AppShell";
 import { NotFound } from "./App";
-import { SolutionSurface } from "./surfaces/Solution";
+import { SolutionSurface, __resetSolutionSurfaceResourceCachesForTests } from "./surfaces/Solution";
 import { ComposedSolutionBody } from "./solution-mount";
 import {
   boqLensLineToSolutionTraceCrossLink,
@@ -784,6 +784,10 @@ describe("PROD-026 the Solution surface (the integration station)", () => {
   });
 
   test("the full surface renders (first paint: the composing state before the lazy mount resolves)", () => {
+    // POST-006 BASE-DEFECT V1 governance: pin the COLD-visitor state regardless
+    // of suite order (an earlier file in the same bun process may have warmed
+    // the ladder's module-level resources).
+    __resetSolutionSurfaceResourceCachesForTests();
     const html = renderToStaticMarkup(
       <SolutionSurface projectId={PROJECT} query={{}} />,
     );

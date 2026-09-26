@@ -145,6 +145,20 @@ function solutionBrowserMountResource(): Promise<SolutionBrowserMount | null> {
   return browserMountResource;
 }
 
+/**
+ * TEST-ONLY cache reset (2026-09-26 POST-006 BASE-DEFECT V1 governance):
+ * the two ladder resources above are ONE cached promise per process by
+ * design (the production contract — the ladder resolves once per session).
+ * The PROD-026 first-paint test pins the COLD-visitor composing state, which
+ * an earlier test file in the same bun process would otherwise warm away.
+ * This hook restores the cold state for that one assertion; production code
+ * never calls it.
+ */
+export function __resetSolutionSurfaceResourceCachesForTests(): void {
+  engineResource = undefined;
+  browserMountResource = undefined;
+}
+
 /* ------------------------------------------------------------------ */
 /* The surface                                                          */
 /* ------------------------------------------------------------------ */

@@ -58,6 +58,13 @@ const SKIPPED_DIRECTORIES = new Set([
   "dist",
   "build",
   ".cache",
+  // Evidence trees under docs/ are FROZEN RECORDS of worker executions
+  // (2026-09-26 POST-006 BASE-DEFECT V2): their .ts files document adapters
+  // that ran inside sandboxes with their own module resolution — they are
+  // never built, typechecked or imported by the workspace, so scanning them
+  // as "root zone source" is a category error. The workspace source zones
+  // remain apps/backend/packages/tools (+ root config files).
+  "docs",
   ".vercel",
 ]);
 
