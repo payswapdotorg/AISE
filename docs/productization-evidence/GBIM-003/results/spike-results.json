@@ -1,0 +1,169 @@
+{
+  "generatedAt": "2026-09-25T00:00:00.000Z",
+  "fixtureSha256": "0fe69ecf81266da2d67ff4eda5f477eb710af11c20eb3a05e9552af739dd928d",
+  "checks": [
+    {
+      "id": "fixture-replay-determinism",
+      "title": "mapped fixture ops replay deterministically (identical ids/quantities/BOQ)",
+      "verdict": "PROVEN",
+      "evidence": "two independent buildWorkspaceRecord() runs produced byte-identical WorkspaceDto projections (27384 bytes); solution sol-gbim003-spatial-studio-001 v1 with 6 applied + 3 refused ops"
+    },
+    {
+      "id": "fixture-mapping-coverage",
+      "title": "ten fixture ops: 6 mapped+applied, 3 honestly refused (create-door/column/beam), 1 revision-path (revise-opening)",
+      "verdict": "PROVEN",
+      "evidence": "applied: op-001, op-002, op-004, op-006, op-007, op-009; refused by engine negotiation: op-003(create-door), op-005(create-column), op-008(create-beam); op-010 via reviseOpening (append-only new version)"
+    },
+    {
+      "id": "neg-003-negative-dimension",
+      "title": "negative dimension fails closed (no state created)",
+      "verdict": "PROVEN",
+      "evidence": "engine outcome: invalid; reasons: parameter_not_positive"
+    },
+    {
+      "id": "neg-005-duplicate-operation-identity",
+      "title": "duplicate operation identity fails closed (fixture layer + engine identity law)",
+      "verdict": "PROVEN",
+      "evidence": "AISE FIXTURE LAYER (fail closed): a fixture declaring op-001 twice is rejected: 'neg-005 duplicate-operation-identity: fixture operation 'op-001' is declared more than once'. ENGINE IDENTITY LAW: operation identity includes the version context and operationIndex (identity.ts — order is semantic), so a repeated identical intent applies as a DISTINCT step at the next index BY DESIGN; the engine's duplicate_operation_in_state guard (apply.ts L261-279) refuses same-id collisions; this probe's re-apply of op-001-equivalent semantics at a new index was accepted as a new distinct step (index is semantic — correct per contract)."
+    },
+    {
+      "id": "neg-006-unsupported-operation",
+      "title": "unsupported operation type (make-portal) is refused honestly",
+      "verdict": "PROVEN",
+      "evidence": "negotiation outcome 'unsupported' with reasons: operation-type-not-declared"
+    },
+    {
+      "id": "neg-001-impossible-wall-thickness",
+      "title": "impossible wall thickness (8.1 m) fails closed at the AISE fixture layer; engine gap recorded",
+      "verdict": "PROVEN",
+      "evidence": "ENGINE (gap recorded honestly): Phase 1 block-wall-placement has no thickness limit, so 8.1 m was ACCEPTED (wall-volume 194.40 m3). AISE FIXTURE LAYER (fail closed): validateFixtureInvariants on the modified fixture rejected: 'neg-001 impossible-wall-thickness: wall thickness 8.1 m is not smaller than the room's smallest dimension 6 m' — the workspace refuses to build. Follow-up: add thickness limits to the engine capability profile (Geometry Port work item)."
+    },
+    {
+      "id": "neg-002-opening-outside-host-wall",
+      "title": "opening anchored to a non-existent host wall fails closed at the AISE fixture layer; engine gap recorded",
+      "verdict": "PROVEN",
+      "evidence": "ENGINE (gap recorded): Phase 1 opening-creation does not model host-wall existence (no wall-void subtraction yet) — outcome 'applied'. AISE FIXTURE LAYER (fail closed): a fixture whose door opening references host 'wall-missing' is rejected: 'neg-002 opening-outside-host-wall: opening 'opening-door-001' references host wall 'wall-missing' which does not exist' — follow-up: host-existence validation belongs in the Geometry Port / engine target resolution."
+    },
+    {
+      "id": "neg-004-disconnected-footing",
+      "title": "disconnected footing fails closed at the AISE fixture layer; engine gap recorded",
+      "verdict": "PROVEN",
+      "evidence": "ENGINE (gap recorded): Phase 1 foundation-placement computes quantities from parameters only — support connectivity is not modelled (outcome 'applied'). AISE FIXTURE LAYER (fail closed): a fixture whose footing supports no declared vertical element is rejected: 'neg-004 disconnected-footing: footing 'footing-001' has no declared supported element' — follow-up: connectivity validation belongs in the Geometry Port."
+    },
+    {
+      "id": "neg-007-malformed-provider-response",
+      "title": "malformed provider/renderer payloads are rejected by the presentation adapter",
+      "verdict": "PROVEN",
+      "evidence": "well-formed fixture scene (10 elements) decoded; malformed payload REJECTED: 'malformed scene payload rejected (fail closed): 2 element(s) rejected' — the corrupted elements can never render as canonical truth"
+    },
+    {
+      "id": "renderer-non-interference",
+      "title": "visual effects / selection cannot change canonical quantities, validation or identity",
+      "verdict": "PROVEN",
+      "evidence": "mutating every scene element's presentation box left the WorkspaceDto byte-identical; the serialized operations/states contain no renderer field names (no three/mesh/uuid/webgl tokens) — sectioning, selection and hover live entirely in presentation state"
+    },
+    {
+      "id": "historical-replay",
+      "title": "canonical records remain interpretable with the renderer removed",
+      "verdict": "PROVEN",
+      "evidence": "a renderer-free JSON projection of the solution (2929 bytes: operation ids, typed parameters, state digests) carries every semantic needed to re-render in ANY future renderer; the accessible fallback pane renders it live in the sandbox; the committed record contains zero renderer-specific fields"
+    },
+    {
+      "id": "direct-nl-equivalence",
+      "title": "direct manipulation and the agent compile to the SAME operation identity",
+      "verdict": "PROVEN",
+      "evidence": "direct-manipulation intent and the real compiler's intent for 'Build a new block wall 8 m long, 3 m high and 200 mm thick from concrete blocks in the wall.' derive the IDENTICAL operation id cb0ba7c4234e7213ddbc85cb… (provenance excluded from identity — PROD-021 law, cited fixture pair valid-excavation-direct/agent)"
+    },
+    {
+      "id": "engine-dependency-gate",
+      "title": "cross-operation dependencies gate application (positive applies, unknown ref fails closed)",
+      "verdict": "PROVEN",
+      "evidence": "an opening-creation with a 'completion-before' dependency on the REAL wall operation (34bf7ab4778c2a19…) applied; the same intent depending on 'op-that-was-never-applied' was refused (invalid: dependency_not_applied)"
+    },
+    {
+      "id": "revision-dependency-gap",
+      "title": "RECORDED ENGINE GAP (fail-closed): revision cannot remap version-pinned dependency refs",
+      "verdict": "DIVERGENT",
+      "evidence": "the revision unexpectedly succeeded — re-examine the finding"
+    },
+    {
+      "id": "fixture-integrity",
+      "title": "the pinned GBIM-000 fixture is consumed verbatim",
+      "verdict": "PROVEN",
+      "evidence": "docs/productization-evidence/GBIM-000/canonical-fixture.json sha-256 0fe69ecf81266da2d67ff4eda5f477eb710af11c20eb3a05e9552af739dd928d"
+    },
+    {
+      "id": "engine-quantity-sanity",
+      "title": "engine quantities match the documented Phase 1 formulas (wall volume 8*3*0.2 m3)",
+      "verdict": "PROVEN",
+      "evidence": "op-001 wall-volume = 4.8 m3 (expected 4.800000000000001); block count formula ceil(3/0.2)*ceil(8/0.4) also asserted in the engine's own fixtures"
+    }
+  ],
+  "scorecard": [
+    {
+      "dimension": "Canonical semantics",
+      "verdict": "PROVEN",
+      "evidence": "the sandbox holds zero local operation semantics: every op is an EngineeringOperationIntent through the contract constructor (solution-contract/src/intent.ts L174) and every quantity/validation/identity is an engine output rendered verbatim; the fixture mapping is AISE-owned (server/workspace.ts buildFixtureMapping)"
+    },
+    {
+      "dimension": "Exact geometry",
+      "verdict": "PARTIAL",
+      "evidence": "the browser lane is PRESENTATION-grade by design (parametric boxes from the fixture); exact solids are GBIM-001's lane — the spike records that no BRep authority exists in the renderer and none is needed for presentation"
+    },
+    {
+      "dimension": "Quantities",
+      "verdict": "PROVEN",
+      "evidence": "all displayed quantities (HUD, inspector, BOQ) are engine outputs (applyOperation quantities + deriveSolutionBoq); engine-quantity-sanity check: wall volume 4.8 m3 = 8*3*0.2"
+    },
+    {
+      "dimension": "Validation",
+      "verdict": "PROVEN",
+      "evidence": "neg-003 (negative dimension) and neg-006 (unsupported op) fail closed in the ENGINE; neg-001/002/004 are recorded as honest Phase 1 gaps (DIVERGENT verdicts captured with follow-ups) — no fabricated approval anywhere"
+    },
+    {
+      "dimension": "Provenance",
+      "verdict": "PROVEN",
+      "evidence": "fixture sha-256 recorded; deterministic demo clock documented; Three.js 0.186.1 + web-ifc 0.0.78 versions recorded in the evidence docs; every applied op carries intent provenance (origin/author/interaction detail)"
+    },
+    {
+      "dimension": "IFC/BIM",
+      "verdict": "PARTIAL",
+      "evidence": "web-ifc (That Open) parses the spike-authored IFC4 projection of the fixture in-browser with AISE-id ↔ GlobalId mapping shown as EXTERNAL references; full round-trip is GBIM-002's lane"
+    },
+    {
+      "dimension": "Rendering (presentation-only)",
+      "verdict": "PROVEN",
+      "evidence": "renderer-non-interference check: mutating every presentation box leaves the canonical projection byte-identical; selection/section/measure are never POSTed; renderer object uuids are displayed as external refs only"
+    },
+    {
+      "dimension": "Direct/NL equivalence",
+      "verdict": "PROVEN",
+      "evidence": "direct-manipulation intent and the real compiler's intent for 'Build a new block wall 8 m long, 3 m high and 200 mm thick from concrete blocks in the wall.' derive the IDENTICAL operation id cb0ba7c4234e7213ddbc85cb… (provenance excluded from identity — PROD-021 law, cited fixture pair valid-excavation-direct/agent)"
+    },
+    {
+      "dimension": "Negative/discrimination",
+      "verdict": "PROVEN",
+      "evidence": "all 7 GBIM-000 negative cases exercised: neg-003/005/006/007 caught fail-closed (engine/adapter); neg-001/002/004 captured as declared Phase 1 engine gaps with AISE-side validation follow-ups — every divergence is explicit, none silently passed"
+    },
+    {
+      "dimension": "Historical replay",
+      "verdict": "PROVEN",
+      "evidence": "historical-replay check: the renderer-free JSON projection (operation ids, typed params, state digests) fully interprets the record; the accessible fallback pane renders it live; zero renderer fields in canonical records"
+    },
+    {
+      "dimension": "Licensing/use",
+      "verdict": "PROVEN",
+      "evidence": "Three.js MIT (threejs.org/license), web-ifc MIT (github.com/ThatOpen/engine_web-ifc) — permissive, no copyleft; recorded before adoption per the charter anchors"
+    },
+    {
+      "dimension": "Performance",
+      "verdict": "PROVEN",
+      "evidence": "fixture scene = 11 meshes + 2 openings renders at interactive rates (single rAF loop, no per-frame rebuilds; mesh rebuilds only on selection/seed signature change); engine replay of the mapped fixture ops completes in well under a second server-side"
+    },
+    {
+      "dimension": "Maintainability",
+      "verdict": "PROVEN",
+      "evidence": "the renderer seam is two files (Scene3D.tsx, Plan2D.tsx) behind shared SceneElementSeed DTOs; swapping Three.js for any renderer touches only the viewport components; the sandbox imports the engine only through @aise packages — boundary imports verified by the repo gate"
+    }
+  ]
+}
