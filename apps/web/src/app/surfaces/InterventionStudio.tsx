@@ -697,7 +697,13 @@ function StageProgressCard({ data }: { readonly data: InterventionData }): React
       ) : (
         <p className="pane-foot" data-next-action={position.next.id}>
           You are in the <strong>{position.current}</strong> stage. Next allowed action:{" "}
-          {position.next.inPage ? (
+          {data.mode === "demo" &&
+          (position.next.id === "record-execution" || position.next.id === "run-comparison") ? (
+            <>
+              {position.next.label} — an API write, honestly unavailable in demo mode
+              (the outcome loop below states what recording it takes).
+            </>
+          ) : position.next.inPage ? (
             <a href={position.next.href} onClick={inPageAnchorOnClick}>
               {position.next.label}
             </a>

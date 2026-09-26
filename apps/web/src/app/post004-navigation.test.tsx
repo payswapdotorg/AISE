@@ -417,6 +417,21 @@ describe("POST-004 — the staged solution journey (plan §2H)", () => {
     expect((html.match(/data-stage-state="done"/g) ?? []).length).toBe(5);
   });
 
+  test("demo mode: an API-write next action is stated honestly, never a dangling anchor", () => {
+    // demo data + the approved fixture (the demo dataset's own scenario)
+    const html = stageMarkup(interventionData(approvedScenario()));
+    expect(html).toContain('data-current-stage="execute"');
+    expect(html).toContain('data-next-action="record-execution"');
+    expect(html).toContain("honestly unavailable in demo mode");
+    // the write panels are API-gated in demo mode — the next-action line must
+    // NOT link the anchor of a panel that does not render
+    const nextLine = html.slice(
+      html.indexOf('data-next-action="record-execution"'),
+      html.indexOf("</p>", html.indexOf('data-next-action="record-execution"')),
+    );
+    expect(nextLine).not.toContain('href="#record-execution"');
+  });
+
   test("a terminal status never claims progress (honest terminal state)", () => {
     const rejected: ViewerScenario = { ...canonicalScenario(), status: "rejected" };
     const html = stageMarkup(interventionData(rejected));
