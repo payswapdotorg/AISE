@@ -1,0 +1,26 @@
+{
+  "handoff": {
+    "contractVersion": "1.0.0",
+    "handoffId": "handoff-postwork-outcome-0002",
+    "purpose": "post-work-capture",
+    "projectId": "proj-7f3a2b",
+    "taskId": "task-postwork-outcome-77e2",
+    "taskType": "field-capture",
+    "intent": "Capture the completed wall condition so the executed work can be compared against the approved scenario and the outcome record stays observed-only through new evidence.",
+    "targetRefs": [
+      "outcome-77e2",
+      "scenario-55c1",
+      "case-91ab"
+    ],
+    "origin": "web",
+    "originSurface": "outcomes",
+    "versionContext": {
+      "missionId": "mission-2026-000042",
+      "boqImportId": "boq-import-33d",
+      "boqRevision": 2
+    },
+    "epistemicState": "OBSERVED",
+    "issuedAt": "2026-09-26T09:05:00.000Z"
+  },
+  "deepLink": "aise://task?v=1&handoff=handoff-postwork-outcome-0002&project=proj-7f3a2b&task=task-postwork-outcome-77e2&type=field-capture&intent=Capture%20the%20completed%20wall%20condition%20so%20the%20executed%20work%20can%20be%20compared%20against%20the%20approved%20scenario%20and%20the%20outcome%20record%20stays%20observed-only%20through%20new%20evidence.&targets=outcome-77e2%2Cscenario-55c1%2Ccase-91ab&purpose=post-work-capture&origin=web&surface=outcomes&epistemic=OBSERVED&issued=2026-09-26T09%3A05%3A00.000Z&boq-import=boq-import-33d&boq-revision=2&mission=mission-2026-000042"
+}

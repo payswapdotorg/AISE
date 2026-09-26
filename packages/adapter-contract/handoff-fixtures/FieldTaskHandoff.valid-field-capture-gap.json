@@ -1,0 +1,23 @@
+{
+  "handoff": {
+    "contractVersion": "1.0.0",
+    "handoffId": "handoff-gap-4471-0001",
+    "purpose": "field-capture",
+    "projectId": "proj-7f3a2b",
+    "taskId": "task-gap-4471-capture",
+    "taskType": "field-capture",
+    "intent": "No calibrated reference dimension was captured for the cracked masonry area; a scale reference or manual measurement is required before dimension assertions can be grounded.",
+    "targetRefs": [
+      "case-91ab",
+      "gap-4471"
+    ],
+    "origin": "web",
+    "originSurface": "engineering-case",
+    "versionContext": {
+      "realityVersionId": "rgv-14"
+    },
+    "epistemicState": "under-review",
+    "issuedAt": "2026-09-26T09:00:00.000Z"
+  },
+  "deepLink": "aise://task?v=1&handoff=handoff-gap-4471-0001&project=proj-7f3a2b&task=task-gap-4471-capture&type=field-capture&intent=No%20calibrated%20reference%20dimension%20was%20captured%20for%20the%20cracked%20masonry%20area%3B%20a%20scale%20reference%20or%20manual%20measurement%20is%20required%20before%20dimension%20assertions%20can%20be%20grounded.&targets=case-91ab%2Cgap-4471&purpose=field-capture&origin=web&surface=engineering-case&epistemic=under-review&issued=2026-09-26T09%3A00%3A00.000Z&reality-version=rgv-14"
+}

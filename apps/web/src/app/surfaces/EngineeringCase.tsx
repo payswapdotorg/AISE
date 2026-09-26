@@ -56,9 +56,11 @@ import {
   inPageAnchorOnClick,
 } from "../components";
 import { ProjectSurfaceNav } from "../components";
-import { TaskFlowStrip } from "../task-first";
+import { TaskFlowStrip, TaskFlowResourceView, useTaskFlow } from "../task-first";
 import { formatRoute } from "../router";
 import { plural, shortId } from "../format";
+import { fieldCaptureHandoff } from "./CaptureMission";
+import { formatFieldTaskDeepLink, type FieldTaskHandoff } from "@aise/adapter-contract/task-handoff";
 import { CaseCrossLinksCard } from "../../parity/components";
 import { CaseToSolutionCard } from "../solution-composition";
 import {
@@ -207,6 +209,15 @@ function CaseDemo({ data }: { readonly data: CaseData }): ReactNode {
           missingEvidenceCount={caseView.missingEvidenceCount}
           source={caseView.source}
           mode={data.mode}
+        />
+      )}
+      {caseView === null ? null : (
+        <CaseCaptureBridgePanel
+          projectId={data.projectId}
+          mode={data.mode}
+          caseId={caseView.caseId}
+          caseStatus={caseView.status.value}
+          missingEvidenceCount={caseView.missingEvidenceCount}
         />
       )}
       {caseView === null ? null : (
@@ -519,6 +530,20 @@ function CaseLive({ data }: { readonly data: CaseData }): ReactNode {
           <CaseDetailRecordView record={live.detail} />
         )}
       </Card>
+      {live.detail === null ? null : (
+        <MissingEvidenceCaptureBridgePanel
+          projectId={data.projectId}
+          mode={data.mode}
+          caseId={live.detail.caseId}
+          caseStatus={live.detail.status}
+          entries={live.detail.missingEvidence.map((missing, index) => ({
+            key: `missing-${String(index + 1)}`,
+            kind: "MISSING",
+            description: missing.description,
+            status: missing.status,
+          }))}
+        />
+      )}
       {live.detail === null ? null : (
         <EvidenceEnvelopeCard
           view={caseEvidenceEnvelopeFromDetail(live.detail)}
@@ -892,5 +917,257 @@ export function NewCasePanel({
         </div>
       ) : null}
     </CreateRecordPanel>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* POST-005 — the missing-evidence → capture bridge (plan §2 F)         */
+/* ------------------------------------------------------------------ */
+
+/** One declared missing-evidence entry the bridge acts on. */
+export interface CaptureBridgeEntry {
+  /** Stable key (the gap id, or the record-position id when none is recorded). */
+  readonly key: string;
+  /** The declaration's own kind vocabulary (MISSING/WEAK/AMBIGUOUS), if recorded. */
+  readonly kind: string;
+  /** The declaration's own words, verbatim. */
+  readonly description: string;
+  /** open | closed — only open declarations carry a capture action. */
+  readonly status: string;
+}
+
+/**
+ * The DEMO-side bridge panel: the same task-flow resource every task-first
+ * surface consumes (no second authority) — the evidence summary's declared
+ * gaps are the case-specific capture tasks this bridge acts on.
+ */
+export function CaseCaptureBridgePanel({
+  projectId,
+  mode,
+  caseId,
+  caseStatus,
+  missingEvidenceCount,
+}: {
+  readonly projectId: string;
+  readonly mode: "demo" | "api";
+  readonly caseId: string;
+  readonly caseStatus: string;
+  readonly missingEvidenceCount: number;
+}): ReactNode {
+  const { state, reload } = useTaskFlow(projectId);
+  const [prepared, setPrepared] = useState<{ key: string; handoff: FieldTaskHandoff } | null>(null);
+  return (
+    <TaskFlowResourceView
+      state={state}
+      onRetry={reload}
+      render={(data) => {
+        const evidence = data.bundle?.evidence ?? null;
+        const caseSummary = data.bundle?.caseSummary ?? null;
+        const entries: readonly CaptureBridgeEntry[] =
+          caseSummary === null
+            ? []
+            : (evidence?.gaps ?? []).map((gap) => ({
+                key: gap.gapId,
+                kind: gap.kind,
+                description: gap.description,
+                status: "open",
+              }));
+        const effectiveCaseId = caseSummary?.caseId ?? caseId;
+        const effectiveCaseStatus = caseSummary?.status ?? caseStatus;
+        return (
+          <MissingEvidenceCaptureBridgeBody
+            projectId={projectId}
+            mode={mode}
+            caseId={effectiveCaseId}
+            caseStatus={effectiveCaseStatus}
+            entries={entries}
+            missingEvidenceCount={missingEvidenceCount}
+            prepared={prepared}
+            onPrepare={(entry) => {
+              setPrepared({
+                key: entry.key,
+                handoff: fieldCaptureHandoff({
+                  projectId,
+                  taskId: `task-capture-${entry.key}`,
+                  intent: entry.description,
+                  targetRefs: [effectiveCaseId, entry.key],
+                  epistemicState: effectiveCaseStatus,
+                  originSurface: "engineering-case",
+                  versionContext: {},
+                  issuedAt: new Date().toISOString(),
+                }),
+              });
+            }}
+          />
+        );
+      }}
+    />
+  );
+}
+
+/**
+ * The LIVE-side bridge panel: entries are the case record's own
+ * missing-evidence declarations (description + status — the live API
+ * carries no gap ids; the bridge's task identity is keyed by record
+ * position, stated as such).
+ */
+export function MissingEvidenceCaptureBridgePanel({
+  projectId,
+  mode,
+  caseId,
+  caseStatus,
+  entries,
+}: {
+  readonly projectId: string;
+  readonly mode: "demo" | "api";
+  readonly caseId: string;
+  readonly caseStatus: string;
+  readonly entries: readonly CaptureBridgeEntry[];
+}): ReactNode {
+  const [prepared, setPrepared] = useState<{ key: string; handoff: FieldTaskHandoff } | null>(null);
+  return (
+    <MissingEvidenceCaptureBridgeBody
+      projectId={projectId}
+      mode={mode}
+      caseId={caseId}
+      caseStatus={caseStatus}
+      entries={entries}
+      missingEvidenceCount={entries.length}
+      prepared={prepared}
+      onPrepare={(entry) => {
+        setPrepared({
+          key: entry.key,
+          handoff: fieldCaptureHandoff({
+            projectId,
+            taskId: `task-capture-${caseId}-${entry.key}`,
+            intent: entry.description,
+            targetRefs: [caseId],
+            epistemicState: caseStatus,
+            originSurface: "engineering-case",
+            versionContext: {},
+            issuedAt: new Date().toISOString(),
+          }),
+        });
+      }}
+    />
+  );
+}
+
+/**
+ * The bridge body (exported for static render tests — pure projection):
+ * from each OPEN missing-evidence declaration directly to
+ * "capture this evidence → on this device → for this case" — never merely a
+ * generic Capture surface. "On this device" is the browser upload entry;
+ * "on the field device" is the task handoff whose identity carries THIS
+ * case, THIS declaration and the case's own epistemic state verbatim.
+ */
+export function MissingEvidenceCaptureBridgeBody({
+  projectId,
+  mode,
+  caseId,
+  caseStatus,
+  entries,
+  missingEvidenceCount,
+  prepared,
+  onPrepare,
+}: {
+  readonly projectId: string;
+  readonly mode: "demo" | "api";
+  readonly caseId: string;
+  readonly caseStatus: string;
+  readonly entries: readonly CaptureBridgeEntry[];
+  readonly missingEvidenceCount: number;
+  readonly prepared: { key: string; handoff: FieldTaskHandoff } | null;
+  readonly onPrepare: (entry: CaptureBridgeEntry) => void;
+}): ReactNode {
+  const open = entries.filter((entry) => entry.status === "open");
+  return (
+    <Card
+      title="Capture the missing evidence — for this case"
+      badge={<DataBadge mode={mode} />}
+      meta={
+        <span>
+          case <span className="mono">{caseId}</span> · status {caseStatus} —
+          each open declaration becomes a case-specific capture task
+        </span>
+      }
+    >
+      {open.length === 0 ? (
+        <EmptyState
+          title="No open missing-evidence declarations to act on"
+          guidance={
+            missingEvidenceCount === 0
+              ? "Nothing is declared missing for this case — and none is invented. When the case records a gap, its capture task appears here with this case's identity attached."
+              : `${plural(missingEvidenceCount, "declaration")} recorded, none open right now — closed declarations carry no capture task.`
+          }
+        />
+      ) : (
+        <>
+          <p data-gap-bridge-lead="true">
+            Go straight from the declaration to the capture:{" "}
+            <strong>capture this evidence</strong> → on this device or the
+            field device → <strong>for this case</strong> ({caseId}). The
+            task&apos;s identity, targets and the case&apos;s own status cross
+            the device boundary verbatim — the capture never degrades into a
+            generic surface.
+          </p>
+          <ul className="notes-list" data-gap-bridge-entries="true">
+            {open.map((entry) => (
+              <li key={entry.key} data-gap-bridge={entry.key} data-gap-bridge-kind={entry.kind}>
+                <span className="tag tag-missing-open">{entry.kind === "" ? "open" : entry.kind}</span>{" "}
+                {entry.description}
+                <div className="toolbar">
+                  <a
+                    className="button button-secondary"
+                    href={formatRoute({ name: "capture", projectId })}
+                    data-bridge-device="this-device"
+                  >
+                    Capture on this device
+                  </a>
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={() => {
+                      onPrepare(entry);
+                    }}
+                    data-bridge-device="field-device"
+                  >
+                    Capture on the field device (handoff)
+                  </button>
+                </div>
+                {prepared === null || prepared.key !== entry.key ? null : (
+                  <div className="callout callout-info" data-bridge-handoff={entry.key} role="status">
+                    <p>
+                      <strong>Case-specific capture task ready.</strong> Open
+                      this link on the phone — the AISE Field app continues
+                      THIS task for THIS case:
+                    </p>
+                    <p className="mono pane-foot">
+                      <a href={formatFieldTaskDeepLink(prepared.handoff)}>
+                        {formatFieldTaskDeepLink(prepared.handoff)}
+                      </a>
+                    </p>
+                    <p className="pane-foot">
+                      task <span className="mono">{prepared.handoff.taskId}</span> · targets{" "}
+                      {prepared.handoff.targetRefs.join(", ")} · purpose{" "}
+                      {prepared.handoff.purpose} · case status carried verbatim
+                      ({prepared.handoff.epistemicState}). The device still
+                      runs its own capability assessment before capture.
+                    </p>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p className="pane-foot" data-gap-bridge-return="true">
+            What returns: captured evidence syncs through the server-side
+            ingestion gateway and reappears on this case&apos;s evidence
+            envelope — observed evidence, never an automatic conclusion. The
+            browser path (this device) ingests files you already hold;
+            in-field camera capture is the mobile adapter&apos;s journey.
+          </p>
+        </>
+      )}
+    </Card>
   );
 }

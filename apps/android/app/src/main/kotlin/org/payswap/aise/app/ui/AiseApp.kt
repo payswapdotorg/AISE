@@ -84,6 +84,7 @@ fun AiseApp(container: AppContainer, modifier: Modifier = Modifier) {
                         factory = FieldJourneyViewModel.factory(
                             container.fieldJourneyRuntime,
                             container.captureController,
+                            container.handedOffTask,
                         ),
                     ),
                     modifier = Modifier.padding(innerPadding),

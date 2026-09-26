@@ -62,6 +62,15 @@ class CaptureViewModel(
     }
 
     /** Called by the camera adapter with the JPEG bytes + verbatim capture metadata. */
+    /**
+     * POST-005 GAP-2 fix: a FAILED still surfaces honestly — the session and
+     * journal stay truthful (nothing is journaled for a failed capture), and
+     * the operator now SEES the failure instead of it being swallowed.
+     */
+    fun onStillCaptureFailed(reason: String) {
+        _message.value = "Still capture failed — no evidence journaled ($reason). Retry the still capture."
+    }
+
     fun onStillCaptured(jpeg: ByteArray, metadata: Map<String, String>) = guarded("capture still") {
         val asset = controller.captureStill(jpeg, metadata)
         _message.value = "Still captured: ${asset.assetId} (${asset.byteSize} bytes)"

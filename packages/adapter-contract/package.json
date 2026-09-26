@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "AISE shared client adapter contract (PROD-016, SHARED): versioned platform-neutral semantic objects (ProjectContext, TaskIntent, CapabilityDescriptor, EvidenceSummary, RealitySummary, BOQContext, EngineeringCaseSummary, InterventionScenarioSummary, OutcomeSummary, NextBestAction, AuthorizationContext, OperationResult), client capability negotiation and the adapter conformance harness for the browser/mobile/desktop adapters over one AISE product core (ACR-004). Data + contract logic only — no I/O in the harness core, no server behavior, no UI, no client-side authority.",
+  "description": "AISE shared client adapter contract (PROD-016, SHARED): versioned platform-neutral semantic objects (ProjectContext, TaskIntent, CapabilityDescriptor, EvidenceSummary, RealitySummary, BOQContext, EngineeringCaseSummary, InterventionScenarioSummary, OutcomeSummary, NextBestAction, AuthorizationContext, OperationResult), client capability negotiation and the adapter conformance harness for the browser/mobile/desktop adapters over one AISE product core (ACR-004). Data + contract logic only \u2014 no I/O in the harness core, no server behavior, no UI, no client-side authority. POST-005 adds the additive ./task-handoff subpath: the cross-device field task identity envelope (FieldTaskHandoff) and the canonical aise://task deep-link codec.",
   "exports": {
     ".": "./src/index.ts",
-    "./fixtures-loader": "./src/fixtures-loader.ts"
+    "./fixtures-loader": "./src/fixtures-loader.ts",
+    "./task-handoff": "./src/task-handoff.ts"
   },
   "scripts": {
     "gen:schemas": "bun scripts/generate-schemas.ts",

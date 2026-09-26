@@ -41,7 +41,7 @@ import {
   DEMO_TASK_PROJECT_ID,
   demoTaskFlowBundle,
 } from "../task-dataset";
-import type { TaskFlowBundle } from "../task-contract";
+import type { OutcomeSummary, TaskFlowBundle } from "../task-contract";
 import {
   BeforeAfterCard,
   BoundaryLabelsCard,
@@ -66,6 +66,8 @@ import { ProjectSurfaceNav } from "../components";
 import { TaskFlowStrip } from "../task-first";
 import { formatRoute } from "../router";
 import { plural, shortId } from "../format";
+import { postWorkCaptureHandoff } from "./CaptureMission";
+import { formatFieldTaskDeepLink, type FieldTaskHandoff } from "@aise/adapter-contract/task-handoff";
 
 /* ------------------------------------------------------------------ */
 /* The outcome-search model (pure)                                     */
@@ -375,6 +377,15 @@ export function OutcomesBody({
       ) : (
         <LiveOutcomes data={data} />
       )}
+
+      <PostWorkCaptureBridgePanel
+        projectId={data.projectId}
+        mode={data.mode}
+        outcome={data.demo?.bundle?.outcome ?? null}
+        scenarioId={data.demo?.bundle?.scenario?.scenarioId ?? null}
+        caseId={data.demo?.bundle?.caseSummary?.caseId ?? null}
+        executions={data.live?.executions ?? []}
+      />
 
       <PlanVsRealityForOutcomes data={data} />
     </>
@@ -686,4 +697,206 @@ function PlanVsRealityForOutcomes({ data }: { readonly data: OutcomesData }): Re
     );
   }
   return <PlanRealityCard view={view} />;
+}
+
+/* ------------------------------------------------------------------ */
+/* POST-005 — the post-work capture return-path bridge (plan §5)        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The post-work capture bridge (plan §5: "EXECUTE → ANDROID post-work
+ * capture → WEB Outcome / Before-After"): from executed work directly to
+ * "capture the completed condition → on this device or the field device →
+ * for this outcome" — and the honest statement of what returns. The demo
+ * side shows the COMPLETED return path (the outcome's own recorded
+ * post-work evidence content ids — observed-only through new evidence);
+ * the live side offers the handoff per recorded execution.
+ */
+export function PostWorkCaptureBridgePanel({
+  projectId,
+  mode,
+  outcome,
+  scenarioId,
+  caseId,
+  executions,
+}: {
+  readonly projectId: string;
+  readonly mode: "demo" | "api";
+  /** The task-flow bundle's outcome summary (demo mode). */
+  readonly outcome: OutcomeSummary | null;
+  readonly scenarioId: string | null;
+  readonly caseId: string | null;
+  /** The live executions (live mode). */
+  readonly executions: readonly ExecutionSummaryRecord[];
+}): ReactNode {
+  const [prepared, setPrepared] = useState<FieldTaskHandoff | null>(null);
+  return (
+    <PostWorkCaptureBridgeBody
+      projectId={projectId}
+      mode={mode}
+      outcome={outcome}
+      scenarioId={scenarioId}
+      caseId={caseId}
+      executions={executions}
+      prepared={prepared}
+      onPrepare={() => {
+        if (outcome !== null) {
+          setPrepared(
+            postWorkCaptureHandoff({
+              projectId,
+              taskId: `task-postwork-${outcome.outcomeId}`,
+              intent:
+                "Capture the completed condition of the executed work so the outcome record stays observed-only through new evidence — the before/after comparison and the plan-vs-reality check cite what was actually done.",
+              targetRefs: [
+                outcome.outcomeId,
+                ...(scenarioId === null ? [] : [scenarioId]),
+                ...(caseId === null ? [] : [caseId]),
+              ],
+              epistemicState: outcome.epistemicState,
+              originSurface: "outcomes",
+              versionContext: {},
+              issuedAt: new Date().toISOString(),
+            }),
+          );
+          return;
+        }
+        const first = executions[0] ?? null;
+        if (first === null) {
+          setPrepared(null);
+          return;
+        }
+        setPrepared(
+          postWorkCaptureHandoff({
+            projectId,
+            taskId: `task-postwork-${first.executionRecordId}`,
+            intent:
+              "Capture the completed condition of the executed work so the outcome record stays observed-only through new evidence.",
+            targetRefs: [first.executionRecordId, first.caseId, first.scenarioId],
+            // The execution record carries no epistemic-state field of its
+            // own; the recorded state id is the execution's own statement.
+            epistemicState: `executed (${first.stateId})`,
+            originSurface: "outcomes",
+            versionContext: {},
+            issuedAt: new Date().toISOString(),
+          }),
+        );
+      }}
+    />
+  );
+}
+
+/** The bridge body (exported for static render tests — pure projection). */
+export function PostWorkCaptureBridgeBody({
+  projectId,
+  mode,
+  outcome,
+  scenarioId,
+  caseId,
+  executions,
+  prepared,
+  onPrepare,
+}: {
+  readonly projectId: string;
+  readonly mode: "demo" | "api";
+  readonly outcome: OutcomeSummary | null;
+  readonly scenarioId: string | null;
+  readonly caseId: string | null;
+  readonly executions: readonly ExecutionSummaryRecord[];
+  readonly prepared: FieldTaskHandoff | null;
+  readonly onPrepare: () => void;
+}): ReactNode {
+  return (
+    <Card
+      title="Post-work evidence — the return path to this outcome loop"
+      badge={<DataBadge mode={mode} />}
+      meta={
+        <span>
+          executed work becomes an outcome ONLY through post-work evidence —
+          the plan §5 bridge: execute → capture → outcome
+        </span>
+      }
+    >
+      {outcome !== null ? (
+        <>
+          <p data-postwork-lead="true">
+            This outcome is <EpistemicBadge status={outcome.epistemicState} /> —
+            {scenarioId === null ? "" : ` from scenario ${scenarioId}`}
+            {caseId === null ? "" : ` on case ${caseId}`} —
+            and it earned that state through its recorded post-work evidence:
+            the content ids the outcome record itself carries.
+          </p>
+          <ul className="notes-list" data-postwork-landed="true">
+            {outcome.postWorkEvidenceContentIds.map((contentId) => (
+              <li key={contentId}>
+                <span className="tag">post-work evidence</span>{" "}
+                <span className="mono">{shortId(contentId)}</span> — captured
+                in the field, synced through the ingestion gateway, and
+                visible in this outcome loop (the search above finds it by
+                this content id).
+              </li>
+            ))}
+            {outcome.postWorkEvidenceContentIds.length === 0 ? (
+              <li>no post-work evidence content ids recorded on this outcome</li>
+            ) : null}
+          </ul>
+        </>
+      ) : executions.length === 0 ? (
+        <EmptyState
+          title="No executed work to capture post-work evidence for"
+          guidance="Executed interventions appear here with their post-work capture task — execute a validated solution in the Intervention Studio first. A proposal without post-work evidence is never presented as an outcome."
+        />
+      ) : (
+        <p data-postwork-lead="true">
+          {plural(executions.length, "recorded execution")} on this
+          deployment — each is a post-work capture task away from its
+          outcome record.
+        </p>
+      )}
+      {outcome === null && executions.length === 0 ? null : (
+        <div className="toolbar">
+          <button
+            type="button"
+            className="button"
+            onClick={onPrepare}
+            data-postwork-prepare="idle"
+          >
+            Prepare the post-work capture handoff
+          </button>
+          <a
+            className="button button-secondary"
+            href={formatRoute({ name: "capture", projectId })}
+            data-postwork-device="this-device"
+          >
+            Capture on this device
+          </a>
+        </div>
+      )}
+      {prepared === null ? null : (
+        <div className="callout callout-info" data-postwork-handoff="true" role="status">
+          <p>
+            <strong>Post-work capture task ready.</strong> Open this link on
+            the phone — the AISE Field app opens the post-work capture for
+            this executed work:
+          </p>
+          <p className="mono pane-foot">
+            <a href={formatFieldTaskDeepLink(prepared)}>{formatFieldTaskDeepLink(prepared)}</a>
+          </p>
+          <p className="pane-foot">
+            task <span className="mono">{prepared.taskId}</span> · targets{" "}
+            {prepared.targetRefs.join(", ")} · purpose {prepared.purpose} ·
+            the outcome&apos;s epistemic state ({prepared.epistemicState})
+            crosses the boundary verbatim — new evidence, never assertion,
+            turns executed work into an observed outcome.
+          </p>
+        </div>
+      )}
+      <p className="pane-foot" data-postwork-return="true">
+        The return path: the captured evidence syncs server-side
+        (content-addressed, provenance preserved) and this loop surfaces it —
+        the outcome search matches post-work evidence content ids, and the
+        before/after and plan-vs-reality comparisons below cite what was
+        actually done.
+      </p>
+    </Card>
+  );
 }
