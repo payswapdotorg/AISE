@@ -1,0 +1,1269 @@
+{
+ "baselineRealityVersionId": "rgv-gbim002-base-0001",
+ "finalStateId": "fcb09126533f7980b7c65098534f7923d323c5d47bf2bb9611e967e462369091",
+ "fixtureKind": "aise-gbim002-canonical-fixture",
+ "fixtureVersion": "1.0.0",
+ "materializedAt": "2026-09-25T00:00:00.000Z",
+ "operations": [
+  {
+   "aiseQuantities": [
+    {
+     "calculationRef": "aise-phase1/block-wall-placement/v1 (spike mirror)",
+     "dimension": "volume",
+     "direction": "added",
+     "formula": "wall-volume = length x height x thickness",
+     "label": "wall-volume",
+     "parameterTrace": [
+      {
+       "name": "length",
+       "unit": "mm",
+       "value": 8000
+      },
+      {
+       "name": "height",
+       "unit": "mm",
+       "value": 3000
+      },
+      {
+       "name": "thickness",
+       "unit": "mm",
+       "value": 200
+      },
+      {
+       "name": "material",
+       "unit": null,
+       "value": "concrete-block"
+      }
+     ],
+     "unit": "m3",
+     "value": 4.8
+    },
+    {
+     "calculationRef": "aise-phase1/block-wall-placement/v1 (spike mirror)",
+     "dimension": "area",
+     "direction": "added",
+     "formula": "wall-face-area = length x height",
+     "label": "wall-face-area",
+     "parameterTrace": [
+      {
+       "name": "length",
+       "unit": "mm",
+       "value": 8000
+      },
+      {
+       "name": "height",
+       "unit": "mm",
+       "value": 3000
+      },
+      {
+       "name": "thickness",
+       "unit": "mm",
+       "value": 200
+      },
+      {
+       "name": "material",
+       "unit": null,
+       "value": "concrete-block"
+      }
+     ],
+     "unit": "m2",
+     "value": 24.0
+    },
+    {
+     "calculationRef": "aise-phase1/block-wall-placement/v1 (spike mirror)",
+     "dimension": "count",
+     "direction": "added",
+     "formula": "block-count = ceil(height/0.2) x ceil(length/0.4)",
+     "label": "block-count",
+     "parameterTrace": [
+      {
+       "name": "length",
+       "unit": "mm",
+       "value": 8000
+      },
+      {
+       "name": "height",
+       "unit": "mm",
+       "value": 3000
+      },
+      {
+       "name": "thickness",
+       "unit": "mm",
+       "value": 200
+      },
+      {
+       "name": "material",
+       "unit": null,
+       "value": "concrete-block"
+      }
+     ],
+     "unit": "count",
+     "value": 300
+    }
+   ],
+   "canonicalAnalogue": "block-wall-placement",
+   "canonicalQuantityStatus": "mapped",
+   "dependsOn": [],
+   "ifc": {
+    "class": "IfcWall",
+    "geometry": {
+     "height": 3.0,
+     "length": 8.0,
+     "placement": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "representation": "wall-api",
+     "thickness": 0.2
+    },
+    "name": "Wall-South",
+    "predefinedType": "SOLIDWALL"
+   },
+   "operationId": "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c",
+   "operationIndex": 1,
+   "operationType": "create-wall",
+   "parameters": [
+    {
+     "name": "length",
+     "unit": "mm",
+     "value": 8000
+    },
+    {
+     "name": "height",
+     "unit": "mm",
+     "value": 3000
+    },
+    {
+     "name": "thickness",
+     "unit": "mm",
+     "value": 200
+    },
+    {
+     "name": "material",
+     "value": "concrete-block"
+    }
+   ],
+   "resultingStateId": "ea4da49d9218d81f41a9b5094ab7fba94f8909cad4adba97e6aa8f61515d3801",
+   "summary": "200 mm host wall, south edge of the 8x6x3 room",
+   "target": {
+    "geometryRefs": [
+     {
+      "kind": "plane",
+      "ref": "geo-wall-line-south"
+     }
+    ],
+    "nodeRefs": [
+     "node-room-shell",
+     "node-wall-south"
+    ],
+    "selectorKind": "geometry-plane",
+    "units": {
+     "linear": "m"
+    }
+   }
+  },
+  {
+   "aiseQuantities": [
+    {
+     "calculationRef": "aise-phase1/opening-creation/v1 (spike mirror)",
+     "dimension": "area",
+     "direction": "removed",
+     "formula": "opening-area = width x height",
+     "label": "opening-area",
+     "parameterTrace": [
+      {
+       "name": "width",
+       "unit": "mm",
+       "value": 900
+      },
+      {
+       "name": "height",
+       "unit": "mm",
+       "value": 2100
+      },
+      {
+       "name": "offset-x",
+       "unit": "m",
+       "value": 1.0
+      }
+     ],
+     "unit": "m2",
+     "value": 1.89
+    },
+    {
+     "calculationRef": "aise-phase1/opening-creation/v1 (spike mirror)",
+     "dimension": "count",
+     "direction": "added",
+     "formula": "opening-count = 1 per operation",
+     "label": "opening-count",
+     "parameterTrace": [
+      {
+       "name": "width",
+       "unit": "mm",
+       "value": 900
+      },
+      {
+       "name": "height",
+       "unit": "mm",
+       "value": 2100
+      },
+      {
+       "name": "offset-x",
+       "unit": "m",
+       "value": 1.0
+      }
+     ],
+     "unit": "count",
+     "value": 1
+    }
+   ],
+   "canonicalAnalogue": "opening-creation",
+   "canonicalQuantityStatus": "mapped",
+   "dependsOn": [
+    {
+     "dependencyKind": "host",
+     "operationRef": "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c"
+    }
+   ],
+   "ifc": {
+    "class": "IfcOpeningElement",
+    "geometry": {
+     "depth": 2.1,
+     "placement": [
+      1.45,
+      0.1,
+      0.0
+     ],
+     "profile": [
+      0.9,
+      0.22
+     ],
+     "representation": "box"
+    },
+    "name": "Opening-Door",
+    "voids": "Wall-South"
+   },
+   "operationId": "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410",
+   "operationIndex": 2,
+   "operationType": "create-opening",
+   "parameters": [
+    {
+     "name": "width",
+     "unit": "mm",
+     "value": 900
+    },
+    {
+     "name": "height",
+     "unit": "mm",
+     "value": 2100
+    },
+    {
+     "name": "offset-x",
+     "unit": "m",
+     "value": 1.0
+    }
+   ],
+   "resultingStateId": "704a764bb07aaf3ee05294666565bf27b05758525d543c2a4db5a7f91b5871f7",
+   "summary": "900x2100 door opening in the host wall (x 1.0..1.9 m)",
+   "target": {
+    "geometryRefs": [
+     {
+      "kind": "plane",
+      "ref": "geo-wall-line-south"
+     },
+     {
+      "kind": "void",
+      "ref": "geo-opening-door-001"
+     }
+    ],
+    "nodeRefs": [
+     "node-wall-south"
+    ],
+    "selectorKind": "geometry-plane",
+    "units": {
+     "linear": "m"
+    }
+   }
+  },
+  {
+   "aiseQuantities": null,
+   "canonicalAnalogue": null,
+   "canonicalQuantityStatus": "no-canonical-model",
+   "dependsOn": [
+    {
+     "dependencyKind": "fills",
+     "operationRef": "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410"
+    }
+   ],
+   "ifc": {
+    "class": "IfcDoor",
+    "fills": "Opening-Door",
+    "geometry": {
+     "depth": 2.1,
+     "placement": [
+      1.45,
+      0.1,
+      0.0
+     ],
+     "profile": [
+      0.9,
+      0.05
+     ],
+     "representation": "box"
+    },
+    "name": "Door-001",
+    "overallHeight": 2.1,
+    "overallWidth": 0.9
+   },
+   "operationId": "7d7dfb3cd32e84213f261407eed051c58c3fa478bfa540a8b04dd9ddcfd7f2bf",
+   "operationIndex": 3,
+   "operationType": "create-door",
+   "parameters": [
+    {
+     "name": "width",
+     "unit": "mm",
+     "value": 900
+    },
+    {
+     "name": "height",
+     "unit": "mm",
+     "value": 2100
+    },
+    {
+     "name": "material",
+     "value": "timber-panel"
+    }
+   ],
+   "resultingStateId": "3692832840dee9434faedbb6365e23b2eac08558c07f25476efedb19b695b006",
+   "summary": "900x2100 door filling the door opening",
+   "target": {
+    "geometryRefs": [
+     {
+      "kind": "void",
+      "ref": "geo-opening-door-001"
+     }
+    ],
+    "nodeRefs": [
+     "node-wall-south"
+    ],
+    "selectorKind": "geometry-plane",
+    "units": {
+     "linear": "m"
+    }
+   }
+  },
+  {
+   "aiseQuantities": null,
+   "canonicalAnalogue": null,
+   "canonicalQuantityStatus": "no-canonical-model",
+   "dependsOn": [
+    {
+     "dependencyKind": "host",
+     "operationRef": "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c"
+    }
+   ],
+   "ifc": {
+    "class": "IfcWindow",
+    "geometry": {
+     "depth": 1.2,
+     "placement": [
+      5.6,
+      0.1,
+      1.0
+     ],
+     "profile": [
+      1.2,
+      0.05
+     ],
+     "representation": "box"
+    },
+    "name": "Window-001",
+    "openingGeometry": {
+     "depth": 1.2,
+     "placement": [
+      5.6,
+      0.1,
+      1.0
+     ],
+     "profile": [
+      1.2,
+      0.22
+     ],
+     "representation": "box"
+    },
+    "opens": "Wall-South",
+    "overallHeight": 1.2,
+    "overallWidth": 1.2
+   },
+   "operationId": "3115f0ec3d5e3943ef80c205b327bc3fb18ce48afdcf51af7c5ab4c1c1df9db1",
+   "operationIndex": 4,
+   "operationType": "create-window",
+   "parameters": [
+    {
+     "name": "width",
+     "unit": "mm",
+     "value": 1200
+    },
+    {
+     "name": "height",
+     "unit": "mm",
+     "value": 1200
+    },
+    {
+     "name": "sill",
+     "unit": "m",
+     "value": 1.0
+    },
+    {
+     "name": "material",
+     "value": "glazing"
+    }
+   ],
+   "resultingStateId": "633c22f25a917ce94f6fd6c7cdaca76570655ded59f5f629f5431b9dd792901f",
+   "summary": "1200x1200 window opening (sill 1.0 m) + window filling it",
+   "target": {
+    "geometryRefs": [
+     {
+      "kind": "void",
+      "ref": "geo-opening-window-001"
+     }
+    ],
+    "nodeRefs": [
+     "node-wall-south"
+    ],
+    "selectorKind": "geometry-plane",
+    "units": {
+     "linear": "m"
+    }
+   }
+  },
+  {
+   "aiseQuantities": [
+    {
+     "calculationRef": "aise-phase1/foundation-placement/v1 (spike mirror)",
+     "dimension": "volume",
+     "direction": "added",
+     "formula": "footing-volume = length x width x depth",
+     "label": "footing-volume",
+     "parameterTrace": [
+      {
+       "name": "length",
+       "unit": "mm",
+       "value": 400
+      },
+      {
+       "name": "width",
+       "unit": "mm",
+       "value": 400
+      },
+      {
+       "name": "depth",
+       "unit": "mm",
+       "value": 300
+      },
+      {
+       "name": "material",
+       "unit": null,
+       "value": "reinforced-concrete"
+      }
+     ],
+     "unit": "m3",
+     "value": 0.048
+    },
+    {
+     "calculationRef": "aise-phase1/foundation-placement/v1 (spike mirror)",
+     "dimension": "area",
+     "direction": "added",
+     "formula": "footing-plan-area = length x width",
+     "label": "footing-plan-area",
+     "parameterTrace": [
+      {
+       "name": "length",
+       "unit": "mm",
+       "value": 400
+      },
+      {
+       "name": "width",
+       "unit": "mm",
+       "value": 400
+      },
+      {
+       "name": "depth",
+       "unit": "mm",
+       "value": 300
+      },
+      {
+       "name": "material",
+       "unit": null,
+       "value": "reinforced-concrete"
+      }
+     ],
+     "unit": "m2",
+     "value": 0.16
+    }
+   ],
+   "canonicalAnalogue": "foundation-placement",
+   "canonicalQuantityStatus": "mapped",
+   "dependsOn": [],
+   "ifc": {
+    "class": "IfcFooting",
+    "geometry": {
+     "depth": 0.3,
+     "placement": [
+      7.7,
+      5.7,
+      -0.5
+     ],
+     "profile": [
+      0.4,
+      0.4
+     ],
+     "representation": "box"
+    },
+    "name": "Footing-001"
+   },
+   "operationId": "a40b1352cb018f5a62848429141336e72c9c0a012d3030a6a46e9d7626ba8807",
+   "operationIndex": 5,
+   "operationType": "create-footing",
+   "parameters": [
+    {
+     "name": "length",
+     "unit": "mm",
+     "value": 400
+    },
+    {
+     "name": "width",
+     "unit": "mm",
+     "value": 400
+    },
+    {
+     "name": "depth",
+     "unit": "mm",
+     "value": 300
+    },
+    {
+     "name": "material",
+     "value": "reinforced-concrete"
+    }
+   ],
+   "resultingStateId": "d6067e6e356e91e6383840c5a170431d8345901fac086163cae66a2b9757e764",
+   "summary": "400x400x300 footing below the column position",
+   "target": {
+    "geometryRefs": [
+     {
+      "kind": "plane",
+      "ref": "geo-footprint-column-001"
+     }
+    ],
+    "nodeRefs": [
+     "node-foundation"
+    ],
+    "selectorKind": "geometry-plane",
+    "units": {
+     "linear": "m"
+    }
+   }
+  },
+  {
+   "aiseQuantities": [
+    {
+     "calculationRef": "aise-phase1/slab-placement/v1 (spike mirror)",
+     "dimension": "volume",
+     "direction": "added",
+     "formula": "slab-volume = length x width x thickness",
+     "label": "slab-volume",
+     "parameterTrace": [
+      {
+       "name": "length",
+       "unit": "mm",
+       "value": 8000
+      },
+      {
+       "name": "width",
+       "unit": "mm",
+       "value": 6000
+      },
+      {
+       "name": "thickness",
+       "unit": "mm",
+       "value": 200
+      },
+      {
+       "name": "material",
+       "unit": null,
+       "value": "reinforced-concrete"
+      }
+     ],
+     "unit": "m3",
+     "value": 9.6
+    },
+    {
+     "calculationRef": "aise-phase1/slab-placement/v1 (spike mirror)",
+     "dimension": "area",
+     "direction": "added",
+     "formula": "slab-plan-area = length x width",
+     "label": "slab-plan-area",
+     "parameterTrace": [
+      {
+       "name": "length",
+       "unit": "mm",
+       "value": 8000
+      },
+      {
+       "name": "width",
+       "unit": "mm",
+       "value": 6000
+      },
+      {
+       "name": "thickness",
+       "unit": "mm",
+       "value": 200
+      },
+      {
+       "name": "material",
+       "unit": null,
+       "value": "reinforced-concrete"
+      }
+     ],
+     "unit": "m2",
+     "value": 48.0
+    }
+   ],
+   "canonicalAnalogue": "slab-placement",
+   "canonicalQuantityStatus": "mapped",
+   "dependsOn": [],
+   "ifc": {
+    "class": "IfcSlab",
+    "geometry": {
+     "depth": 0.2,
+     "placement": [
+      4.0,
+      3.0,
+      -0.2
+     ],
+     "profile": [
+      8.0,
+      6.0
+     ],
+     "representation": "box"
+    },
+    "name": "Slab-Floor",
+    "predefinedType": "FLOOR"
+   },
+   "operationId": "7a71a010f5d7d23a1441cb6f7c183fcbad730a74d43767017aab051279b93e94",
+   "operationIndex": 6,
+   "operationType": "create-slab",
+   "parameters": [
+    {
+     "name": "length",
+     "unit": "mm",
+     "value": 8000
+    },
+    {
+     "name": "width",
+     "unit": "mm",
+     "value": 6000
+    },
+    {
+     "name": "thickness",
+     "unit": "mm",
+     "value": 200
+    },
+    {
+     "name": "material",
+     "value": "reinforced-concrete"
+    }
+   ],
+   "resultingStateId": "d475324a3b22ba09399fea59a05c0e9440c2b3357f14222c579e08ea28d98e74",
+   "summary": "8x6 m floor slab, 200 mm thick (top at z=0)",
+   "target": {
+    "geometryRefs": [
+     {
+      "kind": "plane",
+      "ref": "geo-floor-envelope"
+     }
+    ],
+    "nodeRefs": [
+     "node-room-shell"
+    ],
+    "selectorKind": "geometry-plane",
+    "units": {
+     "linear": "m"
+    }
+   }
+  },
+  {
+   "aiseQuantities": null,
+   "canonicalAnalogue": null,
+   "canonicalQuantityStatus": "no-canonical-model",
+   "dependsOn": [
+    {
+     "dependencyKind": "supported-by",
+     "operationRef": "a40b1352cb018f5a62848429141336e72c9c0a012d3030a6a46e9d7626ba8807"
+    },
+    {
+     "dependencyKind": "bears-on",
+     "operationRef": "7a71a010f5d7d23a1441cb6f7c183fcbad730a74d43767017aab051279b93e94"
+    }
+   ],
+   "ifc": {
+    "class": "IfcColumn",
+    "geometry": {
+     "depth": 3.0,
+     "placement": [
+      7.7,
+      5.7,
+      0.0
+     ],
+     "profile": [
+      0.3,
+      0.3
+     ],
+     "representation": "box"
+    },
+    "name": "Column-001"
+   },
+   "operationId": "4be1a333b23f59fd179787ceb7fe6ef679c12fdb1fdbfbb8e1a0cade4b354056",
+   "operationIndex": 7,
+   "operationType": "create-column",
+   "parameters": [
+    {
+     "name": "width",
+     "unit": "mm",
+     "value": 300
+    },
+    {
+     "name": "height",
+     "unit": "mm",
+     "value": 3000
+    },
+    {
+     "name": "material",
+     "value": "reinforced-concrete"
+    }
+   ],
+   "resultingStateId": "fcaff8fb5690b5a1da04fa2221509fcbe24ca04d24d05e6dfb9cf8f1a1c70ac2",
+   "summary": "300x300 column, full storey height, on the footing axis",
+   "target": {
+    "geometryRefs": [
+     {
+      "kind": "plane",
+      "ref": "geo-footprint-column-001"
+     }
+    ],
+    "nodeRefs": [
+     "node-structure"
+    ],
+    "selectorKind": "geometry-plane",
+    "units": {
+     "linear": "m"
+    }
+   }
+  },
+  {
+   "aiseQuantities": null,
+   "canonicalAnalogue": null,
+   "canonicalQuantityStatus": "no-canonical-model",
+   "dependsOn": [
+    {
+     "dependencyKind": "bears-on",
+     "operationRef": "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c"
+    }
+   ],
+   "ifc": {
+    "class": "IfcBeam",
+    "geometry": {
+     "depth": 0.4,
+     "placement": [
+      4.125,
+      3.0,
+      2.6
+     ],
+     "profile": [
+      0.25,
+      6.0
+     ],
+     "representation": "box"
+    },
+    "name": "Beam-001"
+   },
+   "operationId": "9338a398d3bf72ecf2998be479dac8e88de36ce67d701bfa40b70d61a97beb40",
+   "operationIndex": 8,
+   "operationType": "create-beam",
+   "parameters": [
+    {
+     "name": "length",
+     "unit": "mm",
+     "value": 6000
+    },
+    {
+     "name": "width",
+     "unit": "mm",
+     "value": 250
+    },
+    {
+     "name": "depth",
+     "unit": "mm",
+     "value": 400
+    },
+    {
+     "name": "material",
+     "value": "reinforced-concrete"
+    }
+   ],
+   "resultingStateId": "7fd66c91f16e7e4185582affa59b63f0e5cbdc2f57d7012d4cb449479fed3b5d",
+   "summary": "250x400 beam spanning 6 m at x=4.0, top at z=3.0",
+   "target": {
+    "geometryRefs": [
+     {
+      "kind": "plane",
+      "ref": "geo-beam-axis-001"
+     }
+    ],
+    "nodeRefs": [
+     "node-structure"
+    ],
+    "selectorKind": "geometry-plane",
+    "units": {
+     "linear": "m"
+    }
+   }
+  },
+  {
+   "aiseQuantities": [
+    {
+     "calculationRef": "aise-phase1/block-wall-placement/v1 (spike mirror)",
+     "dimension": "volume",
+     "direction": "added",
+     "formula": "wall-volume = length x height x thickness",
+     "label": "wall-volume",
+     "parameterTrace": [
+      {
+       "name": "length",
+       "unit": "mm",
+       "value": 3000
+      },
+      {
+       "name": "height",
+       "unit": "mm",
+       "value": 3000
+      },
+      {
+       "name": "thickness",
+       "unit": "mm",
+       "value": 150
+      },
+      {
+       "name": "material",
+       "unit": null,
+       "value": "concrete-block"
+      }
+     ],
+     "unit": "m3",
+     "value": 1.35
+    },
+    {
+     "calculationRef": "aise-phase1/block-wall-placement/v1 (spike mirror)",
+     "dimension": "area",
+     "direction": "added",
+     "formula": "wall-face-area = length x height",
+     "label": "wall-face-area",
+     "parameterTrace": [
+      {
+       "name": "length",
+       "unit": "mm",
+       "value": 3000
+      },
+      {
+       "name": "height",
+       "unit": "mm",
+       "value": 3000
+      },
+      {
+       "name": "thickness",
+       "unit": "mm",
+       "value": 150
+      },
+      {
+       "name": "material",
+       "unit": null,
+       "value": "concrete-block"
+      }
+     ],
+     "unit": "m2",
+     "value": 9.0
+    },
+    {
+     "calculationRef": "aise-phase1/block-wall-placement/v1 (spike mirror)",
+     "dimension": "count",
+     "direction": "added",
+     "formula": "block-count = ceil(height/0.2) x ceil(length/0.4)",
+     "label": "block-count",
+     "parameterTrace": [
+      {
+       "name": "length",
+       "unit": "mm",
+       "value": 3000
+      },
+      {
+       "name": "height",
+       "unit": "mm",
+       "value": 3000
+      },
+      {
+       "name": "thickness",
+       "unit": "mm",
+       "value": 150
+      },
+      {
+       "name": "material",
+       "unit": null,
+       "value": "concrete-block"
+      }
+     ],
+     "unit": "count",
+     "value": 120
+    }
+   ],
+   "canonicalAnalogue": "block-wall-placement",
+   "canonicalQuantityStatus": "mapped",
+   "dependsOn": [
+    {
+     "dependencyKind": "bears-on",
+     "operationRef": "7a71a010f5d7d23a1441cb6f7c183fcbad730a74d43767017aab051279b93e94"
+    }
+   ],
+   "ifc": {
+    "class": "IfcWall",
+    "geometry": {
+     "depth": 3.0,
+     "placement": [
+      2.075,
+      2.5,
+      0.0
+     ],
+     "profile": [
+      0.15,
+      3.0
+     ],
+     "representation": "box"
+    },
+    "name": "Wall-Partition",
+    "predefinedType": "PARTITIONINGWALL"
+   },
+   "operationId": "89234d97f93dd60d3d5fd9fb8b0e656c9af6fbc369368d392f4b5bf62e9c3024",
+   "operationIndex": 9,
+   "operationType": "create-partition",
+   "parameters": [
+    {
+     "name": "length",
+     "unit": "mm",
+     "value": 3000
+    },
+    {
+     "name": "height",
+     "unit": "mm",
+     "value": 3000
+    },
+    {
+     "name": "thickness",
+     "unit": "mm",
+     "value": 150
+    },
+    {
+     "name": "material",
+     "value": "concrete-block"
+    }
+   ],
+   "resultingStateId": "c1d1dfe4a191904f97a1bd3e7b9e1b04ddc4919bb43e275f0daf2bc24b5df737",
+   "summary": "150 mm partition wall, 3 m long, inside the room",
+   "target": {
+    "geometryRefs": [
+     {
+      "kind": "plane",
+      "ref": "geo-partition-line-001"
+     }
+    ],
+    "nodeRefs": [
+     "node-room-interior"
+    ],
+    "selectorKind": "geometry-plane",
+    "units": {
+     "linear": "m"
+    }
+   }
+  },
+  {
+   "aiseQuantities": [
+    {
+     "calculationRef": "aise-phase1/opening-creation/v1 (spike mirror)",
+     "dimension": "area",
+     "direction": "removed",
+     "formula": "opening-area = width x height",
+     "label": "opening-area",
+     "parameterTrace": [
+      {
+       "name": "width",
+       "unit": "mm",
+       "value": 1000
+      },
+      {
+       "name": "height",
+       "unit": "mm",
+       "value": 2100
+      },
+      {
+       "name": "offset-x",
+       "unit": "m",
+       "value": 1.0
+      }
+     ],
+     "unit": "m2",
+     "value": 2.1
+    },
+    {
+     "calculationRef": "aise-phase1/opening-creation/v1 (spike mirror)",
+     "dimension": "count",
+     "direction": "added",
+     "formula": "opening-count = 1 per operation",
+     "label": "opening-count",
+     "parameterTrace": [
+      {
+       "name": "width",
+       "unit": "mm",
+       "value": 1000
+      },
+      {
+       "name": "height",
+       "unit": "mm",
+       "value": 2100
+      },
+      {
+       "name": "offset-x",
+       "unit": "m",
+       "value": 1.0
+      }
+     ],
+     "unit": "count",
+     "value": 1
+    }
+   ],
+   "canonicalAnalogue": "opening-creation",
+   "canonicalQuantityStatus": "mapped",
+   "dependsOn": [
+    {
+     "dependencyKind": "revises",
+     "operationRef": "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410"
+    }
+   ],
+   "ifc": {
+    "class": "IfcOpeningElement",
+    "geometry": {
+     "depth": 2.1,
+     "placement": [
+      1.5,
+      0.1,
+      0.0
+     ],
+     "profile": [
+      1.0,
+      0.22
+     ],
+     "representation": "box"
+    },
+    "name": "Opening-Door",
+    "revises": "Opening-Door",
+    "voids": "Wall-South"
+   },
+   "operationId": "ecfbb3221a8a1171a3fa3b2bd7ee17e9ef84f61a4eb4cd05d04140ba2d44f2fa",
+   "operationIndex": 10,
+   "operationType": "revise-opening",
+   "parameters": [
+    {
+     "name": "width",
+     "unit": "mm",
+     "value": 1000
+    },
+    {
+     "name": "height",
+     "unit": "mm",
+     "value": 2100
+    },
+    {
+     "name": "offset-x",
+     "unit": "m",
+     "value": 1.0
+    }
+   ],
+   "resultingStateId": "fcb09126533f7980b7c65098534f7923d323c5d47bf2bb9611e967e462369091",
+   "summary": "revise the door opening width 900 -> 1000 mm (an intra-version operation in the fixture; the IFC projection carries the final state only \u2014 the 900 mm intermediate is a historical AISE record)",
+   "target": {
+    "geometryRefs": [
+     {
+      "kind": "void",
+      "ref": "geo-opening-door-001"
+     }
+    ],
+    "nodeRefs": [
+     "node-wall-south"
+    ],
+    "selectorKind": "geometry-plane",
+    "units": {
+     "linear": "m"
+    }
+   }
+  }
+ ],
+ "roomEnvelope": {
+  "height": 3.0,
+  "length": 8.0,
+  "width": 6.0
+ },
+ "solutionId": "solution-gbim002-001",
+ "states": [
+  {
+   "appliedOperationIds": [],
+   "contentDigest": "6dd537ffc2027b45978ffe89a466bcfe22d4c4c0e6a1cef29fbc0be361c36f3a",
+   "epistemicStatus": "PROPOSED",
+   "stateId": "23134aa41363db5711c6981163364f0fdd6095a4e637844d2f623dad4d225112",
+   "stateIndex": 0
+  },
+  {
+   "appliedOperationIds": [
+    "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c"
+   ],
+   "contentDigest": "cf6fba49b61625ab1a09f9e5c480440c1b8184f96657fdc587cf6790090edd61",
+   "epistemicStatus": "PROPOSED",
+   "stateId": "ea4da49d9218d81f41a9b5094ab7fba94f8909cad4adba97e6aa8f61515d3801",
+   "stateIndex": 1
+  },
+  {
+   "appliedOperationIds": [
+    "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c",
+    "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410"
+   ],
+   "contentDigest": "2facc850629ce7b17b23177221947faa9d7d15fab9b58ae181d1e49e6ab17c11",
+   "epistemicStatus": "PROPOSED",
+   "stateId": "704a764bb07aaf3ee05294666565bf27b05758525d543c2a4db5a7f91b5871f7",
+   "stateIndex": 2
+  },
+  {
+   "appliedOperationIds": [
+    "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c",
+    "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410",
+    "7d7dfb3cd32e84213f261407eed051c58c3fa478bfa540a8b04dd9ddcfd7f2bf"
+   ],
+   "contentDigest": "f7f72dafaf5f6eeed5a93f6ba63a0cacb78af22fb2548904a89e1aad439b3678",
+   "epistemicStatus": "PROPOSED",
+   "stateId": "3692832840dee9434faedbb6365e23b2eac08558c07f25476efedb19b695b006",
+   "stateIndex": 3
+  },
+  {
+   "appliedOperationIds": [
+    "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c",
+    "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410",
+    "7d7dfb3cd32e84213f261407eed051c58c3fa478bfa540a8b04dd9ddcfd7f2bf",
+    "3115f0ec3d5e3943ef80c205b327bc3fb18ce48afdcf51af7c5ab4c1c1df9db1"
+   ],
+   "contentDigest": "0fb2996f3f9e7b8a5d7bda6b413d2e2d7fcb7224aedf734b0c6c60e387f6ecc5",
+   "epistemicStatus": "PROPOSED",
+   "stateId": "633c22f25a917ce94f6fd6c7cdaca76570655ded59f5f629f5431b9dd792901f",
+   "stateIndex": 4
+  },
+  {
+   "appliedOperationIds": [
+    "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c",
+    "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410",
+    "7d7dfb3cd32e84213f261407eed051c58c3fa478bfa540a8b04dd9ddcfd7f2bf",
+    "3115f0ec3d5e3943ef80c205b327bc3fb18ce48afdcf51af7c5ab4c1c1df9db1",
+    "a40b1352cb018f5a62848429141336e72c9c0a012d3030a6a46e9d7626ba8807"
+   ],
+   "contentDigest": "eb330bf5f9ef511efd0cc2ef1eccb33b9091c9b01cda0e86ba627e478fcceb3f",
+   "epistemicStatus": "PROPOSED",
+   "stateId": "d6067e6e356e91e6383840c5a170431d8345901fac086163cae66a2b9757e764",
+   "stateIndex": 5
+  },
+  {
+   "appliedOperationIds": [
+    "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c",
+    "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410",
+    "7d7dfb3cd32e84213f261407eed051c58c3fa478bfa540a8b04dd9ddcfd7f2bf",
+    "3115f0ec3d5e3943ef80c205b327bc3fb18ce48afdcf51af7c5ab4c1c1df9db1",
+    "a40b1352cb018f5a62848429141336e72c9c0a012d3030a6a46e9d7626ba8807",
+    "7a71a010f5d7d23a1441cb6f7c183fcbad730a74d43767017aab051279b93e94"
+   ],
+   "contentDigest": "ba78a34c80700217c0e5f276a5f4cb3bced4d2f1c47ac61df69c4c7a703a41c5",
+   "epistemicStatus": "PROPOSED",
+   "stateId": "d475324a3b22ba09399fea59a05c0e9440c2b3357f14222c579e08ea28d98e74",
+   "stateIndex": 6
+  },
+  {
+   "appliedOperationIds": [
+    "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c",
+    "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410",
+    "7d7dfb3cd32e84213f261407eed051c58c3fa478bfa540a8b04dd9ddcfd7f2bf",
+    "3115f0ec3d5e3943ef80c205b327bc3fb18ce48afdcf51af7c5ab4c1c1df9db1",
+    "a40b1352cb018f5a62848429141336e72c9c0a012d3030a6a46e9d7626ba8807",
+    "7a71a010f5d7d23a1441cb6f7c183fcbad730a74d43767017aab051279b93e94",
+    "4be1a333b23f59fd179787ceb7fe6ef679c12fdb1fdbfbb8e1a0cade4b354056"
+   ],
+   "contentDigest": "89e3aa7d0ea5216baa33db6dec4fd54cb6a3ed82ce9bbbd20cea36563afc6472",
+   "epistemicStatus": "PROPOSED",
+   "stateId": "fcaff8fb5690b5a1da04fa2221509fcbe24ca04d24d05e6dfb9cf8f1a1c70ac2",
+   "stateIndex": 7
+  },
+  {
+   "appliedOperationIds": [
+    "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c",
+    "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410",
+    "7d7dfb3cd32e84213f261407eed051c58c3fa478bfa540a8b04dd9ddcfd7f2bf",
+    "3115f0ec3d5e3943ef80c205b327bc3fb18ce48afdcf51af7c5ab4c1c1df9db1",
+    "a40b1352cb018f5a62848429141336e72c9c0a012d3030a6a46e9d7626ba8807",
+    "7a71a010f5d7d23a1441cb6f7c183fcbad730a74d43767017aab051279b93e94",
+    "4be1a333b23f59fd179787ceb7fe6ef679c12fdb1fdbfbb8e1a0cade4b354056",
+    "9338a398d3bf72ecf2998be479dac8e88de36ce67d701bfa40b70d61a97beb40"
+   ],
+   "contentDigest": "e68df88932524a0ab754e46fa1c30dba5bca5264e6f734c0cc99185c2f7b61ec",
+   "epistemicStatus": "PROPOSED",
+   "stateId": "7fd66c91f16e7e4185582affa59b63f0e5cbdc2f57d7012d4cb449479fed3b5d",
+   "stateIndex": 8
+  },
+  {
+   "appliedOperationIds": [
+    "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c",
+    "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410",
+    "7d7dfb3cd32e84213f261407eed051c58c3fa478bfa540a8b04dd9ddcfd7f2bf",
+    "3115f0ec3d5e3943ef80c205b327bc3fb18ce48afdcf51af7c5ab4c1c1df9db1",
+    "a40b1352cb018f5a62848429141336e72c9c0a012d3030a6a46e9d7626ba8807",
+    "7a71a010f5d7d23a1441cb6f7c183fcbad730a74d43767017aab051279b93e94",
+    "4be1a333b23f59fd179787ceb7fe6ef679c12fdb1fdbfbb8e1a0cade4b354056",
+    "9338a398d3bf72ecf2998be479dac8e88de36ce67d701bfa40b70d61a97beb40",
+    "89234d97f93dd60d3d5fd9fb8b0e656c9af6fbc369368d392f4b5bf62e9c3024"
+   ],
+   "contentDigest": "924062c1e6f53bb842fdea99109e1716ccd0c3a44d595f3bc12c43bb3b40d116",
+   "epistemicStatus": "PROPOSED",
+   "stateId": "c1d1dfe4a191904f97a1bd3e7b9e1b04ddc4919bb43e275f0daf2bc24b5df737",
+   "stateIndex": 9
+  },
+  {
+   "appliedOperationIds": [
+    "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c",
+    "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410",
+    "7d7dfb3cd32e84213f261407eed051c58c3fa478bfa540a8b04dd9ddcfd7f2bf",
+    "3115f0ec3d5e3943ef80c205b327bc3fb18ce48afdcf51af7c5ab4c1c1df9db1",
+    "a40b1352cb018f5a62848429141336e72c9c0a012d3030a6a46e9d7626ba8807",
+    "7a71a010f5d7d23a1441cb6f7c183fcbad730a74d43767017aab051279b93e94",
+    "4be1a333b23f59fd179787ceb7fe6ef679c12fdb1fdbfbb8e1a0cade4b354056",
+    "9338a398d3bf72ecf2998be479dac8e88de36ce67d701bfa40b70d61a97beb40",
+    "89234d97f93dd60d3d5fd9fb8b0e656c9af6fbc369368d392f4b5bf62e9c3024",
+    "ecfbb3221a8a1171a3fa3b2bd7ee17e9ef84f61a4eb4cd05d04140ba2d44f2fa"
+   ],
+   "contentDigest": "c660ff52efe0eeccca611b84ff229814b8cc7c373e78fa3a3e7e658278ccb32f",
+   "epistemicStatus": "PROPOSED",
+   "stateId": "fcb09126533f7980b7c65098534f7923d323c5d47bf2bb9611e967e462369091",
+   "stateIndex": 10
+  }
+ ],
+ "versionNumber": 1
+}

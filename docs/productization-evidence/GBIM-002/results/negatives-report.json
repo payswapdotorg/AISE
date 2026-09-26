@@ -1,0 +1,318 @@
+{
+ "cases": [
+  {
+   "case": "neg-1/impossible-wall-thickness/0",
+   "evidence": {
+    "gateCodes": [
+     "dependency_not_applied",
+     "parameter_not_positive"
+    ]
+   },
+   "expectedBehavior": "AISE-side gate refuses before any IFC projection",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "create-wall thickness 0 mm (zero / negative / absurd)"
+  },
+  {
+   "case": "neg-1/impossible-wall-thickness/-200",
+   "evidence": {
+    "gateCodes": [
+     "dependency_not_applied",
+     "parameter_not_positive"
+    ]
+   },
+   "expectedBehavior": "AISE-side gate refuses before any IFC projection",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "create-wall thickness -200 mm (zero / negative / absurd)"
+  },
+  {
+   "case": "neg-1/impossible-wall-thickness/5000",
+   "evidence": {
+    "gateCodes": [
+     "dependency_not_applied",
+     "impossible_wall_thickness"
+    ]
+   },
+   "expectedBehavior": "AISE-side gate refuses before any IFC projection",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "create-wall thickness 5000 mm (zero / negative / absurd)"
+  },
+  {
+   "case": "neg-2/opening-outside-host",
+   "evidence": {
+    "gateCodes": [
+     "dependency_not_applied",
+     "opening_outside_host"
+    ]
+   },
+   "expectedBehavior": "AISE containment gate refuses (opening must lie within its host)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "door opening placed at x=20 m on an 8 m host wall"
+  },
+  {
+   "case": "div-1/opening-outside-host-raw-ifc",
+   "declaredDivergenceCaught": true,
+   "evidence": {
+    "artifact": "results/neg-opening-outside-host.ifc",
+    "ifcSchemaAccepts": true,
+    "interpretation": "IFC4 schema validation is structural, not engineering: a void may float anywhere. AISE-side containment gates are mandatory before projection, and round-trip quantity comparison catches any leak.",
+    "wallVolumeExpectedIfCut": 4.422,
+    "wallVolumeObserved": 4.800000000000001
+   },
+   "expectedBehavior": "schema accepts the file (no engineering validation); the harness catches the divergence because the wall keeps its gross volume",
+   "refused": false,
+   "status": "DIVERGENCE-CAUGHT",
+   "title": "raw IFC4 with the void placed 12 m outside its host wall"
+  },
+  {
+   "case": "neg-3/negative-dimension/create-wall.length",
+   "evidence": {
+    "gateCodes": [
+     "dependency_not_applied",
+     "parameter_not_positive"
+    ]
+   },
+   "expectedBehavior": "AISE-side gate refuses (parameters must be positive)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "create-wall length = -5 (negative)"
+  },
+  {
+   "case": "neg-3/negative-dimension/create-opening.width",
+   "evidence": {
+    "gateCodes": [
+     "dependency_not_applied",
+     "parameter_not_positive"
+    ]
+   },
+   "expectedBehavior": "AISE-side gate refuses (parameters must be positive)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "create-opening width = -5 (negative)"
+  },
+  {
+   "case": "neg-3/negative-dimension/create-slab.thickness",
+   "evidence": {
+    "gateCodes": [
+     "dependency_not_applied",
+     "parameter_not_positive"
+    ]
+   },
+   "expectedBehavior": "AISE-side gate refuses (parameters must be positive)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "create-slab thickness = -5 (negative)"
+  },
+  {
+   "case": "neg-3/negative-dimension/create-column.height",
+   "evidence": {
+    "gateCodes": [
+     "parameter_not_positive"
+    ]
+   },
+   "expectedBehavior": "AISE-side gate refuses (parameters must be positive)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "create-column height = -5 (negative)"
+  },
+  {
+   "case": "neg-3/negative-dimension/create-beam.depth",
+   "evidence": {
+    "gateCodes": [
+     "parameter_not_positive"
+    ]
+   },
+   "expectedBehavior": "AISE-side gate refuses (parameters must be positive)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "create-beam depth = -5 (negative)"
+  },
+  {
+   "case": "neg-3/negative-dimension/create-footing.length",
+   "evidence": {
+    "gateCodes": [
+     "dependency_not_applied",
+     "parameter_not_positive"
+    ]
+   },
+   "expectedBehavior": "AISE-side gate refuses (parameters must be positive)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "create-footing length = -5 (negative)"
+  },
+  {
+   "case": "neg-4/disconnected-footing",
+   "evidence": {
+    "canonicalFixtureContactOk": true,
+    "crossOperationGate": [
+     {
+      "code": "supported_element_disconnected",
+      "detail": "footing at (17.7, 15.7) does not meet the column at (7.7, 5.7) it is declared to support (dependency 'supported-by') \u2014 IFC4 carries no mandatory support relationship, so the AISE-side contact gate is the only enforcement"
+     }
+    ],
+    "ifc4ConnectsRelationships": [],
+    "interpretation": "IfcRelConnects* relationships exist but are optional and carry no geometric consistency enforcement; the column-footing support semantic stays in the AISE dependency graph, which is why the mapping is declared lossy for create-footing.",
+    "perOpGateCodes": [],
+    "perOpGatesPass": true
+   },
+   "expectedBehavior": "AISE-side CROSS-operation contact gate refuses (per-op gates alone would pass \u2014 IFC4 has no mandatory support relationship)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "footing moved 10 m from the column it supports (dependency 'supported-by')"
+  },
+  {
+   "case": "neg-5/duplicate-operation-identity",
+   "evidence": {
+    "artifact": "results/neg-duplicate-operation-id.ifc",
+    "duplicateExternalReferencesDetected": {
+     "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c": 2
+    },
+    "identityIsContent": true,
+    "importerGate": "duplicate-external-reference"
+   },
+   "expectedBehavior": "identity is content: identical semantic content at the same position derives the same id; the importer flags the duplicated external reference fail-closed",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "the wall's AISE operation id forged onto the beam (two elements, one identity)"
+  },
+  {
+   "case": "neg-6/unsupported-operation",
+   "evidence": {
+    "gateCodes": [
+     "capability_unsupported"
+    ],
+    "note": "the canonical AISE type 'excavation' is ALSO refused for the IFC projection: it is an ACT with a quantity model, not a product with an IFC4 entity \u2014 IFC4x3's IfcEarthworksCut exists but act quantities (excavated-soil-volume) remain AISE-domain"
+   },
+   "expectedBehavior": "capability gate refuses definitively (never best-efforted)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "operation type 'create-dome-shell' (outside the spike catalogue)"
+  },
+  {
+   "case": "neg-6/excavation-no-ifc-product",
+   "evidence": {
+    "aiseQuantityModelExists": "excavated-soil-volume = depth x width x length (Phase 1)",
+    "gateCodes": [
+     "capability_unsupported"
+    ],
+    "ifc4X3Note": "IfcEarthworksCut (IFC4x3) could carry the void shape, but the act quantity stays AISE-domain"
+   },
+   "expectedBehavior": "refused: an act with quantities is not an IFC4 product \u2014 the explicit IFC-interop vs AISE-canonical boundary",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "canonical AISE 'excavation' offered to the IFC projection"
+  },
+  {
+   "case": "neg-7/malformed-ifc/garbage-bytes",
+   "evidence": {
+    "code": "malformed_ifc",
+    "detail": "ifcopenshell refused to open neg-garbage.ifc: Unable to parse IFC SPF header",
+    "exceptionType": "Error"
+   },
+   "expectedBehavior": "ifcopenshell refuses to open (typed failure, no fabricated geometry)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "malformed IFC artifact: garbage-bytes"
+  },
+  {
+   "case": "neg-7/malformed-ifc/truncated-step",
+   "evidence": {
+    "code": "truncated_step_file",
+    "detail": "the STEP terminator END-ISO-10303-21; is absent \u2014 the provider's parser would return a silently-truncated model, so the adapter refuses fail-closed"
+   },
+   "expectedBehavior": "ifcopenshell refuses to open (typed failure, no fabricated geometry)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "malformed IFC artifact: truncated-step"
+  },
+  {
+   "case": "neg-7/malformed-ifc/invalid-step-syntax",
+   "evidence": {
+    "code": "schema_validation_failed",
+    "detail": "6 schema-validation findings \u2014 the provider fabricated or mistyped entities; the adapter refuses fail-closed (first: On instance:\n    #9999=IfcWall('broken\n#199=IFCDIRECTION((1.,0.,0.));\n#200=IFCAXIS2PLACEMENT3D(#197,#198,#199);\n#201=IFCLOCALPLACEMENT($,#200);\n#202=IFCPROPERTY)"
+   },
+   "expectedBehavior": "ifcopenshell refuses to open (typed failure, no fabricated geometry)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "malformed IFC artifact: invalid-step-syntax"
+  },
+  {
+   "case": "neg-7/malformed-ifc/schema-header-mismatch",
+   "evidence": {
+    "code": "schema_pin_mismatch",
+    "detail": "the file declares schema 'IFC2X3' but this importer is pinned to 'IFC4' \u2014 schema drift refuses fail-closed"
+   },
+   "expectedBehavior": "ifcopenshell refuses to open (typed failure, no fabricated geometry)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "malformed IFC artifact: schema-header-mismatch"
+  },
+  {
+   "case": "neg-7/schema-valid-negative-dimensions",
+   "evidence": {
+    "artifact": "results/neg-negative-dims.ifc",
+    "ifcOpens": true,
+    "interpretation": "IFC schema validation accepts engineering nonsense; the provider boundary must treat kernel failures as typed refusals",
+    "kernelMetrics": {
+     "error": "RuntimeError: Failed to process shape. Product: #12=IfcWall('2GUY5EduzEgvh$uBaU2T_5',$,'BadWall',$,$,$,#19,$,$), representation: #18=IfcShapeRepresentation(#11,'Body','SweptSolid',(#17))"
+    }
+   },
+   "expectedBehavior": "the file OPENS (STEP/schema-valid) \u2014 the geometry kernel must fail closed on the nonsense shape (no fabricated geometry)",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "schema-valid IFC4 wall with XDim=-5.0 (negative profile dimension)"
+  },
+  {
+   "case": "neg-7/empty-body-representation",
+   "evidence": {
+    "artifact": "results/neg-empty-representation.ifc",
+    "ifcOpens": false,
+    "kernelOutcome": "AttributeError: 'NoneType' object has no attribute 'by_type'"
+   },
+   "expectedBehavior": "the geometry kernel refuses (typed failure) \u2014 never a fabricated shape",
+   "refused": true,
+   "status": "REFUSED-FAIL-CLOSED",
+   "title": "schema-valid wall whose Body representation carries zero items"
+  },
+  {
+   "case": "div-2/millimetre-default-unit-hazard",
+   "declaredDivergenceCaught": true,
+   "evidence": {
+    "aiseReferenceVolume": 9.600000000000001,
+    "artifact": "results/neg-unit-hazard.ifc",
+    "interpretation": "IfcOpenShell's default IfcProject unit is MILLIMETRE while its wall/slab helper APIs accept metres and convert; hand-built representations are NOT converted. The IFC schema carries no engineering sanity check \u2014 AISE must compare quantities, never trust file-level units.",
+    "kernelVolume": 9.6e-09,
+    "projectLengthUnit": "millimetre",
+    "scaleFactor": 1000000000.0000001
+   },
+   "expectedBehavior": "the schema accepts the file; only quantity comparison against the AISE reference exposes the 1000x scale error",
+   "refused": false,
+   "status": "DIVERGENCE-CAUGHT",
+   "title": "naive project-unit assignment (IfcOpenShell default) + metre-scale hand-built representation"
+  },
+  {
+   "case": "div-3/no-constraint-propagation",
+   "declaredDivergenceCaught": true,
+   "evidence": {
+    "aiseSideHandling": "the fixture's revise-opening op revises the OPENING only; a revise-door operation (or a pset-driven rule in the adapter) is required \u2014 the IFC file alone will never enforce it",
+    "divergence": 0.09999999999999998,
+    "doorOverallWidth": 0.9,
+    "openingWidth": 1.0
+   },
+   "expectedBehavior": "IFC has no constraint propagation; the mismatch is a declared divergence the harness must catch (the AISE dependency graph + quantity comparison, not the file, holds the semantics)",
+   "refused": false,
+   "status": "DIVERGENCE-CAUGHT",
+   "title": "after revise-opening widened the void to 1000 mm, the IfcDoor fill stays 900 mm"
+  }
+ ],
+ "summary": {
+  "divergenceCaught": 3,
+  "divergenceMissed": 0,
+  "refusedFailClosed": 20,
+  "total": 23,
+  "unexpectedPasses": 0
+ }
+}

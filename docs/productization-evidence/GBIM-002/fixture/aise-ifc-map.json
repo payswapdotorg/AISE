@@ -1,0 +1,114 @@
+{
+ "finalStateId": "fcb09126533f7980b7c65098534f7923d323c5d47bf2bb9611e967e462369091",
+ "fixtureInputDigest": "45ff09fc10e1af42cd68a585db9e45b57c86e441f7b4382a780a92000f37ea92",
+ "operations": [
+  {
+   "aiseOperationId": "70dc48260157e7b5fa2cb463fe2a6e5608186b511a89e76b63f16b074e52cd5c",
+   "ifcClass": "IfcWall",
+   "ifcGuid": "0Fv_UqFj1J3wzDgMmWxyHb",
+   "ifcName": "Wall-South",
+   "lossNotes": "exact via wall API representation",
+   "mapping": "IfcWall SOLIDWALL via add_wall_representation",
+   "operationType": "create-wall",
+   "status": "mapped"
+  },
+  {
+   "aiseOperationId": "30016001ee7bb389016478e566d5d67bfb02f4c4d42a5bc10253b6279d01a410",
+   "ifcClass": "IfcOpeningElement",
+   "ifcGuid": "3E_vP8vrfH6x4u7GmcAIMo",
+   "ifcName": "Opening-Door",
+   "lossNotes": "void relationship is standard IFC; the AISE 'host' dependency edge round-trips as IfcRelVoidsElement",
+   "mapping": "IfcOpeningElement + IfcRelVoidsElement -> host wall",
+   "operationType": "create-opening",
+   "status": "mapped"
+  },
+  {
+   "aiseOperationId": "7d7dfb3cd32e84213f261407eed051c58c3fa478bfa540a8b04dd9ddcfd7f2bf",
+   "ifcClass": "IfcDoor",
+   "ifcGuid": "3s2dkrfzPLlBKIpNItor4A",
+   "ifcName": "Door-001",
+   "lossNotes": "door leaf geometry simplified to a panel box; no canonical AISE quantity model (gap)",
+   "mapping": "IfcDoor + IfcRelFillsElement; OverallHeight/OverallWidth attributes",
+   "operationType": "create-door",
+   "status": "mapped"
+  },
+  {
+   "aiseOperationId": "3115f0ec3d5e3943ef80c205b327bc3fb18ce48afdcf51af7c5ab4c1c1df9db1",
+   "ifcClass": "IfcWindow",
+   "ifcGuid": "2Ti5vyTzTQBgtoMMQ6uRtC",
+   "ifcName": "Window-001",
+   "lossNotes": "fenestration op folds opening+filling into one AISE operation (documented mapping decision); no canonical quantity model (gap)",
+   "mapping": "IfcWindow + self-created opening + IfcRelFillsElement",
+   "operationType": "create-window",
+   "status": "mapped"
+  },
+  {
+   "aiseOperationId": "a40b1352cb018f5a62848429141336e72c9c0a012d3030a6a46e9d7626ba8807",
+   "ifcClass": "IfcFooting",
+   "ifcGuid": "0pOik_6njH6v0C$O$n923R",
+   "ifcName": "Footing-001",
+   "lossNotes": "IFC4 expresses no mandatory column-footing support relationship; the AISE dependency graph stays authoritative",
+   "mapping": "IfcFooting (AISE dependency 'supported-by' has NO IFC4 product relationship \u2014 lossy)",
+   "operationType": "create-footing",
+   "status": "mapped"
+  },
+  {
+   "aiseOperationId": "7a71a010f5d7d23a1441cb6f7c183fcbad730a74d43767017aab051279b93e94",
+   "ifcClass": "IfcSlab",
+   "ifcGuid": "24EuzVvErOZhijBomKe$bX",
+   "ifcName": "Slab-Floor",
+   "lossNotes": "exact",
+   "mapping": "IfcSlab FLOOR",
+   "operationType": "create-slab",
+   "status": "mapped"
+  },
+  {
+   "aiseOperationId": "4be1a333b23f59fd179787ceb7fe6ef679c12fdb1fdbfbb8e1a0cade4b354056",
+   "ifcClass": "IfcColumn",
+   "ifcGuid": "1dfitBteLQWfA8ighkhGUH",
+   "ifcName": "Column-001",
+   "lossNotes": "AISE Phase 1 catalogue gap \u2014 element is an IFC-side capability, not an AISE canonical operation",
+   "mapping": "IfcColumn (no canonical AISE op \u2014 IFC-side capability)",
+   "operationType": "create-column",
+   "status": "mapped-ifc-only"
+  },
+  {
+   "aiseOperationId": "9338a398d3bf72ecf2998be479dac8e88de36ce67d701bfa40b70d61a97beb40",
+   "ifcClass": "IfcBeam",
+   "ifcGuid": "2peGcdGkPQA9hJH2Z7OoFx",
+   "ifcName": "Beam-001",
+   "lossNotes": "AISE Phase 1 catalogue gap \u2014 element is an IFC-side capability, not an AISE canonical operation",
+   "mapping": "IfcBeam (no canonical AISE op \u2014 IFC-side capability)",
+   "operationType": "create-beam",
+   "status": "mapped-ifc-only"
+  },
+  {
+   "aiseOperationId": "89234d97f93dd60d3d5fd9fb8b0e656c9af6fbc369368d392f4b5bf62e9c3024",
+   "ifcClass": "IfcWall",
+   "ifcGuid": "2uxoZKoL9HqgZppZ1GDcpA",
+   "ifcName": "Wall-Partition",
+   "lossNotes": "exact; partition semantics ride on PredefinedType=PARTITIONINGWALL",
+   "mapping": "IfcWall PARTITIONINGWALL",
+   "operationType": "create-partition",
+   "status": "mapped"
+  },
+  {
+   "aiseOperationId": "ecfbb3221a8a1171a3fa3b2bd7ee17e9ef84f61a4eb4cd05d04140ba2d44f2fa",
+   "ifcClass": "IfcOpeningElement",
+   "ifcGuid": "3dN1A4MoTD0vOdWxiMXkA0",
+   "ifcName": "Opening-Door",
+   "lossNotes": "IFC4 has no append-only revision graph; the AISE version chain remains the only record of the 900->1000 mm revision; the original create-opening reference is preserved in Pset_AISE while the revision rides in Pset_AISE_Revision",
+   "mapping": "edit-and-re-export (in-place geometry edit; history is AISE-domain)",
+   "operationType": "revise-opening",
+   "status": "lossy"
+  }
+ ],
+ "projection": {
+  "lengthUnit": "SI metre (IfcProject assignment)",
+  "provider": "IfcOpenShell 0.8.5",
+  "rule": "AISE IDs are external references in Pset_AISE; IFC GUIDs are keyed BY AISE identity under the deterministic profile",
+  "schema": "IFC4"
+ },
+ "solutionId": "solution-gbim002-001",
+ "versionNumber": 1
+}

@@ -1,0 +1,55 @@
+{
+ "checks": [
+  {
+   "check": "solution-identity",
+   "detail": "solution / version / baseline identity re-derived identically",
+   "ok": true
+  },
+  {
+   "check": "operation-identities",
+   "detail": "10 operation ids re-derived bit-identically",
+   "ok": true
+  },
+  {
+   "check": "state-chain",
+   "detail": "11-layer state hash chain re-derived identically",
+   "ok": true
+  },
+  {
+   "check": "reference-quantities",
+   "detail": "14 AISE reference quantities recomputed identically (gaps preserved where the AISE catalogue has no model)",
+   "ok": true
+  },
+  {
+   "check": "input-digest",
+   "detail": "configuration/input digest re-derived identically",
+   "ok": true
+  },
+  {
+   "check": "external-references-are-optional",
+   "detail": "the mapping sidecar carries 10 AISE->GUID external references; the 3 IFC artifacts on disk were NOT read by this replay and are not required for interpretation",
+   "ok": true
+  },
+  {
+   "check": "provider-never-imported",
+   "detail": "no provider module (ifcopenshell/OCC/OCP) was importable in this process \u2014 the replay ran on pure-Python AISE semantics only",
+   "ok": true
+  }
+ ],
+ "inputs": [
+  "fixture/aise-fixture-v1.json",
+  "fixture/aise-ifc-map.json (reference-only)"
+ ],
+ "providerBlocklist": [
+  "ifcopenshell",
+  "OCC",
+  "OCP",
+  "ifcopenshell_wrapper"
+ ],
+ "scenario": "historical AISE records interpreted with the geometry provider removed",
+ "summary": {
+  "allPassed": true,
+  "checksPassed": 7,
+  "checksTotal": 7
+ }
+}
