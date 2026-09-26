@@ -222,8 +222,16 @@ private fun CaptureStage(viewModel: CaptureViewModel, journeyViewModel: FieldJou
         if (session == null) {
             Button(
                 onClick = {
-                    val missionRef = (journeyViewModel.phase.value as? FieldJourneyPhase.MissionActive)
-                        ?.directive?.missionId
+                    // POST-005: when a handed-off task drives the journey,
+                    // ITS task id is the session's missionRef — the
+                    // web-originated identity then survives into the
+                    // manifest and the sync envelope (missionRef rides
+                    // POST /v1/capture/sync). Otherwise the executed
+                    // mission plan's own id (the provisioned default).
+                    val handedOff = journeyViewModel.handedOffTask.collectAsState().value
+                    val missionRef = handedOff?.taskId
+                        ?: (journeyViewModel.phase.value as? FieldJourneyPhase.MissionActive)
+                            ?.directive?.missionId
                     viewModel.startSession(missionRef)
                 },
                 enabled = !busy && cameraReady,
@@ -255,7 +263,10 @@ private fun CaptureStage(viewModel: CaptureViewModel, journeyViewModel: FieldJou
                     onCaptured = { jpeg, metadata ->
                         viewModel.onStillCaptured(jpeg, metadata + sensors.snapshot())
                     },
-                    onError = { },
+                    // POST-005 GAP-2 fix: the failure is surfaced to the
+                    // operator (visible message, nothing journaled) —
+                    // never silently swallowed.
+                    onError = { message -> viewModel.onStillCaptureFailed(message) },
                 )
             },
             enabled = !busy && capturing && !recording,
@@ -326,8 +337,9 @@ private fun SubmissionPanel(journeyViewModel: FieldJourneyViewModel) {
         ) {
             Text("Evidence submission", style = MaterialTheme.typography.titleSmall)
             Text(
-                "The sync transport is not wired in this build — submission defers to the " +
-                    "resumable offline store (an explicit state, never a silent failure).",
+                "Submission submits to the configured AISE API over HTTP once you are signed " +
+                    "in; offline or signed-out sessions defer explicitly to the resumable " +
+                    "offline store (a typed state with its reason, never a silent failure).",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -377,7 +389,8 @@ private fun FieldJourneyMissionPanel(journeyViewModel: FieldJourneyViewModel) {
             Text("Field journey", style = MaterialTheme.typography.titleMedium)
             Text(
                 "Task intent → capability assessment → adaptive mission. Server documents " +
-                    "are build-time provisioned (badged) until the AISE-030 sync transport lands.",
+                    "are build-time provisioned (badged) until a live task fetch lands; an " +
+                    "aise://task handoff continues a web-originated task here.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -424,8 +437,27 @@ private fun FieldJourneyMissionPanel(journeyViewModel: FieldJourneyViewModel) {
                             )
                         }
                     }
+                    // POST-005: when a web-originated task handoff drives
+                    // this journey, its identity renders VERBATIM (task id,
+                    // origin, purpose) — the cross-device continuation the
+                    // operator can see, never a hidden swap.
+                    val handedOff = journeyViewModel.handedOffTask.collectAsState().value
+                    if (handedOff != null) {
+                        Text(
+                            "Continuing handed-off task ${handedOff.taskId} — from " +
+                                "${handedOff.origin}:${handedOff.originSurface}, purpose " +
+                                "${handedOff.purpose}, for project ${handedOff.projectId} " +
+                                "(targets: ${handedOff.targetRefs.joinToString(", ")})",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
                     Text(
-                        "Mission ${current.directive.missionId} (provisioned)",
+                        if (handedOff != null) {
+                            "Mission plan ${current.directive.missionId} (provisioned — the build-time plan the handed-off task executes)"
+                        } else {
+                            "Mission ${current.directive.missionId} (provisioned)"
+                        },
                         style = MaterialTheme.typography.titleSmall,
                     )
                     current.directive.steps.forEach { step ->

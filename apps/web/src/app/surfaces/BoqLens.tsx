@@ -21,7 +21,12 @@ import { useCallback, useState } from "react";
 import type { ReactNode } from "react";
 import { useResource, type ResourceOutcome } from "../resource";
 import { isDemoMode, useAppEnvironment } from "../environment";
-import { describeApiFailure, loadBoqImportsLive, loadBoqLensLive } from "../api";
+import {
+  describeApiFailure,
+  loadBoqImportsLive,
+  loadBoqLensLive,
+  type BoqImportSummaryRecord,
+} from "../api";
 import { demoLensInput } from "../demo";
 import { BoqImportPanel } from "./BoqImport";
 import { ContextualIntegrationsPanel } from "../contextual-integrations";
@@ -59,6 +64,13 @@ export interface BoqLensData {
   readonly projectId: string;
   /** The server-assembled lens input; null = none for this project. */
   readonly lens: BoqLensInput | null;
+  /**
+   * POST-005: the deployment's BOQ import documents (the revision selector's
+   * own list). Optional for back-compat with existing static-render
+   * constructions; absent = the selector renders the honest single/none
+   * state from the lens itself.
+   */
+  readonly imports?: readonly BoqImportSummaryRecord[];
 }
 
 /** The BOQ Lens surface. */
@@ -67,26 +79,49 @@ export function BoqLensSurface({ projectId }: { readonly projectId: string }): R
   const mode = environment.apiStatus?.mode ?? "probing";
   const [query, setQuery] = useState("");
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  // POST-005: the user's import/revision SELECTION (null = the service's own
+  // order picks the first import — always NAMED in the selector, never
+  // guessed silently).
+  const [selectedImportId, setSelectedImportId] = useState<string | null>(null);
   const load = useCallback(async (): Promise<ResourceOutcome<BoqLensData>> => {
     if (isDemoMode(environment) || environment.apiStatus === null) {
+      const demoLens = demoLensInput(projectId);
       return {
         kind: "ready",
-        data: { mode: "demo", projectId, lens: demoLensInput(projectId) },
+        data: {
+          mode: "demo",
+          projectId,
+          lens: demoLens,
+          imports:
+            demoLens === null
+              ? []
+              : [
+                  {
+                    importId: demoLens.importId,
+                    format: "xlsx",
+                    byteSize: 38214,
+                    parseStatus: "parsed",
+                  },
+                ],
+        },
       };
     }
-    // Live mode: the joined lens input over the deployment's BOQ imports
-    // (GET /v1/boq/imports is deployment-wide — the same honest discipline
-    // as the case summaries; the first import in the service's own order is
-    // opened and NAMED, never guessed silently).
+    // Live mode: the deployment's BOQ import documents are LISTED (the
+    // revision selector below); the inspected import is the user's
+    // selection or, before any selection, the first in the service's own
+    // order — opened and NAMED, never guessed silently.
     const imports = await loadBoqImportsLive(environment.fetchImpl);
     if (!imports.ok) {
       return { kind: "error", message: describeApiFailure(imports.failure) };
     }
-    const first = imports.imports[0] ?? null;
-    if (first === null) {
-      return { kind: "ready", data: { mode: "api", projectId, lens: null } };
+    const chosen =
+      imports.imports.find((entry) => entry.importId === selectedImportId) ??
+      imports.imports[0] ??
+      null;
+    if (chosen === null) {
+      return { kind: "ready", data: { mode: "api", projectId, lens: null, imports: [] } };
     }
-    const lens = await loadBoqLensLive(environment.fetchImpl, first.importId);
+    const lens = await loadBoqLensLive(environment.fetchImpl, chosen.importId);
     if (!lens.ok) {
       return { kind: "error", message: describeApiFailure(lens.failure) };
     }
@@ -96,11 +131,12 @@ export function BoqLensSurface({ projectId }: { readonly projectId: string }): R
         mode: "api",
         projectId,
         lens: lens.record as unknown as BoqLensInput,
+        imports: imports.imports,
       },
     };
-  }, [environment, projectId]);
+  }, [environment, projectId, selectedImportId]);
 
-  const { state, reload } = useResource(`boq-lens:${projectId}:${mode}`, load);
+  const { state, reload } = useResource(`boq-lens:${projectId}:${mode}:${selectedImportId ?? "first"}`, load);
 
   return (
     <>
@@ -119,6 +155,23 @@ export function BoqLensSurface({ projectId }: { readonly projectId: string }): R
       <TaskFlowStrip projectId={projectId} />
       <ProjectSurfaceNav projectId={projectId} current="boq-lens" />
       <BoqImportPanel projectId={projectId} onImported={reload} />
+      <BoqRevisionSelectorCard
+        mode={isDemoMode(environment) || environment.apiStatus === null ? "demo" : "api"}
+        projectId={projectId}
+        imports={
+          state.status === "ready"
+            ? (state.data.imports ?? (state.data.lens === null ? [] : null))
+            : null
+        }
+        selectedImportId={
+          state.status === "ready"
+            ? (state.data.lens === null ? null : state.data.lens.importId)
+            : null
+        }
+        onSelectImport={(importId) => {
+          setSelectedImportId(importId);
+        }}
+      />
       <ContextualIntegrationsPanel projectId={projectId} />
       <ResourceView
         state={state}
@@ -631,6 +684,118 @@ function TraceCard({ lens, item }: { readonly lens: BoqLensInput; readonly item:
           </tbody>
         </table>
       </div>
+    </Card>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* POST-005 — the BOQ import/revision selector (plan §2 D)              */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The BOQ documents selector (plan §2 D: "Project → BOQ documents →
+ * import/revision selection → inspect → trace"): lists the deployment's
+ * SOURCE-BOQ import documents — every one the service records, each with
+ * its own identity — and makes the inspected import an explicit SELECTION
+ * (never the silently-opened first import). Source BOQs and solution BOQs
+ * stay strictly separate: this selector addresses SOURCE documents only;
+ * solution BOQs are derived projections of validated solutions and are
+ * inspected on the Interactive Solution surface — neither ever overwrites
+ * the other.
+ */
+export function BoqRevisionSelectorCard({
+  mode,
+  projectId,
+  imports,
+  selectedImportId,
+  onSelectImport,
+}: {
+  readonly mode: "demo" | "api";
+  readonly projectId: string;
+  /** The recorded import documents; null = not loaded yet (loading state). */
+  readonly imports: readonly BoqImportSummaryRecord[] | null;
+  readonly selectedImportId: string | null;
+  readonly onSelectImport: (importId: string) => void;
+}): ReactNode {
+  return (
+    <Card
+      title="BOQ documents — source imports"
+      badge={<DataBadge mode={mode} />}
+      meta={
+        <span>
+          every recorded source-BOQ import, each inspectable on its own — the
+          inspected document is your selection, stated below
+        </span>
+      }
+    >
+      <p data-boq-class="source">
+        These are <strong>SOURCE BOQ documents</strong> — the bills of
+        quantities imported from your own files (xlsx/csv/pdf above). They are
+        the connected scope/cost source, never canonical physical reality.
+        <strong> Solution BOQs</strong> — derived projections of validated
+        solutions — are strictly separate: inspect them on the{" "}
+        <a href={formatRoute({ name: "solution", projectId, query: {} })}>
+          Interactive Solution surface
+        </a>
+        ; a solution BOQ never overwrites a source document, and a source
+        document never becomes a solution.
+      </p>
+      {imports === null ? (
+        <p className="pane-foot" data-selector-state="loading">
+          Loading the recorded BOQ documents…
+        </p>
+      ) : imports.length === 0 ? (
+        <EmptyState
+          title="No source-BOQ imports recorded"
+          guidance="No BOQ import documents are recorded here yet — import a source BOQ with the panel above; once ingested, every import appears in this selector for inspection and trace."
+        />
+      ) : (
+        <div className="table-wrap">
+          <table className="data" data-selector-state="ready">
+            <thead>
+              <tr>
+                <th>Import document</th>
+                <th>Format</th>
+                <th>Size</th>
+                <th>Parse status</th>
+                <th>Inspect</th>
+              </tr>
+            </thead>
+            <tbody>
+              {imports.map((entry) => {
+                const selected = entry.importId === selectedImportId;
+                return (
+                  <tr key={entry.importId} data-selected={selected ? "true" : undefined}>
+                    <td className="mono">{entry.importId}</td>
+                    <td>{entry.format}</td>
+                    <td>{plural(entry.byteSize, "byte")}</td>
+                    <td>{entry.parseStatus}</td>
+                    <td>
+                      <button
+                        type="button"
+                        className="button"
+                        disabled={selected}
+                        data-inspect-import={entry.importId}
+                        onClick={() => {
+                          onSelectImport(entry.importId);
+                        }}
+                      >
+                        {selected ? "Inspecting" : `Inspect ${entry.importId}`}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <p className="pane-foot" data-selector-selection={selectedImportId ?? "none"}>
+            {selectedImportId === null
+              ? "No import inspected yet."
+              : `Inspecting import ${selectedImportId} — its verbatim rows, derived interpretation, mapping join and claim traces render below. The first import in the service's own order opens before any selection, always named here, never guessed silently.`}
+            {imports.length === 1 ? " This deployment records exactly one import document." : ""}
+          </p>
+        </div>
+      )}
     </Card>
   );
 }

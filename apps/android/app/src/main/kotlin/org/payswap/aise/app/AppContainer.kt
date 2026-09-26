@@ -2,12 +2,18 @@ package org.payswap.aise.app
 
 import java.io.File
 import java.time.Clock
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.payswap.aise.app.auth.MobileAuthClient
 import org.payswap.aise.app.capture.CaptureEnvironment
 import org.payswap.aise.app.capture.CaptureSessionController
 import org.payswap.aise.app.capture.DeviceIdentityProvider
 import org.payswap.aise.app.capture.FileBackedLocalCaptureStore
 import org.payswap.aise.app.field.FieldJourneyRuntime
+import org.payswap.aise.core.adapter.FieldTaskDeepLink
+import org.payswap.aise.core.adapter.FieldTaskDeepLinkParse
+import org.payswap.aise.core.adapter.FieldTaskHandoffValue
 import org.payswap.aise.core.capture.LocalCaptureStore
 import org.payswap.aise.core.session.CapabilitySnapshot
 import org.payswap.aise.core.session.SessionDeviceIdentity
@@ -76,9 +82,40 @@ class AppContainer(
     )
 
     /**
+     * POST-005 — the handed-off field task (from an `aise://task` deep link
+     * the web surfaces emit), when one was offered. NULL = no handoff: the
+     * build-time provisioned journey remains the default (badged as such).
+     * The handoff carries identity only — the journey still runs its own
+     * capability assessment; no authority crosses the boundary.
+     */
+    private val _handedOffTask = MutableStateFlow<FieldTaskHandoffValue?>(null)
+    val handedOffTask: StateFlow<FieldTaskHandoffValue?> = _handedOffTask.asStateFlow()
+
+    /**
+     * Parse an aise://task deep link STRICTLY; a valid handoff becomes the
+     * active continuation task, an invalid one is returned as its typed
+     * rejection (recorded, never upgraded, never crashed on).
+     */
+    fun offerHandoff(deepLinkUri: String): FieldTaskDeepLinkParse {
+        val parsed = FieldTaskDeepLink.parse(deepLinkUri)
+        if (parsed is FieldTaskDeepLinkParse.Valid) {
+            _handedOffTask.value = parsed.handoff
+        }
+        return parsed
+    }
+
+    /** Clears the handed-off task (the journey consumed it, or the user reset). */
+    fun consumeHandedOffTask() {
+        _handedOffTask.value = null
+    }
+
+    /**
      * The field-journey runtime (PROD-019): journey phases over the capture
-     * controller's session flow, with the explicit-unavailable submission
-     * seam of this build (the AISE-030 transport is not wired yet).
+     * controller's session flow. The submission seam is the REAL HTTP
+     * transport ([org.payswap.aise.app.field.HttpEvidenceSubmissionTransport]
+     * wired below): signed-in sessions submit to the configured AISE API;
+     * offline or unauthenticated states defer EXPLICITLY to the resumable
+     * offline store (typed reasons, never silent failures).
      */
     val fieldJourneyRuntime: FieldJourneyRuntime = FieldJourneyRuntime(
         scope = kotlinx.coroutines.MainScope(),

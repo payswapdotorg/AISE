@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import org.payswap.aise.app.capture.CaptureSessionController
 import org.payswap.aise.app.field.FieldJourneyRuntime
 import org.payswap.aise.core.adapter.FieldJourneyPhase
+import org.payswap.aise.core.adapter.FieldTaskHandoffValue
 
 /**
  * Field-journey view model (PROD-019) — the JVM-pure bridge between the
@@ -22,9 +23,30 @@ import org.payswap.aise.core.adapter.FieldJourneyPhase
 class FieldJourneyViewModel(
     private val runtime: FieldJourneyRuntime,
     private val captureController: CaptureSessionController,
+    handedOffTask: StateFlow<FieldTaskHandoffValue?>? = null,
 ) : ViewModel() {
 
     val phase: StateFlow<FieldJourneyPhase> get() = runtime.phase
+
+    /** The active handed-off task, when one was offered (POST-005). */
+    val handedOffTask: StateFlow<FieldTaskHandoffValue?> = handedOffTask
+        ?: MutableStateFlow(null).asStateFlow()
+
+    init {
+        // POST-005: a web-originated aise://task handoff continues HERE —
+        // when one is active and no journey is running, the journey starts
+        // from the handed-off task identity (same runtime, same assessment;
+        // identity continues, authority never does).
+        if (handedOffTask != null) {
+            viewModelScope.launch {
+                handedOffTask.collect { handoff ->
+                    if (handoff != null && runtime.phase.value is FieldJourneyPhase.Idle) {
+                        startHandedOffJourney(handoff)
+                    }
+                }
+            }
+        }
+    }
 
     private val _busy = MutableStateFlow(false)
     val busy: StateFlow<Boolean> = _busy.asStateFlow()
@@ -35,6 +57,15 @@ class FieldJourneyViewModel(
     /** Starts the field journey (intent → assessment → adaptive mission). */
     fun startJourney() = guarded("start field journey") {
         runtime.startJourney()
+    }
+
+    /**
+     * POST-005: continue the HANDED-OFF task (from an aise://task deep
+     * link) — the journey starts from the handoff's TaskIntent identity
+     * (task id, project, targets, provenance in the parameter map).
+     */
+    fun startHandedOffJourney(handoff: FieldTaskHandoffValue) = guarded("continue handed-off task") {
+        runtime.startJourney(handoff.taskIntentValue())
     }
 
     /**
@@ -90,8 +121,12 @@ class FieldJourneyViewModel(
     }
 
     companion object {
-        fun factory(runtime: FieldJourneyRuntime, captureController: CaptureSessionController) = viewModelFactory {
-            initializer { FieldJourneyViewModel(runtime, captureController) }
+        fun factory(
+            runtime: FieldJourneyRuntime,
+            captureController: CaptureSessionController,
+            handedOffTask: StateFlow<FieldTaskHandoffValue?>? = null,
+        ) = viewModelFactory {
+            initializer { FieldJourneyViewModel(runtime, captureController, handedOffTask) }
         }
     }
 

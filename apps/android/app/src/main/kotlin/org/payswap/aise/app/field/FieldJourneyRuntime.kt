@@ -39,11 +39,14 @@ import org.payswap.aise.core.session.IsoTimestamps
  *
  * ## Provisioned server documents (honest labeling)
  *
- * This build has NO sync transport (AISE-030 owns it), so the server-owned
- * journey documents — the task capability requirements and the mission plan —
- * are PROVISIONED AT BUILD TIME and badged as such in the UI, exactly like
- * the web app's explicitly-badged demo dataset. They are consumed READ-ONLY
- * through the contract mirrors; live provisioning arrives with the transport.
+ * The submission transport IS wired by the app composition root
+ * (HttpEvidenceSubmissionTransport over the configured AISE API); the
+ * server-owned journey documents — the task capability requirements and the
+ * mission plan — are still PROVISIONED AT BUILD TIME and badged as such in
+ * the UI, exactly like the web app's explicitly-badged demo dataset. They
+ * are consumed READ-ONLY through the contract mirrors; live provisioning
+ * arrives with a live task fetch (POST-005 deep links carry the task
+ * identity; the plan stays provisioned, honestly badged).
  *
  * ## Evidence bookkeeping (facts, not sufficiency)
  *
@@ -117,9 +120,10 @@ class FieldJourneyRuntime(
     }
 
     /**
-     * Submits the finalized session's evidence through the seam. In this
-     * build the seam ALWAYS reports network-unavailable — an explicit,
-     * surfaced state; the evidence stays in the durable offline store.
+     * Submits the finalized session's evidence through the seam — the real
+     * HTTP transport when wired and the session is authenticated; offline
+     * or unauthenticated states defer EXPLICITLY (surfaced reasons; the
+     * evidence stays in the durable offline store).
      */
     fun submitFinalized(manifestText: String) {
         val current = _phase.value as? FieldJourneyPhase.MissionActive ?: return
@@ -171,7 +175,7 @@ class FieldJourneyRuntime(
  */
 object OfflineUntilSyncTransport : SubmissionTransport {
     override fun availability(): NetworkAvailability = NetworkAvailability.Unavailable(
-        "no sync transport on this build — AISE-030 transport not wired; evidence stays in the resumable offline store",
+        "no HTTP submission transport configured for this runtime host — evidence stays in the resumable offline store (the app composition root wires the real transport)",
     )
 
     override fun submit(payloadText: String, submissionKey: String) =

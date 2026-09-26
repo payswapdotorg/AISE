@@ -214,17 +214,20 @@ object MobileFieldAdapterProfile {
                 ),
                 mode = NotificationMode.IN_APP,
             ),
+            // POST-005: the aise://task VIEW intent filter IS declared in
+            // this build (AndroidManifest.xml) — the honest declaration is
+            // app-scheme SUPPORT with the scheme named, byte-matching the
+            // committed contract fixture
+            // fixtures/capability/ClientCapabilityProfile.valid-mobile-field.json.
             deepLinks = DeepLinkCapability(
                 descriptor = ClientCapabilityDescriptor(
                     contractVersion = AdapterContractVersion.CURRENT,
                     domain = "deep-links",
-                    status = ClientCapabilityStatus.UNAVAILABLE,
-                    details = emptyMap(),
-                    limitations = listOf(
-                        "deep links are not integrated in this build (no intent filters declared)",
-                    ),
+                    status = ClientCapabilityStatus.SUPPORTED,
+                    details = mapOf("scheme" to "aise"),
+                    limitations = emptyList(),
                 ),
-                mode = DeepLinkMode.NONE,
+                mode = DeepLinkMode.APP_SCHEME,
             ),
         )
     }

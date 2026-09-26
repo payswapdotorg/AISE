@@ -47,13 +47,85 @@ import {
   type AssetDigest,
   type CaptureAssetUploadRecord,
 } from "../api";
-import { Card, DataBadge, EmptyState, ProjectSurfaceNav } from "../components";
+import { Card, DataBadge, EmptyState, Instant, ProjectSurfaceNav } from "../components";
 import { TaskFlowStrip } from "../task-first";
 import { ProviderStatusNote } from "../provider-status";
 import { formatRoute } from "../router";
 import { BROWSER_IMPLEMENTED_INTERACTION_MODES } from "../adapter-profile";
 import { plural } from "../format";
 import { DEMO_TASK_PROJECT_ID } from "../task-dataset";
+import {
+  FIELD_TASK_DEEP_LINK_SCHEME,
+  formatFieldTaskDeepLink,
+  type FieldTaskHandoff,
+} from "@aise/adapter-contract/task-handoff";
+
+/* ------------------------------------------------------------------ */
+/* POST-005 — the cross-device handoff builders (pure)                  */
+/* ------------------------------------------------------------------ */
+
+/** The record fields a case-specific capture handoff is built from. */
+export interface CaptureHandoffSource {
+  readonly projectId: string;
+  /** The field task identity (adapter-authored, stable per target). */
+  readonly taskId: string;
+  /** What to capture — the declaring record's own words, verbatim. */
+  readonly intent: string;
+  /** The entities the capture concerns (case id, gap id, execution id…). */
+  readonly targetRefs: readonly string[];
+  /** The subject record's own status string, verbatim. */
+  readonly epistemicState: string;
+  /** The emitting surface's own name. */
+  readonly originSurface: string;
+  /** Version context of the records the task was declared from. */
+  readonly versionContext: {
+    readonly boqImportId?: string;
+    readonly boqRevision?: number;
+    readonly realityVersionId?: string;
+    readonly missionId?: string;
+  };
+  /** Instant the emitting surface produced the handoff. */
+  readonly issuedAt: string;
+}
+
+/**
+ * Build a case-specific FIELD-CAPTURE handoff (missing-evidence → capture
+ * bridge): the envelope that lets the mobile field adapter continue THIS
+ * task — same project, same task identity, same targets, same epistemic
+ * state — instead of starting a generic capture. Pure: every field is the
+ * input record's own statement; nothing is invented or upgraded.
+ */
+export function fieldCaptureHandoff(source: CaptureHandoffSource): FieldTaskHandoff {
+  return {
+    contractVersion: "1.0.0",
+    handoffId: `handoff-${source.taskId}`,
+    purpose: "field-capture",
+    projectId: source.projectId,
+    taskId: source.taskId,
+    taskType: "field-capture",
+    intent: source.intent,
+    targetRefs: [...source.targetRefs],
+    origin: "web",
+    originSurface: source.originSurface,
+    versionContext: source.versionContext,
+    epistemicState: source.epistemicState,
+    issuedAt: source.issuedAt,
+  };
+}
+
+/**
+ * Build a POST-WORK-CAPTURE handoff (the plan §5 return-path bridge):
+ * executed work that needs post-work evidence so the outcome loop can turn
+ * it into an observed outcome through new evidence — never by assertion.
+ */
+export function postWorkCaptureHandoff(source: CaptureHandoffSource): FieldTaskHandoff {
+  return {
+    ...fieldCaptureHandoff(source),
+    handoffId: `handoff-postwork-${source.taskId}`,
+    purpose: "post-work-capture",
+    taskType: "field-capture",
+  };
+}
 
 /* ------------------------------------------------------------------ */
 /* The surface                                                          */
@@ -79,6 +151,7 @@ export function CaptureMission({ projectId }: { readonly projectId: string }): R
       <TaskFlowStrip projectId={projectId} />
       <ProjectSurfaceNav projectId={projectId} current="capture" />
       <CaptureMissionPanel projectId={projectId} />
+      <CrossDeviceHandoffPanel projectId={projectId} />
       <CaptureUploadPanel projectId={projectId} />
       <BrowserCaptureLimitsCard />
     </>
@@ -446,6 +519,190 @@ export function BrowserCaptureLimitsCard(): ReactNode {
         capability escalation the server states (a depth-capable device or a
         specialist instrument) — the browser never pretends to satisfy it.
       </p>
+    </Card>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* POST-005 — the web → mobile task handoff (the obvious handoff)       */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The cross-device task handoff panel (plan §2 C / §6 Wave 1 Worker 2):
+ * "a user who starts a field task on web should be able to understand
+ * immediately that the next action belongs on the phone, with a direct
+ * handoff/deep-link/task identity". Renders the SAME task-flow resource
+ * the mission panel consumes (no second authority) as the handoff: the
+ * task identity, the canonical `aise://task` deep link the mobile field
+ * adapter opens to CONTINUE this task (capability assessment → guided
+ * capture → pause/resume → finalize → sync), and the honest return path.
+ */
+export function CrossDeviceHandoffPanel({ projectId }: { readonly projectId: string }): ReactNode {
+  const { state, reload } = useTaskFlow(projectId);
+  const [handoff, setHandoff] = useState<FieldTaskHandoff | null>(null);
+  return (
+    <TaskFlowResourceView
+      state={state}
+      onRetry={reload}
+      render={(data) => (
+        <CrossDeviceHandoffBody
+          data={data}
+          handoff={handoff}
+          onPrepare={() => {
+            // The emission instant is the click instant (the only moment
+            // this envelope is honestly "issued"); every other field is the
+            // record's own statement.
+            setHandoff(handoffFromTaskFlow(data, new Date().toISOString()));
+          }}
+        />
+      )}
+    />
+  );
+}
+
+/** Project the task-flow records into the handoff source (pure). */
+function handoffFromTaskFlow(
+  data: TaskFlowResourceData,
+  issuedAt: string,
+): FieldTaskHandoff | null {
+  const evidence = data.bundle?.evidence ?? null;
+  const caseSummary = data.bundle?.caseSummary ?? null;
+  const firstGap = evidence?.gaps[0] ?? null;
+  if (firstGap === null || caseSummary === null) {
+    return null;
+  }
+  return fieldCaptureHandoff({
+    projectId: data.projectId,
+    taskId: `task-capture-${firstGap.gapId}`,
+    intent: firstGap.description,
+    targetRefs: [caseSummary.caseId, firstGap.gapId],
+    epistemicState: caseSummary.status,
+    originSurface: "capture",
+    // Version context: only what the records themselves state — the
+    // task-flow bundle's reality summary carries a model version NUMBER,
+    // not a version id, so none is fabricated here.
+    versionContext: {},
+    issuedAt,
+  });
+}
+
+/** The handoff body (exported for static render tests — pure projection). */
+export function CrossDeviceHandoffBody({
+  data,
+  handoff,
+  onPrepare,
+}: {
+  readonly data: TaskFlowResourceData;
+  readonly handoff: FieldTaskHandoff | null;
+  readonly onPrepare: () => void;
+}): ReactNode {
+  const view = data.view;
+  const evidence = data.bundle?.evidence ?? null;
+  const caseSummary = data.bundle?.caseSummary ?? null;
+  const gapCount = evidence?.gaps.length ?? 0;
+  return (
+    <Card
+      title="Continue this task on the mobile field app"
+      badge={<DataBadge mode={data.mode} />}
+      meta={
+        <span>
+          the direct cross-device handoff — task identity, provenance and
+          version context cross the adapter boundary verbatim
+        </span>
+      }
+    >
+      {view === null || caseSummary === null ? (
+        <EmptyState
+          title="No task-flow records to hand off"
+          guidance="The handoff carries the project's open field task (its declared evidence gaps and the case they belong to). No task-flow objects are recorded for this project — nothing is handed off, and none is invented."
+        />
+      ) : (
+        <>
+          <p data-handoff-lead="true">
+            The next action belongs on the phone: live field capture (camera,
+            sensors, offline sessions, mission submission) is the{" "}
+            <strong>mobile field adapter&apos;s</strong> journey. The handoff
+            below continues <em>this</em> task there — the same project, task
+            identity, case and declared gaps — never a generic capture
+            surface.
+          </p>
+          <ul className="notes-list" data-handoff-identity="true">
+            <li>
+              Project <span className="mono">{data.projectId}</span> · case{" "}
+              <span className="mono">{caseSummary.caseId}</span> (
+              {caseSummary.status} — the case&apos;s own status, carried
+              verbatim)
+            </li>
+            <li>
+              {plural(gapCount, "declared evidence gap")} rides the task:{" "}
+              {(evidence?.gaps ?? [])
+                .map((gap) => `${gap.gapId} (${gap.kind})`)
+                .join(", ") || "none declared"}
+            </li>
+            <li>
+              On the device: open task → capability assessment → guided
+              capture → pause/resume → finalize → sync (the plan §5 field
+              journey).
+            </li>
+          </ul>
+          {handoff === null ? (
+            <div className="toolbar">
+              <button
+                type="button"
+                className="button"
+                onClick={onPrepare}
+                data-handoff-prepare="idle"
+              >
+                Prepare the task handoff link
+              </button>
+            </div>
+          ) : (
+            <div className="callout callout-info" data-handoff-link="true" role="status">
+              <p>
+                <strong>Task handoff ready.</strong> Open this link on the
+                phone (or send it there) — the AISE Field app continues this
+                exact task:
+              </p>
+              <p className="mono pane-foot" data-handoff-uri={FIELD_TASK_DEEP_LINK_SCHEME}>
+                <a href={formatFieldTaskDeepLink(handoff)}>{formatFieldTaskDeepLink(handoff)}</a>
+              </p>
+              <ul className="notes-list">
+                <li>
+                  task <span className="mono">{handoff.taskId}</span> ·
+                  targets{" "}
+                  {handoff.targetRefs.map((ref) => (
+                    <span key={ref} className="mono">
+                      {ref}{" "}
+                    </span>
+                  ))}
+                  · purpose {handoff.purpose}
+                </li>
+                <li>
+                  Provenance: emitted by the web capture surface at{" "}
+                  <Instant iso={handoff.issuedAt} />; version context{" "}
+                  {Object.keys(handoff.versionContext).length === 0
+                    ? "none recorded"
+                    : Object.entries(handoff.versionContext)
+                        .map(([key, value]) => `${key}=${String(value)}`)
+                        .join(" · ")}
+                  .
+                </li>
+                <li>
+                  The device still runs its OWN capability assessment before
+                  capture — the handoff carries identity, never readiness.
+                </li>
+              </ul>
+            </div>
+          )}
+          <p className="pane-foot" data-handoff-return="true">
+            The return path: captured evidence syncs through the server-side
+            ingestion gateway (content-addressed, provenance preserved) and
+            reappears here — in the evidence records, the case&apos;s
+            evidence envelope, and the outcome loop&apos;s before/after — as
+            observed evidence, never as an automatic conclusion.
+          </p>
+        </>
+      )}
     </Card>
   );
 }

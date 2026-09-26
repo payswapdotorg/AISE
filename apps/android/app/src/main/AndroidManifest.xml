@@ -29,14 +29,30 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AiseField">
 
+        <!-- POST-005: launchMode singleTask so a handed-off task deep link
+             always routes into the EXISTING task's activity (onNewIntent)
+             instead of stacking a second capture task on the back stack. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.AiseField">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- POST-005: the cross-device field task handoff entry point —
+                 the aise://task deep link the web capture/case/outcome
+                 surfaces emit (the committed capability fixture's declared
+                 scheme). Parsing and continuation are :core-pure
+                 (FieldTaskDeepLink) and honestly badged; no data crosses
+                 here beyond the typed task identity envelope. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="aise" android:host="task" />
             </intent-filter>
         </activity>
     </application>
