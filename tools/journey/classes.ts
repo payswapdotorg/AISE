@@ -92,8 +92,15 @@ export interface RunRecord {
   readonly repoSha: string;
   /** ISO-8601 UTC at run start. */
   readonly startedAt: string;
-  /** Whether the run had a live headless Chromium (per-leg detail is in each Class column). */
-  readonly chromiumAvailable: boolean;
+  /**
+   * Whether the run had a live headless Chromium (per-leg detail is in each
+   * Class column), or `"none-by-design"` for a journey that runs NO browser
+   * legs at all (the M journey cites the committed E2B station transcripts —
+   * a station's Chromium capability is never claimed as that journey's
+   * evidence, so the header states the by-design fact instead of probing or
+   * hardcoding an availability claim).
+   */
+  readonly chromiumAvailable: boolean | "none-by-design";
   readonly sections: JourneySection[];
 }
 
@@ -165,7 +172,13 @@ export function renderRunRecord(record: RunRecord): string {
   lines.push(`- repo SHA at run time: \`${record.repoSha}\` (git rev-parse HEAD)`);
   lines.push(`- base URL: ${record.baseUrl} (${record.baseSource})`);
   lines.push(
-    `- chromium: ${record.chromiumAvailable ? "available — the live legs ran in a real headless Chromium" : "UNAVAILABLE — the browser legs fell back to their deterministic proofs (the Class column says so per leg; a live run is never fabricated)"}`,
+    `- chromium: ${
+      record.chromiumAvailable === "none-by-design"
+        ? "not applicable — this journey has no browser legs by design (its evidence is the committed transcripts; the station's Chromium capability is never claimed as this journey's evidence)"
+        : record.chromiumAvailable
+          ? "available — the live legs ran in a real headless Chromium"
+          : "UNAVAILABLE — the browser legs fell back to their deterministic proofs (the Class column says so per leg; a live run is never fabricated)"
+    }`,
   );
   lines.push("");
   lines.push(

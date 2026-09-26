@@ -215,7 +215,14 @@ export async function runMJourney(): Promise<RunRecord> {
     baseSource: "local-serve",
     repoSha,
     startedAt,
-    chromiumAvailable: false,
+    // POST-004B (POST-003 Defect 1): the M journey runs NO browser legs by
+    // design — it cites the committed E2B station transcripts — so the record
+    // states that fact instead of a false "UNAVAILABLE/fell back" claim (the
+    // old hardcoded `false` read as a station-capability failure even where
+    // Chromium is available, e.g. the W journey's live Chromium minutes
+    // earlier). The union value renders the by-design header; booleans keep
+    // their exact W/X renderings.
+    chromiumAvailable: "none-by-design",
     sections,
   };
 }

@@ -3,6 +3,15 @@
  * registry list (re-keyed on sign-in/probe completion — never a stale
  * principal's answer) plus the brokered NewProjectPanel (identity:write).
  *
+ * POST-004B (additive, POST-003 Defect 2): the interactive-solution demo
+ * world (proj-demo-001 — apps/web/src/app/demo.ts demoSolutionWorldHeld)
+ * is NOT a registry project of the listed organization (the demo tenant
+ * seeds exactly proj-riverside-refit and project-zurich-hq), so without an
+ * explicit affordance it is reachable only by direct-hash knowledge — the
+ * "orphaned capability" the discoverability plan forbids. The
+ * {@link SolutionWorldCard} below offers it in plain "Build solution" task
+ * vocabulary on this surface, in every mode.
+ *
  * Honesty: the list is what the identity registry answers for ONE
  * organization and the ACTING principal (`?requester=`); the panel's write
  * is offered ONLY through the AISE-040 broker (an explicit `allowed`
@@ -29,7 +38,11 @@ import {
   type CreateActionOffer,
   type NewProjectDraft,
 } from "../create-forms";
-import { DEMO_ORG_ID, demoProjects } from "../demo";
+import {
+  DEMO_ORG_ID,
+  DEMO_SOLUTION_PROJECT_ID,
+  demoProjects,
+} from "../demo";
 import {
   Card,
   CreateField,
@@ -165,6 +178,7 @@ export function Projects(): ReactNode {
         onRetry={reload}
         render={(data) => <ProjectsBody mode={data.mode} entries={data.entries} />}
       />
+      <SolutionWorldCard />
       <NewProjectPanel
         mode={demo ? "demo" : "api"}
         organizationId={organizationId}
@@ -174,6 +188,52 @@ export function Projects(): ReactNode {
         onCreated={reload}
       />
     </>
+  );
+}
+
+/**
+ * POST-004B (POST-003 Defect 2) — the demo-solution world's affordance on
+ * the Projects surface: a clearly-labeled card in the "Build solution"
+ * task vocabulary linking the interactive-solution walkthrough route
+ * DIRECTLY (the same route the primary nav's "Build solution" entry and
+ * the Dashboard's journey step 5 address). The card is deliberately NOT
+ * part of the registry-driven grid: the walkthrough world is the built-in
+ * demo world (its own project id), never presented as an identity-registry
+ * project of the listed organization.
+ */
+export function SolutionWorldCard(): ReactNode {
+  return (
+    <Card
+      title="Build solution — the interactive walkthrough"
+      meta={
+        <span>
+          the built-in interactive-solution world — its own project, listed
+          outside this organization's registry
+        </span>
+      }
+    >
+      <p>
+        The interactive engineering-solution workflow — observed reality →
+        problem → proposed operations → validation → solution BOQ with line
+        ↔ step traceability — runs in its own walkthrough world: the demo
+        wall upgrade, a damaged ground-floor masonry wall with its recorded
+        reference solution journey. It is offered here so the walkthrough is
+        reachable from the Projects surface in every mode, not only by
+        direct-hash knowledge.
+      </p>
+      <div className="toolbar">
+        <a
+          className="button"
+          href={formatRoute({
+            name: "solution",
+            projectId: DEMO_SOLUTION_PROJECT_ID,
+            query: {},
+          })}
+        >
+          Build solution — open the interactive walkthrough
+        </a>
+      </div>
+    </Card>
   );
 }
 
