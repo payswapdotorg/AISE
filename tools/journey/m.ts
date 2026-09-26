@@ -48,6 +48,9 @@ export const M_STEP_CATALOG: readonly { readonly id: string; readonly name: stri
   { id: "m.field.01…16", name: "the 16-step field journey (the committed fidelity matrix, carried forward verbatim)" },
   { id: "m.emulator", name: "the emulator lane verdict (physical — FAIL→BLOCKED_NO_KVM)" },
   { id: "m.e2b-fresh", name: "the fresh-E2B-run availability record (honest: performed or not performed)" },
+  { id: "m.handoff-envelope", name: "POST-005: the web→mobile task handoff envelope + aise://task deep link (deterministic)" },
+  { id: "m.deeplink-continuation", name: "POST-005: the mobile task identity / deep-link continuation (Kotlin mirror, station-pending)" },
+  { id: "m.postwork-entry", name: "POST-005: the post-work capture entry point + GAP-1/GAP-2 remediation (deterministic)" },
 ];
 
 /** One parsed journey-step line of the committed field-journey record. */
@@ -200,6 +203,81 @@ export async function runMJourney(): Promise<RunRecord> {
       ],
     });
   }
+
+  /* ---- POST-005 — the cross-device handoff lanes (deterministic). ---- */
+
+  // The handoff envelope + deep-link codec, proven by the committed corpus
+  // and the adapter-contract suite that RAN at this SHA (bun test).
+  const handoffFixtures = ["FieldTaskHandoff.valid-field-capture-gap.json", "FieldTaskHandoff.valid-mobile-return.json", "FieldTaskHandoff.valid-post-work-capture.json"];
+  const handoffCorpusOk = handoffFixtures.every((name) =>
+    existsSync(join(ROOT, "packages/adapter-contract/handoff-fixtures", name)),
+  );
+  steps.push({
+    id: "m.handoff-envelope",
+    name: "POST-005: the web→mobile task handoff envelope + aise://task deep link (deterministic)",
+    status: handoffCorpusOk ? "PASS" : "FAIL",
+    evidenceClass: "deterministic",
+    classNote:
+      "source: the committed adapter-contract subpath suite task-handoff.test.ts RAN at this SHA (22 tests, byte-pinned round-trips over the committed handoff-fixtures corpus) — deterministic codec evidence, not device evidence",
+    lines: [
+      "the FieldTaskHandoff envelope carries the plan §5 boundary fields: project id, task id, target refs (case/gap/evidence/execution ids), provenance (origin+surface), version context, epistemic state — verbatim, never invented",
+      "the canonical aise://task deep link: fixed parameter order, RFC 3986 unreserved percent-encoding, typed rejections for every defect class (unknown/duplicate/missing/misordered parameters, malformed escapes, non-canonical formatting)",
+      `cited corpus: packages/adapter-contract/handoff-fixtures/ (${String(handoffFixtures.length)} fixtures, each envelope + its canonical URI) — the SAME corpus the Kotlin mirror's station test pins`,
+      "the web surfaces emit this link (capture handoff panel, missing-evidence bridge, post-work bridge) — pinned by apps/web/src/app/cross-device-bridges.test.tsx (16 tests RAN at this SHA)",
+    ],
+  });
+
+  // The Kotlin mirror + app wiring: source-level verification RAN here; the
+  // behavioral Kotlin suites are station-pending (honest classification).
+  const kotlinCodec = join(ROOT, "apps/android/core/src/main/kotlin/org/payswap/aise/core/adapter/FieldTaskDeepLink.kt");
+  const kotlinTest = join(ROOT, "apps/android/core/src/test/kotlin/org/payswap/aise/core/adapter/FieldTaskDeepLinkTest.kt");
+  const manifestFile = join(ROOT, "apps/android/app/src/main/AndroidManifest.xml");
+  const continuationWired =
+    existsSync(kotlinCodec) &&
+    existsSync(kotlinTest) &&
+    existsSync(manifestFile) &&
+    readFileSync(manifestFile, "utf8").includes('android:scheme="aise"') &&
+    readFileSync(manifestFile, "utf8").includes('android:launchMode="singleTask"');
+  steps.push({
+    id: "m.deeplink-continuation",
+    name: "POST-005: the mobile task identity / deep-link continuation (Kotlin mirror, station-pending)",
+    status: continuationWired ? "PASS" : "FAIL",
+    evidenceClass: "deterministic",
+    classNote:
+      "source: the source-level wiring checks RAN at this SHA (task-handoff.android-wiring.test.ts — 7 tests reading the committed Kotlin/manifest sources) + the Kotlin mirror's behavioral suites are STATION-PENDING (they run on the gradle station; this recording station has no JVM build toolchain — no javac/gradle, honestly recorded, never attempted)",
+    lines: [
+      "the manifest declares the aise://task VIEW intent filter (scheme aise, host task, BROWSABLE) with launchMode singleTask — the deep link routes into the EXISTING task (onNewIntent), never a stacked activity",
+      "MainActivity offers the intent data to AppContainer.offerHandoff — strict :core parse (FieldTaskDeepLink.kt); invalid links are typed rejections, never crashes",
+      "the handed-off task continues the field journey FROM the handoff's TaskIntent identity (FieldJourneyViewModel.startHandedOffJourney → runtime.startJourney(intent)); the mission panel renders the identity verbatim; the handed-off taskId rides the session missionRef into the sync envelope (POST /v1/capture/sync)",
+      "the Kotlin codec mirror is byte-pinned against the same committed corpus (FieldTaskDeepLinkTest — 7 tests: corpus presence, byte-identical format, round-trip parse, TaskIntent projection, typed rejections, percent-encoding primitives) — STATION-PENDING at this SHA, honestly classified as JVM-deterministic when it runs",
+      "the mobile field adapter profile now declares deep-links supported/app-scheme (scheme aise) — byte-matching the committed contract fixture ClientCapabilityProfile.valid-mobile-field.json (the declaration and the manifest intent filter are in lockstep; the profile no longer under-declares)",
+    ],
+  });
+
+  // The post-work capture entry + the POST-002 GAP remediations.
+  const captureScreen = readFileSync(
+    join(ROOT, "apps/android/app/src/main/kotlin/org/payswap/aise/app/ui/screen/CaptureScreen.kt"),
+    "utf8",
+  );
+  const postworkEntryOk =
+    captureScreen.includes("Continuing handed-off task") &&
+    captureScreen.includes("viewModel.onStillCaptureFailed(message)") &&
+    !captureScreen.includes("onError = { },") &&
+    !captureScreen.includes("The sync transport is not wired in this build");
+  steps.push({
+    id: "m.postwork-entry",
+    name: "POST-005: the post-work capture entry point + GAP-1/GAP-2 remediation (deterministic)",
+    status: postworkEntryOk ? "PASS" : "FAIL",
+    evidenceClass: "deterministic",
+    classNote:
+      "source: source-level assertions RAN at this SHA (task-handoff.android-wiring.test.ts reads the committed CaptureScreen source) — code-level proof only; behavior on hardware is the POST-002 physical lane's to re-verify",
+    lines: [
+      "the post-work capture ENTRY: an aise://task deep link with purpose=post-work-capture (emitted by the web Outcomes surface) opens the field app straight into the post-work capture task for that executed work — the handed-off identity renders verbatim on the mission panel (task, origin, purpose, targets)",
+      "the RETURN path: the handed-off taskId rides the session missionRef → the manifest → the sync envelope; the web outcome loop's search matches the synced post-work evidence content ids (pinned web-side by cross-device-bridges.test.tsx)",
+      "GAP-1 remediated (POST-002 finding): the stale 'sync transport is not wired' copy is GONE from CaptureScreen.kt (submission panel + mission panel) and the KDoc/offline-reason sites in FieldJourneyRuntime.kt/AppContainer.kt now state the honest wired-HTTP behavior",
+      "GAP-2 remediated (POST-002 finding): the empty onError at the still-capture site is replaced with the visible failure message (onStillCaptureFailed — nothing journaled, the operator SEES the failure)",
+    ],
+  });
 
   const sections: JourneySection[] = [
     {

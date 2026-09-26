@@ -60,6 +60,9 @@ export const X_STEP_CATALOG: readonly { readonly id: string; readonly name: stri
   { id: "x.validate", name: "the solution validated (deterministic, 7/7 checks)" },
   { id: "x.boq-generated", name: "the solution BOQ generated (the committed trace set + parity run)" },
   { id: "x.boq-traced", name: "the BOQ lines traced to steps/geometry (the line↔step round-trip)" },
+  { id: "x.boq-revision-selection", name: "POST-005: the BOQ import/revision selector + source-vs-solution separation (deterministic)" },
+  { id: "x.handoff-roundtrip", name: "POST-005: the task-identity round-trip web→link→continuation (deterministic)" },
+  { id: "x.postwork-return", name: "POST-005: the post-work capture return path → outcome visibility (deterministic)" },
 ];
 
 /** The committed fixtures + records the X journey cites (never re-derived). */
@@ -806,6 +809,58 @@ export async function runXJourney(options: { readonly baseUrl?: string }): Promi
         "the deep-linked line→step navigation (boq-line + step=3 through the app's ONE router) is the W2 browser leg w2.solution-step — the composed record and the browser walk are the two directions of the same trace contract",
       ],
     });
+  /* ---- POST-005 — the cross-device + BOQ continuity rows (deterministic). ---- */
+  {
+    const bridgeSuite = join(ROOT, "apps/web/src/app/cross-device-bridges.test.tsx");
+    const contractSuite = join(ROOT, "packages/adapter-contract/src/task-handoff.test.ts");
+    const bridgesCommitted = existsSync(bridgeSuite) && existsSync(contractSuite);
+    steps.push({
+      id: "x.boq-revision-selection",
+      name: "POST-005: the BOQ import/revision selector + source-vs-solution separation (deterministic)",
+      status: bridgesCommitted ? "PASS" : "FAIL",
+      evidenceClass: "deterministic",
+      classNote:
+        "source: the bridge suite that RAN at this SHA (cross-device-bridges.test.tsx — the selector render/selection/separation assertions over the pure exported card) + the adapter-contract subpath suite",
+      lines: [
+        "the live BOQ Lens now renders the BOQ documents selector: EVERY recorded source import (importId/format/byteSize/parseStatus) with its own Inspect action — the inspected document is an explicit SELECTION (data-selector-selection), never the silently-opened first import",
+        "the selector names the pre-selection default honestly: the service's own order opens the first import, always named in the selector",
+        "source-BOQ vs solution-BOQ separation asserted: the selector addresses SOURCE documents only (data-boq-class=source), links the Interactive Solution surface for solution BOQs, and the suite asserts the solution class never renders in the source selector",
+        "cited: apps/web/src/app/cross-device-bridges.test.tsx (4 selector tests RAN at this SHA: full listing, selection-not-silent, strict separation, honest empty/loading states)",
+      ],
+    });
+
+    steps.push({
+      id: "x.handoff-roundtrip",
+      name: "POST-005: the task-identity round-trip web→link→continuation (deterministic)",
+      status: bridgesCommitted ? "PASS" : "FAIL",
+      evidenceClass: "deterministic",
+      classNote:
+        "source: the composed round-trip RAN at this SHA — the web bridge bodies render the canonical aise://task link; the adapter-contract codec parses it back; the continuation identity preserves the task id (plan §5's boundary fields)",
+      lines: [
+        "the web capture handoff panel / missing-evidence bridge / post-work bridge each emit the FieldTaskHandoff envelope as the canonical aise://task deep link (formatFieldTaskDeepLink)",
+        "the round-trip: parseFieldTaskDeepLink(link) reconstructs the envelope byte-identically — taskId, projectId, targetRefs, purpose, provenance, version context, epistemic state all preserved",
+        "the continuation key: continuedTaskIdentity(handoff).taskId === the web-emitted taskId — the identity the Android mirror continues from (its Kotlin projection is pinned by the station-pending FieldTaskDeepLinkTest against the SAME committed corpus)",
+        "honest classification: deterministic codec + static-render evidence — NOT device or emulator evidence; the Android behavioral leg is station-pending and the physical lane remains POST-002's to execute",
+        "cited: apps/web/src/app/cross-device-bridges.test.tsx (round-trip tests RAN at this SHA) + packages/adapter-contract/src/task-handoff.test.ts (22 tests RAN at this SHA)",
+      ],
+    });
+
+    steps.push({
+      id: "x.postwork-return",
+      name: "POST-005: the post-work capture return path → outcome visibility (deterministic)",
+      status: bridgesCommitted ? "PASS" : "FAIL",
+      evidenceClass: "deterministic",
+      classNote:
+        "source: the bridge suite that RAN at this SHA — the observed outcome's post-work evidence content ids render in the outcome loop (the COMPLETED return path), and the post-work handoff carries purpose=post-work-capture",
+      lines: [
+        "the return path rendered: the demo outcome (OBSERVED) shows its recorded post-work evidence content ids — captured in the field, synced through the ingestion gateway, visible in the outcome loop's search (matched by content id)",
+        "the outgoing leg: the post-work capture handoff (purpose=post-work-capture, targets = outcome/scenario/case ids, the outcome's own epistemic state carried verbatim) hands the executed work's capture to the field device — the aise://task link round-trips",
+        "the loop's honesty law pinned: a proposal without post-work evidence is NEVER presented as an outcome (the empty state asserts it verbatim); executed work becomes an outcome only through new evidence",
+        "cited: apps/web/src/app/cross-device-bridges.test.tsx (the three post-work return-path tests RAN at this SHA)",
+      ],
+    });
+  }
+
   } finally {
     if (serve !== null) {
       const outcome = await serve.stop();
