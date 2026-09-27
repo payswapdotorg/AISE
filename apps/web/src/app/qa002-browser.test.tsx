@@ -203,6 +203,17 @@ afterAll(() => {
   }
 });
 
+/** Poll a test-side predicate until true (bounded — server-side counts). */
+async function waitFor(predicate: () => boolean, timeoutMs: number): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  while (!predicate()) {
+    if (Date.now() > deadline) {
+      throw new Error(`waitFor: predicate not satisfied within ${String(timeoutMs)}ms`);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+}
+
 /** Collect the QA-002 page facts from a loaded surface page. */
 async function collectPageFacts(page: import("playwright").Page): Promise<PageFacts> {
   return page.evaluate((): PageFacts => {
@@ -348,6 +359,62 @@ describe("QA-002 browser proof — the Capture surface on a live deployment that
       expect(facts.demoBadgeCount).toBe(0);
       // Still exactly ONE task-flow request for the whole surface load.
       expect(taskFlowRequestCount).toBe(1);
+      await context.close();
+    },
+    90_000,
+  );
+  test(
+    "D8 honesty rail: Check-again retries the LIVE endpoint — a later 200 replaces the demo fallback entirely",
+    async () => {
+      expect(browser).not.toBeNull();
+      expect(server).not.toBeNull();
+      taskFlowMode = "not-served";
+      taskFlowRequestCount = 0;
+      const context = await browser!.newContext({ viewport: { width: 1280, height: 900 } });
+      const page = await context.newPage();
+      await page.goto(`http://127.0.0.1:${server!.port}/#/projects/proj-7f3a2b/capture`, {
+        waitUntil: "load",
+        timeout: 30_000,
+      });
+      await page.waitForSelector('[data-mission-gaps="true"]', { timeout: 30_000 });
+      expect(taskFlowRequestCount).toBe(1);
+      // "Check again" while the endpoint still 404s: the retry fired one
+      // MORE live request; the banner stays (the honest unavailable truth)
+      // and the demo fallback keeps rendering below — never a silent switch.
+      await page.click(".state-unavailable .state-action button");
+      await waitFor(() => taskFlowRequestCount === 2, 10_000);
+      await page.waitForFunction(() => {
+        const text = document.body.textContent ?? "";
+        return text.split("cannot run on live records").length - 1 === 1;
+      }, undefined, { timeout: 10_000 });
+      // The deployment starts serving the task-flow objects: "Check again"
+      // now lands the LIVE journey — the banner and the demo fallback are
+      // replaced ENTIRELY by the live authority. Wait for the SETTLED live
+      // state (banner gone AND mission content back AND no fallback markers
+      // AND no demo badge — one composite predicate, no intermediate
+      // loading-phase race).
+      taskFlowMode = "served";
+      await page.click(".state-unavailable .state-action button");
+      await page.waitForFunction(
+        () => {
+          return (
+            document.querySelector(".state-unavailable") === null &&
+            document.querySelector('[data-mission-gaps="true"]') !== null &&
+            document.querySelector('[data-handoff-demo-fallback="true"]') === null &&
+            document.querySelector(".data-badge-demo") === null
+          );
+        },
+        undefined,
+        { timeout: 10_000 },
+      );
+      const facts = await collectPageFacts(page);
+      expect(facts.bannerCount).toBe(0);
+      expect(facts.bannerPresent).toBe(false);
+      expect(facts.handoffFallbackNotePresent).toBe(false);
+      expect(facts.apiBadgeCount).toBeGreaterThan(0);
+      expect(facts.demoBadgeCount).toBe(0);
+      expect(facts.missionGapsPresent).toBe(true);
+      expect(taskFlowRequestCount).toBe(3);
       await context.close();
     },
     90_000,
