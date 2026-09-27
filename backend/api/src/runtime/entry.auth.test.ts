@@ -284,7 +284,7 @@ describe("auth ENABLED — the layer comes alive at the runtime seam", () => {
     const projects = (body["projects"] as Array<Record<string, unknown>>).map(
       (project) => project["projectId"],
     );
-    expect(projects.sort()).toEqual(["proj-riverside-refit", "project-zurich-hq"]);
+    expect(projects.sort()).toEqual(["proj-7f3a2b", "proj-riverside-refit", "project-zurich-hq"]);
   });
 
   test("anonymous demo-open read of a NON-demo tenant is 401 (evaluators see demo content only)", async () => {

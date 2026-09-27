@@ -6,8 +6,15 @@
  *  - The demo path mints a session for ONE FIXED PRINCIPAL (AISE_DEMO_PRINCIPAL,
  *    default "demo-evaluator") inside ONE FIXED TENANT — the demo
  *    organization `org-northwind` — which owns exactly the web demo
- *    world's projects (`proj-riverside-refit`, `project-zurich-hq`), ids
- *    kept verbatim from the product's demo dataset.
+ *    world's projects (`proj-riverside-refit`, `project-zurich-hq`, and
+ *    `proj-7f3a2b` — the R1 task-first web world's project, the target of
+ *    the web's task-first navigation and task composer), ids kept verbatim
+ *    from the product's demo datasets. The task-world project is
+ *    registered for TENANCY ONLY: no reality/BOQ/case data is seeded for
+ *    it server-side, so its live reads answer the documented
+ *    fixture-vs-live boundary (404 project_not_found on reality) instead
+ *    of a futile 403 unregistered_project — the web carries that world's
+ *    demo content client-side (apps/web task dataset).
  *  - CONTAINMENT IS STRUCTURAL, not a blocklist: the demo principal's ONLY
  *    membership is in the demo organization, so the tenant predicate
  *    refuses every other tenant with 403 cross_tenant by the same rule as
@@ -40,10 +47,15 @@ import type { Logger } from "../lib/log";
 /** The fixed demo tenant (the web demo world's organization id, verbatim). */
 export const DEMO_ORGANIZATION_ID = "org-northwind";
 
-/** The demo tenant's projects (the web demo world's project ids, verbatim). */
+/**
+ * The demo tenant's projects (the web demo world's project ids, verbatim —
+ * the last entry is the R1 task-first web world's project, registered for
+ * tenancy so the primary journey's live reads pass the tenant predicate).
+ */
 export const DEMO_PROJECT_IDS: readonly string[] = Object.freeze([
   "proj-riverside-refit",
   "project-zurich-hq",
+  "proj-7f3a2b",
 ]);
 
 /** The display name of the demo principal (display-only vocabulary). */
@@ -56,6 +68,7 @@ const DEMO_ORGANIZATION_NAME = "AISE Demo Tenant";
 const DEMO_PROJECT_NAMES: readonly string[] = Object.freeze([
   "Riverside Refit (pilot)",
   "Zurich HQ (intervention scenario)",
+  "Riverside office refit (task-first demo world)",
 ]);
 
 /** True when the typed rejection is the act's "already exists" answer. */
