@@ -13,6 +13,22 @@
  *    stores the bytes content-addressed BEFORE parsing, answers
  *    idempotently for identical bytes, and reports parse failures with
  *    the failing part);
+ *  - QA-003: the flow then ENSURES THE DERIVED NORMALIZATION EXISTS —
+ *    `POST /v1/boq/imports/:id/normalization` (AISE-014's idempotent
+ *    write-once run) — BEFORE the host surface reloads its lens, because
+ *    the joined lens route answers 409 `normalization_required` until a
+ *    view is stored: without this step a freshly imported document is
+ *    un-viewable in-flow (the observed defect). A typed normalization
+ *    failure is surfaced honestly with its typed reason — the import
+ *    itself still succeeded (the source stays stored), but the outcome
+ *    states the lens cannot be built and why, never a silent swallow;
+ *  - QA-003: HONEST EPHEMERALITY — the success state never promises
+ *    durability the deployment does not provide. When the flow's own
+ *    request responses identify a per-instance serverless platform
+ *    (the platform's own response header — no new probe is issued), the
+ *    success state states the honest limit: imports live per-instance on
+ *    this deployment and may not survive a reload. Durable deployments
+ *    (no such marker) get no such caveat — no scare-mongering;
  *  - the SOURCE-BOQ vs SOLUTION-BOQ separation, stated visually and
  *    semantically: this import is a SOURCE BOQ — the incumbent scope's
  *    own verbatim record, preserved immutable, never overwritten. SOLUTION
@@ -24,8 +40,8 @@
  *    outcomes (import id, format, byte size, parse status + row count or
  *    the recorded reason), and the typed failures verbatim.
  *
- * PRESENTATION ONLY: the ingestion route is the authority; nothing here
- * normalizes, maps or derives.
+ * PRESENTATION ONLY: the ingestion and normalization routes are the
+ * authority; nothing here normalizes, maps or derives.
  */
 
 import { useCallback, useState } from "react";
@@ -34,8 +50,11 @@ import { isDemoMode, useAppEnvironment } from "../environment";
 import {
   BOQ_IMPORT_FORMATS,
   describeApiFailure,
+  ensureBoqNormalizationLive,
   importBoqSourceLive,
   type BoqImportRecord,
+  type BoqNormalizationRecord,
+  type FetchLike,
 } from "../api";
 import { Card, DataBadge } from "../components";
 import { formatRoute } from "../router";
@@ -47,24 +66,130 @@ export interface SelectedBoqFile {
   readonly byteSize: number;
 }
 
-/** The import outcome (the route's verbatim answer, or the typed failure). */
+/**
+ * QA-003 — the deployment mode the import flow OBSERVED on the responses
+ * to its own requests (the deployment-status discipline: the platform's
+ * own self-identification, never a guess, never a new probe).
+ *
+ *  - `"serverless"` — the API's own responses carry the serverless
+ *    platform's request-id header (`x-vercel-id`, the deployment shape of
+ *    docs/DEPLOYMENT.md: ONE catch-all function, Fs data dir under /tmp,
+ *    ephemeral per warm instance). On such a deployment imports live
+ *    per-instance and may not survive a reload — the success state says
+ *    so.
+ *  - `"durable"` — no such marker on the responses this flow issued. The
+ *    deployment is not observed to be a per-instance serverless function;
+ *    no ephemerality caveat is rendered (no scare-mongering).
+ */
+export type BoqDeploymentMode = "serverless" | "durable";
+
+/** The header a serverless function platform stamps on every response. */
+const SERVERLESS_PLATFORM_HEADER = "x-vercel-id";
+
+/**
+ * The deployment mode one of the flow's own responses reveals. Absent
+ * marker = `"durable"` (not observed serverless — the honest default that
+ * renders no caveat). Pure observation of the response the flow already
+ * received; no extra request is ever issued.
+ */
+export function observedBoqDeployment(response: Response): BoqDeploymentMode {
+  return response.headers.get(SERVERLESS_PLATFORM_HEADER) === null ? "durable" : "serverless";
+}
+
+/**
+ * QA-003 — the honest normalization leg's summary (the route's own
+ * counters, rendered in the imported outcome) or its typed failure.
+ */
+export type BoqNormalizationOutcome =
+  | { readonly ok: true; readonly view: BoqNormalizationRecord; readonly endpoint: string }
+  | { readonly ok: false; readonly detail: string };
+
+/** The import outcome (the routes' verbatim answers, or the typed failure). */
 export type BoqImportOutcome =
-  | { readonly kind: "imported"; readonly record: BoqImportRecord; readonly endpoint: string }
+  | {
+      readonly kind: "imported";
+      readonly record: BoqImportRecord;
+      readonly endpoint: string;
+      /** QA-003 (additive): the deployment mode observed on the flow's own responses. */
+      readonly deployment?: BoqDeploymentMode;
+      /**
+       * QA-003 (additive): the ensured normalization view (the derived lens
+       * can now be fetched) — or the honest typed failure that leaves the
+       * import recorded but its lens un-buildable.
+       */
+      readonly normalization?: BoqNormalizationOutcome;
+    }
   | { readonly kind: "failed"; readonly detail: string };
+
+/**
+ * QA-003 — run the full import flow at the transport seam: import the
+ * source bytes, then ENSURE the derived normalization view exists so the
+ * lens is viewable in-flow. Exported for the fetch-order spy tests (the
+ * POST /imports → POST /imports/:id/normalization sequence is the fix's
+ * load-bearing wire).
+ *
+ * The transport is wrapped (transparently — every call passes through
+ * unchanged) to OBSERVE the deployment mode from the responses the flow
+ * itself already receives: a per-instance serverless platform identifies
+ * itself on them, and that observation — and nothing else — decides the
+ * ephemerality caveat. No new request is issued for it.
+ */
+export async function runBoqImportFlow(
+  fetchImpl: FetchLike,
+  bytes: Uint8Array,
+  format: "csv" | "xlsx" | "pdf",
+): Promise<BoqImportOutcome> {
+  let deployment: BoqDeploymentMode = "durable";
+  const observingFetch: FetchLike = (input, init) =>
+    fetchImpl(input, init).then((response) => {
+      const observed = observedBoqDeployment(response);
+      if (observed === "serverless") {
+        deployment = "serverless";
+      }
+      return response;
+    });
+  const result = await importBoqSourceLive(observingFetch, bytes, format);
+  if (!result.ok) {
+    return { kind: "failed", detail: describeApiFailure(result.failure) };
+  }
+  // The normalization leg: idempotent (a stored view is returned, never
+  // recomputed into a different one). A typed failure here is HONEST — the
+  // source stays stored (the import succeeded) but the lens cannot be
+  // built; the outcome carries the route's own reason, never a swallow.
+  const normalization = await ensureBoqNormalizationLive(
+    observingFetch,
+    result.record.importId,
+  );
+  return {
+    kind: "imported",
+    record: result.record,
+    endpoint: result.endpoint,
+    deployment,
+    normalization: normalization.ok
+      ? { ok: true, view: normalization.record, endpoint: normalization.endpoint }
+      : { ok: false, detail: describeApiFailure(normalization.failure) },
+  };
+}
 
 /**
  * The first-class SOURCE-BOQ import panel. The file is read locally and
  * POSTed as raw bytes with the operator-declared format (the route's
- * authoritative `?format=` resolution). Demo mode disables submission with
- * the honest never-fabricate notice.
+ * authoritative `?format=` resolution); on success the flow ENSURES the
+ * derived normalization exists (QA-003) so the lens the host surface
+ * reloads is viewable. Demo mode disables submission with the honest
+ * never-fabricate notice.
  */
 export function BoqImportPanel({
   projectId,
   onImported,
 }: {
   readonly projectId: string;
-  /** Signals the host surface to reload its lens (the new import may join it). */
-  readonly onImported: () => void;
+  /**
+   * Signals the host surface to reload its lens (the new import may join
+   * it) and SELECT the freshly imported document — the direct consequence
+   * of the operator's own action, named in the selector (never a guess).
+   */
+  readonly onImported: (importId: string) => void;
 }): ReactNode {
   const environment = useAppEnvironment();
   const demo = isDemoMode(environment) || environment.apiStatus === null;
@@ -99,14 +224,19 @@ export function BoqImportPanel({
     }
     setSubmitting(true);
     setOutcome(null);
-    const result = await importBoqSourceLive(environment.fetchImpl, bytes, format);
+    // QA-003: the flow runs import → normalization (the derived view is
+    // ensured BEFORE the lens reloads — the 409 normalization_required
+    // defect's fix). The host reloads its lens in BOTH outcome branches
+    // where the import itself succeeded: the document joins the selector's
+    // list either way, and its own lens failure (if any) renders per-import.
+    const result = await runBoqImportFlow(environment.fetchImpl, bytes, format);
     setSubmitting(false);
-    if (result.ok) {
-      setOutcome({ kind: "imported", record: result.record, endpoint: result.endpoint });
-      onImported();
+    if (result.kind === "imported") {
+      setOutcome(result);
+      onImported(result.record.importId);
       return;
     }
-    setOutcome({ kind: "failed", detail: describeApiFailure(result.failure) });
+    setOutcome({ kind: "failed", detail: result.detail });
   }, [demo, bytes, file, format, submitting, environment.fetchImpl, onImported]);
 
   return (
@@ -159,7 +289,9 @@ export function BoqImportPanelBody({
       meta={
         <span>
           one source file → POST /v1/boq/imports (the server stores the bytes
-          content-addressed BEFORE parsing — preservation is unconditional)
+          content-addressed BEFORE parsing — preservation is unconditional) →
+          the derived normalization is ensured (POST
+          /v1/boq/imports/:id/normalization) so the lens below can open
         </span>
       }
     >
@@ -271,6 +403,31 @@ export function BoqImportPanelBody({
               : ` — ${outcome.record.parseReason}`}
             .
           </p>
+          {outcome.normalization === undefined || outcome.normalization === null ? null : outcome.normalization.ok ? (
+            <p className="pane-foot" data-normalization="ensured">
+              The derived normalization is ensured —{" "}
+              {plural(outcome.normalization.view.totalItems, "item row")} under
+              dictionary <span className="mono">{outcome.normalization.view.dictionaryVersion}</span>{" "}
+              ({plural(outcome.normalization.view.resolvedConcepts, "resolved concept")},{" "}
+              {plural(outcome.normalization.view.unresolvedConcepts, "unresolved concept")}{" "}
+              — unresolved is an honest outcome, never guessed) — so the lens
+              below can open this import.
+            </p>
+          ) : (
+            <p className="pane-foot" data-normalization="failed" role="alert">
+              <strong>The derived view could not be ensured.</strong>{" "}
+              {outcome.normalization.detail} The source stays stored under its
+              content id, but the lens cannot be built for this import — the
+              reason is the route&apos;s own typed answer.
+            </p>
+          )}
+          {outcome.deployment === "serverless" ? (
+            <p className="pane-foot" data-ephemerality="serverless">
+              Imports live per-instance on this deployment and may not survive
+              a reload — the SOURCE BOQ parse result shown now is the
+              server&apos;s own answer.
+            </p>
+          ) : null}
           <p className="pane-foot">
             The lens below renders one import at a time (the deployment&apos;s
             own order); reload it to see the newly ingested source among the

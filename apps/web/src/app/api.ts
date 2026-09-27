@@ -1959,22 +1959,130 @@ export interface BoqLensLiveRecord {
 }
 
 /**
+ * QA-003 — the typed HTTP failure for ONE BOQ route answer. The API's
+ * 4xx/5xx bodies arrive in ONE of the two documented envelope shapes, and
+ * BOTH are honored (the established httpFailure discipline, extended for
+ * the deployment seam's translation):
+ *
+ *  - the domain routers' internal shape `{ ok: false, error: "<code>", …extras }`
+ *    (the pre-translation body every same-process route test observes);
+ *  - the DEPLOYMENT's stable error envelope
+ *    `{ error: { code, message, requestId? }, …extras }` (runtime/errors.ts
+ *    re-envelopes every internal error at the serve seam — local `bun run
+ *    start` AND the Vercel function answer THIS shape, extras such as
+ *    `detail`/`part`/`issues` preserved verbatim at the top level).
+ *
+ * Either way the typed `code` and the recorded `detail` surface (bounded,
+ * with the explicit truncation marker); anything else — non-JSON bodies,
+ * unknown JSON shapes — keeps the generic base detail, never a guess.
+ */
+async function boqTypedHttpFailure(endpoint: string, response: Response): Promise<ApiFailure> {
+  const failure: {
+    kind: "http";
+    status: number;
+    detail: string;
+    code?: string;
+    reason?: string;
+    issues?: string[];
+  } = {
+    kind: "http",
+    status: response.status,
+    detail: `${endpoint} answered HTTP ${String(response.status)}`,
+  };
+  let text: string;
+  try {
+    text = await response.text();
+  } catch {
+    return failure; // unreadable body — the generic detail stands
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text) as unknown;
+  } catch {
+    return failure; // malformed/HTML body — the generic detail stands
+  }
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    return failure; // not an envelope — never coerced
+  }
+  const body = parsed as Record<string, unknown>;
+  if (body.ok === false && typeof body.error === "string" && body.error.length > 0) {
+    // The internal shape (identical to httpFailure's extraction).
+    failure.code = boundedText(body.error, CODE_BOUND);
+  } else if (
+    isRecord(body.error) &&
+    typeof (body.error as Record<string, unknown>).code === "string" &&
+    ((body.error as Record<string, unknown>).code as string).length > 0
+  ) {
+    // The deployment's stable error envelope: the code rides
+    // `error.code`, the human message `error.message`.
+    failure.code = boundedText((body.error as Record<string, unknown>).code as string, CODE_BOUND);
+    if (typeof (body.error as Record<string, unknown>).message === "string") {
+      failure.reason = boundedText(
+        (body.error as Record<string, unknown>).message as string,
+        REASON_BOUND,
+      );
+    }
+  } else {
+    return failure; // neither documented shape — never coerced
+  }
+  // The recorded human reason: the envelope's own `detail` (both shapes
+  // carry it at the top level) WINS over the derived message — it is the
+  // route's own typed reason (e.g. the lens 409's "run POST
+  // /v1/boq/imports/:id/normalization first").
+  if (typeof body.detail === "string" && body.detail.length > 0) {
+    failure.reason = boundedText(body.detail, REASON_BOUND);
+  }
+  if (Array.isArray(body.issues)) {
+    const issues = body.issues.map(issueText);
+    failure.issues =
+      issues.length <= ISSUES_MAX
+        ? issues
+        : [...issues.slice(0, ISSUES_MAX), `… (+${String(issues.length - ISSUES_MAX)} more)`];
+  }
+  return failure;
+}
+
+/**
  * Load the JOINED lens input LIVE — `GET /v1/boq/imports/:id/lens`
  * (PROD-010's joined endpoint: import record + derived normalization view +
  * mapping entries, assembled server-side). A 409 `normalization_required`
- * and a 404 `import_not_found` surface as typed failures, never coerced.
+ * and a 404 `import_not_found` surface as typed failures carrying the
+ * route's own reason (both the internal and the deployment's stable error
+ * envelope shapes are honored), never coerced. QA-003: the typed 409 is
+ * the D7 error path's own message — the per-import failure names the code
+ * and the recorded reason verbatim.
  */
 export async function loadBoqLensLive(
   fetchImpl: FetchLike,
   importId: string,
 ): Promise<WriteOutcome<BoqLensLiveRecord>> {
   const endpoint = `/v1/boq/imports/${encodeURIComponent(importId)}/lens`;
-  const result = envelopePayload(await fetchJson(fetchImpl, endpoint), endpoint);
-  if (!result.ok) {
-    return result;
+  let response: Response;
+  try {
+    response = await fetchImpl(endpoint);
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "network",
+        detail: error instanceof Error ? error.message : "network request failed",
+      },
+    };
   }
-  const payload = result.value as Record<string, unknown>;
-  if (!isRecord(payload) || !isRecord(payload.lens)) {
+  if (!response.ok) {
+    return { ok: false, failure: await boqTypedHttpFailure(endpoint, response) };
+  }
+  let parsed: unknown;
+  try {
+    parsed = await response.json();
+  } catch {
+    return {
+      ok: false,
+      failure: { kind: "invalid", detail: `${endpoint} did not return valid JSON` },
+    };
+  }
+  const payload = parsed as Record<string, unknown>;
+  if (!isRecord(payload) || payload.ok !== true || !isRecord(payload.lens)) {
     return {
       ok: false,
       failure: {
@@ -2012,6 +2120,124 @@ export async function loadBoqLensLive(
   return {
     ok: true,
     record: payload.lens as unknown as BoqLensLiveRecord,
+    endpoint,
+  };
+}
+
+/**
+ * The derived normalization answer's structural mirror (QA-003 — the fields
+ * the import flow renders). The route answers the full AISE-014
+ * `NormalizedBoqView`; this seam pins the load-bearing scalars the flow
+ * surfaces (identity, dictionary provenance, the honest outcome counters).
+ */
+export interface BoqNormalizationRecord {
+  readonly importId: string;
+  readonly dictionaryVersion: string;
+  /** ITEM rows examined across all detected sections (the view's own stat). */
+  readonly totalItems: number;
+  readonly resolvedConcepts: number;
+  readonly unresolvedConcepts: number;
+}
+
+/**
+ * Ensure the DERIVED normalization view exists LIVE — `POST
+ * /v1/boq/imports/:id/normalization` (QA-003; AISE-014's transport). The
+ * route is IDEMPOTENT and write-once: it runs the pure projection over the
+ * import's stored parsed document and persists it — a stored view is
+ * returned, never recomputed into a different one, so an ensure-call on an
+ * already-normalized import answers the SAME stored view. The SOURCE BOQ is
+ * never changed and numbers are never touched (the route's own contract).
+ *
+ * The web import flow MUST run this step before the lens is fetched: the
+ * joined lens route (`GET /v1/boq/imports/:id/lens`) answers 409
+ * `normalization_required` until a view is stored — a freshly imported
+ * document is otherwise un-viewable in-flow (the observed QA-003 defect).
+ *
+ * The route's typed answers are carried honestly, never coerced:
+ *  - 200 `{ ok: true, normalization: view }` → the stored derived view;
+ *  - 404 `import_not_found` (unknown import — e.g. the per-instance
+ *    serverless store lost it);
+ *  - 422 `normalization_unavailable` + `code`/`detail` (the honest known
+ *    limit: an un-parsed import such as a stored-only PDF cannot be
+ *    normalized);
+ *  - 500 `boq_store_error` + `part` (a store-level failure).
+ */
+export async function ensureBoqNormalizationLive(
+  fetchImpl: FetchLike,
+  importId: string,
+): Promise<WriteOutcome<BoqNormalizationRecord>> {
+  const endpoint = `/v1/boq/imports/${encodeURIComponent(importId)}/normalization`;
+  let response: Response;
+  try {
+    response = await fetchImpl(endpoint, { method: "POST" });
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "network",
+        detail: error instanceof Error ? error.message : "network request failed",
+      },
+    };
+  }
+  if (!response.ok) {
+    return { ok: false, failure: await boqTypedHttpFailure(endpoint, response) };
+  }
+  let parsed: unknown;
+  try {
+    parsed = await response.json();
+  } catch {
+    return {
+      ok: false,
+      failure: { kind: "invalid", detail: `${endpoint} did not return valid JSON` },
+    };
+  }
+  const payload = parsed as Record<string, unknown>;
+  if (!isRecord(payload) || payload.ok !== true || !isRecord(payload.normalization)) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: `${endpoint} did not return the expected { ok: true, normalization } envelope`,
+      },
+    };
+  }
+  const view = payload.normalization as Record<string, unknown>;
+  const defects: string[] = [];
+  if (typeof view.importId !== "string" || view.importId.length === 0) {
+    defects.push("normalization.importId must be a non-empty string");
+  }
+  if (typeof view.dictionaryVersion !== "string" || view.dictionaryVersion.length === 0) {
+    defects.push("normalization.dictionaryVersion must be a non-empty string");
+  }
+  const stats = view.stats;
+  if (!isRecord(stats)) {
+    defects.push("normalization.stats must be an object");
+  } else {
+    for (const field of ["totalItems", "resolvedConcepts", "unresolvedConcepts"] as const) {
+      if (typeof stats[field] !== "number" || !Number.isInteger(stats[field])) {
+        defects.push(`normalization.stats.${field} must be an integer`);
+      }
+    }
+  }
+  if (defects.length > 0) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: `normalization record is not structurally valid: ${defects.join("; ")}`,
+      },
+    };
+  }
+  const normalizationStats = stats as Record<string, unknown>;
+  return {
+    ok: true,
+    record: {
+      importId: view.importId as string,
+      dictionaryVersion: view.dictionaryVersion as string,
+      totalItems: normalizationStats.totalItems as number,
+      resolvedConcepts: normalizationStats.resolvedConcepts as number,
+      unresolvedConcepts: normalizationStats.unresolvedConcepts as number,
+    },
     endpoint,
   };
 }
@@ -2479,7 +2705,7 @@ export async function importBoqSourceLive(
     };
   }
   if (!response.ok) {
-    return { ok: false, failure: await httpFailure(endpoint, response) };
+    return { ok: false, failure: await boqTypedHttpFailure(endpoint, response) };
   }
   let parsed: unknown;
   try {
