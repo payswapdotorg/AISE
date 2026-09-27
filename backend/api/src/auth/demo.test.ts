@@ -43,8 +43,20 @@ describe("ensureDemoTenant (the idempotent bootstrap through the library's own a
         "organization created with demo founder",
         `project ${DEMO_PROJECT_IDS[0]} registered`,
         `project ${DEMO_PROJECT_IDS[1]} registered`,
+        `project ${DEMO_PROJECT_IDS[2]} registered`,
       ],
     });
+    // QA-001: the demo tenant registers THREE projects — the two original
+    // web demo world projects plus the R1 task-first web world's project
+    // (the target of the web's task-first navigation), so the primary
+    // journey's live reads pass the tenant predicate and hit the honest
+    // 404 fixture-vs-live boundary instead of 403 unregistered_project.
+    expect(DEMO_PROJECT_IDS.length).toBe(3);
+    expect(DEMO_PROJECT_IDS).toEqual([
+      "proj-riverside-refit",
+      "project-zurich-hq",
+      "proj-7f3a2b",
+    ]);
     // The registry facts (through the identity library's own store):
     expect(await store.getPrincipal(DEMO_PRINCIPAL)).toEqual({
       principalId: DEMO_PRINCIPAL,
@@ -52,8 +64,17 @@ describe("ensureDemoTenant (the idempotent bootstrap through the library's own a
       createdAt: FIXED_NOW,
     });
     expect((await store.getOrganization(DEMO_ORGANIZATION_ID))?.organizationId).toBe(DEMO_ORGANIZATION_ID);
+    // The registered projects' display names, pinned in DEMO_PROJECT_IDS
+    // order (the task world's name stays distinct from the pilot's).
+    const demoProjectNames: Record<string, string> = {
+      "proj-riverside-refit": "Riverside Refit (pilot)",
+      "project-zurich-hq": "Zurich HQ (intervention scenario)",
+      "proj-7f3a2b": "Riverside office refit (task-first demo world)",
+    };
     for (const projectId of DEMO_PROJECT_IDS) {
-      expect((await store.getProject(projectId))?.organizationId).toBe(DEMO_ORGANIZATION_ID);
+      const project = await store.getProject(projectId);
+      expect(project?.organizationId).toBe(DEMO_ORGANIZATION_ID);
+      expect(project?.name).toBe(demoProjectNames[projectId]);
     }
   });
 
@@ -63,14 +84,15 @@ describe("ensureDemoTenant (the idempotent bootstrap through the library's own a
     const second = await ensureDemoTenant({ service, demoPrincipalId: DEMO_PRINCIPAL });
     expect(second.recordedActions).toEqual([]);
     // No duplicate acts, no duplicate audit spam: the org's audit log keeps
-    // exactly the events of the FIRST bootstrap (5 acts: org.created,
-    // membership.granted, role.created, and 2 × project.created).
+    // exactly the events of the FIRST bootstrap (6 acts: org.created,
+    // membership.granted, role.created, and 3 × project.created).
     const audit = await store.listAuditEvents(DEMO_ORGANIZATION_ID);
-    expect(audit.length).toBe(5);
+    expect(audit.length).toBe(6);
     expect(audit.map((event) => event.action)).toEqual([
       "organization.created",
       "role.created",
       "membership.granted",
+      "project.created",
       "project.created",
       "project.created",
     ]);
