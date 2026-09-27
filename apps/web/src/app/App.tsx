@@ -39,6 +39,8 @@ import { AuthGate, UserMenu, type GateActions } from "./AuthGate";
 import { formatRoute, routeKey, type Route } from "./router";
 import { gateAdmitsSurfaces, gateReducer, initialGateState, type GateStatus } from "./gate";
 import { LoadingPanel } from "./components";
+import { TaskFlowSurface } from "./task-first";
+import { DEMO_TASK_PROJECT_ID } from "./task-dataset";
 import { Dashboard } from "./surfaces/Dashboard";
 import { Projects } from "./surfaces/Projects";
 import { ProjectOverview } from "./surfaces/ProjectOverview";
@@ -325,7 +327,15 @@ export function UnresolvedPrincipalPanel(): ReactNode {
   );
 }
 
-/** Render the surface one route addresses (the typed switch). */
+/** Render the surface one route addresses (the typed switch).
+ *
+ * QA-002 (D3): every route whose surface consumes the task-flow resource
+ * renders inside ONE {@link TaskFlowSurface} — the shared task-flow
+ * resource (single fetch, single decode, single degraded-state decision
+ * per project per surface tree) plus the ONE surface-level degraded banner
+ * when the live endpoint 404s (the demo-fallback journey then renders
+ * below it, badged demo). Routes with no task-flow consumer render
+ * unchanged. */
 function RoutedSurface({
   route,
   principalId,
@@ -339,38 +349,70 @@ function RoutedSurface({
 }): ReactNode {
   switch (route.name) {
     case "dashboard":
-      return <Dashboard />;
+      return (
+        <TaskFlowSurface projectId={DEMO_TASK_PROJECT_ID}>
+          <Dashboard />
+        </TaskFlowSurface>
+      );
     case "projects":
       return <Projects />;
     case "project":
-      return <ProjectOverview projectId={route.projectId} />;
+      return (
+        <TaskFlowSurface projectId={route.projectId}>
+          <ProjectOverview projectId={route.projectId} />
+        </TaskFlowSurface>
+      );
     case "capture":
-      return <CaptureMission projectId={route.projectId} />;
+      return (
+        <TaskFlowSurface projectId={route.projectId}>
+          <CaptureMission projectId={route.projectId} />
+        </TaskFlowSurface>
+      );
     case "sitetwin":
-      return <SiteTwin projectId={route.projectId} />;
+      return (
+        <TaskFlowSurface projectId={route.projectId}>
+          <SiteTwin projectId={route.projectId} />
+        </TaskFlowSurface>
+      );
     case "boq-lens":
-      return <BoqLensSurface projectId={route.projectId} />;
+      return (
+        <TaskFlowSurface projectId={route.projectId}>
+          <BoqLensSurface projectId={route.projectId} />
+        </TaskFlowSurface>
+      );
     case "case":
-      return <EngineeringCase projectId={route.projectId} />;
+      return (
+        <TaskFlowSurface projectId={route.projectId}>
+          <EngineeringCase projectId={route.projectId} />
+        </TaskFlowSurface>
+      );
     case "intervention":
       return (
-        <InterventionStudio
-          key={routeKey(route)}
-          projectId={route.projectId}
-          layer={route.query.layer ?? 0}
-          scenarioId={route.query.scenario}
-        />
+        <TaskFlowSurface projectId={route.projectId}>
+          <InterventionStudio
+            key={routeKey(route)}
+            projectId={route.projectId}
+            layer={route.query.layer ?? 0}
+            scenarioId={route.query.scenario}
+          />
+        </TaskFlowSurface>
       );
     case "solution":
       return (
-        <SolutionSurface
-          key={routeKey(route)}
-          projectId={route.projectId}
-          query={route.query}
-        />
+        <TaskFlowSurface projectId={route.projectId}>
+          <SolutionSurface
+            key={routeKey(route)}
+            projectId={route.projectId}
+            query={route.query}
+          />
+        </TaskFlowSurface>
       );
     case "outcomes":
-      return <Outcomes projectId={route.projectId} />;
+      return (
+        <TaskFlowSurface projectId={route.projectId}>
+          <Outcomes projectId={route.projectId} />
+        </TaskFlowSurface>
+      );
     case "settings":
       return (
         <Settings

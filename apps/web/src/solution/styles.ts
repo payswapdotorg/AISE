@@ -73,6 +73,11 @@ tr[data-contributes-to-selection="true"] td{background:#ffedd5}
 .agent-transcript .turn-agent{background:#ecfdf5}
 .turn-who{font-weight:600;margin-right:.4rem}
 .agent-pending{border:2px solid #0f766e;background:#f0fdfa;border-radius:8px;padding:.5rem .75rem;margin:.4rem 0}
+.agent-choices{display:flex;flex-wrap:wrap;gap:.4rem;margin:.35rem 0}
+.agent-choice{font:inherit;font-size:13px;padding:.3rem .7rem;border-radius:999px;border:1px solid #0f766e;background:#ffffff;color:#0f766e;cursor:pointer}
+.agent-choice:hover{background:#f0fdfa}
+.agent-choice:focus-visible{outline:2px solid #0f766e;outline-offset:1px}
+.agent-choice:disabled{opacity:.5;cursor:default}
 .proposal-command{font-weight:600;margin:.2rem 0}
 .proposal-warning{color:#b91c1c;font-weight:600}
 .proposal-actions{display:flex;gap:.5rem;margin-top:.4rem}
