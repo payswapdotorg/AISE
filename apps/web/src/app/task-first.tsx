@@ -31,7 +31,7 @@
  * authorization or measurement truth.
  */
 
-import { useCallback, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { TASK_TYPES } from "@aise/adapter-contract";
 import { useResource, type ResourceOutcome, type ResourceState } from "./resource";
@@ -76,6 +76,7 @@ import {
   CanonicalActionBar,
   TaskCompositionPanelBody,
 } from "../parity/components";
+import { UnavailableState } from "./components";
 
 /* ------------------------------------------------------------------ */
 /* The task-flow resource                                              */
@@ -89,6 +90,24 @@ export interface TaskFlowResourceData {
   readonly view: TaskFlowView | null;
   /** The decoded bundle (the audit card renders the objects verbatim). */
   readonly bundle: TaskFlowBundle | null;
+  /**
+   * QA-002 (D8): the LIVE task-flow endpoint answered 404 and this ready
+   * outcome carries the COMMITTED DEMO bundle as the honest fallback — the
+   * degraded banner's promise ("the committed demo task journey below
+   * remains executable and is badged demo — never presented as live
+   * authority") made true. `mode: "demo"` is the badge vocabulary's own
+   * data-provenance truth (this record comes from the built-in demo
+   * dataset — every DataBadge consumer therefore badges the JOURNEY demo);
+   * the transport truth (live deployment, HTTP 404) is carried VERBATIM in
+   * `reason` and rendered by the ONE surface-level banner
+   * ({@link TaskFlowSurface}). Undefined = the data is exactly what the
+   * transport delivered (live bundle in live mode, demo bundle in offline
+   * demo mode, or the honest empty state).
+   */
+  readonly demoFallback?: {
+    readonly reason: string;
+    readonly impact: string;
+  };
 }
 
 /** The honest not-served reason (live 404 on the adapter task-flow route). */
@@ -105,11 +124,15 @@ function notServedImpact(): string {
  *
  *  - demo mode (API unavailable) → the committed demo journey for the
  *    corpus project, the honest empty state for every other project;
- *  - live mode → the same-origin joined task-flow GET; a 404 is the
- *    EXPLICIT unavailable-provider state (the honest reason + impact);
+ *  - live mode → the same-origin joined task-flow GET; a 404 (QA-002 D8)
+ *    returns a READY outcome carrying the committed demo bundle marked as
+ *    the demo fallback (`demoFallback` with the verbatim not-served reason
+ *    + impact) — the surface renders the ONE degraded banner ABOVE the
+ *    badged-demo journey, and "Check again" re-runs this loader against
+ *    the LIVE endpoint (a later 200 replaces the fallback entirely);
  *  - every other failure → the error state (typed detail, retryable).
  */
-function loadTaskFlow(
+export function loadTaskFlow(
   environment: ReturnType<typeof useAppEnvironment>,
   projectId: string,
 ): () => Promise<ResourceOutcome<TaskFlowResourceData>> {
@@ -145,28 +168,142 @@ function loadTaskFlow(
       };
     }
     if (isNotFoundHttp(result.failure)) {
-      return { kind: "unavailable" as const, reason: notServedReason(), impact: notServedImpact() };
+      // QA-002 (D8): the deployment answers the API but does not serve the
+      // task-flow adapter objects. The Impact line promises "the committed
+      // demo task journey below remains executable and is badged demo" —
+      // this ready outcome carries it: the committed corpus journey keeps
+      // its OWN project identity (links, handoff, records — never presented
+      // as THIS project's live records), the consumers' existing demo-bundle
+      // render paths render it below the surface-level banner, and the
+      // banner's "Check again" re-runs THIS loader against the live
+      // endpoint — never the fallback.
+      const bundle = demoTaskFlowBundle();
+      return {
+        kind: "ready" as const,
+        data: {
+          mode: "demo" as const,
+          projectId: DEMO_TASK_PROJECT_ID,
+          view: taskFlowView(bundle, DEMO_TASK_PROJECT_ID),
+          bundle,
+          demoFallback: { reason: notServedReason(), impact: notServedImpact() },
+        },
+      };
     }
     return { kind: "error" as const, message: describeApiFailure(result.failure) };
   };
 }
 
-/** The task-flow resource hook (keyed by project + API mode). */
+/* ------------------------------------------------------------------ */
+/* QA-002 (D3) — the ONE shared task-flow resource per surface tree      */
+/* ------------------------------------------------------------------ */
+
+/** The shared task-flow resource a surface tree provides (QA-002 D3). */
+export interface TaskFlowSharedResource {
+  /** The project the shared resource was loaded for. */
+  readonly projectId: string;
+  readonly state: ResourceState<TaskFlowResourceData>;
+  readonly reload: () => void;
+}
+
+/**
+ * The shared task-flow resource context (QA-002 D3). Provided by
+ * {@link TaskFlowSurface}; read by {@link useTaskFlow} so every consumer
+ * below one surface tree (strips, panels, bridges, compositions) renders
+ * from ONE fetch/decode/degraded-decision instead of one per consumer.
+ */
+const TaskFlowResourceContext = createContext<TaskFlowSharedResource | null>(null);
+
+/** The never-settling loader used when a shared provider owns the resource. */
+function neverLoadTaskFlow(): Promise<ResourceOutcome<TaskFlowResourceData>> {
+  // The outcome is never consumed (the shared state wins); the promise
+  // deliberately never settles so no shadow fetch ever fires.
+  return new Promise(() => {});
+}
+
+/** The task-flow resource hook (keyed by project + API mode). QA-002 (D3):
+ * when a {@link TaskFlowSurface} provides the shared resource for THIS
+ * project, every consumer reads it — one fetch, one decode, one
+ * degraded-state decision per surface tree. Standalone (no provider, or a
+ * different project) the hook owns its resource exactly as before. */
 export function useTaskFlow(
   projectId: string,
 ): {
   readonly state: ResourceState<TaskFlowResourceData>;
   readonly reload: () => void;
 } {
+  const shared = useContext(TaskFlowResourceContext);
   const environment = useAppEnvironment();
   const mode = environment.apiStatus?.mode ?? "probing";
+  const fromShared = shared !== null && shared.projectId === projectId;
   const load = useMemo(
     () => loadTaskFlow(environment, projectId),
     // The loader captures the environment (transport + mode); the resource
     // key re-runs it when either changes.
     [environment.fetchImpl, mode, projectId],
   );
-  return useResource(`task-flow:${projectId}:${mode}`, load);
+  const standalone = useResource(
+    fromShared ? `task-flow:${projectId}:${mode}:provided` : `task-flow:${projectId}:${mode}`,
+    fromShared ? neverLoadTaskFlow : load,
+  );
+  if (fromShared && shared !== null) {
+    return { state: shared.state, reload: shared.reload };
+  }
+  return standalone;
+}
+
+/**
+ * QA-002 (D3/D8) — the surface-level degraded banner: the honest
+ * unavailable state VERBATIM (the contractual "task-flow objects not served
+ * on this deployment" wording and the Impact line) plus the provider-status
+ * note, rendered ONCE per surface tree above the demo-fallback journey.
+ * "Check again" retries the LIVE endpoint (the shared resource's reload).
+ */
+export function TaskFlowDegradedBanner({
+  fallback,
+  onRetry,
+}: {
+  readonly fallback: { readonly reason: string; readonly impact: string };
+  readonly onRetry: () => void;
+}): ReactNode {
+  return (
+    <>
+      <UnavailableState impact={fallback.impact} reason={fallback.reason} onRetry={onRetry} />
+      <ProviderStatusNote subject="the task-first flow" />
+    </>
+  );
+}
+
+/**
+ * QA-002 (D3/D8) — the ONE task-flow resource per project per surface
+ * tree: loads the shared resource (single fetch, single decode, single
+ * degraded-state decision) and provides it to every consumer below; when
+ * the live endpoint answered 404 (ready-with-`demoFallback`), renders the
+ * ONE degraded banner ABOVE the surface — the committed demo task journey
+ * then renders BELOW it through the consumers' existing demo-bundle paths
+ * (badged demo, never live authority). In every other state the surface
+ * renders exactly as before (the banner is a demo-fallback-only addition).
+ */
+export function TaskFlowSurface({
+  projectId,
+  children,
+}: {
+  readonly projectId: string;
+  readonly children: ReactNode;
+}): ReactNode {
+  const { state, reload } = useTaskFlow(projectId);
+  const shared = useMemo<TaskFlowSharedResource>(
+    () => ({ projectId, state, reload }),
+    [projectId, state, reload],
+  );
+  const fallback = state.status === "ready" ? state.data.demoFallback : undefined;
+  return (
+    <TaskFlowResourceContext.Provider value={shared}>
+      {fallback === undefined ? null : (
+        <TaskFlowDegradedBanner fallback={fallback} onRetry={reload} />
+      )}
+      {children}
+    </TaskFlowResourceContext.Provider>
+  );
 }
 
 /* ------------------------------------------------------------------ */

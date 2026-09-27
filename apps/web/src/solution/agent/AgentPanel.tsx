@@ -23,8 +23,51 @@
  */
 
 import { useState } from "react";
-import type { AgentPendingProposal } from "./port";
+import type { AgentClarificationQuestion, AgentPendingProposal } from "./port";
 import type { SolutionAgentPort } from "./port";
+
+/**
+ * QA-002 (D2) — render one clarification question's offered choices as
+ * ACTIONABLE answer affordances: one button per choice, each submitting the
+ * choice as the next user turn through the SAME submission path as typing
+ * (`onUserTurn` — the compiler resolves the offered labels/ids through the
+ * session foci's aliases). Keyboard accessible by construction (native
+ * buttons); honest when absent — no choices means the plain question stands,
+ * never a fabricated list.
+ */
+function ClarificationChoices({
+  busy,
+  question,
+  onUserTurn,
+}: {
+  readonly busy: boolean;
+  readonly question: AgentClarificationQuestion;
+  readonly onUserTurn: (utterance: string) => void;
+}): React.ReactNode {
+  const choices = question.offeredChoices ?? [];
+  if (choices.length === 0) {
+    return null;
+  }
+  return (
+    <div className="agent-choices" data-clarification-choices={question.slot}>
+      <span className="sr-only">Answers the assistant accepts for {question.slot}:</span>
+      {choices.map((choice) => (
+        <button
+          className="agent-choice"
+          data-clarification-choice={choice}
+          disabled={busy}
+          key={choice}
+          onClick={() => {
+            onUserTurn(choice);
+          }}
+          type="button"
+        >
+          {choice}
+        </button>
+      ))}
+    </div>
+  );
+}
 
 export function AgentPanel({ port, busy, transcript, pendingProposal, pendingClarification, onUserTurn, onCancelPending }: {
   /** The agent seam port (undefined = not wired; the panel says so). */
@@ -53,7 +96,9 @@ export function AgentPanel({ port, busy, transcript, pendingProposal, pendingCla
       <h3>Ask the assistant</h3>
       <p className="agent-hint">
         Describe the work in your own words — e.g. “Apply 30 mm plaster to the affected wall
-        faces.” The assistant proposes the exact operation; you confirm before anything changes.
+        faces.” The assistant proposes the exact operation, and you confirm before anything
+        changes. If a detail is missing it will ask — and when it can list the answers it
+        accepts, they appear as buttons you can pick instead of typing.
       </p>
       <form
         aria-label="Message the assistant"
@@ -89,6 +134,21 @@ export function AgentPanel({ port, busy, transcript, pendingProposal, pendingCla
           <p>
             <strong>Waiting for your answer:</strong>{" "}
             {pendingClarification.questions.map((question) => question.question).join(" ")}
+          </p>
+          {/* QA-002 (D2): every question's offered choices render as actionable
+              answers — the user never has to guess the vocabulary the compiler
+              accepts. Questions without choices keep the plain question above. */}
+          {pendingClarification.questions.map((question, index) => (
+            <ClarificationChoices
+              busy={busy}
+              key={`${question.slot}:${String(index)}`}
+              onUserTurn={onUserTurn}
+              question={question}
+            />
+          ))}
+          <p className="pane-foot">
+            Pick an offered answer above, or type your own reply — the assistant only
+            accepts the answers it listed when it offered them.
           </p>
           <button onClick={onCancelPending} type="button">
             Cancel this request

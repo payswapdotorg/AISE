@@ -618,6 +618,15 @@ export function CrossDeviceHandoffBody({
         />
       ) : (
         <>
+          {data.demoFallback === undefined ? null : (
+            <div className="callout callout-warning" data-handoff-demo-fallback="true">
+              This deployment serves no live task-flow objects, so the handoff below
+              carries the <strong>committed demo task journey</strong> (project{" "}
+              <span className="mono">{DEMO_TASK_PROJECT_ID}</span>) — badged demo,
+              never this project&apos;s live records. The banner above states the live
+              truth; “Check again” there re-checks the live endpoint.
+            </div>
+          )}
           <p data-handoff-lead="true">
             The next action belongs on the phone: live field capture (camera,
             sensors, offline sessions, mission submission) is the{" "}
