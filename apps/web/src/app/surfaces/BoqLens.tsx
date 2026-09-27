@@ -4,6 +4,19 @@
  * honest totals, grounded explanations and per-claim traceability — all
  * computed by the FROZEN boqlens library over its demo fixture.
  *
+ * QA-003 (D7) — the LIST and the per-import LENS are INDEPENDENT data with
+ * independent failures, and the load is decoupled accordingly: a failure
+ * of the CHOSEN import's lens fetch (409 normalization_required, 404
+ * import_not_found under the per-instance serverless store, or any typed
+ * failure) does NOT discard the imports list — the resource reaches a
+ * ready state carrying `imports` PLUS a per-import `lensFailure`, the
+ * selector renders the full truthful table (a list that loaded NEVER
+ * renders the loading branch), the lens area names WHICH import failed
+ * with the typed reason and its "Try again" retries THAT import's lens,
+ * and selecting a different import in the selector loads its lens
+ * normally (the switch-back path — the recovery story). Only a failure
+ * of the LIST itself is a whole-surface error.
+ *
  * Honesty (the R8 discipline, presentation-only here):
  *  - original text renders VERBATIM (class .verbatim) with its cell refs;
  *  - every normalized/interpreted/mapped value carries a "derived" tag;
@@ -26,6 +39,7 @@ import {
   loadBoqImportsLive,
   loadBoqLensLive,
   type BoqImportSummaryRecord,
+  type FetchLike,
 } from "../api";
 import { demoLensInput } from "../demo";
 import { BoqImportPanel } from "./BoqImport";
@@ -58,6 +72,17 @@ import { BoqLineSolutionTraceBridge } from "../solution-composition";
 import { quantityBoundaryLabels } from "../../parity/boundary-labels";
 import { demoBoqImport, demoCase, demoWorkspaceInput } from "../demo";
 
+/**
+ * QA-003 (D7) — the CHOSEN import's lens fetch failed while the imports
+ * LIST loaded fine: which import failed (the selection's own id) and the
+ * typed reason verbatim. The list is NOT discarded — the selector keeps
+ * rendering every recorded import and the lens area renders this failure.
+ */
+export interface BoqLensFailure {
+  readonly importId: string;
+  readonly message: string;
+}
+
 /** What the BOQ Lens surface renders once loaded. */
 export interface BoqLensData {
   readonly mode: "demo" | "api";
@@ -71,6 +96,77 @@ export interface BoqLensData {
    * state from the lens itself.
    */
   readonly imports?: readonly BoqImportSummaryRecord[];
+  /**
+   * QA-003 (D7): the CHOSEN import's per-import lens failure (null when the
+   * lens loaded — or when no import was chosen). The imports list stays
+   * rendered alongside it; only a LIST failure is a whole-surface error.
+   */
+  readonly lensFailure: BoqLensFailure | null;
+}
+
+/**
+ * QA-003 (D7) — the LIVE load, decoupled: the list and the chosen import's
+ * lens are independent data with independent failures. Exported for the
+ * spy-driven tests (the list-OK + lens-fail path is the D7 pin).
+ *
+ *  - the LIST (`GET /v1/boq/imports`) failing is a whole-surface error
+ *    (nothing truthful to render);
+ *  - the CHOSEN import's lens failing (409 normalization_required, 404
+ *    import_not_found, any typed failure) is NOT: the resource reaches a
+ *    ready state carrying `imports` PLUS the per-import `lensFailure` —
+ *    the selector's table stays truthful and the failure names its import.
+ */
+export async function loadBoqLensSurfaceData(input: {
+  readonly fetchImpl: FetchLike;
+  readonly projectId: string;
+  readonly selectedImportId: string | null;
+}): Promise<ResourceOutcome<BoqLensData>> {
+  // Live mode: the deployment's BOQ import documents are LISTED (the
+  // revision selector below); the inspected import is the user's
+  // selection or, before any selection, the first in the service's own
+  // order — opened and NAMED, never guessed silently.
+  const imports = await loadBoqImportsLive(input.fetchImpl);
+  if (!imports.ok) {
+    return { kind: "error", message: describeApiFailure(imports.failure) };
+  }
+  const chosen =
+    imports.imports.find((entry) => entry.importId === input.selectedImportId) ??
+    imports.imports[0] ??
+    null;
+  if (chosen === null) {
+    return {
+      kind: "ready",
+      data: { mode: "api", projectId: input.projectId, lens: null, imports: [], lensFailure: null },
+    };
+  }
+  const lens = await loadBoqLensLive(input.fetchImpl, chosen.importId);
+  if (!lens.ok) {
+    // D7: the list STAYS — the resource is ready with the per-import lens
+    // failure (which import, the typed reason). Never a whole-surface error.
+    return {
+      kind: "ready",
+      data: {
+        mode: "api",
+        projectId: input.projectId,
+        lens: null,
+        imports: imports.imports,
+        lensFailure: {
+          importId: chosen.importId,
+          message: describeApiFailure(lens.failure),
+        },
+      },
+    };
+  }
+  return {
+    kind: "ready",
+    data: {
+      mode: "api",
+      projectId: input.projectId,
+      lens: lens.record as unknown as BoqLensInput,
+      imports: imports.imports,
+      lensFailure: null,
+    },
+  };
 }
 
 /** The BOQ Lens surface. */
@@ -103,37 +199,18 @@ export function BoqLensSurface({ projectId }: { readonly projectId: string }): R
                     parseStatus: "parsed",
                   },
                 ],
+          lensFailure: null,
         },
       };
     }
-    // Live mode: the deployment's BOQ import documents are LISTED (the
-    // revision selector below); the inspected import is the user's
-    // selection or, before any selection, the first in the service's own
-    // order — opened and NAMED, never guessed silently.
-    const imports = await loadBoqImportsLive(environment.fetchImpl);
-    if (!imports.ok) {
-      return { kind: "error", message: describeApiFailure(imports.failure) };
-    }
-    const chosen =
-      imports.imports.find((entry) => entry.importId === selectedImportId) ??
-      imports.imports[0] ??
-      null;
-    if (chosen === null) {
-      return { kind: "ready", data: { mode: "api", projectId, lens: null, imports: [] } };
-    }
-    const lens = await loadBoqLensLive(environment.fetchImpl, chosen.importId);
-    if (!lens.ok) {
-      return { kind: "error", message: describeApiFailure(lens.failure) };
-    }
-    return {
-      kind: "ready",
-      data: {
-        mode: "api",
-        projectId,
-        lens: lens.record as unknown as BoqLensInput,
-        imports: imports.imports,
-      },
-    };
+    // QA-003 (D7): the live load, decoupled (list failure = whole-surface
+    // error; chosen-import lens failure = ready state carrying the list +
+    // the per-import failure).
+    return loadBoqLensSurfaceData({
+      fetchImpl: environment.fetchImpl,
+      projectId,
+      selectedImportId,
+    });
   }, [environment, projectId, selectedImportId]);
 
   const { state, reload } = useResource(`boq-lens:${projectId}:${mode}:${selectedImportId ?? "first"}`, load);
@@ -154,7 +231,17 @@ export function BoqLensSurface({ projectId }: { readonly projectId: string }): R
       </div>
       <TaskFlowStrip projectId={projectId} />
       <ProjectSurfaceNav projectId={projectId} current="boq-lens" />
-      <BoqImportPanel projectId={projectId} onImported={reload} />
+      <BoqImportPanel
+        projectId={projectId}
+        onImported={(importId) => {
+          // QA-003: the freshly imported document becomes the explicit
+          // selection (the direct consequence of the operator's own action,
+          // NAMED in the selector — never a guess) and the lens resource
+          // re-loads onto it — the normalization was ensured in-flow, so it
+          // is viewable; a failed lens load renders the per-import failure.
+          setSelectedImportId(importId);
+        }}
+      />
       <BoqRevisionSelectorCard
         mode={isDemoMode(environment) || environment.apiStatus === null ? "demo" : "api"}
         projectId={projectId}
@@ -165,7 +252,11 @@ export function BoqLensSurface({ projectId }: { readonly projectId: string }): R
         }
         selectedImportId={
           state.status === "ready"
-            ? (state.data.lens === null ? null : state.data.lens.importId)
+            ? state.data.lens !== null
+              ? state.data.lens.importId
+              : state.data.lensFailure !== null
+                ? state.data.lensFailure.importId
+                : null
             : null
         }
         onSelectImport={(importId) => {
@@ -184,6 +275,7 @@ export function BoqLensSurface({ projectId }: { readonly projectId: string }): R
             onQuery={setQuery}
             selectedItemId={selectedItemId}
             onSelectItem={setSelectedItemId}
+            onRetryLens={reload}
           />
         )}
       />
@@ -197,14 +289,52 @@ export function BoqLensBody({
   onQuery,
   selectedItemId,
   onSelectItem,
+  onRetryLens,
 }: {
   readonly data: BoqLensData;
   readonly query: string;
   readonly onQuery: (query: string) => void;
   readonly selectedItemId: string | null;
   readonly onSelectItem: (itemId: string) => void;
+  /**
+   * QA-003 (D7): retries the CHOSEN import's lens fetch (the per-import
+   * failure's own "Try again"). Optional — static renders omit it.
+   */
+  readonly onRetryLens?: () => void;
 }): ReactNode {
   if (data.lens === null) {
+    if (data.lensFailure !== null) {
+      // D7: the CHOSEN import's lens failed — name WHICH import and the
+      // typed reason; "Try again" retries THAT import's lens; the selector
+      // above still lists every recorded import (switch to another there).
+      return (
+        <Card title="BOQ Lens" badge={<DataBadge mode={data.mode} />}>
+          <div className="state state-error" role="alert" data-lens-failure={data.lensFailure.importId}>
+            <p className="state-title">This import&apos;s lens could not be loaded</p>
+            <p className="state-guidance">
+              Import <span className="mono">{data.lensFailure.importId}</span>: {data.lensFailure.message}
+            </p>
+            <p className="state-detail">
+              This failure is THIS import&apos;s own — the documents table above still
+              lists every import this deployment records, and inspecting another
+              document there loads its lens normally.
+            </p>
+            {onRetryLens === undefined ? null : (
+              <div className="state-action">
+                <button
+                  type="button"
+                  className="button"
+                  data-retry-import={data.lensFailure.importId}
+                  onClick={onRetryLens}
+                >
+                  Try again
+                </button>
+              </div>
+            )}
+          </div>
+        </Card>
+      );
+    }
     return (
       <Card title="BOQ Lens" badge={<DataBadge mode={data.mode} />}>
         {data.mode === "demo" ? (
@@ -245,6 +375,7 @@ export function BoqLensBody({
     <>
       <Card
         title="BOQ import"
+        id="boq-lens-open-import"
         badge={<DataBadge mode={data.mode} />}
         meta={
           <span>
