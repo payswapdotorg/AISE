@@ -439,8 +439,8 @@ export async function checkShellRenders(ctx: CheckContext): Promise<CheckReport>
     const title = await pageHandle.page.title();
     // Measured through Playwright's locator API (no in-page globals):
     // root mount size, visible text volume and the shell's own landmarks.
-    const rootChildren = await pageHandle.page.locator("main#app > *").count();
-    const rootDescendants = await pageHandle.page.locator("main#app *").count();
+    const rootChildren = await pageHandle.page.locator("#app > *").count();
+    const rootDescendants = await pageHandle.page.locator("#app *").count();
     const gateHeading =
       ((await pageHandle.page.locator("h2#gate-title").textContent()) ?? "").trim();
     const demoButtonText = (
