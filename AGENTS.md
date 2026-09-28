@@ -2,16 +2,17 @@
 
 AISE is implemented by replaceable coding workers under an independent Tech Lead/Architect. The repository is the sole durable source of implementation truth. No worker may require prior conversation history.
 
-## CURRENT STATE — 2026-09-28
+## CURRENT STATE — 2026-09-28 (R2-complete reconciliation)
 
 - The original 41-item implementation campaign is complete: AISE-001 through AISE-041 are finalized.
-- PROD-001 through PROD-034 are finalized; PROD-015 remains the product-readiness declaration authority.
+- PROD-001 through PROD-034 are finalized; PROD-015 remains the product-readiness declaration authority (valid for its own recorded final SHA).
 - HFX-000, HFX-101, HFX-201, HFX-204, HFX-301, HFX-302, HFX-303 and HFX-401 are finalized.
-- Track R is closed: POST-000 (#14) plus POST-001…POST-006 (#15…#20) are completed.
+- Track R is closed INCLUDING R2: POST-000 (#14) plus POST-001…POST-006 (#15…#20) are completed, and the Tech-Lead-only R2 exact-SHA W/M/X replay is COMPLETE and PASS (2026-09-28 — evidence: docs/productization-evidence/R2-2026-09-28/).
 - Track G is closed: GBIM-000 (#10) plus GBIM-001…GBIM-003 (#11…#13) are completed. Results are exploratory ADAPT evidence; no fork and no default-provider selection is authorized.
-- Post-R1 corrective closure is present on main as QA-001, QA-002 and QA-003. QA-003 is accepted at 6113/0 tests, with typecheck and lint passing; the subsequent current application tip 2de6670366a15c55a970139c32be43413c200849 is a deployment-trigger-only commit with no file changes relative to that accepted tree.
-- The GitHub Vercel status for 2de6670366a15c55a970139c32be43413c200849 is success / Deployment has completed. This is deployment evidence, not a fresh current-SHA W/M/X journey proof.
-- The remaining governed evidence frontier is R2: Tech Lead exact-current-SHA W/M/X replay and reconciliation. Do not call the current application tip freshly replay-proven until that record exists.
+- Post-R1 corrective closure is present on main as QA-001…QA-007. QA-007 (c34ad7b) closed the D9 definition-list/dlitem accessibility defect the R2 replay found deterministically at 28c2631's live deployment (the QA-006-era full-suite PASS claim for the accessibility check could not be reproduced — two deterministic FAIL logs are committed as evidence).
+- The code-bearing application tip is c34ad7b, deployed EXACTLY (Vercel dpl_3Y7qBgNcjWuyGf9CfbcEBZoydnym, production alias https://aise-tan.vercel.app) and freshly replay-proven at that exact deployment: deployed-check 7/7 PASS (accessibility critical=0 serious=0 both viewports), W journey 24/24, M journey 22 PASS + 1 BLOCKED_NO_KVM (recorded, never upgraded), X journey 15/15.
+- The R2 harness commit d80f2b3 and the docs/state reconciliation commits that follow are tools-only/docs-only and build-inert relative to the deployed artifact.
+- Release hygiene: if main advances with code-bearing commits, deploy the new exact SHA and refresh the W/M/X replay evidence before describing the deployment as current.
 - POST-006 is complete, but its live accessibility ledger records 0 critical, 23 serious and 44 moderate findings. Any remediation beyond accepted scope requires separate governance.
 - Always resolve the live default-branch HEAD directly before dispatching or accepting work; state-only reconciliation commits may follow the code-bearing application tip.
 

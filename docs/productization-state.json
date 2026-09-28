@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-28T06:44:00Z",
+  "lastReconciledAt": "2026-09-28T23:21:00Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -20,16 +20,16 @@
     "status": "ready",
     "installable": "yes",
     "freeTierDeployed": "yes",
-    "deploymentStatus": "current main SHA deployed according to GitHub Vercel commit status (Deployment has completed, 2026-09-27T18:10:03Z); fresh exact-SHA W/M/X replay is still pending and is required before describing the current SHA as freshly replay-proven.",
+    "deploymentStatus": "R2 complete 2026-09-28: the exact code-bearing application tip c34ad7b is deployed (Vercel dpl_3Y7qBgNcjWuyGf9CfbcEBZoydnym, READY, production alias aise-tan.vercel.app) and freshly replay-proven at that exact deployment — deployed-check 7/7 PASS + W 24/24 + M 22 PASS/1 BLOCKED_NO_KVM + X 15/15 (evidence: docs/productization-evidence/R2-2026-09-28/). The PROD-015 declaration remains valid for its own recorded final SHA (dpl_9G5gsVbGzpbWGBewyQUE4QhgadFY / 91f1b449).",
     "userFriendlyInterface": "yes",
     "publicUrl": "https://aise-tan.vercel.app",
-    "vercelDeploymentId": "dpl_B7dnBrzQ2P3FzbVgdv8AhF814rU1",
-    "deployedApplicationCommit": "79680261a043850e10f4e352194fe9cd49c831a3",
-    "lastVerifiedCommit": "7968026",
-    "currentMainCommit": "2de6670366a15c55a970139c32be43413c200849",
-    "currentMainCommitDate": "2026-09-27T17:57:31Z",
-    "currentMainResolvedAt": "2026-09-28T06:44:00Z",
-    "deploymentFreshness": "current main SHA is the exact deployed commit according to the GitHub Vercel status; prior W/M/X journey evidence is for earlier exact SHAs, so a new R2 replay is required for current-SHA proof.",
+    "vercelDeploymentId": "dpl_3Y7qBgNcjWuyGf9CfbcEBZoydnym",
+    "deployedApplicationCommit": "c34ad7bdeb68eee0c6df6621a962bf77da9e891f",
+    "lastVerifiedCommit": "c34ad7b",
+    "currentMainCommit": "c34ad7bdeb68eee0c6df6621a962bf77da9e891f",
+    "currentMainCommitDate": "2026-09-28T22:59:58Z",
+    "currentMainResolvedAt": "2026-09-28T23:21:00Z",
+    "deploymentFreshness": "R2 complete 2026-09-28: the code-bearing application tip c34ad7b (QA-007 acceptance) is deployed exactly (Vercel dpl_3Y7qBgNcjWuyGf9CfbcEBZoydnym, production alias aise-tan.vercel.app) and carries a fresh full W/M/X journey replay plus the 7-check deployed-check PASS at that exact deployment; the commits that follow on main are tools-only/docs-only reconciliation commits (build-inert). Evidence: docs/productization-evidence/R2-2026-09-28/.",
     "finalGate": "docs/PRODUCTION-READINESS-GATE.md",
     "lastReconciledAt": "2026-09-25T14:58:41Z"
   },
@@ -556,7 +556,7 @@
     "competitiveArtifact": "docs/layered-competitive-stress-test-2026-09-16.md",
     "adapterContract": "spec/client-adapter-contract.md",
     "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-    "status": "implementation-verification complete; post-production hardening and Geometry/BIM spike complete; current-SHA R2 replay remains the active evidence frontier"
+    "status": "implementation-verification complete; post-production hardening and Geometry/BIM spike complete; R2 exact-SHA W/M/X replay complete and PASS (evidence: docs/productization-evidence/R2-2026-09-28/; QA-004/005/006/007 reconciled on main)"
   },
   "hfx": {
     "workItems": [
@@ -656,7 +656,7 @@
   },
   "followOnPrograms": {
     "postProductionHardening": {
-      "status": "R0/R1 complete; R2 exact-SHA final replay pending",
+      "status": "R0/R1/R2 complete — the R2 exact-SHA W/M/X replay PASSed at c34ad7b (deployed dpl_3Y7qBgNcjWuyGf9CfbcEBZoydnym): deployed-check 7/7, W 24/24, M 22 PASS + 1 BLOCKED_NO_KVM (recorded), X 15/15; the replay found and governed the D9 definition-list defect (QA-007) and the journey harness zero-settle click crash (d80f2b3, tools-only); evidence docs/productization-evidence/R2-2026-09-28/",
       "authority": "docs/post-production-discoverability-and-device-validation-plan-2026-09-25.md",
       "parentIssue": 14,
       "waves": {
@@ -671,7 +671,7 @@
           "#20 POST-006"
         ],
         "R2": [
-          "Tech Lead final exact-SHA W/M/X replay and reconciliation"
+          "Tech Lead final exact-SHA W/M/X replay and reconciliation — COMPLETE 2026-09-28 (see docs/productization-evidence/R2-2026-09-28/README.md)"
         ]
       }
     },

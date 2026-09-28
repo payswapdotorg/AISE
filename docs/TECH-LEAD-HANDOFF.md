@@ -7,6 +7,46 @@ Audience: successor AISE Tech Lead / Architect with up to 3 concurrent workers
 Source of truth: repository state; this document is authoritative for orchestration only.
 ## 0. 2026-09-28 reconciliation override
 
+### 0.a R2 completion addendum — 2026-09-28T23:2xZ (supersedes the R2-pending statements below)
+
+The remaining governed evidence frontier is CLOSED. The successor Tech Lead's
+R2 exact-SHA W/M/X replay and reconciliation is complete and recorded:
+
+- **QA-004 (`e93a052`), QA-005 (`2cc1bba`), QA-006 (`28c2631`), QA-007
+  (`c34ad7b`) are accepted on main** (post-production corrective closure; the
+  state files now carry them).
+- **The code-bearing application tip is `c34ad7b`** (QA-007 acceptance — the
+  D9 definition-list/dlitem accessibility defect the R2 replay FOUND at
+  `28c2631`'s live deployment, governed and fixed; worker `815bff67`,
+  Lead-verified: typecheck/lint PASS, suite 6175/0/405, boundaries 1067).
+- **`c34ad7b` is deployed exactly**: Vercel `dpl_3Y7qBgNcjWuyGf9CfbcEBZoydnym`
+  (project `aise`, target production, READY), production alias
+  **https://aise-tan.vercel.app**. (The `28c2631` push at 08:19Z had been
+  Vercel rate-limited — the team quota window — which is why production
+  briefly remained at `2cc1bba`.)
+- **Freshly replay-proven at that exact deployment**: deployed-check
+  **7/7 PASS** (41/41 assertions; accessibility `critical=0 serious=0` both
+  viewports) + **W 24/24 PASS** + **M 22 PASS / 1 BLOCKED_NO_KVM (recorded)**
+  + **X 15/15 PASS**. Evidence: `docs/productization-evidence/R2-2026-09-28/`
+  (incl. the two deterministic FAIL logs that documented the D9 finding, the
+  deployed environment fingerprint, and the honest environmental notes — the
+  bun-tsc OOM ceiling on the recording sandbox with the node-runtime
+  per-step gate evidence).
+- The R2 harness commit `d80f2b3` (tools-only: the pass-17 settle cure for
+  the journey legs' Enter-demo click + the W2 leg's bounded retry) and the
+  docs/state reconciliation commits that follow are **build-inert** relative
+  to the deployed artifact (tools/journey + tools/deployed + docs only).
+- The current deployment may now be described as **current and freshly
+  replay-proven at `c34ad7b`**. If main advances with further code-bearing
+  commits, release hygiene re-asserts: deploy the new exact SHA and refresh
+  the replay evidence before calling it current.
+- Known residual state is unchanged: POST-006's accessibility ledger (0
+  critical / 23 serious / 44 moderate — remediation beyond QA-007's D9 fix
+  needs separate governance); the M emulator lane's BLOCKED_NO_KVM; no open
+  successor WOs known at reconciliation time.
+
+### 0.b Prior reconciliation (2026-09-28T06:47Z — historical, superseded where it conflicts)
+
 This section supersedes any older “current” or “immediate priority” statements below that conflict with the repository. Always resolve the live main HEAD first; the SHA below is the last reconciled code-bearing application tip, followed only by documentation/state reconciliation commits.
 
 - Resolved code-bearing application tip: 2de6670366a15c55a970139c32be43413c200849 (2026-09-27).
@@ -534,13 +574,13 @@ Stop implementation and raise an Architecture Change Record when a proposed chan
 
 A fresh Tech Lead should be able to start with no chat context and know exactly what is true, what is active, what is allowed, what must be verified, and which three workers can be dispatched next.
 
-As of the 2026-09-28 reconciliation:
+As of the 2026-09-28 R2-completion reconciliation (§0.a):
 - AISE-001…041 are finalized.
 - PROD-001…034 and the listed HFX program are finalized.
 - Track R (#14–#20) and Track G (#10–#13) are closed.
-- QA-001, QA-002 and QA-003 are accepted on main.
-- The current main SHA is 2de6670366a15c55a970139c32be43413c200849 and has a successful GitHub Vercel deployment status.
-- The immediate remaining proof is R2: Tech Lead exact-SHA W/M/X replay + evidence/state reconciliation.
+- QA-001…QA-007 are accepted on main (QA-007 closed the D9 definition-list defect the R2 replay found at 28c2631's live deployment).
+- The code-bearing application tip is c34ad7b, deployed exactly (dpl_3Y7qBgNcjWuyGf9CfbcEBZoydnym → https://aise-tan.vercel.app) and freshly replay-proven at that exact deployment (deployed-check 7/7; W 24/24; M 22 PASS + 1 BLOCKED_NO_KVM recorded; X 15/15 — evidence docs/productization-evidence/R2-2026-09-28/).
+- R2 is COMPLETE — no evidence frontier remains open. The next work is whatever the operator governs next; until then, hold the frozen state.
 - Do not reopen finalized work merely for polish. Known POST-006 accessibility findings require separate governance if remediated.
 - Do not infer completion from prose; resolve repository state and independently reproduce evidence at each merge/release decision.
 
