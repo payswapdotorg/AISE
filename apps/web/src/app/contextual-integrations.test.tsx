@@ -167,10 +167,16 @@ describe("PROD-034 gap 5 — the live-mode honest state + the wiring", () => {
       <ContextualIntegrationsPanelBody data={data} demo={true} />,
     );
     expect(demoHtml).toContain("ERP procurement");
+    expect(demoHtml).toContain("data-badge-demo");
     const liveHtml = renderToStaticMarkup(
       <ContextualIntegrationsPanelBody data={data} demo={false} />,
     );
     expect(liveHtml).toContain("no readable same-origin endpoint");
+    // QA-005 (D6c): the badge follows the task-flow DATA's own mode, never
+    // the environment — this live-environment render carries the demo
+    // dataset (the live-404 demo-fallback shape), so it badges demo.
+    expect(liveHtml).toContain("data-badge-demo");
+    expect(liveHtml).not.toContain("data-badge-api");
   });
 
   test("a bundle-less project renders the honest empty card (never an invented reference)", () => {

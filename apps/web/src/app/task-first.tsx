@@ -3,8 +3,10 @@
  *
  * The React surface of the golden journey (task-first, not module-first):
  *
- *  - {@link TaskFirstLanding} — the entry experience: "What do you need to
- *    do?" (typed task selection → a `TaskIntent` wire object, W-R3), the
+ *  - {@link TaskFirstLanding} — the entry experience: the "Choose where
+ *    to start" intent card (typed task selection → a `TaskIntent` wire
+ *    object, W-R3 — the page-head h1 asks "What do you need to do?" and
+ *    the entry card's own heading names the chooser, QA-005 D6a), the
  *    open/create-project entrypoints and the current task's journey;
  *  - {@link TaskFlowPanel} — the full task-first view: the server's
  *    NextBestAction (actionable prompt or EXPLICIT blocked reason,
@@ -849,7 +851,12 @@ export function TaskIntentForm({
 
   return (
     <Card
-      title="What do you need to do?"
+      // QA-005 (D6a): the card's h2 names what the card HOLDS (the
+      // entry-point chooser), never the page question — the dashboard's
+      // page-head h1 already asks "What do you need to do?", and an
+      // identical card h2 made screen-reader heading navigation hear the
+      // same heading twice with no distinguishing context (WCAG 2.4.6/1.3.1).
+      title="Choose where to start"
       badge={demo ? <DataBadge mode="demo" /> : <DataBadge mode="api" />}
       meta={<span>task intent → context → evidence → gaps → next best action</span>}
     >

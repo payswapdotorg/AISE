@@ -259,11 +259,13 @@ describe("PROD-034 cross-route sweep — no orphaned surfaces", () => {
 describe("PROD-034 cross-route sweep — the new elements are threaded where they belong", () => {
   test("the LANDING composes the task-first flow AND the contextual integrations panel", () => {
     const landing = RENDERED.find((entry) => entry.name === "landing")!.html;
-    // The canonical actions (the capture entry) + the intent form.
+    // The canonical actions (the capture entry) + the intent form (QA-005
+    // D6a: the entry card's own heading names the chooser — the page-head
+    // question stays the dashboard's h1, never a card title).
     expect(landing).toContain(
       `href="${formatRoute({ name: "capture", projectId: DEMO_TASK_PROJECT_ID })}"`,
     );
-    expect(landing).toContain("What do you need to do?");
+    expect(landing).toContain("Choose where to start");
     // The task-flow panel AND the integrations panel both mount (each
     // renders the shared task-flow loading state).
     const loadingCount = (landing.match(/Loading the task-first flow…/g) ?? []).length;

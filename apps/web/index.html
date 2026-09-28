@@ -12,7 +12,11 @@
     <title>AISE — AI Site Engineer</title>
   </head>
   <body>
-    <main id="app"></main>
+    <!-- QA-005 (D6b): a plain div mount, not a <main> — the React shell's
+         own main#main-content is the page's single main landmark (the skip
+         link's target); a main#app wrapper nested a second <main> inside it
+         on every page (invalid HTML, two competing main landmarks). -->
+    <div id="app"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
