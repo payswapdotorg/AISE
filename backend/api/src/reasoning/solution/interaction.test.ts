@@ -22,6 +22,7 @@ import { createSolutionCommandCompiler } from "./compiler";
 import { decideNextTurn, executeDecision } from "./interaction";
 import { createInMemorySolutionToolDouble } from "./tools";
 import { constClock, demoSessionContext, bareSessionContext } from "./testkit";
+import type { AgentSessionContext, SessionFocus } from "./model";
 import type { PendingClarification } from "./interaction";
 
 const compiler = createSolutionCommandCompiler({ clock: constClock() });
@@ -416,5 +417,190 @@ describe("PROD-023 interaction loop: pending-state lifecycle", () => {
       throw new Error("expected refusal");
     }
     expect(decision.command.reasonCode).toBe("approval-authority-claim");
+  });
+});
+
+/* ------------------------------------------------------------------ */
+/* QA-004: the Lead's live sequence — area language (D5a) + the         */
+/* constraint gate at the confirm boundary (D5b)                        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The LIVE wall-world session shape (Lead-verified defect, 2026-09-26):
+ * wall-faces focus present, NO default focus — turn 1 of the Lead's
+ * sequence asked "Which target location should the plaster-application
+ * apply to?" and the answer "Damaged ground-floor wall faces" anchored it.
+ */
+const QA004_WALL_FACES_FOCUS: SessionFocus = {
+  focusId: "wall-faces",
+  label: "Damaged ground-floor wall faces",
+  aliases: [
+    "ground-floor wall faces",
+    "the ground-floor wall faces",
+    "affected wall faces",
+    "the wall faces",
+  ],
+  selectorKind: "face-set",
+  nodeRefs: ["node-wall-002"],
+  geometryRefs: [{ kind: "polygon", ref: "geo-wall-faces-002" }],
+  knownParameters: [
+    { name: "length", value: 5, unit: "m" },
+    { name: "height", value: 2.4, unit: "m" },
+    { name: "area", value: 12, unit: "m2" },
+  ],
+};
+
+function qa004LiveSession(): AgentSessionContext {
+  return {
+    sessionId: "session-qa004-live",
+    agentId: "agent-demo-assistant",
+    userId: "user-demo-engineer",
+    proposedTo: { solutionId: "solution-demo-001", versionNumber: 1 },
+    foci: [QA004_WALL_FACES_FOCUS],
+  };
+}
+
+describe("QA-004 interaction loop: the Lead's 3-turn sequence — the 2500 mm proposal is gone", () => {
+  test("D5a: utterance → location answer → dimension clarification (never the mis-bound proposal)", async () => {
+    const live = qa004LiveSession();
+
+    // Turn 1 — the Lead's exact utterance: the area language leaves the
+    // thickness unstated and no focus matches, so the agent asks BOTH the
+    // thickness and the target location (never proposes a thickness).
+    const ask = await decideNextTurn(
+      {
+        utterance:
+          "Apply a cement plaster coat to the damaged wall faces over a 2.5 by 2.5 metre area",
+        session: live,
+      },
+      compiler,
+    );
+    expect(ask.decision).toBe("ask");
+    if (ask.decision !== "ask") {
+      throw new Error("expected ask (D5a)");
+    }
+    expect(ask.questions.map((question) => `${question.slotKind}/${question.slot}`)).toEqual([
+      "dimension/thickness",
+      "location/target location",
+    ]);
+
+    // Turn 2 — the Lead's location answer: the merged recompilation
+    // resolves the target but the thickness is STILL unstated — the
+    // previously-misbound 2500 mm proposal becomes a dimension
+    // clarification (the D5a path).
+    const clarify = await decideNextTurn(
+      {
+        utterance: "Damaged ground-floor wall faces",
+        session: live,
+        pendingClarification: ask.pendingClarification,
+      },
+      compiler,
+    );
+    expect(clarify.decision).toBe("ask");
+    if (clarify.decision !== "ask") {
+      throw new Error("expected the thickness clarification (D5a) — not a proposal");
+    }
+    expect(clarify.questions).toHaveLength(1);
+    expect(clarify.questions[0]?.slotKind).toBe("dimension");
+    expect(clarify.questions[0]?.slot).toBe("thickness");
+
+    // Turn 3 — the user supplies a valid explicit thickness: NOW it
+    // proposes, within the declared limit.
+    const propose = await decideNextTurn(
+      {
+        utterance: "30 mm thick",
+        session: live,
+        pendingClarification: clarify.pendingClarification,
+      },
+      compiler,
+    );
+    expect(propose.decision).toBe("propose");
+    if (propose.decision !== "propose") {
+      throw new Error("expected the corrected proposal");
+    }
+    expect(propose.proposal.renderedCommand).toBe(
+      "Apply 30 mm cement-plaster to the affected wall faces.",
+    );
+    expect(propose.proposal.intent.parameters).toEqual([
+      { name: "thickness", value: 30, unit: "mm" },
+      { name: "material", value: "cement-plaster" },
+    ]);
+  });
+
+  test("D5b: explicit over-limit thickness → the constraint re-ask, never a confirmable proposal", async () => {
+    const live = qa004LiveSession();
+
+    // Turn 1 — the thickness IS stated (60 mm, over the 50 mm per-coat
+    // limit) but no focus matches: the location is asked first.
+    const ask = await decideNextTurn(
+      { utterance: "Apply 60 mm cement plaster to the damaged wall faces", session: live },
+      compiler,
+    );
+    expect(ask.decision).toBe("ask");
+    if (ask.decision !== "ask") {
+      throw new Error("expected ask (location)");
+    }
+    expect(ask.questions.map((question) => question.slot)).toEqual(["target location"]);
+
+    // Turn 2 — the location answer completes the parameter set… which
+    // violates the declared limit: the gate fires BEFORE any proposal.
+    // The agent re-asks with the exact violation prose — the D5b path.
+    const gated = await decideNextTurn(
+      {
+        utterance: "Damaged ground-floor wall faces",
+        session: live,
+        pendingClarification: ask.pendingClarification,
+      },
+      compiler,
+    );
+    expect(gated.decision).toBe("ask");
+    if (gated.decision !== "ask") {
+      throw new Error("expected the constraint re-ask (D5b) — never a proposal");
+    }
+    expect(gated.questions).toHaveLength(1);
+    expect(gated.questions[0]?.slotKind).toBe("constraint");
+    expect(gated.questions[0]?.slot).toBe("thickness");
+    expect(gated.questions[0]?.question).toContain("maximum plaster thickness is 50 mm per coat");
+    expect(gated.questions[0]?.question).toContain("60 mm");
+  });
+
+  test("a confirmation with NO pending proposal never dispatches (the gate leaves nothing confirmable)", async () => {
+    const live = qa004LiveSession();
+    const decision = await decideNextTurn(
+      { utterance: "Confirm the proposed operation and apply it", session: live },
+      compiler,
+    );
+    expect(decision.decision).not.toBe("dispatch-operation");
+    expect(decision.decision).not.toBe("propose");
+  });
+
+  test("the canonical 30 mm golden path still proposes AND confirms end-to-end", async () => {
+    const double = toolDouble();
+    const live = qa004LiveSession();
+    const propose = await decideNextTurn(
+      { utterance: "Apply 30 mm plaster to the affected wall faces.", session: live },
+      compiler,
+    );
+    expect(propose.decision).toBe("propose");
+    if (propose.decision !== "propose") {
+      throw new Error("expected the canonical proposal");
+    }
+    expect(propose.proposal.reviewRequirements).toContain(
+      "maximum plaster thickness is 50 mm per coat",
+    );
+    const dispatch = await decideNextTurn(
+      {
+        utterance: "Yes, apply it.",
+        session: live,
+        pendingProposal: propose.pendingProposal,
+      },
+      compiler,
+    );
+    expect(dispatch.decision).toBe("dispatch-operation");
+    if (dispatch.decision !== "dispatch-operation") {
+      throw new Error("expected dispatch");
+    }
+    const response = await executeDecision(double, dispatch);
+    expect(response.kind).toBe("apply-accepted");
   });
 });

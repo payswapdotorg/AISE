@@ -23,7 +23,11 @@
  *      0.5 m" / "increase the depth by 50 cm" / verb-dimension "deepen the
  *      pit by 500 mm"), unit canonicalization (mm/cm/m mixes → the
  *      parameter's canonical unit — the semantic-equivalence enabler),
- *      material vocabulary normalization, coat/layer counts.
+ *      material vocabulary normalization, coat/layer counts. AREA-quantity
+ *      language (QA-004 D5a: "over a 2.5 by 2.5 metre area", "covering
+ *      2.5 by 2.5 m", "12.5 m2", "6 square metres") governs its
+ *      measurements as AREA facts — they NEVER bind linear parameter
+ *      slots and never become bare/unassigned candidates.
  *   6. SLOT COMPLETION: utterance values > recent-operation seeds (change
  *      requests) > focus-known parameter seeds (caller-known reality
  *      facts). Missing dimensions/materials/locations/sequencing/
@@ -34,7 +38,12 @@
  *   7. INTENT CONSTRUCTION: ONLY via the contract's `createOperationIntent`
  *      (origin "agent", provenance carrying the exact normalized command
  *      text, the compiler path, agent attribution) — never a hand-rolled
- *      intent object.
+ *      intent object. QA-004 D5b: a complete parameter set that violates
+ *      a declared quantitative Phase 1 limit (the engine's
+ *      REFERENCE_BUILDING_OPERATION_LIMITS — the same data behind the
+ *      proposal's review requirements) is gated BEFORE construction: it
+ *      compiles to a constraint-kind re-ask naming the exact violation
+ *      prose, never to a confirmable intent.
  *
  * DETERMINISM: no I/O, no randomness, injected clock. The optional
  * `NlUnderstandingPort` (LLM seam) may only reassign measurements ALREADY
@@ -91,6 +100,7 @@ import {
   COAT_WORD_NUMBERS,
   COMPARATIVE_WORDS,
   DIMENSION_WORDS,
+  LINEAR_UNIT_FACTORS,
   MATERIAL_CHANGE_VERBS,
   MATERIAL_VOCABULARIES,
   MEASUREMENT_PATTERN,
@@ -103,7 +113,9 @@ import {
   canonicalUnitFor,
   extractChangedMaterial,
   extractMaterials,
+  isAreaQuantitySpanOf,
   isFutureVertical,
+  scanAreaQuantitySpans,
   toCanonicalUnit,
 } from "./vocabulary";
 import { numericParameterOf, textParameterOf } from "./quantities";
@@ -203,6 +215,99 @@ const FOCUS_SEEDABLE_PARAMETERS: Readonly<Record<string, readonly string[]>> = {
   "finish-application": [],
   "building-service-installation": [],
 };
+
+/* ------------------------------------------------------------------ */
+/* QA-004 D5b — the quantitative Phase 1 limits of the compile gate      */
+/* ------------------------------------------------------------------ */
+
+/** One quantitative Phase 1 limit attached to a parameter. */
+export interface CompilerOperationLimit {
+  readonly parameterName: string;
+  readonly maxCanonicalValue: number;
+  readonly unit: string;
+  readonly limitId: string;
+  readonly detail: string;
+}
+
+/**
+ * The quantitative Phase 1 limits the compile path gates on (QA-004 D5b):
+ * a FROZEN MIRROR of the solution engine's authoritative
+ * `REFERENCE_BUILDING_OPERATION_LIMITS`
+ * (packages/solution-engine/src/quantity-models.ts — itself the
+ * quantitative mirror of the contract capability profile's declared
+ * limitation strings, the same data that renders the proposal's review
+ * requirements). The reasoning module must NOT import the engine (the
+ * PROD-023 source guarantee: validation outcomes belong to the engine
+ * behind the tool port), so the table is mirrored here as pure data and
+ * PINNED to the engine's authoritative export by a drift-guard test
+ * (compiler.test.ts asserts deep equality — the gate can never silently
+ * diverge from the validation leg's limits).
+ */
+export const COMPILER_OPERATION_LIMITS: Readonly<
+  Record<string, readonly CompilerOperationLimit[]>
+> = Object.freeze({
+  excavation: [
+    {
+      parameterName: "depth",
+      maxCanonicalValue: 6,
+      unit: "m",
+      limitId: "excavation-max-depth",
+      detail: "maximum excavation depth is 6 m per operation (Phase 1 building scope)",
+    },
+  ],
+  "block-wall-placement": [
+    {
+      parameterName: "height",
+      maxCanonicalValue: 3,
+      unit: "m",
+      limitId: "block-wall-max-height",
+      detail: "maximum wall height is 3 m per operation",
+    },
+  ],
+  "plaster-application": [
+    {
+      parameterName: "thickness",
+      maxCanonicalValue: 0.05,
+      unit: "m",
+      limitId: "plaster-max-thickness-per-coat",
+      detail: "maximum plaster thickness is 50 mm per coat",
+    },
+  ],
+});
+
+/**
+ * Evaluates the quantitative limits of one compiled parameter set — the
+ * compile-gate twin of the engine's validation-leg evaluator (same
+ * semantics: canonical-metre comparison, missing parameters and unknown
+ * units skipped — those remain the negotiation/validation legs' concern).
+ * Deterministic and side-effect free; returns the exceeded limits.
+ */
+export function exceededOperationLimits(
+  operationType: string,
+  parameters: readonly TypedOperationParameter[],
+  limits: Readonly<Record<string, readonly CompilerOperationLimit[]>> = COMPILER_OPERATION_LIMITS,
+): readonly CompilerOperationLimit[] {
+  const entries = limits[operationType] ?? [];
+  const exceeded: CompilerOperationLimit[] = [];
+  for (const limit of entries) {
+    const parameter = parameters.find((entry) => entry.name === limit.parameterName);
+    if (
+      parameter === undefined ||
+      typeof parameter.value !== "number" ||
+      typeof parameter.unit !== "string"
+    ) {
+      continue; // missing parameters are the clarification loop's concern
+    }
+    const factor = LINEAR_UNIT_FACTORS[parameter.unit.toLowerCase()];
+    if (factor === undefined) {
+      continue; // unknown unit: the deterministic validation leg owns it
+    }
+    if (parameter.value * factor > limit.maxCanonicalValue) {
+      exceeded.push(limit);
+    }
+  }
+  return exceeded;
+}
 
 /** The honest refusal prose per reason code (patterns live in vocabulary.ts). */
 const UNSAFE_REFUSAL_PROSE: Readonly<
@@ -770,6 +875,26 @@ export function createSolutionCommandCompiler(
           { ...attributionBase, compilerPath },
         );
       }
+
+      /* 19b. QA-004 D5b — the quantitative capability gate. A compiled
+       * parameter set that violates a declared Phase 1 limit
+       * (COMPILER_OPERATION_LIMITS — the frozen mirror of the same data
+       * the deterministic validation leg evaluates, pinned by a
+       * drift-guard test) is NEVER constructed into an intent: an intent
+       * is the only input the propose/confirm boundary can offer, so a
+       * violating operation is structurally never confirmable. The
+       * outcome is the honest RE-ASK — a constraint-kind clarification
+       * naming the exact violation prose — and the deterministic
+       * validation leg stays as the independent second net for every
+       * other entry path. */
+      const exceededLimits = exceededOperationLimits(type, parameters);
+      if (exceededLimits.length > 0) {
+        return clarificationCommand(
+          exceededLimits.map((limit) => limitViolationQuestion(type, parameters, limit)),
+          type,
+          { ...attributionBase, compilerPath },
+        );
+      }
       if (target === undefined) {
         // Unreachable after the location clarification above; the typed
         // guard keeps the constructor input provably anchored.
@@ -881,6 +1006,16 @@ function extractMeasurements(
   readonly bindings: readonly DimensionBinding[];
   readonly unassigned: readonly ExtractedMeasurement[];
 } {
+  // QA-004 D5a: area-governed spans — a measurement inside one is an AREA
+  // quantity ("over a 2.5 by 2.5 metre area", "covering 2.5 by 2.5 m",
+  // "12.5 m2"), never a linear parameter candidate. It is excluded from
+  // the scan→bind path ENTIRELY (neither dimension-word bindings, nor
+  // bare/unassigned leftovers, nor NLU-seam enrichment may pick it up):
+  // binding an area side to a linear slot is the misattribution this fix
+  // removes. Phase 1 building contracts declare no area parameter, so the
+  // required linear parameters the utterance does not state route to the
+  // existing clarification loop instead.
+  const areaSpans = scanAreaQuantitySpans(text);
   // Constraint-clearance spans are pre-computed so their measurements bind
   // to the clearance parameter directly (never bare/unassigned leftovers).
   const clearanceSpans: { start: number; end: number; value: number; unit: string }[] = [];
@@ -906,19 +1041,23 @@ function extractMeasurements(
   let altMatch = alternative.exec(text);
   while (altMatch !== null) {
     const unit = (altMatch[3] ?? "m").toLowerCase();
-    for (const group of [altMatch[1], altMatch[2]]) {
-      if (group === undefined) {
-        continue;
-      }
-      const value = Number(group.replace(",", "."));
-      if (Number.isFinite(value)) {
-        measurements.push({
-          value,
-          rawUnit: unit,
-          start: altMatch.index,
-          end: altMatch.index + altMatch[0].length,
-          precededByBy: false,
-        });
+    const altStart = altMatch.index;
+    const altEnd = altStart + altMatch[0].length;
+    if (!isAreaQuantitySpanOf(areaSpans, altStart, altEnd)) {
+      for (const group of [altMatch[1], altMatch[2]]) {
+        if (group === undefined) {
+          continue;
+        }
+        const value = Number(group.replace(",", "."));
+        if (Number.isFinite(value)) {
+          measurements.push({
+            value,
+            rawUnit: unit,
+            start: altStart,
+            end: altEnd,
+            precededByBy: false,
+          });
+        }
       }
     }
     altMatch = alternative.exec(text);
@@ -934,7 +1073,9 @@ function extractMeasurements(
     const overlaps = measurements.some(
       (existing) => start < existing.end && end > existing.start,
     );
-    if (Number.isFinite(value) && !overlaps) {
+    // QA-004 D5a: area-governed measurements never enter the binding path.
+    const areaGoverned = isAreaQuantitySpanOf(areaSpans, start, end);
+    if (Number.isFinite(value) && !overlaps && !areaGoverned) {
       measurements.push({
         value,
         rawUnit: unit,
@@ -1403,6 +1544,35 @@ function dimensionQuestion(
     question:
       `What is the ${name} of the ${type}? Provide the value with an explicit ` +
       `unit (the canonical unit is ${unit}).`,
+  };
+}
+
+/**
+ * The QA-004 D5b constraint re-ask: one exceeded quantitative Phase 1
+ * limit, rendered with the exact violation prose (the limit's declared
+ * `detail`, verbatim — the same string the deterministic validation leg
+ * reports) plus the offending parameter and its requested value. The
+ * user may answer with a within-limit value; the pending clarification
+ * merges it and recompiles.
+ */
+function limitViolationQuestion(
+  type: string,
+  parameters: readonly TypedOperationParameter[],
+  limit: CompilerOperationLimit,
+): ClarificationQuestion {
+  const parameter = parameters.find((entry) => entry.name === limit.parameterName);
+  const unit = parameter?.unit ?? canonicalUnitFor(type, limit.parameterName);
+  const value = numericParameterOf(parameters, limit.parameterName);
+  return {
+    slotKind: "constraint",
+    slot: limit.parameterName,
+    question:
+      `The ${type} cannot be proposed as requested: its ${limit.parameterName} ` +
+      `(${value !== undefined ? `${formatCanonicalNumber(value)} ` : ""}${unit}) ` +
+      `exceeds the declared limit — ${limit.detail}. What ` +
+      `${limit.parameterName} should the ${type} use? Provide the value with ` +
+      `an explicit unit (the canonical unit is ${unit}); a violating ` +
+      `operation is never offered for confirmation.`,
   };
 }
 

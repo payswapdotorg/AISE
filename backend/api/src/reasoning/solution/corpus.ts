@@ -23,7 +23,7 @@
 import type { ClarificationSlotKind, UnsafeRefusalReasonCode } from "./model";
 
 /** The corpus version (bumped when entries change). */
-export const COMMAND_CORPUS_VERSION = "1.0.0";
+export const COMMAND_CORPUS_VERSION = "1.1.0";
 
 /** The corpus categories (the work order's evidence families). */
 export const COMMAND_CORPUS_CATEGORIES = [
@@ -189,6 +189,22 @@ const REPRESENTATIVE: readonly CommandCorpusEntry[] = [
       targetFocusId: "wall-faces",
     },
     note: "plaster thickness + layers",
+  },
+  {
+    id: "REP-PLASTER-003",
+    category: "representative",
+    utterance: "Apply 50 mm plaster to the affected wall faces.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "plaster-application",
+      parameters: [
+        { name: "thickness", value: 50, unit: "mm" },
+        { name: "material", value: "cement-plaster" },
+      ],
+      targetFocusId: "wall-faces",
+    },
+    note: "QA-004 D5b boundary: 50 mm is AT the declared per-coat limit — still confirmable (the gate never over-blocks)",
   },
   {
     id: "REP-DEMO-001",
@@ -908,6 +924,84 @@ const CLARIFICATION: readonly CommandCorpusEntry[] = [
       expectedSlots: [{ slotKind: "dimension", slot: "depth" }],
     },
     note: "a delta with no amount — deeper by how much, or to what resulting depth?",
+  },
+  {
+    id: "CLR-010",
+    category: "clarification",
+    utterance:
+      "Apply a cement plaster coat to the damaged wall faces over a 2.5 by 2.5 metre area.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "dimension", slot: "thickness" }],
+    },
+    note: "QA-004 D5a (Lead-verified live defect): the '2.5 by 2.5 metre AREA' language governs its measurements as AREA quantities — they never bind the THICKNESS slot; the unstated thickness is asked",
+  },
+  {
+    id: "CLR-011",
+    category: "clarification",
+    utterance: "Apply cement plaster to the affected wall faces covering 2.5 by 2.5 m.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "dimension", slot: "thickness" }],
+    },
+    note: "QA-004 D5a: the 'covering X by Y m' family — area-governed, never a linear binding",
+  },
+  {
+    id: "CLR-012",
+    category: "clarification",
+    utterance: "Apply cement plaster to the affected wall faces over about 6 square metres.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "dimension", slot: "thickness" }],
+    },
+    note: "QA-004 D5a: explicit square-metre area language — no linear measurement is ever derived from it",
+  },
+  {
+    id: "CLR-013",
+    category: "clarification",
+    utterance: "Plaster the affected wall faces over an area of 12.5 m2.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "dimension", slot: "thickness" }],
+    },
+    note: "QA-004 D5a: the m2 marker family — an area quantity, never a thickness",
+  },
+  {
+    id: "CLR-014",
+    category: "clarification",
+    utterance: "Apply 60 mm plaster to the affected wall faces.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "constraint", slot: "thickness" }],
+    },
+    note: "QA-004 D5b: 60 mm exceeds the declared 'maximum plaster thickness is 50 mm per coat' limit — the violating parameter set never becomes a confirmable intent; the constraint re-ask names the exact violation",
+  },
+  {
+    id: "CLR-015",
+    category: "clarification",
+    utterance: "Lay concrete blocks to a height of 3.5 m along this wall.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "constraint", slot: "height" }],
+    },
+    note: "QA-004 D5b: 3.5 m exceeds the declared 'maximum wall height is 3 m per operation' limit — gated before any intent",
+  },
+  {
+    id: "CLR-016",
+    category: "clarification",
+    utterance: "Excavate a pit 6.5 m deep, 2 m wide and 3 m long.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "constraint", slot: "depth" }],
+    },
+    note: "QA-004 D5b: 6.5 m exceeds the declared 'maximum excavation depth is 6 m per operation' limit — gated before any intent",
   },
 ];
 
