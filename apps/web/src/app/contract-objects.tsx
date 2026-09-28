@@ -241,12 +241,16 @@ function NestedObject({ value }: { readonly value: Record<string, unknown> }): R
   return (
     <dl className="fields" data-field-kind="object">
       {entries.map(([key, entryValue]) => (
-        <span className="field" key={key}>
+        // QA-007: a dt/dd group inside a dl must be wrapped in a div —
+        // HTML permits no other wrapper, and a span here is an axe
+        // definition-list/dlitem SERIOUS violation. The `.field` CSS is
+        // class-based flex, so the element change is layout-neutral.
+        <div className="field" key={key}>
           <dt>{key}</dt>
           <dd>
             <FieldValue value={entryValue} />
           </dd>
-        </span>
+        </div>
       ))}
     </dl>
   );
@@ -272,12 +276,16 @@ export function ContractObjectFields({
   return (
     <dl className="fields" data-contract-object={String(objectName)}>
       {fields.map((field) => (
-        <span className="field" key={field} data-field={field}>
+        // QA-007: a dt/dd group inside a dl must be wrapped in a div —
+        // HTML permits no other wrapper, and a span here is an axe
+        // definition-list/dlitem SERIOUS violation. The `.field` CSS is
+        // class-based flex, so the element change is layout-neutral.
+        <div className="field" key={field} data-field={field}>
           <dt>{field}</dt>
           <dd>
             <FieldValue value={payload[field]} />
           </dd>
-        </span>
+        </div>
       ))}
     </dl>
   );
