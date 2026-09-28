@@ -1,10 +1,27 @@
 # AISE — Final Tech Lead / Architect Handoff
 
 Status: CURRENT / DURABLE / SELF-CONTAINED  
-Audit date: 2026-09-25  
+Audit date: 2026-09-28  
 Repository: payswapdotorg/AISE  
 Audience: successor AISE Tech Lead / Architect with up to 3 concurrent workers  
 Source of truth: repository state; this document is authoritative for orchestration only.
+## 0. 2026-09-28 reconciliation override
+
+This section supersedes any older “current” or “immediate priority” statements below that conflict with the repository at the resolved main HEAD.
+
+- Resolved main HEAD: 2de6670366a15c55a970139c32be43413c200849 (2026-09-27).
+- Core AISE v2 implementation: 41/41 Work Items finalized.
+- Productization: PROD-001…PROD-034 finalized; PROD-015 remains the governing product-readiness declaration.
+- HFX provider/technology evaluation: HFX-000, HFX-101, HFX-201, HFX-204, HFX-301, HFX-302, HFX-303, HFX-401 finalized.
+- Track R / post-production hardening: #14 POST-000 and #15–#20 all closed/completed.
+- Track G / Geometry-BIM R&D: #10 GBIM-000 and #11–#13 all closed/completed. Results are exploratory evidence and produced ADAPT outcomes; no fork and no default-provider selection is authorized.
+- Post-R1 QA closure fixes now present on main: QA-001, QA-002, QA-003. The latest accepted QA-003 commit is 0b3595c04311888642d35454a4e3bcd124184de9; it reported typecheck PASS, lint PASS and 6113/0 tests with 399 files. HEAD 2de6670366a15c55a970139c32be43413c200849 adds one deployment-trigger commit after that acceptance; the compare is one commit with no file changes.
+- Current HEAD has a GitHub Vercel commit status of success / Deployment has completed (2026-09-27 18:10Z). This establishes deployment completion for the exact SHA but is not a substitute for a fresh repository-recorded W/M/X replay against that exact SHA.
+- Current frontier: the remaining governed evidence task is the Tech-Lead-only R2 exact-SHA W/M/X replay and reconciliation. Until that replay is recorded, describe the current SHA as deployed, not as freshly replay-proven.
+- POST-006 remains closed. Its live accessibility ledger records 0 critical, 23 serious, 44 moderate findings; these are known findings, not evidence that the acceptance work item failed. Any remediation beyond the accepted scope must be separately governed.
+- spec/development-state/program-state.json remains the authoritative ledger for the original 41-item core campaign; its 2026-09-15 asOf is historical by design. Post-production/HFX/QA current truth is carried by the handoff and productization evidence/state until a broader machine-state schema change is explicitly governed.
+- QA-001…003 are post-production corrective commits rather than reopened AISE-001…041 work items.
+
 
 ## 1. Mission
 
@@ -517,8 +534,13 @@ Stop implementation and raise an Architecture Change Record when a proposed chan
 
 A fresh Tech Lead should be able to start with no chat context and know exactly what is true, what is active, what is allowed, what must be verified, and which three workers can be dispatched next.
 
-Immediate orchestration priority: execute Track R / Wave R0 (#15, #16, #17).
-After R0 is independently harvested, execute Track R / Wave R1 (#18, #19, #20).
-Run Track G / G0 (#11, #12, #13) when the three-worker capacity is allocated to the exploratory Geometry/BIM program without compromising the release/evidence gates.
+As of the 2026-09-28 reconciliation:
+- AISE-001…041 are finalized.
+- PROD-001…034 and the listed HFX program are finalized.
+- Track R (#14–#20) and Track G (#10–#13) are closed.
+- QA-001, QA-002 and QA-003 are accepted on main.
+- The current main SHA is 2de6670366a15c55a970139c32be43413c200849 and has a successful GitHub Vercel deployment status.
+- The immediate remaining proof is R2: Tech Lead exact-SHA W/M/X replay + evidence/state reconciliation.
+- Do not reopen finalized work merely for polish. Known POST-006 accessibility findings require separate governance if remediated.
+- Do not infer completion from prose; resolve repository state and independently reproduce evidence at each merge/release decision.
 
-Do not infer completion from this document. Resolve repository state and independently reproduce evidence every time.
