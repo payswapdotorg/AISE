@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-09-25T14:58:41Z",
+  "lastReconciledAt": "2026-09-28T06:44:00Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -20,16 +20,16 @@
     "status": "ready",
     "installable": "yes",
     "freeTierDeployed": "yes",
-    "deploymentStatus": "exact-SHA production deployment (dpl_B7dnBrzQ2P3FzbVgdv8AhF814rU1, ready 2026-09-25T14:55:44Z, Lead-executed POST-001 DEPLOY_PENDING_CREDENTIAL runbook at commit 79680261a043850e10f4e352194fe9cd49c831a3); DEPLOYED: PASS (deployed-check vs https://aise-tan.vercel.app, 2026-09-25T14:5xZ); JOURNEY HARNESS: PASS against the deployed URL (w/m/x records 2026-09-25T14:57Z under PROD-033/runs/)",
+    "deploymentStatus": "current main SHA deployed according to GitHub Vercel commit status (Deployment has completed, 2026-09-27T18:10:03Z); fresh exact-SHA W/M/X replay is still pending and is required before describing the current SHA as freshly replay-proven.",
     "userFriendlyInterface": "yes",
     "publicUrl": "https://aise-tan.vercel.app",
     "vercelDeploymentId": "dpl_B7dnBrzQ2P3FzbVgdv8AhF814rU1",
     "deployedApplicationCommit": "79680261a043850e10f4e352194fe9cd49c831a3",
     "lastVerifiedCommit": "7968026",
-    "currentMainCommit": "79680261a043850e10f4e352194fe9cd49c831a3",
-    "currentMainCommitDate": "2026-09-25T14:46:26Z",
-    "currentMainResolvedAt": "2026-09-25T14:58:41Z",
-    "deploymentFreshness": "exact-SHA redeploy executed 2026-09-25T14:55:44Z by the Lead (POST-001 runbook Section C steps 1-8): dpl_B7dnBrzQ2P3FzbVgdv8AhF814rU1 built from 79680261a043850e10f4e352194fe9cd49c831a3 (= main 4065037 + the POST-001 state-refresh commit 7968026, documentation/state-only); platform-bound git SHA verified via deployment API; aise-tan.vercel.app is a verified project domain routing to the latest production deployment; local build at the deployed SHA reproduced the api/[...path].mjs beacon sha256 d809e0d81e8d4222cb5982942c15e84c988429092edbd7f4c74f0cd569d74c3f byte-identically (same beacon as the 91f1b449 PROD-015 build — build inputs unchanged); VERIFY: PASS 5944/0 + lint + boundaries at the deployed SHA; DEPLOYED: PASS; JOURNEY HARNESS: PASS replayed against the new deployment; subsequent evidence-pin commits are documentation-only and do not change build inputs",
+    "currentMainCommit": "2de6670366a15c55a970139c32be43413c200849",
+    "currentMainCommitDate": "2026-09-27T17:57:31Z",
+    "currentMainResolvedAt": "2026-09-28T06:44:00Z",
+    "deploymentFreshness": "current main SHA is the exact deployed commit according to the GitHub Vercel status; prior W/M/X journey evidence is for earlier exact SHAs, so a new R2 replay is required for current-SHA proof.",
     "finalGate": "docs/PRODUCTION-READINESS-GATE.md",
     "lastReconciledAt": "2026-09-25T14:58:41Z"
   },
@@ -556,7 +556,7 @@
     "competitiveArtifact": "docs/layered-competitive-stress-test-2026-09-16.md",
     "adapterContract": "spec/client-adapter-contract.md",
     "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-    "status": "design-simulation-complete; adapter, interactive-solution and layer-hardening implementation-verification pending"
+    "status": "implementation-verification complete; post-production hardening and Geometry/BIM spike complete; current-SHA R2 replay remains the active evidence frontier"
   },
   "hfx": {
     "workItems": [
@@ -656,7 +656,7 @@
   },
   "followOnPrograms": {
     "postProductionHardening": {
-      "status": "active",
+      "status": "R0/R1 complete; R2 exact-SHA final replay pending",
       "authority": "docs/post-production-discoverability-and-device-validation-plan-2026-09-25.md",
       "parentIssue": 14,
       "waves": {
@@ -676,7 +676,7 @@
       }
     },
     "geometryBimRAndD": {
-      "status": "active",
+      "status": "complete — ADAPT evidence; no fork/default-provider authorization",
       "exploratory": true,
       "authority": "docs/geometry-bim-technology-spike-2026-09-25.md",
       "parentIssue": 10,
