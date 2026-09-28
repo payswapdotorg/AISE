@@ -270,10 +270,14 @@ export function ContextualIntegrationsCard({
 /**
  * The contextual integrations panel: the task-flow resource (the current
  * task's records) projected through {@link ContextualIntegrationsCard} —
- * demo mode renders the demo dataset's connector bindings (badged demo);
- * live mode renders the honest not-readable state for bindings (the
- * registry has no readable endpoint in this build) while the references
- * still render from the live bundle when it is served.
+ * demo mode renders the demo dataset's connector bindings; live mode
+ * renders the honest not-readable state for bindings (the registry has no
+ * readable endpoint in this build) while the references still render from
+ * the live bundle when it is served. QA-005 (D6c): the card's BADGE follows
+ * the task-flow DATA's own provenance mode (a live-404 demo-fallback
+ * payload badges demo — never "live API" over the fallback corpus refs);
+ * only the BINDINGS section follows the environment (demo fixtures vs the
+ * live not-readable state).
  */
 export function ContextualIntegrationsPanel({
   projectId,
@@ -300,7 +304,14 @@ export function ContextualIntegrationsPanelBody({
   readonly data: TaskFlowResourceData;
   readonly demo: boolean;
 }): ReactNode {
-  const mode: "demo" | "api" = demo ? "demo" : "api";
+  // QA-005 (D6c): the badge states the provenance of the DATA rendered —
+  // `data.mode` is the resource's own truth ("demo" for the built-in demo
+  // dataset AND for the live-404 demo fallback, "api" for live-served
+  // records) — never the ENVIRONMENT's transport mode. A live deployment
+  // whose task-flow endpoint 404s renders the fallback corpus refs here;
+  // those refs badge demo, never "live API". The `demo` prop keeps
+  // governing only the BINDINGS source (demo fixtures vs not-readable).
+  const mode: "demo" | "api" = data.mode;
   if (data.bundle === null) {
     return (
       <ContextualIntegrationsCard

@@ -64,8 +64,12 @@ interface PageFacts {
   readonly handoffFallbackNotePresent: boolean;
 }
 
-const APP_HTML = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QA-002 proof — the real app</title></head><body><main id="app"></main><script type="module" src="/main.js"></script></body></html>`;
-const AGENT_HTML = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QA-002 proof — the agent panel mount</title></head><body><main id="app"></main><script type="module" src="/solution/agent/qa002-agent-mount.js"></script></body></html>`;
+// QA-005 (D6b): the fixtures mirror the app's fixed mount document — a
+// plain <div id="app"> (the shell's main#main-content is the single main
+// landmark on the page; the pre-fix <main id="app"> mount nested a second
+// main inside it).
+const APP_HTML = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QA-002 proof — the real app</title></head><body><div id="app"></div><script type="module" src="/main.js"></script></body></html>`;
+const AGENT_HTML = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QA-002 proof — the agent panel mount</title></head><body><div id="app"></div><script type="module" src="/solution/agent/qa002-agent-mount.js"></script></body></html>`;
 
 let browser: Browser | null = null;
 let server: ReturnType<typeof Bun.serve> | null = null;

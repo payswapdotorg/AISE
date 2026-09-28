@@ -20,8 +20,8 @@
  *     in plain language ("draw it or describe it; both resolve to the
  *     same typed operations");
  *  2. THE NL FRONT DOOR — the task-intent form (the natural-language
- *     entry: "What do you need to do?") still composes the typed task
- *     contract with its honest demo-mode statement;
+ *     entry: "Choose where to start", QA-005 D6a) still composes the typed
+ *     task contract with its honest demo-mode statement;
  *  3. THE EQUIVALENCE CORE — the three authoring journeys (direct,
  *     agent, mixed) re-derived over the seeded world produce IDENTICAL
  *     operation identities, identical state digests, identical
@@ -137,7 +137,9 @@ describe("POST-006 direct/NL equivalence — entry parity after the navigation c
 describe("POST-006 direct/NL equivalence — the natural-language front door", () => {
   test("the task-intent form composes the typed task contract (the NL entry is typed, never free-text-only)", () => {
     const html = renderToStaticMarkup(withEnv(<TaskIntentForm initialProjectId={DEMO_PROJECT_ID} />));
-    expect(html).toContain("What do you need to do?");
+    // QA-005 (D6a): the card's own heading names the entry chooser (the
+    // page-head question is the dashboard's h1, never a card title).
+    expect(html).toContain("Choose where to start");
     expect(html).toContain('id="task-intent"');
     expect(html).toContain('for="task-intent"');
     expect(html).toContain("Submit task intent");

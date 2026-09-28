@@ -1,7 +1,8 @@
 /**
  * PROD-002 — the Dashboard surface (the landing page of the golden
  * journey). PROD-017: the entry experience is TASK-FIRST — the
- * "What do you need to do?" intent form (a typed TaskIntent, W-R3) and
+ * "What do you need to do?" page question (the page-head h1) over the
+ * "Choose where to start" intent form (a typed TaskIntent, W-R3) and
  * the current task's journey panel (NextBestAction-driven) render FIRST,
  * before the module-first journey map and dataset overview. The API mode,
  * the way into the demo/live projects, the journey map and a dataset
