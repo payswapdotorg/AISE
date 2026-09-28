@@ -7,9 +7,9 @@ Audience: successor AISE Tech Lead / Architect with up to 3 concurrent workers
 Source of truth: repository state; this document is authoritative for orchestration only.
 ## 0. 2026-09-28 reconciliation override
 
-This section supersedes any older “current” or “immediate priority” statements below that conflict with the repository at the resolved main HEAD.
+This section supersedes any older “current” or “immediate priority” statements below that conflict with the repository. Always resolve the live main HEAD first; the SHA below is the last reconciled code-bearing application tip, followed only by documentation/state reconciliation commits.
 
-- Resolved main HEAD: 2de6670366a15c55a970139c32be43413c200849 (2026-09-27).
+- Resolved code-bearing application tip: 2de6670366a15c55a970139c32be43413c200849 (2026-09-27).
 - Core AISE v2 implementation: 41/41 Work Items finalized.
 - Productization: PROD-001…PROD-034 finalized; PROD-015 remains the governing product-readiness declaration.
 - HFX provider/technology evaluation: HFX-000, HFX-101, HFX-201, HFX-204, HFX-301, HFX-302, HFX-303, HFX-401 finalized.
