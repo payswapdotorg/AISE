@@ -2,18 +2,18 @@
 
 AISE is implemented by replaceable coding workers under an independent Tech Lead/Architect. The repository is the sole durable source of implementation truth. No worker may require prior conversation history.
 
-## CURRENT STATE — 2026-09-25
+## CURRENT STATE — 2026-09-28
 
-- The original 41-item implementation campaign is complete.
-- PROD-001 through PROD-034 are finalized.
-- PROD-015 is finalized and declared product readiness for its exact recorded final SHA; later commits require fresh deployment/replay evidence.
+- The original 41-item implementation campaign is complete: AISE-001 through AISE-041 are finalized.
+- PROD-001 through PROD-034 are finalized; PROD-015 remains the product-readiness declaration authority.
 - HFX-000, HFX-101, HFX-201, HFX-204, HFX-301, HFX-302, HFX-303 and HFX-401 are finalized.
-- The next user-facing hardening directive is docs/post-production-discoverability-and-device-validation-plan-2026-09-25.md.
-- A separate architect-authorized R&D track is active: docs/geometry-bim-technology-spike-2026-09-25.md, with GBIM-001/002/003 in issues #11/#12/#13 under parent #10.
-- The post-production hardening track is active: docs/post-production-discoverability-and-device-validation-plan-2026-09-25.md, with POST-001/002/003 in issues #15/#16/#17 under parent #14, followed by POST-004/005/006 in #18/#19/#20.
-- Track R (post-production evidence freshness/device validation) is the immediate orchestration priority. Track G (Geometry/BIM) is separately authorized and must not consume capacity in a way that bypasses the release/evidence gates.
-- The Geometry/BIM spike is exploratory evidence collection. It does not reopen PROD-015, create a new authority, select a default provider, or authorize an external-platform fork.
-- Always resolve the current branch HEAD directly from the repository before dispatching or accepting work.
+- Track R is closed: POST-000 (#14) plus POST-001…POST-006 (#15…#20) are completed.
+- Track G is closed: GBIM-000 (#10) plus GBIM-001…GBIM-003 (#11…#13) are completed. Results are exploratory ADAPT evidence; no fork and no default-provider selection is authorized.
+- Post-R1 corrective closure is present on main as QA-001, QA-002 and QA-003. QA-003 is accepted at 6113/0 tests, with typecheck and lint passing; the subsequent current application tip 2de6670366a15c55a970139c32be43413c200849 is a deployment-trigger-only commit with no file changes relative to that accepted tree.
+- The GitHub Vercel status for 2de6670366a15c55a970139c32be43413c200849 is success / Deployment has completed. This is deployment evidence, not a fresh current-SHA W/M/X journey proof.
+- The remaining governed evidence frontier is R2: Tech Lead exact-current-SHA W/M/X replay and reconciliation. Do not call the current application tip freshly replay-proven until that record exists.
+- POST-006 is complete, but its live accessibility ledger records 0 critical, 23 serious and 44 moderate findings. Any remediation beyond accepted scope requires separate governance.
+- Always resolve the live default-branch HEAD directly before dispatching or accepting work; state-only reconciliation commits may follow the code-bearing application tip.
 
 ## Mandatory reading order
 
@@ -186,10 +186,7 @@ The geometry/BIM spike is an architect-authorized exploratory program. It is sub
 frozen architecture and technology-substitution contract, and it does not modify the meaning of
 PROD-015.
 
-G0 may use exactly three concurrent workers:
-- GBIM-001 — exact geometry: OCCT + CadQuery/OCP + FreeCAD.
-- GBIM-002 — IFC/OpenBIM: IfcOpenShell + IFC + Bonsai/Blender.
-- GBIM-003 — browser spatial UX: Three.js + That Open/web-ifc + Atelier-derived Spatial Studio.
+G0 is complete. Do not dispatch GBIM-001/002/003 again unless a new governed work item explicitly authorizes successor evaluation.
 
 Do not fork an external project during the spike. Provider-specific IDs/types/formats remain
 outside canonical AISE semantics. A successful spike produces evidence, not an automatic default
