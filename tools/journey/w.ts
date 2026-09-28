@@ -712,6 +712,11 @@ export async function runWJourney(options: { readonly baseUrl?: string }): Promi
         await page.goto(baseUrl, { timeout: LEG_BUDGETS.gotoMs, waitUntil: "domcontentloaded" });
         await page.waitForSelector("h2#gate-title", { timeout: LEG_BUDGETS.landmarkMs });
         homeLines.push('the auth gate rendered (h2#gate-title "Sign in to AISE")');
+        // R2 2026-09-28 (pass-17 forensics): settle before the Enter-demo
+        // click — the zero-settle click is swallowed by the gate's
+        // hydration in a large fraction of fresh contexts (the same cure
+        // deployed-checks applied 2026-09-22; settled clicks pass 4/4).
+        await sleep(LEG_BUDGETS.settleMs);
         await page.getByRole("button", { name: "Enter demo", exact: true }).click();
         await page.waitForSelector("header.app-header", { timeout: LEG_BUDGETS.landmarkMs });
         homeLines.push("the demo session entered through the product's own gate control");
@@ -874,7 +879,9 @@ export async function runWJourney(options: { readonly baseUrl?: string }): Promi
       );
 
       /* ---- W2: the interactive solution journey (the PROD-031 path). ---- */
-      const solutionObservations = await journeySolutionWorkspaceLegs(ctx);
+      const solutionObservations = await withOneBoundedRetry(() =>
+        journeySolutionWorkspaceLegs(ctx),
+      );
       for (const observation of solutionObservations) {
         w2Steps.push({
           id: observation.id,

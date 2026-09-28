@@ -182,6 +182,13 @@ async function navigateToBase(page: Page, origin: string): Promise<void> {
 
 /** Enter the demo through the product's OWN control (the honest gate path). */
 async function enterDemoViaUi(page: Page): Promise<void> {
+  // R2 2026-09-28 (pass-17 forensics, applied here after the W-journey
+  // crash): settle BEFORE the demo click. A zero-settle click lands ~50ms
+  // after the gate becomes visible and is silently swallowed in a large
+  // fraction of fresh contexts (deployed-checks cured this 2026-09-22;
+  // the journey legs now carry the same cure). A settled click is a
+  // landed click; a swallowed click is a retryable transient below.
+  await sleep(LEG_BUDGETS.settleMs);
   const button = page.getByRole("button", { name: "Enter demo", exact: true });
   try {
     await button.click({ timeout: LEG_BUDGETS.landmarkMs });
@@ -671,8 +678,23 @@ export async function journeySolutionWorkspaceLegs(
     let legPass = true;
     await navigateToBase(page, ctx.origin);
     await page.waitForSelector("h2#gate-title", { timeout: LEG_BUDGETS.landmarkMs });
-    await page.getByRole("button", { name: "Enter demo" }).click();
-    await page.waitForSelector("h2#gate-title", { state: "detached", timeout: LEG_BUDGETS.landmarkMs });
+    // R2 2026-09-28 (pass-17 forensics): settle before the Enter-demo
+    // click — zero-settle clicks are swallowed by the gate's hydration
+    // in a large fraction of fresh contexts, and this leg previously
+    // crashed the whole journey harness on the un-wrapped timeout.
+    await sleep(LEG_BUDGETS.settleMs);
+    try {
+      await page.getByRole("button", { name: "Enter demo" }).click();
+      await page.waitForSelector("h2#gate-title", { state: "detached", timeout: LEG_BUDGETS.landmarkMs });
+    } catch (error) {
+      // The same retryable-transient class enterDemoViaUi throws: a
+      // swallowed click is transient, not a product defect — the W2
+      // caller's bounded retry re-runs the whole leg.
+      throw new TransientCheckError(
+        `the demo session did not enter through the gate control: ${describeError(error)}`,
+        error,
+      );
+    }
     legLines.push("the demo session entered through the honest 'Enter demo' gate");
     await page.goto(`${ctx.origin}/${SOLUTION_HASH}`, {
       timeout: LEG_BUDGETS.gotoMs,
