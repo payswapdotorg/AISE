@@ -485,6 +485,87 @@ export function canonicalUnitFor(operationType: string, parameter: string): stri
   return CANONICAL_UNITS[operationType]?.[parameter] ?? "m";
 }
 
+/* ------------------------------------------------------------------ */
+/* Area-quantity language (QA-004 D5a)                                  */
+/* ------------------------------------------------------------------ */
+
+/**
+ * AREA-QUANTITY governance patterns (QA-004 D5a): utterance spans whose
+ * measurements are AREA facts, never linear dimensions:
+ *
+ *   - the "X by Y <unit> … area" family ("over a 2.5 by 2.5 metre area",
+ *     "a 2.5 m by 2.5 m area", "a 2-by-2-metre damaged area");
+ *   - the "covering X by Y <unit>" family ("covering 2.5 by 2.5 m");
+ *   - explicit area units/markers ("12.5 m2", "about 6 square metres").
+ *
+ * A measurement governed by an area span can NEVER bind a linear parameter
+ * slot (thickness/length/height/width/depth/diameter): the live D5a defect
+ * bound an area side "2.5 m" to a plaster THICKNESS slot (canonicalized to
+ * 2500 mm) and offered the physically absurd operation as confirmable.
+ * Phase 1 building contracts declare no area parameter, so an area
+ * quantity is excluded from the linear scan→bind path entirely; the
+ * required linear parameters the utterance does NOT state route to the
+ * existing clarification loop (compiler.ts).
+ *
+ * Deliberately narrow (no over-matching): a bare "X by Y m" pair WITHOUT
+ * area semantics ("Cut an opening 1 by 2 m") keeps its existing honest
+ * ambiguity, and delta "by" phrases ("deeper by 0.5 m") never match —
+ * these tables demand the area WORD ("area(s)", "covering…") or an
+ * explicit area unit marker.
+ */
+export const AREA_BY_DIMENSIONS_AREA_PATTERN =
+  /(\d+(?:[.,]\d+)?)[\s-]*(?:mm|cm|m|meters?|metres?|meter)?[\s-]*(?:by|x|×)[\s-]*(\d+(?:[.,]\d+)?)[\s-]*(mm|cm|m|meters?|metres?)(?:\s+\w+){0,2}?\s+areas?\b/gi;
+export const AREA_COVERING_PATTERN =
+  /\bcover(?:s|ed|ing)?\s+(?:an?\s+|the\s+)?(\d+(?:[.,]\d+)?)[\s-]*(?:mm|cm|m|meters?|metres?)?[\s-]*(?:by|x|×)[\s-]*(\d+(?:[.,]\d+)?)[\s-]*(mm|cm|m|meters?|metres?)/gi;
+
+export const AREA_UNIT_MARKER_PATTERN =
+  /(\d+(?:[.,]\d+)?)\s*(?:m2|m²|sq\.?\s*m\.?|sqm|square\s+(?:meters?|metres?|m)\b)/gi;
+
+/** One area-governed span of an utterance (character range, inclusive-exclusive). */
+export interface AreaQuantitySpan {
+  readonly start: number;
+  readonly end: number;
+}
+
+/** Whether a character range overlaps one of the area-governed spans. */
+export function isAreaQuantitySpanOf(
+  spans: readonly AreaQuantitySpan[],
+  start: number,
+  end: number,
+): boolean {
+  return spans.some((span) => start < span.end && end > span.start);
+}
+
+/**
+ * Scans an utterance for its AREA-quantity-governed spans (pure,
+ * deterministic). Overlapping matches merge to the first-seen span (the
+ * by-dimensions pattern runs first — the most specific family). Any
+ * extracted measurement overlapping one of these spans is an AREA
+ * quantity and is excluded from the linear binding path by compiler.ts.
+ */
+export function scanAreaQuantitySpans(text: string): readonly AreaQuantitySpan[] {
+  const spans: AreaQuantitySpan[] = [];
+  for (const pattern of [
+    AREA_BY_DIMENSIONS_AREA_PATTERN,
+    AREA_COVERING_PATTERN,
+    AREA_UNIT_MARKER_PATTERN,
+  ]) {
+    const scanner = new RegExp(pattern.source, pattern.flags);
+    let match = scanner.exec(text);
+    while (match !== null) {
+      const start = match.index;
+      const end = start + match[0].length;
+      const overlaps = spans.some((span) => start < span.end && end > span.start);
+      if (!overlaps) {
+        spans.push({ start, end });
+      }
+      match = scanner.exec(text);
+    }
+  }
+  spans.sort((a, b) => a.start - b.start);
+  return spans;
+}
+
 /** Converts a measured value+unit into the canonical unit of a parameter. */
 export function toCanonicalUnit(
   value: number,

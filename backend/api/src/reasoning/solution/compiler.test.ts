@@ -545,6 +545,220 @@ describe("PROD-023 compiler: the NlUnderstandingPort seam (deterministic default
 });
 
 /* ------------------------------------------------------------------ */
+/* QA-004 D5a: area-language never binds linear slots                   */
+/* ------------------------------------------------------------------ */
+
+describe("QA-004 D5a compiler: area-governed measurements never bind linear parameter slots", () => {
+  test("the Lead's exact utterance asks for the thickness — never binds the 2.5 m area side (2500 mm)", async () => {
+    const command = await compile(
+      "Apply a cement plaster coat to the damaged wall faces over a 2.5 by 2.5 metre area.",
+    );
+    expect(command.kind).toBe("clarification-needed");
+    if (command.kind !== "clarification-needed") {
+      throw new Error("expected the thickness clarification (D5a)");
+    }
+    expect(command.partialOperationType).toBe("plaster-application");
+    expect(command.questions).toHaveLength(1);
+    expect(command.questions[0]?.slotKind).toBe("dimension");
+    expect(command.questions[0]?.slot).toBe("thickness");
+    // NO intent exists on this outcome — the 2500 mm mis-binding is gone.
+    expect("intent" in command).toBe(false);
+  });
+
+  test("the thickness clarification is the EXISTING question shape (identical to the no-measurement case)", async () => {
+    const area = await compile(
+      "Apply a cement plaster coat to the damaged wall faces over a 2.5 by 2.5 metre area.",
+    );
+    const bare = await compile("Plaster the affected wall faces.");
+    expect(area.kind).toBe("clarification-needed");
+    expect(bare.kind).toBe("clarification-needed");
+    if (area.kind !== "clarification-needed" || bare.kind !== "clarification-needed") {
+      throw new Error("expected clarifications");
+    }
+    expect(area.questions[0]?.question).toBe(bare.questions[0]?.question);
+  });
+
+  test("the 'covering X by Y m' family is area-governed — the thickness is asked", async () => {
+    const command = await compile(
+      "Apply cement plaster to the affected wall faces covering 2.5 by 2.5 m.",
+    );
+    expect(command.kind).toBe("clarification-needed");
+    if (command.kind !== "clarification-needed") {
+      throw new Error("expected the thickness clarification (D5a)");
+    }
+    expect(command.questions[0]?.slot).toBe("thickness");
+    expect("intent" in command).toBe(false);
+  });
+
+  test("square-metre and m2 phrasings carry no linear measurement into the binding path", async () => {
+    for (const utterance of [
+      "Apply cement plaster to the affected wall faces over about 6 square metres.",
+      "Plaster the affected wall faces over an area of 12.5 m2.",
+    ]) {
+      const command = await compile(utterance);
+      expect(command.kind).toBe("clarification-needed");
+      if (command.kind !== "clarification-needed") {
+        throw new Error(`expected the thickness clarification for '${utterance}'`);
+      }
+      expect(command.questions[0]?.slot).toBe("thickness");
+      expect("intent" in command).toBe(false);
+    }
+  });
+
+  test("an explicit thickness beside area language still compiles (the area is simply not a slot)", async () => {
+    const command = await expectIntent(
+      "Apply 30 mm cement plaster to the affected wall faces over a 2.5 by 2.5 metre area.",
+    );
+    expect(command.intent.parameters).toEqual([
+      { name: "thickness", value: 30, unit: "mm" },
+      { name: "material", value: "cement-plaster" },
+    ]);
+  });
+
+  test("area language over two open linear slots asks for them — the area side is never a width/length candidate", async () => {
+    const command = await compile("Excavate a pit over a 2 by 2 metre area, 1.5 m deep.");
+    expect(command.kind).toBe("clarification-needed");
+    if (command.kind !== "clarification-needed") {
+      throw new Error("expected the width/length clarification (D5a)");
+    }
+    expect(command.questions.map((question) => question.slot)).toEqual(["width", "length"]);
+    expect("intent" in command).toBe(false);
+  });
+
+  test("a plain 'X by Y m' WITHOUT area semantics keeps the existing honest ambiguity", async () => {
+    const command = await compile("Cut an opening 1 by 2 m in this wall.");
+    expect(command.kind).toBe("ambiguous");
+    if (command.kind !== "ambiguous") {
+      throw new Error("expected the preserved non-area ambiguity");
+    }
+    expect(command.readings.length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+/* ------------------------------------------------------------------ */
+/* QA-004 D5b: constraint-violating parameters never become intents     */
+/* ------------------------------------------------------------------ */
+
+describe("QA-004 D5b compiler: declared quantitative limits gate the compiled parameter set", () => {
+  test("60 mm plaster (over the 50 mm per-coat limit) re-asks with the exact violation prose — no intent", async () => {
+    const command = await compile("Apply 60 mm plaster to the affected wall faces.");
+    expect(command.kind).toBe("clarification-needed");
+    if (command.kind !== "clarification-needed") {
+      throw new Error("expected the constraint re-ask (D5b)");
+    }
+    expect(command.partialOperationType).toBe("plaster-application");
+    expect(command.questions).toHaveLength(1);
+    const question = command.questions[0];
+    expect(question?.slotKind).toBe("constraint");
+    expect(question?.slot).toBe("thickness");
+    expect(question?.question).toContain("60 mm");
+    expect(question?.question).toContain("maximum plaster thickness is 50 mm per coat");
+    expect(question?.question).toContain("thickness");
+    // NO intent exists on this outcome — a violating parameter set is
+    // structurally never confirmable.
+    expect("intent" in command).toBe(false);
+  });
+
+  test("the at-limit 50 mm plaster still compiles exactly (the gate never over-blocks)", async () => {
+    const command = await expectIntent("Apply 50 mm plaster to the affected wall faces.");
+    expect(command.intent.parameters).toEqual([
+      { name: "thickness", value: 50, unit: "mm" },
+      { name: "material", value: "cement-plaster" },
+    ]);
+  });
+
+  test("a 3.5 m block wall (over the 3 m limit) re-asks with the declared wall-height limit", async () => {
+    const command = await compile("Lay concrete blocks to a height of 3.5 m along this wall.");
+    expect(command.kind).toBe("clarification-needed");
+    if (command.kind !== "clarification-needed") {
+      throw new Error("expected the constraint re-ask (D5b)");
+    }
+    expect(command.questions[0]?.slotKind).toBe("constraint");
+    expect(command.questions[0]?.slot).toBe("height");
+    expect(command.questions[0]?.question).toContain("maximum wall height is 3 m per operation");
+    expect("intent" in command).toBe(false);
+  });
+
+  test("a 6.5 m excavation depth (over the 6 m limit) re-asks with the declared depth limit", async () => {
+    const command = await compile("Excavate a pit 6.5 m deep, 2 m wide and 3 m long.");
+    expect(command.kind).toBe("clarification-needed");
+    if (command.kind !== "clarification-needed") {
+      throw new Error("expected the constraint re-ask (D5b)");
+    }
+    expect(command.questions[0]?.slotKind).toBe("constraint");
+    expect(command.questions[0]?.slot).toBe("depth");
+    expect(command.questions[0]?.question).toContain(
+      "maximum excavation depth is 6 m per operation",
+    );
+    expect("intent" in command).toBe(false);
+  });
+
+  test("a delta resolving over the limit is gated too (30 mm base + 40 mm = 70 mm)", async () => {
+    const command = await compile("Make the plaster thicker by 40 mm.");
+    expect(command.kind).toBe("clarification-needed");
+    if (command.kind !== "clarification-needed") {
+      throw new Error("expected the constraint re-ask (D5b)");
+    }
+    expect(command.questions[0]?.slotKind).toBe("constraint");
+    expect(command.questions[0]?.slot).toBe("thickness");
+    expect(command.questions[0]?.question).toContain("70 mm");
+    expect(command.questions[0]?.question).toContain("maximum plaster thickness is 50 mm per coat");
+    expect("intent" in command).toBe(false);
+  });
+
+  test("the canonical 30 mm corpus commands are untouched by the gate (byte-identical command text)", async () => {
+    const command = await expectIntent("Apply 30 mm plaster to the affected wall faces.");
+    expect(command.intent.provenance.commandText).toBe(
+      "Apply 30 mm cement-plaster to the affected wall faces.",
+    );
+    expect(command.attribution.normalizedCommandText).toBe(
+      "Apply 30 mm cement-plaster to the affected wall faces.",
+    );
+  });
+
+  test("the gate's limits mirror is PINNED to the engine's authoritative validation data (drift guard)", async () => {
+    // The reasoning module must not import the engine at runtime (the
+    // PROD-023 source guarantee), so the compile gate carries a frozen
+    // mirror of the engine's REFERENCE_BUILDING_OPERATION_LIMITS. This
+    // test imports the AUTHORITATIVE table from the test side and pins
+    // the mirror to it: any engine-side limit change that is not mirrored
+    // fails the gate here, so the compile gate can never silently diverge
+    // from the deterministic validation leg.
+    const { REFERENCE_BUILDING_OPERATION_LIMITS, evaluateOperationLimits } = await import(
+      "@aise/solution-engine"
+    );
+    const { COMPILER_OPERATION_LIMITS, exceededOperationLimits } = await import("./compiler");
+    expect(COMPILER_OPERATION_LIMITS).toEqual(REFERENCE_BUILDING_OPERATION_LIMITS);
+    // Evaluator agreement over the boundary matrix (within / at / over the
+    // limit, per limited operation) — the gate and the validation leg
+    // always agree on exceedance.
+    const cases: readonly [
+      string,
+      { name: string; value: number; unit: string }[],
+      number,
+    ][] = [
+      ["plaster-application", [{ name: "thickness", value: 30, unit: "mm" }], 0],
+      ["plaster-application", [{ name: "thickness", value: 50, unit: "mm" }], 0],
+      ["plaster-application", [{ name: "thickness", value: 60, unit: "mm" }], 1],
+      ["plaster-application", [{ name: "thickness", value: 0.06, unit: "m" }], 1],
+      ["plaster-application", [{ name: "thickness", value: 2500, unit: "mm" }], 1],
+      ["excavation", [{ name: "depth", value: 6, unit: "m" }], 0],
+      ["excavation", [{ name: "depth", value: 6.5, unit: "m" }], 1],
+      ["block-wall-placement", [{ name: "height", value: 3, unit: "m" }], 0],
+      ["block-wall-placement", [{ name: "height", value: 3.5, unit: "m" }], 1],
+    ];
+    for (const [operationType, parameters, expectedCount] of cases) {
+      expect(exceededOperationLimits(operationType, parameters).length, operationType).toBe(
+        expectedCount,
+      );
+      expect(evaluateOperationLimits(operationType, parameters).length, operationType).toBe(
+        expectedCount,
+      );
+    }
+  });
+});
+
+/* ------------------------------------------------------------------ */
 /* Unsupported domains                                                   */
 /* ------------------------------------------------------------------ */
 

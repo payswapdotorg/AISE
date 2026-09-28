@@ -58,19 +58,19 @@ const FOCUS_ANCHORS: Readonly<
 
 describe("PROD-023 corpus: the inventory itself", () => {
   test("the corpus is versioned with unique ids across seven categories", () => {
-    expect(COMMAND_CORPUS_VERSION).toBe("1.0.0");
+    expect(COMMAND_CORPUS_VERSION).toBe("1.1.0");
     const ids = new Set(COMMAND_CORPUS.map((entry) => entry.id));
     expect(ids.size).toBe(COMMAND_CORPUS.length);
     expect(corpusCategoryCounts()).toEqual({
-      representative: 19,
+      representative: 20,
       equivalent: 16,
       ambiguous: 5,
       unsupported: 6,
       unsafe: 8,
-      clarification: 9,
+      clarification: 16,
       tool: 8,
     });
-    expect(COMMAND_CORPUS.length).toBe(71);
+    expect(COMMAND_CORPUS.length).toBe(79);
   });
 
   test("every equivalence group has at least two members", () => {
@@ -84,7 +84,7 @@ describe("PROD-023 corpus: the inventory itself", () => {
 describe("PROD-023 corpus: every entry compiles to its expected typed outcome", () => {
   test("the representative acceptance set compiles into typed operations", async () => {
     const entries = COMMAND_CORPUS.filter((entry) => entry.category === "representative");
-    expect(entries.length).toBe(19);
+    expect(entries.length).toBe(20);
     for (const entry of entries) {
       const command = await compileEntry(entry);
       expect(
@@ -171,7 +171,7 @@ describe("PROD-023 corpus: every entry compiles to its expected typed outcome", 
 
   test("the clarification entries ask exactly their expected slots", async () => {
     const entries = COMMAND_CORPUS.filter((entry) => entry.category === "clarification");
-    expect(entries.length).toBe(9);
+    expect(entries.length).toBe(16);
     for (const entry of entries) {
       const command = await compileEntry(entry);
       expect(`${entry.id}: ${command.kind}`).toBe(`${entry.id}: clarification-needed`);
