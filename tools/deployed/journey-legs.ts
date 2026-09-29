@@ -1161,6 +1161,21 @@ export async function journeyRealitySeamRoundTrip(
       waitUntil: "domcontentloaded",
     });
     await page.waitForSelector("#field-baseline-version", { timeout: LEG_BUDGETS.landmarkMs });
+    /* The prefill is ASYNC (loadLatestRealityVersionLive → setBaseline): the
+     * field renders empty and populates once the fetch resolves. Waiting for
+     * the selector alone races the fetch (the 2026-09-29 deployed runs read
+     * "" while v002 was provably recorded — the pin landed ~1s later). Wait
+     * BOUNDED for the value; fall through to the honest read either way so
+     * a genuine prefill failure still fails on its own merit. */
+    await page
+      .waitForFunction(() => {
+        const g = globalThis as unknown as {
+          document?: { querySelector(selector: string): { value?: string } | null };
+        };
+        const el = g.document?.querySelector("#field-baseline-version") ?? null;
+        return el !== null && typeof el.value === "string" && el.value.length > 0;
+      }, { timeout: 8_000 })
+      .catch(() => undefined);
     const baselineValue = await page.locator("#field-baseline-version").inputValue();
     assertions.push({
       name: "the Intervention Studio's baseline picker prefills the recorded version",

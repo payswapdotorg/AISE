@@ -460,9 +460,18 @@ export async function runXJourney(options: { readonly baseUrl?: string }): Promi
       { "content-type": assets.still.mediaType },
       assets.still.bytes,
     );
+    /* Durable-store honesty (the w1.upload discipline, 2026-09-29): the
+     * fixture bytes are deterministic BY DESIGN, so only the first run
+     * against a FRESH store can observe STORED. Against the DURABLE
+     * deployed store (Neon + R2) the first upload honestly answers
+     * DUPLICATE — the store already holds these exact bytes from a
+     * previous run. Both outcomes are honest; both prove the gateway.
+     * The re-upload MUST answer DUPLICATE in either world. */
+    const firstUploadOutcome = (u: { body: Record<string, unknown> }) =>
+      u.body["outcome"] === "STORED" || u.body["outcome"] === "DUPLICATE";
     const uploadPass =
-      uploadStill.body["outcome"] === "STORED" &&
-      uploadVideo.body["outcome"] === "STORED" &&
+      firstUploadOutcome(uploadStill) &&
+      firstUploadOutcome(uploadVideo) &&
       reupload.body["outcome"] === "DUPLICATE";
     steps.push({
       id: "x.capture-upload",
@@ -472,8 +481,8 @@ export async function runXJourney(options: { readonly baseUrl?: string }): Promi
       classNote:
         "deterministic fixture bytes standing in for the absent camera (the same SYNTHETIC class the M journey's capture steps carry); the transport is the real capture gateway over the local serve",
       lines: [
-        `still: POST /v1/capture/assets/${assets.still.contentId.slice(0, 16)}… → ${uploadStill.status} ${String(uploadStill.body["outcome"])} (${assets.still.bytes.length} B image/jpeg)`,
-        `video: POST /v1/capture/assets/${assets.video.contentId.slice(0, 16)}… → ${uploadVideo.status} ${String(uploadVideo.body["outcome"])} (${assets.video.bytes.length} B video/mp4)`,
+        `still: POST /v1/capture/assets/${assets.still.contentId.slice(0, 16)}… → ${uploadStill.status} ${String(uploadStill.body["outcome"])} (${assets.still.bytes.length} B image/jpeg${uploadStill.body["outcome"] === "DUPLICATE" ? " — the durable store already held the deterministic bytes (the honest first answer)" : ""})`,
+        `video: POST /v1/capture/assets/${assets.video.contentId.slice(0, 16)}… → ${uploadVideo.status} ${String(uploadVideo.body["outcome"])} (${assets.video.bytes.length} B video/mp4${uploadVideo.body["outcome"] === "DUPLICATE" ? " — the durable store already held the deterministic bytes (the honest first answer)" : ""})`,
         `re-upload of the identical still bytes → ${reupload.status} ${String(reupload.body["outcome"])} (idempotent, never a duplication — the same DUPLICATE semantics the M journey's step 14 proved on the station)`,
         `cited artifacts: contentIds ${assets.still.contentId.slice(0, 16)}… / ${assets.video.contentId.slice(0, 16)}…`,
       ],
@@ -490,9 +499,18 @@ export async function runXJourney(options: { readonly baseUrl?: string }): Promi
     }, batchBody);
     const syncAck = asRecord(sync.body);
     const replayAck = asRecord(syncReplay.body);
+    /* Durable-store honesty (the w1.upload discipline, 2026-09-29): the
+     * session/batch ids are deterministic BY DESIGN, so against the
+     * DURABLE deployed store the first sync honestly answers DUPLICATE
+     * (the batch is already recorded from a previous run) — the
+     * idempotent verdict itself is the proof. ACCEPTED (fresh store) and
+     * DUPLICATE (durable store) are both honest first answers; the
+     * replay MUST answer DUPLICATE in either world. */
+    const firstSyncOutcome =
+      syncAck?.["outcome"] === "ACCEPTED" || syncAck?.["outcome"] === "DUPLICATE";
     const syncPass =
       sync.status === 200 &&
-      syncAck?.["outcome"] === "ACCEPTED" &&
+      firstSyncOutcome &&
       syncAck?.["lastAcceptedSequence"] === 0 &&
       replayAck?.["outcome"] === "DUPLICATE";
     steps.push({
@@ -503,7 +521,7 @@ export async function runXJourney(options: { readonly baseUrl?: string }): Promi
       classNote:
         "the server-side sync semantics over the local serve (the same wire contract the M journey's station run exercised: a canonical SyncBatch envelope with the content manifest)",
       lines: [
-        `POST /v1/capture/sync (session ${X_SESSION_ID}, sequence 0, batch batch-${X_SESSION_ID}-0, 2 manifest entries) → ${sync.status} ${String(syncAck?.["outcome"])} lastAcceptedSequence=${String(syncAck?.["lastAcceptedSequence"])}`,
+        `POST /v1/capture/sync (session ${X_SESSION_ID}, sequence 0, batch batch-${X_SESSION_ID}-0, 2 manifest entries) → ${sync.status} ${String(syncAck?.["outcome"])} lastAcceptedSequence=${String(syncAck?.["lastAcceptedSequence"])}${syncAck?.["outcome"] === "DUPLICATE" ? " — the durable store already held the deterministic batch (the honest first answer)" : ""}`,
         `the SAME batch replayed (the idempotency key stable across retries) → ${syncReplay.status} ${String(replayAck?.["outcome"])} (the server's idempotent verdict — the M journey's step 13/14 semantics)`,
         `cited artifacts: session ${X_SESSION_ID} · batch batch-${X_SESSION_ID}-0`,
       ],
