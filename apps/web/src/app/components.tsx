@@ -868,10 +868,17 @@ export function BaselinePicker({
   state,
   value,
   onChange,
+  recordHref,
 }: {
   readonly state: BaselinePickerState;
   readonly value: string;
   readonly onChange: (value: string) => void;
+  /**
+   * PROD-016: where the "Record a reality snapshot first" guidance links —
+   * the SiteTwin's recorder panel (the composed materialization path).
+   * Absent (demo panels) the guidance stays plain text.
+   */
+  readonly recordHref?: string;
 }): ReactNode {
   return (
     <div className="field" data-picker="baseline">
@@ -903,7 +910,15 @@ export function BaselinePicker({
       ) : state.kind === "none" ? (
         <p className="pane-foot" data-picker-state="none">
           No reality version is recorded for this project yet — a scenario pins a baseline, and
-          there is none to pin. Record a reality snapshot first.
+          there is none to pin.{" "}
+          {recordHref === undefined ? (
+            "Record a reality snapshot first."
+          ) : (
+            <>
+              <a href={recordHref}>Record a reality snapshot first</a> — the SiteTwin&apos;s
+              recorder composes the first version with evidence provenance.
+            </>
+          )}
         </p>
       ) : state.version.nodeCount === 0 ? (
         <div className="callout callout-warning" data-picker-state="empty-latest">

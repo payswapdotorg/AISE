@@ -27,6 +27,7 @@ import {
   loadRealityLive,
   liveEvidencePaneViews,
 } from "../api";
+import { RealityRecorderPanel } from "./RealityRecorder";
 import { demoEvidenceList, demoReality, demoWorkspaceInput } from "../demo";
 import type { EvidencePaneView, RealityPaneView } from "../../shell";
 import {
@@ -76,6 +77,11 @@ export function SiteTwin({ projectId }: { readonly projectId: string }): ReactNo
   const environment = useAppEnvironment();
   const mode = environment.apiStatus?.mode ?? "probing";
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  // PROD-016 (the reality-materialization seam): the recorder panel is
+  // offered from the reality card's honest empty state in live mode — the
+  // one click that lets a first-time user cross from captures to a first
+  // reality version without developer tools.
+  const [recorderOpen, setRecorderOpen] = useState(false);
   const load = useCallback(async (): Promise<ResourceOutcome<SiteTwinData>> => {
     if (isDemoMode(environment) || environment.apiStatus === null) {
       return {
@@ -145,9 +151,47 @@ export function SiteTwin({ projectId }: { readonly projectId: string }): ReactNo
             data={data}
             selectedNodeId={selectedNodeId}
             onSelectNode={setSelectedNodeId}
+            recorderAction={
+              data.mode === "api" ? (
+                <>
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={() => {
+                      setRecorderOpen(true);
+                    }}
+                  >
+                    {data.reality === null ? "Record the first snapshot" : "Record another version"}
+                  </button>
+                  {recorderOpen ? (
+                    <button
+                      type="button"
+                      className="button"
+                      onClick={() => {
+                        setRecorderOpen(false);
+                      }}
+                    >
+                      Close the recorder
+                    </button>
+                  ) : null}
+                </>
+              ) : null
+            }
           />
         )}
       />
+      {recorderOpen ? (
+        <RealityRecorderPanel
+          projectId={projectId}
+          mode={isDemoMode(environment) || environment.apiStatus === null ? "demo" : "api"}
+          principalId={environment.principalId}
+          fetchImpl={environment.fetchImpl}
+          onRecorded={() => {
+            setRecorderOpen(false);
+            reload();
+          }}
+        />
+      ) : null}
     </>
   );
 }
@@ -156,10 +200,13 @@ export function SiteTwinBody({
   data,
   selectedNodeId,
   onSelectNode,
+  recorderAction = null,
 }: {
   readonly data: SiteTwinData;
   readonly selectedNodeId: string | null;
   readonly onSelectNode: (nodeId: string) => void;
+  /** The reality recorder's open/close controls (live mode; PROD-016). */
+  readonly recorderAction?: ReactNode;
 }): ReactNode {
   const planReality = planRealityView({
     projectId: data.projectId,
@@ -196,7 +243,7 @@ export function SiteTwinBody({
         />
       )}
       <PlanRealityCard view={planReality} />
-      <RealityCard reality={data.reality} mode={data.mode} />
+      <RealityCard reality={data.reality} mode={data.mode} action={recorderAction} />
       <EvidenceCard evidence={data.evidence} mode={data.mode} projectId={data.projectId} />
     </>
   );
@@ -438,9 +485,12 @@ function Field2({
 function RealityCard({
   reality,
   mode,
+  action = null,
 }: {
   readonly reality: RealityPaneView | null;
   readonly mode: "demo" | "api";
+  /** The recorder affordance (live mode; rendered in both states). */
+  readonly action?: ReactNode;
 }): ReactNode {
   return (
     <Card
@@ -457,10 +507,17 @@ function RealityCard({
       }
     >
       {reality === null ? (
-        <EmptyState
-          title="No reality snapshot recorded for this project"
-          guidance="Reality snapshots are materialized from reconstructed evidence. This project has none yet — the SiteTwin shows the pinned projections only."
-        />
+        <>
+          <EmptyState
+            title="No reality snapshot recorded for this project"
+            guidance={
+              mode === "api"
+                ? "Record the first snapshot below — compose the site's nodes with evidence provenance from the live register, and the governed changes API versions it (the composed materialization path; no developer tools needed)."
+                : "Reality snapshots are materialized from reconstructed evidence. This project has none yet — the SiteTwin shows the pinned projections only."
+            }
+            action={action ?? undefined}
+          />
+        </>
       ) : (
         <>
           <p className="pane-foot">
@@ -498,6 +555,7 @@ function RealityCard({
               </tbody>
             </table>
           </div>
+          {action === null ? null : <div className="state-action">{action}</div>}
         </>
       )}
     </Card>

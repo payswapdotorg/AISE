@@ -42,18 +42,25 @@ import type { TaskFlowResourceData } from "../task-first";
 import { isDemoMode, useAppEnvironment } from "../environment";
 import {
   describeApiFailure,
+  registerEvidenceLive,
   uploadCaptureAssetLive,
   webCryptoSha256,
   type AssetDigest,
   type CaptureAssetUploadRecord,
 } from "../api";
-import { Card, DataBadge, EmptyState, Instant, ProjectSurfaceNav } from "../components";
+import { Card, CreateField, DataBadge, EmptyState, Instant, ProjectSurfaceNav } from "../components";
 import { TaskFlowStrip } from "../task-first";
 import { ProviderStatusNote } from "../provider-status";
 import { formatRoute } from "../router";
 import { BROWSER_IMPLEMENTED_INTERACTION_MODES } from "../adapter-profile";
 import { plural } from "../format";
 import { DEMO_TASK_PROJECT_ID } from "../task-dataset";
+import {
+  defaultAcquisitionMethod,
+  EVIDENCE_ACQUISITION_METHODS,
+  evidenceRegistrationRequestBody,
+  validateEvidenceRegistrationDraft,
+} from "../evidence-registration";
 import {
   FIELD_TASK_DEEP_LINK_SCHEME,
   formatFieldTaskDeepLink,
@@ -342,19 +349,210 @@ export function CaptureUploadPanel({ projectId }: { readonly projectId: string }
   }, [demo, digest, bytes, file, submitting, environment.fetchImpl]);
 
   return (
-    <CaptureUploadCardBody
-      projectId={projectId}
-      demo={demo}
-      digestAvailable={digest !== null}
-      file={file}
-      reading={reading}
-      submitting={submitting}
-      outcome={outcome}
-      onFileSelected={onFileSelected}
-      onSubmit={() => {
-        void submit();
-      }}
-    />
+    <>
+      <CaptureUploadCardBody
+        projectId={projectId}
+        demo={demo}
+        digestAvailable={digest !== null}
+        file={file}
+        reading={reading}
+        submitting={submitting}
+        outcome={outcome}
+        onFileSelected={onFileSelected}
+        onSubmit={() => {
+          void submit();
+        }}
+      />
+      {!demo && outcome !== null && outcome.kind !== "failed" ? (
+        <EvidenceRegistrationPanel
+          key={outcome.record.contentId}
+          projectId={projectId}
+          fetchImpl={environment.fetchImpl}
+          record={outcome.record}
+          capturedAtDefault={new Date().toISOString()}
+        />
+      ) : null}
+    </>
+  );
+}
+
+/** The outcome banner of one registration (created or idempotent, named). */
+interface RegistrationOutcome {
+  readonly kind: "registered" | "idempotent" | "failed";
+  readonly detail: string;
+}
+
+/**
+ * PROD-016b — the evidence REGISTRATION panel (the capture → reality
+ * journey's second leg, previously API-only): after a stored upload the
+ * capture becomes EVIDENCE — pickable as provenance by the reality
+ * recorder, listed by the SiteTwin — through the server-validated
+ * registration step (`POST /v1/evidence`). Every field is prefilled from
+ * the upload's own record or entered by the user; the register stays the
+ * authority (idempotent re-registration, typed conflicts verbatim).
+ */
+export function EvidenceRegistrationPanel({
+  projectId,
+  fetchImpl,
+  record,
+  capturedAtDefault,
+}: {
+  readonly projectId: string;
+  readonly fetchImpl: (input: string, init?: RequestInit) => Promise<Response>;
+  /** The upload's own record (content id, byte size, media type). */
+  readonly record: CaptureAssetUploadRecord;
+  /** The upload instant (ISO 8601 UTC) offered as the captured-at prefill. */
+  readonly capturedAtDefault: string;
+}): ReactNode {
+  const [contentId, setContentId] = useState(record.contentId);
+  const [byteSize, setByteSize] = useState(String(record.byteSize));
+  const [mediaType, setMediaType] = useState(record.mediaType);
+  const [capturedAt, setCapturedAt] = useState(capturedAtDefault);
+  const [acquisitionMethod, setAcquisitionMethod] = useState(() =>
+    defaultAcquisitionMethod(record.mediaType),
+  );
+  const [sessionId, setSessionId] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [registration, setRegistration] = useState<RegistrationOutcome | null>(null);
+
+  const draft = {
+    contentId,
+    byteSize,
+    mediaType,
+    capturedAt,
+    acquisitionMethod,
+    sessionId,
+  };
+  const defects = validateEvidenceRegistrationDraft(draft);
+
+  const submit = useCallback(async () => {
+    if (defects.length > 0 || submitting) {
+      return;
+    }
+    const body = evidenceRegistrationRequestBody(draft);
+    if (!body.ok) {
+      setRegistration({ kind: "failed", detail: body.defects.join("; ") });
+      return;
+    }
+    setSubmitting(true);
+    const result = await registerEvidenceLive(fetchImpl, body.body);
+    setSubmitting(false);
+    if (!result.ok) {
+      setRegistration({ kind: "failed", detail: describeApiFailure(result.failure) });
+      return;
+    }
+    setRegistration({
+      kind: result.record.outcome === "REGISTERED" ? "registered" : "idempotent",
+      detail:
+        result.record.outcome === "REGISTERED"
+          ? `Registered as evidence — ${result.record.acquisitionMethod} · ${result.record.mediaType} · captured ${result.record.capturedAt}. The reality recorder's evidence picker offers it now.`
+          : `Identical re-registration — the register already holds this exact record (idempotent, no duplication).`,
+    });
+  }, [defects.length, draft, fetchImpl, submitting]);
+
+  return (
+    <Card
+      title="Register this capture as evidence"
+      badge={<DataBadge mode="api" />}
+      meta={
+        <span>
+          the server-validated registration step (POST /v1/evidence) — a
+          capture becomes pickable provenance only through the register
+        </span>
+      }
+    >
+      <p>
+        The uploaded bytes live in the content-addressed store; registering
+        them as an Evidence document is what makes them count as evidence —
+        the SiteTwin lists them and the reality recorder&apos;s provenance
+        picker offers them. Identical re-registration is idempotent; a
+        differing re-registration is a typed conflict (the register is the
+        authority).
+      </p>
+      <CreateField
+        label="Content id"
+        value={contentId}
+        onChange={setContentId}
+        hint="Prefilled from the upload — the content-addressed identity."
+      />
+      <CreateField
+        label="Byte size"
+        value={byteSize}
+        onChange={setByteSize}
+        hint="Prefilled from the upload."
+      />
+      <CreateField
+        label="Media type"
+        value={mediaType}
+        onChange={setMediaType}
+        hint="Prefilled from the upload."
+      />
+      <CreateField
+        label="Captured at (ISO 8601 UTC)"
+        value={capturedAt}
+        onChange={setCapturedAt}
+        hint="The acquisition instant — prefilled with the upload instant, hand-correctable."
+      />
+      <CreateField
+        label="Acquisition method"
+        value={acquisitionMethod}
+        onChange={setAcquisitionMethod}
+        options={EVIDENCE_ACQUISITION_METHODS.map((method) => ({
+          value: method,
+          label: method,
+        }))}
+        hint="The closed acquisition vocabulary, verbatim — substituting a method never silently preserves a stronger evidence claim."
+      />
+      <CreateField
+        label="Session id (optional)"
+        value={sessionId}
+        onChange={setSessionId}
+        hint="Rides the well-known session.id metadata key; empty is honest."
+      />
+      {defects.length === 0 ? null : (
+        <div className="callout callout-warning" role="alert">
+          <strong>The draft does not satisfy the recorded contract yet:</strong>
+          <ul className="notes-list">
+            {defects.map((defect) => (
+              <li key={defect}>{defect}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <div className="toolbar">
+        <button
+          type="button"
+          className="button"
+          disabled={defects.length > 0 || submitting}
+          data-submit-state={submitting ? "submitting" : defects.length > 0 ? "invalid-draft" : "ready"}
+          onClick={() => {
+            void submit();
+          }}
+        >
+          {submitting ? "Registering…" : "Register as evidence"}
+        </button>
+        <a className="button button-secondary" href={formatRoute({ name: "sitetwin", projectId })}>
+          Record a reality snapshot with it
+        </a>
+      </div>
+      {registration === null ? null : registration.kind === "failed" ? (
+        <div className="callout callout-warning" data-outcome="failed" role="alert">
+          <p>
+            <strong>The registration was refused.</strong> {registration.detail}
+          </p>
+        </div>
+      ) : (
+        <div className="callout callout-info" data-outcome={registration.kind} role="status">
+          <p>
+            <strong>
+              {registration.kind === "registered" ? "Registered." : "Idempotent — already registered."}
+            </strong>{" "}
+            {registration.detail}
+          </p>
+        </div>
+      )}
+      <ProviderStatusNote subject="the evidence registration" />
+    </Card>
   );
 }
 

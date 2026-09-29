@@ -51,6 +51,7 @@ import { TransientCheckError, type CheckReport } from "../deployed/verdict";
 import {
   journeyAvailability,
   journeyCaptureUploadRoundTrip,
+  journeyRealitySeamRoundTrip,
   journeySessionLifecycle,
   journeySolutionWorkspaceLegs,
   LEG_BUDGETS,
@@ -90,6 +91,7 @@ export const W_STEP_CATALOG: readonly { readonly id: string; readonly name: stri
   { id: "w1.boq", name: "BOQ — the BOQ Lens + the SOURCE BOQ import panel + incumbent context" },
   { id: "w1.evidence", name: "EVIDENCE — the capture surface + the guided mission + the upload entry" },
   { id: "w1.upload", name: "the REAL capture upload round-trip (STORED → DUPLICATE)" },
+  { id: "w1.seam", name: "the REALITY-MATERIALIZATION SEAM — upload → register → record → pin (PROD-016/016b)" },
   { id: "w1.case", name: "CASE — the engineering case + the Evidence Envelope" },
   { id: "w1.intervention", name: "INTERVENTION — the Intervention Studio + proposed states" },
   { id: "w1.outcome", name: "OUTCOME — the Outcomes surface" },
@@ -842,6 +844,32 @@ export async function runWJourney(options: { readonly baseUrl?: string }): Promi
         ),
       );
       rmSync(fixtureDir, { recursive: true, force: true });
+
+      /* w1.seam — the REALITY-MATERIALIZATION crossing (PROD-016/016b):
+       * upload → register → record → pin, through the product's own
+       * surfaces, on a per-run project. The fixture bytes are the same
+       * deterministic class as w1.upload (the caller records it once). */
+      const seamFixtureDir = mkdtempSync(join(tmpdir(), "aise-journey-seam-"));
+      const seamFixtureFile = join(seamFixtureDir, "prod016-seam-fixture.jpeg");
+      writeFileSync(
+        seamFixtureFile,
+        new TextEncoder().encode(
+          "AISE PROD-016 seam journey fixture — deterministic bytes for the register + record legs (synthetic class)",
+        ),
+      );
+      const seam = await withOneBoundedRetry(() =>
+        journeyRealitySeamRoundTrip(ctx, { fixtureFile: seamFixtureFile }),
+      );
+      w1Steps.push(
+        reportToStep(
+          seam,
+          "w1.seam",
+          "the REALITY-MATERIALIZATION SEAM — upload → register → record → pin (PROD-016/016b)",
+          "synthetic",
+          "deterministic fixture bytes; the browser crossing itself is live (the real registration panel, the real recorder panel, the governed changes API, the Studio's baseline prefill)",
+        ),
+      );
+      rmSync(seamFixtureDir, { recursive: true, force: true });
 
       /* w1.responsive — the IMPORTED deployed checks, against this base. */
       const responsiveDesktop = await withOneBoundedRetry(() => checkResponsiveDesktop(checkCtx));

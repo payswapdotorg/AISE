@@ -968,3 +968,200 @@ export async function journeySolutionWorkspaceLegs(
     await pageHandle.close();
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Leg 4 — journeyRealitySeamRoundTrip (PROD-016/016b)                 */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The reality-materialization seam's own journey leg: the FULL crossing
+ * from a capture to a pinned baseline through the product's own surfaces,
+ * zero developer tools —
+ *
+ *  upload (STORED|DUPLICATE — the bytes are deterministic, the store is
+ *  idempotent) → REGISTER the capture as evidence (the registration panel;
+ *  a DETERMINISTIC captured-at keeps re-runs IDEMPOTENT, never a typed
+ *  conflict) → RECORD the first reality snapshot (the SiteTwin's recorder:
+ *  one node with a derivation-note provenance → a governed change set →
+ *  v002 of a FRESH per-run project, so the version id is deterministic)
+ *  → PIN check (the Intervention Studio's baseline picker prefills the
+ *  recorded version).
+ *
+ * The leg mints its OWN project id per run (`proj-seam-<epoch-ms>`) so the
+ * baseline prefill is asserted against a project that provably has no
+ * scenario yet — the pin observation cannot be polluted by earlier runs.
+ */
+export async function journeyRealitySeamRoundTrip(
+  ctx: JourneyLegContext,
+  options: {
+    /** The deterministic fixture file (the caller records the synthetic class). */
+    readonly fixtureFile: string;
+  },
+): Promise<CheckReport> {
+  const seamProjectId = `proj-seam-${String(Date.now())}`;
+  const pageHandle = await newCheckPage(ctx.browser, ctx.guard, "journey-reality-seam", {
+    label: "desktop 1280x900",
+    width: 1280,
+    height: 900,
+  });
+  let sessionCookieExisted = false;
+  try {
+    const page = pageHandle.page;
+    await navigateToBase(page, ctx.origin);
+    await page.waitForSelector("h2#gate-title", { timeout: LEG_BUDGETS.landmarkMs }).catch(() => {
+      throw new TransientCheckError("the auth gate did not appear before the seam leg", null);
+    });
+    sessionCookieExisted = true;
+    await enterDemoViaUi(page);
+    const assertions: CheckAssertion[] = [];
+    const extras: string[] = [`seam project: ${seamProjectId} (minted for this run)`];
+
+    /* Leg A0 — register the per-run project in the tenancy registry (the
+     * same POST the Projects surface's create panel makes; the per-project
+     * surfaces answer 403 unregistered_project otherwise — the tenancy
+     * gate working as designed). */
+    const registerProject = await page.evaluate(async (projectId: string) => {
+      const response = await fetch(
+        `/v1/identity/organizations/org-northwind/projects`,
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            projectId,
+            name: "Journey seam probe (per-run)",
+            actor: "demo-evaluator",
+          }),
+        },
+      );
+      return { status: response.status, ok: response.ok };
+    }, seamProjectId);
+    assertions.push({
+      name: "the per-run project registered in the tenancy registry (the Projects panel's own POST)",
+      pass: registerProject.ok,
+      detail: `POST answered ${String(registerProject.status)}`,
+    });
+
+    /* Leg A — the upload (STORED first-ever, DUPLICATE across runs). */
+    await page.goto(`${ctx.origin}/#/projects/${seamProjectId}/capture`, {
+      timeout: LEG_BUDGETS.gotoMs,
+      waitUntil: "domcontentloaded",
+    });
+    await page.waitForSelector("#capture-file", { timeout: LEG_BUDGETS.landmarkMs });
+    await page.setInputFiles("#capture-file", options.fixtureFile);
+    await page.getByRole("button", { name: "Upload to the capture gateway" }).click();
+    await page.waitForSelector('[data-outcome="stored"], [data-outcome="duplicate"]', {
+      timeout: LEG_BUDGETS.legMs,
+    });
+    const uploadOutcome = await page
+      .locator('[data-outcome="stored"], [data-outcome="duplicate"]')
+      .first()
+      .innerText();
+    assertions.push({
+      name: "the upload leg answered honestly (STORED first-ever or DUPLICATE idempotent)",
+      pass:
+        uploadOutcome.includes("Stored server-side") ||
+        uploadOutcome.includes("Already stored"),
+      detail: uploadOutcome.replace(/\s+/g, " ").slice(0, 100),
+    });
+
+    /* Leg B — the registration (deterministic captured-at → REGISTERED or IDEMPOTENT). */
+    await page.waitForSelector("#field-captured-at-iso-8601-utc-", {
+      timeout: LEG_BUDGETS.landmarkMs,
+    });
+    await page.locator("#field-captured-at-iso-8601-utc-").fill("2026-01-01T00:00:00.000Z");
+    await page.getByRole("button", { name: "Register as evidence" }).click();
+    await page.waitForSelector('[data-outcome="registered"], [data-outcome="idempotent"]', {
+      timeout: LEG_BUDGETS.legMs,
+    });
+    const registrationText = await page
+      .locator('[data-outcome="registered"], [data-outcome="idempotent"]')
+      .first()
+      .innerText();
+    assertions.push({
+      name: "the registration panel registered the capture as evidence (REGISTERED or IDEMPOTENT)",
+      pass:
+        registrationText.includes("Registered.") ||
+        registrationText.includes("Idempotent"),
+      detail: registrationText.replace(/\s+/g, " ").slice(0, 110),
+    });
+
+    /* Leg C — the recorder (the SiteTwin affordance → one governed change set → v002). */
+    await page.goto(`${ctx.origin}/#/projects/${seamProjectId}/sitetwin`, {
+      timeout: LEG_BUDGETS.gotoMs,
+      waitUntil: "domcontentloaded",
+    });
+    await page.waitForSelector("h1", { timeout: LEG_BUDGETS.landmarkMs });
+    await page.getByRole("button", { name: "Record the first snapshot" }).click();
+    await page.waitForSelector("#record-reality-snapshot", { timeout: LEG_BUDGETS.landmarkMs });
+    await page.locator("#field-node-1-id").fill("site-seam-probe");
+    await page.locator("#field-node-1-derivation-note-optional-").fill(
+      "journey seam probe — the deterministic derivation note provenance",
+    );
+    await page.getByRole("button", { name: "Record snapshot" }).click();
+    /* The success banner is TRANSIENT by design: onRecorded closes the
+     * panel and reloads the live surface — the durable feedback IS the
+     * reloaded reality card ("Record another version" renders only when a
+     * snapshot exists). Wait for THAT, then read the version from the
+     * card's own meta. */
+    await page.getByRole("button", { name: "Record another version" }).waitFor({
+      timeout: LEG_BUDGETS.legMs,
+    });
+    // Scope to the card whose HEADING is "Reality snapshot" (the projection
+    // card's unavailable-state text also mentions "reality snapshot" — a
+    // hasText match grabs the wrong card).
+    const realityMeta = await page
+      .locator("section.card", {
+        has: page.getByRole("heading", { name: "Reality snapshot", exact: true }),
+      })
+      .first()
+      .innerText();
+    const recordedVersion = /v\d+/.exec(realityMeta)?.[0] ?? "";
+    assertions.push({
+      name: "the recorder applied the change set and the surface reloaded with the recorded version",
+      pass: realityMeta.includes("Reality snapshot") && recordedVersion !== "",
+      detail: realityMeta.replace(/\s+/g, " ").slice(0, 120),
+    });
+    extras.push(`recorded version: ${recordedVersion}`);
+
+    /* Leg D — the live surface reload (the reality card shows the node). */
+    await page.goto(`${ctx.origin}/#/projects/${seamProjectId}/sitetwin`, {
+      timeout: LEG_BUDGETS.gotoMs,
+      waitUntil: "domcontentloaded",
+    });
+    await page.waitForSelector("td.mono", { timeout: LEG_BUDGETS.landmarkMs });
+    const realityTable = await page.locator("td.mono").first().innerText();
+    assertions.push({
+      name: "the SiteTwin's reality card renders the composed node live",
+      pass: realityTable.includes("site-seam-probe"),
+      detail: `first node cell: ${realityTable.slice(0, 60)}`,
+    });
+
+    /* Leg E — the pin (the Studio's baseline picker prefills the recorded version). */
+    await page.goto(`${ctx.origin}/#/projects/${seamProjectId}/intervention`, {
+      timeout: LEG_BUDGETS.gotoMs,
+      waitUntil: "domcontentloaded",
+    });
+    await page.waitForSelector("#field-baseline-version", { timeout: LEG_BUDGETS.landmarkMs });
+    const baselineValue = await page.locator("#field-baseline-version").inputValue();
+    assertions.push({
+      name: "the Intervention Studio's baseline picker prefills the recorded version",
+      pass: baselineValue === recordedVersion,
+      detail: `baseline field: "${baselineValue}" (recorded ${recordedVersion})`,
+    });
+
+    return allPassed(assertions)
+      ? passedReport("journey-reality-seam-round-trip", assertions, extras)
+      : failedReport("journey-reality-seam-round-trip", assertions, extras);
+  } finally {
+    if (sessionCookieExisted) {
+      const cookies = await pageHandle.context.cookies(ctx.origin).catch(() => null);
+      if (cookies === null || cookies.some((cookie) => cookie.name === "aise_session")) {
+        const fallback = await deleteSessionInPage(pageHandle.page);
+        if (fallback.startsWith("failed")) {
+          console.error(`  cleanup: journey-reality-seam finally fallback — ${fallback}`);
+        }
+      }
+    }
+    await pageHandle.close();
+  }
+}

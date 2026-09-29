@@ -29,13 +29,14 @@ unified stills/360/drone capture, #1-rated reality capture, agentic direction.
 | Capture-data portability | **MET** — the adapter contract (three platforms, one canonical contract, committed schemas) | PROD-016/017/018/019/020 evidence chain |
 | **Durability of captures (this session's gap)** | **MET (was the gap)** — production storage is now Neon (domain state) + R2 (blobs) + Redis (sessions); cross-instance idempotency PROVEN (10 concurrent identical uploads → 1 STORED + 9 DUPLICATE; fresh-session re-upload → DUPLICATE) | readyz `artifacts backend=r2`; this session's adversarial battery |
 | 360°/drone/LiDAR capture breadth | **HONEST-BY-DESIGN** — AISE does not pretend sensor breadth; stills+video through the real gateway, depth via capability escalation to capable devices | The capability-blocked states; `sensor-capture UNAVAILABLE-ON-STATION imuActive=false` honesty |
-| Automatic images→plans spatial mapping | **OPEN (the honest L1 gap)** — the reality graph is authored through the governed changes API with evidence provenance; there is no automatic spatial anchoring and no UI path from captures to a first reality version (API-only today) | The 2026-09-29 real-user walk: upload works, "No reality version is recorded for this project yet" |
+| Automatic images→plans spatial mapping | **PARTIAL — the UI crossing is closed; automatic anchoring stays OPEN (the honest L1 gap)** — the reality graph is authored through the governed changes API with evidence provenance; since PROD-016/016b (2026-09-29) the FULL crossing runs from the UI: upload → register (the capture surface's registration panel) → record (the SiteTwin's reality recorder: closed vocabularies, evidence-provenance picker, one governed change set) → pin (the Studio's baseline picker prefills the recorded version) — zero developer tools, live-proven end-to-end. Automatic spatial anchoring (images mapped to plan context without composing) remains OpenSpace's advantage | The 2026-09-29 seam walk: real photo → DUPLICATE-idempotent upload → "Registered." → v002 (2 nodes, 1 evidence record) → scenario created over v002; screenshots `/tmp/aise_seam_*.png` |
 
-**L1 verdict**: parity on friction, honesty, retrieval, offline, degradation and
-(now) durability; OpenSpace retains the advantage in automatic spatial mapping
-and sensor breadth. The differentiator (task-directed evidence budget) is
-shipped and proven. The OPEN row is the one candidate for the next
-productization phase (see "Open items").
+**L1 verdict**: parity on friction, honesty, retrieval, offline, degradation,
+(now) durability and (since PROD-016/016b) the capture→reality UI crossing;
+OpenSpace retains the advantage in automatic spatial mapping and sensor
+breadth. The differentiator (task-directed evidence budget) is shipped and
+proven. The remaining OPEN dimension (automatic anchoring) is the one
+candidate for the next productization phase (see "Open items").
 
 ## Layer 2 — Engineering intelligence vs AutoCAD/Forma/Procore-class
 
@@ -65,14 +66,15 @@ arbitrary uploaded plans) that AISE deliberately does not claim.
 | BOQ traceability both directions | **MET** | `x.boq-traced`; the trace panel's line→steps and step→lines |
 | Preventing attractive-but-invalid solutions | **MET** — deterministic validation (7 checks) + the append-step duplicate-node pre-check (POST-008) + the projection contract server-side | POST-008 live re-proof; `x.validate` |
 | Plan/reality distinction | **MET — sealed** — the observed-reality seal: proposed states never overwrite the observed record; undo creates versions | The reality-seal echo + the observed/proposed legend |
-| Golden journey completable without developer tools | **PARTIAL — the OPEN L3 seam** — capture→evidence→case→interactive-solution→BOQ→outcome is UI-complete; but the step-by-step INTERVENTION lane pins a reality baseline that today only the API can create (no UI path from uploaded captures to a first reality version) | The 2026-09-29 production walk: "Record a reality snapshot first" |
+| Golden journey completable without developer tools | **MET (was the OPEN L3 seam)** — capture→evidence→case→interactive-solution→BOQ→outcome is UI-complete; the step-by-step INTERVENTION lane's reality baseline is now creatable from the UI too (PROD-016/016b: upload → register → record → pin, live-proven 2026-09-29) | The seam walk: v002 composed from a real photo in the browser; scenario created over it |
 | Drawing-upload → auto-measured BOQ (Togal lane) | **HONEST-BY-DESIGN — not claimed** — AISE's BOQ is generated from validated typed operations over reality, never from drawing recognition; the source BOQ import path exists for documents you already hold | BOQ Lens import/revision (POST-005) |
 
 **L3 verdict**: the interactive lane is at parity or ahead (typed operations +
 deterministic validation + bidirectional traceability is beyond the
 drawing-takeoff cohort); the governed intervention lane over REAL captured
-evidence needs the reality-materialization seam (below) to be completable by a
-first-time user end-to-end.
+evidence is now completable by a first-time user end-to-end (the
+reality-materialization seam closed by PROD-016/016b, 2026-09-29: upload →
+register → record → pin, zero developer tools, live-proven).
 
 ## Accessibility & responsive parity (cross-layer table stakes)
 
@@ -87,12 +89,16 @@ first-time user end-to-end.
 
 ## Open items (ranked, honest)
 
-1. **The reality-materialization seam (L1/L3)** — a UI path from captured
-   evidence to a first reality version (reconstruction-driven or composed
-   with evidence provenance). This is the one place a first-time user still
-   needs the API to complete the governed intervention lane. Sized as the
-   next productization phase: server-side materialization over the free
-   deterministic provider + a SiteTwin affordance.
+1. ~~**The reality-materialization seam (L1/L3)**~~ **CLOSED 2026-09-29
+   (PROD-016 + PROD-016b)** — the composed-with-evidence-provenance path
+   shipped and live-proven: the capture surface registers a stored upload as
+   evidence (POST /v1/evidence panel), the SiteTwin's reality recorder
+   composes nodes/relationships with the register's provenance picker and
+   applies ONE governed change set (closed vocabularies, named defects,
+   brokered reality:write), and the Studio's baseline picker prefills the
+   recorded version. The reconstruction-driven path (server-side
+   materialization over the deterministic provider) remains a future
+   enhancement, not a blocker.
 2. **Automatic spatial anchoring (L1)** — images mapped to plan/floor context
    automatically (OpenSpace's Spatial AI signature). Research-grade; AISE's
    task-directed gaps ledger is the honest alternative today.

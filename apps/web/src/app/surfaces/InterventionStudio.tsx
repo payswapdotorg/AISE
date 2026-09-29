@@ -1413,6 +1413,11 @@ export function NewScenarioPanel({
           setBaselineTouched(true);
           setBaseline(value);
         }}
+        recordHref={
+          mode === "api"
+            ? formatRoute({ name: "sitetwin", projectId })
+            : undefined
+        }
       />
     </CreateRecordPanel>
   );

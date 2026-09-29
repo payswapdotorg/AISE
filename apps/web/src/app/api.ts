@@ -1597,6 +1597,218 @@ export async function loadLatestRealityVersionLive(
   }
 }
 
+/* ------------------------------------------------------------------ */
+/* PROD-016 — the reality recorder's live write adapters                */
+/* ------------------------------------------------------------------ */
+
+/** What `ensureRealityProjectLive` reports (record fields only). */
+export interface EnsureRealityProjectOutcome {
+  /** The project's latest version id after ensure (v001 when just created). */
+  readonly latestVersionId: string;
+  /** True when THIS call created the project; false when it already existed. */
+  readonly created: boolean;
+}
+
+/**
+ * Ensure the reality project exists LIVE — `POST /v1/reality/projects`
+ * with the EXACT body `{ projectId }` (the caller-supplied stable
+ * identity contract). The reality-materialization seam's first leg:
+ *
+ *  - 200 `{ project }` → the project was created by this call (empty
+ *    v001 — the baseline picker's empty-version trap callout applies
+ *    until a change set carries nodes);
+ *  - 422 `project_exists` → the project already exists (NOT a failure —
+ *    the recorder proceeds to apply its change set onto the latest
+ *    version; `created: false`);
+ *  - anything else → the typed failure, verbatim.
+ */
+export async function ensureRealityProjectLive(
+  fetchImpl: FetchLike,
+  projectId: string,
+): Promise<
+  { readonly ok: true; readonly outcome: EnsureRealityProjectOutcome; readonly endpoint: string }
+  | { readonly ok: false; readonly failure: ApiFailure }
+> {
+  const endpoint = "/v1/reality/projects";
+  const result = envelopePayload(
+    await postJson(fetchImpl, endpoint, { projectId }),
+    endpoint,
+  );
+  if (!result.ok) {
+    if (
+      result.failure.kind === "http" &&
+      result.failure.status === 422 &&
+      result.failure.code === "project_exists"
+    ) {
+      // Honest "already exists": read the header for its latest version id.
+      const read = envelopePayload(
+        await fetchJson(fetchImpl, `/v1/reality/projects/${encodeURIComponent(projectId)}`),
+        endpoint,
+      );
+      if (read.ok) {
+        const payload = read.value as Record<string, unknown>;
+        const project = payload.project as Record<string, unknown> | undefined;
+        if (isRecord(project) && typeof project.latestVersionId === "string") {
+          return { ok: true, outcome: { latestVersionId: project.latestVersionId, created: false }, endpoint };
+        }
+      }
+      // The create refusal named project_exists but the header read failed —
+      // surface THAT failure (never guess the version id).
+      return {
+        ok: false,
+        failure: read.ok
+          ? { kind: "invalid", detail: "project_exists was refused but the project header did not validate" }
+          : read.failure,
+      };
+    }
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  const project = payload.project as Record<string, unknown> | undefined;
+  if (!isRecord(project) || typeof project.latestVersionId !== "string") {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: `${endpoint} did not return a valid project header`,
+      },
+    };
+  }
+  return {
+    ok: true,
+    outcome: { latestVersionId: project.latestVersionId, created: true },
+    endpoint,
+  };
+}
+
+/** The recorded-version subset the recorder panel renders (record fields only). */
+export interface RecordedRealityVersion {
+  readonly versionId: string;
+  readonly parentVersionId: string;
+  readonly createdAt: string;
+  readonly nodeCount: number;
+  readonly relationshipCount: number;
+  readonly changeCount: number;
+}
+
+/** What one evidence registration answers (record fields only). */
+export interface EvidenceRegistrationRecord {
+  /** REGISTERED (this call created it) or IDEMPOTENT (identical re-registration). */
+  readonly outcome: "REGISTERED" | "IDEMPOTENT";
+  readonly contentId: string;
+  readonly byteSize: number;
+  readonly mediaType: string;
+  readonly capturedAt: string;
+  readonly acquisitionMethod: string;
+}
+
+/**
+ * Register one Evidence document LIVE — `POST /v1/evidence` with the EXACT
+ * family-`evidence` body (the register is the authority for what counts as
+ * evidence; the capture upload only stores bytes). Identical
+ * re-registration answers IDEMPOTENT; a differing re-registration is a
+ * typed 422 `evidence_conflict`; unpinned content is 422
+ * `content_not_pinned`. This is the capture → reality journey's second
+ * leg (PROD-016b — previously API-only).
+ */
+export async function registerEvidenceLive(
+  fetchImpl: FetchLike,
+  body: unknown,
+): Promise<WriteOutcome<EvidenceRegistrationRecord>> {
+  const endpoint = "/v1/evidence";
+  const result = envelopePayload(await postJson(fetchImpl, endpoint, body), endpoint);
+  if (!result.ok) {
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  const evidence = payload.evidence as Record<string, unknown> | undefined;
+  if (
+    !isRecord(payload) ||
+    (payload.outcome !== "REGISTERED" && payload.outcome !== "IDEMPOTENT") ||
+    !isRecord(evidence) ||
+    typeof evidence.contentId !== "string" ||
+    typeof evidence.byteSize !== "number" ||
+    typeof evidence.mediaType !== "string" ||
+    typeof evidence.capturedAt !== "string" ||
+    typeof evidence.acquisitionMethod !== "string"
+  ) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: `${endpoint} did not return a valid registration envelope`,
+      },
+    };
+  }
+  return {
+    ok: true,
+    record: {
+      outcome: payload.outcome,
+      contentId: evidence.contentId,
+      byteSize: evidence.byteSize,
+      mediaType: evidence.mediaType,
+      capturedAt: evidence.capturedAt,
+      acquisitionMethod: evidence.acquisitionMethod,
+    },
+    endpoint,
+  };
+}
+
+/**
+ * Apply one change set LIVE — `POST /v1/reality/projects/:id/changes`
+ * with the EXACT body `{ changes: ChangeRecord[] }` (the governed,
+ * engine-validated changes API; the deterministic versioning engine is
+ * the single authority — typed 422 codes surface verbatim through the
+ * POST-009 failure discipline). Answers `{ version }`.
+ */
+export async function applyRealityChangesLive(
+  fetchImpl: FetchLike,
+  projectId: string,
+  changes: readonly unknown[],
+): Promise<WriteOutcome<RecordedRealityVersion>> {
+  const endpoint = `/v1/reality/projects/${encodeURIComponent(projectId)}/changes`;
+  const result = envelopePayload(
+    await postJson(fetchImpl, endpoint, { changes: [...changes] }),
+    endpoint,
+  );
+  if (!result.ok) {
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  try {
+    const version = validateGraphVersion(payload.version);
+    const parent = payload.version as Record<string, unknown>;
+    const parentVersionId =
+      typeof parent.parentVersionId === "string" ? parent.parentVersionId : "";
+    const relationshipCount = Array.isArray(parent.relationships)
+      ? (parent.relationships as unknown[]).length
+      : 0;
+    const changeCount = Array.isArray(parent.changeLog)
+      ? (parent.changeLog as unknown[]).length
+      : 0;
+    return {
+      ok: true,
+      record: {
+        versionId: version.versionId,
+        parentVersionId,
+        createdAt: version.createdAt,
+        nodeCount: version.nodes.length,
+        relationshipCount,
+        changeCount,
+      },
+      endpoint,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: error instanceof Error ? error.message : "recorded version failed validation",
+      },
+    };
+  }
+}
+
 /**
  * Record one approval reference LIVE —
  * `POST /v1/interventions/:id/approval-reference` with the EXACT body
