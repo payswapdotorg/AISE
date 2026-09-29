@@ -26,7 +26,13 @@ export const SOLUTION_WORKSPACE_CSS = `
 .solution-workspace button[aria-pressed="true"]{background:#fef3c7;border-color:#92400e}
 .solution-workspace input,.solution-workspace select{font:inherit;padding:.25rem .4rem;border:1px solid #44403c;border-radius:4px;min-height:34px}
 .solution-workspace input:focus-visible,.solution-workspace select:focus-visible{outline:3px solid #c2410c;outline-offset:1px}
-.solution-pane{border:1px solid #d6d3d1;border-radius:8px;padding:.6rem .75rem;margin:.5rem 0;background:#ffffff}
+.solution-pane{border:1px solid #d6d3d1;border-radius:8px;padding:.6rem .75rem;margin:.5rem 0;background:#ffffff;min-width:0}
+/* The solution mount's twin of the shell's .table-wrap (POST-009): the pane
+ * is a grid item of .solution-columns and must be allowed to shrink below
+ * its tables' intrinsic width; wide tables scroll inside the wrap instead
+ * of stretching the page (the 2026-09-29 mobile walk found the Interactive
+ * Solution surface at 427px on a 390px viewport). */
+.pane-table-wrap{overflow-x:auto}
 .solution-columns{display:grid;grid-template-columns:repeat(auto-fit,minmax(20rem,1fr));gap:.6rem}
 .solution-columns .solution-pane{margin:0}
 .empty{color:#57534e;font-style:italic}

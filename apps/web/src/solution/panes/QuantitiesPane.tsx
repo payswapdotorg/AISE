@@ -26,7 +26,8 @@ export function QuantitiesPane({ rows, inventory }: {
           No proposed work yet — quantities appear as steps are added.
         </p>
       ) : (
-        <table className="quantities-table">
+        <div className="pane-table-wrap" tabIndex={0}>
+          <table className="quantities-table">
           <caption>Engine-computed quantities of the work up to the current step</caption>
           <thead>
             <tr>
@@ -54,7 +55,8 @@ export function QuantitiesPane({ rows, inventory }: {
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
+        </div>
       )}
       {inventory === undefined ? null : (
         <div className="quantity-totals" data-totals-state-index={inventory.stateIndex}>

@@ -60,7 +60,8 @@ export function BoqPane({ state, boq, onSelectLine }: {
       {status.kind === "version-pinned-elsewhere" ? (
         <p className="boq-pin-notice" data-boq-pin="true">{status.detail}</p>
       ) : null}
-      <table className="boq-table">
+      <div className="pane-table-wrap" tabIndex={0}>
+        <table className="boq-table">
         <caption>Generated solution BOQ — version {traceSet.versionNumber}, trace set pinned to validation snapshot {traceSet.validationSnapshotRef.slice(0, 12)}…</caption>
         <thead>
           <tr>
@@ -107,7 +108,8 @@ export function BoqPane({ state, boq, onSelectLine }: {
             );
           })}
         </tbody>
-      </table>
+        </table>
+      </div>
       {highlight === undefined ? null : (
         <p aria-live="polite" className="boq-sync-note" data-boq-sync="line-to-operations">
           Line “{selectedLineId}” comes from {highlight.operationIds.length} step(s); their

@@ -431,7 +431,8 @@ export function SolutionBoqTracePanel({
       }
       id="solution-boq-trace-panel"
     >
-      <table className="boq-table" data-boq-id={boq.boqId}>
+      <div className="table-wrap" tabIndex={0}>
+        <table className="boq-table" data-boq-id={boq.boqId}>
         <caption>
           Generated from the validated solution version — every quantity is
           engine-sourced with its calculation reference cited; click a line to
@@ -489,7 +490,8 @@ export function SolutionBoqTracePanel({
             );
           })}
         </tbody>
-      </table>
+        </table>
+      </div>
       {boq.assumptions.length > 0 ? (
         <p className="pane-foot">
           {plural(boq.assumptions.length, "carried assumption")} (propagated validation

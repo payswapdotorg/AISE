@@ -735,6 +735,34 @@ async function checkResponsiveAt(
       });
     }
 
+    // POST-011 (2026-09-29): the deep-surface walk. The shell-only
+    // measurement missed the Interactive Solution surface rendering at
+    // 427px on a 390px viewport (its BOQ/quantities tables had no scroll
+    // wrap). Every per-project surface of the two always-present demo
+    // worlds is now measured at BOTH breakpoints — gate + shell + DEEP.
+    const deepRoutes: readonly { readonly hash: string; readonly why: string }[] = [
+      { hash: "#/projects/proj-demo-001/solution", why: "the interactive solution workspace (the mount's own panes)" },
+      { hash: "#/projects/proj-riverside-refit/capture", why: "the capture/upload surface" },
+      { hash: "#/projects/proj-riverside-refit/sitetwin", why: "the SiteTwin/evidence surface" },
+      { hash: "#/projects/proj-riverside-refit/boq-lens", why: "the BOQ lens surface" },
+      { hash: "#/projects/proj-riverside-refit/case", why: "the engineering case surface" },
+      { hash: "#/projects/proj-riverside-refit/intervention", why: "the intervention studio surface" },
+      { hash: "#/projects/proj-riverside-refit/outcomes", why: "the outcomes surface" },
+    ];
+    for (const route of deepRoutes) {
+      await page.evaluate((hash: string) => {
+        const pageGlobal = globalThis as unknown as { readonly location: { hash: string } };
+        pageGlobal.location.hash = hash;
+      }, route.hash);
+      await sleep(BUDGETS.settleMs);
+      const routeOverflow = await measureOverflow(page);
+      assertions.push({
+        name: `no horizontal overflow on ${route.hash} (${route.why})`,
+        pass: overflowOk(routeOverflow),
+        detail: overflowDetail(routeOverflow),
+      });
+    }
+
     // ALWAYS clean up this check's minted session (the doctrine).
     const cleanup = await signOutAndVerify(page);
     bodyCleanupOk = !cleanup.startsWith("failed");
@@ -865,6 +893,51 @@ async function axeAtViewport(
       `axe violations by impact (${viewport.label}): critical=${counts.critical} serious=${counts.serious} moderate=${counts.moderate} minor=${counts.minor} (impact-less=${counts.none}); scanned the signed-in Dashboard shell`,
     ];
     for (const violation of results.violations) {
+      const blocking = violation.impact === "critical" || violation.impact === "serious";
+      extras.push(
+        `  ${blocking ? "BLOCKING" : "reported (non-blocking)"}: [${violation.impact ?? "n/a"}] ${violation.id} — ${violation.help} (${violation.nodes.length} node(s))`,
+      );
+      if (blocking) {
+        for (const node of violation.nodes.slice(0, 3)) {
+          extras.push(`    node target=${JSON.stringify(node.target)} html=${node.html.slice(0, 120)}`);
+        }
+      }
+    }
+
+    // POST-011 (2026-09-29): the second scan — the Interactive Solution
+    // surface (the solution mount's own DOM: panes, tables, the agent
+    // transcript). The 2026-09-29 mobile walk found this surface outside
+    // every gate (its tables overflowed; its scrollables were not in the
+    // a11y sweep's surface set). One bounded analysis at each breakpoint.
+    await page.evaluate(() => {
+      const pageGlobal = globalThis as unknown as { readonly location: { hash: string } };
+      pageGlobal.location.hash = "#/projects/proj-demo-001/solution";
+    });
+    await sleep(BUDGETS.settleMs);
+    try {
+      await page.waitForLoadState("networkidle", { timeout: BUDGETS.networkIdleMs });
+    } catch {
+      // non-fatal (same reasoning as the dashboard scan).
+    }
+    const solutionResults = await Promise.race([
+      new AxeBuilder({ page }).analyze(),
+      timeoutAfter(BUDGETS.axeRunMs, "the axe-core analysis (solution surface)"),
+    ]);
+    const solutionCounts = countByImpact(solutionResults.violations);
+    assertions.push({
+      name: `zero critical axe violations on the Interactive Solution surface (${viewport.label})`,
+      pass: solutionCounts.critical === 0,
+      detail: `critical=${solutionCounts.critical}`,
+    });
+    assertions.push({
+      name: `zero serious axe violations on the Interactive Solution surface (${viewport.label})`,
+      pass: solutionCounts.serious === 0,
+      detail: `serious=${solutionCounts.serious}`,
+    });
+    extras.push(
+      `axe violations by impact (${viewport.label}, the Interactive Solution surface): critical=${solutionCounts.critical} serious=${solutionCounts.serious} moderate=${solutionCounts.moderate} minor=${solutionCounts.minor} (impact-less=${solutionCounts.none})`,
+    );
+    for (const violation of solutionResults.violations) {
       const blocking = violation.impact === "critical" || violation.impact === "serious";
       extras.push(
         `  ${blocking ? "BLOCKING" : "reported (non-blocking)"}: [${violation.impact ?? "n/a"}] ${violation.id} — ${violation.help} (${violation.nodes.length} node(s))`,
