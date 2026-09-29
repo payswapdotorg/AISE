@@ -6,8 +6,8 @@ package org.payswap.aise.core.adapter
  *
  * Source of truth: the COMMITTED TypeScript subpath
  * `packages/adapter-contract/src/task-handoff.ts` and the committed fixture
- * corpus `packages/adapter-contract/handoff-fixtures/*.json` (each fixture
- * carries the envelope AND its canonical URI). `FieldTaskDeepLinkTest` pins
+ * corpus of JSON fixtures in `packages/adapter-contract/handoff-fixtures`
+ * (each `*.json` fixture carries the envelope AND its canonical URI). `FieldTaskDeepLinkTest` pins
  * this mirror byte-identically against that corpus — the established
  * AdapterCorpus discipline (wire drift is a test failure, never a silent
  * incompatibility).

@@ -139,6 +139,10 @@ private fun CaptureStage(viewModel: CaptureViewModel, journeyViewModel: FieldJou
     val busy by viewModel.busy.collectAsState()
     val message by viewModel.message.collectAsState()
     val videoTargetFile by viewModel.videoTargetFile.collectAsState()
+    // POST-005: hoisted to the composable body — collectAsState() is a
+    // @Composable and may NOT be called inside onClick lambdas (the
+    // 2026-09-29 E2E compile fix; the Button onClick below reads this).
+    val handedOffTask by journeyViewModel.handedOffTask.collectAsState()
 
     val sensors = remember { RotationVectorSnapshotter(context) }
     val cameraAdapter = remember { CameraCaptureAdapter(context, lifecycleOwner) }
@@ -228,7 +232,7 @@ private fun CaptureStage(viewModel: CaptureViewModel, journeyViewModel: FieldJou
                     // manifest and the sync envelope (missionRef rides
                     // POST /v1/capture/sync). Otherwise the executed
                     // mission plan's own id (the provisioned default).
-                    val handedOff = journeyViewModel.handedOffTask.collectAsState().value
+                    val handedOff = handedOffTask
                     val missionRef = handedOff?.taskId
                         ?: (journeyViewModel.phase.value as? FieldJourneyPhase.MissionActive)
                             ?.directive?.missionId

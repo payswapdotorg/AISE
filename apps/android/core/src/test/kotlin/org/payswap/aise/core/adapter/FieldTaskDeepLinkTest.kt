@@ -141,7 +141,14 @@ class FieldTaskDeepLinkTest {
         assertTrue(reasonFor(valid.replace(Regex("&epistemic=[^&]*"), "")).contains("missing required parameter"))
         assertTrue(reasonFor(valid.replace("v=1", "v=2")).contains("unsupported grammar version"))
         assertTrue(reasonFor(valid.replace("%20", "%2 ")).contains("malformed"))
-        assertTrue(reasonFor(valid.replace("task=", "tas%6B=")).contains("canonical"))
+        // 2026-09-29 correction: the TS mirror (task-handoff.test.ts "rejects a
+        // non-canonical percent-encoding of an unreserved byte") asserts only
+        // the typed Invalid for the tas%6B= case — both codecs reject it as
+        // `unknown parameter 'tas%6B'` (the key is matched literally before
+        // any decoding). This test over-specified a "canonical" reason the
+        // codec never produced; it could not have been caught earlier because
+        // :core had not compiled from a clean state since POST-005.
+        assertTrue(reasonFor(valid.replace("task=", "tas%6B=")).contains("unknown parameter"))
     }
 
     @Test

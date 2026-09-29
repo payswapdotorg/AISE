@@ -20,7 +20,13 @@ object RepoFiles {
         repeat(8) {
             if (File(dir, "AGENTS.md").isFile && File(dir, "spec").isDirectory) {
                 val target = File(dir, relative)
-                require(target.isFile) { "repository file not found: ${target.absolutePath}" }
+                // 2026-09-29 fix: callers legitimately locate DIRECTORIES too
+                // (FieldTaskDeepLinkTest resolves the handoff-fixtures corpus
+                // directory and lists its JSON files). The former isFile-only
+                // check made that impossible — the check must be exists(), so
+                // a directory reference resolves and a later readText on a
+                // non-file still fails loudly at the read itself.
+                require(target.exists()) { "repository file not found: ${target.absolutePath}" }
                 return target
             }
             dir = dir.parentFile ?: return@repeat
