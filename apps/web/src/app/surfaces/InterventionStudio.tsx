@@ -2476,6 +2476,16 @@ export function RecordOutcomePanel({
     | null
   >(null);
 
+  // The panel opens from an in-page anchor (#record-outcome) whose native
+  // jump fires BEFORE this panel renders (React state → render), so the
+  // anchor alone lands the viewport nowhere near the new panel. The panel
+  // scrolls ITSELF into view on mount; the section's scroll-margin-top
+  // (app.css) clears the sticky header. Found by the 2026-09-29
+  // adversarial sweep: the panel mounted ~7600px below with no scroll.
+  useEffect(() => {
+    document.getElementById("record-outcome")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
   useEffect(() => {
     if (mode !== "api") {
       return;

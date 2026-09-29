@@ -127,6 +127,18 @@ a:hover {
   grid-template-rows: auto 1fr auto;
 }
 
+/* The body row's grid item must be allowed to shrink below its content's
+ * min-content (grid items default to min-width: auto): without this, wide
+ * .data tables (mono content ids, many columns) stretch the whole page to
+ * their min-content and every surface horizontal-scrolls on a 390px
+ * viewport (found by the 2026-09-29 adversarial mobile sweep: document
+ * scrollWidth 905 vs clientWidth 390). The tables keep their own
+ * .table-wrap scroll containers — nothing is clipped, the wide table
+ * scrolls inside its card. */
+.app-body {
+  min-width: 0;
+}
+
 .app-header {
   background: var(--brand);
   color: var(--brand-ink);
@@ -361,6 +373,17 @@ a:hover {
   box-shadow: var(--shadow);
   margin: 0 0 18px;
   overflow: hidden;
+}
+
+/* Anchor targets (in-page links like #record-outcome, hash routes with
+ * anchors, scrollIntoView jumps) must land BELOW the sticky app header
+ * (~74px, z-index 20): without this margin the target section renders
+ * underneath the header and its top controls are unclickable at that
+ * scroll position — reproduced with the append-step parent picker and the
+ * #record-outcome panel on 2026-09-29. */
+section.card[id],
+fieldset[id] {
+  scroll-margin-top: 88px;
 }
 
 .card-head {
