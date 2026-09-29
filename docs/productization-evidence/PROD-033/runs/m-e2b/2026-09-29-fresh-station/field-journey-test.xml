@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.payswap.aise.app.field.FieldJourneyRuntimeTest" tests="8" skipped="0" failures="1" errors="0" timestamp="2026-09-29T08:29:29.395Z" hostname="e2b.local" time="0.063">
+  <properties/>
+  <testcase name="starting the journey assesses and prepares the mission()" classname="org.payswap.aise.app.field.FieldJourneyRuntimeTest" time="0.032"/>
+  <testcase name="reset returns the journey to idle()" classname="org.payswap.aise.app.field.FieldJourneyRuntimeTest" time="0.002"/>
+  <testcase name="submitting through this build's seam defers explicitly with the surfaced reason()" classname="org.payswap.aise.app.field.FieldJourneyRuntimeTest" time="0.012">
+    <failure message="org.opentest4j.AssertionFailedError: expected: &lt;true&gt; but was: &lt;false&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: expected: &lt;true&gt; but was: &lt;false&gt;
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at app//org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at app//org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at app//org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at app//org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at app//org.payswap.aise.app.field.FieldJourneyRuntimeTest$submitting through this build's seam defers explicitly with the surfaced reason$1.invokeSuspend(FieldJourneyRuntimeTest.kt:184)
+	at app//org.payswap.aise.app.field.FieldJourneyRuntimeTest$submitting through this build's seam defers explicitly with the surfaced reason$1.invoke(FieldJourneyRuntimeTest.kt)
+	at app//org.payswap.aise.app.field.FieldJourneyRuntimeTest$submitting through this build's seam defers explicitly with the surfaced reason$1.invoke(FieldJourneyRuntimeTest.kt)
+	at app//kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt$runTest$2$1$1.invokeSuspend(TestBuilders.kt:317)
+	at app//kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at app//kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at app//kotlinx.coroutines.test.TestDispatcher.processEvent$kotlinx_coroutines_test(TestDispatcher.kt:24)
+	at app//kotlinx.coroutines.test.TestCoroutineScheduler.tryRunNextTaskUnless$kotlinx_coroutines_test(TestCoroutineScheduler.kt:99)
+	at app//kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt$runTest$2$1$workRunner$1.invokeSuspend(TestBuilders.kt:326)
+	at app//kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at app//kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at app//kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at app//kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at app//kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at app//kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at app//kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:48)
+	at app//kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at app//kotlinx.coroutines.test.TestBuildersJvmKt.createTestResult(TestBuildersJvm.kt:10)
+	at app//kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt.runTest-8Mi8wO0(TestBuilders.kt:309)
+	at app//kotlinx.coroutines.test.TestBuildersKt.runTest-8Mi8wO0(Unknown Source)
+	at app//kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt.runTest-8Mi8wO0(TestBuilders.kt:167)
+	at app//kotlinx.coroutines.test.TestBuildersKt.runTest-8Mi8wO0(Unknown Source)
+	at app//kotlinx.coroutines.test.TestBuildersKt__TestBuildersKt.runTest-8Mi8wO0$default(TestBuilders.kt:159)
+	at app//kotlinx.coroutines.test.TestBuildersKt.runTest-8Mi8wO0$default(Unknown Source)
+	at app//org.payswap.aise.app.field.FieldJourneyRuntimeTest.submitting through this build's seam defers explicitly with the surfaced reason(FieldJourneyRuntimeTest.kt:177)
+	at java.base@21.0.12.1/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base@21.0.12.1/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base@21.0.12.1/java.util.ArrayList.forEach(ArrayList.java:1596)
+</failure>
+  </testcase>
+  <testcase name="a scripted online transport resumes to the server reference()" classname="org.payswap.aise.app.field.FieldJourneyRuntimeTest" time="0.004"/>
+  <testcase name="the declared profile is honest - still and video kinds, no guessed bound()" classname="org.payswap.aise.app.field.FieldJourneyRuntimeTest" time="0.002"/>
+  <testcase name="session assets close matching gap steps deterministically()" classname="org.payswap.aise.app.field.FieldJourneyRuntimeTest" time="0.003"/>
+  <testcase name="resuming counts attempts and stays explicit while offline()" classname="org.payswap.aise.app.field.FieldJourneyRuntimeTest" time="0.003"/>
+  <testcase name="a video asset closes the video step, not a still step()" classname="org.payswap.aise.app.field.FieldJourneyRuntimeTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

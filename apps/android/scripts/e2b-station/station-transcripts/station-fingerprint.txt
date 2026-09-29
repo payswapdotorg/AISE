@@ -1,0 +1,15 @@
+=== AISE Android E2B station fingerprint ===
+fingerprintAt: 2026-09-29T08:25:50Z
+kernel: Linux 6.1.158+ x86_64 GNU/Linux
+os: Debian GNU/Linux 12 (bookworm)
+cpus: 4
+memoryMb: 7956
+jdk: openjdk version "21.0.12.1" 2026-08-18 LTS
+cmdlineToolsBuild: 13114758
+sdkPackages: platform-tools platforms;android-35 build-tools;35.0.0
+buildTools: 1 x build-tools;35.0.0 (sdkmanager)
+adb: Android Debug Bridge version 1.0.41
+gradleWrapper: https\://services.gradle.org/distributions/gradle-8.14.3-bin.zip
+repoUrl: https://github.com/payswapdotorg/AISE.git
+repoSha: 1e608f8616c4c86e76aa920964d125b2b78bd197
+kvm: ABSENT
