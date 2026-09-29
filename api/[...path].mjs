@@ -41702,7 +41702,17 @@ var PG_TABLES = {
   evidenceLinks: "evidence_links",
   evidenceDerivations: "evidence_derivations",
   caseRecords: "case_records",
-  gapAnalysisRecords: "gap_analysis_records"
+  gapAnalysisRecords: "gap_analysis_records",
+  // PROD-017 (v002): the reality + identity twins.
+  realityProjectIndex: "reality_project_index",
+  realityVersions: "reality_versions",
+  identityPrincipals: "identity_principals",
+  identityOrganizations: "identity_organizations",
+  identityProjects: "identity_projects",
+  identityRoles: "identity_roles",
+  identityMemberships: "identity_memberships",
+  identityRetention: "identity_retention",
+  identityAudit: "identity_audit"
 };
 var MIGRATION_ADVISORY_LOCK_KEY = 735805;
 var SCHEMA_MIGRATIONS_DDL = "CREATE TABLE IF NOT EXISTS schema_migrations (version INTEGER PRIMARY KEY, name TEXT NOT NULL, checksum TEXT NOT NULL, applied_at TIMESTAMPTZ NOT NULL DEFAULT now())";
@@ -41781,9 +41791,51 @@ function splitSqlStatements(sqlText) {
 // backend/api/src/pg/migrations/v001__initial_schema.sql
 var v001_initial_schema_default = "-- AISE Postgres persistence \u2014 v001 initial schema (PROD-005).\n--\n-- Deterministic, additive, idempotent bootstrap of the Neon persistence\n-- family. EVERY statement is `CREATE ... IF NOT EXISTS`: re-running applies\n-- nothing the second time, and no destructive DDL (DROP/TRUNCATE/ALTER/\n-- DELETE) ever runs automatically \u2014 redeploying the application touches\n-- only compute, never durable domain state (that is the whole point of\n-- PROD-005). Rollbacks, when they are ever written, live in explicitly\n-- named rollback files that NOTHING in the runtime calls.\n--\n-- The generic JSONB pattern: one row per domain record with\n--   record_key TEXT  \u2014 the domain id (already filesystem-unsafe ids are\n--                      safe as keys; the Fs stores hashed them, Pg does not\n--                      need to);\n--   payload   JSONB  \u2014 the canonical document as a queryable jsonb value;\n--   canonical TEXT   \u2014 the BYTE-EXACT canonical JSON text (the same bytes\n--                      the Fs stores write to disk), the source for every\n--                      read-back so round-trips are byte-identical.\n\nCREATE TABLE IF NOT EXISTS schema_migrations (version INTEGER PRIMARY KEY, name TEXT NOT NULL, checksum TEXT NOT NULL, applied_at TIMESTAMPTZ NOT NULL DEFAULT now());\n\nCREATE TABLE IF NOT EXISTS seed_markers (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, applied_at TIMESTAMPTZ NOT NULL DEFAULT now());\n\nCREATE TABLE IF NOT EXISTS boq_sources (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, bytes BYTEA NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());\n\nCREATE TABLE IF NOT EXISTS boq_documents (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());\n\nCREATE TABLE IF NOT EXISTS boq_normalizations (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());\n\nCREATE TABLE IF NOT EXISTS capture_assets (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, bytes BYTEA NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());\n\nCREATE TABLE IF NOT EXISTS capture_sessions (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now());\n\nCREATE TABLE IF NOT EXISTS capture_batches (session_id TEXT NOT NULL, sequence INTEGER NOT NULL, batch_id TEXT NOT NULL, payload JSONB NOT NULL, canonical TEXT NOT NULL, PRIMARY KEY (session_id, sequence));\n\nCREATE TABLE IF NOT EXISTS capture_idempotency (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());\n\nCREATE TABLE IF NOT EXISTS mission_revisions (mission_id TEXT NOT NULL, revision INTEGER NOT NULL, payload JSONB NOT NULL, canonical TEXT NOT NULL, PRIMARY KEY (mission_id, revision));\n\nCREATE TABLE IF NOT EXISTS evidence_records (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());\n\nCREATE TABLE IF NOT EXISTS evidence_invalidations (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());\n\nCREATE TABLE IF NOT EXISTS evidence_links (id BIGSERIAL PRIMARY KEY, journal_key TEXT NOT NULL, payload JSONB NOT NULL, canonical TEXT NOT NULL);\n\nCREATE TABLE IF NOT EXISTS evidence_derivations (id BIGSERIAL PRIMARY KEY, journal_key TEXT NOT NULL, payload JSONB NOT NULL, canonical TEXT NOT NULL);\n\nCREATE TABLE IF NOT EXISTS case_records (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now());\n\nCREATE TABLE IF NOT EXISTS gap_analysis_records (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());\n";
 
+// backend/api/src/pg/migrations/v002__reality_identity.sql
+var v002_reality_identity_default = `-- v002__reality_identity.sql \u2014 PROD-017: the reality + identity Pg twins.
+--
+-- Completes the durability mapping the pg/factory.ts header documented as
+-- this item's follow-up: the Reality Graph ("in Pg mode reality versions
+-- remain file-local") and the identity registry (FsIdentityStore under the
+-- data dir) were the two per-instance surfaces left on the deployed stack \u2014
+-- the 2026-09-29 deployed seam journey proved the split live (a project
+-- registered on one warm lambda instance was project_not_found on another's
+-- authorize ask).
+--
+-- Both namespaces follow the generic record-table pattern (see records.ts):
+-- one row per domain record, record_key = the domain id (identity org-scoped
+-- records key on "<orgId>::<recordId>"), payload = the canonical document as
+-- jsonb, canonical = the BYTE-EXACT canonical JSON the Fs twins write \u2014
+-- round-trips are identical by construction. (Statements are single-line,
+-- the v001 migration discipline the deterministic splitter + fakes expect.)
+
+CREATE TABLE IF NOT EXISTS reality_project_index (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now());
+
+CREATE TABLE IF NOT EXISTS reality_versions (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+
+CREATE TABLE IF NOT EXISTS identity_principals (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now());
+
+CREATE TABLE IF NOT EXISTS identity_organizations (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now());
+
+CREATE TABLE IF NOT EXISTS identity_projects (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now());
+
+CREATE TABLE IF NOT EXISTS identity_roles (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now());
+
+CREATE TABLE IF NOT EXISTS identity_memberships (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now());
+
+CREATE TABLE IF NOT EXISTS identity_retention (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now());
+
+CREATE TABLE IF NOT EXISTS identity_audit (record_key TEXT PRIMARY KEY, payload JSONB NOT NULL, canonical TEXT NOT NULL, updated_at TIMESTAMPTZ NOT NULL DEFAULT now());
+`;
+
 // backend/api/src/pg/migrate.ts
 var MIGRATIONS = [
-  { version: 1, name: "v001__initial_schema.sql", sql: v001_initial_schema_default }
+  { version: 1, name: "v001__initial_schema.sql", sql: v001_initial_schema_default },
+  {
+    version: 2,
+    name: "v002__reality_identity.sql",
+    sql: v002_reality_identity_default
+  }
 ];
 var MAX_MIGRATIONS_PER_RUN = 64;
 function verifyRegistry(files) {
@@ -42462,9 +42514,263 @@ var PgGapAnalysisStore = class {
   }
 };
 
+// backend/api/src/pg/stores/identity.ts
+function parseJson2(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error("identity row is not valid JSON");
+  }
+}
+function scopedKey(organizationId, recordId) {
+  return `${organizationId}::${recordId}`;
+}
+var PgIdentityStore = class {
+  principals;
+  organizations;
+  projects;
+  roles;
+  memberships;
+  retention;
+  audit;
+  constructor(executor) {
+    this.principals = new RecordTable(executor, PG_TABLES.identityPrincipals);
+    this.organizations = new RecordTable(executor, PG_TABLES.identityOrganizations);
+    this.projects = new RecordTable(executor, PG_TABLES.identityProjects);
+    this.roles = new RecordTable(executor, PG_TABLES.identityRoles);
+    this.memberships = new RecordTable(executor, PG_TABLES.identityMemberships);
+    this.retention = new RecordTable(executor, PG_TABLES.identityRetention);
+    this.audit = new RecordTable(executor, PG_TABLES.identityAudit);
+  }
+  /* -- principals ---------------------------------------------------- */
+  async putPrincipal(record) {
+    await this.principals.upsert(record.principalId, canonicalJsonStringify(record));
+  }
+  async getPrincipal(principalId) {
+    const text = await this.principals.selectCanonical(principalId);
+    return text === null ? null : parsePrincipalRecord(parseJson2(text));
+  }
+  async listPrincipals() {
+    const records = (await this.principals.listCanonical()).map(
+      (text) => parsePrincipalRecord(parseJson2(text))
+    );
+    return records.sort(
+      (a, b2) => a.principalId < b2.principalId ? -1 : a.principalId > b2.principalId ? 1 : 0
+    );
+  }
+  /* -- organizations ------------------------------------------------- */
+  async putOrganization(record) {
+    await this.organizations.upsert(record.organizationId, canonicalJsonStringify(record));
+  }
+  async getOrganization(organizationId) {
+    const text = await this.organizations.selectCanonical(organizationId);
+    return text === null ? null : parseOrganizationRecord(parseJson2(text));
+  }
+  async listOrganizations() {
+    const records = (await this.organizations.listCanonical()).map(
+      (text) => parseOrganizationRecord(parseJson2(text))
+    );
+    return records.sort(
+      (a, b2) => a.organizationId < b2.organizationId ? -1 : a.organizationId > b2.organizationId ? 1 : 0
+    );
+  }
+  /* -- the tenancy project registry ---------------------------------- */
+  async putProject(record) {
+    await this.projects.upsert(record.projectId, canonicalJsonStringify(record));
+  }
+  async getProject(projectId) {
+    const text = await this.projects.selectCanonical(projectId);
+    return text === null ? null : parseProjectRecord(parseJson2(text));
+  }
+  async listProjects() {
+    const records = (await this.projects.listCanonical()).map(
+      (text) => parseProjectRecord(parseJson2(text))
+    );
+    return records.sort((a, b2) => a.projectId < b2.projectId ? -1 : a.projectId > b2.projectId ? 1 : 0);
+  }
+  /* -- org-scoped roles ----------------------------------------------- */
+  async putRole(record) {
+    await this.roles.upsert(
+      scopedKey(record.organizationId, record.roleId),
+      canonicalJsonStringify(record)
+    );
+  }
+  async getRole(organizationId, roleId) {
+    const text = await this.roles.selectCanonical(scopedKey(organizationId, roleId));
+    return text === null ? null : parseRoleRecord(parseJson2(text));
+  }
+  async listRoles(organizationId) {
+    const prefix = `${organizationId}::`;
+    const records = (await this.roles.listCanonical()).map((text) => parseRoleRecord(parseJson2(text))).filter((record) => record.organizationId === organizationId);
+    void prefix;
+    return records.sort((a, b2) => a.roleId < b2.roleId ? -1 : a.roleId > b2.roleId ? 1 : 0);
+  }
+  /* -- org-scoped memberships ----------------------------------------- */
+  async putMembership(record) {
+    await this.memberships.upsert(
+      scopedKey(record.organizationId, record.membershipId),
+      canonicalJsonStringify(record)
+    );
+  }
+  async getMembership(organizationId, membershipId) {
+    const text = await this.memberships.selectCanonical(scopedKey(organizationId, membershipId));
+    return text === null ? null : parseMembershipRecord(parseJson2(text));
+  }
+  async listMemberships(organizationId) {
+    const records = (await this.memberships.listCanonical()).map((text) => parseMembershipRecord(parseJson2(text))).filter((record) => record.organizationId === organizationId);
+    return records.sort(
+      (a, b2) => a.membershipId < b2.membershipId ? -1 : a.membershipId > b2.membershipId ? 1 : 0
+    );
+  }
+  async listMembershipsByPrincipal(principalId) {
+    const records = (await this.memberships.listCanonical()).map((text) => parseMembershipRecord(parseJson2(text))).filter((record) => record.principalId === principalId);
+    return records.sort(
+      (a, b2) => a.membershipId < b2.membershipId ? -1 : a.membershipId > b2.membershipId ? 1 : 0
+    );
+  }
+  /* -- retention ------------------------------------------------------ */
+  async putRetentionPolicy(record) {
+    await this.retention.upsert(record.organizationId, canonicalJsonStringify(record));
+  }
+  async getRetentionPolicy(organizationId) {
+    const text = await this.retention.selectCanonical(organizationId);
+    return text === null ? null : parseRetentionPolicyRecord(parseJson2(text));
+  }
+  /* -- the per-org audit log (whole-array persistence) ----------------- */
+  async putAuditEvents(organizationId, events) {
+    await this.audit.upsert(organizationId, canonicalJsonStringify([...events]));
+  }
+  async listAuditEvents(organizationId) {
+    const text = await this.audit.selectCanonical(organizationId);
+    if (text === null) {
+      return [];
+    }
+    const value = parseJson2(text);
+    if (!Array.isArray(value)) {
+      throw new Error("audit log is not a JSON array");
+    }
+    return value.map(parseAuditEvent);
+  }
+};
+
+// backend/api/src/pg/stores/reality.ts
+function parseHeaderText(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new RealityGraphError("invalid_version_id", "reality index row is not valid JSON");
+  }
+}
+function parseVersionText(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new RealityGraphError("invalid_version_id", "reality version row is not valid JSON");
+  }
+}
+function versionKey(projectId, versionId) {
+  return `${projectId}::${versionId}`;
+}
+var PgRealityStore = class {
+  indexTable;
+  versionsTable;
+  constructor(executor) {
+    this.indexTable = new RecordTable(executor, PG_TABLES.realityProjectIndex);
+    this.versionsTable = new RecordTable(executor, PG_TABLES.realityVersions);
+  }
+  async createProject(projectId, createdAt) {
+    assertProjectId2(projectId);
+    assertIsoTimestamp(createdAt, "project createdAt");
+    const version = createInitialVersion(projectId, createdAt);
+    const header = {
+      projectId,
+      createdAt,
+      latestVersionId: version.versionId,
+      versions: [summarizeVersion(version)]
+    };
+    const claim = await this.indexTable.insertIfAbsent(
+      projectId,
+      canonicalJsonStringify(header)
+    );
+    if (!claim.wrote) {
+      throw new RealityGraphError("project_exists", `project "${projectId}" already exists`);
+    }
+    await this.versionsTable.insertIfAbsent(
+      versionKey(projectId, version.versionId),
+      canonicalJsonStringify(version)
+    );
+    return header;
+  }
+  async getProject(projectId) {
+    const canonical = await this.indexTable.selectCanonical(projectId);
+    return canonical === null ? null : parseHeaderText(canonical);
+  }
+  async getVersion(projectId, versionId) {
+    const index = await this.getProject(projectId);
+    if (index === null) {
+      return null;
+    }
+    const target = versionId ?? index.latestVersionId;
+    if (!VERSION_ID_PATTERN.test(target)) {
+      throw new RealityGraphError(
+        "invalid_version_id",
+        `version id "${target}" is not a vNNN sequence id`
+      );
+    }
+    const canonical = await this.versionsTable.selectCanonical(versionKey(projectId, target));
+    return canonical === null ? null : parseVersionText(canonical);
+  }
+  async applyChanges(projectId, changes, meta) {
+    return applyChangesFlow(
+      {
+        loadIndex: (id) => this.getProject(id),
+        loadVersion: (id, versionId) => this.getVersion(id, versionId),
+        persistVersion: async (id, version) => {
+          const claim = await this.versionsTable.insertIfAbsent(
+            versionKey(id, version.versionId),
+            canonicalJsonStringify(version)
+          );
+          if (!claim.wrote) {
+            throw new RealityGraphError(
+              "version_exists",
+              `version "${version.versionId}" of project "${id}" already exists (append-only: version rows are never rewritten)`
+            );
+          }
+        },
+        persistIndex: (id, header) => {
+          return this.indexTable.upsert(id, canonicalJsonStringify(header));
+        }
+      },
+      projectId,
+      changes,
+      meta
+    );
+  }
+  async getNodeHistory(projectId, nodeId) {
+    const index = await this.getProject(projectId);
+    if (index === null) {
+      return null;
+    }
+    const versions = [];
+    for (const summary of index.versions) {
+      const canonical = await this.versionsTable.selectCanonical(
+        versionKey(projectId, summary.versionId)
+      );
+      if (canonical === null) {
+        throw new RealityGraphError(
+          "version_not_found",
+          `version "${summary.versionId}" of project "${projectId}" is missing`
+        );
+      }
+      versions.push(parseVersionText(canonical));
+    }
+    return buildNodeHistory(projectId, nodeId, index.latestVersionId, versions);
+  }
+};
+
 // backend/api/src/pg/factory.ts
 function createPgStoreFamily(options) {
-  const { executor, logger, dataDir } = options;
+  const { executor, logger } = options;
   const clock = options.clock ?? (() => (/* @__PURE__ */ new Date()).toISOString());
   const capture = createCaptureGateway({
     store: new PgCaptureStore(executor),
@@ -42495,6 +42801,12 @@ function createPgStoreFamily(options) {
       boq: boqService
     })
   };
+  const realityStore = new PgRealityStore(executor);
+  const reality = {
+    store: realityStore,
+    clock,
+    logger
+  };
   const gaps = {
     service: new GapAnalysisService({
       store: new PgGapAnalysisStore(executor),
@@ -42503,11 +42815,16 @@ function createPgStoreFamily(options) {
         getAssuranceProfile
       }),
       readinessEvaluator: evaluateReadiness,
-      realityVersionResolver: readOnlyGapRealityVersionResolver(new FsRealityStore(dataDir)),
+      realityVersionResolver: readOnlyGapRealityVersionResolver(realityStore),
       evidenceGraphResolver: readOnlyEvidenceGraphResolver(new PgEvidenceStore(executor))
     }),
     logger
   };
+  const identityStore = new PgIdentityStore(executor);
+  const identityService = new IdentityService({
+    store: identityStore,
+    clock
+  });
   const cases = {
     service: new CaseService({
       store: new PgCaseStore(executor),
@@ -42515,7 +42832,7 @@ function createPgStoreFamily(options) {
     }),
     logger
   };
-  return { capture, missions, evidence, boq, gaps, cases };
+  return { capture, missions, evidence, boq, gaps, cases, reality, identityService, identityStore };
 }
 
 // backend/api/src/pg/runtime.ts
@@ -45259,7 +45576,7 @@ function createRuntimeHandler(options = {}) {
     const issues = authConfigResult.ok ? [] : [...authConfigResult.issues];
     if (authConfigResult.ok) {
       try {
-        const identityStore = new FsIdentityStore(dataDir);
+        const identityStore = pgBoot.mode === "pg" ? pgBoot.family.identityStore : new FsIdentityStore(dataDir);
         const identityService = new IdentityService({
           store: identityStore,
           clock: () => (/* @__PURE__ */ new Date()).toISOString()
@@ -45457,7 +45774,10 @@ function createRuntimeHandler(options = {}) {
       evidence: pgBoot.family.evidence,
       boq: pgBoot.family.boq,
       gaps: pgBoot.family.gaps,
-      cases: pgBoot.family.cases
+      cases: pgBoot.family.cases,
+      // PROD-017: the Reality Graph over the Pg twin (durable across
+      // instances; the core's lazy Fs default remains the Fs-mode path).
+      reality: pgBoot.family.reality
     } : {}
   });
   const cors = createCorsLayer(
