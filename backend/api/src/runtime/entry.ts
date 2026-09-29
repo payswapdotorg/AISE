@@ -62,6 +62,7 @@ import {
 import { RedisSessionStore } from "../auth/store-redis";
 import { FsIdentityStore } from "../identity/store";
 import { IdentityService } from "../identity/service";
+import type { IdentityStore } from "../identity/store";
 import { createRequestHandler, SERVICE_NAME } from "../server";
 import { bootPgPersistence, type PgBootResult } from "../pg/runtime";
 import type { PgExecutor } from "../pg/executor";
@@ -761,7 +762,15 @@ export function createRuntimeHandler(
     const issues = authConfigResult.ok ? [] : [...authConfigResult.issues];
     if (authConfigResult.ok) {
       try {
-        const identityStore = new FsIdentityStore(dataDir);
+        // PROD-017: DATABASE_URL (Pg mode) → the tenancy registry lives in
+        // Postgres — durable across lambda instances (the 2026-09-29
+        // deployed seam finding: a project registered on one warm instance
+        // was project_not_found on another's authorize ask, refusing the
+        // governed crossing). Fs mode keeps the exact per-process twin.
+        const identityStore: IdentityStore =
+          pgBoot.mode === "pg"
+            ? pgBoot.family.identityStore
+            : new FsIdentityStore(dataDir);
         const identityService = new IdentityService({
           store: identityStore,
           clock: (): string => new Date().toISOString(),
@@ -1057,6 +1066,9 @@ export function createRuntimeHandler(
           boq: pgBoot.family.boq,
           gaps: pgBoot.family.gaps,
           cases: pgBoot.family.cases,
+          // PROD-017: the Reality Graph over the Pg twin (durable across
+          // instances; the core's lazy Fs default remains the Fs-mode path).
+          reality: pgBoot.family.reality,
         }
       : {}),
   });

@@ -43,18 +43,19 @@ describe("migration registry", () => {
   });
 });
 
-describe("runMigrations (fake executor, real v001)", () => {
-  test("applies v001 from zero and records its bookkeeping row", async () => {
+describe("runMigrations (fake executor, real files)", () => {
+  test("applies every registered migration from zero and records the bookkeeping rows", async () => {
     const fake = fakePgExecutor();
     const outcome = await runMigrations(fake);
-    expect(outcome.applied).toEqual([1]);
+    // v001 (initial schema) + v002 (the PROD-017 reality + identity twins).
+    expect(outcome.applied).toEqual(MIGRATIONS.map((file) => file.version));
     expect(outcome.alreadyApplied).toEqual([]);
     const rows = fake.rowsOf(PG_TABLES.schemaMigrations);
-    expect(rows.length).toBe(1);
+    expect(rows.length).toBe(MIGRATIONS.length);
     expect(rows[0]!.version).toBe(1);
     expect(rows[0]!.name).toBe("v001__initial_schema.sql");
     expect(rows[0]!.checksum).toBe(migrationChecksum(MIGRATIONS[0]!));
-    // Every v001 table exists after the run (schema from zero).
+    // Every registered table exists after the run (schema from zero).
     for (const table of Object.values(PG_TABLES)) {
       expect(fake.tableNames()).toContain(table);
     }
@@ -65,8 +66,8 @@ describe("runMigrations (fake executor, real v001)", () => {
     await runMigrations(fake);
     const outcome = await runMigrations(fake);
     expect(outcome.applied).toEqual([]);
-    expect(outcome.alreadyApplied).toEqual([1]);
-    expect(fake.rowsOf(PG_TABLES.schemaMigrations).length).toBe(1);
+    expect(outcome.alreadyApplied).toEqual(MIGRATIONS.map((file) => file.version));
+    expect(fake.rowsOf(PG_TABLES.schemaMigrations).length).toBe(MIGRATIONS.length);
   });
 
   test("a tampered applied file is refused (history is append-only)", async () => {

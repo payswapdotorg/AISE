@@ -123,3 +123,196 @@ describe("pg store twins: Fs ⇄ Pg equivalence over identical fixtures", () => 
     });
   });
 });
+
+/* ------------------------------------------------------------------ */
+/* PROD-017 — the reality + identity twins                             */
+/* ------------------------------------------------------------------ */
+
+import { FsRealityStore as TwinFsRealityStore } from "../../reality/store";
+import { FsIdentityStore as TwinFsIdentityStore } from "../../identity/store";
+import { PgRealityStore } from "./reality";
+import { PgIdentityStore } from "./identity";
+import type { ChangeRecord, RealityNode } from "../../reality/model";
+
+/** One evidence-provenanced node fixture (schema-valid through the engine). */
+function seamNode(nodeId: string): RealityNode {
+  return {
+    nodeId,
+    kind: "site",
+    epistemicStatus: "OBSERVED",
+    properties: [
+      {
+        key: "name",
+        value: "Riverside site",
+        epistemicStatus: "OBSERVED",
+        provenance: [
+          { role: "SUPPORTS", derivationNote: "twin fixture", recordedAt: "2026-09-29T12:00:00.000Z" },
+        ],
+      },
+    ],
+    provenance: [
+      { role: "SUPPORTS", derivationNote: "twin fixture", recordedAt: "2026-09-29T12:00:00.000Z" },
+    ],
+  };
+}
+
+describe("pg store twins (PROD-017): reality Fs ⇄ Pg equivalence", () => {
+  test("create → header identical; apply → version + history identical", async () => {
+    const createdAt = "2026-09-29T12:00:00.000Z";
+    const changes: ChangeRecord[] = [
+      { op: "upsert-node", node: seamNode("site-twin-probe") },
+      {
+        op: "upsert-relationship",
+        relationship: {
+          relationshipId: "rel-twin-1",
+          fromNodeId: "site-twin-probe",
+          toNodeId: "site-twin-probe",
+          kind: "references",
+          provenance: [
+            { role: "CONTEXT", derivationNote: "twin fixture", recordedAt: createdAt },
+          ],
+        },
+      },
+    ];
+    await withTempDir(async (dir) => {
+      const fs = new TwinFsRealityStore(dir);
+      const pg = new PgRealityStore(await migratedFake());
+
+      const fsHeader = await fs.createProject("proj-twin-1", createdAt);
+      const pgHeader = await pg.createProject("proj-twin-1", createdAt);
+      expect(pgHeader).toEqual(fsHeader);
+
+      // createProject twice = the typed project_exists, both twins.
+      await expect(pg.createProject("proj-twin-1", createdAt)).rejects.toThrow("project_exists");
+
+      const fsVersion = await fs.applyChanges("proj-twin-1", changes, {
+        createdAt: "2026-09-29T12:01:00.000Z",
+      });
+      const pgVersion = await pg.applyChanges("proj-twin-1", changes, {
+        createdAt: "2026-09-29T12:01:00.000Z",
+      });
+      expect(pgVersion).toEqual(fsVersion);
+
+      expect(await pg.getProject("proj-twin-1")).toEqual(await fs.getProject("proj-twin-1"));
+      // The router translates "latest" → an absent versionId before the
+      // store call — the twins' latest discipline.
+      expect(await pg.getVersion("proj-twin-1")).toEqual(await fs.getVersion("proj-twin-1"));
+      expect(await pg.getVersion("proj-twin-1", "v002")).toEqual(
+        await fs.getVersion("proj-twin-1", "v002"),
+      );
+      expect(await pg.getNodeHistory("proj-twin-1", "site-twin-probe")).toEqual(
+        await fs.getNodeHistory("proj-twin-1", "site-twin-probe"),
+      );
+      // Unknown projects answer null, both twins.
+      expect(await pg.getProject("proj-unknown")).toBeNull();
+      expect(await pg.getVersion("proj-unknown")).toBeNull();
+      // Malformed version ids are the typed invalid_version_id, both twins.
+      await expect(pg.getVersion("proj-twin-1", "not-a-version")).rejects.toThrow(
+        "invalid_version_id",
+      );
+    });
+  });
+});
+
+describe("pg store twins (PROD-017): identity Fs ⇄ Pg equivalence", () => {
+  test("principal/org/project/role/membership/audit round-trips are identical", async () => {
+    const createdAt = "2026-09-29T12:00:00.000Z";
+    const principal = {
+      principalId: "demo-evaluator",
+      displayName: "Demo Evaluator",
+      createdAt,
+    };
+    const organization = {
+      organizationId: "org-northwind",
+      name: "Northwind",
+      createdAt,
+    };
+    const project = {
+      projectId: "proj-twin-identity",
+      organizationId: "org-northwind",
+      name: "Twin probe",
+      createdAt,
+    };
+    const role = {
+      roleId: "org-founder",
+      organizationId: "org-northwind",
+      name: "Founder",
+      permissions: ["reality:write", "identity:admin"] as const,
+      createdAt,
+    };
+    const membership = {
+      membershipId: "mem-twin-1",
+      organizationId: "org-northwind",
+      principalId: "demo-evaluator",
+      roleId: "org-founder",
+      scope: { kind: "organization" as const },
+      state: "active" as const,
+      grantedAt: createdAt,
+      grantedBy: "demo-evaluator",
+    };
+    const auditEvent = {
+      eventId: "audit-twin-1",
+      organizationId: "org-northwind",
+      projectId: "proj-twin-identity",
+      actor: "demo-evaluator",
+      action: "project.created" as const,
+      targetKind: "project" as const,
+      targetId: "proj-twin-identity",
+      outcome: "allowed" as const,
+      occurredAt: createdAt,
+      previousEventDigest:
+        "0000000000000000000000000000000000000000000000000000000000000000",
+      eventDigest:
+        "1111111111111111111111111111111111111111111111111111111111111111",
+    };
+    await withTempDir(async (dir) => {
+      const fs = new TwinFsIdentityStore(dir);
+      const pg = new PgIdentityStore(await migratedFake());
+
+      await fs.putPrincipal(principal);
+      await pg.putPrincipal(principal);
+      await fs.putOrganization(organization);
+      await pg.putOrganization(organization);
+      await fs.putProject(project);
+      await pg.putProject(project);
+      await fs.putRole(role);
+      await pg.putRole(role);
+      await fs.putMembership(membership);
+      await pg.putMembership(membership);
+      await fs.putAuditEvents("org-northwind", [auditEvent]);
+      await pg.putAuditEvents("org-northwind", [auditEvent]);
+
+      expect(await pg.getPrincipal("demo-evaluator")).toEqual(
+        await fs.getPrincipal("demo-evaluator"),
+      );
+      expect(await pg.getOrganization("org-northwind")).toEqual(
+        await fs.getOrganization("org-northwind"),
+      );
+      expect(await pg.getProject("proj-twin-identity")).toEqual(
+        await fs.getProject("proj-twin-identity"),
+      );
+      expect(await pg.getRole("org-northwind", "org-founder")).toEqual(
+        await fs.getRole("org-northwind", "org-founder"),
+      );
+      expect(await pg.getMembership("org-northwind", "mem-twin-1")).toEqual(
+        await fs.getMembership("org-northwind", "mem-twin-1"),
+      );
+      expect(await pg.listAuditEvents("org-northwind")).toEqual(
+        await fs.listAuditEvents("org-northwind"),
+      );
+      expect(await pg.listPrincipals()).toEqual(await fs.listPrincipals());
+      expect(await pg.listProjects()).toEqual(await fs.listProjects());
+      expect(await pg.listRoles("org-northwind")).toEqual(await fs.listRoles("org-northwind"));
+      expect(await pg.listMemberships("org-northwind")).toEqual(
+        await fs.listMemberships("org-northwind"),
+      );
+      expect(await pg.listMembershipsByPrincipal("demo-evaluator")).toEqual(
+        await fs.listMembershipsByPrincipal("demo-evaluator"),
+      );
+      // Absent records answer null / [] identically.
+      expect(await pg.getPrincipal("nobody")).toBeNull();
+      expect(await pg.getRetentionPolicy("org-northwind")).toBeNull();
+      expect(await pg.listAuditEvents("org-empty")).toEqual([]);
+    });
+  });
+});

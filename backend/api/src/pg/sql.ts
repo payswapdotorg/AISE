@@ -48,6 +48,16 @@ export const PG_TABLES = {
   evidenceDerivations: "evidence_derivations",
   caseRecords: "case_records",
   gapAnalysisRecords: "gap_analysis_records",
+  // PROD-017 (v002): the reality + identity twins.
+  realityProjectIndex: "reality_project_index",
+  realityVersions: "reality_versions",
+  identityPrincipals: "identity_principals",
+  identityOrganizations: "identity_organizations",
+  identityProjects: "identity_projects",
+  identityRoles: "identity_roles",
+  identityMemberships: "identity_memberships",
+  identityRetention: "identity_retention",
+  identityAudit: "identity_audit",
 } as const;
 
 /** Deterministic advisory-lock key for the migration runner (arbitrary constant). */

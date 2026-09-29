@@ -536,21 +536,40 @@ export async function journeyCaptureUploadRoundTrip(
       detail: `selected: ${((await page.locator('[data-selected-file="true"]').first().textContent()) ?? "").trim().slice(0, 90)}`,
     });
 
-    // THE round-trip: upload → STORED with the content id.
+    // THE round-trip: upload → STORED (the first-ever upload of these
+    // bytes) or DUPLICATE (a DURABLE store that already holds them — the
+    // deployed R2 case after the first run; the fixture bytes are
+    // deterministic BY DESIGN, so only the first run against a fresh store
+    // can observe STORED). Both outcomes are honest; both must name the
+    // content address. (The 2026-09-29 deployed run caught the old
+    // STORED-only wait: the durable store answered DUPLICATE and the leg
+    // timed out — the leg now accepts the store's honest answer.)
     await page.getByRole("button", { name: "Upload to the capture gateway" }).click();
-    await page.waitForSelector('[data-outcome="stored"]', {
+    await page.waitForSelector('[data-outcome="stored"], [data-outcome="duplicate"]', {
       timeout: LEG_BUDGETS.legMs,
     });
-    const storedText = await page.locator('[data-outcome="stored"]').first().innerText();
+    const firstOutcome = page
+      .locator('[data-outcome="stored"], [data-outcome="duplicate"]')
+      .first();
+    const firstKind = (await firstOutcome.getAttribute("data-outcome")) ?? "";
+    const firstText = await firstOutcome.innerText();
     assertions.push({
-      name: "the upload answered STORED server-side with the content address",
+      name:
+        firstKind === "stored"
+          ? "the upload answered STORED server-side with the content address"
+          : "the upload answered DUPLICATE — the durable store already held the deterministic bytes",
       pass:
-        storedText.includes("Stored server-side") &&
-        storedText.includes(options.expectedContentId),
-      detail: `outcome panel: ${storedText.replace(/\s+/g, " ").slice(0, 120)}`,
+        (firstKind === "stored" || firstKind === "duplicate") &&
+        firstText.includes(options.expectedContentId),
+      detail: `outcome panel: ${firstText.replace(/\s+/g, " ").slice(0, 120)}`,
     });
     extras.push(
       `content id: ${options.expectedContentId} (the client's sha-256 content address of the fixture bytes)`,
+    );
+    extras.push(
+      firstKind === "stored"
+        ? "first outcome: STORED (the first-ever upload of these bytes against this store)"
+        : "first outcome: DUPLICATE (idempotency across runs — the durable store holds the deterministic bytes)",
     );
 
     // The idempotent re-upload → DUPLICATE (never a duplication).

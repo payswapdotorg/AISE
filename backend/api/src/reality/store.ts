@@ -79,9 +79,10 @@ export interface RealityStore {
 /* Shared helpers                                                       */
 /* ------------------------------------------------------------------ */
 
-const VERSION_ID_PATTERN = /^v\d{3,}$/;
+/** The vNNN sequence-id pattern (exported for the store twins). */
+export const VERSION_ID_PATTERN = /^v\d{3,}$/;
 
-function assertProjectId(projectId: string): void {
+export function assertProjectId(projectId: string): void {
   if (projectId.length < 1 || projectId.length > 256) {
     throw new RealityGraphError("invalid_project_id", "projectId must be 1..256 characters");
   }
@@ -125,7 +126,7 @@ async function writeJsonAtomic(path: string, value: unknown): Promise<void> {
 }
 
 /** Build the history projection from ordered full version records. */
-function buildNodeHistory(
+export function buildNodeHistory(
   projectId: string,
   nodeId: string,
   latestVersionId: string,
@@ -156,14 +157,14 @@ function buildNodeHistory(
 }
 
 /** Shared apply-flow: parent → engine → append-only persistence. */
-interface ApplyDeps {
+export interface ApplyDeps {
   readonly loadIndex: (projectId: string) => Promise<ProjectHeader | null>;
   readonly loadVersion: (projectId: string, versionId: string) => Promise<GraphVersion | null>;
   readonly persistVersion: (projectId: string, version: GraphVersion) => Promise<void>;
   readonly persistIndex: (projectId: string, header: ProjectHeader) => Promise<void>;
 }
 
-async function applyChangesFlow(
+export async function applyChangesFlow(
   deps: ApplyDeps,
   projectId: string,
   changes: readonly ChangeRecord[],

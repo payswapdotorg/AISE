@@ -52,6 +52,7 @@ import {
   STATEMENT_TIMEOUT_REASSERT_MS,
 } from "./sql";
 import v001 from "./migrations/v001__initial_schema.sql" with { type: "text" };
+import v002 from "./migrations/v002__reality_identity.sql" with { type: "text" };
 
 /** One versioned migration file. */
 export interface MigrationFile {
@@ -66,6 +67,11 @@ export interface MigrationFile {
 /** The ordered registry — the single source of migration truth. */
 export const MIGRATIONS: readonly MigrationFile[] = [
   { version: 1, name: "v001__initial_schema.sql", sql: v001 },
+  {
+    version: 2,
+    name: "v002__reality_identity.sql",
+    sql: v002,
+  },
 ] as const;
 
 /** Upper bound on files applied in one run (see module header). */

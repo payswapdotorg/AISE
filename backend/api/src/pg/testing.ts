@@ -400,6 +400,16 @@ const RECORD_TABLES: readonly string[] = [
   PG_TABLES.evidenceInvalidations,
   PG_TABLES.caseRecords,
   PG_TABLES.gapAnalysisRecords,
+  // PROD-017 (v002): the reality + identity twins.
+  PG_TABLES.realityProjectIndex,
+  PG_TABLES.realityVersions,
+  PG_TABLES.identityPrincipals,
+  PG_TABLES.identityOrganizations,
+  PG_TABLES.identityProjects,
+  PG_TABLES.identityRoles,
+  PG_TABLES.identityMemberships,
+  PG_TABLES.identityRetention,
+  PG_TABLES.identityAudit,
 ] as const;
 
 const JOURNAL_TABLES: readonly string[] = [
