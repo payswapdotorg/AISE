@@ -70,6 +70,7 @@ import {
 import {
   allowedScenarioTransitions,
   appendStepRequestBody,
+  appendStepTargetDefects,
   CASE_REVIEW_DECISIONS,
   createRecordAction,
   idListFromField,
@@ -83,6 +84,7 @@ import {
   type AppendStepDraft,
   type CreateActionOffer,
   type NewScenarioDraft,
+  type StateNodeOption,
   type StepKindValue,
 } from "../create-forms";
 import {
@@ -1427,6 +1429,100 @@ export function NewScenarioPanel({
  * the per-kind fields, and provenance (EvidencePicker + derivation note).
  * Success reloads — the new layer materializes.
  */
+/**
+ * The append-step target control (POST-008): `element_addition`'s wire
+ * `targetNodeId` is the NEW node's identity — it must not collide with the
+ * state's live ids (the backend answers `duplicate_node_ref` otherwise), so
+ * that kind gets a free-entry "New node id" field and the state's existing
+ * nodes are offered only as the optional PARENT host. The other four kinds
+ * target an EXISTING node and keep the target picker.
+ */
+export function StepTargetPicker({
+  kind,
+  targetNodeId,
+  nodeOptions,
+  stateIndex,
+  onTargetChange,
+  onParentChange,
+}: {
+  readonly kind: StepKindValue;
+  readonly targetNodeId: string;
+  readonly nodeOptions: readonly StateNodeOption[];
+  readonly stateIndex: number;
+  readonly onTargetChange: (value: string) => void;
+  readonly onParentChange: (value: string) => void;
+}): ReactNode {
+  return (
+    <>
+      <CreateField
+        label={kind === "element_addition" ? "New node id" : "Target node id"}
+        value={targetNodeId}
+        onChange={onTargetChange}
+        hint={
+          kind === "element_addition"
+            ? "element_addition ADDS a new node: this id is the new node's identity and must NOT already exist in the current state (the backend answers duplicate_node_ref otherwise). To change an existing node, use element_modification."
+            : "Free entry stays available; the current state's own nodes are offered below."
+        }
+      />
+      {kind === "element_addition" ? (
+        nodeOptions.length === 0 ? (
+          <p className="state-guidance" data-picker-state="empty">
+            The current state carries no nodes — the new node starts unhosted
+            (no contains edge).
+          </p>
+        ) : (
+          <fieldset className="picker" data-picker="parent-node">
+            <legend>
+              Current state&apos;s nodes (optional parent host — layer{" "}
+              {String(stateIndex)})
+            </legend>
+            <ul className="notes-list">
+              {nodeOptions.map((option) => (
+                <li key={option.nodeId}>
+                  <button
+                    type="button"
+                    className="button button-secondary button-small"
+                    onClick={() => {
+                      onParentChange(option.nodeId);
+                    }}
+                  >
+                    Host under <span className="mono">{option.nodeId}</span>
+                  </button>
+                  <span className="picker-caption"> — {option.label}</span>
+                </li>
+              ))}
+            </ul>
+          </fieldset>
+        )
+      ) : nodeOptions.length === 0 ? (
+        <p className="state-guidance" data-picker-state="empty">
+          The current state carries no nodes — hand-entry is the only path.
+        </p>
+      ) : (
+        <fieldset className="picker" data-picker="target-node">
+          <legend>Current state&apos;s nodes (layer {String(stateIndex)})</legend>
+          <ul className="notes-list">
+            {nodeOptions.map((option) => (
+              <li key={option.nodeId}>
+                <button
+                  type="button"
+                  className="button button-secondary button-small"
+                  onClick={() => {
+                    onTargetChange(option.nodeId);
+                  }}
+                >
+                  Use <span className="mono">{option.nodeId}</span>
+                </button>
+                <span className="picker-caption"> — {option.label}</span>
+              </li>
+            ))}
+          </ul>
+        </fieldset>
+      )}
+    </>
+  );
+}
+
 export function AppendStepPanel({
   scenario,
   stateLayer,
@@ -1493,7 +1589,17 @@ export function AppendStepPanel({
     provenanceEvidenceIds: idListFromField(evidenceField),
     ...(derivationNote.trim() === "" ? {} : { provenanceDerivationNote: derivationNote }),
   };
-  const defects = validateAppendStepDraft(draft);
+  // element_addition's wire target is the NEW node's identity — a picked
+  // existing id is a guaranteed duplicate_node_ref 422, so the panel checks
+  // the collision client-side with the same wording family as the server.
+  const defects = [
+    ...validateAppendStepDraft(draft),
+    ...appendStepTargetDefects(
+      kind,
+      targetNodeId,
+      stateLayer.nodes.map((entry) => entry.nodeId),
+    ),
+  ];
   const nodeOptions = stateNodeOptions(stateLayer);
   const askable = mode === "api" && targetNodeId.trim() !== "";
 
@@ -1552,7 +1658,7 @@ export function AppendStepPanel({
     <CreateRecordPanel
       id="append-step"
       title="Append a step"
-      intro="Steps append to the scenario's ordered record (POST /v1/interventions/:id/steps); each accepted step materializes the next proposed layer. The target-node picker lists the CURRENT materialized state's own nodes — hand-entry stays the fallback."
+      intro="Steps append to the scenario's ordered record (POST /v1/interventions/:id/steps); each accepted step materializes the next proposed layer. The state's own nodes are offered where they are valid targets — element_addition instead takes a NEW node id (its target must not already exist)."
       offer={offer}
       mode={mode}
       draftValid={defects.length === 0}
@@ -1573,37 +1679,14 @@ export function AppendStepPanel({
         options={STEP_KINDS.map((stepKind) => ({ value: stepKind, label: stepKind }))}
         hint="The AISE-026 frozen step-kind vocabulary, verbatim."
       />
-      <CreateField
-        label="Target node id"
-        value={targetNodeId}
-        onChange={setTargetNodeId}
-        hint="Free entry stays available; the current state's own nodes are offered below."
+      <StepTargetPicker
+        kind={kind}
+        targetNodeId={targetNodeId}
+        nodeOptions={nodeOptions}
+        stateIndex={stateLayer.stateIndex}
+        onTargetChange={setTargetNodeId}
+        onParentChange={setParentNodeId}
       />
-      {nodeOptions.length === 0 ? (
-        <p className="state-guidance" data-picker-state="empty">
-          The current state carries no nodes — hand-entry is the only path.
-        </p>
-      ) : (
-        <fieldset className="picker" data-picker="target-node">
-          <legend>Current state&apos;s nodes (layer {String(stateLayer.stateIndex)})</legend>
-          <ul className="notes-list">
-            {nodeOptions.map((option) => (
-              <li key={option.nodeId}>
-                <button
-                  type="button"
-                  className="button button-secondary button-small"
-                  onClick={() => {
-                    setTargetNodeId(option.nodeId);
-                  }}
-                >
-                  Use <span className="mono">{option.nodeId}</span>
-                </button>
-                <span className="picker-caption"> — {option.label}</span>
-              </li>
-            ))}
-          </ul>
-        </fieldset>
-      )}
       {kind === "property_change" || kind === "element_modification" ? (
         <CreateField
           label="Property lines (one `key = value unit` per line)"
@@ -1616,7 +1699,12 @@ export function AppendStepPanel({
       {kind === "element_addition" ? (
         <>
           <CreateField label="New node kind" value={nodeKind} onChange={setNodeKind} hint="The reality NodeKind vocabulary, verbatim." />
-          <CreateField label="Parent node id (optional host)" value={parentNodeId} onChange={setParentNodeId} />
+          <CreateField
+            label="Parent node id (optional host)"
+            value={parentNodeId}
+            onChange={setParentNodeId}
+            hint="Optional existing node to host the new one — materializes a contains edge (offered above)."
+          />
           <CreateField
             label="New node property lines (optional, one `key = value unit` per line)"
             value={propertyLines}

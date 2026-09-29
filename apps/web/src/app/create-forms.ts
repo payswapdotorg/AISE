@@ -557,6 +557,32 @@ export function validateAppendStepDraft(draft: AppendStepDraft): readonly string
   return defects;
 }
 
+/**
+ * Panel-level target check against the CURRENT state's live node ids.
+ *
+ * `element_addition` is the one step kind whose wire `targetNodeId` is the
+ * NEW node's identity (backend/api projection: "an element_addition target
+ * must NOT already exist, live or tombstoned" → typed `duplicate_node_ref`).
+ * The other four kinds target an EXISTING node. A target picker that offers
+ * the state's existing ids is correct for those kinds and exactly wrong for
+ * element_addition — this check keeps the panel honest client-side with the
+ * same wording family as the server's rejection.
+ */
+export function appendStepTargetDefects(
+  kind: StepKindValue,
+  targetNodeId: string,
+  liveNodeIds: readonly string[],
+): readonly string[] {
+  const defects: string[] = [];
+  const target = targetNodeId.trim();
+  if (kind === "element_addition" && target !== "" && liveNodeIds.includes(target)) {
+    defects.push(
+      `element_addition adds a NEW node: the target id must not already exist in the current state (duplicate_node_ref server-side) — modify the existing node with element_modification instead`,
+    );
+  }
+  return defects;
+}
+
 /** The FLAT POST /v1/interventions/:id/steps wire body (exact shape). */
 export type AppendStepRequestBody = {
   readonly kind: "property_change";
