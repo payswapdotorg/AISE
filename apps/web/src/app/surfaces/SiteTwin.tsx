@@ -21,7 +21,12 @@ import { useCallback, useState } from "react";
 import type { ReactNode } from "react";
 import { useResource, type ResourceOutcome } from "../resource";
 import { isDemoMode, useAppEnvironment } from "../environment";
-import { describeApiFailure, loadRealityLive } from "../api";
+import {
+  describeApiFailure,
+  loadEvidenceIndexLive,
+  loadRealityLive,
+  liveEvidencePaneViews,
+} from "../api";
 import { demoEvidenceList, demoReality, demoWorkspaceInput } from "../demo";
 import type { EvidencePaneView, RealityPaneView } from "../../shell";
 import {
@@ -62,7 +67,7 @@ export interface SiteTwinData {
   readonly workspace: WorkspaceInput | null;
   /** The reality snapshot (demo fixture or live adapter); null = none recorded. */
   readonly reality: RealityPaneView | null;
-  /** Evidence records (demo fixtures; live mode has no readable evidence route). */
+  /** Evidence records (demo fixtures; live mode = register records referenced by the reality graph — POST-007). */
   readonly evidence: readonly EvidencePaneView[];
 }
 
@@ -88,6 +93,17 @@ export function SiteTwin({ projectId }: { readonly projectId: string }): ReactNo
     if (!reality.ok) {
       return { kind: "error", message: describeApiFailure(reality.failure) };
     }
+    // The evidence seam (POST-007): the register is live at GET /v1/evidence
+    // (the same loader the Intervention Studio evidence picker uses) — this
+    // card lists the records the project's reality snapshot references
+    // through node provenance ("captures behind the reality graph"). A
+    // register read failure is a typed error for the whole surface, never a
+    // silent empty card.
+    const evidenceIndex = await loadEvidenceIndexLive(environment.fetchImpl);
+    if (!evidenceIndex.ok) {
+      return { kind: "error", message: describeApiFailure(evidenceIndex.failure) };
+    }
+    const referenced = new Set(realityReferencedEvidenceIds(reality.view));
     return {
       kind: "ready",
       data: {
@@ -95,7 +111,9 @@ export function SiteTwin({ projectId }: { readonly projectId: string }): ReactNo
         projectId,
         workspace: null,
         reality: reality.view,
-        evidence: [],
+        evidence: liveEvidencePaneViews(evidenceIndex.items, projectId).filter((view) =>
+          referenced.has(view.evidenceId),
+        ),
       },
     };
   }, [environment, projectId]);
@@ -486,6 +504,28 @@ function RealityCard({
   );
 }
 
+/**
+ * The evidence ids a reality snapshot references (its nodes' provenance
+ * evidence ids), deduped in first-seen order (POST-007: the live filter for
+ * the evidence card — "captures behind the reality graph").
+ */
+export function realityReferencedEvidenceIds(reality: RealityPaneView | null): readonly string[] {
+  if (reality === null) {
+    return [];
+  }
+  const seen = new Set<string>();
+  const ids: string[] = [];
+  for (const node of reality.nodes) {
+    for (const entry of node.evidenceIds) {
+      if (!seen.has(entry.value)) {
+        seen.add(entry.value);
+        ids.push(entry.value);
+      }
+    }
+  }
+  return ids;
+}
+
 function EvidenceCard({
   evidence,
   mode,
@@ -496,8 +536,9 @@ function EvidenceCard({
   readonly projectId: string;
 }): ReactNode {
   // The capture → issue → quantity cross-links need the records this build
-  // holds for the project: the demo world's case/BOQ/lens records (live
-  // mode holds no readable evidence route at all — the honest note below).
+  // holds for the project: the demo world's case/BOQ/lens records. Live mode
+  // consumes the evidence register (POST-007) but no case-linkage route, so
+  // its records render the honest-empty cross-links column.
   const caseView = mode === "demo" ? demoCase(projectId) : null;
   const boqImport = mode === "demo" ? demoBoqImport(projectId) : null;
   const lens = mode === "demo" ? demoLensInput(projectId) : null;
@@ -510,8 +551,8 @@ function EvidenceCard({
       {evidence.length === 0 ? (
         mode === "api" ? (
           <EmptyState
-            title="Evidence records are not readable through this build's API seam"
-            guidance="The evidence namespace has no GET route this build consumes; evidence ids remain visible on every reality node above. The demo dataset (API unavailable) shows the full evidence surface."
+            title="No evidence records referenced by this project's reality graph"
+            guidance="The evidence register is live (GET /v1/evidence) and this card lists the records the project's current reality snapshot references through node provenance. Captures appear here once a reality version references them."
           />
         ) : (
           <EmptyState

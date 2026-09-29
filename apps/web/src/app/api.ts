@@ -26,7 +26,7 @@
  * the caller's concern (AbortController is passed through untouched).
  */
 
-import type { RealityPaneView, ShellAuthorizationDecision, ShellAuthorizationPort } from "../shell";
+import type { EvidencePaneView, RealityPaneView, ShellAuthorizationDecision, ShellAuthorizationPort } from "../shell";
 import { scenarioReadRequest, type ViewerScenario } from "../viewer";
 
 /* ------------------------------------------------------------------ */
@@ -1508,6 +1508,37 @@ export async function loadEvidenceIndexLive(
       },
     };
   }
+}
+
+/**
+ * Adapt the live evidence index (`GET /v1/evidence` items) into the shell's
+ * `EvidencePaneView` — the SiteTwin evidence card's live seam (POST-007).
+ *
+ * Every scalar carries its verbatim source (`evidence/<contentId>` — the
+ * shell's source discipline); `relatedCaseIds` stays EMPTY in live mode
+ * (this build consumes no case-linkage route for evidence — the demo world
+ * builds its cross-links from its own records, and the live card renders
+ * the same honest-empty column instead of inventing links).
+ */
+export function liveEvidencePaneViews(
+  items: readonly EvidenceIndexItem[],
+  projectId: string,
+): readonly EvidencePaneView[] {
+  return items.map((item) => {
+    const source = { module: "evidence" as const, recordId: item.evidence.contentId };
+    return {
+      source,
+      projectId,
+      evidenceId: item.evidence.contentId,
+      acquisitionMethod: { value: item.evidence.acquisitionMethod, source },
+      mediaType: { value: item.evidence.mediaType, source },
+      byteSize: { value: item.evidence.byteSize, source },
+      capturedAt: { value: item.evidence.capturedAt, source },
+      invalidationReason:
+        item.invalidation === null ? null : { value: item.invalidation.reason, source },
+      relatedCaseIds: [],
+    };
+  });
 }
 
 /** The latest-reality-version projection (what the baseline picker needs). */
