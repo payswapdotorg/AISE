@@ -6969,6 +6969,34 @@ var CANONICAL_UNITS = {
 function canonicalUnitFor(operationType, parameter) {
   return CANONICAL_UNITS[operationType]?.[parameter] ?? "m";
 }
+var AREA_BY_DIMENSIONS_AREA_PATTERN = /(\d+(?:[.,]\d+)?)[\s-]*(?:mm|cm|m|meters?|metres?|meter)?[\s-]*(?:by|x|×)[\s-]*(\d+(?:[.,]\d+)?)[\s-]*(mm|cm|m|meters?|metres?)(?:\s+\w+){0,2}?\s+areas?\b/gi;
+var AREA_COVERING_PATTERN = /\bcover(?:s|ed|ing)?\s+(?:an?\s+|the\s+)?(\d+(?:[.,]\d+)?)[\s-]*(?:mm|cm|m|meters?|metres?)?[\s-]*(?:by|x|×)[\s-]*(\d+(?:[.,]\d+)?)[\s-]*(mm|cm|m|meters?|metres?)/gi;
+var AREA_UNIT_MARKER_PATTERN = /(\d+(?:[.,]\d+)?)\s*(?:m2|m²|sq\.?\s*m\.?|sqm|square\s+(?:meters?|metres?|m)\b)/gi;
+function isAreaQuantitySpanOf(spans, start, end) {
+  return spans.some((span) => start < span.end && end > span.start);
+}
+function scanAreaQuantitySpans(text) {
+  const spans = [];
+  for (const pattern of [
+    AREA_BY_DIMENSIONS_AREA_PATTERN,
+    AREA_COVERING_PATTERN,
+    AREA_UNIT_MARKER_PATTERN
+  ]) {
+    const scanner = new RegExp(pattern.source, pattern.flags);
+    let match = scanner.exec(text);
+    while (match !== null) {
+      const start = match.index;
+      const end = start + match[0].length;
+      const overlaps = spans.some((span) => start < span.end && end > span.start);
+      if (!overlaps) {
+        spans.push({ start, end });
+      }
+      match = scanner.exec(text);
+    }
+  }
+  spans.sort((a, b2) => a.start - b2.start);
+  return spans;
+}
 function toCanonicalUnit(value, unit, operationType, parameter) {
   const canonical = canonicalUnitFor(operationType, parameter);
   const sourceFactor = LINEAR_UNIT_FACTORS[unit.toLowerCase()] ?? 1;
@@ -7292,6 +7320,53 @@ var FOCUS_SEEDABLE_PARAMETERS = {
   "finish-application": [],
   "building-service-installation": []
 };
+var COMPILER_OPERATION_LIMITS = Object.freeze({
+  excavation: [
+    {
+      parameterName: "depth",
+      maxCanonicalValue: 6,
+      unit: "m",
+      limitId: "excavation-max-depth",
+      detail: "maximum excavation depth is 6 m per operation (Phase 1 building scope)"
+    }
+  ],
+  "block-wall-placement": [
+    {
+      parameterName: "height",
+      maxCanonicalValue: 3,
+      unit: "m",
+      limitId: "block-wall-max-height",
+      detail: "maximum wall height is 3 m per operation"
+    }
+  ],
+  "plaster-application": [
+    {
+      parameterName: "thickness",
+      maxCanonicalValue: 0.05,
+      unit: "m",
+      limitId: "plaster-max-thickness-per-coat",
+      detail: "maximum plaster thickness is 50 mm per coat"
+    }
+  ]
+});
+function exceededOperationLimits(operationType, parameters, limits = COMPILER_OPERATION_LIMITS) {
+  const entries = limits[operationType] ?? [];
+  const exceeded = [];
+  for (const limit of entries) {
+    const parameter = parameters.find((entry) => entry.name === limit.parameterName);
+    if (parameter === void 0 || typeof parameter.value !== "number" || typeof parameter.unit !== "string") {
+      continue;
+    }
+    const factor = LINEAR_UNIT_FACTORS[parameter.unit.toLowerCase()];
+    if (factor === void 0) {
+      continue;
+    }
+    if (parameter.value * factor > limit.maxCanonicalValue) {
+      exceeded.push(limit);
+    }
+  }
+  return exceeded;
+}
 var UNSAFE_REFUSAL_PROSE = {
   "validation-authority-claim": {
     family: "claim validation success",
@@ -7744,6 +7819,14 @@ function createSolutionCommandCompiler(options) {
           { ...attributionBase, compilerPath }
         );
       }
+      const exceededLimits = exceededOperationLimits(type, parameters);
+      if (exceededLimits.length > 0) {
+        return clarificationCommand(
+          exceededLimits.map((limit) => limitViolationQuestion(type, parameters, limit)),
+          type,
+          { ...attributionBase, compilerPath }
+        );
+      }
       if (target === void 0) {
         throw new SolutionCompilerError(
           "invalid_session",
@@ -7822,6 +7905,7 @@ function matchToolCommand(utterance) {
   return null;
 }
 function extractMeasurements(text) {
+  const areaSpans = scanAreaQuantitySpans(text);
   const clearanceSpans = [];
   for (const pattern2 of [CONSTRAINT_VALUE_PATTERN, CONSTRAINT_VALUE_PATTERN_REVERSE]) {
     const scanner = new RegExp(pattern2.source, pattern2.flags);
@@ -7840,19 +7924,23 @@ function extractMeasurements(text) {
   let altMatch = alternative.exec(text);
   while (altMatch !== null) {
     const unit = (altMatch[3] ?? "m").toLowerCase();
-    for (const group of [altMatch[1], altMatch[2]]) {
-      if (group === void 0) {
-        continue;
-      }
-      const value = Number(group.replace(",", "."));
-      if (Number.isFinite(value)) {
-        measurements.push({
-          value,
-          rawUnit: unit,
-          start: altMatch.index,
-          end: altMatch.index + altMatch[0].length,
-          precededByBy: false
-        });
+    const altStart = altMatch.index;
+    const altEnd = altStart + altMatch[0].length;
+    if (!isAreaQuantitySpanOf(areaSpans, altStart, altEnd)) {
+      for (const group of [altMatch[1], altMatch[2]]) {
+        if (group === void 0) {
+          continue;
+        }
+        const value = Number(group.replace(",", "."));
+        if (Number.isFinite(value)) {
+          measurements.push({
+            value,
+            rawUnit: unit,
+            start: altStart,
+            end: altEnd,
+            precededByBy: false
+          });
+        }
       }
     }
     altMatch = alternative.exec(text);
@@ -7868,7 +7956,8 @@ function extractMeasurements(text) {
     const overlaps = measurements.some(
       (existing) => start < existing.end && end > existing.start
     );
-    if (Number.isFinite(value) && !overlaps) {
+    const areaGoverned = isAreaQuantitySpanOf(areaSpans, start, end);
+    if (Number.isFinite(value) && !overlaps && !areaGoverned) {
       measurements.push({
         value,
         rawUnit: unit,
@@ -8225,6 +8314,16 @@ function dimensionQuestion(type, name, flavor) {
     question: `What is the ${name} of the ${type}? Provide the value with an explicit unit (the canonical unit is ${unit}).`
   };
 }
+function limitViolationQuestion(type, parameters, limit) {
+  const parameter = parameters.find((entry) => entry.name === limit.parameterName);
+  const unit = parameter?.unit ?? canonicalUnitFor(type, limit.parameterName);
+  const value = numericParameterOf(parameters, limit.parameterName);
+  return {
+    slotKind: "constraint",
+    slot: limit.parameterName,
+    question: `The ${type} cannot be proposed as requested: its ${limit.parameterName} (${value !== void 0 ? `${formatCanonicalNumber(value)} ` : ""}${unit}) exceeds the declared limit \u2014 ${limit.detail}. What ${limit.parameterName} should the ${type} use? Provide the value with an explicit unit (the canonical unit is ${unit}); a violating operation is never offered for confirmation.`
+  };
+}
 function materialQuestion(type, changeMode, seeds) {
   const vocabulary = MATERIAL_VOCABULARIES[type] ?? [];
   const current = seeds.get("material");
@@ -8557,6 +8656,22 @@ var REPRESENTATIVE = [
       targetFocusId: "wall-faces"
     },
     note: "plaster thickness + layers"
+  },
+  {
+    id: "REP-PLASTER-003",
+    category: "representative",
+    utterance: "Apply 50 mm plaster to the affected wall faces.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "operation-intent",
+      operationType: "plaster-application",
+      parameters: [
+        { name: "thickness", value: 50, unit: "mm" },
+        { name: "material", value: "cement-plaster" }
+      ],
+      targetFocusId: "wall-faces"
+    },
+    note: "QA-004 D5b boundary: 50 mm is AT the declared per-coat limit \u2014 still confirmable (the gate never over-blocks)"
   },
   {
     id: "REP-DEMO-001",
@@ -9251,6 +9366,83 @@ var CLARIFICATION = [
       expectedSlots: [{ slotKind: "dimension", slot: "depth" }]
     },
     note: "a delta with no amount \u2014 deeper by how much, or to what resulting depth?"
+  },
+  {
+    id: "CLR-010",
+    category: "clarification",
+    utterance: "Apply a cement plaster coat to the damaged wall faces over a 2.5 by 2.5 metre area.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "dimension", slot: "thickness" }]
+    },
+    note: "QA-004 D5a (Lead-verified live defect): the '2.5 by 2.5 metre AREA' language governs its measurements as AREA quantities \u2014 they never bind the THICKNESS slot; the unstated thickness is asked"
+  },
+  {
+    id: "CLR-011",
+    category: "clarification",
+    utterance: "Apply cement plaster to the affected wall faces covering 2.5 by 2.5 m.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "dimension", slot: "thickness" }]
+    },
+    note: "QA-004 D5a: the 'covering X by Y m' family \u2014 area-governed, never a linear binding"
+  },
+  {
+    id: "CLR-012",
+    category: "clarification",
+    utterance: "Apply cement plaster to the affected wall faces over about 6 square metres.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "dimension", slot: "thickness" }]
+    },
+    note: "QA-004 D5a: explicit square-metre area language \u2014 no linear measurement is ever derived from it"
+  },
+  {
+    id: "CLR-013",
+    category: "clarification",
+    utterance: "Plaster the affected wall faces over an area of 12.5 m2.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "dimension", slot: "thickness" }]
+    },
+    note: "QA-004 D5a: the m2 marker family \u2014 an area quantity, never a thickness"
+  },
+  {
+    id: "CLR-014",
+    category: "clarification",
+    utterance: "Apply 60 mm plaster to the affected wall faces.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "constraint", slot: "thickness" }]
+    },
+    note: "QA-004 D5b: 60 mm exceeds the declared 'maximum plaster thickness is 50 mm per coat' limit \u2014 the violating parameter set never becomes a confirmable intent; the constraint re-ask names the exact violation"
+  },
+  {
+    id: "CLR-015",
+    category: "clarification",
+    utterance: "Lay concrete blocks to a height of 3.5 m along this wall.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "constraint", slot: "height" }]
+    },
+    note: "QA-004 D5b: 3.5 m exceeds the declared 'maximum wall height is 3 m per operation' limit \u2014 gated before any intent"
+  },
+  {
+    id: "CLR-016",
+    category: "clarification",
+    utterance: "Excavate a pit 6.5 m deep, 2 m wide and 3 m long.",
+    sessionKind: "demo",
+    expectation: {
+      kind: "clarification-needed",
+      expectedSlots: [{ slotKind: "constraint", slot: "depth" }]
+    },
+    note: "QA-004 D5b: 6.5 m exceeds the declared 'maximum excavation depth is 6 m per operation' limit \u2014 gated before any intent"
   }
 ];
 var TOOL = [
@@ -14068,13 +14260,15 @@ async function decideTenantAccess(input) {
 var DEMO_ORGANIZATION_ID = "org-northwind";
 var DEMO_PROJECT_IDS = Object.freeze([
   "proj-riverside-refit",
-  "project-zurich-hq"
+  "project-zurich-hq",
+  "proj-7f3a2b"
 ]);
 var DEMO_PRINCIPAL_DISPLAY_NAME = "Demo Evaluator";
 var DEMO_ORGANIZATION_NAME = "AISE Demo Tenant";
 var DEMO_PROJECT_NAMES = Object.freeze([
   "Riverside Refit (pilot)",
-  "Zurich HQ (intervention scenario)"
+  "Zurich HQ (intervention scenario)",
+  "Riverside office refit (task-first demo world)"
 ]);
 function isAlreadyExists(error, code) {
   return error instanceof IdentityError && error.code === code;
