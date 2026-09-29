@@ -402,6 +402,11 @@ interface SurfaceStop {
   readonly domSelectors?: readonly string[];
   /** Extra honest-contract lines recorded with the step. */
   readonly notes?: readonly string[];
+  /** Bounded async-settle wait (2026-09-29): surface content that arrives
+   *  AFTER the h1 (async fetches) — the walk waits for ANY of these
+   *  strings (or the bounded budget) before reading the body text, so the
+   *  control checks never race the card's own data load. */
+  readonly waitForAny?: readonly string[];
 }
 
 /** The W1 golden journey's surface stops (one session, coherent navigation). */
@@ -451,13 +456,20 @@ const W1_SURFACE_STOPS: readonly SurfaceStop[] = [
     name: "CASE — the engineering case + the Evidence Envelope",
     hash: `#/projects/${W1_PROJECT_ID}/case`,
     h1: "Engineering Case",
+    /* The cases card's list/detail arrives async (GET /v1/cases) — wait
+     * bounded for the card's own honest content (empty state OR a case
+     * detail) before the control checks read the body (the 2026-09-29
+     * deployed runs read mid-flight and failed a healthy surface). */
+    waitForAny: ["No engineering cases recorded", "Case detail", "Demo: damp ingress"],
     controls: [
       {
         description:
-          'the live "Engineering cases" card renders with its honest state (the empty list + the create-first-case action when no case exists)',
+          'the live "Engineering cases" card renders with its honest state (the empty list + the create-first-case action when no case exists, OR the durable/seeded case list with its detail)',
         check: (text) =>
           text.includes("Engineering cases") &&
-          (text.includes("No engineering cases recorded") || text.includes("Case detail")),
+          (text.includes("No engineering cases recorded") ||
+            text.includes("Case detail") ||
+            text.includes("Demo: damp ingress")),
       },
     ],
     domSelectors: ["#create-case"],
@@ -767,6 +779,21 @@ export async function runWJourney(options: { readonly baseUrl?: string }): Promi
             waitUntil: "domcontentloaded",
           });
           await page.waitForSelector("main#main-content h1", { timeout: LEG_BUDGETS.landmarkMs });
+          if (stop.waitForAny !== undefined && stop.waitForAny.length > 0) {
+            await page
+              .waitForFunction(
+                (needles: readonly string[]) => {
+                  const g = globalThis as unknown as {
+                    document?: { body?: { innerText?: string } };
+                  };
+                  const text = g.document?.body?.innerText ?? "";
+                  return needles.some((needle) => text.includes(needle));
+                },
+                [...stop.waitForAny],
+                { timeout: 8_000 },
+              )
+              .catch(() => undefined);
+          }
           const heading = ((await page.locator("main#main-content h1").first().textContent()) ?? "").trim();
           await sleep(LEG_BUDGETS.settleMs);
           const text = await page.locator("body").innerText();
