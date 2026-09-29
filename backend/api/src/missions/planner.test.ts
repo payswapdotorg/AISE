@@ -195,7 +195,7 @@ describe("core device adaptation: one task, three devices", () => {
         expect(step.sequence).toBe(index);
         expect(step.requirementRefs.length).toBeGreaterThan(0);
         expect(typeof step.mandatory).toBe("boolean");
-        expect(step.contractVersion).toBe("1.0.0");
+        expect(step.contractVersion).toBe("1.1.0");
       });
     }
   });

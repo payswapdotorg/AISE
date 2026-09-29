@@ -37,7 +37,7 @@ describe("version map", () => {
 
   test("CONTRACT_VERSION is strict semver", () => {
     expect(parseMajorVersion(CONTRACT_VERSION)).toBe(1);
-    expect(CONTRACT_VERSION).toBe("1.0.0");
+    expect(CONTRACT_VERSION).toBe("1.1.0");
   });
 });
 

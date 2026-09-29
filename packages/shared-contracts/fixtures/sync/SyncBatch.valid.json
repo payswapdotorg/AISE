@@ -1,11 +1,11 @@
 {
-  "contractVersion": "1.0.0",
+  "contractVersion": "1.1.0",
   "batchId": "batch-2026-0007-000",
   "sessionId": "session-2026-0007",
   "sequence": 0,
   "idempotencyKey": "idem-session-2026-0007-batch-000",
   "envelope": {
-    "contractVersion": "1.0.0",
+    "contractVersion": "1.1.0",
     "sessionId": "session-2026-0007",
     "missionRef": "mission-2026-000042",
     "deviceIdentity": {
@@ -16,7 +16,7 @@
       "appVersion": "0.3.0"
     },
     "capabilityProfile": {
-      "contractVersion": "1.0.0",
+      "contractVersion": "1.1.0",
       "profileId": "cap-profile-2026-0142",
       "capturedAt": "2026-01-15T09:30:00.000Z",
       "deviceIdentity": {
@@ -27,7 +27,7 @@
         "appVersion": "0.3.0"
       },
       "device": {
-        "contractVersion": "1.0.0",
+        "contractVersion": "1.1.0",
         "status": "supported",
         "details": {
           "thermal.state": "nominal",
@@ -36,7 +36,7 @@
         "limitations": []
       },
       "camera": {
-        "contractVersion": "1.0.0",
+        "contractVersion": "1.1.0",
         "status": "supported",
         "details": {
           "rear.sensors": "wide,ultrawide,tele",
@@ -45,7 +45,7 @@
         "limitations": []
       },
       "depth": {
-        "contractVersion": "1.0.0",
+        "contractVersion": "1.1.0",
         "status": "degraded",
         "details": {
           "lidar": "false",
@@ -56,7 +56,7 @@
         ]
       },
       "imu": {
-        "contractVersion": "1.0.0",
+        "contractVersion": "1.1.0",
         "status": "supported",
         "details": {
           "accelerometer": "true",
@@ -66,7 +66,7 @@
         "limitations": []
       },
       "tracking": {
-        "contractVersion": "1.0.0",
+        "contractVersion": "1.1.0",
         "status": "supported",
         "details": {
           "pose.provider": "ARCore",
@@ -75,7 +75,7 @@
         "limitations": []
       },
       "compute": {
-        "contractVersion": "1.0.0",
+        "contractVersion": "1.1.0",
         "status": "supported",
         "details": {
           "ml.accelerator": "NPU",
@@ -84,7 +84,7 @@
         "limitations": []
       },
       "calibration": {
-        "contractVersion": "1.0.0",
+        "contractVersion": "1.1.0",
         "status": "unknown",
         "details": {},
         "limitations": [
@@ -92,7 +92,7 @@
         ]
       },
       "environment": {
-        "contractVersion": "1.0.0",
+        "contractVersion": "1.1.0",
         "status": "degraded",
         "details": {
           "illumination": "low-artificial",
@@ -107,7 +107,7 @@
     "endedAt": "2026-01-15T09:58:22.000Z",
     "assets": [
       {
-        "contractVersion": "1.0.0",
+        "contractVersion": "1.1.0",
         "contentId": "b1f5de0e80d632a4c7ab9d9536cd4516804852cd29913229944f3625ea6f5f40",
         "byteSize": 4821934,
         "mediaType": "image/jpeg",
@@ -124,7 +124,7 @@
         }
       },
       {
-        "contractVersion": "1.0.0",
+        "contractVersion": "1.1.0",
         "contentId": "38167a47831dad3a5c7ec174d36334ed9189324069bca4ca78b0485f517441c8",
         "byteSize": 184502271,
         "mediaType": "video/mp4",
@@ -141,7 +141,7 @@
         }
       },
       {
-        "contractVersion": "1.0.0",
+        "contractVersion": "1.1.0",
         "contentId": "fe637af931c15f4569a71f141c12d1c4d6606a91ba1a09a6a043182e2675c98c",
         "byteSize": 218,
         "mediaType": "application/json",

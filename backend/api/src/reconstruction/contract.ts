@@ -128,7 +128,7 @@ export type InputModality = (typeof INPUT_MODALITIES)[number];
  * This table is a static orchestration-side hint, NOT an authoritative
  * evidence-method catalogue — the evidence service owns evidence semantics.
  * Methods that provide no reconstruction input (HUMAN_ANSWER,
- * DOCUMENT_REGION) are deliberately unmapped.
+ * DOCUMENT_REGION, VOICE_NOTE) are deliberately unmapped.
  */
 export const METHOD_TO_MODALITY: Readonly<Record<string, InputModality>> = {
   STILL_IMAGERY: "still_image",

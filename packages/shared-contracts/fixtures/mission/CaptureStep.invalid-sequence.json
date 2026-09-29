@@ -1,5 +1,5 @@
 {
-  "contractVersion": "1.0.0",
+  "contractVersion": "1.1.0",
   "stepId": "step-bad-sequence",
   "sequence": -1,
   "title": "Step with a negative sequence",

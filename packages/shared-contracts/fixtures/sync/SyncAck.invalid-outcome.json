@@ -1,5 +1,5 @@
 {
-  "contractVersion": "1.0.0",
+  "contractVersion": "1.1.0",
   "batchId": "batch-2026-0007-003",
   "idempotencyKey": "idem-session-2026-0007-batch-003",
   "outcome": "MAYBE",

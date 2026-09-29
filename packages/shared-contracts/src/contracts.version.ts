@@ -26,7 +26,7 @@
  *    new wire objects, relaxed constraints);
  *  - PATCH: documentation/description-only changes.
  */
-export const CONTRACT_VERSION = "1.0.0";
+export const CONTRACT_VERSION = "1.1.0";
 
 /** The contract families owned by this package (one module each). */
 export const CONTRACT_FAMILIES = [

@@ -165,7 +165,8 @@
                 "STILL_IMAGERY",
                 "INSTRUMENT_READING",
                 "HUMAN_ANSWER",
-                "DOCUMENT_REGION"
+                "DOCUMENT_REGION",
+                "VOICE_NOTE"
               ],
               "type": "string"
             },
@@ -182,7 +183,8 @@
               "STILL_IMAGERY",
               "INSTRUMENT_READING",
               "HUMAN_ANSWER",
-              "DOCUMENT_REGION"
+              "DOCUMENT_REGION",
+              "VOICE_NOTE"
             ],
             "type": "string"
           },
@@ -247,7 +249,8 @@
               "STILL_IMAGERY",
               "INSTRUMENT_READING",
               "HUMAN_ANSWER",
-              "DOCUMENT_REGION"
+              "DOCUMENT_REGION",
+              "VOICE_NOTE"
             ],
             "type": "string"
           },

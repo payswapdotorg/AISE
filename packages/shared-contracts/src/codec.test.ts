@@ -122,7 +122,7 @@ describe("contractVersion handling on decode (never silent)", () => {
     expect(caught).toBeInstanceOf(ContractVersionMismatchError);
     const mismatch = caught as ContractVersionMismatchError;
     expect(mismatch.code).toBe("CONTRACT_VERSION_MISMATCH");
-    expect(mismatch.expected).toBe("1.0.0");
+    expect(mismatch.expected).toBe("1.1.0");
     expect(mismatch.received).toBe("0.9.0");
     expect(mismatch.family).toBe("sync");
     expect(mismatch.objectName).toBe("SyncBatch");
@@ -311,13 +311,17 @@ describe("domain fidelity", () => {
     expect(calibration["status"]).not.toBe("unavailable");
   });
 
-  test("acquisition metadata well-known keys match the AISE-002 advisory vocabulary", () => {
+  test("acquisition metadata well-known keys match the AISE-002 advisory vocabulary + the VOICE-001 voice keys", () => {
     expect(ACQUISITION_METADATA_KEYS).toEqual({
       missionId: "mission.id",
       sessionId: "session.id",
       deviceId: "device.id",
       captureKind: "capture.kind",
       sensorId: "acquisition.sensorId",
+      voiceDurationMs: "voice.duration.ms",
+      voiceCodec: "voice.codec",
+      voiceSampleRateHz: "voice.sample.rate.hz",
+      voiceLanguageHint: "voice.language.hint",
     });
   });
 });

@@ -152,7 +152,7 @@ describe("gap model: frozen vocabularies", () => {
 
   test("the action vocabulary and scoring tables are frozen and complete", () => {
     expect([...CANDIDATE_ACTION_KINDS]).toHaveLength(7);
-    expect(Object.keys(DEFAULT_METHOD_EFFORT)).toHaveLength(10);
+    expect(Object.keys(DEFAULT_METHOD_EFFORT)).toHaveLength(11);
     expect(Object.keys(DEFAULT_METHOD_PREFERENCES)).toHaveLength(6);
     expect(Object.isFrozen(SCORE_WEIGHTS)).toBe(true);
     expect(Object.isFrozen(RECOVERABILITY_BY_STATE)).toBe(true);

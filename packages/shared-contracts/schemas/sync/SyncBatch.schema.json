@@ -25,7 +25,7 @@
                 "additionalProperties": {
                   "type": "string"
                 },
-                "description": "Open string map. Well-known keys: mission.id, session.id, device.id, capture.kind, acquisition.sensorId. Unknown keys are data and must be preserved.",
+                "description": "Open string map. Well-known keys: mission.id, session.id, device.id, capture.kind, acquisition.sensorId, voice.duration.ms, voice.codec, voice.sample.rate.hz, voice.language.hint. Unknown keys are data and must be preserved.",
                 "type": "object"
               },
               "acquisitionMethod": {
@@ -39,7 +39,8 @@
                   "STILL_IMAGERY",
                   "INSTRUMENT_READING",
                   "HUMAN_ANSWER",
-                  "DOCUMENT_REGION"
+                  "DOCUMENT_REGION",
+                  "VOICE_NOTE"
                 ],
                 "type": "string"
               },

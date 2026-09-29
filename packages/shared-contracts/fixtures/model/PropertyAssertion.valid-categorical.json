@@ -1,5 +1,5 @@
 {
-  "contractVersion": "1.0.0",
+  "contractVersion": "1.1.0",
   "assertionId": "assertion-204-material-002",
   "subjectRef": "reality-object-204-west-wall",
   "property": "material",

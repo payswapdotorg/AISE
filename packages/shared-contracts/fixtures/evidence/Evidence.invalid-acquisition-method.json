@@ -1,0 +1,13 @@
+{
+  "contractVersion": "1.1.0",
+  "contentId": "c30ef5571e696486cf6cc59e22f90ddcf74fe6532c4361225d0b6821a4754c23",
+  "byteSize": 148932,
+  "mediaType": "audio/ogg",
+  "capturedAt": "2026-01-15T09:41:03.000Z",
+  "acquisitionMethod": "VOICE_MEMO",
+  "acquisitionMetadata": {
+    "mission.id": "mission-2026-000042",
+    "capture.kind": "voice",
+    "voice.duration.ms": "18400"
+  }
+}

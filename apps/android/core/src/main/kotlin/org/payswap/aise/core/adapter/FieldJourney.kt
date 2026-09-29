@@ -163,6 +163,7 @@ fun exactCaptureAction(method: AcquisitionMethod): String = when (method) {
     AcquisitionMethod.DOCUMENT_REGION -> "Capture document region"
     AcquisitionMethod.SPECIALIST_INSTRUMENT -> "Capture with specialist instrument"
     AcquisitionMethod.INSTRUMENT_READING -> "Record instrument reading"
+    AcquisitionMethod.VOICE_NOTE -> "Record voice note"
 }
 
 /**

@@ -181,7 +181,7 @@ function resolveDataDir(env) {
 }
 
 // packages/shared-contracts/src/contracts.version.ts
-var CONTRACT_VERSION = "1.0.0";
+var CONTRACT_VERSION = "1.1.0";
 var FAMILY_VERSIONS = {
   capability: CONTRACT_VERSION,
   mission: CONTRACT_VERSION,
@@ -4531,7 +4531,8 @@ var EVIDENCE_METHODS = [
   "STILL_IMAGERY",
   "INSTRUMENT_READING",
   "HUMAN_ANSWER",
-  "DOCUMENT_REGION"
+  "DOCUMENT_REGION",
+  "VOICE_NOTE"
 ];
 var evidenceMethodSchema = external_exports.enum(EVIDENCE_METHODS);
 var PROVENANCE_ROLES = [
@@ -4551,7 +4552,7 @@ var EvidenceSchema = external_exports.object({
   capturedAt: isoTimestampSchema.describe("Acquisition instant (UTC)."),
   acquisitionMethod: evidenceMethodSchema,
   acquisitionMetadata: external_exports.record(external_exports.string(), external_exports.string()).describe(
-    "Open string map. Well-known keys: mission.id, session.id, device.id, capture.kind, acquisition.sensorId. Unknown keys are data and must be preserved."
+    "Open string map. Well-known keys: mission.id, session.id, device.id, capture.kind, acquisition.sensorId, voice.duration.ms, voice.codec, voice.sample.rate.hz, voice.language.hint. Unknown keys are data and must be preserved."
   )
 }).passthrough();
 var ProvenanceLinkSchema = external_exports.object({
@@ -15217,6 +15218,7 @@ function methodUsabilityTable(profile) {
   alwaysAvailable("DOCUMENT_REGION");
   alwaysAvailable("SPECIALIST_INSTRUMENT");
   alwaysAvailable("INSTRUMENT_READING");
+  alwaysAvailable("VOICE_NOTE");
   const bind = (method, domain) => {
     const descriptor = domainDescriptor(profile, domain);
     switch (descriptor.status) {
@@ -15499,6 +15501,16 @@ function stepsForMethod(spec, seed, requirementId, context) {
         {
           title: "Instrument readings",
           instructions: "Take and record the required instrument readings with instrument identity and reading uncertainty. " + tail,
+          method,
+          requirementRefs: [requirementId],
+          mandatory: true
+        }
+      ];
+    case "VOICE_NOTE":
+      return [
+        {
+          title: "Field voice note",
+          instructions: "Record a short voice note at the subject describing the observed conditions. The note is raw audio evidence \u2014 spoken statements are observations, never measurements. " + tail,
           method,
           requirementRefs: [requirementId],
           mandatory: true
@@ -24010,7 +24022,10 @@ var DEFAULT_METHOD_EFFORT = Object.freeze({
   STILL_IMAGERY: 0.15,
   INSTRUMENT_READING: 0.4,
   HUMAN_ANSWER: 0.2,
-  DOCUMENT_REGION: 0.35
+  DOCUMENT_REGION: 0.35,
+  // VOICE-001: a voice note is a quick operator-recorded capture — the
+  // same effort class as answering a guiding question (HUMAN_ANSWER).
+  VOICE_NOTE: 0.2
 });
 var RECOVERABILITY_BY_STATE = Object.freeze({
   OBSERVED: 0.9,
@@ -26651,7 +26666,10 @@ var METHOD_CAPABILITY_FACT_KEYS = {
   STILL_IMAGERY: "capability.still_imagery",
   INSTRUMENT_READING: "capability.instrument_reading",
   HUMAN_ANSWER: "capability.human_answer",
-  DOCUMENT_REGION: "capability.document_region"
+  DOCUMENT_REGION: "capability.document_region",
+  // VOICE-001: operator-recorded audio; the field-capture lane owns the
+  // microphone, no capability domain gates the method today.
+  VOICE_NOTE: "capability.voice_note"
 };
 var CAPABILITY_FACT_LEVELS = ["available", "degraded", "unavailable"];
 var METHOD_REMEDIATION_ALTERNATIVES = {

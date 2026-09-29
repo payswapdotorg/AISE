@@ -186,6 +186,11 @@ function methodUsabilityTable(
   alwaysAvailable("DOCUMENT_REGION");
   alwaysAvailable("SPECIALIST_INSTRUMENT");
   alwaysAvailable("INSTRUMENT_READING");
+  // VOICE-001: a voice note is operator-recorded audio content — the field
+  // capture lane owns the microphone and no capability domain gates the
+  // method in the frozen profile vocabulary, so it is device-independent
+  // here (same class as HUMAN_ANSWER, not a camera-gated capture).
+  alwaysAvailable("VOICE_NOTE");
 
   const bind = (method: EvidenceMethod, domain: MethodGatingDomain): void => {
     const descriptor = domainDescriptor(profile, domain);
@@ -615,6 +620,21 @@ function stepsForMethod(
           title: "Instrument readings",
           instructions:
             "Take and record the required instrument readings with instrument identity and reading uncertainty. " +
+            tail,
+          method,
+          requirementRefs: [requirementId],
+          mandatory: true,
+        },
+      ];
+    case "VOICE_NOTE":
+      // VOICE-001: no requirement template prefers a voice note yet — the
+      // case exists so the exhaustive switch stays total over the enum and
+      // the step wording is ready when a template adopts the method.
+      return [
+        {
+          title: "Field voice note",
+          instructions:
+            "Record a short voice note at the subject describing the observed conditions. The note is raw audio evidence — spoken statements are observations, never measurements. " +
             tail,
           method,
           requirementRefs: [requirementId],

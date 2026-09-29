@@ -1,0 +1,20 @@
+{
+  "contractVersion": "1.1.0",
+  "contentId": "c30ef5571e696486cf6cc59e22f90ddcf74fe6532c4361225d0b6821a4754c23",
+  "byteSize": 148932,
+  "mediaType": "audio/ogg",
+  "capturedAt": "2026-01-15T09:41:03.000Z",
+  "acquisitionMethod": "VOICE_NOTE",
+  "acquisitionMetadata": {
+    "mission.id": "mission-2026-000042",
+    "session.id": "session-2026-0007",
+    "device.id": "device-field-007",
+    "capture.kind": "voice",
+    "acquisition.sensorId": "bottom-mic",
+    "voice.duration.ms": "18400",
+    "voice.codec": "opus",
+    "voice.sample.rate.hz": "48000",
+    "voice.language.hint": "en",
+    "operator.note.position": "grid B-2 slab edge"
+  }
+}

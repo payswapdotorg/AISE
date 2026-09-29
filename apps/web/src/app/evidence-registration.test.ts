@@ -49,12 +49,14 @@ describe("PROD-016b the acquisition-method mirror", () => {
       "INSTRUMENT_READING",
       "HUMAN_ANSWER",
       "DOCUMENT_REGION",
+      "VOICE_NOTE",
     ]);
   });
 
   test("defaultAcquisitionMethod maps media-type families honestly", () => {
     expect(defaultAcquisitionMethod("image/jpeg")).toBe("STILL_IMAGERY");
     expect(defaultAcquisitionMethod("video/mp4")).toBe("VIDEO_FOOTAGE");
+    expect(defaultAcquisitionMethod("audio/ogg")).toBe("VOICE_NOTE");
     expect(defaultAcquisitionMethod("application/pdf")).toBe("DOCUMENT_REGION");
   });
 });
@@ -110,7 +112,7 @@ describe("PROD-016b evidenceRegistrationRequestBody (the EXACT wire document)", 
       acquisitionMetadata: { "session.id": "session-browser-1" },
     });
     // The version is the shared constant, never a local literal.
-    expect(CONTRACT_VERSION).toBe("1.0.0");
+    expect(CONTRACT_VERSION).toBe("1.1.0");
   });
 
   test("an empty session id maps to an empty (honest) metadata map", () => {
@@ -149,7 +151,7 @@ describe("PROD-016b registerEvidenceLive (the live adapter)", () => {
   }
 
   const evidence = {
-    contractVersion: "1.0.0",
+    contractVersion: CONTRACT_VERSION,
     contentId: CONTENT_ID,
     byteSize: 2693684,
     mediaType: "image/jpeg",

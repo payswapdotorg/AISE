@@ -156,8 +156,8 @@ describe("committed fixtures vs TypeScript codecs", () => {
       expect(caught).toBeInstanceOf(ContractVersionMismatchError);
       const mismatch = caught as ContractVersionMismatchError;
       expect(mismatch.code).toBe("CONTRACT_VERSION_MISMATCH");
-      expect(mismatch.expected).toBe("1.0.0");
-      expect(mismatch.received).not.toBe("1.0.0");
+      expect(mismatch.expected).toBe("1.1.0");
+      expect(mismatch.received).not.toBe("1.1.0");
     }
   });
 });

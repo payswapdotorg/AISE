@@ -1,5 +1,5 @@
 {
-  "contractVersion": "1.0.0",
+  "contractVersion": "1.1.0",
   "missionId": "mission-2026-000042",
   "state": "active",
   "intent": "Establish as-built room dimensions and wall condition for level 2, room 204 ahead of the partition rework quote.",
@@ -33,7 +33,7 @@
   ],
   "steps": [
     {
-      "contractVersion": "1.0.0",
+      "contractVersion": "1.1.0",
       "stepId": "step-place-reference",
       "sequence": 0,
       "title": "Place the scale bar",
@@ -43,7 +43,7 @@
       "mandatory": true
     },
     {
-      "contractVersion": "1.0.0",
+      "contractVersion": "1.1.0",
       "stepId": "step-video-sweep",
       "sequence": 1,
       "title": "Video sweep of the room",
@@ -53,7 +53,7 @@
       "mandatory": true
     },
     {
-      "contractVersion": "1.0.0",
+      "contractVersion": "1.1.0",
       "stepId": "step-manual-measure",
       "sequence": 2,
       "title": "Tape-measure the room width (fallback)",
@@ -65,7 +65,7 @@
   ],
   "referenceControls": [
     {
-      "contractVersion": "1.0.0",
+      "contractVersion": "1.1.0",
       "controlId": "refcontrol-scalebar-001",
       "kind": "scale_bar",
       "description": "Certified 1 m aluminium scale bar with cm graduations.",
