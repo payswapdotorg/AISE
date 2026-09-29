@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.io.CleanupMode
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.api.Test
+import org.payswap.aise.core.session.CaptureContractVersion
 import org.payswap.aise.core.session.CaptureSessionStatus
 
 /**
@@ -68,7 +69,7 @@ class CaptureSessionControllerTest {
         val manifest = controller.finalizeSession()
         assertTrue(manifest.isFile)
         val manifestText = manifest.readText(Charsets.UTF_8)
-        assertTrue(manifestText.contains("\"contractVersion\": \"1.0.0\""))
+        assertTrue(manifestText.contains("\"contractVersion\": \"${CaptureContractVersion.CURRENT}\""))
         assertTrue(manifestText.contains("\"acquisitionMethod\": \"VIDEO_FOOTAGE\""))
         assertTrue(manifestText.contains(video.contentId.value))
         assertTrue(manifestText.contains(still1.contentId.value))

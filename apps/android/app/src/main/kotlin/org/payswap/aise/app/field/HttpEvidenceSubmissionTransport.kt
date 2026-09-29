@@ -12,6 +12,7 @@ import org.payswap.aise.core.adapter.SubmissionTransport
 import org.payswap.aise.core.json.JsonParser
 import org.payswap.aise.core.json.JsonValue
 import org.payswap.aise.core.json.JsonWriter
+import org.payswap.aise.core.session.CaptureContractVersion
 
 /** Real HTTP sync adapter: upload immutable assets, then atomically post SyncBatch. */
 class HttpEvidenceSubmissionTransport(
@@ -73,7 +74,7 @@ class HttpEvidenceSubmissionTransport(
             }
 
             val batch = JsonValue.obj(
-                "contractVersion" to JsonValue.str("1.0.0"),
+                "contractVersion" to JsonValue.str(CaptureContractVersion.CURRENT),
                 "batchId" to JsonValue.str("batch-" + sessionId + "-0"),
                 "sessionId" to JsonValue.str(sessionId),
                 "sequence" to JsonValue.num(0L),

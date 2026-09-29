@@ -121,7 +121,7 @@ class SessionManifestExporterTest {
     @Test
     fun `manifest carries the required wire fields with correct shapes`() {
         val tree = mapper.readTree(SessionManifestExporter.export(finalizedRecord()))
-        assertEquals("1.0.0", tree.get("contractVersion").asText())
+        assertEquals(CaptureContractVersion.CURRENT, tree.get("contractVersion").asText())
         assertEquals(SessionFixtures.SESSION_ID, tree.get("sessionId").asText())
         assertEquals("2026-01-01T00:00:00.000Z", tree.get("startedAt").asText())
         assertEquals("2026-01-01T00:00:06.000Z", tree.get("endedAt").asText())
