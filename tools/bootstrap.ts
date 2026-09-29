@@ -742,11 +742,10 @@ function printEntry(ctx: PhaseContext, elapsedMs: number): void {
   deps.log("    server log   → data/demo/server.log (relative to the repository root)");
   deps.log(`    guide        → ${config.guidePath} — the 10-minute evaluator walkthrough`);
   deps.log("");
-  deps.log("    Known limitation at this commit: the LOCAL web bundle renders blank in plain");
-  deps.log("    browsers (an escalated PROD-026 finding — see the guide §5/§6). The phases above");
-  deps.log("    prove the real runtime; the visual product experience is the deployed URL in");
-  deps.log("    the guide. The demo server keeps running in the background — stop it with");
-  deps.log("    `bun run demo --stop`; tear everything down and re-run with `--fresh`.");
+  deps.log("    The LOCAL web bundle mounts in plain browsers (the PROD-026 blank-bundle");
+  deps.log("    defect was fixed via subpath exports). The demo server keeps running in the");
+  deps.log("    background — stop it with `bun run demo --stop`; tear everything down and");
+  deps.log("    re-run with `--fresh`.");
   deps.log("");
   deps.log(`DEMO: READY (8/8 phases, ${(elapsedMs / 1000).toFixed(1)}s)`);
 }
