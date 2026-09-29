@@ -181,7 +181,14 @@ class FieldJourneyRuntimeTest {
         runtime.submitFinalized("{}\n")
         val deferred = runtime.phase.value as FieldJourneyPhase.DeferredOffline
         assertEquals(1, deferred.submission.attempts)
-        assertTrue(deferred.submission.reason.contains("no sync transport"))
+        // The surfaced reason is THIS build's seam contract (the app's
+        // OfflineUntilSyncTransport, reworded in POST-005 — the fresh E2B
+        // station trio of 2026-09-29 caught this expectation still naming
+        // the old core-module phrasing): no HTTP submission transport is
+        // configured for this runtime host, and the evidence explicitly
+        // stays in the resumable offline store.
+        assertTrue(deferred.submission.reason.contains("no HTTP submission transport"))
+        assertTrue(deferred.submission.reason.contains("resumable offline store"))
         assertTrue(deferred.submission.submissionKey.startsWith("aise-submission-v1:"))
     }
 
