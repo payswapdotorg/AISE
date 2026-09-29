@@ -96,6 +96,7 @@ export type {
 
 export {
   ACQUISITION_METADATA_KEYS,
+  ASR_TRANSCRIPTION_METHOD,
   EVIDENCE_METHODS,
   evidenceMethodSchema,
   PROVENANCE_ROLES,

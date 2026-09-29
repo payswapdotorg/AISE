@@ -1,5 +1,5 @@
 {
-  "contractVersion": "1.0.0",
+  "contractVersion": "1.1.0",
   "gapId": "gap-bad-kind",
   "kind": "ABSENT",
   "description": "Gap kind outside the MISSING/WEAK/AMBIGUOUS vocabulary.",

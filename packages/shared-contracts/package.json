@@ -1,6 +1,6 @@
 {
   "name": "@aise/shared-contracts",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "AISE cross-platform wire contracts (AISE-003): versioned data shapes for device capability, capture mission, evidence, model objects and sync envelopes. TypeScript source of truth plus generated JSON Schemas for non-TypeScript consumers (Android). Data shapes only — no business logic, no I/O, no client or server behavior.",

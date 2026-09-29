@@ -1,0 +1,17 @@
+{
+  "contractVersion": "1.1.0",
+  "derivationId": "derivation-204-voice-transcript-001",
+  "outputContentId": "55015939de43a3a8b5568b58f40e6588c05045a1bb2c0fde5c4bc0c280f4e81b",
+  "inputEvidenceContentIds": [
+    "c30ef5571e696486cf6cc59e22f90ddcf74fe6532c4361225d0b6821a4754c23"
+  ],
+  "method": "transcription.asr",
+  "methodVersion": "1.2.0+model.asr-7b-q5",
+  "parameters": {
+    "asr.language": "en",
+    "asr.model": "asr-7b-q5",
+    "asr.encoding": "utf-8",
+    "asr.audio.codec": "opus"
+  },
+  "createdAt": "2026-01-15T09:42:31.000Z"
+}

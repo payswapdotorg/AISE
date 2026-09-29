@@ -1,5 +1,5 @@
 {
-  "contractVersion": "1.0.0",
+  "contractVersion": "1.1.0",
   "missionId": "mission-bad-state",
   "state": "cancelled",
   "intent": "Mission with a state outside the lifecycle enum.",

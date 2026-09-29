@@ -13,7 +13,7 @@ package org.payswap.aise.core.session
  * else is a typed error. Bumping this value is a governed contract change.
  */
 object CaptureContractVersion {
-    const val V1: String = "1.0.0"
+    const val V1: String = "1.1.0"
 
     /** The version every wire object produced by the capture domain carries. */
     val CURRENT: String get() = V1

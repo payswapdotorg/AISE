@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { ASR_TRANSCRIPTION_METHOD } from "@aise/shared-contracts";
 import pkg from "../../package.json" with { type: "json" };
 import { sha256Hex } from "../lib/hash";
 import { createLogger } from "../lib/log";
@@ -18,6 +19,7 @@ import {
   makeDerivation,
   makeEvidence,
   makeLink,
+  makeVoiceNote,
   rawBody,
   withTempDir,
 } from "./testkit";
@@ -454,6 +456,139 @@ describe("evidence HTTP surface: default server wiring", () => {
       const view = (await read.json()) as { evidence: { contentId: string }; invalidation: null };
       expect(view.evidence.contentId).toBe(evidence.contentId);
       expect(view.invalidation).toBeNull();
+    });
+  });
+});
+
+describe("evidence HTTP surface: VOICE-001 voice-note conformance", () => {
+  test("register -> idempotent re-register -> get -> list -> provenance-link -> derivation (replayable)", async () => {
+    await withTempDir(async (root) => {
+      const handler = handlerWith(root);
+      const voiceNote = makeVoiceNote("router-voice-conformance");
+      const transcript = makeVoiceNote("router-voice-transcript-out", {
+        mediaType: "text/plain",
+        byteSize: 96,
+        extraMetadata: {
+          "transcript.of": voiceNote.contentId,
+          "transcript.method": ASR_TRANSCRIPTION_METHOD,
+          "transcript.candidate": "true",
+        },
+      });
+
+      // 1. Register the voice note end-to-end.
+      const first = await handler(postJson("/v1/evidence", evidenceBody(voiceNote)));
+      expect(first.status).toBe(200);
+      expect(((await first.json()) as RegisterBody).outcome).toBe("REGISTERED");
+
+      // 2. Idempotent re-registration.
+      const again = await handler(postJson("/v1/evidence", evidenceBody(voiceNote)));
+      expect(again.status).toBe(200);
+      expect(((await again.json()) as RegisterBody).outcome).toBe("IDEMPOTENT");
+
+      // 3. The full read view (explicitly no transcript yet — inspectable).
+      const read = await handler(get(`/v1/evidence/${voiceNote.contentId}`));
+      expect(read.status).toBe(200);
+      const view = (await read.json()) as {
+        evidence: { acquisitionMethod: string; acquisitionMetadata: Record<string, string> };
+        invalidation: null;
+        derivations: { inputsOf: unknown[]; derivedFrom: unknown[] };
+      };
+      expect(view.evidence.acquisitionMethod).toBe("VOICE_NOTE");
+      expect(view.evidence.acquisitionMetadata["voice.codec"]).toBe("opus");
+      expect(view.invalidation).toBeNull();
+      expect(view.derivations).toEqual({ inputsOf: [], derivedFrom: [] });
+
+      // 4. Listing carries the voice note.
+      const listed = await handler(get("/v1/evidence"));
+      const listBody = (await listed.json()) as {
+        evidence: Array<{ evidence: { contentId: string; acquisitionMethod: string } }>;
+      };
+      expect(
+        listBody.evidence.some(
+          (item) =>
+            item.evidence.contentId === voiceNote.contentId &&
+            item.evidence.acquisitionMethod === "VOICE_NOTE",
+        ),
+      ).toBe(true);
+
+      // 5. Provenance link: a consequential subject supported by the voice note.
+      const linked = await handler(
+        postJson(
+          "/v1/evidence/provenance-links",
+          linkBody(makeLink("property_assertion", "assertion-204-slab-thickness", voiceNote.contentId)),
+        ),
+      );
+      expect(linked.status).toBe(200);
+      expect(((await linked.json()) as { outcome: string }).outcome).toBe("LINKED");
+
+      // 6. A transcription derivation over the voice note, then its replay.
+      await handler(postJson("/v1/evidence", evidenceBody(transcript)));
+      const derivation = makeDerivation(
+        "voice-001-router-transcript",
+        transcript.contentId,
+        [voiceNote.contentId],
+        {
+          method: ASR_TRANSCRIPTION_METHOD,
+          methodVersion: "1.2.0+model.asr-7b-q5",
+          parameters: { "asr.language": "en", "asr.model": "asr-7b-q5", "asr.encoding": "utf-8" },
+        },
+      );
+      const recorded = await handler(
+        postJson("/v1/evidence/derivations", derivationBody(derivation)),
+      );
+      expect(recorded.status).toBe(200);
+      expect(((await recorded.json()) as { outcome: string }).outcome).toBe("RECORDED");
+
+      const replay = await handler(
+        postJson("/v1/evidence/derivations", derivationBody(derivation)),
+      );
+      expect(replay.status).toBe(200);
+      expect(((await replay.json()) as { outcome: string }).outcome).toBe("DUPLICATE");
+
+      // The read view now exposes the transcript derivation (inputsOf) and
+      // the support link (asObject) — the voice note itself never changed.
+      const after = await handler(get(`/v1/evidence/${voiceNote.contentId}`));
+      const afterView = (await after.json()) as {
+        evidence: { contentId: string };
+        provenance: { asObject: unknown[] };
+        derivations: { inputsOf: Array<{ method: string; outputContentId: string }> };
+      };
+      expect(afterView.evidence.contentId).toBe(voiceNote.contentId);
+      expect(afterView.provenance.asObject).toHaveLength(1);
+      expect(afterView.derivations.inputsOf).toEqual([
+        expect.objectContaining({
+          method: ASR_TRANSCRIPTION_METHOD,
+          outputContentId: transcript.contentId,
+        }),
+      ]);
+    });
+  });
+
+  test("a voice note registers under the pinning gate exactly like every other evidence (audio bytes via the capture surface)", async () => {
+    await withTempDir(async (root) => {
+      const handler = handlerWithPinning(root);
+      const bytes = new TextEncoder().encode("router-voice-audio-bytes-opus-48khz");
+      const contentId = sha256Hex(bytes);
+      const voiceNote = makeVoiceNote("router-voice-pinned", { contentId });
+
+      // Unpinned: typed rejection naming the content id.
+      const rejected = await handler(postJson("/v1/evidence", evidenceBody(voiceNote)));
+      expect(rejected.status).toBe(422);
+      expect(((await rejected.json()) as ErrorBody).error).toBe("content_not_pinned");
+
+      // Pin the audio through the capture surface (audio/ogg, as captured),
+      // then register.
+      const upload = await handler(
+        new Request(`http://localhost/v1/capture/assets/${contentId}`, {
+          method: "POST",
+          body: bytes,
+          headers: { "content-type": "audio/ogg" },
+        }),
+      );
+      expect(upload.status).toBe(200);
+      const accepted = await handler(postJson("/v1/evidence", evidenceBody(voiceNote)));
+      expect(accepted.status).toBe(200);
+      expect(((await accepted.json()) as RegisterBody).outcome).toBe("REGISTERED");
     });
   });
 });

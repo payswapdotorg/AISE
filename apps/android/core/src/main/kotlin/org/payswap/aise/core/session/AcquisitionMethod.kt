@@ -1,13 +1,16 @@
 package org.payswap.aise.core.session
 
 /**
- * How evidence was acquired — the exact 10-value enum of the committed
+ * How evidence was acquired — the exact 11-value enum of the committed
  * AISE-003 `Evidence` contract
  * (`packages/shared-contracts/schemas/evidence/Evidence.schema.json`).
  * Enum names ARE the wire strings (uppercase), so the mapping is identity.
  *
- * AISE-005 uses STILL_IMAGERY and VIDEO_FOOTAGE; the rest exist so the enum
- * is the full cross-platform contract (AISE-004/009 consume the same values).
+ * AISE-005 uses STILL_IMAGERY and VIDEO_FOOTAGE; VOICE_NOTE (VOICE-001)
+ * makes field voice notes first-class evidence (raw audio, registered
+ * content-addressed; transcription is a provider-gated derivation, never a
+ * rewrite); the rest exist so the enum is the full cross-platform contract
+ * (AISE-004/009 consume the same values).
  */
 enum class AcquisitionMethod {
     DEPTH_SENSING,
@@ -20,6 +23,7 @@ enum class AcquisitionMethod {
     INSTRUMENT_READING,
     HUMAN_ANSWER,
     DOCUMENT_REGION,
+    VOICE_NOTE,
     ;
 
     companion object {

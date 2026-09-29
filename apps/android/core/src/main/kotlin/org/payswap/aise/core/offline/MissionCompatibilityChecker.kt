@@ -24,7 +24,7 @@ import org.payswap.aise.core.session.CapabilitySnapshot
  * ## The static method → domain table
  *
  * Which capability domains an acquisition method NEEDS is a documented,
- * frozen mapping ([REQUIRED_DOMAINS_BY_METHOD]) over the committed 10-value
+ * frozen mapping ([REQUIRED_DOMAINS_BY_METHOD]) over the committed 11-value
  * acquisition-method enum:
  *
  *  - STILL_IMAGERY, VIDEO_FOOTAGE → CAMERA
@@ -32,10 +32,11 @@ import org.payswap.aise.core.session.CapabilitySnapshot
  *  - VISUAL_RECONSTRUCTION → TRACKING
  *  - CALIBRATED_REFERENCE → CALIBRATION
  *  - MANUAL_MEASUREMENT, HUMAN_ANSWER, DOCUMENT_REGION,
- *    SPECIALIST_INSTRUMENT, INSTRUMENT_READING → device-independent (empty):
- *    their evidence is operator-recorded content or external-instrument
- *    readings; no specific on-device capability domain is a precondition of
- *    the method itself.
+ *    SPECIALIST_INSTRUMENT, INSTRUMENT_READING, VOICE_NOTE →
+ *    device-independent (empty): their evidence is operator-recorded
+ *    content or external-instrument readings; no specific on-device
+ *    capability domain is a precondition of the method itself (VOICE-001:
+ *    the frozen vocabulary has no microphone domain).
  *
  * ## Verdict semantics (the honest-unknown discipline)
  *
@@ -130,7 +131,7 @@ object MissionCompatibilityChecker {
 
     /**
      * The documented static table: which capability domains each committed
-     * acquisition method needs. Covers EXACTLY the 10-value
+     * acquisition method needs. Covers EXACTLY the 11-value
      * [AcquisitionMethod] enum; empty list = device-independent method.
      */
     val REQUIRED_DOMAINS_BY_METHOD: Map<AcquisitionMethod, List<CapabilityDomainKind>> = mapOf(
@@ -144,6 +145,11 @@ object MissionCompatibilityChecker {
         AcquisitionMethod.DOCUMENT_REGION to emptyList(),
         AcquisitionMethod.SPECIALIST_INSTRUMENT to emptyList(),
         AcquisitionMethod.INSTRUMENT_READING to emptyList(),
+        // VOICE-001: a voice note is operator-recorded audio content; the
+        // frozen capability vocabulary has no microphone domain, so the
+        // method is device-independent here (the field-capture work order
+        // will revisit if a MICROPHONE domain ever lands).
+        AcquisitionMethod.VOICE_NOTE to emptyList(),
     )
 
     /** Evaluates every step of [plan] against [snapshot]; overall = worst-of. */

@@ -343,6 +343,9 @@ export const DEFAULT_METHOD_EFFORT: Readonly<Record<EvidenceMethod, number>> = O
   INSTRUMENT_READING: 0.4,
   HUMAN_ANSWER: 0.2,
   DOCUMENT_REGION: 0.35,
+  // VOICE-001: a voice note is a quick operator-recorded capture — the
+  // same effort class as answering a guiding question (HUMAN_ANSWER).
+  VOICE_NOTE: 0.2,
 } as const);
 
 /**

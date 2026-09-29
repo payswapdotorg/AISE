@@ -65,6 +65,7 @@ export interface EvidenceOptions {
   readonly mediaType?: string;
   readonly byteSize?: number;
   readonly capturedAt?: string;
+  readonly acquisitionMetadata?: Record<string, string>;
 }
 
 /** A schema-valid `Evidence` record for a seeded (or explicit) content id. */
@@ -76,7 +77,7 @@ export function makeEvidence(seed: string, options?: EvidenceOptions): Evidence 
     mediaType: options?.mediaType ?? "image/jpeg",
     capturedAt: options?.capturedAt ?? FIXED_CAPTURED_AT,
     acquisitionMethod: options?.acquisitionMethod ?? "STILL_IMAGERY",
-    acquisitionMetadata: {
+    acquisitionMetadata: options?.acquisitionMetadata ?? {
       "mission.id": "mission-2026-000042",
       "session.id": options?.sessionId ?? "session-evidence-1",
       "device.id": "device-field-007",
@@ -84,6 +85,43 @@ export function makeEvidence(seed: string, options?: EvidenceOptions): Evidence 
       "acquisition.sensorId": "rear-wide",
     },
   };
+}
+
+/** Options for the VOICE-001 voice-note fixture (see `makeVoiceNote`). */
+export interface VoiceNoteOptions {
+  readonly contentId?: string;
+  readonly mediaType?: string;
+  readonly byteSize?: number;
+  readonly capturedAt?: string;
+  readonly sessionId?: string;
+  /** Extra producer keys beyond the canonical voice keys (open map). */
+  readonly extraMetadata?: Record<string, string>;
+}
+
+/**
+ * A schema-valid VOICE_NOTE evidence record carrying the canonical voice
+ * acquisition-metadata keys (VOICE-001) plus the well-known base keys.
+ */
+export function makeVoiceNote(seed: string, options?: VoiceNoteOptions): Evidence {
+  return makeEvidence(seed, {
+    contentId: options?.contentId,
+    mediaType: options?.mediaType ?? "audio/ogg",
+    byteSize: options?.byteSize ?? 148932,
+    capturedAt: options?.capturedAt,
+    acquisitionMethod: "VOICE_NOTE",
+    acquisitionMetadata: {
+      "mission.id": "mission-2026-000042",
+      "session.id": options?.sessionId ?? "session-evidence-1",
+      "device.id": "device-field-007",
+      "capture.kind": "voice",
+      "acquisition.sensorId": "bottom-mic",
+      "voice.duration.ms": "18400",
+      "voice.codec": "opus",
+      "voice.sample.rate.hz": "48000",
+      "voice.language.hint": "en",
+      ...(options?.extraMetadata ?? {}),
+    },
+  });
 }
 
 /** A schema-valid `ProvenanceLink`. */

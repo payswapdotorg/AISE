@@ -33,6 +33,7 @@ export const EVIDENCE_ACQUISITION_METHODS = [
   "INSTRUMENT_READING",
   "HUMAN_ANSWER",
   "DOCUMENT_REGION",
+  "VOICE_NOTE",
 ] as const;
 
 /** One registration draft (raw user input over the upload's own record). */
@@ -132,6 +133,10 @@ export function defaultAcquisitionMethod(mediaType: string): string {
   }
   if (mediaType.startsWith("image/")) {
     return "STILL_IMAGERY";
+  }
+  // VOICE-001: raw audio is a field voice note — never a document.
+  if (mediaType.startsWith("audio/")) {
+    return "VOICE_NOTE";
   }
   return "DOCUMENT_REGION";
 }

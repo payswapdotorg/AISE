@@ -412,6 +412,9 @@ export const METHOD_CAPABILITY_FACT_KEYS: Readonly<Record<EvidenceMethod, string
   INSTRUMENT_READING: "capability.instrument_reading",
   HUMAN_ANSWER: "capability.human_answer",
   DOCUMENT_REGION: "capability.document_region",
+  // VOICE-001: operator-recorded audio; the field-capture lane owns the
+  // microphone, no capability domain gates the method today.
+  VOICE_NOTE: "capability.voice_note",
 };
 
 /** Recognized capability fact values (normalized lowercase/trimmed). */
