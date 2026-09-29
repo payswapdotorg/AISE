@@ -102,5 +102,14 @@ register → record → pin, zero developer tools, live-proven).
 2. **Automatic spatial anchoring (L1)** — images mapped to plan/floor context
    automatically (OpenSpace's Spatial AI signature). Research-grade; AISE's
    task-directed gaps ledger is the honest alternative today.
-3. **Voice notes as evidence kind (L1)** — OpenSpace captures voice on site;
-   AISE's acquisition methods cover stills/video today.
+3. **Voice notes as evidence kind (L1)** — PARTIALLY CLOSED 2026-09-29 (evening):
+   the VOICE-001 merge (a409603, deployed and journey-verified) made
+   `VOICE_NOTE` a live evidence kind at the contract (1.1.0) + API level —
+   audio registers with honest metadata (device-known keys as strings),
+   transcripts degrade honestly (`asr_provider_not_configured` — never
+   fabricated), and the cross-version idempotency seam is closed (POST-012,
+   0b96844). Remaining, in flight: the capture LANES — web Capture surface
+   (VOICE-002 authorized 8b8d6d7, dispatch quota-gated) and the Android
+   capture lane (the named follow-up work order). Until a capture lane lands,
+   "captures voice on site" stays OpenSpace's claim; AISE's register accepts
+   voice as evidence today.
