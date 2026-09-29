@@ -129,6 +129,45 @@ function servicePolicy(name: string, makeStore: () => EvidenceStore): void {
     expect((await service.getEvidence(ID_A))?.evidence).toEqual(evidenceA);
   });
 
+  test(`${name}: re-registering the same identity across contract versions is idempotent`, async () => {
+    // The durable-register seam (POST-012): the register already holds this
+    // evidence at an OLDER wire stamp (production holds "1.0.0" from before
+    // the VOICE-001 bump); an upgraded offline-first client replays the
+    // IDENTICAL registration carrying the newer stamp. Evidence identity is
+    // the AISE-CONTENT-V1 content address over (payload, acquisition
+    // metadata); contractVersion is wire metadata, never identity.
+    const service = makeService(makeStore());
+    const stored = await service.registerEvidence({ ...evidenceA, contractVersion: "1.0.0" });
+    expect(stored.kind).toBe("registered");
+    expect(stored.evidence.contractVersion).toBe("1.0.0");
+
+    // Same identity, newer version stamp: IDEMPOTENT with the STORED record
+    // — its original stamp is returned verbatim and is never rewritten.
+    const replay = await service.registerEvidence(evidenceA);
+    expect(replay.kind).toBe("idempotent");
+    expect(replay.evidence).toEqual({ ...evidenceA, contractVersion: "1.0.0" });
+    expect((await service.getEvidence(ID_A))?.evidence).toEqual({
+      ...evidenceA,
+      contractVersion: "1.0.0",
+    });
+
+    // A version bump never launders a genuine identity difference: the same
+    // content id with different acquisition metadata is still a conflict.
+    await expectEvidenceError(
+      service.registerEvidence({
+        ...evidenceA,
+        acquisitionMetadata: { ...evidenceA.acquisitionMetadata, "session.id": "session-other" },
+      }),
+      "evidence_conflict",
+      ID_A,
+    );
+    // The stored record is retained verbatim through all of the above.
+    expect((await service.getEvidence(ID_A))?.evidence).toEqual({
+      ...evidenceA,
+      contractVersion: "1.0.0",
+    });
+  });
+
   test(`${name}: appends invalidation, never deletes, and rejects double invalidation`, async () => {
     const service = makeService(makeStore());
     await service.registerEvidence(evidenceA);

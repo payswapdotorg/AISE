@@ -88,7 +88,7 @@ function get(path: string, headers?: Record<string, string>): Request {
 interface RegisterBody {
   ok: boolean;
   outcome: "REGISTERED" | "IDEMPOTENT";
-  evidence: { contentId: string };
+  evidence: { contentId: string; contractVersion: string };
   invalidation: { reason: string } | null;
 }
 
@@ -128,6 +128,43 @@ describe("evidence HTTP surface: registration", () => {
       expect(conflictBody.detail).toContain(evidence.contentId);
       // The response never echoes the conflicting values.
       expect(JSON.stringify(conflictBody)).not.toContain("99");
+    });
+  });
+
+  test("answers IDEMPOTENT when the same identity re-registers across contract versions", async () => {
+    await withTempDir(async (root) => {
+      const handler = handlerWith(root);
+      // The durable-register seam (POST-012): production holds this exact
+      // fixture registered at the older "1.0.0" wire stamp (pre-VOICE-001);
+      // the upgraded client replays the identical registration carrying the
+      // current stamp. Identity is the AISE-CONTENT-V1 content address over
+      // (payload, acquisition metadata) — the version stamp is wire metadata.
+      const replayed = makeEvidence("router-cross-version");
+      const older = await handler(
+        postJson("/v1/evidence", rawBody({ ...replayed, contractVersion: "1.0.0" })),
+      );
+      expect(older.status).toBe(200);
+      expect(((await older.json()) as RegisterBody).outcome).toBe("REGISTERED");
+
+      const replay = await handler(postJson("/v1/evidence", evidenceBody(replayed)));
+      expect(replay.status).toBe(200);
+      const replayBody = (await replay.json()) as RegisterBody;
+      expect(replayBody.outcome).toBe("IDEMPOTENT");
+      // The STORED record answers — its original stamp, never rewritten.
+      expect(replayBody.evidence.contractVersion).toBe("1.0.0");
+
+      // A genuinely different identity under any stamp is still a 422.
+      const conflict = await handler(
+        postJson(
+          "/v1/evidence",
+          evidenceBody({
+            ...replayed,
+            acquisitionMetadata: { ...replayed.acquisitionMetadata, "session.id": "other" },
+          }),
+        ),
+      );
+      expect(conflict.status).toBe(422);
+      expect(((await conflict.json()) as ErrorBody).error).toBe("evidence_conflict");
     });
   });
 

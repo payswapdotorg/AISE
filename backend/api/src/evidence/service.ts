@@ -14,8 +14,16 @@
  *    removed or rewritten.
  *  - Evidence records are validated with `decodeEvidenceStrict` (canonical
  *    validation for an internal pipeline) and are IMMUTABLE: re-registering
- *    byte-identical content is an idempotent no-op; any differing field is a
- *    typed conflict (`evidence_conflict`), compared over canonical JSON.
+ *    the same evidence identity is an idempotent no-op; any differing
+ *    identity field is a typed conflict (`evidence_conflict`), compared over
+ *    canonical JSON. `contractVersion` is wire metadata (which contract the
+ *    producer spoke), never evidence identity — the identity is the
+ *    AISE-CONTENT-V1 content address over payload + acquisition metadata —
+ *    so a same-identity re-registration carrying a different contract
+ *    version (an offline-first client replaying a sync batch after an app/
+ *    contract upgrade) answers idempotent with the STORED record, whose
+ *    original version stamp is never rewritten. The immutability law holds
+ *    absolutely either way.
  *  - Content pinning gate: when a content resolver is injected, evidence may
  *    only be registered for content ids that are pinned (already stored) in
  *    the content store (`content_not_pinned` otherwise). The adapter
@@ -218,6 +226,24 @@ function conflictDetail(contentId: string): string {
   );
 }
 
+/**
+ * Canonical identity of an evidence record for the re-registration gate:
+ * the full record WITHOUT the `contractVersion` wire stamp. Evidence
+ * identity is the content address over (payload, acquisition metadata)
+ * (AISE-CONTENT-V1, see the shared contracts); `contractVersion` names the
+ * contract the producer spoke and is wire metadata, never identity.
+ * Offline-first clients replay registrations across app/contract upgrades,
+ * so a same-identity re-registration carrying a newer version stamp must
+ * stay idempotent — the STORED record answers, and its original stamp is
+ * never rewritten (the immutability law holds absolutely). Any OTHER
+ * differing field still fails this compare and is a typed conflict.
+ */
+function evidenceIdentityCanonical(record: Evidence): string {
+  const { ...identity } = record as Record<string, unknown>;
+  delete identity["contractVersion"];
+  return canonicalJsonStringify(identity);
+}
+
 /** Project a stored invalidation record onto the read passthrough fields. */
 function toInvalidationSummary(
   info: EvidenceInvalidationInfo | null,
@@ -311,11 +337,13 @@ export function createEvidenceService(deps: EvidenceServiceDeps): EvidenceServic
     // 1. Canonical validation (strict: typed contract errors propagate).
     const evidence = decodeEvidenceStrict(input);
 
-    // 2. Immutable-record gate: identical re-registration is a no-op; any
-    //    differing field (canonical byte-compare) is a typed conflict.
+    // 2. Immutable-record gate: same-identity re-registration is a no-op;
+    //    any differing identity field (canonical byte-compare, excluding
+    //    the contractVersion wire stamp — see `evidenceIdentityCanonical`)
+    //    is a typed conflict.
     const existing = await store.getEvidenceRecord(evidence.contentId);
     if (existing !== null) {
-      if (canonicalJsonStringify(existing) === canonicalJsonStringify(evidence)) {
+      if (evidenceIdentityCanonical(existing) === evidenceIdentityCanonical(evidence)) {
         return {
           kind: "idempotent",
           evidence: existing,
@@ -340,13 +368,14 @@ export function createEvidenceService(deps: EvidenceServiceDeps): EvidenceServic
       );
     }
 
-    // 4. Write once (a lost write-once race is resolved by re-comparison).
+    // 4. Write once (a lost write-once race is resolved by re-comparison
+    //    over the same identity fields, version stamp excluded).
     const written = await store.putEvidenceRecord(evidence);
     if (!written) {
       const raced = await store.getEvidenceRecord(evidence.contentId);
       if (
         raced !== null &&
-        canonicalJsonStringify(raced) === canonicalJsonStringify(evidence)
+        evidenceIdentityCanonical(raced) === evidenceIdentityCanonical(evidence)
       ) {
         return { kind: "idempotent", evidence: raced, invalidation: null };
       }

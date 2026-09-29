@@ -5,7 +5,10 @@
  * content address (sha-256 over the frozen AISE-CONTENT-V1 canonical
  * encoding of payload + acquisition metadata, established by the AISE-002
  * Android foundation). Evidence is append-only and immutable; raw evidence
- * is never rewritten (spec/architecture-lock.md).
+ * is never rewritten (spec/architecture-lock.md). Re-registering the same
+ * evidence identity across contract versions answers idempotent with the
+ * stored record: the `contractVersion` stamp is wire metadata (which
+ * contract the producer spoke), never evidence identity.
  *
  * `ProvenanceLink` binds a consequential assertion/artifact to the evidence
  * that supports it. `Derivation` records how a derived artifact was produced
