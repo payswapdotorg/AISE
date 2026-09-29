@@ -64,6 +64,15 @@ const EXPECTED_FAILURES: ReadonlySet<string> = new Set([
  * impact, never a crash). The joined endpoint is a future capability;
  * deployments without it answer 404 by design. Excluded per §4.3's
  * "XHR/fetch 4xx the app HANDLES by design are not blocking".
+ *
+ * 2026-09-29 (POST-011 follow-up): `GET /v1/reality/projects/:id/versions/
+ * latest` → 404 is the same designed class — the client contract
+ * (apps/web/src/app/api.ts loadRealityLive) maps the 404 to
+ * `{ ok: true, view: null }`: the SiteTwin's honest "No reality snapshot
+ * recorded for this project" state (a project with no reality versions
+ * yet). The deep-route responsive walk (POST-011) navigates the SiteTwin
+ * route, so this handled 404 now appears in the guard's capture; it is
+ * the product's own no-versions-yet answer, never a crash.
  */
 const EXPECTED_FAILURE_ROUTE_FAMILIES: ReadonlyArray<{
   readonly method: string;
@@ -73,6 +82,11 @@ const EXPECTED_FAILURE_ROUTE_FAMILIES: ReadonlyArray<{
   {
     method: "GET",
     path: /^\/v1\/adapter\/projects\/[^/]+\/task-flow$/,
+    status: 404,
+  },
+  {
+    method: "GET",
+    path: /^\/v1\/reality\/projects\/[^/]+\/versions\/latest$/,
     status: 404,
   },
 ];
