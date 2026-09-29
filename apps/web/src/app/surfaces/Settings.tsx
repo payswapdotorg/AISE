@@ -425,7 +425,7 @@ function AuthorizationTableCard({
         {plural(table.length, "recorded decision")} — grants and refusals with
         their reasons, exactly as the identity module records them.
       </p>
-      <div className="table-wrap">
+      <div className="table-wrap" tabIndex={0}>
         <table className="data">
           <thead>
             <tr>

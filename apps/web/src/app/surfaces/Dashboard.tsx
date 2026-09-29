@@ -340,7 +340,7 @@ function DatasetOverview({ data }: { readonly data: DashboardData }): ReactNode 
               </div>
             </div>
             {data.live.scenarios.length === 0 ? null : (
-              <div className="table-wrap">
+              <div className="table-wrap" tabIndex={0}>
                 <table className="data">
                   <thead>
                     <tr>

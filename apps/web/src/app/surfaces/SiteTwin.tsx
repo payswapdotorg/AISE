@@ -282,7 +282,7 @@ function WorkspacePanes({
         resolves in the 2D drawing, the 3D wireframe and the linked evidence
         (the cross-view identity the workspace library enforces).
       </div>
-      <div className="table-wrap">
+      <div className="table-wrap" tabIndex={0}>
         <table className="data">
           <caption className="pane-foot">
             Measurements carried by the drawing — values with their propagated
@@ -375,7 +375,7 @@ function SelectionPanel({
         </Field2>
       </dl>
       {bundle.properties.length === 0 ? null : (
-        <div className="table-wrap">
+        <div className="table-wrap" tabIndex={0}>
           <table className="data">
             <thead>
               <tr>
@@ -468,7 +468,7 @@ function RealityCard({
             is the project&apos;s reality graph version, with every node&apos;s
             epistemic status and evidence references.
           </p>
-          <div className="table-wrap">
+          <div className="table-wrap" tabIndex={0}>
             <table className="data">
               <thead>
                 <tr>
@@ -561,7 +561,7 @@ function EvidenceCard({
           />
         )
       ) : (
-        <div className="table-wrap">
+        <div className="table-wrap" tabIndex={0}>
           <table className="data">
             <thead>
               <tr>

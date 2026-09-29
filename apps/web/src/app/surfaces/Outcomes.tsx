@@ -343,7 +343,7 @@ export function OutcomesBody({
             guidance="The search matches recorded case ids, scenario ids, execution/comparison ids, design source-of-record ids and post-work evidence content ids. Try a different term — nothing is inferred."
           />
         ) : (
-          <div className="table-wrap">
+          <div className="table-wrap" tabIndex={0}>
             <table className="data">
               <thead>
                 <tr>
@@ -553,7 +553,7 @@ function LiveOutcomes({ data }: { readonly data: OutcomesData }): ReactNode {
             }
           />
         ) : (
-          <div className="table-wrap">
+          <div className="table-wrap" tabIndex={0}>
             <table className="data">
               <thead>
                 <tr>
@@ -610,7 +610,7 @@ function LiveOutcomes({ data }: { readonly data: OutcomesData }): ReactNode {
             guidance="Run a reality-vs-design comparison against the pinned reality version (the Intervention Studio's comparison panel assembles the exact nested contract)."
           />
         ) : (
-          <div className="table-wrap">
+          <div className="table-wrap" tabIndex={0}>
             <table className="data">
               <thead>
                 <tr>

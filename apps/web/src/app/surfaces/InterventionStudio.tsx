@@ -1018,7 +1018,7 @@ function ScenarioView({
               BOQ — proposed quantities <EpistemicBadge status="PROPOSED" />
               <span className="pane-sub">{plural(boq.rows.length, "live node")}</span>
             </div>
-            <div className="table-wrap">
+            <div className="table-wrap" tabIndex={0}>
               <table className="data">
                 <thead>
                   <tr>
@@ -1102,7 +1102,7 @@ function StatusTimeline({ scenario }: { readonly scenario: ViewerScenario }): Re
 
 function StepList({ scenario, layer }: { readonly scenario: ViewerScenario; readonly layer: number }): ReactNode {
   return (
-    <div className="table-wrap">
+    <div className="table-wrap" tabIndex={0}>
       <table className="data">
         <thead>
           <tr>
@@ -1913,7 +1913,7 @@ export function ApprovalPanel({
           the CURRENT status (the stat above) and the approval reference
           stay visible; the full audit trail is one click away. */}
       <TechnicalDetails summary="Technical details — the recorded status audit">
-        <div className="table-wrap">
+        <div className="table-wrap" tabIndex={0}>
           <table className="data">
             <thead>
               <tr>
@@ -2056,7 +2056,7 @@ function OutcomeLoopCard({
                 }
               />
             ) : (
-              <div className="table-wrap">
+              <div className="table-wrap" tabIndex={0}>
                 <table className="data">
                   <thead>
                     <tr>
@@ -2106,7 +2106,7 @@ function OutcomeLoopCard({
                 }
               />
             ) : (
-              <div className="table-wrap">
+              <div className="table-wrap" tabIndex={0}>
                 <table className="data">
                   <thead>
                     <tr>
@@ -3000,7 +3000,7 @@ export function ComparisonRecordView({
           guidance="The comparison carried zero rows — the design reference declared no comparable scope against the pinned reality version."
         />
       ) : (
-        <div className="table-wrap">
+        <div className="table-wrap" tabIndex={0}>
           <table className="data">
             <thead>
               <tr>

@@ -351,7 +351,7 @@ function ScenarioReviewCard({
         </span>
       }
     >
-      <div className="table-wrap">
+      <div className="table-wrap" tabIndex={0}>
         <table className="data">
           <thead>
             <tr>
@@ -412,7 +412,7 @@ function CaseEvidenceCard({
           guidance="Cases link evidence records by their content ids; this one carries none in the current dataset."
         />
       ) : (
-        <div className="table-wrap">
+        <div className="table-wrap" tabIndex={0}>
           <table className="data">
             <thead>
               <tr>
@@ -479,7 +479,7 @@ function CaseLive({ data }: { readonly data: CaseData }): ReactNode {
             }
           />
         ) : (
-          <div className="table-wrap">
+          <div className="table-wrap" tabIndex={0}>
             <table className="data">
               <thead>
                 <tr>
@@ -570,7 +570,7 @@ function CaseDetailRecordView({ record }: { readonly record: CaseDetailRecord })
       {record.observations.length === 0 ? (
         <p className="pane-foot">none recorded</p>
       ) : (
-        <div className="table-wrap">
+        <div className="table-wrap" tabIndex={0}>
           <table className="data">
             <thead>
               <tr>

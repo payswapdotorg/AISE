@@ -28,7 +28,13 @@
   --line: #d7dee5;
   --brand: #0f4c5c;
   --brand-ink: #ffffff;
-  --accent: #147d93;
+  /* POST-010 (WCAG 1.4.3 AA): the link/accent tone. The pre-remediation
+   * #147d93 cleared white (4.79:1) but NOT the tinted surfaces (surface-2
+   * 4.22, warn-bg 4.33, error-bg 4.12, derived-bg 4.10) — the 2026-09-29
+   * per-surface axe sweep caught the Intervention Studio intro link at
+   * serious. #11748a keeps the same teal family and clears every light
+   * surface of the palette (minimum 4.62:1; pinned in tokens.test.ts). */
+  --accent: #11748a;
   --focus: #b35c00;
 
   /* Epistemic vocabulary — the honesty palette. */

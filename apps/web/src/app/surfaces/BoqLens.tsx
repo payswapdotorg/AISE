@@ -458,7 +458,7 @@ export function BoqLensBody({
             }
           />
         ) : (
-          <div className="table-wrap">
+          <div className="table-wrap" tabIndex={0}>
             <table className="data">
               <thead>
                 <tr>
@@ -682,7 +682,7 @@ function RollupCard({ lens }: { readonly lens: BoqLensInput }): ReactNode {
         </span>
       }
     >
-      <div className="table-wrap">
+      <div className="table-wrap" tabIndex={0}>
         <table className="data">
           <thead>
             <tr>
@@ -783,7 +783,7 @@ function TraceCard({ lens, item }: { readonly lens: BoqLensInput; readonly item:
       <p className="pane-foot">
         {chain.summary} — {chain.grounded ? "grounded in BOQ evidence" : "carries inference markers"}.
       </p>
-      <div className="table-wrap">
+      <div className="table-wrap" tabIndex={0}>
         <table className="data">
           <thead>
             <tr>
@@ -881,7 +881,7 @@ export function BoqRevisionSelectorCard({
           guidance="No BOQ import documents are recorded here yet — import a source BOQ with the panel above; once ingested, every import appears in this selector for inspection and trace."
         />
       ) : (
-        <div className="table-wrap">
+        <div className="table-wrap" tabIndex={0}>
           <table className="data" data-selector-state="ready">
             <thead>
               <tr>

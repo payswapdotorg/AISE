@@ -307,7 +307,7 @@ function ScopeCard({ data }: { readonly data: ProjectOverviewData }): ReactNode 
               <div className="stat-label">by epistemic status</div>
             </div>
           </div>
-          <div className="table-wrap">
+          <div className="table-wrap" tabIndex={0}>
             <table className="data">
               <thead>
                 <tr>
@@ -376,7 +376,7 @@ function CostScopeCard({ data }: { readonly data: ProjectOverviewData }): ReactN
           />
         ) : (
           <>
-            <div className="table-wrap">
+            <div className="table-wrap" tabIndex={0}>
               <table className="data">
                 <thead>
                   <tr>

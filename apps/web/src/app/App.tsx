@@ -431,9 +431,13 @@ export function NotFound({ hash }: { readonly hash: string }): ReactNode {
   return (
     <section className="card" aria-labelledby="not-found-title">
       <div className="card-head">
-        <h2 id="not-found-title" className="card-title">
+        {/* POST-010: an h1 — the not-found surface is a full page and every
+         * page must carry exactly one top-level heading (axe
+         * page-has-heading-one; the per-surface sweep hit this surface via
+         * unknown routes). The .card-title class sizes it identically. */}
+        <h1 id="not-found-title" className="card-title">
           This address does not match any product surface
-        </h2>
+        </h1>
       </div>
       <div className="card-body">
         <p>

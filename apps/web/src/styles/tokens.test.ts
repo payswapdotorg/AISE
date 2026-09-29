@@ -185,4 +185,26 @@ describe("PROD-012-R design-token WCAG contrast (apps/web/src/styles/app.css)", 
   test("--brand-ink on --brand (the header chrome) clears AA", () => {
     expectAa("--brand-ink", "--brand");
   });
+
+  test("--accent (the link tone) clears AA on EVERY light surface (POST-010: the Intervention Studio intro link)", () => {
+    // The 2026-09-29 per-surface axe sweep found the Intervention Studio's
+    // "Build it interactively instead" link at 4.2–4.5:1 — --accent
+    // #147d93 cleared white (4.79) but NOT the tinted surfaces (surface-2
+    // 4.22, warn-bg 4.33, error-bg 4.12, derived-bg 4.10). Darkened to
+    // #11748a (same teal family) which clears every light surface with a
+    // minimum of 4.62:1 — this block is the regression pin.
+    const lightSurfaces = [
+      "--bg",
+      "--surface",
+      "--surface-2",
+      "--warn-bg",
+      "--error-bg",
+      "--derived-bg",
+    ];
+    for (const surface of lightSurfaces) {
+      expectAa("--accent", surface);
+    }
+    const ratio = contrastRatio(token("--accent"), token("--surface"));
+    expect(ratio).toBeLessThan(6); // still the ACCENT tone, not a second --ink
+  });
 });

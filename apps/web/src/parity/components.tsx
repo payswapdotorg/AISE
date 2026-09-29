@@ -333,7 +333,7 @@ export function BeforeAfterCard({
           guidance="Pairs are composed only from recorded outcome records (the task-flow outcome summary or the executions/comparisons namespaces). Record an execution and its outcome to compose the first pair."
         />
       ) : (
-        <div className="table-wrap">
+        <div className="table-wrap" tabIndex={0}>
           <table className="data">
             <thead>
               <tr>
