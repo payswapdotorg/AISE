@@ -561,10 +561,16 @@ export function describeApiFailure(failure: ApiFailure): string {
     case "network":
       return `network failure — ${failure.detail}`;
     case "http": {
-      if (failure.code === undefined) {
+      // A reason without a code still states WHY (never just "answered
+      // HTTP N") — the typed envelope detail is the user's actionable
+      // information (2026-09-29 adversarial finding).
+      if (failure.code === undefined && failure.reason === undefined) {
         return failure.detail;
       }
-      let text = `${failure.detail} — ${failure.code}`;
+      let text = failure.detail;
+      if (failure.code !== undefined) {
+        text += ` — ${failure.code}`;
+      }
       if (failure.reason !== undefined) {
         text += `: ${failure.reason}`;
       }
@@ -2492,6 +2498,28 @@ async function captureRejection(path: string, response: Response): Promise<ApiFa
   }
   if (typeof envelope.error === "string" && envelope.error.length > 0) {
     failure.code = boundedText(envelope.error, CODE_BOUND);
+  } else if (
+    typeof envelope.error === "object" &&
+    envelope.error !== null &&
+    !Array.isArray(envelope.error)
+  ) {
+    // The API's STANDARD error envelope carries `error` as an object
+    // `{ code, message, requestId }` (lib/http.ts errorResponse — e.g. the
+    // shared 413 payload_too_large refusal). The code must surface so the
+    // UI states WHY, not just that, the request was refused (found by the
+    // 2026-09-29 adversarial upload sweep: an 11 MB upload rendered only
+    // "answered HTTP 413" while the envelope carried the cap and reason).
+    const errorBody = envelope.error as Record<string, unknown>;
+    if (typeof errorBody.code === "string" && errorBody.code.length > 0) {
+      failure.code = boundedText(errorBody.code, CODE_BOUND);
+    }
+    if (
+      failure.reason === undefined &&
+      typeof errorBody.message === "string" &&
+      errorBody.message.length > 0
+    ) {
+      failure.reason = boundedText(errorBody.message, REASON_BOUND);
+    }
   }
   const detailSource =
     typeof envelope.reasonDetail === "string" && envelope.reasonDetail.length > 0
