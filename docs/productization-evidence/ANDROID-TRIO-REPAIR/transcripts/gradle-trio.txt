@@ -1,0 +1,242 @@
+BG_START gradle-trio
+2026-09-29T20:19:43Z
+[gradle-trio] station has 7956 MB — repository Gradle defaults apply
+gradle wrapper: Gradle 8.14.3
+
+===================================================================
+[gradle-trio] :core:test
+$ ./gradlew :core:test
+started: 2026-09-29T20:19:45Z
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :core:processResources NO-SOURCE
+
+> Task :core:assertNoNetworkDependencies
+:core runtime classpath (external artifacts): [org.jetbrains:annotations:13.0, org.jetbrains.kotlin:kotlin-stdlib:2.1.21] — OK, Kotlin stdlib only.
+
+> Task :core:processTestResources NO-SOURCE
+> Task :core:compileKotlin
+> Task :core:compileJava NO-SOURCE
+> Task :core:classes UP-TO-DATE
+> Task :core:jar
+> Task :core:compileTestKotlin
+> Task :core:compileTestJava NO-SOURCE
+> Task :core:testClasses UP-TO-DATE
+> Task :core:test
+
+[Incubating] Problems report is available at: file:///home/user/aise-station/aise/apps/android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 10s
+5 actionable tasks: 5 executed
+finished: 2026-09-29T20:20:57Z  exit=0  seconds=72
+[gradle-trio] suite TEST-org.payswap.aise.core.adapter.AdapterContractVersionTest tests=7 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.adapter.AdapterCorpusConformanceTest tests=14 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.adapter.AuthoritativeFieldsMirrorTest tests=4 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.adapter.CapabilityNegotiationTest tests=13 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.adapter.ClientCapabilityProfileTest tests=9 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.adapter.CompatibilityCheckerAlignmentTest tests=6 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.adapter.FieldJourneyTest tests=7 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.adapter.FieldTaskDeepLinkTest tests=6 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.adapter.TaskIntentWireTest tests=4 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.capability.CapabilityContractTest tests=10 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.capability.CapabilityMutationTest tests=20 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.capability.CapabilityProfileRendererTest tests=15 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.capability.RepresentativeDeviceClassesTest tests=22 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.capture.AppendOnlyContractTest tests=6 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.capture.InMemoryLocalCaptureStoreTest tests=24 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.guard.NoNetworkDependencyTest tests=6 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.identity.ContentIdentityTest tests=17 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.identity.StreamingContentHasherTest tests=7 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.json.JsonCodecTest tests=23 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.mission.MissionExecutorTest tests=13 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.mission.MissionJournalRehydrateTest tests=15 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.mission.MissionPlanParserTest tests=16 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.mission.MissionReconciliationTest tests=8 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.offline.JournalCompactorTest tests=9 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.offline.MissionCompatibilityCheckerTest tests=10 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.offline.OfflineDeterminismTest tests=6 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.offline.OfflineDeviceMatrixTest tests=5 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.offline.OfflineMissionQueueTest tests=13 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.offline.UploadPlannerTest tests=12 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.session.CaptureContractVersionTest tests=2 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.session.IsoTimestampsTest tests=7 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.session.SessionManifestExporterTest tests=15 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.session.SessionReplayDeterminismTest tests=6 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.session.SessionReplayTest tests=28 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.core.session.SessionStateMachineTest tests=8 failures=0 errors=0 skipped=0
+
+===================================================================
+[gradle-trio] :app:test
+$ ./gradlew :app:test
+started: 2026-09-29T20:20:57Z
+> Task :core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :core:compileKotlin UP-TO-DATE
+> Task :core:compileJava NO-SOURCE
+> Task :core:processResources NO-SOURCE
+> Task :core:classes UP-TO-DATE
+> Task :core:jar UP-TO-DATE
+> Task :app:generateDebugBuildConfig
+> Task :app:generateDebugResValues
+> Task :app:checkDebugAarMetadata
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:mergeDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:parseDebugLocalResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebug
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:buildKotlinToolingMetadata
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseBuildConfig
+> Task :app:generateReleaseResValues FROM-CACHE
+> Task :app:checkReleaseAarMetadata
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:generateReleaseResources
+> Task :app:processDebugResources
+> Task :app:mergeReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:parseReleaseLocalResources FROM-CACHE
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease FROM-CACHE
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:processReleaseManifestForPackage
+> Task :app:javaPreCompileRelease FROM-CACHE
+> Task :app:preReleaseUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileReleaseUnitTest FROM-CACHE
+> Task :app:processReleaseResources
+> Task :app:compileDebugKotlin
+> Task :app:compileReleaseKotlin
+> Task :app:compileDebugJavaWithJavac
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:processDebugJavaRes
+> Task :app:compileReleaseJavaWithJavac
+> Task :app:bundleReleaseClassesToCompileJar
+> Task :app:bundleReleaseClassesToRuntimeJar
+> Task :app:processReleaseJavaRes
+
+> Task :app:compileDebugUnitTestKotlin
+w: file:///home/user/aise-station/aise/apps/android/app/src/test/kotlin/org/payswap/aise/app/field/RealImageStationJourneyTest.kt:71:27 Java type mismatch: inferred type is 'String?', but 'String' was expected.
+
+> Task :app:compileReleaseUnitTestKotlin
+w: file:///home/user/aise-station/aise/apps/android/app/src/test/kotlin/org/payswap/aise/app/field/RealImageStationJourneyTest.kt:71:27 Java type mismatch: inferred type is 'String?', but 'String' was expected.
+
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes
+> Task :app:testDebugUnitTest
+> Task :app:compileReleaseUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processReleaseUnitTestJavaRes
+> Task :app:testReleaseUnitTest
+> Task :app:test
+
+BUILD SUCCESSFUL in 34s
+51 actionable tasks: 43 executed, 6 from cache, 2 up-to-date
+finished: 2026-09-29T20:21:32Z  exit=0  seconds=35
+[gradle-trio] suite TEST-org.payswap.aise.app.auth.MobileAuthClientTest tests=6 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.capture.CaptureSessionControllerTest tests=11 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.capture.FileBackedLocalCaptureStoreTest tests=9 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.capture.JsonlSessionJournalTest tests=8 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.capture.SessionRecoveryTest tests=15 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.field.FieldJourneyRuntimeTest tests=8 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.field.FieldJourneyStationSyncTest tests=1 failures=0 errors=0 skipped=1
+[gradle-trio] suite TEST-org.payswap.aise.app.field.HttpEvidenceSubmissionTransportTest tests=10 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.field.RealImageStationJourneyTest tests=1 failures=0 errors=0 skipped=1
+[gradle-trio] suite TEST-org.payswap.aise.app.navigation.AppDestinationTest tests=8 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.ui.screen.CaptureViewModelTest tests=7 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.ui.screen.HomeViewModelTest tests=5 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.auth.MobileAuthClientTest tests=6 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.capture.CaptureSessionControllerTest tests=11 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.capture.FileBackedLocalCaptureStoreTest tests=9 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.capture.JsonlSessionJournalTest tests=8 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.capture.SessionRecoveryTest tests=15 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.field.FieldJourneyRuntimeTest tests=8 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.field.FieldJourneyStationSyncTest tests=1 failures=0 errors=0 skipped=1
+[gradle-trio] suite TEST-org.payswap.aise.app.field.HttpEvidenceSubmissionTransportTest tests=10 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.field.RealImageStationJourneyTest tests=1 failures=0 errors=0 skipped=1
+[gradle-trio] suite TEST-org.payswap.aise.app.navigation.AppDestinationTest tests=8 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.ui.screen.CaptureViewModelTest tests=7 failures=0 errors=0 skipped=0
+[gradle-trio] suite TEST-org.payswap.aise.app.ui.screen.HomeViewModelTest tests=5 failures=0 errors=0 skipped=0
+
+===================================================================
+[gradle-trio] :app:assembleDebug
+$ ./gradlew :app:assembleDebug
+started: 2026-09-29T20:21:32Z
+> Task :core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :core:compileKotlin UP-TO-DATE
+> Task :core:compileJava NO-SOURCE
+> Task :core:processResources NO-SOURCE
+> Task :core:classes UP-TO-DATE
+> Task :core:jar UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:dexBuilderDebug
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :app:mergeDebugGlobalSynthetics
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libimage_processing_util_jni.so, libsurface_util_jni.so.
+
+> Task :app:mergeLibDexDebug
+> Task :app:mergeProjectDexDebug
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 6s
+39 actionable tasks: 19 executed, 20 up-to-date
+finished: 2026-09-29T20:22:38Z  exit=0  seconds=66
+
+[gradle-trio] APK artifact:
+-rw-r--r-- 1 user user 18460302 Sep 29 20:22 /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+d44e399321f3b2feae166fb304f5fdf9d2ed8e5a8121a74e3be08b367d312090  /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+
+[gradle-trio] ALL THREE GATES PASSED on this station.
