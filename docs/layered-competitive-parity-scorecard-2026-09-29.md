@@ -117,6 +117,13 @@ register → record → pin, zero developer tools, live-proven).
    optional user-entered language hint), the client-only transcript state
    from a new GET read seam, and the shared kebab-case kind badge
    (voice-note) on both evidence-list surfaces. Remaining, in flight: the
-   ANDROID capture lane (VOICE-003 dispatched, chat d786e238). "Captures
-   voice on site" is now AISE's claim on the web; the field (Android) lane
-   follows.
+   ANDROID capture lane — CLOSED 2026-09-30: VOICE-003 merged f80a4e7
+   (worker 72a2233 + lead repairs a939037; TS gate 6356/0 + E2B station
+   trio ALL THREE GATES PASSED at that exact SHA — APK sha256 5fa5e383;
+   deployed: DEPLOYED PASS, W/X/M journeys PASS). The configured-encoder
+   claim is STRONGER than web (the device knows its encoder);
+   RECORD_AUDIO is mission-scoped; the registration rides the ONE sync
+   envelope path. "Captures voice on site" is now AISE's claim on BOTH
+   lanes — web and field. Voice notes: CLOSED (the remaining voice surface
+   is the physical-device runtime-permission lane, documented as
+   awaiting-execution in physical-device-lane.md).
