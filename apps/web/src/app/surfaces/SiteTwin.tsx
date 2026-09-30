@@ -27,6 +27,7 @@ import {
   loadRealityLive,
   liveEvidencePaneViews,
 } from "../api";
+import { evidenceKindBadge } from "../evidence-kind";
 import { RealityRecorderPanel } from "./RealityRecorder";
 import { demoEvidenceList, demoReality, demoWorkspaceInput } from "../demo";
 import type { EvidencePaneView, RealityPaneView } from "../../shell";
@@ -638,7 +639,16 @@ function EvidenceCard({
                   <td className="mono" title={record.evidenceId}>
                     {shortId(record.evidenceId)}
                   </td>
-                  <td>{record.acquisitionMethod.value}</td>
+                  <td>
+                  {/* VOICE-002: the kind badge — every acquisition method
+                      renders the same kebab-case tag (still-imagery,
+                      video-footage, voice-note, …) from the one shared
+                      mapping; the record's own UPPER_SNAKE word stays
+                      inspectable in the tag's title. */}
+                  <span className="tag" title={record.acquisitionMethod.value}>
+                    {evidenceKindBadge(record.acquisitionMethod.value)}
+                  </span>
+                </td>
                   <td>{record.mediaType.value}</td>
                   <td>{formatBytes(record.byteSize.value)}</td>
                   <td>
