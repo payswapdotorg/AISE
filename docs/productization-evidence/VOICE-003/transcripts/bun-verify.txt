@@ -1,0 +1,14 @@
+VOICE-003 — bun run verify at the delivered tree (work/voice-003, final commit)
+====================================================================
+==> typecheck PASS
+==> lint PASS (eslint)
+==> test: 6356 pass / 0 fail, 81305+ expect() calls, 419 files
+    (baseline at 5ef7e11: 6342/0 across 418 files — 14 new tests:
+     packages/adapter-contract/src/android-voice-wiring.test.ts, the
+     VOICE-003 source-level Android wiring suite, all 14 PASS)
+==> boundaries: scanned 1090 source files, no cross-zone import violations
+VERIFY: PASS
+
+(The two expect() count runs above differ by 2-3 calls run-to-run: the
+playwright browser-gate suites count live-mount expectations whose exact
+count varies slightly per run — pass/fail is stable at 0 fail.)

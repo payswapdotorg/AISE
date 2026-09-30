@@ -11,6 +11,7 @@ import org.payswap.aise.app.capture.CaptureSessionController
 import org.payswap.aise.app.capture.DeviceIdentityProvider
 import org.payswap.aise.app.capture.FileBackedLocalCaptureStore
 import org.payswap.aise.app.field.FieldJourneyRuntime
+import org.payswap.aise.app.field.HttpEvidenceReadClient
 import org.payswap.aise.core.adapter.FieldTaskDeepLink
 import org.payswap.aise.core.adapter.FieldTaskDeepLinkParse
 import org.payswap.aise.core.adapter.FieldTaskHandoffValue
@@ -54,6 +55,15 @@ class AppContainer(
 
     /** Passwordless/session adapter; server remains the authentication authority. */
     val authClient: MobileAuthClient = MobileAuthClient(apiBaseUrl)
+
+    /**
+     * VOICE-003 — the evidence READ seam (the client-only voice-note
+     * transcript state derives from `GET /v1/evidence/:contentId`'s read
+     * view; NO backend transcript-state route exists and none is added).
+     * A READ only: registration keeps riding the ONE existing sync path
+     * (asset upload + `POST /v1/capture/sync`), never a direct evidence POST.
+     */
+    val evidenceReadClient: HttpEvidenceReadClient = HttpEvidenceReadClient(apiBaseUrl, authClient.sessionToken)
 
     val captureController: CaptureSessionController = CaptureSessionController(
         sessionsRoot = File(rootDir, "sessions"),

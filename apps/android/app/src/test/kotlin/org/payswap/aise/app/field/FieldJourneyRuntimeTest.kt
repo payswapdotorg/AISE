@@ -112,10 +112,14 @@ class FieldJourneyRuntimeTest {
         // declared profile (touch + still, no byte-bounded requirement).
         assertEquals(NegotiationOutcome.PERMITTED, active.negotiation.outcome)
         assertEquals("mission-2026-000042", active.directive.missionId)
-        assertEquals(3, active.directive.steps.size)
+        // VOICE-003: the provisioned plan gained the OPTIONAL site-condition
+        // voice-note step (step 4, mandatory = false) — the journey tests
+        // were updated in the same honest pass.
+        assertEquals(4, active.directive.steps.size)
         assertEquals("Capture still image", active.directive.steps[0].exactAction)
         assertEquals(StepReadiness.READY, active.directive.steps[0].readiness)
-        assertEquals(3, active.gaps.size)
+        assertEquals("Record voice note", active.directive.steps[3].exactAction)
+        assertEquals(4, active.gaps.size)
         runtime.reset()
     }
 
@@ -140,14 +144,15 @@ class FieldJourneyRuntimeTest {
         // A capturing session with one intact still asset appears in the flow.
         sessionFlow.value = sessionRecord(listOf(stillAsset("a-0001")))
         val active = runtime.phase.value as FieldJourneyPhase.MissionActive
-        assertEquals(2, active.gaps.size, "the first still step's gap is closed")
+        // VOICE-003: 4 provisioned steps − the first still step closed = 3 gaps.
+        assertEquals(3, active.gaps.size, "the first still step's gap is closed")
         assertEquals(
             listOf(CONTENT_ID),
             active.evidenceByStep["step-stills"],
         )
         // The same asset re-emitted (a derived flow re-render) does not double-count.
         sessionFlow.value = sessionRecord(listOf(stillAsset("a-0001")))
-        assertEquals(2, (runtime.phase.value as FieldJourneyPhase.MissionActive).gaps.size)
+        assertEquals(3, (runtime.phase.value as FieldJourneyPhase.MissionActive).gaps.size)
         runtime.reset()
     }
 
@@ -168,8 +173,34 @@ class FieldJourneyRuntimeTest {
         )
         sessionFlow.value = sessionRecord(listOf(videoAsset))
         val active = runtime.phase.value as FieldJourneyPhase.MissionActive
-        assertEquals(2, active.gaps.size, "the optional video step's gap is closed")
+        // VOICE-003: 4 provisioned steps − the optional video step closed = 3 gaps.
+        assertEquals(3, active.gaps.size, "the optional video step's gap is closed")
         assertTrue("step-video" in active.evidenceByStep.keys)
+        runtime.reset()
+    }
+
+    @Test
+    fun `a voice-note asset closes the optional voice step - matching by AcquisitionMethod generically`() = runTest {
+        // VOICE-003: the journey bookkeeping needed NO fork — the runtime
+        // matches gap steps to assets by AcquisitionMethod generically, so a
+        // VOICE_NOTE asset closes the optional voice step out of the box.
+        val runtime = newRuntime()
+        runtime.startJourney()
+        val voiceAsset = CapturedAssetRecord(
+            assetId = "a-0003",
+            relativePath = "assets/a-0003.m4a",
+            contentId = ContentId(CONTENT_ID),
+            byteSize = 4096L,
+            headSampleSha256 = HEAD_SAMPLE,
+            mediaType = "audio/mp4",
+            capturedAtUtcMillis = 1_767_225_602_000L,
+            acquisitionMethod = AcquisitionMethod.VOICE_NOTE,
+            sensorMetadata = AcquisitionMetadata(emptyMap()),
+        )
+        sessionFlow.value = sessionRecord(listOf(voiceAsset))
+        val active = runtime.phase.value as FieldJourneyPhase.MissionActive
+        assertEquals(3, active.gaps.size, "the optional voice step's gap is closed")
+        assertEquals(listOf(CONTENT_ID), active.evidenceByStep["step-voice-note"])
         runtime.reset()
     }
 

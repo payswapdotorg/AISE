@@ -28,6 +28,7 @@ import org.payswap.aise.app.ui.screen.CaptureViewModel
 import org.payswap.aise.app.ui.screen.FieldJourneyViewModel
 import org.payswap.aise.app.ui.screen.HomeScreen
 import org.payswap.aise.app.ui.screen.SettingsScreen
+import org.payswap.aise.app.ui.screen.VoiceNoteTranscriptViewModel
 
 /**
  * Root composable of the AISE field client shell: a navigation graph with the
@@ -85,6 +86,14 @@ fun AiseApp(container: AppContainer, modifier: Modifier = Modifier) {
                             container.fieldJourneyRuntime,
                             container.captureController,
                             container.handedOffTask,
+                        ),
+                    ),
+                    // VOICE-003: the client-only voice-note transcript panel's
+                    // view model (the evidence read seam).
+                    transcriptViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+                        factory = VoiceNoteTranscriptViewModel.factory(
+                            container.evidenceReadClient,
+                            container.captureController,
                         ),
                     ),
                     modifier = Modifier.padding(innerPadding),

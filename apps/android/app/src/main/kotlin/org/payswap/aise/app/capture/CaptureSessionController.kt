@@ -41,9 +41,9 @@ import org.payswap.aise.core.session.SessionStateChanged
  *    the [StateFlow] UI state and the manifest file are DERIVED state,
  *    re-derived by replay. Nothing here keeps a parallel authoritative model.
  *  - Still images are hashed WHILE being written (single pass: every chunk
- *    written also feeds the digest); video segments are hashed by ONE
- *    sequential chunked read after the recorder closes the file — never a
- *    whole-file in-memory copy.
+ *    written also feeds the digest); video segments and voice notes are
+ *    hashed by ONE sequential chunked read after the recorder closes the
+ *    file — never a whole-file in-memory copy.
  *  - Asset commit protocol: write `tmp/<assetId>.<ext>.tmp` → journal
  *    `asset.captured` (fsync — the commit point) → atomic rename → (stills)
  *    append to the [LocalCaptureStore]. A crash between journal and rename
@@ -189,12 +189,15 @@ class CaptureSessionController(
     /**
      * Finalizes the open session and writes the offline manifest (atomic,
      * deterministic derivation of the journal). Returns the manifest file.
-     * Also refuses while a video writer is open (stop the recording first).
+     * Also refuses while a video writer or a voice writer is open (stop the
+     * recording first).
      */
     suspend fun finalizeSession(): File = withIo {
         mutex.withLock {
             val record = requireOpenSession()
             check(videoWriter == null) { "cannot finalize while a video segment is open — stop recording first" }
+            // VOICE-003: the same refusal discipline for the voice lane.
+            check(voiceWriter == null) { "cannot finalize while a voice segment is open — stop the voice note first" }
             when (record.status) {
                 CaptureSessionStatus.CAPTURING, CaptureSessionStatus.PAUSED, CaptureSessionStatus.DRAFT -> Unit
                 else -> throw IllegalStateException("session is ${record.status.name}, cannot finalize")
@@ -219,6 +222,11 @@ class CaptureSessionController(
             }
             if (to == CaptureSessionStatus.PAUSED && videoWriter != null) {
                 throw IllegalStateException("cannot pause while a video segment is open — stop recording first")
+            }
+            // VOICE-003: pause refuses while a voice segment is open (the
+            // same discipline as video — the state machine is the boss).
+            if (to == CaptureSessionStatus.PAUSED && voiceWriter != null) {
+                throw IllegalStateException("cannot pause while a voice segment is open — stop the voice note first")
             }
             val journal = journalOf(record)
             journal.append(SessionStateChanged(journal.nextSequence(), clock.millis(), from, to))
@@ -301,6 +309,10 @@ class CaptureSessionController(
         mutex.withLock {
             val record = requireCapturing()
             check(videoWriter == null) { "a video segment is already open — close it first" }
+            // VOICE-003: one in-flight recorder at a time — a voice segment
+            // holds the next asset id until it closes, so a simultaneous
+            // video writer would collide on it.
+            check(voiceWriter == null) { "a voice segment is open — close it before opening a video segment" }
             val dir = dirOf(record)
             val journal = journalOf(record)
             val assetId = nextAssetId(record)
@@ -372,6 +384,116 @@ class CaptureSessionController(
     }
 
     /**
+     * Opens a voice-segment writer (VOICE-003): the microphone recorder
+     * writes into the writer's tmp file; [VoiceAssetWriter.close] hashes
+     * (one sequential chunked read), journals `asset.captured` (fsync — the
+     * commit point) and atomically commits the segment — the SAME commit
+     * protocol as video. [mediaType] is the recorder's CONFIGURED output
+     * (an `audio`-family type the platform adapter states as a fact, e.g.
+     * `audio/mp4` for AAC in an MPEG_4 container) — never inferred here.
+     *
+     * Like video segments, voice notes are NOT appended to the
+     * [LocalCaptureStore]: the 002 interface is ByteArray-based and a
+     * recorder-written file must not be loaded into memory wholesale. Voice
+     * evidence lives in the session dir and the manifest (content-addressed).
+     */
+    suspend fun beginVoiceAsset(mediaType: String): VoiceAssetWriter = withIo {
+        mutex.withLock {
+            val record = requireCapturing()
+            check(videoWriter == null) { "a video segment is open — close it before opening a voice segment" }
+            check(voiceWriter == null) { "a voice segment is already open — close it first" }
+            require(mediaType.startsWith("audio/")) {
+                "voice assets must use audio/* media types, was '$mediaType'"
+            }
+            org.payswap.aise.core.session.MediaTypes.requireValid(mediaType)
+            val dir = dirOf(record)
+            val journal = journalOf(record)
+            val assetId = nextAssetId(record)
+            val tmp = dir.tmpFile(assetId, mediaType)
+            tmp.parentFile?.mkdirs() // the recorder writes here; ensure the dir exists
+            val writer = VoiceAssetWriter(this, dir, journal, assetId, mediaType, tmp)
+            voiceWriter = writer
+            writer
+        }
+    }
+
+    /**
+     * Internal: closes the open voice writer (called by
+     * [VoiceAssetWriter.close]). Deliberately mirrors [closeVideoAsset]
+     * step-for-step rather than refactoring it — the stills/video commit
+     * path must remain byte-identical (VOICE-003's protected-surface
+     * clause); the voice lane FOLLOWS the same protocol:
+     * tmp file → sequential chunked hash over (payload, metadata) → journal
+     * `asset.captured` fsync commit point → atomic rename.
+     */
+    internal suspend fun closeVoiceAsset(
+        writer: VoiceAssetWriter,
+        voiceMetadata: Map<String, String>,
+    ): CapturedAssetRecord = withIo {
+        mutex.withLock {
+            check(voiceWriter === writer) { "the voice writer being closed is not the open one" }
+            voiceWriter = null
+            val record = requireCapturing()
+            val dir = dirOf(record)
+            val journal = journalOf(record)
+            val relativePath = dir.assetRelativePath(writer.assetId, writer.mediaType)
+
+            require(writer.tmpFile.isFile) { "voice tmp file missing — nothing recorded?" }
+            val byteSize = writer.tmpFile.length()
+
+            // One sequential chunked read: hash without a whole-file in-memory copy.
+            val hasher = StreamingContentHasher.begin(byteSize)
+            val buffer = ByteArray(StreamingContentHasher.STREAM_CHUNK_BYTES)
+            java.io.FileInputStream(writer.tmpFile).use { input ->
+                while (true) {
+                    val read = input.read(buffer)
+                    if (read < 0) break
+                    if (read > 0) hasher.updatePayloadChunk(buffer, 0, read)
+                }
+            }
+            val metadata = baseMetadata(record) + voiceMetadata
+            val contentId = hasher.contentId(metadata)
+
+            val head = ByteArray(minOf(CapturedAssetRecord.HEAD_SAMPLE_BYTES.toLong(), byteSize).toInt())
+            java.io.FileInputStream(writer.tmpFile).use { input ->
+                var offset = 0
+                while (offset < head.size) {
+                    val read = input.read(head, offset, head.size - offset)
+                    if (read < 0) break
+                    offset += read
+                }
+            }
+
+            val asset = CapturedAssetRecord(
+                assetId = writer.assetId,
+                relativePath = relativePath,
+                contentId = contentId,
+                byteSize = byteSize,
+                headSampleSha256 = Digests.sha256Hex(head),
+                mediaType = writer.mediaType,
+                capturedAtUtcMillis = clock.millis(),
+                acquisitionMethod = AcquisitionMethod.VOICE_NOTE,
+                sensorMetadata = org.payswap.aise.core.capture.AcquisitionMetadata(metadata),
+            )
+
+            journal.append(AssetCapturedEvent(journal.nextSequence(), clock.millis(), asset))
+            AtomicFiles.commitRename(writer.tmpFile, dir.assetFile(relativePath))
+
+            _activeSession.value = SessionReplaySession(journal.read().events)
+            asset
+        }
+    }
+
+    /** Internal: discards the open voice writer's tmp file (recording failed / cancelled). */
+    internal suspend fun discardVoiceAsset(writer: VoiceAssetWriter) = withIo {
+        mutex.withLock {
+            check(voiceWriter === writer) { "the voice writer being discarded is not the open one" }
+            voiceWriter = null
+            writer.tmpFile.delete()
+        }
+    }
+
+    /**
      * Appends the transport fact FINALIZED -> SYNCED for the most recent finalized
      * session. The local journal remains authoritative for lifecycle facts; the
      * server is authoritative for engineering readiness.
@@ -416,6 +538,9 @@ class CaptureSessionController(
     // ------------------------------------------------------------------
 
     private var videoWriter: VideoAssetWriter? = null
+
+    /** VOICE-003: the open voice-segment writer, if any (one in-flight recorder at a time). */
+    private var voiceWriter: VoiceAssetWriter? = null
 
     private fun requireOpenSession(): CaptureSessionRecord {
         val record = openRecord() ?: throw IllegalStateException("no open capture session")
@@ -478,4 +603,42 @@ class VideoAssetWriter internal constructor(
 
     /** Discards the segment — it was never evidence, nothing is journaled. */
     suspend fun discard() = controller.discardVideoAsset(this)
+}
+
+/**
+ * Handle for one in-flight VOICE segment (VOICE-003) — the
+ * [VideoAssetWriter] discipline applied to the microphone: the recorder
+ * ([MicrophoneRecorderAdapter] in the UI layer) writes into [tmpFile]; the
+ * segment becomes evidence only through [close] (sequential chunked hash →
+ * journal `asset.captured` → atomic rename, acquisition method
+ * [AcquisitionMethod.VOICE_NOTE]), or is discarded via [discard] (it was
+ * never evidence — nothing is journaled).
+ *
+ * [mediaType] is the recorder's CONFIGURED output, stated as a fact by the
+ * platform adapter that owns the encoder configuration (never inferred
+ * here, never guessed behind a container).
+ */
+class VoiceAssetWriter internal constructor(
+    private val controller: CaptureSessionController,
+    internal val dir: SessionDirectory,
+    internal val journal: JsonlSessionJournal,
+    internal val assetId: String,
+    internal val mediaType: String,
+    internal val tmpFile: File,
+) {
+    /** The file the recorder must write into (the tmp path; NOT the final asset path). */
+    val targetFile: File get() = tmpFile
+
+    /**
+     * Commits the voice segment. [voiceMetadata] carries ONLY honest keys —
+     * the configured codec, the measured-when-measurable duration/sample
+     * rate, the optional user-entered language hint, the capture kind —
+     * unmeasured keys are the CALLER's absence (never zero, never
+     * "unknown"); the controller adds the session's base identity keys.
+     */
+    suspend fun close(voiceMetadata: Map<String, String>): CapturedAssetRecord =
+        controller.closeVoiceAsset(this, voiceMetadata)
+
+    /** Discards the segment — it was never evidence, nothing is journaled. */
+    suspend fun discard() = controller.discardVoiceAsset(this)
 }

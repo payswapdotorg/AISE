@@ -29,6 +29,37 @@ object AcquisitionMetadataKeys {
 
     /** Identifier of the sensor/adapter that produced the payload. */
     const val SENSOR_ID = "acquisition.sensorId"
+
+    /**
+     * VOICE-001 canonical voice-note keys (contract `1.1.0` — the VOICE-001
+     * §5.4 hand-off, added to this vocabulary by VOICE-003 when the audio
+     * capture path landed). All values are STRINGS; numeric values are
+     * string-encoded integers (the open-map discipline). Absence renders as
+     * absence — an unmeasured key is simply not asserted, never zero, never
+     * `"unknown"`, never fabricated.
+     */
+
+    /**
+     * Codec / media subtype of the audio payload (`aac`, `amr-nb`, `opus`, …).
+     * On Android this is the recorder's ACTUAL CONFIGURED encoder — the
+     * configured profile, never a guess behind a container (the contract's
+     * device-that-knows-its-encoder case; STRONGER than the web lane's
+     * browser-observed container subtype).
+     */
+    const val VOICE_CODEC = "voice.codec"
+
+    /** Recording duration in milliseconds — device-measured when measurable, honestly absent when not. */
+    const val VOICE_DURATION_MS = "voice.duration.ms"
+
+    /** Audio sample rate in hertz — device-measured when measurable, honestly absent when not. */
+    const val VOICE_SAMPLE_RATE_HZ = "voice.sample.rate.hz"
+
+    /**
+     * Spoken-language hint (e.g. `en`, `de-CH`) — an OPTIONAL user-entered
+     * ADVISORY for ASR providers and UIs, never an authoritative language
+     * determination. Absent by default.
+     */
+    const val VOICE_LANGUAGE_HINT = "voice.language.hint"
 }
 
 /**
