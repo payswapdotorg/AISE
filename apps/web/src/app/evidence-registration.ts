@@ -50,6 +50,34 @@ export interface EvidenceRegistrationDraft {
   readonly acquisitionMethod: string;
   /** Optional session id (the well-known `session.id` metadata key). */
   readonly sessionId: string;
+  /**
+   * VOICE-002: the voice lane's honest acquisition metadata, present only
+   * when the capture entered through the voice-note lane. Every value is
+   * measured by the platform or observed from the upload's own record
+   * (`null` = honestly absent, never zero, never "unknown") — except the
+   * language hint, which is the one user-entered advisory. Absent (`null`/
+   * `undefined`) for the stills/video lanes: the wire body then carries no
+   * voice keys at all (their flow is byte-identical to before).
+   */
+  readonly voice?: VoiceNoteDraftMetadata | null;
+}
+
+/**
+ * The voice lane's draft metadata (VOICE-002). Measured keys are
+ * string-encoded integers per the 1.1.0 contract (`voice.duration.ms`,
+ * `voice.sample.rate.hz`); `voice.codec` is the browser-reported media
+ * subtype (the weaker observable claim); the language hint is an optional
+ * user-entered advisory (absent by default).
+ */
+export interface VoiceNoteDraftMetadata {
+  /** Measured via HTMLMediaElement metadata; `null` when unmeasured. */
+  readonly durationMs: string | null;
+  /** Measured via Web Audio decodeAudioData; `null` when undecodable. */
+  readonly sampleRateHz: string | null;
+  /** The browser-reported media subtype; `null` when the type states none. */
+  readonly codec: string | null;
+  /** OPTIONAL user-entered spoken-language hint (advisory only). */
+  readonly languageHint: string;
 }
 
 /** The exact POST /v1/evidence body (family `evidence`). */
@@ -66,10 +94,30 @@ export interface EvidenceRegistrationRequestBody {
 /** Millisecond precision, Z suffix — the shared contract's exact rule. */
 const ISO_8601_UTC = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 
+/** The canonical voice metadata keys (the 1.1.0 contract's own names). */
+const VOICE_DURATION_MS_KEY = "voice.duration.ms";
+const VOICE_CODEC_KEY = "voice.codec";
+const VOICE_SAMPLE_RATE_HZ_KEY = "voice.sample.rate.hz";
+const VOICE_LANGUAGE_HINT_KEY = "voice.language.hint";
+const CAPTURE_KIND_KEY = "capture.kind";
+
+/** A media subtype token (RFC 6838-ish, lowercase — what browsers report). */
+const SUBTYPE_TOKEN = /^[a-z0-9][a-z0-9._-]*$/;
+
+/** The contract's rule: numeric values are string-encoded integers. */
+const STRING_ENCODED_NON_NEGATIVE_INT = /^\d+$/;
+const STRING_ENCODED_POSITIVE_INT = /^[1-9]\d*$/;
+
+/** The language hint is an advisory tag (e.g. `en`, `de-CH`), not prose. */
+const LANGUAGE_HINT_MAX = 32;
+
 /**
  * Validate a registration draft: 64-hex content id, non-negative integer
  * byte size, non-empty media type, ISO-8601-UTC captured instant, and the
- * closed acquisition-method vocabulary. Returns the named defects.
+ * closed acquisition-method vocabulary. VOICE-002: the voice lane's
+ * metadata, when present, must satisfy the contract's own rules (numeric
+ * values string-encoded integers; the codec a media subtype token; the
+ * language hint a bounded advisory tag). Returns the named defects.
  */
 export function validateEvidenceRegistrationDraft(
   draft: EvidenceRegistrationDraft,
@@ -96,13 +144,40 @@ export function validateEvidenceRegistrationDraft(
       `acquisition method "${draft.acquisitionMethod}" is not in the closed vocabulary (${EVIDENCE_ACQUISITION_METHODS.join("|")})`,
     );
   }
+  const voice = draft.voice ?? null;
+  if (voice !== null) {
+    if (voice.durationMs !== null && !STRING_ENCODED_NON_NEGATIVE_INT.test(voice.durationMs)) {
+      defects.push(
+        "voice duration must be a string-encoded non-negative integer of milliseconds, or absent",
+      );
+    }
+    if (voice.sampleRateHz !== null && !STRING_ENCODED_POSITIVE_INT.test(voice.sampleRateHz)) {
+      defects.push(
+        "voice sample rate must be a string-encoded positive integer of hertz, or absent",
+      );
+    }
+    if (voice.codec !== null && !SUBTYPE_TOKEN.test(voice.codec)) {
+      defects.push("voice codec must be a media subtype token (the browser-reported subtype), or absent");
+    }
+    if (voice.languageHint.trim().length > LANGUAGE_HINT_MAX) {
+      defects.push(
+        `voice language hint must be at most ${String(LANGUAGE_HINT_MAX)} characters (an advisory tag, e.g. en, de-CH)`,
+      );
+    }
+  }
   return defects;
 }
 
 /**
  * Map a validated draft to the EXACT registration body. The session id,
- * when present, rides the well-known `session.id` metadata key (the open
- * map stays otherwise empty — nothing invented).
+ * when present, rides the well-known `session.id` metadata key. VOICE-002:
+ * the voice lane's metadata rides the SAME open map — only the keys the
+ * client honestly knows (measured values and the user-entered hint), plus
+ * the well-known `capture.kind: "voice"` (the operator chose the voice
+ * lane — a fact, not an inference). Unmeasured keys are simply not
+ * asserted (absence renders as absence — never zero, never "unknown"); the
+ * stills/video lanes (no `voice` on the draft) produce a byte-identical
+ * body to before.
  */
 export function evidenceRegistrationRequestBody(
   draft: EvidenceRegistrationDraft,
@@ -112,6 +187,25 @@ export function evidenceRegistrationRequestBody(
     return { ok: false, defects };
   }
   const sessionId = draft.sessionId.trim();
+  const acquisitionMetadata: Record<string, string> =
+    sessionId.length === 0 ? {} : { "session.id": sessionId };
+  const voice = draft.voice ?? null;
+  if (voice !== null) {
+    acquisitionMetadata[CAPTURE_KIND_KEY] = "voice";
+    if (voice.codec !== null) {
+      acquisitionMetadata[VOICE_CODEC_KEY] = voice.codec;
+    }
+    if (voice.durationMs !== null) {
+      acquisitionMetadata[VOICE_DURATION_MS_KEY] = voice.durationMs;
+    }
+    if (voice.sampleRateHz !== null) {
+      acquisitionMetadata[VOICE_SAMPLE_RATE_HZ_KEY] = voice.sampleRateHz;
+    }
+    const languageHint = voice.languageHint.trim();
+    if (languageHint.length > 0) {
+      acquisitionMetadata[VOICE_LANGUAGE_HINT_KEY] = languageHint;
+    }
+  }
   return {
     ok: true,
     body: {
@@ -121,7 +215,7 @@ export function evidenceRegistrationRequestBody(
       mediaType: draft.mediaType.trim(),
       capturedAt: draft.capturedAt.trim(),
       acquisitionMethod: draft.acquisitionMethod,
-      acquisitionMetadata: sessionId.length === 0 ? {} : { "session.id": sessionId },
+      acquisitionMetadata,
     },
   };
 }

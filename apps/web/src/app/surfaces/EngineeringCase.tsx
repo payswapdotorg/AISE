@@ -37,6 +37,7 @@ import {
   type NewCaseDraft,
 } from "../create-forms";
 import { evidenceOptionsFromDemo, evidenceOptionsFromLive, toggleEvidenceId } from "../evidence-picker";
+import { evidenceKindBadge } from "../evidence-kind";
 import { defaultOrganizationId } from "./Projects";
 import type { CasePaneView, EvidencePaneView, SourceRef } from "../../shell";
 import type { ViewerScenario } from "../../viewer";
@@ -428,7 +429,15 @@ function CaseEvidenceCard({
                   <td className="mono" title={record.evidenceId}>
                     {shortId(record.evidenceId)}
                   </td>
-                  <td>{record.acquisitionMethod.value}</td>
+                  <td>
+                    {/* VOICE-002: the kind badge — the same kebab-case tag
+                        discipline as the SiteTwin evidence card (one shared
+                        mapping; the record's own UPPER_SNAKE word stays
+                        inspectable in the tag's title). */}
+                    <span className="tag" title={record.acquisitionMethod.value}>
+                      {evidenceKindBadge(record.acquisitionMethod.value)}
+                    </span>
+                  </td>
                   <td>
                     <Instant iso={record.capturedAt.value} />
                   </td>

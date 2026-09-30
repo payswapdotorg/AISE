@@ -24,6 +24,20 @@
  *    implemented modes say so), so live field capture stays the mobile
  *    adapter's journey — stated, never faked.
  *
+ * VOICE-002 adds the VOICE-NOTE CAPTURE LANE over the unchanged VOICE-001
+ * contract (1.1.0), reusing every seam the stills/video lanes use —
+ * additively: a dedicated audio-accepting entry ({@link VoiceNoteCapturePanel})
+ * through the same file-input → Web-Crypto sha-256 digest → `POST
+ * /v1/capture/assets/:contentId` → server-validated registration flow, with
+ * the voice acquisition metadata HONEST (measured-when-measurable,
+ * honestly absent when not — never zero, never "unknown", never
+ * fabricated), and the client transcript state
+ * ({@link VoiceNoteTranscriptPanel}) derived from the evidence read view's
+ * own derivations set: the explicit calm `asr_provider_not_configured`
+ * no-transcript state (this deployment's live state) or the transcript
+ * DERIVED CANDIDATE with its provenance link — never an error, never a
+ * fabricated transcript. The stills/video flows are unchanged.
+ *
  * EXPLICIT STATES EVERYWHERE: the task-flow resource machine's
  * loading/empty/error/unavailable states (the mission panel), the demo
  * never-fabricate notice (upload), the Web-Crypto-unavailable state (an
@@ -35,20 +49,22 @@
  * records' own.
  */
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { useTaskFlow, TaskFlowResourceView } from "../task-first";
 import type { TaskFlowResourceData } from "../task-first";
 import { isDemoMode, useAppEnvironment } from "../environment";
 import {
   describeApiFailure,
+  loadEvidenceReadViewLive,
   registerEvidenceLive,
   uploadCaptureAssetLive,
   webCryptoSha256,
   type AssetDigest,
   type CaptureAssetUploadRecord,
+  type EvidenceRegistrationRecord,
 } from "../api";
-import { Card, CreateField, DataBadge, EmptyState, Instant, ProjectSurfaceNav } from "../components";
+import { Card, CreateField, DataBadge, EmptyState, ErrorState, Instant, LoadingPanel, ProjectSurfaceNav } from "../components";
 import { TaskFlowStrip } from "../task-first";
 import { ProviderStatusNote } from "../provider-status";
 import { formatRoute } from "../router";
@@ -61,6 +77,13 @@ import {
   evidenceRegistrationRequestBody,
   validateEvidenceRegistrationDraft,
 } from "../evidence-registration";
+import {
+  browserVoiceNoteAudioProbe,
+  voiceCodecFromMediaType,
+  voiceNoteTranscriptState,
+  type VoiceNoteMeasured,
+  type VoiceNoteTranscriptState,
+} from "../voice-note";
 import {
   FIELD_TASK_DEEP_LINK_SCHEME,
   formatFieldTaskDeepLink,
@@ -160,6 +183,7 @@ export function CaptureMission({ projectId }: { readonly projectId: string }): R
       <CaptureMissionPanel projectId={projectId} />
       <CrossDeviceHandoffPanel projectId={projectId} />
       <CaptureUploadPanel projectId={projectId} />
+      <VoiceNoteCapturePanel projectId={projectId} />
       <BrowserCaptureLimitsCard />
     </>
   );
@@ -383,6 +407,15 @@ interface RegistrationOutcome {
 }
 
 /**
+ * The voice lane's honest measurement state (VOICE-002): the platform
+ * probe is in flight, or its answer has landed (each key a measured value
+ * or an explicit absence). `null` = not the voice lane at all.
+ */
+export type VoiceNoteMeasurementState =
+  | { readonly kind: "measuring" }
+  | { readonly kind: "measured"; readonly measured: VoiceNoteMeasured };
+
+/**
  * PROD-016b — the evidence REGISTRATION panel (the capture → reality
  * journey's second leg, previously API-only): after a stored upload the
  * capture becomes EVIDENCE — pickable as provenance by the reality
@@ -390,12 +423,24 @@ interface RegistrationOutcome {
  * registration step (`POST /v1/evidence`). Every field is prefilled from
  * the upload's own record or entered by the user; the register stays the
  * authority (idempotent re-registration, typed conflicts verbatim).
+ *
+ * VOICE-002 (additive, the SAME single registration path — not forked):
+ * the voice lane passes its honest measurement state; the panel renders
+ * the measured metadata (value or explicit absence), offers the one
+ * user-entered field (the optional `voice.language.hint` advisory) and
+ * holds registration while the measurement is in flight so no measurable
+ * key is silently dropped. Non-voice callers omit the props: the stills/
+ * video flow is byte-identical to before. `onRegistered` (optional)
+ * reports the register's own answer to the caller that mounted this
+ * panel.
  */
 export function EvidenceRegistrationPanel({
   projectId,
   fetchImpl,
   record,
   capturedAtDefault,
+  voiceMeasurement = null,
+  onRegistered = null,
 }: {
   readonly projectId: string;
   readonly fetchImpl: (input: string, init?: RequestInit) => Promise<Response>;
@@ -403,6 +448,10 @@ export function EvidenceRegistrationPanel({
   readonly record: CaptureAssetUploadRecord;
   /** The upload instant (ISO 8601 UTC) offered as the captured-at prefill. */
   readonly capturedAtDefault: string;
+  /** VOICE-002: the voice lane's measurement state (absent for stills/video). */
+  readonly voiceMeasurement?: VoiceNoteMeasurementState | null;
+  /** VOICE-002: optional callback with the register's own answer on success. */
+  readonly onRegistered?: ((record: EvidenceRegistrationRecord) => void) | null;
 }): ReactNode {
   const [contentId, setContentId] = useState(record.contentId);
   const [byteSize, setByteSize] = useState(String(record.byteSize));
@@ -412,8 +461,16 @@ export function EvidenceRegistrationPanel({
     defaultAcquisitionMethod(record.mediaType),
   );
   const [sessionId, setSessionId] = useState("");
+  const [languageHint, setLanguageHint] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [registration, setRegistration] = useState<RegistrationOutcome | null>(null);
+
+  const voiceMeasuring =
+    voiceMeasurement !== null && voiceMeasurement !== undefined && voiceMeasurement.kind === "measuring";
+  const measured =
+    voiceMeasurement !== null && voiceMeasurement !== undefined && voiceMeasurement.kind === "measured"
+      ? voiceMeasurement.measured
+      : null;
 
   const draft = {
     contentId,
@@ -422,11 +479,20 @@ export function EvidenceRegistrationPanel({
     capturedAt,
     acquisitionMethod,
     sessionId,
+    voice:
+      measured === null
+        ? null
+        : {
+            durationMs: measured.durationMs,
+            sampleRateHz: measured.sampleRateHz,
+            codec: measured.codec,
+            languageHint,
+          },
   };
   const defects = validateEvidenceRegistrationDraft(draft);
 
   const submit = useCallback(async () => {
-    if (defects.length > 0 || submitting) {
+    if (defects.length > 0 || submitting || voiceMeasuring) {
       return;
     }
     const body = evidenceRegistrationRequestBody(draft);
@@ -441,6 +507,9 @@ export function EvidenceRegistrationPanel({
       setRegistration({ kind: "failed", detail: describeApiFailure(result.failure) });
       return;
     }
+    if (onRegistered !== null && onRegistered !== undefined) {
+      onRegistered(result.record);
+    }
     setRegistration({
       kind: result.record.outcome === "REGISTERED" ? "registered" : "idempotent",
       detail:
@@ -448,7 +517,7 @@ export function EvidenceRegistrationPanel({
           ? `Registered as evidence — ${result.record.acquisitionMethod} · ${result.record.mediaType} · captured ${result.record.capturedAt}. The reality recorder's evidence picker offers it now.`
           : `Identical re-registration — the register already holds this exact record (idempotent, no duplication).`,
     });
-  }, [defects.length, draft, fetchImpl, submitting]);
+  }, [defects.length, draft, fetchImpl, submitting, voiceMeasuring, onRegistered]);
 
   return (
     <Card
@@ -509,6 +578,56 @@ export function EvidenceRegistrationPanel({
         onChange={setSessionId}
         hint="Rides the well-known session.id metadata key; empty is honest."
       />
+      {voiceMeasurement === null ? null : voiceMeasuring ? (
+        <p className="pane-foot" data-voice-measuring="true">
+          Measuring the audio with this browser&apos;s own decoders (duration,
+          sample rate) — the registration waits so no honestly-measurable
+          key is silently dropped.
+        </p>
+      ) : measured === null ? null : (
+        <>
+          <div className="callout callout-info" data-voice-metadata="true">
+            <p>
+              <strong>
+                Voice-note metadata — what this browser honestly measured.
+              </strong>{" "}
+              The registration asserts only what this platform could actually
+              observe; an unmeasured key stays ABSENT from the wire body
+              (never zero, never &quot;unknown&quot;, never fabricated):
+            </p>
+            <ul className="notes-list">
+              <li data-voice-key="voice.codec">
+                voice.codec —{" "}
+                {measured.codec === null
+                  ? "not reported by the browser — the key is not asserted"
+                  : `${measured.codec} (the media subtype the File itself states — the weaker observable claim, never a guessed encoder)`}
+              </li>
+              <li data-voice-key="voice.duration.ms">
+                voice.duration.ms —{" "}
+                {measured.durationMs === null
+                  ? "not measurable on this platform — the key is not asserted"
+                  : `${measured.durationMs} ms (measured via the browser's media decoders)`}
+              </li>
+              <li data-voice-key="voice.sample.rate.hz">
+                voice.sample.rate.hz —{" "}
+                {measured.sampleRateHz === null
+                  ? "not decodable on this platform — the key is not asserted"
+                  : `${measured.sampleRateHz} Hz (measured via the browser's Web Audio decoder)`}
+              </li>
+              <li>
+                capture.kind — voice (the operator chose the voice lane — a
+                fact, not an inference)
+              </li>
+            </ul>
+          </div>
+          <CreateField
+            label="Spoken-language hint (optional)"
+            value={languageHint}
+            onChange={setLanguageHint}
+            hint="Rides the advisory voice.language.hint key — a hint for ASR providers and UIs, never an authoritative language determination; empty is honest."
+          />
+        </>
+      )}
       {defects.length === 0 ? null : (
         <div className="callout callout-warning" role="alert">
           <strong>The draft does not satisfy the recorded contract yet:</strong>
@@ -523,13 +642,17 @@ export function EvidenceRegistrationPanel({
         <button
           type="button"
           className="button"
-          disabled={defects.length > 0 || submitting}
-          data-submit-state={submitting ? "submitting" : defects.length > 0 ? "invalid-draft" : "ready"}
+          disabled={defects.length > 0 || submitting || voiceMeasuring}
+          data-submit-state={submitting ? "submitting" : voiceMeasuring ? "measuring" : defects.length > 0 ? "invalid-draft" : "ready"}
           onClick={() => {
             void submit();
           }}
         >
-          {submitting ? "Registering…" : "Register as evidence"}
+          {submitting
+            ? "Registering…"
+            : voiceMeasuring
+              ? "Measuring the audio…"
+              : "Register as evidence"}
         </button>
         <a className="button button-secondary" href={formatRoute({ name: "sitetwin", projectId })}>
           Record a reality snapshot with it
@@ -682,6 +805,467 @@ export function CaptureUploadCardBody({
         </div>
       )}
       <ProviderStatusNote subject="the capture upload" />
+    </Card>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* VOICE-002 — the voice-note capture lane                              */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The VOICE-NOTE capture panel (VOICE-002): a dedicated audio-accepting
+ * entry through the SAME file-input → Web-Crypto sha-256 digest → capture
+ * gateway upload → server-validated registration flow the stills lane uses
+ * (every seam reused unchanged — `webCryptoSha256` /
+ * `uploadCaptureAssetLive` / the single `EvidenceRegistrationPanel`). On
+ * selection the platform probe measures what it honestly can (duration,
+ * sample rate; `voice.codec` from the File's own media type); the measured
+ * state rides the SAME registration path (never a forked one), and a
+ * successful registration mounts the transcript panel — the client-only
+ * transcript state derived from the evidence read view.
+ */
+export function VoiceNoteCapturePanel({ projectId }: { readonly projectId: string }): ReactNode {
+  const environment = useAppEnvironment();
+  const demo = isDemoMode(environment) || environment.apiStatus === null;
+  const digest = useMemo<AssetDigest | null>(() => webCryptoSha256(), []);
+  const probe = useMemo(() => browserVoiceNoteAudioProbe(), []);
+  const [file, setFile] = useState<SelectedCaptureFile | null>(null);
+  const [bytes, setBytes] = useState<Uint8Array | null>(null);
+  const [reading, setReading] = useState(false);
+  const [measurement, setMeasurement] = useState<VoiceNoteMeasurementState | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [outcome, setOutcome] = useState<CaptureUploadOutcome | null>(null);
+  const [registeredContentId, setRegisteredContentId] = useState<string | null>(null);
+
+  const onFileSelected = useCallback(
+    (selected: File | null) => {
+      setOutcome(null);
+      setRegisteredContentId(null);
+      if (selected === null) {
+        setFile(null);
+        setBytes(null);
+        setMeasurement(null);
+        return;
+      }
+      setReading(true);
+      setMeasurement(null);
+      void selected.arrayBuffer().then(async (buffer) => {
+        const audioBytes = new Uint8Array(buffer);
+        const mediaType = selected.type === "" ? "application/octet-stream" : selected.type;
+        setBytes(audioBytes);
+        setFile({
+          name: selected.name,
+          byteSize: selected.size,
+          mediaType,
+        });
+        setReading(false);
+        // The honest platform measurement: each key measured when the
+        // browser's own decoders can, explicitly absent when they cannot.
+        setMeasurement({ kind: "measuring" });
+        const probed = await probe(selected, audioBytes);
+        setMeasurement({
+          kind: "measured",
+          measured: {
+            codec: voiceCodecFromMediaType(mediaType),
+            durationMs: probed.durationMs,
+            sampleRateHz: probed.sampleRateHz,
+          },
+        });
+      });
+    },
+    [probe],
+  );
+
+  const submit = useCallback(async () => {
+    if (demo || digest === null || bytes === null || file === null || submitting) {
+      return;
+    }
+    setSubmitting(true);
+    setOutcome(null);
+    const result = await uploadCaptureAssetLive(environment.fetchImpl, digest, bytes, file.mediaType);
+    setSubmitting(false);
+    if (result.ok) {
+      setOutcome({
+        kind: result.record.outcome === "STORED" ? "stored" : "duplicate",
+        record: result.record,
+        endpoint: result.endpoint,
+      });
+      return;
+    }
+    setOutcome({ kind: "failed", detail: describeApiFailure(result.failure) });
+  }, [demo, digest, bytes, file, submitting, environment.fetchImpl]);
+
+  return (
+    <>
+      <VoiceNoteCaptureCardBody
+        projectId={projectId}
+        demo={demo}
+        digestAvailable={digest !== null}
+        file={file}
+        reading={reading}
+        measurement={measurement}
+        submitting={submitting}
+        outcome={outcome}
+        onFileSelected={onFileSelected}
+        onSubmit={() => {
+          void submit();
+        }}
+      />
+      {!demo && outcome !== null && outcome.kind !== "failed" ? (
+        <EvidenceRegistrationPanel
+          key={outcome.record.contentId}
+          projectId={projectId}
+          fetchImpl={environment.fetchImpl}
+          record={outcome.record}
+          capturedAtDefault={new Date().toISOString()}
+          voiceMeasurement={measurement}
+          onRegistered={(record) => {
+            setRegisteredContentId(record.contentId);
+          }}
+        />
+      ) : null}
+      {registeredContentId === null ? null : (
+        <VoiceNoteTranscriptPanel
+          projectId={projectId}
+          fetchImpl={environment.fetchImpl}
+          contentId={registeredContentId}
+        />
+      )}
+    </>
+  );
+}
+
+/** The voice upload body (exported for static render tests — pure projection). */
+export function VoiceNoteCaptureCardBody({
+  projectId,
+  demo,
+  digestAvailable,
+  file,
+  reading,
+  measurement,
+  submitting,
+  outcome,
+  onFileSelected,
+  onSubmit,
+}: {
+  readonly projectId: string;
+  readonly demo: boolean;
+  readonly digestAvailable: boolean;
+  readonly file: SelectedCaptureFile | null;
+  readonly reading: boolean;
+  readonly measurement: VoiceNoteMeasurementState | null;
+  readonly submitting: boolean;
+  readonly outcome: CaptureUploadOutcome | null;
+  readonly onFileSelected: (file: File | null) => void;
+  readonly onSubmit: () => void;
+}): ReactNode {
+  const ready = !demo && digestAvailable && file !== null && !reading;
+  const measuring = measurement !== null && measurement !== undefined && measurement.kind === "measuring";
+  const measured =
+    measurement !== null && measurement !== undefined && measurement.kind === "measured"
+      ? measurement.measured
+      : null;
+  return (
+    <Card
+      title="Record a voice note (audio upload)"
+      badge={demo ? <DataBadge mode="demo" /> : <DataBadge mode="api" />}
+      meta={
+        <span>
+          an audio/* file → sha-256 content address → the same server-side
+          capture gateway (POST /v1/capture/assets/:contentId) — the
+          VOICE_NOTE lane
+        </span>
+      }
+    >
+      <p>
+        A spoken field observation enters exactly like every other evidence
+        kind: the browser reads the audio file, computes its content address
+        and uploads the raw bytes to the SAME capture gateway (the server
+        re-verifies the digest and stores immutably). The registration then
+        asserts only the voice metadata this browser can HONESTLY observe —
+        measured when measurable, absent when not — and the transcript state
+        below renders from the evidence read view: a transcript is a derived
+        candidate, never authoritative text.
+      </p>
+      <div className="task-form">
+        <label className="inline-label" htmlFor="voice-note-file">
+          Audio file
+          <input
+            id="voice-note-file"
+            type="file"
+            accept="audio/*"
+            onChange={(event) => {
+              onFileSelected(event.target.files?.[0] ?? null);
+            }}
+          />
+        </label>
+      </div>
+      {reading ? (
+        <p className="pane-foot" data-reading="true">
+          Reading the audio file…
+        </p>
+      ) : null}
+      {file === null ? null : (
+        <p className="pane-foot" data-selected-file="true">
+          Selected: <span className="mono">{file.name}</span> ·{" "}
+          {plural(file.byteSize, "byte")} · media type{" "}
+          <span className="mono">{file.mediaType}</span>
+        </p>
+      )}
+      {measuring ? (
+        <p className="pane-foot" data-voice-measuring="true">
+          Measuring the audio with this browser&apos;s own decoders
+          (duration, sample rate)…
+        </p>
+      ) : null}
+      {measured === null ? null : (
+        <div className="callout callout-info" data-voice-metadata="true">
+          <p>
+            <strong>Measured by this browser — the honest voice metadata.</strong>{" "}
+            Unmeasured keys are ABSENT from the registration (never zero,
+            never &quot;unknown&quot;, never fabricated):
+          </p>
+          <ul className="notes-list">
+            <li data-voice-key="voice.codec">
+              voice.codec —{" "}
+              {measured.codec === null
+                ? "not reported by the browser — the key is not asserted"
+                : `${measured.codec} (the media subtype the File itself states — the weaker observable claim, never a guessed encoder)`}
+            </li>
+            <li data-voice-key="voice.duration.ms">
+              voice.duration.ms —{" "}
+              {measured.durationMs === null
+                ? "not measurable on this platform — the key is not asserted"
+                : `${measured.durationMs} ms (measured via the browser's media decoders)`}
+            </li>
+            <li data-voice-key="voice.sample.rate.hz">
+              voice.sample.rate.hz —{" "}
+              {measured.sampleRateHz === null
+                ? "not decodable on this platform — the key is not asserted"
+                : `${measured.sampleRateHz} Hz (measured via the browser's Web Audio decoder)`}
+            </li>
+          </ul>
+        </div>
+      )}
+      {!digestAvailable ? (
+        <div className="callout callout-warning" data-digest-unavailable="true">
+          This browser context does not expose Web Crypto (content addressing
+          requires a secure context — HTTPS or localhost). The voice-note
+          entry is honestly disabled: the adapter never falls back to an
+          unverified address.
+        </div>
+      ) : null}
+      {demo ? (
+        <div className="callout callout-warning" data-demo-notice="true">
+          Upload requires the live API — this deployment renders the demo
+          dataset, and the shell never fabricates writes or server answers.
+        </div>
+      ) : null}
+      <div className="toolbar">
+        <button
+          type="button"
+          className="button"
+          disabled={!ready || submitting}
+          data-submit-state={demo ? "demo" : !digestAvailable ? "no-digest" : file === null ? "no-file" : reading ? "reading" : measuring ? "measuring" : submitting ? "submitting" : "ready"}
+          onClick={onSubmit}
+        >
+          {submitting ? "Uploading…" : "Upload the voice note"}
+        </button>
+        <a
+          className="button button-secondary"
+          href={formatRoute({ name: "sitetwin", projectId })}
+        >
+          Inspect the stored evidence
+        </a>
+      </div>
+      {outcome === null ? null : outcome.kind === "failed" ? (
+        <div className="callout callout-warning" data-outcome="failed" role="alert">
+          <p>
+            <strong>The upload was refused.</strong> {outcome.detail}
+          </p>
+        </div>
+      ) : (
+        <div className="callout callout-info" data-outcome={outcome.kind} role="status">
+          <p>
+            <strong>
+              {outcome.kind === "stored" ? "Stored server-side." : "Already stored — no duplication."}
+            </strong>{" "}
+            Content id <span className="mono">{outcome.record.contentId}</span> ·{" "}
+            {plural(outcome.record.byteSize, "byte")} · media type{" "}
+            <span className="mono">{outcome.record.mediaType}</span>
+          </p>
+          <p className="mono pane-foot">{outcome.endpoint}</p>
+        </div>
+      )}
+      <ProviderStatusNote subject="the voice-note upload" />
+    </Card>
+  );
+}
+
+/** The transcript read's client state (loading / loaded / typed failure). */
+export type VoiceNoteTranscriptResource =
+  | { readonly kind: "loading" }
+  | { readonly kind: "loaded"; readonly state: VoiceNoteTranscriptState }
+  | { readonly kind: "failed"; readonly detail: string };
+
+/**
+ * The voice-note TRANSCRIPT panel (VOICE-002, client-only): after a
+ * successful registration the panel loads the evidence read view
+ * (`GET /v1/evidence/:contentId` — the register's own read discipline,
+ * consumed read-only) and derives the transcript state from the view's own
+ * derivations set. NO backend transcript-state route exists and none is
+ * added — the client derives the state from `derivations.inputsOf` +
+ * `provenance.asObject`, which are inspectable today.
+ */
+export function VoiceNoteTranscriptPanel({
+  projectId,
+  fetchImpl,
+  contentId,
+}: {
+  readonly projectId: string;
+  readonly fetchImpl: (input: string, init?: RequestInit) => Promise<Response>;
+  readonly contentId: string;
+}): ReactNode {
+  const [resource, setResource] = useState<VoiceNoteTranscriptResource>({
+    kind: "loading",
+  });
+  useEffect(() => {
+    let cancelled = false;
+    void loadEvidenceReadViewLive(fetchImpl, contentId).then((result) => {
+      if (cancelled) {
+        return;
+      }
+      if (!result.ok) {
+        setResource({ kind: "failed", detail: describeApiFailure(result.failure) });
+        return;
+      }
+      setResource({
+        kind: "loaded",
+        state: voiceNoteTranscriptState(
+          result.view.derivations.inputsOf,
+          result.view.provenance.asObject,
+        ),
+      });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [fetchImpl, contentId]);
+  return (
+    <VoiceNoteTranscriptBody
+      projectId={projectId}
+      contentId={contentId}
+      resource={resource}
+    />
+  );
+}
+
+/** The transcript body (exported for static render tests — pure projection). */
+export function VoiceNoteTranscriptBody({
+  projectId,
+  contentId,
+  resource,
+}: {
+  readonly projectId: string;
+  readonly contentId: string;
+  readonly resource: VoiceNoteTranscriptResource;
+}): ReactNode {
+  return (
+    <Card
+      title="Voice-note transcript state"
+      badge={<DataBadge mode="api" />}
+      meta={
+        <span>
+          derived client-side from the evidence read view
+          (GET /v1/evidence/:contentId) — a transcript is a derived
+          candidate, never authoritative text
+        </span>
+      }
+    >
+      {resource.kind === "loading" ? (
+        <LoadingPanel label="Reading the evidence read view…" />
+      ) : resource.kind === "failed" ? (
+        <ErrorState
+          message={resource.detail}
+          attempt={1}
+        />
+      ) : resource.state.kind === "NO_TRANSCRIPT" ? (
+        <div className="callout callout-info" data-transcript-state="no-transcript" role="status">
+          <p>
+            <strong>
+              No transcript exists — {resource.state.reason}.
+            </strong>{" "}
+            The voice note itself is registered and intact: transcription is
+            a provider-gated derivation, and this deployment configures no
+            ASR provider (the read view answers an empty derivations set —
+            that is this deployment&apos;s actual, honest state). Nothing is
+            fabricated here and nothing is lost: wiring an ASR engine is a
+            governed backend work order, and when one lands this panel
+            renders its derived candidate.
+          </p>
+        </div>
+      ) : (
+        <div className="callout callout-info" data-transcript-state="derived-candidate" role="status">
+          <p>
+            <strong>
+              A transcript derivation exists — a DERIVED CANDIDATE, never
+              authoritative text.
+            </strong>{" "}
+            The voice note stays immutable; the transcript gains engineering
+            meaning only through downstream gates.
+          </p>
+          <ul className="notes-list">
+            <li>
+              method — <span className="mono">{resource.state.derivation.method}</span>{" "}
+              (the provider-neutral ASR method identity)
+            </li>
+            <li>
+              engine / model identity (methodVersion) —{" "}
+              <span className="mono">{resource.state.derivation.methodVersion}</span>
+            </li>
+            <li>
+              transcript artifact —{" "}
+              <span className="mono">{resource.state.derivation.outputContentId}</span>{" "}
+              (content-addressed)
+            </li>
+            <li>
+              {resource.state.derivedFromLink === null ? (
+                "no evidence-to-evidence DERIVED_FROM link is recorded in this read view"
+              ) : (
+                <>
+                  provenance — DERIVED_FROM:{" "}
+                  <span className="mono">
+                    {resource.state.derivedFromLink.subjectId}
+                  </span>{" "}
+                  derived from this voice note (the linkage stays inspectable
+                  in the provenance graph)
+                </>
+              )}
+            </li>
+          </ul>
+          {resource.state.additionalCandidateCount === 0 ? null : (
+            <p className="pane-foot">
+              {plural(resource.state.additionalCandidateCount, "later ASR candidate")}{" "}
+              recorded after the primary (the journal is append-only —
+              version bumps append, never rewrite).
+            </p>
+          )}
+        </div>
+      )}
+      <p className="pane-foot" data-transcript-derivation-note="true">
+        The state derives from the read view&apos;s own derivations set
+        (inputsOf) — the client never guesses a transcript, never errors on
+        its absence, and never presents one as authoritative.
+      </p>
+      <p className="pane-foot">
+        Evidence record{" "}
+        <span className="mono" title={contentId}>
+          {contentId.slice(0, 12)}…
+        </span>{" "}
+        · inspect the full record on the{" "}
+        <a href={formatRoute({ name: "sitetwin", projectId })}>SiteTwin evidence surface</a>.
+      </p>
     </Card>
   );
 }

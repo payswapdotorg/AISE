@@ -1554,6 +1554,215 @@ export interface LatestRealityVersion {
   readonly nodeCount: number;
 }
 
+/* ------------------------------------------------------------------ */
+/* VOICE-002 — the evidence READ-VIEW seam (GET /v1/evidence/:contentId) */
+/* ------------------------------------------------------------------ */
+
+/** One derivation entry as the read view answers it (verbatim fields). */
+export interface DerivationView {
+  readonly derivationId: string;
+  readonly outputContentId: string;
+  readonly inputEvidenceContentIds: readonly string[];
+  readonly method: string;
+  readonly methodVersion: string;
+  readonly parameters: Record<string, string>;
+  readonly createdAt: string;
+}
+
+/** One evidence-to-evidence provenance link as the read view answers it. */
+export interface ProvenanceLinkView {
+  readonly subjectKind: string;
+  readonly subjectId: string;
+  readonly evidenceContentId: string;
+  readonly role: string;
+}
+
+/** The full read view's subset the voice lane consumes (record + graph sets). */
+export interface EvidenceReadView {
+  readonly evidence: {
+    readonly contentId: string;
+    readonly acquisitionMethod: string;
+    readonly mediaType: string;
+    readonly byteSize: number;
+    readonly capturedAt: string;
+    readonly acquisitionMetadata: Record<string, string>;
+  };
+  readonly invalidation: { readonly reason: string; readonly invalidatedAt: string } | null;
+  readonly provenance: {
+    readonly asSubject: readonly ProvenanceLinkView[];
+    readonly asObject: readonly ProvenanceLinkView[];
+  };
+  readonly derivations: {
+    readonly inputsOf: readonly DerivationView[];
+    readonly derivedFrom: readonly DerivationView[];
+  };
+}
+
+/** Structurally validate one derivation entry (named defects, never coerced). */
+function validateDerivationView(value: unknown, field: string): DerivationView {
+  const defects: string[] = [];
+  if (!isRecord(value)) {
+    throw new Error(`${field} must be a JSON object`);
+  }
+  requireString(value.derivationId, `${field}.derivationId`, defects);
+  requireString(value.outputContentId, `${field}.outputContentId`, defects);
+  if (
+    !Array.isArray(value.inputEvidenceContentIds) ||
+    value.inputEvidenceContentIds.some((id) => typeof id !== "string")
+  ) {
+    defects.push(`${field}.inputEvidenceContentIds must be an array of strings`);
+  }
+  requireString(value.method, `${field}.method`, defects);
+  requireString(value.methodVersion, `${field}.methodVersion`, defects);
+  if (!isRecord(value.parameters)) {
+    defects.push(`${field}.parameters must be a string map`);
+  } else if (Object.values(value.parameters).some((entry) => typeof entry !== "string")) {
+    defects.push(`${field}.parameters must be a string map`);
+  }
+  requireString(value.createdAt, `${field}.createdAt`, defects);
+  if (defects.length > 0) {
+    throw new Error(`${field} is not structurally valid: ${defects.join("; ")}`);
+  }
+  return value as unknown as DerivationView;
+}
+
+/** Structurally validate one provenance-link entry (named defects, never coerced). */
+function validateProvenanceLinkView(value: unknown, field: string): ProvenanceLinkView {
+  const defects: string[] = [];
+  if (!isRecord(value)) {
+    throw new Error(`${field} must be a JSON object`);
+  }
+  requireString(value.subjectKind, `${field}.subjectKind`, defects);
+  requireString(value.subjectId, `${field}.subjectId`, defects);
+  requireString(value.evidenceContentId, `${field}.evidenceContentId`, defects);
+  requireString(value.role, `${field}.role`, defects);
+  if (defects.length > 0) {
+    throw new Error(`${field} is not structurally valid: ${defects.join("; ")}`);
+  }
+  return value as unknown as ProvenanceLinkView;
+}
+
+/**
+ * Structurally validate the read-view envelope's body (the fields the voice
+ * lane consumes; typed defects, never coerced — the same discipline as
+ * `validateEvidenceIndexItem`).
+ */
+function validateEvidenceReadView(value: unknown): EvidenceReadView {
+  const defects: string[] = [];
+  if (!isRecord(value)) {
+    throw new Error("evidence read view must be a JSON object");
+  }
+  const evidence = value.evidence;
+  if (!isRecord(evidence)) {
+    defects.push("evidence must be an object");
+  } else {
+    requireString(evidence.contentId, "evidence.contentId", defects);
+    requireString(evidence.acquisitionMethod, "evidence.acquisitionMethod", defects);
+    requireString(evidence.mediaType, "evidence.mediaType", defects);
+    if (typeof evidence.byteSize !== "number" || !Number.isInteger(evidence.byteSize)) {
+      defects.push("evidence.byteSize must be an integer");
+    }
+    requireString(evidence.capturedAt, "evidence.capturedAt", defects);
+    if (!isRecord(evidence.acquisitionMetadata)) {
+      defects.push("evidence.acquisitionMetadata must be a string map");
+    } else if (
+      Object.values(evidence.acquisitionMetadata).some((entry) => typeof entry !== "string")
+    ) {
+      defects.push("evidence.acquisitionMetadata must be a string map");
+    }
+  }
+  const invalidation = value.invalidation;
+  if (invalidation !== null) {
+    if (!isRecord(invalidation)) {
+      defects.push("invalidation must be an object or null");
+    } else {
+      requireString(invalidation.reason, "invalidation.reason", defects);
+      requireString(invalidation.invalidatedAt, "invalidation.invalidatedAt", defects);
+    }
+  }
+  const provenance = value.provenance;
+  if (!isRecord(provenance)) {
+    defects.push("provenance must be an object");
+  } else if (
+    !Array.isArray(provenance.asSubject) ||
+    !Array.isArray(provenance.asObject)
+  ) {
+    defects.push("provenance.asSubject and provenance.asObject must be arrays");
+  }
+  const derivations = value.derivations;
+  if (!isRecord(derivations)) {
+    defects.push("derivations must be an object");
+  } else if (
+    !Array.isArray(derivations.inputsOf) ||
+    !Array.isArray(derivations.derivedFrom)
+  ) {
+    defects.push("derivations.inputsOf and derivations.derivedFrom must be arrays");
+  }
+  if (defects.length > 0) {
+    throw new Error(`evidence read view is not structurally valid: ${defects.join("; ")}`);
+  }
+  const view = value as unknown as EvidenceReadView;
+  return {
+    evidence: view.evidence,
+    invalidation: view.invalidation,
+    provenance: {
+      asSubject: view.provenance.asSubject.map((link) =>
+        validateProvenanceLinkView(link, "provenance.asSubject entry"),
+      ),
+      asObject: view.provenance.asObject.map((link) =>
+        validateProvenanceLinkView(link, "provenance.asObject entry"),
+      ),
+    },
+    derivations: {
+      inputsOf: view.derivations.inputsOf.map((derivation) =>
+        validateDerivationView(derivation, "derivations.inputsOf entry"),
+      ),
+      derivedFrom: view.derivations.derivedFrom.map((derivation) =>
+        validateDerivationView(derivation, "derivations.derivedFrom entry"),
+      ),
+    },
+  };
+}
+
+/**
+ * Load one evidence record's FULL READ VIEW LIVE —
+ * `GET /v1/evidence/:contentId` (the register's own read discipline,
+ * consumed read-only). The view answers the verbatim record plus the
+ * invalidation state, both-direction provenance links and both-direction
+ * derivations — VOICE-002's client transcript state derives from
+ * `derivations.inputsOf` + `provenance.asObject` (NO backend
+ * transcript-state route exists and none is added). Unknown content ids
+ * answer the typed 404 (`evidence_not_found`).
+ */
+export async function loadEvidenceReadViewLive(
+  fetchImpl: FetchLike,
+  contentId: string,
+): Promise<
+  | { readonly ok: true; readonly view: EvidenceReadView; readonly endpoint: string }
+  | { readonly ok: false; readonly failure: ApiFailure }
+> {
+  const endpoint = `/v1/evidence/${encodeURIComponent(contentId)}`;
+  const result = envelopePayload(await fetchJson(fetchImpl, endpoint), endpoint);
+  if (!result.ok) {
+    return result;
+  }
+  try {
+    return {
+      ok: true,
+      view: validateEvidenceReadView(result.value),
+      endpoint,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: error instanceof Error ? error.message : "evidence read view failed validation",
+      },
+    };
+  }
+}
+
 /**
  * Load the project's LATEST reality version LIVE —
  * `GET /v1/reality/projects/:id/versions/latest`. A 404 is an HONEST EMPTY
