@@ -1,0 +1,438 @@
+[driver 2026-09-30T05:23:02Z] connecting to sandbox ihnsur599ph81vezt7oej…
+[driver 2026-09-30T05:23:02Z] connected
+[driver 2026-09-30T05:23:04Z] committed station scripts uploaded
+[driver 2026-09-30T05:23:05Z] [gradle-trio] background pid 4766, log /home/user/aise-station/logs/gradle-trio.out
+k :core:classes UP-TO-DATE
+> Task :core:jar UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:dexBuilderDebug
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+
+[gradle-trio] …following (14431 bytes so far)
+core:jar UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:dexBuilderDebug
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+
+[gradle-trio] …following (14466 bytes so far)
+pp:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:dexBuilderDebug
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+
+[gradle-trio] …following (14495 bytes so far)
+pp:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:dexBuilderDebug
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+
+[gradle-trio] …following (14495 bytes so far)
+:app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :app:mergeDebugGlobalSynthetics
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libimage_processing_util_jni.so, libsurface_util_jni.so.
+
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeLibDexDebug
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 20s
+39 actionable tasks: 19 executed, 20 up-to-date
+finished: 2026-09-30T05:24:38Z  exit=0  seconds=80
+
+[gradle-trio] APK artifact:
+-rw-r--r-- 1 user user 18509522 Sep 30 05:24 /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+5fa5e38302e886c5ec23e346b25247c5c0988c0ae4ae131c5b0a148384d7e49f  /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+
+[gradle-trio] ALL THREE GATES PASSED on this station.
+
+[gradle-trio] …following (15487 bytes so far)
+:app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :app:mergeDebugGlobalSynthetics
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libimage_processing_util_jni.so, libsurface_util_jni.so.
+
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeLibDexDebug
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 20s
+39 actionable tasks: 19 executed, 20 up-to-date
+finished: 2026-09-30T05:24:38Z  exit=0  seconds=80
+
+[gradle-trio] APK artifact:
+-rw-r--r-- 1 user user 18509522 Sep 30 05:24 /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+5fa5e38302e886c5ec23e346b25247c5c0988c0ae4ae131c5b0a148384d7e49f  /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+
+[gradle-trio] ALL THREE GATES PASSED on this station.
+
+[gradle-trio] …following (15487 bytes so far)
+:app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :app:mergeDebugGlobalSynthetics
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libimage_processing_util_jni.so, libsurface_util_jni.so.
+
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeLibDexDebug
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 20s
+39 actionable tasks: 19 executed, 20 up-to-date
+finished: 2026-09-30T05:24:38Z  exit=0  seconds=80
+
+[gradle-trio] APK artifact:
+-rw-r--r-- 1 user user 18509522 Sep 30 05:24 /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+5fa5e38302e886c5ec23e346b25247c5c0988c0ae4ae131c5b0a148384d7e49f  /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+
+[gradle-trio] ALL THREE GATES PASSED on this station.
+
+[gradle-trio] …following (15487 bytes so far)
+:app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :app:mergeDebugGlobalSynthetics
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libimage_processing_util_jni.so, libsurface_util_jni.so.
+
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeLibDexDebug
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 20s
+39 actionable tasks: 19 executed, 20 up-to-date
+finished: 2026-09-30T05:24:38Z  exit=0  seconds=80
+
+[gradle-trio] APK artifact:
+-rw-r--r-- 1 user user 18509522 Sep 30 05:24 /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+5fa5e38302e886c5ec23e346b25247c5c0988c0ae4ae131c5b0a148384d7e49f  /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+
+[gradle-trio] ALL THREE GATES PASSED on this station.
+
+[gradle-trio] …following (15487 bytes so far)
+:app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :app:mergeDebugGlobalSynthetics
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libimage_processing_util_jni.so, libsurface_util_jni.so.
+
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeLibDexDebug
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 20s
+39 actionable tasks: 19 executed, 20 up-to-date
+finished: 2026-09-30T05:24:38Z  exit=0  seconds=80
+
+[gradle-trio] APK artifact:
+-rw-r--r-- 1 user user 18509522 Sep 30 05:24 /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+5fa5e38302e886c5ec23e346b25247c5c0988c0ae4ae131c5b0a148384d7e49f  /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+
+[gradle-trio] ALL THREE GATES PASSED on this station.
+
+[gradle-trio] …following (15487 bytes so far)
+:app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :app:mergeDebugGlobalSynthetics
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libimage_processing_util_jni.so, libsurface_util_jni.so.
+
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeLibDexDebug
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 20s
+39 actionable tasks: 19 executed, 20 up-to-date
+finished: 2026-09-30T05:24:38Z  exit=0  seconds=80
+
+[gradle-trio] APK artifact:
+-rw-r--r-- 1 user user 18509522 Sep 30 05:24 /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+5fa5e38302e886c5ec23e346b25247c5c0988c0ae4ae131c5b0a148384d7e49f  /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+
+[gradle-trio] ALL THREE GATES PASSED on this station.
+
+[gradle-trio] …following (15487 bytes so far)
+:app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :app:mergeDebugGlobalSynthetics
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libimage_processing_util_jni.so, libsurface_util_jni.so.
+
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeLibDexDebug
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 20s
+39 actionable tasks: 19 executed, 20 up-to-date
+finished: 2026-09-30T05:24:38Z  exit=0  seconds=80
+
+[gradle-trio] APK artifact:
+-rw-r--r-- 1 user user 18509522 Sep 30 05:24 /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+5fa5e38302e886c5ec23e346b25247c5c0988c0ae4ae131c5b0a148384d7e49f  /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+
+[gradle-trio] ALL THREE GATES PASSED on this station.
+
+[gradle-trio] …following (15487 bytes so far)
+:app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :app:mergeDebugGlobalSynthetics
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libimage_processing_util_jni.so, libsurface_util_jni.so.
+
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeLibDexDebug
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 20s
+39 actionable tasks: 19 executed, 20 up-to-date
+finished: 2026-09-30T05:24:38Z  exit=0  seconds=80
+
+[gradle-trio] APK artifact:
+-rw-r--r-- 1 user user 18509522 Sep 30 05:24 /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+5fa5e38302e886c5ec23e346b25247c5c0988c0ae4ae131c5b0a148384d7e49f  /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+
+[gradle-trio] ALL THREE GATES PASSED on this station.
+
+[gradle-trio] …following (15487 bytes so far)
+:app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :app:mergeDebugGlobalSynthetics
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libimage_processing_util_jni.so, libsurface_util_jni.so.
+
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeLibDexDebug
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 20s
+39 actionable tasks: 19 executed, 20 up-to-date
+finished: 2026-09-30T05:24:38Z  exit=0  seconds=80
+
+[gradle-trio] APK artifact:
+-rw-r--r-- 1 user user 18509522 Sep 30 05:24 /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+5fa5e38302e886c5ec23e346b25247c5c0988c0ae4ae131c5b0a148384d7e49f  /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+
+[gradle-trio] ALL THREE GATES PASSED on this station.
+
+[gradle-trio] …following (15487 bytes so far)
+:app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeDebugJavaResource
+> Task :app:mergeExtDexDebug
+> Task :app:mergeDebugGlobalSynthetics
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so, libimage_processing_util_jni.so, libsurface_util_jni.so.
+
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeLibDexDebug
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 20s
+39 actionable tasks: 19 executed, 20 up-to-date
+finished: 2026-09-30T05:24:38Z  exit=0  seconds=80
+
+[gradle-trio] APK artifact:
+-rw-r--r-- 1 user user 18509522 Sep 30 05:24 /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+5fa5e38302e886c5ec23e346b25247c5c0988c0ae4ae131c5b0a148384d7e49f  /home/user/aise-station/aise/apps/android/app/build/outputs/apk/debug/app-debug.apk
+
+[gradle-trio] ALL THREE GATES PASSED on this station.
+
+[gradle-trio] …following (15487 bytes so far)
