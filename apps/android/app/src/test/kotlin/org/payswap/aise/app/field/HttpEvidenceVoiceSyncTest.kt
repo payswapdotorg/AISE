@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -225,9 +226,24 @@ class HttpEvidenceVoiceSyncTest {
         // Every metadata value is a STRING (the open-map discipline):
         assertTrue(metadata.members.values.all { it is JsonValue.JsonString })
 
-        // The uploaded voice bytes are the manifest's own content address.
-        val voiceContentId = (voiceEntry.members["contentId"] as? JsonValue.JsonString)?.value!!
-        assertTrue(storedAssets.containsKey(voiceContentId), "the voice bytes were uploaded under their content address")
+        // The uploads go under the RAW sha (the file bytes' own address — the
+        // transport's established convention, journey-proven since PROD-032);
+        // the envelope's entry is the MANIFEST identity (ContentIdentity over
+        // payload+metadata). The batch's `manifest` list is the bridge: its
+        // contentId IS the upload address. (The envelope id and the upload id
+        // are different ids by design — never conflated.)
+        val manifestList = batch.members["manifest"] as? JsonValue.JsonArray
+            ?: error("batch has no manifest list")
+        assertEquals(2, manifestList.items.size)
+        val voiceUpload = manifestList.items[1] as? JsonValue.JsonObject
+            ?: error("the voice upload entry is not an object")
+        val uploadedId = (voiceUpload.members["contentId"] as? JsonValue.JsonString)?.value!!
+        assertEquals("audio/mp4", (voiceUpload.members["mediaType"] as? JsonValue.JsonString)?.value)
+        assertTrue(storedAssets.containsKey(uploadedId), "the voice bytes were uploaded under their raw content address")
+        assertNotEquals(
+            uploadedId, voiceEntry.members["contentId"],
+            "the upload address (raw sha) and the envelope identity (payload+metadata) are different ids by design",
+        )
     }
 
     @Test

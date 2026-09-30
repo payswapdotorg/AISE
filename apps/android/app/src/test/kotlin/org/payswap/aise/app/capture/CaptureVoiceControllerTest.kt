@@ -10,6 +10,8 @@ import org.junit.jupiter.api.io.CleanupMode
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.api.Test
 import org.payswap.aise.core.identity.ContentIdentity
+import org.payswap.aise.core.json.JsonParser
+import org.payswap.aise.core.json.JsonValue
 import org.payswap.aise.core.session.AcquisitionMethod
 import org.payswap.aise.core.session.CaptureContractVersion
 import org.payswap.aise.core.session.CaptureSessionStatus
@@ -124,7 +126,20 @@ class CaptureVoiceControllerTest {
         assertFalse(text.contains("\"voice.duration.ms\""), "unmeasured duration must be absent from the manifest")
         assertFalse(text.contains("\"voice.sample.rate.hz\""), "unmeasured sample rate must be absent")
         assertFalse(text.contains("\"voice.language.hint\""), "no hint entered → absent")
-        assertFalse(text.contains("unknown"), "never an 'unknown' placeholder")
+        // Never an 'unknown'/zero placeholder IN THE VOICE METADATA (the
+        // honesty rule's scope). The whole-manifest text search would be
+        // over-broad: capabilityProfile legitimately renders 'unknown' domain
+        // statuses (the honest AISE-005 baseline — unprobed domains are
+        // reported as unknown there, by design, a DIFFERENT honesty rule).
+        val manifestJson = JsonParser.parse(text) as JsonValue.JsonObject
+        val voiceAsset = (manifestJson.members["assets"] as JsonValue.JsonArray).items.first()
+            as JsonValue.JsonObject
+        val voiceMeta = voiceAsset.members["acquisitionMetadata"] as JsonValue.JsonObject
+        for (value in voiceMeta.members.values) {
+            val s = (value as? JsonValue.JsonString)?.value
+            assertFalse(s == "unknown", "never an 'unknown' placeholder in the voice metadata")
+            assertFalse(s == "0", "never a zero placeholder in the voice metadata")
+        }
         assertTrue(text.contains("\"voice.codec\": \"aac\""))
         assertTrue(text.contains("\"acquisitionMethod\": \"VOICE_NOTE\""))
         assertTrue(text.contains("\"contractVersion\": \"${CaptureContractVersion.CURRENT}\""))
