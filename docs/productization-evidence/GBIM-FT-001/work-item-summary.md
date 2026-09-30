@@ -1,0 +1,18 @@
+# GBIM-FT-001 — Work Item definition summary (GBIM-004, the shared geometry contract)
+
+**Authoritative record:** `docs/shared-geometry-contract-work-item-2026-09-30.md` (this summary points at it; if they ever disagree, the record is authoritative). **Status:** DEFINED by GBIM-FT-001, NOT DISPATCHED — execution deferred until a product requirement needs it (ACR-007 §"Deferment ledger" item 1). **Format:** the work-order format of `docs/geometry-bim-spike-work-orders-2026-09-25.md`, extended with an explicit Dependencies section (required by the GBIM-FT-001 work order).
+
+## One-sentence scope
+
+Lift the spike-proven geometry port into ONE typed, provider-neutral contract shared by the three adapted lanes (exact kernel / IFC interop / browser presentation) — closed wire shapes, AISE-owned identity, fail-closed laws, process-boundary execution, shared external-reference conventions, and provider registration through the promotion gates — so a future worker can implement against a single definition instead of three spike-shaped precedents.
+
+## The four required statements (summaries; the record holds the full text)
+
+- **Scope (required work):** the zod-coded lift of `GBIM-001/PORT.md` §2/§3 (AISE-owned ids, explicit units, closed vocabularies, declared placement policy; closed output with measurements/quantities/hostEffect/deletable externalReferences/validationChecks/provenance digests/sceneStateDigest); the three port laws as typed, tested invariants; the AISE-side supervised subprocess runner (input digest, timeout, stdio JSON, output guard); the shared lane conventions (Pset-pattern + deterministic export profile for IFC; external-ref display rule + render-port formalization on the HFX-303 pattern for the browser lane); provider registration through `packages/provider-registry` (OCCT as first reference candidate, evaluation-stage, no default); and the capability-profile validation decisions (GBIM-001 D-5's five checks; GBIM-003 G-1/G-2) — declaring interfaces for, never closing, the deferred gaps.
+- **Dependencies:** the three frozen spike evidence trees + the GBIM-000 fixture; the existing governed seams to reconcile with (`backend/api/src/geometry-eval/` GeometryProvider/executeSequence, `packages/visual-render` port pattern, `packages/solution-contract` codec + identity, `packages/provider-registry` control plane); the deferred AISE-side decisions as declared interfaces (catalogue extension, `opening-void-volume`, G-3, G-4); and a product requirement as the dispatch trigger.
+- **Protected surfaces:** a new `packages/` geometry-contract package (additive) + the provider-registry registration path; canonical engine semantics, the spike evidence trees, and ACR-001…007 stay unmodified.
+- **Completion gate:** the contract + invariant tests + runner + first reference-provider registration through the promotion gates, delivered with deterministic tests, negative/discrimination tests, provenance tests and representative building validation; the full substitution-contract §4 set (incl. semantic-equivalence matrix over the four seams, dependent-layer regression, rollback path) green for the first promoted provider; historical records interpretable with any provider removed; no default provider without promotion; `bun run verify` PASS.
+
+## Boundary against the deferment ledger (what GBIM-004 explicitly does NOT own)
+
+Per ACR-007 §"Deferment ledger": the AISE catalogue extension for door/window/column/beam, the desktop GUI pilot, and the GBIM-003 gaps G-3/G-4/G-5 are open follow-ups owned by **future work orders** — GBIM-004 declares interfaces for them (versioned operation vocabulary, quantity vocabulary extensibility, validation-check surface) but does not close them.

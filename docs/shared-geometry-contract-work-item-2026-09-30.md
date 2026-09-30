@@ -1,0 +1,47 @@
+# AISE — Shared Geometry Contract Work Item (GBIM-004)
+
+**Status:** DEFINED by GBIM-FT-001 (per `spec/governance/architecture-change-record-007.md` §"The shared geometry-contract Work Item", Status DRAFT). **NOT DISPATCHED** — production implementation is deferred until a product requirement needs it (ACR-007 §"Deferment ledger" item 1; `docs/productization-roadmap.md` §Post-readiness geometry/BIM R&D: "The spike is evidence collection only").
+**Definition basis:** `docs/geometry-follow-through-work-orders-2026-09-29.md` §GBIM-FT-001; `docs/productization-evidence/GBIM-001/PORT.md` §5 + `GBIM-001/recommendation.md` §"What to adapt, and in what order"; `GBIM-002/RECOMMENDATION.md` §"Successor handoff"; `GBIM-003/recommendation.md` §"What to adopt into the product"; `docs/geometry-bim-technology-spike-2026-09-25.md` §9.
+**Format:** follows the work-order format of `docs/geometry-bim-spike-work-orders-2026-09-25.md` (one work item: protected primary surfaces / objective / required work / acceptance / deliverables), extended with an explicit Dependencies section as required by the GBIM-FT-001 work order.
+**Path shorthand:** `GBIM-001/…` etc. mean `docs/productization-evidence/GBIM-001/…` (as in ACR-007).
+
+---
+
+## GBIM-004 — The Shared Geometry Contract (the provider-neutral geometry port shared by the three lanes)
+
+**Protected primary surfaces:** a new `packages/` geometry-contract package (additive) and the `packages/provider-registry` registration path. Do not alter canonical solution semantics (`packages/solution-contract`, `packages/solution-engine` stay authoritative and unmodified except where a declared, ACR-governed extension is separately authorized), the spike evidence trees (`docs/productization-evidence/GBIM-000…003/`), or `spec/governance/architecture-change-record-001…007`.
+
+### Objective
+
+Lift the spike-proven geometry port into ONE typed, provider-neutral contract shared by the three adapted lanes (exact kernel — OCCT via OCP/CadQuery; IFC interop — IfcOpenShell + IFC4; browser presentation — Three.js + web-ifc), so that every geometry-class provider and every geometry consumer implements against the same closed wire shapes, the same AISE-owned identity discipline, and the same fail-closed laws — keeping "no kernel type crosses the canonical contract" physically true (a process boundary), not merely conventional (`GBIM-001/PORT.md` §1; `GBIM-001/recommendation.md` §1).
+
+### Required work (scope)
+
+- **The typed port contract** — lift `SpikeGeometryExecutionInput`/`SpikeGeometryExecutionOutput` (`GBIM-001/PORT.md` §2/§3) into a zod-coded contract package in `packages/` following the `solution-contract` codec discipline: AISE-owned ids and explicit units on every numeric parameter; closed operation vocabulary (versioned — see Dependencies); declared, versioned placement policy; closed output vocabulary (`executed|refused` + typed `reasonCode`s; measurements only on `applied`; quantities in the AISE dimension/direction vocabulary; `hostEffect` blocks; deletable `externalReferences`; `validationChecks`; the provenance block with `inputDigest` + `adapterSourceDigest`; `sceneStateDigest`).
+- **The three port laws as typed, tested invariants** (`GBIM-001/PORT.md` §3): (1) no provider type crosses — unknown fields refused with the field named (`contract-mismatch`); (2) AISE owns identity — ids echoed, never invented, provider refs only in `externalReferences`; (3) fail closed before geometry — gate order input sanity → duplicate identity → capability (family named before any computation) → parameters → semantic/host validation → geometry → topology validity; invalid and unsupported carry no measurements and no quantities.
+- **The AISE-side supervised subprocess runner** — input digest, timeout, stdio JSON, output guard (`GBIM-001/PORT.md` §5; `GBIM-001/recommendation.md` §1).
+- **The shared external-reference/mapping conventions across the lanes:** the `Pset_AISE`/`Pset_AISE_Revision` external-reference pattern and the deterministic export profile for the IFC lane (`GBIM-002/mapping/SEMANTIC-MAPPING.md` rules 1/3; `GBIM-002/RECOMMENDATION.md` §"Required adapter obligations" 3); the external-ref display rule (provider/renderer/GUID ids never become AISE identity) and the renderer port formalization on the HFX-303 `visual-render` pattern — `SceneElementSeed`-shaped projections + strict decode + renderer-unavailable fallback (`GBIM-003/recommendation.md` §"What to adopt" 2 and 4).
+- **Provider registration through the promotion gates** — the OCCT lane as first reference provider candidate enters `packages/provider-registry` as an evaluation-stage provider (registered → evaluation → benchmarked → promoted); no default provider merely because the spike succeeded (`GBIM-001/recommendation.md` §2; `docs/geometry-bim-technology-spike-2026-09-25.md` §9; `spec/technology-substitution-contract.md` §6).
+- **Capability-profile validation decisions** — decide, against the engine's own check catalogue, which provider-measurement-consuming checks the contract's `validationChecks` surface carries: the five GBIM-001-proven checks (host resolution, geometric containment, wall-thickness plausibility, footing connectivity, port-level duplicate identity — `GBIM-001/semantic-comparison.md` §2 D-5) and the GBIM-003 capability-profile follow-ups G-1 (wall-thickness limits) and G-2 (opening host-existence + sill parameter slot) (`GBIM-003/fixture-mapping.md` §4). The contract DECLARES the interfaces; closing the deferred engine gaps (G-3/G-4) and the catalogue extension is owned by future work orders (ACR-007 §"Deferment ledger").
+
+### Dependencies
+
+- **Spike evidence (inputs, frozen):** `GBIM-001/` (the port, the exact-equality comparison, D-1…D-5), `GBIM-002/` (the pset mapping conventions, the integrity-layer obligations, the round-trip loss inventory), `GBIM-003/` (the render seam, the strict decoder, the fallback contract, G-1…G-5) — plus the shared `GBIM-000/` fixture.
+- **Existing governed seams (must reconcile, not fork):** `backend/api/src/geometry-eval/` (`GeometryProvider` + `executeSequence` — the existing Layer-3 substitution surface the spike port projects, `GBIM-001/PORT.md` §"Relationship to existing seams"); `packages/visual-render/src/port.ts` (the HFX-303 render-port pattern); `packages/solution-contract` (the codec discipline and the canonical identity derivation); `packages/provider-registry` (the control plane and promotion gates).
+- **Deferred AISE-side decisions (declared interfaces only — owned by future work orders per ACR-007's deferment ledger):** the catalogue extension for door/window/column/beam (the closed operation vocabulary must version so the extension does not break the contract); the `opening-void-volume` quantity proposal (`GBIM-001/semantic-comparison.md` §2 D-2 — the quantity vocabulary must accommodate a `[volume, m3, removed]` opening-void quantity if adopted); the engine-gap closures G-3 (footing support connectivity) and G-4 (reviseVersion dependency-ref remapping).
+- **Dispatch trigger:** a product requirement that needs the exact-geometry, IFC-interop or spatial-presentation lane in production (ACR-007 §"Deferment ledger" item 1).
+
+### Acceptance (completion gate)
+
+- The typed contract exists in `packages/` under the codec discipline, and the three port laws are enforced by tests: a provider payload with an unknown field is refused with the field named; a duplicate identity is refused; an unsupported family is named before any computation; invalid/unsupported results carry zero measurements and zero quantities.
+- The supervised subprocess runner is implemented and tested (input digest recorded; timeout enforced; output guarded).
+- A reference provider adapter (the OCCT lane) is registered through `packages/provider-registry` and passes the promotion gates with benchmark records and provenance manifests committed as evidence — and is NOT a default provider.
+- The substitution-contract §4 conformance set is fully green for the first promoted provider on the same merged commit lineage: contract conformance, the semantic-equivalence matrix over the four seams (`operation-compiler | engine-execution | validation | boq-derivation`), negative/discrimination tests, provenance continuity, failure-path tests, dependent-layer regression, and an explicit compatibility/rollback path (`spec/technology-substitution-contract.md` §4–§5).
+- Deterministic tests, negative/discrimination tests, provenance tests and representative building/physical validation are delivered for every engineering geometry or quantity claim (`spec/governance/architecture-change-record-005.md` §Evidence requirement; `spec/governance/architecture-change-record-006.md` §Required evidence).
+- Historical AISE records remain interpretable with any provider removed (the replay discipline proven by all three spikes).
+- No canonical engine semantics changed; AISE authority, provenance and the truth vocabulary preserved throughout.
+- `bun run verify` PASSES at the delivered tree.
+
+### Deliverables
+
+The contract package (typed schemas + invariant tests + the runner), the reference provider adapter and its registration/benchmark/provenance evidence, the lane-mapping conventions documentation, and an evidence tree under `docs/productization-evidence/GBIM-004/` following the spike-evidence discipline (scorecard-shaped gate record, negative ledger, provenance, replay proof) — produced by the future worker that executes this Work Item, NOT by GBIM-FT-001 (which defines it only).
