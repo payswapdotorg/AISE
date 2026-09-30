@@ -1,0 +1,376 @@
+{
+  "fixture": {
+    "fixtureId": "anchor001-fixture-001",
+    "synthetic": true,
+    "stills": 10,
+    "pixelsPerMeter": 200,
+    "groundTruth": "exact by construction (plan raster and stills render one shared procedural texture; analytic H verified to <2e-5 px)"
+  },
+  "accuracy": {
+    "method": "per still: floor-grid points (0.25 m spacing) visible in the still are mapped plan-px -> still-px by the TRUE homography and back to plan-px by the ESTIMATED inverse; error in meters at plan scale",
+    "perStill": [
+      {
+        "evidenceContentId": "1d3f46bca1da47aa81c0c081bfd92b9eb9d9a4a34d6ada4acdb287a210326c5d",
+        "stillFile": "still-010.png",
+        "inlierCount": 13,
+        "matchCount": 90,
+        "inlierRatio": 0.1444,
+        "confidence": 0.6904,
+        "declaredUncertainty": {
+          "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+          "budget95M": 0.019257,
+          "budgetTerms": {
+            "crossvalDisagreementM": 0.00695,
+            "inlierResidualPlusTruncationM": 0.007733,
+            "supportSpreadExtrapolationM": 0.009825
+          },
+          "floorRmsM": 0.009825
+        },
+        "measured": {
+          "floorRegistrationRmseM": 0.00647,
+          "floorRegistrationP95M": 0.010588,
+          "floorRegistrationMaxM": 0.014497,
+          "sampledFloorPoints": 86
+        },
+        "budgetCoversActual": {
+          "floorRmsCovers": true,
+          "budget95Covers": true
+        },
+        "crossValidationPeers": 2,
+        "consistentPeers": 1
+      },
+      {
+        "evidenceContentId": "20d59bf1a722cdeb7f96ad14eeeed030aade50e226ff80762c534ef0508efd96",
+        "stillFile": "still-004.png",
+        "inlierCount": 16,
+        "matchCount": 92,
+        "inlierRatio": 0.1739,
+        "confidence": 0.81,
+        "declaredUncertainty": {
+          "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+          "budget95M": 0.021327,
+          "budgetTerms": {
+            "crossvalDisagreementM": 0.010881,
+            "inlierResidualPlusTruncationM": 0.005941,
+            "supportSpreadExtrapolationM": 0.008286
+          },
+          "floorRmsM": 0.010881
+        },
+        "measured": {
+          "floorRegistrationRmseM": 0.006194,
+          "floorRegistrationP95M": 0.010365,
+          "floorRegistrationMaxM": 0.017998,
+          "sampledFloorPoints": 94
+        },
+        "budgetCoversActual": {
+          "floorRmsCovers": true,
+          "budget95Covers": true
+        },
+        "crossValidationPeers": 5,
+        "consistentPeers": 4
+      },
+      {
+        "evidenceContentId": "25fdee226abc438068d67b408148e9667920e5187fc50e80fd989b80be87e7d0",
+        "stillFile": "still-003.png",
+        "inlierCount": 18,
+        "matchCount": 99,
+        "inlierRatio": 0.1818,
+        "confidence": 0.9183,
+        "declaredUncertainty": {
+          "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+          "budget95M": 0.01281,
+          "budgetTerms": {
+            "crossvalDisagreementM": 0.006386,
+            "inlierResidualPlusTruncationM": 0.005,
+            "supportSpreadExtrapolationM": 0.006536
+          },
+          "floorRmsM": 0.006536
+        },
+        "measured": {
+          "floorRegistrationRmseM": 0.003762,
+          "floorRegistrationP95M": 0.005937,
+          "floorRegistrationMaxM": 0.007148,
+          "sampledFloorPoints": 90
+        },
+        "budgetCoversActual": {
+          "floorRmsCovers": true,
+          "budget95Covers": true
+        },
+        "crossValidationPeers": 3,
+        "consistentPeers": 3
+      },
+      {
+        "evidenceContentId": "549adbec565e41cb4abc3c62307616ccfad32d73d821d4b9d55d70cdf77f4ff4",
+        "stillFile": "still-007.png",
+        "inlierCount": 15,
+        "matchCount": 99,
+        "inlierRatio": 0.1515,
+        "confidence": 0.8319,
+        "declaredUncertainty": {
+          "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+          "budget95M": 0.015578,
+          "budgetTerms": {
+            "crossvalDisagreementM": 0.004918,
+            "inlierResidualPlusTruncationM": 0.005292,
+            "supportSpreadExtrapolationM": 0.007948
+          },
+          "floorRmsM": 0.007948
+        },
+        "measured": {
+          "floorRegistrationRmseM": 0.020963,
+          "floorRegistrationP95M": 0.043584,
+          "floorRegistrationMaxM": 0.078418,
+          "sampledFloorPoints": 110
+        },
+        "budgetCoversActual": {
+          "floorRmsCovers": false,
+          "budget95Covers": false
+        },
+        "crossValidationPeers": 2,
+        "consistentPeers": 2
+      },
+      {
+        "evidenceContentId": "71706fcc27aa43ab064562b96a1762dc32b03d84ceeb148915d16a022b495a52",
+        "stillFile": "still-008.png",
+        "inlierCount": 12,
+        "matchCount": 66,
+        "inlierRatio": 0.1818,
+        "confidence": 0.5723,
+        "declaredUncertainty": {
+          "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+          "budget95M": 0.016506,
+          "budgetTerms": {
+            "crossvalDisagreementM": 0,
+            "inlierResidualPlusTruncationM": 0.00616,
+            "supportSpreadExtrapolationM": 0.008421
+          },
+          "floorRmsM": 0.008421
+        },
+        "measured": {
+          "floorRegistrationRmseM": 0.082236,
+          "floorRegistrationP95M": 0.190711,
+          "floorRegistrationMaxM": 0.259386,
+          "sampledFloorPoints": 82
+        },
+        "budgetCoversActual": {
+          "floorRmsCovers": false,
+          "budget95Covers": false
+        },
+        "crossValidationPeers": 3,
+        "consistentPeers": 0
+      },
+      {
+        "evidenceContentId": "96f7a6435f05c3f7b8501a9500c0df7320f61eafc50d7666c2fd1467cfe9f382",
+        "stillFile": "still-009.png",
+        "inlierCount": 16,
+        "matchCount": 93,
+        "inlierRatio": 0.172,
+        "confidence": 0.8847,
+        "declaredUncertainty": {
+          "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+          "budget95M": 0.026969,
+          "budgetTerms": {
+            "crossvalDisagreementM": 0.01376,
+            "inlierResidualPlusTruncationM": 0.006039,
+            "supportSpreadExtrapolationM": 0.00696
+          },
+          "floorRmsM": 0.01376
+        },
+        "measured": {
+          "floorRegistrationRmseM": 0.007534,
+          "floorRegistrationP95M": 0.009479,
+          "floorRegistrationMaxM": 0.009911,
+          "sampledFloorPoints": 106
+        },
+        "budgetCoversActual": {
+          "floorRmsCovers": true,
+          "budget95Covers": true
+        },
+        "crossValidationPeers": 3,
+        "consistentPeers": 3
+      },
+      {
+        "evidenceContentId": "b793a722879f6b316201c9dc9a5db8dc41d7f51ad5d273e06d73097f57ba67ba",
+        "stillFile": "still-006.png",
+        "inlierCount": 12,
+        "matchCount": 72,
+        "inlierRatio": 0.1667,
+        "confidence": 0.6781,
+        "declaredUncertainty": {
+          "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+          "budget95M": 0.049309,
+          "budgetTerms": {
+            "crossvalDisagreementM": 0.009049,
+            "inlierResidualPlusTruncationM": 0.006393,
+            "supportSpreadExtrapolationM": 0.025157
+          },
+          "floorRmsM": 0.025157
+        },
+        "measured": {
+          "floorRegistrationRmseM": 0.088869,
+          "floorRegistrationP95M": 0.195623,
+          "floorRegistrationMaxM": 0.346478,
+          "sampledFloorPoints": 96
+        },
+        "budgetCoversActual": {
+          "floorRmsCovers": false,
+          "budget95Covers": false
+        },
+        "crossValidationPeers": 2,
+        "consistentPeers": 1
+      },
+      {
+        "evidenceContentId": "bafd9eb20138afaf1e5798f82da23449f4b0418ef4ef062dd1de08a4d163f349",
+        "stillFile": "still-001.png",
+        "inlierCount": 22,
+        "matchCount": 105,
+        "inlierRatio": 0.2095,
+        "confidence": 0.8869,
+        "declaredUncertainty": {
+          "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+          "budget95M": 0.018947,
+          "budgetTerms": {
+            "crossvalDisagreementM": 0,
+            "inlierResidualPlusTruncationM": 0.006005,
+            "supportSpreadExtrapolationM": 0.009667
+          },
+          "floorRmsM": 0.009667
+        },
+        "measured": {
+          "floorRegistrationRmseM": 0.03689,
+          "floorRegistrationP95M": 0.076861,
+          "floorRegistrationMaxM": 0.097123,
+          "sampledFloorPoints": 89
+        },
+        "budgetCoversActual": {
+          "floorRmsCovers": false,
+          "budget95Covers": false
+        },
+        "crossValidationPeers": 0,
+        "consistentPeers": 0
+      },
+      {
+        "evidenceContentId": "c82eed4d580c1f5aba76922300e6e860653935aed53adf9fe92e199269005f02",
+        "stillFile": "still-005.png",
+        "inlierCount": 10,
+        "matchCount": 116,
+        "inlierRatio": 0.0862,
+        "confidence": 0.6327,
+        "declaredUncertainty": {
+          "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+          "budget95M": 0.030034,
+          "budgetTerms": {
+            "crossvalDisagreementM": 0.015323,
+            "inlierResidualPlusTruncationM": 0.006955,
+            "supportSpreadExtrapolationM": 0.008406
+          },
+          "floorRmsM": 0.015323
+        },
+        "measured": {
+          "floorRegistrationRmseM": 0.036523,
+          "floorRegistrationP95M": 0.063268,
+          "floorRegistrationMaxM": 0.078315,
+          "sampledFloorPoints": 122
+        },
+        "budgetCoversActual": {
+          "floorRmsCovers": false,
+          "budget95Covers": false
+        },
+        "crossValidationPeers": 2,
+        "consistentPeers": 1
+      },
+      {
+        "evidenceContentId": "ca88357b345eeb21f191973be46f564b2bbe5b0160bf94095f05e71d64428fc5",
+        "stillFile": "still-002.png",
+        "inlierCount": 14,
+        "matchCount": 96,
+        "inlierRatio": 0.1458,
+        "confidence": 0.7066,
+        "declaredUncertainty": {
+          "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+          "budget95M": 0.03742,
+          "budgetTerms": {
+            "crossvalDisagreementM": 0.019092,
+            "inlierResidualPlusTruncationM": 0.00719,
+            "supportSpreadExtrapolationM": 0.019016
+          },
+          "floorRmsM": 0.019092
+        },
+        "measured": {
+          "floorRegistrationRmseM": 0.060246,
+          "floorRegistrationP95M": 0.13259,
+          "floorRegistrationMaxM": 0.23363,
+          "sampledFloorPoints": 103
+        },
+        "budgetCoversActual": {
+          "floorRmsCovers": false,
+          "budget95Covers": false
+        },
+        "crossValidationPeers": 2,
+        "consistentPeers": 1
+      }
+    ],
+    "aggregate": {
+      "meanRmseM": 0.034969,
+      "minRmseM": 0.003762,
+      "maxRmseM": 0.088869
+    },
+    "epistemicCheck": {
+      "rule": "a declared uncertainty budget is honest only if it covers the realized error",
+      "allBudgetsCoverActual": false,
+      "exceptions": [
+        "still-007.png",
+        "still-008.png",
+        "still-006.png",
+        "still-001.png",
+        "still-005.png",
+        "still-002.png"
+      ]
+    }
+  },
+  "determinism": {
+    "identical": true,
+    "run1Digest": "sha256:457710cfaa6abfab3db0ec0d7bf141a36625c80182d3618938c066be07382953",
+    "run2Digest": "sha256:457710cfaa6abfab3db0ec0d7bf141a36625c80182d3618938c066be07382953",
+    "caveat": "asserted for this opencv/numpy/python/platform combination (recorded in provenance); cross-version floating-point relocation is not claimed"
+  },
+  "runtime": {
+    "run1WallMs": 15225,
+    "run2WallMs": 15083,
+    "providerStageTimingsMs": {
+      "crossval": 11996.905,
+      "detect": 1112.301,
+      "estimate": 1784.108,
+      "match": 110.798
+    },
+    "note": "wall time includes python interpreter + numpy/opencv import (cold process); stage timings are the provider's own observations"
+  },
+  "provenance": {
+    "adapterSourceDigest": "sha256:7bbffeabc89dc1621ae27429f1f3a159bcd87aae411ed9cf19793fb9f200717c",
+    "config": {
+      "confidenceModel": "inliers-and-crossval-heuristic/1",
+      "crossValMaxResidualPx": 20,
+      "crossValMinInliers": 12,
+      "detector": "SIFT",
+      "matcher": "BF-L2-crossCheck",
+      "maxMatchesPerPair": 200,
+      "minInliersPerStill": 8,
+      "minKeypointsPerImage": 80,
+      "minMatchesForEstimate": 12,
+      "minStills": 2,
+      "ransacConfidence": 0.9999,
+      "ransacMaxIters": 20000,
+      "ransacThresholdPx": 3,
+      "siftContrastThreshold": 0.02,
+      "siftEdgeThreshold": 15,
+      "uncertaintyModel": "inlier-residual-first-order-v2.1"
+    },
+    "inputDigest": "sha256:d270b8ffc74c838b4e4efd6f3ad3f0542b9606e66cdcbc5994a40bc6107660ac",
+    "numpyVersion": "2.5.3",
+    "opencvVersion": "5.0.0",
+    "platform": "Linux x86_64",
+    "providerId": "sift-homography-spike",
+    "providerVersion": "anchor001-adapter/1",
+    "pythonVersion": "3.12.14"
+  }
+}
