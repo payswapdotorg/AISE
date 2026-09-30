@@ -250,7 +250,7 @@ class HttpEvidenceVoiceSyncTest {
             writer.close(mapOf("capture.kind" to "voice", "voice.codec" to "aac"))
             controller.finalizeSession()
         }
-        val manifest = controller.lastFinalizedManifestText()!!
+        val manifest = runBlocking { controller.lastFinalizedManifestText() }!!
         val answer = transport().submit(payloadText(manifest), "key-voice-partial-1")
         assertTrue(answer is SubmissionAnswer.Accepted, "got $answer")
 
