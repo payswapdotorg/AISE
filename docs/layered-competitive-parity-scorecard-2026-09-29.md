@@ -99,9 +99,17 @@ register → record → pin, zero developer tools, live-proven).
    recorded version. The reconstruction-driven path (server-side
    materialization over the deterministic provider) remains a future
    enhancement, not a blocker.
-2. **Automatic spatial anchoring (L1)** — images mapped to plan/floor context
-   automatically (OpenSpace's Spatial AI signature). Research-grade; AISE's
-   task-directed gaps ledger is the honest alternative today.
+2. **Automatic spatial anchoring (L1)** — SPIKE DELIVERED 2026-09-30:
+   ANCHOR-001 merged 0dae734 (worker 0a5ceaa9, docs-only, Lead-gated
+   verify PASS 6356/0). The provider-neutral anchoring port + OpenCV
+   SIFT/RANSAC reference adapter: 10/10 stills anchored, 3.5 cm mean
+   floor-registration RMSE on the ground-truth-exact fixture,
+   determinism byte-identical, 9 negatives fail-closed. Verdict: ADAPT
+   never fork; the production lane is gated on a real-photoset run and
+   named as the shared anchoring contract Work Item (PORT.md §7 records
+   the PARTIAL-outcome design question). The honest claim today: the
+   seam is proven at spike level; production parity with OpenSpace's
+   Spatial AI follows the contract Work Item, not a fork.
 3. **Voice notes as evidence kind (L1)** — WEB LANE CLOSED 2026-09-30 (early
    hours): the VOICE-001 merge (a409603) made `VOICE_NOTE` a live evidence
    kind at the contract (1.1.0) + API level — audio registers with honest
