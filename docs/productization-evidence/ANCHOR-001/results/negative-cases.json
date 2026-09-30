@@ -1,0 +1,90 @@
+{
+  "cases": [
+    {
+      "caseId": "neg-001",
+      "kind": "no-plan",
+      "expected": "plan-context-missing",
+      "got": "plan-context-missing",
+      "hypothesesEmitted": 0,
+      "pass": true,
+      "refusalDetail": "no plan/floor context was supplied; anchoring requires one — refusing rather than fabricating",
+      "notes": "anchoring without a plan/floor context is refused; no anchor can be fabricated from stills alone"
+    },
+    {
+      "caseId": "neg-002",
+      "kind": "single-image",
+      "expected": "insufficient-stills",
+      "got": "insufficient-stills",
+      "hypothesesEmitted": 0,
+      "pass": true,
+      "refusalDetail": "1 still(s) supplied; this method requires >= 2 (a single still yields an exactly-determined homography with no redundancy evidence — RANSAC inliers are self-referential and cannot discriminate a wrong registration)",
+      "notes": "one still yields an exactly-determined homography with zero redundancy evidence — the method refuses instead of trusting self-referential RANSAC inliers"
+    },
+    {
+      "caseId": "neg-003",
+      "kind": "textureless",
+      "expected": "insufficient-features",
+      "got": "insufficient-features",
+      "hypothesesEmitted": 0,
+      "pass": true,
+      "refusalDetail": "images below the 80-keypoint floor: 5892ad45898e23e86702908cd14f7eda8ec973edb41552fdfbe2b66185d395ad(23 keypoints), 287fe9f3fef1d6737d1c2bec9751374cc8b1eb775282386995e1a02c2dd4a9a0(0 keypoints) (textureless or feature-poor evidence cannot be anchored — refusing rather than guessing)",
+      "notes": "uniform painted-gray floor stills produce ~2 keypoints; the feature floor refuses rather than guessing a transform"
+    },
+    {
+      "caseId": "neg-004",
+      "kind": "mismatched-plan",
+      "expected": "registration-unreliable",
+      "got": "registration-unreliable",
+      "hypothesesEmitted": 0,
+      "pass": true,
+      "refusalDetail": "stills that could not be registered to this plan: 71706fcc27aa43ab064562b96a1762dc32b03d84ceeb148915d16a022b495a52(4 inliers), 1d3f46bca1da47aa81c0c081bfd92b9eb9d9a4a34d6ada4acdb287a210326c5d(3 inliers) (inlier support below the floor — the plan and the stills likely do not depict the same floor; refusing rather than emitting low-support anchors)",
+      "notes": "the stills ARE textured and the plan IS readable, but they depict different floors — inlier support collapses and the whole request fails closed"
+    },
+    {
+      "caseId": "neg-005",
+      "kind": "unsupported-evidence-methods",
+      "expected": "evidence-method-unsupported",
+      "got": "evidence-method-unsupported",
+      "hypothesesEmitted": 0,
+      "pass": true,
+      "refusalDetail": "evidence aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa has acquisitionMethod 'VIDEO_FOOTAGE'; this method supports ['STILL_IMAGERY'] only",
+      "notes": "video/audio evidence is refused by METHOD before any bytes are read (bytesPaths deliberately nonexistent — gate-order proof)"
+    },
+    {
+      "caseId": "neg-006",
+      "kind": "corrupted-response/unknown top-level field",
+      "expected": "guard refusal naming: unknown top-level field 'mysteryPoseGraph'",
+      "got": "guard refused with 1 violation(s)",
+      "hypothesesEmitted": 10,
+      "pass": true,
+      "notes": "guard refused: unknown top-level field 'mysteryPoseGraph' (provider types may not cross the canonical boundary)"
+    },
+    {
+      "caseId": "neg-006",
+      "kind": "corrupted-response/unknown hypothesis field (provider handle leak)",
+      "expected": "guard refusal naming: unknown field 'siftKeyPointHandle'",
+      "got": "guard refused with 1 violation(s)",
+      "hypothesesEmitted": 10,
+      "pass": true,
+      "notes": "guard refused: hypotheses[0]: unknown field 'siftKeyPointHandle' (provider types may not cross)"
+    },
+    {
+      "caseId": "neg-006",
+      "kind": "corrupted-response/non-finite matrix entry",
+      "expected": "guard refusal naming: matrix must be a 3x3 matrix of finite numbers",
+      "got": "guard refused with 1 violation(s)",
+      "hypothesesEmitted": 10,
+      "pass": true,
+      "notes": "guard refused: hypotheses[0].transform.matrix must be a 3x3 matrix of finite numbers"
+    },
+    {
+      "caseId": "neg-006",
+      "kind": "corrupted-response/refused response carrying hypotheses (fabricated anchors)",
+      "expected": "guard refusal naming: a refused response must carry NO hypotheses",
+      "got": "guard refused with 1 violation(s)",
+      "hypothesesEmitted": 10,
+      "pass": true,
+      "notes": "guard refused: a refused response must carry NO hypotheses (no fabricated anchors)"
+    }
+  ]
+}

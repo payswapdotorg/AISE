@@ -1,0 +1,593 @@
+{
+  "executionId": "anchor001-run-002",
+  "executionTimeMs": 14954.969,
+  "hypotheses": [
+    {
+      "confidence": 0.6904,
+      "crossValidation": [
+        {
+          "consistent": true,
+          "peerContentId": "96f7a6435f05c3f7b8501a9500c0df7320f61eafc50d7666c2fd1467cfe9f382",
+          "residualRmsPx": 3.6361732482910156
+        },
+        {
+          "consistent": false,
+          "peerContentId": "b793a722879f6b316201c9dc9a5db8dc41d7f51ad5d273e06d73097f57ba67ba",
+          "residualRmsPx": 36.926361083984375
+        }
+      ],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "1d3f46bca1da47aa81c0c081bfd92b9eb9d9a4a34d6ada4acdb287a210326c5d",
+      "inlierCount": 13,
+      "inlierRatio": 0.1444,
+      "matchCount": 90,
+      "representation": "plan-homography",
+      "residualRmsPx": 1.3572,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            2.1826985965606873,
+            1.0996001101886639,
+            -1572.2307341301982
+          ],
+          [
+            -1.02459793220037,
+            1.0157160107236123,
+            646.0449924182998
+          ],
+          [
+            0.0013489066026423524,
+            -0.0013603854933471756,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+        "budget95M": 0.019257,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0.00695,
+          "inlierResidualPlusTruncationM": 0.007733,
+          "supportSpreadExtrapolationM": 0.009825
+        },
+        "floorRmsM": 0.009825
+      }
+    },
+    {
+      "confidence": 0.81,
+      "crossValidation": [
+        {
+          "consistent": true,
+          "peerContentId": "25fdee226abc438068d67b408148e9667920e5187fc50e80fd989b80be87e7d0",
+          "residualRmsPx": 2.13981556892395
+        },
+        {
+          "consistent": true,
+          "peerContentId": "549adbec565e41cb4abc3c62307616ccfad32d73d821d4b9d55d70cdf77f4ff4",
+          "residualRmsPx": 2.361922025680542
+        },
+        {
+          "consistent": false,
+          "peerContentId": "71706fcc27aa43ab064562b96a1762dc32b03d84ceeb148915d16a022b495a52",
+          "residualRmsPx": 22.371662139892578
+        },
+        {
+          "consistent": true,
+          "peerContentId": "b793a722879f6b316201c9dc9a5db8dc41d7f51ad5d273e06d73097f57ba67ba",
+          "residualRmsPx": 5.321291923522949
+        },
+        {
+          "consistent": true,
+          "peerContentId": "c82eed4d580c1f5aba76922300e6e860653935aed53adf9fe92e199269005f02",
+          "residualRmsPx": 7.315262317657471
+        }
+      ],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "20d59bf1a722cdeb7f96ad14eeeed030aade50e226ff80762c534ef0508efd96",
+      "inlierCount": 16,
+      "inlierRatio": 0.1739,
+      "matchCount": 92,
+      "representation": "plan-homography",
+      "residualRmsPx": 1.3186,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            0.1317886183233755,
+            -0.6752315683082372,
+            453.1392156427561
+          ],
+          [
+            0.3287152949783161,
+            0.18709605831597265,
+            -306.822789563618
+          ],
+          [
+            -0.00047953857276266054,
+            -0.0002913290405134249,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+        "budget95M": 0.021327,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0.010881,
+          "inlierResidualPlusTruncationM": 0.005941,
+          "supportSpreadExtrapolationM": 0.008286
+        },
+        "floorRmsM": 0.010881
+      }
+    },
+    {
+      "confidence": 0.9183,
+      "crossValidation": [
+        {
+          "consistent": true,
+          "peerContentId": "20d59bf1a722cdeb7f96ad14eeeed030aade50e226ff80762c534ef0508efd96",
+          "residualRmsPx": 2.13981556892395
+        },
+        {
+          "consistent": true,
+          "peerContentId": "549adbec565e41cb4abc3c62307616ccfad32d73d821d4b9d55d70cdf77f4ff4",
+          "residualRmsPx": 3.711042642593384
+        },
+        {
+          "consistent": true,
+          "peerContentId": "96f7a6435f05c3f7b8501a9500c0df7320f61eafc50d7666c2fd1467cfe9f382",
+          "residualRmsPx": 4.832021713256836
+        }
+      ],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "25fdee226abc438068d67b408148e9667920e5187fc50e80fd989b80be87e7d0",
+      "inlierCount": 18,
+      "inlierRatio": 0.1818,
+      "matchCount": 99,
+      "representation": "plan-homography",
+      "residualRmsPx": 1.1522,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            0.5028173227910129,
+            -0.5651100738237408,
+            178.8024676480872
+          ],
+          [
+            0.22279992703764404,
+            0.38308600209790566,
+            -304.730326322652
+          ],
+          [
+            -0.00029693360206662256,
+            -0.0005177838566052436,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+        "budget95M": 0.01281,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0.006386,
+          "inlierResidualPlusTruncationM": 0.005,
+          "supportSpreadExtrapolationM": 0.006536
+        },
+        "floorRmsM": 0.006536
+      }
+    },
+    {
+      "confidence": 0.8319,
+      "crossValidation": [
+        {
+          "consistent": true,
+          "peerContentId": "20d59bf1a722cdeb7f96ad14eeeed030aade50e226ff80762c534ef0508efd96",
+          "residualRmsPx": 2.361922025680542
+        },
+        {
+          "consistent": true,
+          "peerContentId": "25fdee226abc438068d67b408148e9667920e5187fc50e80fd989b80be87e7d0",
+          "residualRmsPx": 3.711042642593384
+        }
+      ],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "549adbec565e41cb4abc3c62307616ccfad32d73d821d4b9d55d70cdf77f4ff4",
+      "inlierCount": 15,
+      "inlierRatio": 0.1515,
+      "matchCount": 99,
+      "representation": "plan-homography",
+      "residualRmsPx": 1.3182,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            7.155872620133503,
+            -6.261073814903615,
+            -5162.967582175358
+          ],
+          [
+            1.5372028409039704,
+            4.595144392670155,
+            -5083.253744198311
+          ],
+          [
+            -0.0031877450627276873,
+            -0.008077097244074669,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+        "budget95M": 0.015578,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0.004918,
+          "inlierResidualPlusTruncationM": 0.005292,
+          "supportSpreadExtrapolationM": 0.007948
+        },
+        "floorRmsM": 0.007948
+      }
+    },
+    {
+      "confidence": 0.5723,
+      "crossValidation": [
+        {
+          "consistent": false,
+          "peerContentId": "20d59bf1a722cdeb7f96ad14eeeed030aade50e226ff80762c534ef0508efd96",
+          "residualRmsPx": 22.371662139892578
+        },
+        {
+          "consistent": false,
+          "peerContentId": "c82eed4d580c1f5aba76922300e6e860653935aed53adf9fe92e199269005f02",
+          "residualRmsPx": 113.65523529052734
+        },
+        {
+          "consistent": false,
+          "peerContentId": "ca88357b345eeb21f191973be46f564b2bbe5b0160bf94095f05e71d64428fc5",
+          "residualRmsPx": 551.889892578125
+        }
+      ],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "71706fcc27aa43ab064562b96a1762dc32b03d84ceeb148915d16a022b495a52",
+      "inlierCount": 12,
+      "inlierRatio": 0.1818,
+      "matchCount": 66,
+      "representation": "plan-homography",
+      "residualRmsPx": 1.2721,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            2.057713535498872,
+            -4.483059963316323,
+            -382.67819048985285
+          ],
+          [
+            1.8961632428631585,
+            1.8414803448500534,
+            -2811.7322462738734
+          ],
+          [
+            -0.0031817433943197447,
+            -0.003568610043116751,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+        "budget95M": 0.016506,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0,
+          "inlierResidualPlusTruncationM": 0.00616,
+          "supportSpreadExtrapolationM": 0.008421
+        },
+        "floorRmsM": 0.008421
+      }
+    },
+    {
+      "confidence": 0.8847,
+      "crossValidation": [
+        {
+          "consistent": true,
+          "peerContentId": "1d3f46bca1da47aa81c0c081bfd92b9eb9d9a4a34d6ada4acdb287a210326c5d",
+          "residualRmsPx": 3.6361732482910156
+        },
+        {
+          "consistent": true,
+          "peerContentId": "25fdee226abc438068d67b408148e9667920e5187fc50e80fd989b80be87e7d0",
+          "residualRmsPx": 4.832021713256836
+        },
+        {
+          "consistent": true,
+          "peerContentId": "ca88357b345eeb21f191973be46f564b2bbe5b0160bf94095f05e71d64428fc5",
+          "residualRmsPx": 9.400307655334473
+        }
+      ],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "96f7a6435f05c3f7b8501a9500c0df7320f61eafc50d7666c2fd1467cfe9f382",
+      "inlierCount": 16,
+      "inlierRatio": 0.172,
+      "matchCount": 93,
+      "representation": "plan-homography",
+      "residualRmsPx": 1.416,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            3.110498061448656,
+            8.832462186498978,
+            -4199.283522924678
+          ],
+          [
+            -5.202794615032184,
+            -0.021464273785664442,
+            4440.020545866222
+          ],
+          [
+            0.007805150885883411,
+            -0.00005951538276226232,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+        "budget95M": 0.026969,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0.01376,
+          "inlierResidualPlusTruncationM": 0.006039,
+          "supportSpreadExtrapolationM": 0.00696
+        },
+        "floorRmsM": 0.01376
+      }
+    },
+    {
+      "confidence": 0.6781,
+      "crossValidation": [
+        {
+          "consistent": false,
+          "peerContentId": "1d3f46bca1da47aa81c0c081bfd92b9eb9d9a4a34d6ada4acdb287a210326c5d",
+          "residualRmsPx": 36.926361083984375
+        },
+        {
+          "consistent": true,
+          "peerContentId": "20d59bf1a722cdeb7f96ad14eeeed030aade50e226ff80762c534ef0508efd96",
+          "residualRmsPx": 5.321291923522949
+        }
+      ],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "b793a722879f6b316201c9dc9a5db8dc41d7f51ad5d273e06d73097f57ba67ba",
+      "inlierCount": 12,
+      "inlierRatio": 0.1667,
+      "matchCount": 72,
+      "representation": "plan-homography",
+      "residualRmsPx": 1.1329,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            -1.9195869989254424,
+            0.01068183688580562,
+            2195.4119809391696
+          ],
+          [
+            0.30281532602621275,
+            -0.9082307118934064,
+            497.8333399050037
+          ],
+          [
+            -0.0008592362841548769,
+            0.0015330476436539386,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+        "budget95M": 0.049309,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0.009049,
+          "inlierResidualPlusTruncationM": 0.006393,
+          "supportSpreadExtrapolationM": 0.025157
+        },
+        "floorRmsM": 0.025157
+      }
+    },
+    {
+      "confidence": 0.8869,
+      "crossValidation": [],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "bafd9eb20138afaf1e5798f82da23449f4b0418ef4ef062dd1de08a4d163f349",
+      "inlierCount": 22,
+      "inlierRatio": 0.2095,
+      "matchCount": 105,
+      "representation": "plan-homography",
+      "residualRmsPx": 1.5115,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            0.5586705203766612,
+            -0.5410929697459657,
+            448.035649737837
+          ],
+          [
+            0.15503733967445157,
+            0.39880793405198334,
+            -223.0221601090779
+          ],
+          [
+            -0.00034163077034564735,
+            -0.0005788051488507622,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+        "budget95M": 0.018947,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0,
+          "inlierResidualPlusTruncationM": 0.006005,
+          "supportSpreadExtrapolationM": 0.009667
+        },
+        "floorRmsM": 0.009667
+      }
+    },
+    {
+      "confidence": 0.6327,
+      "crossValidation": [
+        {
+          "consistent": true,
+          "peerContentId": "20d59bf1a722cdeb7f96ad14eeeed030aade50e226ff80762c534ef0508efd96",
+          "residualRmsPx": 7.315262317657471
+        },
+        {
+          "consistent": false,
+          "peerContentId": "71706fcc27aa43ab064562b96a1762dc32b03d84ceeb148915d16a022b495a52",
+          "residualRmsPx": 113.65523529052734
+        }
+      ],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "c82eed4d580c1f5aba76922300e6e860653935aed53adf9fe92e199269005f02",
+      "inlierCount": 10,
+      "inlierRatio": 0.0862,
+      "matchCount": 116,
+      "representation": "plan-homography",
+      "residualRmsPx": 0.7115,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            -0.3696730256658069,
+            -0.6156604277001777,
+            888.3298422668108
+          ],
+          [
+            0.34497467104713103,
+            -0.06667945273784988,
+            -192.5020218529554
+          ],
+          [
+            -0.0006025740401342809,
+            0.00004973125970204908,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+        "budget95M": 0.030034,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0.015323,
+          "inlierResidualPlusTruncationM": 0.006955,
+          "supportSpreadExtrapolationM": 0.008406
+        },
+        "floorRmsM": 0.015323
+      }
+    },
+    {
+      "confidence": 0.7066,
+      "crossValidation": [
+        {
+          "consistent": false,
+          "peerContentId": "71706fcc27aa43ab064562b96a1762dc32b03d84ceeb148915d16a022b495a52",
+          "residualRmsPx": 551.889892578125
+        },
+        {
+          "consistent": true,
+          "peerContentId": "96f7a6435f05c3f7b8501a9500c0df7320f61eafc50d7666c2fd1467cfe9f382",
+          "residualRmsPx": 9.400307655334473
+        }
+      ],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "ca88357b345eeb21f191973be46f564b2bbe5b0160bf94095f05e71d64428fc5",
+      "inlierCount": 14,
+      "inlierRatio": 0.1458,
+      "matchCount": 96,
+      "representation": "plan-homography",
+      "residualRmsPx": 0.9397,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            0.5597625152174146,
+            -0.5613873653947808,
+            283.9841996370314
+          ],
+          [
+            0.1818441648837618,
+            0.3492662955271866,
+            -220.67172929613727
+          ],
+          [
+            -0.00018831147969206011,
+            -0.0006690295684509475,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2 (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation; max of terms)",
+        "budget95M": 0.03742,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0.019092,
+          "inlierResidualPlusTruncationM": 0.00719,
+          "supportSpreadExtrapolationM": 0.019016
+        },
+        "floorRmsM": 0.019092
+      }
+    }
+  ],
+  "portVersion": "anchor001-anchoring-port/1",
+  "provenance": {
+    "adapterSourceDigest": "sha256:7bbffeabc89dc1621ae27429f1f3a159bcd87aae411ed9cf19793fb9f200717c",
+    "config": {
+      "confidenceModel": "inliers-and-crossval-heuristic/1",
+      "crossValMaxResidualPx": 20,
+      "crossValMinInliers": 12,
+      "detector": "SIFT",
+      "matcher": "BF-L2-crossCheck",
+      "maxMatchesPerPair": 200,
+      "minInliersPerStill": 8,
+      "minKeypointsPerImage": 80,
+      "minMatchesForEstimate": 12,
+      "minStills": 2,
+      "ransacConfidence": 0.9999,
+      "ransacMaxIters": 20000,
+      "ransacThresholdPx": 3,
+      "siftContrastThreshold": 0.02,
+      "siftEdgeThreshold": 15,
+      "uncertaintyModel": "inlier-residual-first-order-v2.1"
+    },
+    "inputDigest": "sha256:4ed67bdcc527e428e79573320ceaeee884e5748b1156ec683cf38c2daa7c1fe2",
+    "numpyVersion": "2.5.3",
+    "opencvVersion": "5.0.0",
+    "platform": "Linux x86_64",
+    "providerId": "sift-homography-spike",
+    "providerVersion": "anchor001-adapter/1",
+    "pythonVersion": "3.12.14"
+  },
+  "reasonCode": null,
+  "schemaVersion": 1,
+  "stageTimingsMs": {
+    "crossval": 11940.261,
+    "detect": 1017.582,
+    "estimate": 1798.161,
+    "match": 109.135
+  },
+  "status": "anchored"
+}

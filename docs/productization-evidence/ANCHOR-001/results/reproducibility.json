@@ -1,0 +1,8 @@
+{
+  "method": "two separate provider processes over identical canonical input; digests over the deterministic projection (executionId, executionTimeMs, stageTimingsMs excluded — performance observations, not semantics)",
+  "run1Digest": "sha256:457710cfaa6abfab3db0ec0d7bf141a36625c80182d3618938c066be07382953",
+  "run2Digest": "sha256:457710cfaa6abfab3db0ec0d7bf141a36625c80182d3618938c066be07382953",
+  "identical": true,
+  "inputDigestEcho": "sha256:d270b8ffc74c838b4e4efd6f3ad3f0542b9606e66cdcbc5994a40bc6107660ac",
+  "adapterSourceDigest": "sha256:7bbffeabc89dc1621ae27429f1f3a159bcd87aae411ed9cf19793fb9f200717c"
+}
