@@ -107,9 +107,18 @@ register → record → pin, zero developer tools, live-proven).
    determinism byte-identical, 9 negatives fail-closed. Verdict: ADAPT
    never fork; the production lane is gated on a real-photoset run and
    named as the shared anchoring contract Work Item (PORT.md §7 records
-   the PARTIAL-outcome design question). The honest claim today: the
-   seam is proven at spike level; production parity with OpenSpace's
-   Spatial AI follows the contract Work Item, not a fork.
+   the PARTIAL-outcome design question). UPDATE 2026-09-30 (midday):
+   the CONTRACT LAYER IS LIVE — ANCHOR-002 merged 8f40a45 (worker
+   d9908b2, Lead-gated verify PASS 6451/0): the typed
+   packages/anchoring-contract (anchor002-anchoring-contract/1, the
+   handedness law first-class, the typed PARTIAL outcome with per-still
+   results, the three port laws test-enforced, the supervised runner,
+   the OpenCV lane at evaluation stage with the typed license-blocked
+   promotion refusal); DEPLOYED PASS + W/X/M journeys at 8f40a45. The
+   honest claim today: the seam is proven at spike level AND the
+   contract layer is shipped; production parity with OpenSpace's
+   Spatial AI now waits only on the real-photoset evidence run (the
+   named production precondition), never a fork.
 3. **Voice notes as evidence kind (L1)** — WEB LANE CLOSED 2026-09-30 (early
    hours): the VOICE-001 merge (a409603) made `VOICE_NOTE` a live evidence
    kind at the contract (1.1.0) + API level — audio registers with honest
