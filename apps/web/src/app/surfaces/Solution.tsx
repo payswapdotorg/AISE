@@ -173,6 +173,19 @@ export function SolutionSurface({
 }): ReactNode {
   return (
     <>
+      {/* POST-006-R1 — FINDING A11Y-1 remediation (the pinned moderate): the
+          page identity as a visually-hidden h1 (the repo's sr-only pattern,
+          now in the app stylesheet). The Interactive Solution surface was the
+          only routed surface without a top-level h1 — its content composed
+          under card h2s ("Build solution — two ways"). The h1 names the
+          destination exactly as the task-first vocabulary does everywhere
+          else ("Build solution" — the primary nav's label for this surface);
+          the card h2s keep their own distinguishing tails. Visually hidden:
+          NO visual redesign of the accepted surface — the heading exists for
+          the accessibility tree (axe page-has-heading-one) and heading
+          navigation, before the strip and the nav in DOM order. The pin in
+          post006-accessibility.test.tsx asserts it. */}
+      <h1 className="sr-only">Build solution</h1>
       <TaskFlowStrip projectId={projectId} />
       <ProjectSurfaceNav projectId={projectId} current="solution" />
       {demoSolutionWorldHeld(projectId) ? (

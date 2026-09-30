@@ -223,9 +223,10 @@ async function checkRouteSweep(
       await sleep(LOCAL_BUDGETS.settleMs);
       const shellVisible = await page.locator("header.app-header").first().isVisible();
       // The routed surface's identity: an h1 where the surface composes one
-      // (ten surfaces) or the first heading otherwise (the solution surface
-      // — FINDING A11Y-1 records the missing h1). The h1 probe is
-      // NON-waiting (count first — the solution route composes none).
+      // (eleven surfaces — POST-006-R1 remediated FINDING A11Y-1: the
+      // solution surface's page-identity h1 is now visually hidden but
+      // composed, so the probe reads it) or the first heading otherwise.
+      // The h1 probe is NON-waiting (count first).
       const h1Count = await page.locator("main#main-content h1").count();
       const h1 =
         h1Count > 0
@@ -806,7 +807,7 @@ function writeAcceptanceRecord(origin: string, chromiumVersion: string, exitPass
     "- The touch-target gate is WCAG 2.5.8's 24×24 CSS-pixel minimum (AA); the 44×44 best-practice shortfall is recorded per surface, not gated.",
     "- The local serve's task-flow lane answers the designed 404 family: the bridge panels' honest not-served states are the EXPECTED render on this serve (pinned live here; the demo bodies are pinned deterministically by the static suites).",
     "- Check F exercises the one state a same-tab replay never enters (a new tab shares the cookie jar but NOT the per-tab sessionStorage) — the POST-004B successor-handoff item.",
-    "- Static FINDING A11Y-1 (the solution surface's missing top-level h1) is recorded in apps/web/src/app/post006-accessibility.test.tsx; the live sweep surfaces it as the h1-less route heading.",
+    "- Static FINDING A11Y-1 (the solution surface's missing top-level h1) was remediated by POST-006-R1: the surface now composes a visually-hidden page-identity h1 (the repo's sr-only pattern), asserted by apps/web/src/app/post006-accessibility.test.tsx; the live sweep records the h1 as the route's first heading.",
   );
   writeFileSync(file, lines.join("\n") + "\n", "utf8");
   return file;

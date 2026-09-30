@@ -295,7 +295,7 @@ describe("POST-006 accessibility — semantic HTML", () => {
     expect(shell).toContain("Skip to main content");
   });
 
-  test("every routed SURFACE composes EXACTLY ONE h1 (its page identity) — the ten page-head surfaces", () => {
+  test("every routed SURFACE composes EXACTLY ONE h1 (its page identity) — the eleven composed surfaces", () => {
     const PAGE_HEAD_SURFACES = new Set([
       "dashboard",
       "projects",
@@ -307,6 +307,10 @@ describe("POST-006 accessibility — semantic HTML", () => {
       "intervention",
       "outcomes",
       "settings",
+      // POST-006-R1: FINDING A11Y-1 remediated — the Interactive Solution
+      // surface now composes its page identity as a visually-hidden h1
+      // (the repo's sr-only pattern). It joins the exactly-one-h1 sweep.
+      "solution",
     ]);
     const failures: string[] = [];
     for (const { name, html } of CORPUS) {
@@ -321,17 +325,30 @@ describe("POST-006 accessibility — semantic HTML", () => {
     expect(failures).toEqual([]);
   });
 
-  test("FINDING A11Y-1 (recorded, moderate): the Interactive Solution surface is the only routed surface WITHOUT a top-level h1", () => {
-    // Honest acceptance finding — NOT fixed by this lane (product code is
-    // read-only for the verification worker; the Lead governs the fix):
-    // the solution route composes its content under card h2s ("Build
-    // solution — two ways" …) with no page-head h1, unlike the other ten
-    // routed surfaces. This pins the CURRENT state so a fix flips this
-    // assertion (and the Lead's findings ledger records it).
+  test("FINDING A11Y-1 REMEDIATED (POST-006-R1): the Interactive Solution surface composes its page identity as a visually-hidden h1", () => {
+    // The pinned finding, FLIPPED by the POST-006-R1 remediation lane (the
+    // pin existed to be flipped — this test now ASSERTS the remediation):
+    // the solution route composes its page identity ("Build solution" —
+    // the task-first vocabulary's name for the destination, the primary
+    // nav's label) as a top-level h1 in the repo's sr-only pattern —
+    // visually hidden (NO visual redesign of the accepted surface), first
+    // in DOM order (before every card h2), carrying the page identity for
+    // the accessibility tree (axe page-has-heading-one) and heading
+    // navigation, in BOTH ladder branches (the world-held body and the
+    // honest empty state render under the same page identity).
     const solution = byName("solution");
     const h1Count = (solution.match(/<h1[\s>]/g) ?? []).length;
-    expect(h1Count).toBe(0);
-    expect(solution).toContain("<h2"); // its first heading is a card title
+    expect(h1Count).toBe(1);
+    // the sr-only contract (the repo's canonical visually-hidden pattern,
+    // lifted into the app stylesheet from the solution workspace's own):
+    expect(solution).toMatch(/<h1[^>]*class="sr-only"[^>]*>Build solution<\/h1>/);
+    // the h1 PRECEDES the first card h2 (the heading hierarchy stays flat
+    // and ordered — the page identity, then the card titles):
+    const h1Index = solution.search(/<h1[\s>]/);
+    const h2Index = solution.search(/<h2[\s>]/);
+    expect(h1Index).toBeGreaterThanOrEqual(0);
+    expect(h2Index).toBeGreaterThan(h1Index);
+    expect(solution).toContain("<h2"); // its card titles remain h2
   });
 
   test("card titles are h2 (the heading hierarchy stays flat and ordered)", () => {
@@ -478,5 +495,38 @@ describe("POST-006 accessibility — focus order + touch-target element contract
       }
     }
     expect(failures).toEqual([]);
+  });
+
+  test("POST-006-R1: the stylesheet carries the inline-link touch floor + the file-input sizing (the measured-size remediation's substrate)", () => {
+    // The POST-006 live ledger's 21 serious touch-target findings (the
+    // inline prose links at 15–19px tall + the two file inputs at 21px)
+    // are remediated AT THE STYLESHEET (the repo's interactive-element
+    // sizing convention lives in CSS — the element contract above pins
+    // the native-control half, this pins the sizing half). The measured
+    // proof stays with the live harness (tools/post006/acceptance.ts,
+    // check E — never wired into bun run verify, the journey-harness
+    // law); this static pin fails fast if the remediation rules are
+    // removed from the shipped stylesheet, so the escape cannot recur
+    // silently between live audits.
+    const css = readFileSync(join(import.meta.dir, "..", "styles", "app.css"), "utf8");
+    // the inline prose-link touch floor (WCAG 2.5.8 AA) over every
+    // measured context: journey links, crumbs, callout/task-strip/
+    // notes/pane-foot prose, the BOQ source/solution panels:
+    expect(css).toContain(".journey-body a");
+    expect(css).toContain(".crumbs a");
+    expect(css).toContain(".callout a");
+    expect(css).toContain(".task-strip-line a");
+    expect(css).toContain(".notes-list a");
+    expect(css).toContain(".pane-foot a");
+    expect(css).toContain("p[data-boq-class] a");
+    // the floor's mechanism (vertical padding grows the measured target
+    // box past 24×24 without touching the visual language):
+    expect(css).toMatch(/\.pane-foot a,\s*\n\s*p\[data-boq-class\] a \{\s*\n\s*padding-block: 5px;/);
+    // the file input joins the input sizing convention (min-height:
+    // --touch — the same floor every other input clears):
+    expect(css).toMatch(/input\[type="file"\] \{\s*\n\s*min-height: var\(--touch\);/);
+    // the sr-only utility (FINDING A11Y-1's visually-hidden heading — the
+    // repo's canonical pattern, now in the always-loaded app stylesheet):
+    expect(css).toMatch(/\.sr-only \{[^}]*clip: rect\(0, 0, 0, 0\);[^}]*\}/);
   });
 });
