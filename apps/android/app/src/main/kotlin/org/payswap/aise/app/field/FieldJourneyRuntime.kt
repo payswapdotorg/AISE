@@ -218,7 +218,8 @@ object ProvisionedJourneyDocs {
     private val provisionedMissionPlan = MissionPlan(
         missionId = "mission-2026-000042",
         state = MissionState.ACTIVE,
-        intent = "Diagnose the level-2 masonry crack: overview stills, detail stills and a walk-through.",
+        intent = "Diagnose the level-2 masonry crack: overview stills, detail stills, a walk-through " +
+            "and a site-condition voice note.",
         steps = listOf(
             MissionStep(
                 stepId = "step-stills",
@@ -245,6 +246,23 @@ object ProvisionedJourneyDocs {
                 instructions = "Record a slow walk-through of level 2 for spatial context.",
                 method = AcquisitionMethod.VIDEO_FOOTAGE,
                 requirementRefs = listOf("req-spatial-context"),
+                mandatory = false,
+            ),
+            // VOICE-003: the optional site-condition voice-note step. The
+            // journey bookkeeping needed NO fork — [FieldJourneyRuntime.observeSessionEvidence]
+            // matches gap steps to assets by [AcquisitionMethod] generically and
+            // `FieldJourney.exactCaptureAction` already carries "Record voice
+            // note" for VOICE_NOTE (the VOICE-001 source sync). Deliberately
+            // OPTIONAL (mandatory = false): a voice note is operator-recorded
+            // evidence, never a forced capture.
+            MissionStep(
+                stepId = "step-voice-note",
+                sequence = 4,
+                title = "Site-condition voice note",
+                instructions = "Record a short voice note describing the observed site conditions " +
+                    "at the crack (an optional spoken-language advisory can be entered first).",
+                method = AcquisitionMethod.VOICE_NOTE,
+                requirementRefs = listOf("req-site-conditions"),
                 mandatory = false,
             ),
         ),

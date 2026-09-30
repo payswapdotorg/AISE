@@ -89,6 +89,16 @@ class SessionDirectory private constructor(val root: File) {
             "image/jpeg" -> "jpg"
             "video/mp4" -> "mp4"
             "application/json" -> "json"
+            // VOICE-003: the voice-note lane's audio containers. The tmp-name
+            // contract (tmp/<assetId>.<ext>.tmp) and recovery's interrupted-
+            // commit adoption both derive the extension from the asset's
+            // media type, so the audio mappings must round-trip exactly.
+            "audio/mp4" -> "m4a"
+            "audio/3gpp" -> "3gp"
+            "audio/3gpp2" -> "3g2"
+            "audio/ogg" -> "ogg"
+            "audio/amr" -> "amr"
+            "audio/mpeg" -> "mp3"
             else -> "bin"
         }
     }

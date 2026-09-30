@@ -5,20 +5,30 @@
       AISE-002 foundation shipped ZERO permissions by design. AISE-005 adds
       the capture session layer and with it the CAMERA permission — requested
       MISSION-SCOPED at runtime (the capture screen asks when the operator
-      starts using capture, it is never blanket-granted). Deliberately NOT
-      requested: location (optional per the work order; AISE-009 decides),
-      RECORD_AUDIO (video is visual evidence only — no microphone), network
-      (offline-first; sync is AISE-030 behind its own boundary).
+      starts using capture, it is never blanket-granted). VOICE-003 adds
+      RECORD_AUDIO the same mission-scoped way: the voice-note entry requests
+      it at runtime; the microphone serves VOICE NOTES only — video remains
+      visual evidence only (the documented no-audio-in-video decision
+      stands; a voice note is a distinct evidence kind with its own
+      provenance semantics). INTERNET is the offline-first sync seam only
+      (evidence submission, PROD-032). Deliberately NOT requested: location
+      (optional per the work order; AISE-009 decides); no blanket grants of
+      any kind.
     -->
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Capability-aware: camera-less devices can still install the app
-         (manual measurements arrive with AISE-009); capture is simply
-         unavailable — an honest capability fact, not an install barrier. -->
+    <!-- Capability-aware: camera-less and microphone-less devices can still
+         install the app (manual measurements arrive with AISE-009); the
+         corresponding capture lane is simply unavailable — an honest
+         capability fact, not an install barrier. -->
     <uses-feature
         android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.microphone"
         android:required="false" />
 
     <application

@@ -11,6 +11,9 @@ import kotlinx.coroutines.launch
 import org.payswap.aise.app.capture.CaptureEnvironment
 import org.payswap.aise.app.capture.CaptureSessionController
 import org.payswap.aise.app.capture.VideoAssetWriter
+import org.payswap.aise.app.capture.VoiceAssetWriter
+import org.payswap.aise.app.capture.VoiceSegmentFacts
+import org.payswap.aise.core.capture.AcquisitionMetadataKeys
 import org.payswap.aise.core.session.CaptureSessionRecord
 import org.payswap.aise.core.session.SessionDeviceIdentity
 
@@ -27,8 +30,9 @@ import org.payswap.aise.core.session.SessionDeviceIdentity
  * no-ops or crashes.
  *
  * The camera/sensor adapters (platform glue, not unit-tested) call back into
- * [onStillCaptured] / [onVideoFinalized] / [onVideoFailed]; all session
- * semantics stay inside the controller.
+ * [onStillCaptured] / [onVideoFinalized] / [onVideoFailed]; the microphone
+ * adapter (VOICE-003) calls back into [onVoiceFinalized] / [onVoiceFailed].
+ * All session semantics stay inside the controller.
  */
 class CaptureViewModel(
     private val controller: CaptureSessionController,
@@ -46,7 +50,21 @@ class CaptureViewModel(
     private val _videoTargetFile = MutableStateFlow<java.io.File?>(null)
     val videoTargetFile: StateFlow<java.io.File?> = _videoTargetFile.asStateFlow()
 
+    /** VOICE-003: the open voice segment's tmp target — non-null while a voice note records. */
+    private val _voiceTargetFile = MutableStateFlow<java.io.File?>(null)
+    val voiceTargetFile: StateFlow<java.io.File?> = _voiceTargetFile.asStateFlow()
+
+    /**
+     * VOICE-003: the optional user-entered spoken-language advisory
+     * (`voice.language.hint` — a hint for ASR providers and UIs, never an
+     * authoritative determination). Empty = absent (the default).
+     */
+    private val _voiceLanguageHint = MutableStateFlow("")
+    val voiceLanguageHint: StateFlow<String> = _voiceLanguageHint.asStateFlow()
+
     private var videoWriter: VideoAssetWriter? = null
+
+    private var voiceWriter: VoiceAssetWriter? = null
 
     fun startSession(missionRef: String? = null) = guarded("start session") {
         controller.startSession(environment.deviceIdentity(), environment.imuActive(), missionRef)
@@ -99,6 +117,69 @@ class CaptureViewModel(
         _videoTargetFile.value = null
         writer.discard()
         _message.value = "Video segment discarded (no evidence journaled)"
+    }
+
+    // ------------------------------------------------------------------
+    // VOICE-003 — the voice-note capture lane (additive; the stills/video
+    // callbacks above are untouched)
+    // ------------------------------------------------------------------
+
+    /** Sets the optional spoken-language advisory for the NEXT voice note (empty = absent). */
+    fun setVoiceLanguageHint(hint: String) {
+        _voiceLanguageHint.value = hint
+    }
+
+    /**
+     * Opens a voice-segment writer; the microphone recorder must write into
+     * the exposed target file. [mediaType] is the recorder's CONFIGURED
+     * output (a fact stated by the platform adapter, e.g. `audio/mp4`).
+     */
+    fun beginVoiceAsset(mediaType: String) = guarded("begin voice note") {
+        val writer = controller.beginVoiceAsset(mediaType)
+        voiceWriter = writer
+        _voiceTargetFile.value = writer.targetFile
+    }
+
+    /**
+     * Called when the microphone adapter closed the segment file — commits
+     * it via the writer with ONLY honest metadata: the configured codec (a
+     * fact), the measured-when-measurable duration/sample rate (absent when
+     * not), the optional user-entered language hint, and the capture kind
+     * `voice` (the operator chose the voice entry — a fact, not an inference).
+     */
+    fun onVoiceFinalized(facts: VoiceSegmentFacts) = guarded("commit voice note") {
+        val writer = voiceWriter ?: return@guarded
+        voiceWriter = null
+        _voiceTargetFile.value = null
+        val asset = writer.close(voiceMetadata(facts))
+        _message.value = "Voice note captured: ${asset.assetId} (${asset.byteSize} bytes)"
+    }
+
+    /** Called when the recorder failed or was cancelled — the segment was never evidence. */
+    fun onVoiceFailed() = guarded("discard voice note") {
+        val writer = voiceWriter ?: return@guarded
+        voiceWriter = null
+        _voiceTargetFile.value = null
+        writer.discard()
+        _message.value = "Voice note discarded (no evidence journaled)"
+    }
+
+    /**
+     * The honest voice metadata composition — every value is device-measured
+     * or user-entered, never fabricated; an unmeasured key is simply not
+     * asserted (never zero, never "unknown"). Pure and internal so the
+     * discipline is pinned by the VM tests.
+     */
+    internal fun voiceMetadata(facts: VoiceSegmentFacts): Map<String, String> = buildMap {
+        put(AcquisitionMetadataKeys.CAPTURE_KIND, "voice") // the operator chose the voice entry — a fact
+        put(AcquisitionMetadataKeys.VOICE_CODEC, facts.configuredCodec) // the recorder's ACTUAL configured encoder
+        facts.audioSource?.let { put(AcquisitionMetadataKeys.SENSOR_ID, it) }
+        facts.durationMs?.let { put(AcquisitionMetadataKeys.VOICE_DURATION_MS, it.toString()) } // measured or absent
+        facts.sampleRateHz?.let { put(AcquisitionMetadataKeys.VOICE_SAMPLE_RATE_HZ, it.toString()) } // measured or absent
+        val hint = _voiceLanguageHint.value.trim()
+        if (hint.isNotEmpty()) {
+            put(AcquisitionMetadataKeys.VOICE_LANGUAGE_HINT, hint) // the user-entered advisory
+        }
     }
 
     fun consumeMessage() {

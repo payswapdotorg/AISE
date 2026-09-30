@@ -1,14 +1,15 @@
 # AISE Android Field Client — `apps/android`
 
 AISE-002 foundation + **AISE-005 capture session layer** + **PROD-019 mobile
-adapter layer**: the Android shell, navigation, the local persistence
-abstraction, the build/test harness, the offline capture session runtime —
-stills, video, sensor metadata, the event-sourced session journal, the
-offline manifest and crash recovery — and the **shared client-adapter
-contract consumption** that promotes this foundation into the product's
-mobile adapter (capability negotiation, conformance, the field journey and
-the explicit-unavailable submission seam). Everything here is
-**offline-first** and carries **no server authority**.
+adapter layer** + **VOICE-003 voice-note capture**: the Android shell,
+navigation, the local persistence abstraction, the build/test harness, the
+offline capture session runtime — stills, video, **voice notes**, sensor
+metadata, the event-sourced session journal, the offline manifest and crash
+recovery — and the **shared client-adapter contract consumption** that
+promotes this foundation into the product's mobile adapter (capability
+negotiation, conformance, the field journey and the explicit-unavailable
+submission seam). Everything here is **offline-first** and carries **no
+server authority**.
 
 This is a self-contained Gradle (Kotlin DSL) project inside the AISE
 repository. The repository root is a bun/TypeScript workspace that ignores
@@ -131,7 +132,11 @@ aise/
   AISE-009 mission execution and AISE-030 offline hardening to own — promote
   then, with the notification + service semantics that implies).
   Owns: start/pause/resume/finalize, still ingestion (write+hash in one
-  pass → journal → atomic rename → store append), video writers, recovery
+  pass → journal → atomic rename → store append), video writers, **voice-note
+  writers (VOICE-003 — the same commit protocol: tmp file → recorder writes →
+  one sequential chunked hash over (payload, metadata) → journal
+  `asset.captured` fsync commit point → atomic rename; pause/finalize refuse
+  while a voice segment is open, the same discipline as video)**, recovery
   at startup, and the manifest write. Single mutex, all I/O on
   `Dispatchers.IO`, one open session per device.
 - **Asset commit protocol (crash-safe)**: write `tmp/<assetId>.<ext>.tmp` →
@@ -159,16 +164,32 @@ aise/
   rotation + frame timestamp + LATCHED exposure parameters (Camera2Interop
   session-capture callback; keys say `latched`, including the latch sensor
   timestamp — provenance states exactly what the values are). Video:
-  CameraX Recorder writes the writer's tmp file; no audio is recorded
-  (visual evidence only — no RECORD_AUDIO permission). Rotation-vector
-  sensor snapshots (`sensor.rotation.*`) attach verbatim to every asset.
+  CameraX Recorder writes the writer's tmp file; no audio is recorded into
+  VIDEO segments (visual evidence only — the documented decision stands).
+  Rotation-vector sensor snapshots (`sensor.rotation.*`) attach verbatim to
+  every asset.
+- **Microphone adapter** (`capture/platform/MicrophoneRecorderAdapter.kt`,
+  VOICE-003): the camera adapter's discipline applied to VOICE NOTES — a
+  deliberately configured encoder profile stated as a FACT (`audio/mp4` /
+  AAC → `voice.codec = "aac"`, the contract's device-that-knows-its-encoder
+  case, STRONGER than the web lane's container-subtype observation),
+  duration/sample rate MEASURED over the closed file
+  (MediaMetadataRetriever/MediaExtractor) and honestly absent when the
+  platform cannot measure them. NOT unit-tested (platform glue — the
+  physical-device lane owns microphone evidence); every failure reports to
+  the UI instead of crashing the session. The microphone never records into
+  video segments.
 - **`FileBackedLocalCaptureStore`** — AISE-002's in-memory store's persistent
   twin behind the SAME interface (append-only, idempotent duplicates,
   re-derived content ids, sync-ack ledger). Stills are appended to it; video
   segments are NOT (see Limitations).
-- **Permissions**: the manifest now declares CAMERA (mission-scoped,
-  requested at runtime from the capture screen) + camera feature
-  `required="false"`. No location, no microphone, no network.
+- **Permissions**: the manifest declares CAMERA + RECORD_AUDIO (both
+  MISSION-SCOPED, requested at runtime from the capture surface — the camera
+  from the permissions card / stills+video lane, the microphone from the
+  voice-note entry) + INTERNET (the sync seam) + camera/microphone features
+  `required="false"`. No location, no blanket grants. (VOICE-003 made the
+  voice lane reachable WITHOUT the camera — a voice-only stage renders below
+  the permissions card.)
 
 ### No-judgment discipline
 
@@ -348,11 +369,14 @@ authorities*):
   its Jackson/slf4j transitives) to validate manifests against the committed
   schemas — the test allowlist documents this DELIBERATELY; the runtime
   classpath is untouched.
-- The app's source manifest requests **one** permission: CAMERA
-  (mission-scoped, runtime-requested from the capture screen). The AISE-002
-  build-time footnote still applies: the merged APK carries the single
-  application-local marker permission from `androidx.core`'s AAR manifest
-  (invisible, grants no capability, never prompts).
+- The app's source manifest requests **three** permissions: CAMERA,
+  RECORD_AUDIO (both VOICE-003-current: mission-scoped, runtime-requested
+  from the capture surface; the microphone serves VOICE NOTES only) and
+  INTERNET (the PROD-032 evidence-sync seam — offline-first, used only on
+  submission). The AISE-002 build-time footnote still applies: the merged
+  APK carries the single application-local marker permission from
+  `androidx.core`'s AAR manifest (invisible, grants no capability, never
+  prompts).
 - Raw evidence is immutable and append-only: journal lines are never
   rewritten, entries are never updated or deleted, duplicates are
   idempotent no-ops, and sync acknowledgement (AISE-030) will be an
@@ -372,14 +396,16 @@ pinning) MUST re-derive exactly this encoding. AISE-005 added
 `StreamingContentHasher` (same encoding, chunked delivery) — pinned equal
 by tests; nothing about the frozen identity contract changed.
 
-## Known limitations (AISE-005 scope)
+## Known limitations (AISE-005 scope, updated by VOICE-003)
 
 - **Video assets are not appended to the `LocalCaptureStore`** — the 002
   interface is ByteArray-based and cannot take multi-hundred-MB payloads
   without an in-memory copy. Video evidence lives in the session dir and
   the manifest (content-addressed); a streaming ingestion interface is
   AISE-030's design decision (an interface extension to 002's abstraction
-  would be a governed change, raised then, never hacked here).
+  would be a governed change, raised then, never hacked here). **VOICE-003:
+  voice notes follow the same discipline** (recorder-written files, not
+  in-memory bytes).
 - **Store `list()`/`pending()` materialize payloads** (the 002 interface
   returns full entries) — count-only use is O(total bytes) today. A
   count/stream API is deliberately NOT added silently (same governed-change
@@ -387,9 +413,17 @@ by tests; nothing about the frozen identity contract changed.
 - **No GPS/location metadata** — optional in the work order; the location
   permission is a mission-scoped decision for AISE-009/030, with the
   privacy considerations it implies.
-- **No audio in video segments** — visual evidence only; documented
-  decision (avoids RECORD_AUDIO; audio evidence, if ever required, has
-  different provenance semantics).
+- **No audio in video segments** — visual evidence only; the documented
+  decision stands. VOICE NOTES (VOICE-003) are the audio lane: a distinct
+  evidence kind (`VOICE_NOTE`, `capture.kind: "voice"`) with its own
+  provenance semantics — the microphone is never attached to video.
+- **Voice-note metadata honesty** — `voice.codec` is the recorder's
+  CONFIGURED encoder (a fact), `voice.duration.ms`/
+  `voice.sample.rate.hz` are device-MEASURED when measurable and honestly
+  ABSENT when not (never zero, never "unknown"), `voice.language.hint` is
+  an optional user-entered advisory. The microphone adapter itself is
+  platform glue exercised only on the physical-device lane (runtime
+  permission + physical microphone evidence are that lane's to own).
 - **One open session per device** — deliberate 005 scope; concurrent/paused
   multi-session scheduling is mission-executor territory (009/030).
 - **deviceId stability is app-data-scoped** — a locally generated UUID
@@ -425,6 +459,11 @@ by tests; nothing about the frozen identity contract changed.
 ## What is deliberately NOT here
 
 Mission logic and coverage coaching (AISE-007/009), capability adapters
-(006), upload/sync/transport (030), quality or readiness judgment of any
-kind (server-side assurance), location capture, audio recording,
-multi-device coordination.
+(006), upload/sync/transport beyond the existing sync seam (030), quality
+or readiness judgment of any kind (server-side assurance), location
+capture, audio in VIDEO segments (voice notes are the audio lane),
+multi-device coordination, any ASR provider integration (the `AsrProvider`
+seam is provider-gated BY DESIGN — wiring an engine is a governed backend
+work order, never a client concern; with no provider configured the voice
+note's transcript state is the explicit calm `asr_provider_not_configured`
+informational state, derived CLIENT-side from the evidence read view).

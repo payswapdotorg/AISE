@@ -32,17 +32,23 @@ import org.payswap.aise.core.session.CaptureSessionStatus
  * (backend/api booted in the sandbox by
  * apps/android/scripts/e2b-station/field-journey.sh):
  *
- *   capability assessment → guided capture (SYNTHETIC still + video bytes)
- *   → pause/resume → crash-recovery → finalize → authenticated HTTP submit
- *   → idempotent DUPLICATE re-submit → offline-defer + resume
- *   → server-verified session → local SYNCED marking.
+ *   capability assessment → guided capture (SYNTHETIC still + video +
+ *   voice-note bytes) → pause/resume → crash-recovery → finalize →
+ *   authenticated HTTP submit → idempotent DUPLICATE re-submit →
+ *   offline-defer + resume → server-verified session → the voice note's
+ *   CLIENT-ONLY transcript state from the REAL read view → local SYNCED
+ *   marking.
  *
  * HONEST FIDELITY CLASSIFICATION (never claimed as physical):
  *   - journey state machine, journal, recovery, manifest: DETERMINISTIC (pure JVM)
- *   - captured assets: SYNTHETIC (bytes generated in-test; no physical camera/sensor)
- *   - auth + evidence submission transport: REAL (HTTP against the real backend/api code)
- *   - camera/sensor hardware: NOT EXERCISED (a sandbox has none — the
- *     physical/device lane owns that evidence; it is never fabricated here)
+ *   - captured assets: SYNTHETIC (bytes generated in-test; no physical
+ *     camera/sensor/microphone — the VOICE-003 voice legs carry NO voice.*
+ *     metadata keys at all: nothing was measured or configured, so nothing
+ *     is asserted, never conflated with physical evidence)
+ *   - auth + evidence submission transport + evidence read view: REAL (HTTP
+ *     against the real backend/api code)
+ *   - camera/sensor/microphone hardware: NOT EXERCISED (a sandbox has none —
+ *     the physical/device lane owns that evidence; it is never fabricated here)
  *
  * Gating: the test is INERT unless AISE_STATION_SYNC_BASE_URL is set, so the
  * ordinary `./gradlew :app:test` gate (CI, no backend) is unaffected. On the
@@ -135,6 +141,21 @@ class FieldJourneyStationSyncTest {
             "no IMU/rotation-vector hardware in an E2B sandbox; the baseline snapshot records imuActive=false (never conflated with supported)",
         )
 
+        // VOICE-003: the guided VOICE-NOTE leg — SYNTHETIC bytes through the
+        // REAL voice-commit protocol (tmp → write → chunked hash → journal →
+        // atomic rename, acquisitionMethod VOICE_NOTE). No physical
+        // microphone exists on the station, so the honest voice.* metadata
+        // keys are simply ABSENT (nothing was measured or configured — never
+        // fabricated, never conflated with physical evidence).
+        val voiceWriter = controller.beginVoiceAsset(mediaType = "audio/mp4")
+        voiceWriter.targetFile.writeBytes(CaptureRuntimeFixtures.payload(seed = 31, size = 9_216))
+        voiceWriter.close(mapOf("capture.kind" to "synthetic-station-voice-note"))
+        record(
+            "guided-voice-capture",
+            "SYNTHETIC",
+            "9 KB deterministic voice-note bytes through the voice-commit protocol (no physical microphone; voice.* keys honestly absent)",
+        )
+
         // Guided-capture bookkeeping folds the assets into the gap steps.
         val bookkeeping = runtime.phase.value as FieldJourneyPhase.MissionActive
         assertTrue(
@@ -144,6 +165,12 @@ class FieldJourneyStationSyncTest {
         assertTrue(
             bookkeeping.evidenceByStep.containsKey("step-video"),
             "video gap must close: ${bookkeeping.evidenceByStep.keys}",
+        )
+        // VOICE-003: the optional voice-note step closes generically (the
+        // journey bookkeeping matches by AcquisitionMethod — no fork).
+        assertTrue(
+            bookkeeping.evidenceByStep.containsKey("step-voice-note"),
+            "voice-note gap must close: ${bookkeeping.evidenceByStep.keys}",
         )
         record("guided-capture-progress", "DETERMINISTIC", "evidenceByStep=${bookkeeping.evidenceByStep.keys}")
 
@@ -165,7 +192,8 @@ class FieldJourneyStationSyncTest {
         val recovered = reborn.openSessionRecord()
         assertNotNull(recovered, "the open session must be recovered from the journal")
         assertEquals(CaptureSessionStatus.CAPTURING, recovered!!.status)
-        assertEquals(2, recovered.assets.size)
+        // VOICE-003: still + video + the voice note = 3 recovered assets.
+        assertEquals(3, recovered.assets.size)
         record("recovery", "DETERMINISTIC", "journal replay recovered session=${recovered.sessionId} assets=${recovered.assets.size}")
 
         // ---- 6. finalize (DETERMINISTIC) -------------------------------------
@@ -203,7 +231,36 @@ class FieldJourneyStationSyncTest {
         assertTrue(stored.second.contains("\"sessionId\""), "stored session projection must carry the sessionId")
         record("server-verification", "REAL", "GET /v1/capture/sessions/$sessionId HTTP ${stored.first}")
 
-        // ---- 11. local SYNCED marking (DETERMINISTIC) ---------------------------
+        // ---- 11. VOICE-003: the voice note's CLIENT-ONLY transcript state (REAL) -
+        // The submitted session's voice note read back through the evidence
+        // read view (GET /v1/evidence/:contentId — the route VOICE-001's
+        // conformance pinned); the state is derived CLIENT-side from the
+        // view's own derivations set. The deployment declares NO ASR provider
+        // (readiness OPTIONAL_PROVIDERS: worldsculpt only), so the honest
+        // answer is the explicit calm informational state — never an error,
+        // never a fabricated transcript.
+        val voiceContentId = voiceNoteContentIdOf(manifestText)
+            ?: error("the station journey's session must carry the voice note")
+        val readClient = HttpEvidenceReadClient(baseUrl, token)
+        val readAnswer = readClient.readEvidenceView(voiceContentId)
+        assertTrue(readAnswer is EvidenceReadAnswer.Read, "the read view must answer: $readAnswer")
+        val transcriptState = VoiceNoteTranscripts.state(
+            (readAnswer as EvidenceReadAnswer.Read).inputsOf,
+            readAnswer.linksAsObject,
+        )
+        assertTrue(transcriptState is VoiceNoteTranscriptState.NoTranscript, "got $transcriptState")
+        assertEquals(
+            VoiceNoteTranscripts.REASON_ASR_PROVIDER_NOT_CONFIGURED,
+            (transcriptState as VoiceNoteTranscriptState.NoTranscript).reason,
+            "the deployment's honest no-ASR state must surface verbatim",
+        )
+        record(
+            "voice-transcript-state",
+            "REAL",
+            "GET /v1/evidence/$voiceContentId answered empty derivations → NO_TRANSCRIPT asr_provider_not_configured (the deployment's honest no-ASR state; derived client-side, no backend transcript route)",
+        )
+
+        // ---- 12. local SYNCED marking (DETERMINISTIC) ---------------------------
         val synced = reborn.markLatestFinalizedSynced()
         assertEquals(CaptureSessionStatus.SYNCED, synced.status)
         record("mark-synced", "DETERMINISTIC", "local session ${synced.sessionId} FINALIZED→SYNCED after server acceptance")
@@ -216,6 +273,19 @@ class FieldJourneyStationSyncTest {
     private fun sessionIdOf(manifestText: String): String {
         val parsed = JsonParser.parse(manifestText) as JsonValue.JsonObject
         return (parsed.members["sessionId"] as JsonValue.JsonString).value
+    }
+
+    /** The first VOICE_NOTE asset's content id of a finalized manifest (pure parse). */
+    private fun voiceNoteContentIdOf(manifestText: String): String? {
+        val parsed = JsonParser.parse(manifestText) as JsonValue.JsonObject
+        val assets = parsed.members["assets"] as? JsonValue.JsonArray ?: return null
+        for (value in assets.items) {
+            val asset = value as? JsonValue.JsonObject ?: continue
+            val method = (asset.members["acquisitionMethod"] as? JsonValue.JsonString)?.value
+            val contentId = (asset.members["contentId"] as? JsonValue.JsonString)?.value
+            if (method == "VOICE_NOTE" && contentId != null) return contentId
+        }
+        return null
     }
 
     /** Minimal HTTP probe (the transport carries its own request path). */
