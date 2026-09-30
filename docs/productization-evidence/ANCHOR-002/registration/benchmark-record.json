@@ -1,0 +1,74 @@
+{
+  "benchmarkId": "anchor001-synthetic-fixture/1",
+  "capability": "spatial-anchoring",
+  "failureObservations": [
+    {
+      "detail": "4 corrupted-response classes refused by the AISE-side guard with the field named (neg-006a..d: unknown top-level field, provider handle leak, non-finite matrix entry, refused response carrying hypotheses)",
+      "kind": "contract-mismatch"
+    },
+    {
+      "detail": "budget95 does not cover realized error on 6/10 stills — the first-order v2.1 uncertainty model over-covers weakly-supported stills' floors and misses strongly-supported ones' realized errors; empirical calibration deferred to the real-photoset production gate",
+      "kind": "perception-failure"
+    }
+  ],
+  "kind": "provider-benchmark-record",
+  "metrics": [
+    {
+      "detail": "per-still floor-point registration RMSE vs the fixture's exact ground truth, aggregate mean over 10/10 anchored stills (ANCHOR-001/results/measurements.json)",
+      "metric": "floorRegistrationRmseMean",
+      "unit": "m",
+      "value": 0.034969
+    },
+    {
+      "detail": "best still (ANCHOR-001/results/measurements.json aggregate)",
+      "metric": "floorRegistrationRmseMin",
+      "unit": "m",
+      "value": 0.003762
+    },
+    {
+      "detail": "worst still (ANCHOR-001/results/measurements.json aggregate)",
+      "metric": "floorRegistrationRmseMax",
+      "unit": "m",
+      "value": 0.088869
+    },
+    {
+      "detail": "10/10 synthetic-fixture stills anchored (ANCHOR-001/results/run-1.json)",
+      "metric": "anchoredStills",
+      "unit": "stills",
+      "value": 10
+    },
+    {
+      "detail": "9/9 negative cases answered with typed refusals carrying zero hypotheses (ANCHOR-001/results/negative-cases.json)",
+      "metric": "negativesFailClosed",
+      "unit": "cases",
+      "value": 9
+    },
+    {
+      "detail": "two separate provider processes, byte-identical deterministic-projection digests (457710cfaa6abfab…; ANCHOR-001/results/reproducibility.json)",
+      "metric": "deterministicRunsIdentical",
+      "unit": "runs",
+      "value": 2
+    },
+    {
+      "detail": "budget95 covers realized error on 4/10 stills — the honest calibration miss (6 exceptions, measurements.md §4) that gates the production adapter",
+      "metric": "budget95Coverage",
+      "unit": "ratio",
+      "value": 0.4
+    }
+  ],
+  "providerId": "sift-homography-spike",
+  "recordId": "13e0d24ce30df185da260e177c26cf39e223b1068266ba5110d04888be2d88ea",
+  "reproduction": {
+    "codeVersion": "0dae7343a780ecdb1358d3f90c7facf2661a0d0f",
+    "inputsDigest": "d270b8ffc74c838b4e4efd6f3ad3f0542b9606e66cdcbc5994a40bc6107660ac",
+    "statement": "the frozen ANCHOR-001 spike evidence (synthetic fixture anchor001-fixture-001: 8m x 6m floor, 200 px/m, shared procedural texture, analytic homographies < 2e-5 px); reproduce with `bun docs/productization-evidence/ANCHOR-001/aise-side/run_spike.ts` and `run_negatives.ts` at the recorded SHA — SYNTHETIC evidence, not a real photoset"
+  },
+  "resourceObservations": {
+    "compute": "local-cpu",
+    "latencyMsP50": 15083,
+    "latencyMsP95": 15225,
+    "memoryMiB": 512
+  },
+  "schemaVersion": "provider-benchmark/1",
+  "technologyVersion": "anchor001-adapter/1"
+}
