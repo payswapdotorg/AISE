@@ -102,14 +102,21 @@ register → record → pin, zero developer tools, live-proven).
 2. **Automatic spatial anchoring (L1)** — images mapped to plan/floor context
    automatically (OpenSpace's Spatial AI signature). Research-grade; AISE's
    task-directed gaps ledger is the honest alternative today.
-3. **Voice notes as evidence kind (L1)** — PARTIALLY CLOSED 2026-09-29 (evening):
-   the VOICE-001 merge (a409603, deployed and journey-verified) made
-   `VOICE_NOTE` a live evidence kind at the contract (1.1.0) + API level —
-   audio registers with honest metadata (device-known keys as strings),
-   transcripts degrade honestly (`asr_provider_not_configured` — never
-   fabricated), and the cross-version idempotency seam is closed (POST-012,
-   0b96844). Remaining, in flight: the capture LANES — web Capture surface
-   (VOICE-002 authorized 8b8d6d7, dispatch quota-gated) and the Android
-   capture lane (the named follow-up work order). Until a capture lane lands,
-   "captures voice on site" stays OpenSpace's claim; AISE's register accepts
-   voice as evidence today.
+3. **Voice notes as evidence kind (L1)** — WEB LANE CLOSED 2026-09-30 (early
+   hours): the VOICE-001 merge (a409603) made `VOICE_NOTE` a live evidence
+   kind at the contract (1.1.0) + API level — audio registers with honest
+   metadata (device-known keys as strings), transcripts degrade honestly
+   (`asr_provider_not_configured` — never fabricated), and the cross-version
+   idempotency seam is closed (POST-012, 0b96844). The WEB capture lane is
+   now LIVE: VOICE-002 merged 5ef7e11 (worker 7fadefa, Lead-gated — full
+   gate PASS at the branch 6342/0; deployed and journey-verified: DEPLOYED
+   PASS, W 26/0/0, X 16/0/0, M 22/0/1 BLOCKED_NO_KVM at 07f96a2 records) —
+   a dedicated `accept="audio/*"` entry through the same
+   digest→asset→registration path, honest voice metadata
+   (browser-reported codec, measured-when-measurable duration/sample-rate,
+   optional user-entered language hint), the client-only transcript state
+   from a new GET read seam, and the shared kebab-case kind badge
+   (voice-note) on both evidence-list surfaces. Remaining, in flight: the
+   ANDROID capture lane (VOICE-003 dispatched, chat d786e238). "Captures
+   voice on site" is now AISE's claim on the web; the field (Android) lane
+   follows.
