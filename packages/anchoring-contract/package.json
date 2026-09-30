@@ -1,0 +1,19 @@
+{
+  "name": "@aise/anchoring-contract",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE shared anchoring contract (ANCHOR-002, SHARED): the provider-neutral anchoring port lifted from the ANCHOR-001 spike into a typed zod-coded wire contract — AnchoringRequest/AnchoringResponse over the anchor002-anchoring-contract/1 process boundary, the rasterToScene HANDEDNESS LAW as a first-class field, the typed PARTIAL outcome with per-still results, the three port laws as tested invariants (no provider type crosses — unknown fields refused with the field named; AISE owns identity — ids echoed never invented, provider refs only in externalReferences; fail closed before anchoring with the declared gate order and zero hypotheses on every refusal), the AISE-side supervised subprocess runner (input digest, timeout, stdio JSON, output guard) and the evaluation-stage provider-registry registration of the OpenCV reference lane. Additive only — no canonical solution semantics, no frozen evidence tree, no app surface is touched.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "gen:registration": "bun scripts/generate-registration.ts"
+  },
+  "dependencies": {
+    "@aise/provider-registry": "workspace:*",
+    "@aise/shared-contracts": "workspace:*",
+    "zod": "^3.25.0"
+  }
+}

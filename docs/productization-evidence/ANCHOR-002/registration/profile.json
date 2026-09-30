@@ -1,0 +1,145 @@
+{
+  "benchmarkResults": [],
+  "capabilities": [
+    "spatial-anchoring"
+  ],
+  "computeProfile": {
+    "accelerator": "none",
+    "minimumCores": 2,
+    "offlineCapable": true,
+    "recommendedCores": 4,
+    "statement": "local CPU computation in a disposable provider process (the arms-length venv of the spike); no network, no cloud, no accelerator"
+  },
+  "costProfile": {
+    "currency": "USD",
+    "model": "none",
+    "quotaPolicy": "local execution — no quota, no metering, no third-party service",
+    "unitCost": 0
+  },
+  "description": "The ANCHOR-001 spike adapter (OpenCV 5.0.0 SIFT + RANSAC over a stdio JSON process boundary) registered as the reference lane of the anchor002-anchoring-contract/1 port. Evaluation-stage: the production adapter is gated on a real-photoset evidence run (ANCHOR-001/recommendation.md); the synthetic fixture proves the lane, not the world.",
+  "displayName": "OpenCV SIFT+RANSAC plan-homography anchoring — reference lane",
+  "failureModes": [
+    {
+      "behavior": "typed refusal insufficient-features / registration-unreliable — zero hypotheses",
+      "condition": "a textureless still or a plan/still pair without shared texture",
+      "kind": "unsupported-data"
+    },
+    {
+      "behavior": "AISE-side guard refusal naming the offending field — never admitted as evidence",
+      "condition": "response bytes that violate the closed output vocabulary",
+      "kind": "contract-mismatch"
+    },
+    {
+      "behavior": "typed refusal evidence-bytes-mismatch — the port trusts content ids, not paths",
+      "condition": "content-address mismatch between echoed id and re-hashed bytes",
+      "kind": "perception-failure"
+    },
+    {
+      "behavior": "typed timeout failure — bounded termination, no hang, no fabricated response",
+      "condition": "provider exceeds the supervised runner timeout (120 000 ms declared)",
+      "kind": "timeout"
+    }
+  ],
+  "inputContract": {
+    "contractId": "anchor002-anchoring-contract/1",
+    "fields": [
+      {
+        "description": "the pinned port id 'anchor002-anchoring-contract/1'",
+        "name": "portVersion",
+        "required": true,
+        "type": "string"
+      },
+      {
+        "description": "closed plan-context kind vocabulary (plan-raster)",
+        "name": "planContext.kind",
+        "required": true,
+        "type": "string"
+      },
+      {
+        "description": "AISE-owned 64-hex sha-256 content ids (echoed, never invented)",
+        "maxLength": 64,
+        "minLength": 64,
+        "name": "evidence[].contentId",
+        "required": true,
+        "type": "string"
+      },
+      {
+        "description": "redundancy floor — fewer stills refuse with insufficient-stills",
+        "min": 1,
+        "name": "policy.minStills",
+        "required": true,
+        "type": "integer"
+      }
+    ],
+    "modality": "image"
+  },
+  "kind": "provider-profile",
+  "latencyProfile": {
+    "expectedMsP50": 15083,
+    "expectedMsP95": 15225,
+    "statement": "cold-process wall times observed over the two spike runs (15 083 / 15 225 ms, python interpreter + numpy/opencv import included); the supervised runner's declared timeout is the spike's own 120 000 ms",
+    "timeoutMs": 120000
+  },
+  "license": {
+    "commercialUse": true,
+    "evaluationOnly": true,
+    "identifier": "Apache-2.0",
+    "intendedUse": "production floor-plan-to-photoset anchoring adapter behind the anchor002 anchoring contract",
+    "intendedUseCleared": false
+  },
+  "memoryProfile": {
+    "minimumMiB": 512,
+    "recommendedMiB": 1024,
+    "statement": "declared recommended footprint for the OpenCV 5.0.0 / numpy 2.5.3 process; memory was not separately measured during the spike (recorded honestly, not invented)"
+  },
+  "outputContract": {
+    "contractId": "anchor002-anchoring-contract/1",
+    "fields": [
+      {
+        "description": "closed whole-request outcome vocabulary: anchored | partial | refused",
+        "name": "status",
+        "required": true,
+        "type": "string"
+      },
+      {
+        "description": "normalized 3x3 plan-raster-px -> still-px homography (h[2][2] === 1; finiteness and normalization are enforced by the contract guard, not by range bounds)",
+        "name": "hypotheses[].transform.matrix",
+        "required": true,
+        "type": "number-array"
+      },
+      {
+        "description": "explicit 95% uncertainty budget in meters (never implicit)",
+        "min": 0,
+        "name": "hypotheses[].uncertainty.budget95M",
+        "required": true,
+        "type": "number"
+      },
+      {
+        "description": "declared support score in [0,1] — NOT a probability",
+        "max": 1,
+        "min": 0,
+        "name": "hypotheses[].confidence",
+        "required": true,
+        "type": "number"
+      }
+    ],
+    "modality": "document"
+  },
+  "provenanceContract": {
+    "configurationDigestRequired": true,
+    "inputDigestRequired": true,
+    "nativePayloadPolicy": "none",
+    "providerIdentityRequired": true
+  },
+  "providerId": "sift-homography-spike",
+  "schemaVersion": "provider-profile/1",
+  "supportedModalities": [
+    "image"
+  ],
+  "technologyVersion": "anchor001-adapter/1",
+  "uncertaintyCharacteristics": {
+    "calibration": "measurement-uncertainty",
+    "confidenceSeparateFromMeasurementUncertainty": true,
+    "notes": "declared first-order budget in meters (inlier-residual-first-order-v2.1); confidence is a support score, never a probability. The budget95 covers realized error on 4/10 synthetic-fixture stills (6 exceptions — measurements.md §4, the calibration finding); empirical calibration is gated on the real-photoset run"
+  }
+}

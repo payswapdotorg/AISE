@@ -1,0 +1,31 @@
+{
+  "benchmarkRecordDigests": [
+    "cfd99a346addf11dce018b36993fa61e1c467b0846a8a258094ba95ccac39917"
+  ],
+  "benchmarkRecordReferences": [
+    "13e0d24ce30df185da260e177c26cf39e223b1068266ba5110d04888be2d88ea"
+  ],
+  "consumerIdentity": {
+    "consumer": "AISE",
+    "surface": "provider-evaluation-control-plane"
+  },
+  "environmentFingerprint": {
+    "codeVersion": "0dae7343a780ecdb1358d3f90c7facf2661a0d0f",
+    "declaredPlatform": "Linux x86_64",
+    "declaredRuntime": "python 3.12.14 / opencv 5.0.0 / numpy 2.5.3",
+    "statement": "declared, not sensed — carried verbatim from the frozen ANCHOR-001 spike provenance (results/run-1.json, results/measurements.json); the control plane reads no environment"
+  },
+  "inputDigests": [
+    "d270b8ffc74c838b4e4efd6f3ad3f0542b9606e66cdcbc5994a40bc6107660ac"
+  ],
+  "kind": "provider-provenance-manifest",
+  "manifestId": "23c283c1067655c05698b015f197ccde83c4dabe1f9ba0dea01db10e49abe4f8",
+  "normalizedResultDigest": "457710cfaa6abfab3db0ec0d7bf141a36625c80182d3618938c066be07382953",
+  "profileReference": {
+    "profileDigest": "1514841201c234d419a8a92df0f51ebef722540a5c64fa9f88e1cbf0dd6ad3f9",
+    "providerId": "sift-homography-spike",
+    "technologyVersion": "anchor001-adapter/1"
+  },
+  "reproducibilityStatement": "the registered profile, the spike's exact request bytes (digest above), the deterministic-projection result digest (byte-identical across both runs) and the benchmark record (digest above) fully determine this evaluation — identical inputs reproduce the identical manifest; the ANCHOR-001 evidence tree is frozen at merge 0dae7343a780ecdb1358d3f90c7facf2661a0d0f",
+  "schemaVersion": "provider-provenance/1"
+}
