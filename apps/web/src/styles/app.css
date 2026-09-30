@@ -106,6 +106,47 @@ a:hover {
   border-radius: 4px;
 }
 
+/* POST-006-R1 (WCAG 1.3.1 / 2.4.6 — FINDING A11Y-1 remediation): the
+ * sr-only utility — content laid out for assistive tech, removed from
+ * the visual flow. The SAME canonical pattern the solution workspace's
+ * own stylesheet already carries (apps/web/src/solution/styles.ts
+ * `.sr-only`), lifted here so the app shell's always-loaded stylesheet
+ * provides it to every surface (the Interactive Solution surface's
+ * page-identity h1 is the first consumer). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* POST-006-R1 (WCAG 2.5.8 AA): the inline prose-link touch floor —
+ * every prose context the POST-006 live ledger measured below the
+ * 24×24 CSS-pixel minimum (dashboard journey links at 16px tall, the
+ * .crumbs links at 18px, the callout/notes/pane-foot/task-strip prose
+ * links at 15–19px). Vertical padding grows the measured target box
+ * past the floor WITHOUT touching the visual language: the link keeps
+ * its inline flow, its wrapping, its font, its color — only the tappable
+ * height grows (padding-block: 5px ≳ +10px on every measured context).
+ * The repo's interactive-element convention stays authoritative: real
+ * controls (buttons, nav links, inputs) size at --touch/36px; this floor
+ * is the prose-link complement, so no inline link on the key surfaces
+ * can again measure under the 24×24 gate. */
+.journey-body a,
+.crumbs a,
+.callout a,
+.task-strip-line a,
+.notes-list a,
+.pane-foot a,
+p[data-boq-class] a {
+  padding-block: 5px;
+}
+
 .skip-link {
   position: absolute;
   left: -9999px;
@@ -989,6 +1030,16 @@ input[type="text"] {
   font-size: 0.92rem;
   background: var(--surface);
   color: var(--ink);
+}
+
+/* POST-006-R1 (WCAG 2.5.8 AA): the native file input joins the input
+ * sizing convention — the browser default measured 21px tall on the
+ * capture and boq-lens surfaces (the POST-006 live ledger's two input
+ * touch-target findings). Only the box height is asserted (min-height:
+ * --touch, the same floor every other input clears); the native
+ * control's own chrome is untouched. */
+input[type="file"] {
+  min-height: var(--touch);
 }
 
 label.inline-label {

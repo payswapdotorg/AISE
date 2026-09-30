@@ -207,4 +207,36 @@ describe("PROD-012-R design-token WCAG contrast (apps/web/src/styles/app.css)", 
     const ratio = contrastRatio(token("--accent"), token("--surface"));
     expect(ratio).toBeLessThan(6); // still the ACCENT tone, not a second --ink
   });
+
+  test("--accent clears AA on the FULL light-surface set incl. the epistemic backgrounds (POST-006-R1: the Solution-surface links)", () => {
+    // POST-006-R1 pin extension — the escape cannot recur. The POST-006
+    // live ledger (acceptance-2026-09-26T06-21-18-061Z.md, run at the
+    // pre-POST-010 tree) recorded the Interactive Solution surface's links
+    // (p > a:nth-child(2)/(3) on --surface-2, .pane-foot > a on --bg) at
+    // serious color-contrast: 4.22 / 4.42:1 as the then-token #147d93.
+    // POST-010's #11748a remediation already clears every one of those
+    // pairs (4.76 / 4.98:1) — but the pin only covered the six palette
+    // surfaces, NOT the five epistemic chip backgrounds that --ink-faint's
+    // pin already guards (a link rendered on an epistemic background would
+    // have escaped the pin entirely). This block closes that gap: the
+    // SAME full light-surface set --ink-faint is pinned on, so ANY future
+    // link-on-light-surface consumer is covered (current computed minimum
+    // across the set: 4.62:1 on --derived-bg).
+    const lightSurfaces = [
+      "--bg",
+      "--surface",
+      "--surface-2",
+      "--warn-bg",
+      "--error-bg",
+      "--derived-bg",
+      "--epistemic-observed-bg",
+      "--epistemic-confirmed-bg",
+      "--epistemic-inferred-bg",
+      "--epistemic-other-bg",
+      "--epistemic-proposed-bg",
+    ];
+    for (const surface of lightSurfaces) {
+      expectAa("--accent", surface);
+    }
+  });
 });
