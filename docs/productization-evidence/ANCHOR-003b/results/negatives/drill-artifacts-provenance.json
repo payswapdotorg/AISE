@@ -1,0 +1,36 @@
+{
+  "manifestId": "anchor003b-drill-artifacts/1",
+  "declaration": "Every artifact in this directory is a DECLARED negative/drill artifact — never part of the REAL photoset, never counted in its 28 stills, fidelity class DERIVED-DRILL or DECLARED-OTHER-SITE as recorded below.",
+  "artifacts": [
+    {
+      "file": "still-flat-gray.jpg",
+      "kind": "synthesized textureless drill still (flat gray 1024x768, JPEG q95)",
+      "fidelityClass": "DERIVED-DRILL",
+      "purpose": "neg-003 — the insufficient-features gate"
+    },
+    {
+      "file": "still-plan-derived-1.jpg",
+      "kind": "the REAL photoset plan raster warped by a KNOWN homography (declared in tools/make_drill_artifacts.py DRILL_TRANSFORMS)",
+      "fidelityClass": "DERIVED-DRILL",
+      "purpose": "drill-012/013 — exercising the typed partial/anchored outcomes through the real adapter on the real plan (the ANCHOR-001 self-test discipline lifted to the contract seam)"
+    },
+    {
+      "file": "still-plan-derived-2.jpg",
+      "kind": "same, second known homography",
+      "fidelityClass": "DERIVED-DRILL",
+      "purpose": "drill-013"
+    },
+    {
+      "file": "still-plan-derived-3.jpg",
+      "kind": "same, third known homography",
+      "fidelityClass": "DERIVED-DRILL",
+      "purpose": "drill-013"
+    },
+    {
+      "file": "plan-other-site.jpg",
+      "kind": "REAL USGS NAIP orthoimagery of a DIFFERENT real site (Seattle Center, WA; USGSNAIPImagery ImageServer exportImage, EPSG:3857 box 2.0 km centered -122.3493/47.6247, exported 4000x4000, resized 1600x1600), retrieved 2026-10-01, public domain",
+      "fidelityClass": "REAL-OTHER-SITE",
+      "purpose": "neg-004 — the wrong-plan discriminator on REAL data: real public-domain imagery, wrong ground"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "verdictLine": "evaluation-kept — the substitution-contract §6 promotion gate answers the typed refusal(s): license-blocked",
+  "admitted": false,
+  "refusalKinds": [
+    "license-blocked"
+  ],
+  "checks": [
+    {
+      "gate": "license-use-clearance",
+      "passed": false,
+      "detail": "license 'Apache-2.0' is evaluation-only (commercialUse: true, intendedUseCleared: false) — the dataset/model-use rule forbids production promotion"
+    },
+    {
+      "gate": "benchmark-evidence",
+      "passed": true,
+      "detail": "1 benchmark record(s) attached, all referencing this provider+version"
+    },
+    {
+      "gate": "provenance-continuity",
+      "passed": true,
+      "detail": "1 provenance manifest(s) sealed against this profile digest"
+    }
+  ],
+  "realPhotosetBenchmarkRecordId": "a8c7e2bef6847da28b97d5b569583567ffe861f1fcc4fa3b622ec7b87f26dc53",
+  "registrationStateToday": "benchmarked",
+  "workerSelfPromotion": "NONE — this delivery records evidence and derives the gates' answer; the promotion decision belongs to the Tech Lead (workers may not self-approve or self-merge governed Work Items)",
+  "honestReading": "The real-photoset gate the roadmap named has now RUN (this evidence tree). The reference lane, exercised through the shipped supervised runner against the typed contract on a real 28-photo web-sourced photoset with per-photo provenance, refused every still at its declared quality gates — with the new photometric verification gate catching the plausible-but-wrong consensus sets a pure inlier floor would have admitted. The promotion gate's license dimension is unchanged by evidence (it is license-driven, not metric-driven — HFX-000), and the metric dimension now carries this honest negative result: an adapter whose reference lane cannot verify-anchor the real web-photo classes tested here is NOT production-ready for them. Both point the same way: keep the lane at evaluation stage; the synthetic-fixture benchmark (ANCHOR-001, frozen) proves the lane; this real-photoset benchmark proves the world is harder than the fixture — exactly what the ANCHOR-001 recommendation's own gate anticipated. Successor work (a near-nadir, vintage-matched, GSD-matched capture lane) is named in the deferment ledger."
+}

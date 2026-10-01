@@ -1,0 +1,140 @@
+{
+  "harness": "aise-side/run_negatives.ts — every case through runSupervisedAnchoring (packages/anchoring-contract): input-digest audit, SIGKILL supervision, closed-vocabulary output guard, identity-echo laws",
+  "failClosedRule": "every degraded request answers a typed refusal (or typed runner failure) with ZERO hypotheses — no fabricated anchors",
+  "counts": {
+    "negativesTotal": 14,
+    "negativesFailClosed": 14,
+    "negativesZeroHypotheses": 14,
+    "drills": 2
+  },
+  "cases": [
+    {
+      "caseId": "neg-001",
+      "kind": "no-plan",
+      "expectation": "plan-context-missing",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "status=refused reasonCode=plan-context-missing hypotheses=0 — \"no plan/floor context was supplied; anchoring requires one — refusing rather than fabricating…\"",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-002",
+      "kind": "single-image",
+      "expectation": "insufficient-stills",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "status=refused reasonCode=insufficient-stills hypotheses=0 — \"1 still(s) supplied; this method requires >= 2 (a single still yields an exactly-determined homography with no redundancy evidence — RANSAC …\"",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-003",
+      "kind": "textureless",
+      "expectation": "insufficient-features",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "status=refused reasonCode=insufficient-features hypotheses=0 — \"images below the 80-keypoint floor: 5272551f4a3e63727ee48c248ade065d44c4303d17309cf52091571e5a06a53a(0 keypoints) (textureless or feature-po…\"",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-004",
+      "kind": "mismatched-plan (real other-site ortho)",
+      "expectation": "registration-unreliable",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "status=refused reasonCode=registration-unreliable hypotheses=0 — \"no still could be registered to this plan (0/2 anchored). Per-still refusals: b7607dd54218b648…: 7 RANSAC inliers < floor; c7ea6a58cbfc6a9a……\"",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-005",
+      "kind": "unsupported-evidence-method (nonexistent bytes)",
+      "expectation": "evidence-method-unsupported",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "status=refused reasonCode=evidence-method-unsupported hypotheses=0 — \"evidence b7607dd54218b6486397ee929ce6ef935e34aaeb08dd133cf7ad561de52a79b9 has acquisitionMethod 'VIDEO_FOOTAGE'; this method supports ['STIL…\"",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-006a",
+      "kind": "corrupted-response/unknown-field",
+      "expectation": "guard refuses, field named",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "runner guard-refused: [unknown-field] mysteryPoseGraph: unknown field 'mysteryPoseGraph' (provider types may not cross the canonical anchoring boundary)",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-006b",
+      "kind": "corrupted-response/handle-leak",
+      "expectation": "guard refuses, field named",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "runner guard-refused: [unknown-field] provenance.siftKeyPointHandle: unknown field 'siftKeyPointHandle' (provider types may not cross the canonical anchoring boundary)",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-006c",
+      "kind": "corrupted-response/nan-matrix",
+      "expectation": "guard refuses (type-mismatch)",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "runner guard-refused: [type-mismatch] hypotheses[0].transform.matrix: hypotheses[0].transform.matrix must be a 3x3 matrix of finite numbers",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-006d",
+      "kind": "corrupted-response/refused-with-hypotheses",
+      "expectation": "guard refuses (refusal-discipline)",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "runner guard-refused: [refusal-discipline] hypotheses: a refused response must carry NO hypotheses (no fabricated anchors)",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-007",
+      "kind": "wrong-digest",
+      "expectation": "evidence-bytes-mismatch",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "status=refused reasonCode=evidence-bytes-mismatch hypotheses=0 — \"evidence 0000000000000000000000000000000000000000000000000000000000000000 bytes digest b7607dd54218b6486397ee929ce6ef935e34aaeb08dd133cf7ad5…\"",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-008",
+      "kind": "input-digest-mismatch",
+      "expectation": "runner typed failure input-digest-mismatch",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "runner typed failure input-digest-mismatch: provider echoed inputDigest sha256:0000000000000000000000000000000000000000000000000000000000000000 but the supervised runner wrote (and dig",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-009",
+      "kind": "unsupported-plan-kind",
+      "expectation": "plan-context-unsupported",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "status=refused reasonCode=plan-context-unsupported hypotheses=0 — \"planContext.kind 'plan-lineart' is not in ['plan-raster']…\"",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-010",
+      "kind": "unsupported-representation",
+      "expectation": "representation-unsupported",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "status=refused reasonCode=representation-unsupported hypotheses=0 — \"requestedAnchoring.representation 'camera_poses' is not in ['plan-homography']…\"",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "neg-011",
+      "kind": "handedness-violation (yDirection screen-down)",
+      "expectation": "input-contract-violation",
+      "outcome": "FAIL-CLOSED OK",
+      "detail": "status=refused reasonCode=input-contract-violation hypotheses=0 — \"planContext.rasterToScene must declare pixelsPerMeter>0, xDirection 'east-right', yDirection 'north-up', worldOriginPx [x,y] (THE HANDEDNESS…\"",
+      "zeroHypotheses": true
+    },
+    {
+      "caseId": "drill-012",
+      "kind": "typed-partial exercise (plan-derived drill still + real stills)",
+      "expectation": "status=partial with per-still results",
+      "outcome": "OUTCOME OK",
+      "detail": "status=partial anchored=1 refused=2 (the drill still anchored: true; per-still reasons: registration-unreliable)",
+      "zeroHypotheses": false
+    },
+    {
+      "caseId": "drill-013",
+      "kind": "typed-anchored exercise (plan-derived drill stills)",
+      "expectation": "status=anchored, all hypotheses present",
+      "outcome": "OUTCOME OK",
+      "detail": "status=anchored hypotheses=3 (3e797980…:500in/500m 757a448d…:496in/500m ff55fe59…:500in/500m)",
+      "zeroHypotheses": false
+    }
+  ]
+}

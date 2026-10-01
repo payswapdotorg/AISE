@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "portVersion": "anchor002-anchoring-contract/1",
+  "contractVersion": "1.0.0",
+  "executionId": "anchor003b-run-001",
+  "status": "refused",
+  "reasonCode": "registration-unreliable",
+  "refusalDetail": "no still could be registered to this plan (0/28 anchored). Per-still refusals: b7607dd54218b648…: photometric verification failed (NCC -0.032 < 0.25; 8 inliers); c7ea6a58cbfc6a9a…: photometric verification failed (NCC -0.001 < 0.25; 8 inliers); f199ac8f11b0733a…: photometric verification failed (NCC 0.026 < 0.25; 8 inliers); 55761c1852393ca0…: photometric verification failed (NCC 0.002 < 0.25; 8 inliers); c878fc94a6f52a69…: photometric verification failed (NCC -0.026 < 0.25; 8 inliers); 56909b8be8ffb5d4…: photometric verification failed (NCC -0.014 < 0.25; 8 inliers); b979459db7f58ca1…: photometric verification failed (NCC -0.031 < 0.25; 8 inliers); 50c09eb2bdc37cf4…: photometric verification failed (NCC -0.003 < 0.25; 9 inliers); 782802f68c21ba67…: photometric verification failed (NCC -0.005 < 0.25; 8 inliers); 0f9d1cf55036f52d…: 3 RANSAC inliers < floor; ceaf982ba83db85b…: 7 RANSAC inliers < floor; 2e8cbb3b090f0d48…: photometric verification failed (NCC 0.000 < 0.25; 8 inliers); b0547c2463c2df83…: photometric verification failed (NCC 0.008 < 0.25; 8 inliers); 1fc3624a4bea407d…: photometric verification failed (NCC 0.019 < 0.25; 8 inliers); 25dc935120fab905…: 7 RANSAC inliers < floor; 21b973429d7d3e7b…: photometric verification failed (NCC -0.006 < 0.25; 9 inliers); 42788c6707544a4e…: 7 RANSAC inliers < floor; eed6bcbe1afcc9d4…: 7 RANSAC inliers < floor; 0057f559f204aecf…: photometric verification failed (NCC -0.011 < 0.25; 9 inliers); b9e8ddc3d1f36f6f…: photometric verification failed (NCC 0.000 < 0.25; 9 inliers); b6afab39b6f9831c…: photometric verification failed (NCC -0.006 < 0.25; 8 inliers); 6fa53911c939b0c7…: 7 RANSAC inliers < floor; 420fae6806cc11f3…: 5 RANSAC inliers < floor; ea126d072589bee1…: photometric verification failed (NCC 0.014 < 0.25; 8 inliers); 1f1ecb82071710df…: photometric verification failed (NCC -0.023 < 0.25; 8 inliers); dd1ac9cb780b4b1f…: photometric verification failed (NCC 0.029 < 0.25; 8 inliers); a7d922b451b75053…: photometric verification failed (NCC -0.075 < 0.25; 8 inliers); b867bbf1d7be90cd…: photometric verification failed (NCC -0.037 < 0.25; 8 inliers). Zero fabricated anchors.",
+  "provenance": {
+    "providerId": "sift-homography-reference",
+    "providerVersion": "anchor003b-adapter/1",
+    "platform": "Linux x86_64",
+    "inputDigest": "sha256:1f57b3a3b2a8ba34d5ff9413bfcd93204068adba98eedad70a362b3eee89be27",
+    "adapterSourceDigest": "sha256:74b75f9837f10fe5884aaae8df074a1180588b30907611db6d1ddcbe6cd38bfd",
+    "components": [
+      {
+        "name": "opencv",
+        "version": "4.13.0"
+      },
+      {
+        "name": "numpy",
+        "version": "2.1.3"
+      },
+      {
+        "name": "python",
+        "version": "3.12.14"
+      }
+    ],
+    "config": {
+      "detector": "SIFT",
+      "siftContrastThreshold": 0.02,
+      "siftEdgeThreshold": 15,
+      "siftNfeaturesCap": 40000,
+      "matcher": "chunked-mutual-nearest-L2",
+      "matcherChunkRows": 512,
+      "maxMatchesPerPair": 500,
+      "ransacThresholdPx": 4,
+      "ransacMaxIters": 20000,
+      "ransacConfidence": 0.9999,
+      "minKeypointsPerImage": 80,
+      "minMatchesForEstimate": 12,
+      "minInliersPerStill": 8,
+      "minStills": 2,
+      "crossValMinInliers": 12,
+      "crossValMaxResidualPx": 20,
+      "minAnchoredNcc": 0.25,
+      "nccFootprintMinPixels": 2000,
+      "uncertaintyModel": "inlier-residual-first-order-v2.1",
+      "confidenceModel": "inliers-and-crossval-heuristic/1"
+    }
+  },
+  "hypotheses": [],
+  "executionTimeMs": 0,
+  "stageTimingsMs": {
+    "detect": 13820.829,
+    "match": 87488.89,
+    "estimate": 9217.517,
+    "crossval": 0
+  }
+}

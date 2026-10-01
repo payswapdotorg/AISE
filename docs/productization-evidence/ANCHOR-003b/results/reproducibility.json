@@ -1,0 +1,10 @@
+{
+  "method": "two separate supervised provider processes over IDENTICAL canonical request bytes (same executionId — required by the contract's full-depth deterministicProjection, which unlike the spike's defective array-replacer projection compares every nested field including provenance.inputDigest); digests over the contract's deterministicProjection (executionId, executionTimeMs, stageTimingsMs excluded — performance observations, not semantics)",
+  "run1DeterministicDigest": "sha256:739ab22a870342245ae91cdf9a57b786cda8d4bc58c3fc55c993f9a6a53f3393",
+  "run2DeterministicDigest": "sha256:739ab22a870342245ae91cdf9a57b786cda8d4bc58c3fc55c993f9a6a53f3393",
+  "identical": true,
+  "inputDigestRun1": "sha256:1f57b3a3b2a8ba34d5ff9413bfcd93204068adba98eedad70a362b3eee89be27",
+  "inputDigestRun2": "sha256:1f57b3a3b2a8ba34d5ff9413bfcd93204068adba98eedad70a362b3eee89be27",
+  "echoedInputDigest": "sha256:1f57b3a3b2a8ba34d5ff9413bfcd93204068adba98eedad70a362b3eee89be27",
+  "adapterSourceDigest": "sha256:74b75f9837f10fe5884aaae8df074a1180588b30907611db6d1ddcbe6cd38bfd"
+}

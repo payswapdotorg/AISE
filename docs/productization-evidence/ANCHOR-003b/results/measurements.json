@@ -1,0 +1,251 @@
+{
+  "photoset": {
+    "manifestId": "anchor003b-photoset/1",
+    "site": "Szawlowski Farm, North Hatfield MA",
+    "stills": 28,
+    "fidelityClass": "REAL (web-retrieved USDA public-domain photographs; never upgraded)",
+    "planRaster": "USGS NAIP orthoimagery export, EPSG:3857 north-up (the handedness law TRUE by construction)"
+  },
+  "outcome": {
+    "status": "refused",
+    "reasonCode": "registration-unreliable",
+    "anchoredStills": 0,
+    "refusedStills": 28,
+    "vocabulary": "anchored | partial | refused (the typed ANCHOR-002 outcome vocabulary)",
+    "perStill": [
+      {
+        "stillId": "still-a01",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-a02",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-a03",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-a04",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-a05",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-a06",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b01",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b02",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b03",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b04",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b05",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b06",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b07",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b08",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b09",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b10",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b11",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b12",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b13",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b14",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b15",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b16",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b17",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b18",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b19",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-b20",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-c01",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-c02",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      }
+    ]
+  },
+  "determinism": {
+    "identical": true,
+    "run1DeterministicDigest": "sha256:739ab22a870342245ae91cdf9a57b786cda8d4bc58c3fc55c993f9a6a53f3393",
+    "run2DeterministicDigest": "sha256:739ab22a870342245ae91cdf9a57b786cda8d4bc58c3fc55c993f9a6a53f3393",
+    "caveat": "asserted for this opencv/numpy/python/platform combination (recorded in provenance); cross-version or cross-platform relocation of summation orders is not claimed"
+  },
+  "runtime": {
+    "run1WallMs": 111850,
+    "run2WallMs": 111197,
+    "providerStageTimingsMs": {
+      "detect": 13820.829,
+      "match": 87488.89,
+      "estimate": 9217.517,
+      "crossval": 0
+    },
+    "note": "wall time includes the python interpreter + numpy/opencv import (cold process); stage timings are the provider's own observations"
+  },
+  "budgetRecalibration": {
+    "anchoring001Finding": "budget95 covers realized error on only 4/10 synthetic-fixture stills (ANCHOR-001 measurements.md §4, budget95Coverage 0.4 — the honest miss carried forward, never hidden)",
+    "realPhotosetStatus": "NOT DERIVABLE on this photoset: zero stills anchored, and no co-registered ground truth exists for web photographs (the mission's honesty clause) — realized registration error cannot be measured; the v2.1 declared-budget model carries forward UNCHANGED, and empirical calibration remains gated on an anchorable real photoset (recorded as the standing deferment)",
+    "measurementUncertaintyDiscipline": "confidence is a declared support score, never a probability; a budget is honest only if it covers the realized error — where realized error is not measurable, the budget stays a DECLARATION, never an implied measurement"
+  },
+  "provenance": {
+    "providerId": "sift-homography-reference",
+    "providerVersion": "anchor003b-adapter/1",
+    "platform": "Linux x86_64",
+    "inputDigest": "sha256:1f57b3a3b2a8ba34d5ff9413bfcd93204068adba98eedad70a362b3eee89be27",
+    "adapterSourceDigest": "sha256:74b75f9837f10fe5884aaae8df074a1180588b30907611db6d1ddcbe6cd38bfd",
+    "components": [
+      {
+        "name": "opencv",
+        "version": "4.13.0"
+      },
+      {
+        "name": "numpy",
+        "version": "2.1.3"
+      },
+      {
+        "name": "python",
+        "version": "3.12.14"
+      }
+    ],
+    "config": {
+      "detector": "SIFT",
+      "siftContrastThreshold": 0.02,
+      "siftEdgeThreshold": 15,
+      "siftNfeaturesCap": 40000,
+      "matcher": "chunked-mutual-nearest-L2",
+      "matcherChunkRows": 512,
+      "maxMatchesPerPair": 500,
+      "ransacThresholdPx": 4,
+      "ransacMaxIters": 20000,
+      "ransacConfidence": 0.9999,
+      "minKeypointsPerImage": 80,
+      "minMatchesForEstimate": 12,
+      "minInliersPerStill": 8,
+      "minStills": 2,
+      "crossValMinInliers": 12,
+      "crossValMaxResidualPx": 20,
+      "minAnchoredNcc": 0.25,
+      "nccFootprintMinPixels": 2000,
+      "uncertaintyModel": "inlier-residual-first-order-v2.1",
+      "confidenceModel": "inliers-and-crossval-heuristic/1"
+    }
+  }
+}

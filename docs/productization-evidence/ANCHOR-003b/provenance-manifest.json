@@ -1,0 +1,587 @@
+{
+  "manifestId": "anchor003b-photoset/1",
+  "site": {
+    "name": "Szawlowski Farm (potato farm), North Hatfield, Massachusetts, USA",
+    "centerLatLon": [
+      42.44,
+      -72.6235
+    ],
+    "description": "one real working farm in the Connecticut River valley, documented by USDA NRCS over two flight days during the October 2019 potato harvest"
+  },
+  "planRaster": {
+    "file": "plan-raster.jpg",
+    "contentDigestSha256": "7d2b2fc0a2c9e6e81a54f672d9eeb706442fe879f6a14d19f1c8b9ffab28baff",
+    "source": "USGS The National Map \u2014 NAIP orthoimagery (public domain), via the USGSNAIPImagery ImageServer exportImage endpoint",
+    "retrievedUtc": "2026-10-01",
+    "exportParameters": {
+      "service": "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage",
+      "bboxSR": "EPSG:3857 (Web Mercator \u2014 north-up, x-east-right by construction)",
+      "bboxCenterLonLat": [
+        -72.6235,
+        42.44
+      ],
+      "bboxHalfSizeMercatorM": 1200.0,
+      "exportSizePx": [
+        4000,
+        4000
+      ],
+      "finalSizePx": [
+        3000,
+        3000
+      ],
+      "resize": "INTER_AREA downsample 4000->3000, grayscale, JPEG quality 92"
+    },
+    "rasterToScene": {
+      "pixelsPerMeter": 1.693803,
+      "xDirection": "east-right",
+      "yDirection": "north-up",
+      "worldOriginPx": [
+        1500.0,
+        1500.0
+      ],
+      "derivation": "Web Mercator box of 2400 m centered at (42.44, -72.6235); conformal scale factor 1/cos(lat) = 1.355042; true ground size 1771.2 m over 3000 px = 0.590388 m/px => 1.693803 px/m; the scene origin is declared at the raster center. THE HANDEDNESS LAW: the north-up/east-right convention is TRUE for this raster by construction (EPSG:3857 axis-aligned export), never assumed."
+    },
+    "fidelityClass": "REAL",
+    "fidelityNote": "real public-domain orthoimagery of the same site \u2014 a plan RASTER with shared texture (not a line-art drawing; PORT.md \u00a77's open gap)",
+    "knownCaveat": "the NAIP mosaic vintage at this location is NOT the same day, month or crop state as the October-2019 harvest photographs \u2014 the fields' vegetation state differs; this is recorded honestly and is part of what the evidence run measures"
+  },
+  "stills": [
+    {
+      "stillId": "still-a01",
+      "file": "still-a01.jpg",
+      "contentDigestSha256": "b7607dd54218b6486397ee929ce6ef935e34aaeb08dd133cf7ad561de52a79b9",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445864456_ca199ae305_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445864456",
+      "sourceTitle": "20191022-NRCS-LSC-0977",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-a02",
+      "file": "still-a02.jpg",
+      "contentDigestSha256": "c7ea6a58cbfc6a9aba1cc5ce040d07363624158ed7cd00d4e026a73604d60514",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445386393_1c1b0be47c_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445386393",
+      "sourceTitle": "20191022-NRCS-LSC-0978",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-a03",
+      "file": "still-a03.jpg",
+      "contentDigestSha256": "f199ac8f11b0733a1fa9b29173326cb76da9bec9c961d52b4f1b23f76b1f64fb",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445385873_8e66debd47_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445385873",
+      "sourceTitle": "20191022-NRCS-LSC-0979",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-a04",
+      "file": "still-a04.jpg",
+      "contentDigestSha256": "55761c1852393ca014d2d4546835baf3e5b23b58abf4b5b76c6b54e77437f197",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445863486_cf0a3cc704_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445863486",
+      "sourceTitle": "20191022-NRCS-LSC-0980",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-a05",
+      "file": "still-a05.jpg",
+      "contentDigestSha256": "c878fc94a6f52a697c2f1e0847365c741aa7d423c03b7dc3d169c84527bab6ed",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445385178_9d3b53006c_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445385178",
+      "sourceTitle": "20191022-NRCS-LSC-0982",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-a06",
+      "file": "still-a06.jpg",
+      "contentDigestSha256": "56909b8be8ffb5d45a263d2d6dc87784f195e7284f8e434ef6c30ed60ee7fa86",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445384738_7567023183_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445384738",
+      "sourceTitle": "20191022-NRCS-LSC-0984",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b01",
+      "file": "still-b01.jpg",
+      "contentDigestSha256": "b979459db7f58ca1d2999f21d551162d6f4a4ffcb05bb30b8963c6054d33ec76",
+      "sourceUrl": "https://live.staticflickr.com/65535/49431751221_d475059609_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49431751221",
+      "sourceTitle": "20191018-NRCS-LSC-0001",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b02",
+      "file": "still-b02.jpg",
+      "contentDigestSha256": "50c09eb2bdc37cf4738f2e4bd3a2a308524c735c1139e2191cb81215e6c7343a",
+      "sourceUrl": "https://live.staticflickr.com/65535/49431744246_861d9e23b4_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49431744246",
+      "sourceTitle": "20191018-NRCS-LSC-0014",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b03",
+      "file": "still-b03.jpg",
+      "contentDigestSha256": "782802f68c21ba67a9a8f175e690a469bf826bcbba2330b96f1d01b8b8a45317",
+      "sourceUrl": "https://live.staticflickr.com/65535/48965693877_9985a585e6_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/48965693877",
+      "sourceTitle": "20191018-NRCS-LSC-0023",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b04",
+      "file": "still-b04.jpg",
+      "contentDigestSha256": "0f9d1cf55036f52da9a749b808ae238b9a884c72fa4bfacafb0eeb068f384eac",
+      "sourceUrl": "https://live.staticflickr.com/65535/48965691832_1c6d54b6ce_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/48965691832",
+      "sourceTitle": "20191018-NRCS-LSC-0032",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b05",
+      "file": "still-b05.jpg",
+      "contentDigestSha256": "ceaf982ba83db85b02217e8a5cb3a729bebb48ff6354a760734fe77921b3badc",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445829387_38b6fa558a_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445829387",
+      "sourceTitle": "20191018-NRCS-LSC-0198",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b06",
+      "file": "still-b06.jpg",
+      "contentDigestSha256": "2e8cbb3b090f0d482c027dc0e806f286443d24d429247f6ad625e32865718804",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445884077_923e64bf70_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445884077",
+      "sourceTitle": "20191018-NRCS-LSC-0388",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b07",
+      "file": "still-b07.jpg",
+      "contentDigestSha256": "b0547c2463c2df83a07631fbff1e8b58c71e18148b84a85914d8becfbabf8b93",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445433063_23d9caece6_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445433063",
+      "sourceTitle": "20191018-NRCS-LSC-0588",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b08",
+      "file": "still-b08.jpg",
+      "contentDigestSha256": "1fc3624a4bea407d8cb540853675e819e4cb6df9f76a6c18491d4381fe9b41f8",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445431443_a391ff34a8_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445431443",
+      "sourceTitle": "20191018-NRCS-LSC-0620",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b09",
+      "file": "still-b09.jpg",
+      "contentDigestSha256": "25dc935120fab9058de0c6da1181c296c4096d380bd848dc720876b64f851ac9",
+      "sourceUrl": "https://live.staticflickr.com/65535/49446126582_7fed5300dc_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49446126582",
+      "sourceTitle": "20191018-NRCS-LSC-0764",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b10",
+      "file": "still-b10.jpg",
+      "contentDigestSha256": "21b973429d7d3e7b6b7b312842b1ebc0ea9449f1140042abcbd7abb903900c92",
+      "sourceUrl": "https://live.staticflickr.com/65535/49446122267_6c8f467477_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49446122267",
+      "sourceTitle": "20191018-NRCS-LSC-0812",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b11",
+      "file": "still-b11.jpg",
+      "contentDigestSha256": "42788c6707544a4e4d6ad92850ab4100f7f17b66cce097911d9f5f1448588695",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445420383_42c053a40a_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445420383",
+      "sourceTitle": "20191018-NRCS-LSC-0816",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b12",
+      "file": "still-b12.jpg",
+      "contentDigestSha256": "eed6bcbe1afcc9d49de223475bca643a739814fc4a6ef4dbb2a292065c7718e9",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445896321_3b7e774096_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445896321",
+      "sourceTitle": "20191018-NRCS-LSC-0829",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b13",
+      "file": "still-b13.jpg",
+      "contentDigestSha256": "0057f559f204aecfa8c07ae95c1c257760156f3682a54ea35ff7011a8c3e8bed",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445895811_1f28547803_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445895811",
+      "sourceTitle": "20191018-NRCS-LSC-0841",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b14",
+      "file": "still-b14.jpg",
+      "contentDigestSha256": "b9e8ddc3d1f36f6f04b1f65dde9b9b09b00ca11a647ff7b82e2991a8586ba817",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445895136_4ae30ce3f5_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445895136",
+      "sourceTitle": "20191018-NRCS-LSC-0856",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b15",
+      "file": "still-b15.jpg",
+      "contentDigestSha256": "b6afab39b6f9831cf2790961692bf5cc1ca14fbdcf2cc888ea20b55633593d56",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445894746_4c8d9d0e8d_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445894746",
+      "sourceTitle": "20191018-NRCS-LSC-0862",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b16",
+      "file": "still-b16.jpg",
+      "contentDigestSha256": "6fa53911c939b0c7f617060a621c3fc7a53aa81f93ea526f0497d8b66bff02ee",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445806142_fa036fe6b0_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445806142",
+      "sourceTitle": "20191018-NRCS-LSC-0927",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b17",
+      "file": "still-b17.jpg",
+      "contentDigestSha256": "420fae6806cc11f39ce014e6327fb07caab895936b0651cb70f7c97123529925",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445657471_df1f7cc153_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445657471",
+      "sourceTitle": "20191018-NRCS-LSC-0937",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b18",
+      "file": "still-b18.jpg",
+      "contentDigestSha256": "ea126d072589bee161445297e5d05ef465c456e81e44f2c8e22b9d2089702474",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445175348_0da5384425_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445175348",
+      "sourceTitle": "20191018-NRCS-LSC-0954",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b19",
+      "file": "still-b19.jpg",
+      "contentDigestSha256": "1f1ecb82071710dfc03c2714561564bb8b04ad4b7f17a154ca62c74e84c6883a",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445175013_7ea0807bfd_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445175013",
+      "sourceTitle": "20191018-NRCS-LSC-0972",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-b20",
+      "file": "still-b20.jpg",
+      "contentDigestSha256": "dd1ac9cb780b4b1f194404dcb6f93c1c8ca0a7377ae6dbf048ec5da78bce4854",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445900297_2c53c47b63_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445900297",
+      "sourceTitle": "20191018-NRCS-LSC-1322",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-c01",
+      "file": "still-c01.jpg",
+      "contentDigestSha256": "a7d922b451b750537feaaac7bb82bf5aab4231bcb5ffe2b077e3c92c7881e474",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445527446_13f4c19eb4_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445527446",
+      "sourceTitle": "20191022-NRCS-LSC-0911",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "still-c02",
+      "file": "still-c02.jpg",
+      "contentDigestSha256": "b867bbf1d7be90cd70ff0f0d8b3beec4725025edfbedce007d319d116157a899",
+      "sourceUrl": "https://live.staticflickr.com/65535/49445527226_71b8fec9f3_b.jpg",
+      "landingPage": "https://www.flickr.com/photos/41284017@N08/49445527226",
+      "sourceTitle": "20191022-NRCS-LSC-0916",
+      "creator": "Lance Cheung, USDA (flickr: USDAgov)",
+      "license": {
+        "identifier": "PDM 1.0",
+        "statement": "public domain (US government work, 17 U.S.C. \u00a7 105)",
+        "commercialUse": true,
+        "rightsNote": "USDA photographs are public domain; attribution to USDA/Lance Cheung is courtesy, not a legal requirement."
+      },
+      "retrievedUtc": "2026-10-01",
+      "captureSession": "USDA NRCS Szawlowski Farm documentation flights, North Hatfield MA, 2019-10-18 and 2019-10-22",
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the Szawlowski Farm site \u2014 never synthetic, never upgraded"
+    }
+  ],
+  "counts": {
+    "stills": 28,
+    "planRasters": 1
+  },
+  "rightsSummary": "Every still is a public-domain USDA photograph; the plan raster is public-domain USGS NAIP orthoimagery. No license blocks the EVALUATION use of this photoset inside AISE evidence. (Production promotion is a separate substitution-contract \u00a76 decision.)"
+}
