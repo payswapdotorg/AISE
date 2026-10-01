@@ -1,0 +1,62 @@
+{
+  "kind": "provider-benchmark-record",
+  "schemaVersion": "provider-benchmark/1",
+  "providerId": "sift-homography-spike",
+  "technologyVersion": "anchor003b-adapter/1",
+  "benchmarkId": "anchor003b-real-photoset/1",
+  "capability": "spatial-anchoring",
+  "metrics": [
+    {
+      "metric": "stillsRequested",
+      "value": 28,
+      "unit": "stills",
+      "detail": "28 real web-retrieved USDA public-domain photographs of one real site (the Szawlowski Farm, North Hatfield MA) — fidelity class REAL, per-photo provenance in provenance-manifest.json"
+    },
+    {
+      "metric": "anchoredStills",
+      "value": 0,
+      "unit": "stills",
+      "detail": "0/28 — the reference lane refused EVERY real still; the whole request failed closed with reasonCode=registration-unreliable"
+    },
+    {
+      "metric": "photometricVerificationGate",
+      "value": 0.25,
+      "unit": "NCC floor",
+      "detail": "the ANCHOR-003b adapter's DECLARED new gate (minAnchoredNcc, provenance.config): every surviving RANSAC homography must verify photometrically (footprint NCC vs the plan) — without it, real web photos produce plausible-but-wrong 8-inlier consensus sets that a pure inlier-count floor would admit as anchors"
+    },
+    {
+      "metric": "deterministicRunsIdentical",
+      "value": 2,
+      "unit": "runs",
+      "detail": "two supervised runs over IDENTICAL canonical request bytes; the contract's FULL-DEPTH deterministicProjection digests byte-identical (739ab22a87034224…)"
+    },
+    {
+      "metric": "negativesFailClosed",
+      "value": 14,
+      "unit": "cases",
+      "detail": "14/14 negative cases fail-closed through the adapter+contract seam (the supervised runner's input-digest audit, guard and SIGKILL supervision between the adapter and the evidence); every refusal carries zero hypotheses; plus 2 typed-outcome drills (anchored + partial)"
+    }
+  ],
+  "failureObservations": [
+    {
+      "kind": "unsupported-data",
+      "detail": "0/28 real stills anchored. Dominant cause classes (measured during sourcing, recorded in run-record.md): (a) oblique vantage — web aerials overwhelmingly shoot 20-45 deg toward the horizon, breaking the ground-plane homography; (b) vintage/state mismatch — the NAIP mosaic's crop state differs from the October-2019 harvest photographs (two public ortho products of the same farm at different vintages cross-correlate at only NCC 0.27-0.32); (c) content mismatch — ground-level and close-up frames share no structure with the plan raster; (d) radiometry — dusk/night frames against day orthoimagery"
+    },
+    {
+      "kind": "perception-failure",
+      "detail": "the plausible-junk discriminator: unverified RANSAC consensus sets of 5-9 inliers formed on nearly EVERY still (28/28) and were refused by the declared photometric NCC gate — exactly the fabricated-anchor class the fail-closed law exists to prevent"
+    }
+  ],
+  "resourceObservations": {
+    "compute": "local-cpu",
+    "memoryMiB": 3072,
+    "latencyMsP50": 111197,
+    "latencyMsP95": 111850
+  },
+  "reproduction": {
+    "inputsDigest": "1f57b3a3b2a8ba34d5ff9413bfcd93204068adba98eedad70a362b3eee89be27",
+    "codeVersion": "see adapterSourceDigest (the evidence tree carries the adapter + the photoset bytes)",
+    "statement": "reproduce with `bun docs/productization-evidence/ANCHOR-003b/aise-side/run_photoset.ts` and `run_negatives.ts` at this tree — REAL photoset evidence (28 web-retrieved USDA photographs + a USGS NAIP plan raster), never synthetic-presented-as-real"
+  },
+  "recordId": "a8c7e2bef6847da28b97d5b569583567ffe861f1fcc4fa3b622ec7b87f26dc53"
+}
