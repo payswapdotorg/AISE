@@ -1,3 +1,259 @@
+# AISE — FINAL SUCCESSOR TECH LEAD HANDOFF
+
+**Reconciliation date:** 2026-10-01
+**Repository:** `payswapdotorg/AISE`
+**Audience:** fresh AISE Tech Lead / Architect / Orchestrator with up to 3 concurrent workers
+**Authority:** this addendum is the current orchestration authority and supersedes older “current”, “immediate priority”, or “remaining work” statements below. Historical evidence remains valid for the exact SHA/run it names.
+
+## 0. Current repository truth
+
+- Current `main` HEAD: **`0d56dc1e6224283f371c6276492dabb9e4440557`**.
+- The current HEAD is **65 commits ahead of `c34ad7b`**, the exact application SHA used for the completed R2 deployment/replay.
+- There are **no open GitHub issues** in the repository at this reconciliation.
+- `docs/productization-state.json` is stale relative to current `main`: its last reconciliation is 2026-09-28 and it still names `c34ad7b` as the R2 code-bearing tip. Treat that file as historical until the successor TL reconciles it against the live repository.
+- Do **not** describe `0d56dc1` as the current production artifact merely because later work has deployment evidence for earlier SHAs. Current-production status must be established from the exact SHA being claimed.
+
+## 1. Mission of the successor TL
+
+Operate from repository state alone. Preserve the frozen architecture, harvest evidence, prevent semantic drift, maintain exact-SHA release hygiene, and create new governed work only when a concrete product requirement or evidence gap requires it.
+
+The TL is simultaneously architect, reviewer, merge gate and orchestrator. Workers do not self-merge. The TL must independently reproduce material worker claims before acceptance.
+
+## 2. What is complete
+
+### Core implementation
+
+- **AISE-001 … AISE-041: 41/41 finalized.**
+- Core completion authority: `b9b031a85016ac50caba6cd66990707f7815b179`.
+
+### Productization
+
+- **PROD-001 … PROD-034: finalized.**
+- Productization status: ready for the declared production baseline.
+- PROD-015 readiness evidence remains valid for its own recorded SHA/deployment and must not be confused with later main history.
+
+### Provider/technology evaluation
+
+- **HFX-000, HFX-101, HFX-201, HFX-204, HFX-301, HFX-302, HFX-303, HFX-401: finalized.**
+- Provider evaluation is evidence-driven and does not make an external provider canonical.
+
+### Post-production hardening
+
+The original R0/R1/R2 program is complete and was exact-SHA replay-proven at `c34ad7b`:
+- deployed-check 7/7;
+- W 24/24;
+- M 22 PASS + 1 honest `BLOCKED_NO_KVM`;
+- X 15/15;
+- accessibility at the deployed replay: 0 critical / 0 serious.
+
+Subsequent accepted follow-on work includes:
+- POST-006-R1 accessibility remediation: serious findings reduced to **zero**; four remaining moderates are the explicitly held QA-005-B nested-main finding, which requires separate semantic governance rather than a silent accessibility-lane patch.
+- POST-007: SiteTwin evidence card wired to the live evidence register.
+- POST-008: `element_addition` target semantics hardened; existing-node IDs fail closed.
+- POST-009: typed failure reasons surfaced end-to-end.
+- POST-010: accessibility driven to zero critical/serious violations across the audited 9-surface set and both viewports.
+- POST-011: Interactive Solution mobile fit and deep-route/anchor hardening.
+- R3 production journey revalidation: canonical journey, adversarial checks, and layer alignment revalidated with live evidence at the then-deployed artifact.
+
+### Reality materialization
+
+- Capture → evidence registration → Reality materialization → SiteTwin pin crossing is closed and live-proven.
+- No second reality authority was introduced.
+
+### Voice notes
+
+- **VOICE-001, VOICE-002, VOICE-003: implemented and accepted.**
+- Web and Android voice capture use the governed evidence contract and one registration/sync identity path.
+- Android station evidence is reproducible and explicitly classified.
+- A **physical-device runtime-permission lane remains unexecuted**; do not upgrade emulator/E2B evidence into physical-device evidence.
+
+### Geometry/BIM
+
+- **GBIM-000 … GBIM-003: complete as exploratory technology evaluation.**
+- Follow-through **GBIM-FT-001: complete.**
+- Adaptation direction recorded: OCCT via OCP/CadQuery for exact geometry, IfcOpenShell + IFC4 for IFC/OpenBIM interoperability, Three.js + web-ifc for browser presentation.
+- None of these is an AISE authority; all remain behind adapter/presentation boundaries.
+- **GBIM-004 shared geometry contract is DEFINED but intentionally DEFERRED** until a concrete product requirement requires execution.
+- No fork and no default-provider mandate was authorized.
+
+### Spatial anchoring
+
+- **ANCHOR-001:** deterministic synthetic spike complete; 10/10 anchors, 3.5 cm mean floor-registration RMSE, byte-identical deterministic output, negatives fail closed; ADAPT direction.
+- **ANCHOR-002:** typed shared contract, handedness law, PARTIAL outcome, supervised runner, provider-registry evaluation gate complete.
+- **ANCHOR-003a:** plan-context seam complete; 49 new tests; handedness round-trip proven; no anchoring execution added to the plan-context import lane.
+- **ANCHOR-003b:** real-photoset production evaluation complete. **28/28 real stills refused; 0/28 anchored; zero fabricated hypotheses; 14/14 negatives fail closed.** Promotion remains **evaluation-kept**, with a typed license-blocked refusal recorded. This is an honest frontier result, not a failed implementation claim.
+- Therefore **automatic images→plans spatial anchoring is still not promoted/default production capability**.
+
+## 3. Frozen architecture — do not redesign
+
+AISE remains one engineering-domain core with three capability layers and three client adapters:
+
+```
+LAYER 1 — REALITY
+capture → spatial context → evidence → reconstruction → readiness
+
+LAYER 2 — UNDERSTANDING
+engineering question → Evidence Envelope → reasoning → deterministic checks → action
+
+LAYER 3 — SOLUTION
+problem → EngineeringOperation → proposed state → validation → solution BOQ
+
+                    ONE DOMAIN CORE
+                 /        |        \\
+             BROWSER    MOBILE    DESKTOP
+             ADAPTER    ADAPTER   ADAPTER
+```
+
+Canonical authorities:
+- Reality Graph — canonical engineering-model authority;
+- Evidence Graph — provenance authority;
+- Assurance Engine — task-readiness authority;
+- Verification Engine — deterministic verification authority;
+- BOQ Graph — domain representation, never a second reality authority;
+- Solution Graph — proposed solution operation/state history authority.
+
+Clients, renderers, LLMs, agents and external providers are not authorities.
+
+## 4. Non-negotiable truth rules
+
+- Raw field evidence is immutable.
+- Derived models are versioned.
+- OBSERVED, INFERRED, CONFIRMED and PROPOSED remain distinct.
+- UNKNOWN / NOT_OBSERVED / OCCLUDED never imply absence.
+- Confidence is not measurement uncertainty.
+- Estimates cannot silently become measurements.
+- Proposed state cannot mutate observed reality.
+- Executed outcomes become observed only through new evidence and the existing assurance/verification process.
+- Unsupported means refusal, not fabricated output.
+
+## 5. Interactive solution contract
+
+The canonical solution flow is:
+
+```
+CURRENT REALITY
+→ ENGINEERING PROBLEM / INTENT
+→ INTERACTIVE SOLUTION
+→ DIRECT MANIPULATION OR AGENT COMMAND
+→ TYPED EngineeringOperation
+→ PROPOSED STATE
+→ VALIDATE
+→ SOLUTION BOQ
+→ BOQ LINE ↔ OPERATION ↔ GEOMETRY
+→ REVIEW / REVISE
+```
+
+Direct manipulation and natural-language authoring must resolve to identical operation semantics where they express the same intent.
+
+Agents may interpret intent, request clarification, explain, navigate, and invoke bounded deterministic tools. Agents may not invent measurements/materials/evidence, write authoritative geometry directly, bypass validation, declare readiness/approval, or mutate observed reality.
+
+## 6. Technology substitution law
+
+Read and enforce `spec/technology-substitution-contract.md` before introducing or promoting any provider.
+
+A substitution must preserve domain semantics, authority boundaries, epistemic state, provenance, uncertainty, assurance thresholds, verification behavior, client contracts and historical interpretability.
+
+Required evidence includes contract conformance, semantic equivalence, negatives/discrimination, provenance continuity, explicit unsupported/failure behavior, dependent regression, compatibility/rollback when warranted, and licensing/use clearance.
+
+Never turn a spike result, demo, provider identity, or visual output into an architectural authority.
+
+## 7. Immediate TL actions
+
+### Action A — reconcile current main
+
+Treat **`0d56dc1`** as the current codebase. Read the current handoff, machine state, architecture lock, productization state, follow-on scorecards, and latest evidence trees. Recompute what is actually covered by production evidence.
+
+Do not assume the R2 `c34ad7b` replay covers later code-bearing commits.
+
+### Action B — restore release hygiene
+
+Determine the exact currently deployed production SHA. If `0d56dc1` (or a newer main) is intended to become current production, deploy that exact SHA and run the repository's required deployed replay against that exact deployment.
+
+At minimum, preserve the established W/M/X, deployed-check, runtime-error, accessibility, provenance, cross-adapter, source-BOQ/solution-BOQ and outcome-continuity evidence appropriate to the affected surfaces.
+
+The declaration must name:
+- exact Git SHA;
+- exact Vercel deployment ID/URL;
+- environment/config fingerprint as appropriate;
+- exact test/replay counts;
+- honest environmental blocks.
+
+A later main SHA is never covered by an earlier deployment record.
+
+### Action C — reconcile machine state
+
+After release evidence is established, update `docs/productization-state.json` (and any linked roadmap/state docs) so the repository no longer presents 2026-09-28 `c34ad7b` as the latest code-bearing reality.
+
+Preserve historical records; add a new dated reconciliation rather than rewriting history.
+
+### Action D — do not invent successor work
+
+There are currently no open GitHub issues. Do not manufacture a new roadmap just because the original roadmap is green.
+
+Create a new governed Work Item only when there is a specific product requirement, an evidence-backed defect, a required physical-device validation, or a clearly bounded technology/policy question.
+
+The current evidence frontiers are:
+1. latest-main deployment/replay reconciliation;
+2. physical Android device permission/runtime validation;
+3. automatic spatial anchoring promotion remains unproven and should stay evaluation-kept;
+4. GBIM-004 remains deferred until required by product scope.
+
+## 8. Concurrency protocol for future work
+
+Use at most 3 concurrent workers only when their protected surfaces can be made independent.
+
+Each worker must declare:
+- Work Item ID;
+- exact base SHA;
+- protected paths/surfaces;
+- implementation or experiment scope;
+- acceptance criteria;
+- negative cases;
+- expected evidence;
+- out-of-scope items.
+
+Workers never self-merge. The TL harvests, reproduces, checks protected surfaces, runs targeted/full verification, reviews composition, merges, and refreshes state.
+
+Every accepted worker package must include exact SHAs, commands, tests/results, provenance, failure/unsupported cases, security/tenant considerations, licensing/use status, limitations, and successor handoff; raise an ACR when architecture changes.
+
+## 9. Acceptance discipline
+
+Never accept:
+- documentation-only claims as runtime evidence;
+- emulator evidence as physical-device evidence;
+- confidence as measurement uncertainty;
+- provider IDs as canonical identities;
+- visual similarity as engineering equivalence;
+- unsupported cases silently converted into estimates or guesses;
+- a current-production claim without exact-SHA deployment evidence;
+- a new cross-layer semantic change hidden inside a narrower worker lane.
+
+When a defect crosses a protected semantic boundary, stop and create a governed shared Work Item rather than patching around the boundary.
+
+## 10. First deliverable from the successor TL
+
+The first TL checkpoint should be a repository-grounded reconciliation stating:
+
+```
+CURRENT MAIN SHA
+        ↓
+CURRENT DEPLOYED SHA
+        ↓
+EXACT-SHA EVIDENCE COVERAGE
+        ↓
+PRODUCTION / NON-PRODUCTION DELTA
+        ↓
+OPEN EVIDENCE FRONTIERS
+        ↓
+AUTHORIZED NEXT WORK (if any)
+```
+
+Do not report “complete” merely because the historical roadmap is green. Report the exact state of the repository, the exact state of production, and the exact remaining evidence frontier.
+
+**This document is the takeover contract. Start from the repository, not from prior chat.**
+
+---
+
 # AISE — Final Tech Lead / Architect Handoff
 
 Status: CURRENT / DURABLE / SELF-CONTAINED  
