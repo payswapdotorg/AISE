@@ -28,6 +28,11 @@
 
 import type { EvidencePaneView, RealityPaneView, ShellAuthorizationDecision, ShellAuthorizationPort } from "../shell";
 import { scenarioReadRequest, type ViewerScenario } from "../viewer";
+import { activePlanContextOfVersion } from "./reality-recorder";
+// ANCHOR-003a (read-only consumer): the PlanContext type comes from the
+// contract's own request module — never the barrel index (which
+// re-exports the supervised runner's node:child_process).
+import type { PlanContext } from "../../../../packages/anchoring-contract/src/request";
 
 /* ------------------------------------------------------------------ */
 /* The injected transport                                              */
@@ -1804,6 +1809,75 @@ export async function loadLatestRealityVersionLive(
       },
     };
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* ANCHOR-003a — the active plan-context read seam (GET the latest     */
+/* version, find the stable annotation node — no backend change: the   */
+/* route already answers the full graph version)                       */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Load the project's ACTIVE plan context LIVE —
+ * `GET /v1/reality/projects/:id/versions/latest`, then the stable
+ * `active-plan-context` annotation node is read back through the
+ * plan-context seam's typed reader (`planContextOfAnnotationNode` — the
+ * contract's own planContextSchema validates the rebuild; a malformed
+ * node is a NAMED typed refusal, never coerced). A 404 (no snapshot
+ * yet) and a version without the annotation node are the HONEST EMPTY
+ * state (`active: null`), never an error.
+ */
+export async function loadActivePlanContextLive(
+  fetchImpl: FetchLike,
+  projectId: string,
+): Promise<
+  | {
+      readonly ok: true;
+      readonly active: PlanContext | null;
+      readonly versionId: string | null;
+      readonly endpoint: string;
+    }
+  | { readonly ok: false; readonly failure: ApiFailure }
+> {
+  const endpoint = `/v1/reality/projects/${encodeURIComponent(projectId)}/versions/latest`;
+  const result = envelopePayload(await fetchJson(fetchImpl, endpoint), endpoint);
+  if (!result.ok) {
+    if (result.failure.kind === "http" && result.failure.status === 404) {
+      return { ok: true, active: null, versionId: null, endpoint };
+    }
+    return result;
+  }
+  const payload = result.value as Record<string, unknown>;
+  let version: GraphVersionLike;
+  try {
+    version = validateGraphVersion(payload.version);
+  } catch (error) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: error instanceof Error ? error.message : "reality version failed validation",
+      },
+    };
+  }
+  const read = activePlanContextOfVersion({
+    versionId: version.versionId,
+    nodes: version.nodes.map((node) => ({
+      nodeId: node.nodeId,
+      kind: node.kind,
+      properties: node.properties,
+    })),
+  });
+  if (!read.ok) {
+    return {
+      ok: false,
+      failure: {
+        kind: "invalid",
+        detail: `the active plan-context annotation could not be read back: ${read.defects.join("; ")}`,
+      },
+    };
+  }
+  return { ok: true, active: read.active, versionId: version.versionId, endpoint };
 }
 
 /* ------------------------------------------------------------------ */

@@ -441,6 +441,7 @@ export function EvidenceRegistrationPanel({
   capturedAtDefault,
   voiceMeasurement = null,
   onRegistered = null,
+  initialAcquisitionMethod = null,
 }: {
   readonly projectId: string;
   readonly fetchImpl: (input: string, init?: RequestInit) => Promise<Response>;
@@ -452,13 +453,20 @@ export function EvidenceRegistrationPanel({
   readonly voiceMeasurement?: VoiceNoteMeasurementState | null;
   /** VOICE-002: optional callback with the register's own answer on success. */
   readonly onRegistered?: ((record: EvidenceRegistrationRecord) => void) | null;
+  /**
+   * ANCHOR-003a: an optional lane-declared initial acquisition method
+   * (the plan lane's honest DOCUMENT_REGION prefill for imported plan
+   * drawings). Absent/null → the media-type default, byte-identical to
+   * before (the same single registration path — additive, not forked).
+   */
+  readonly initialAcquisitionMethod?: string | null;
 }): ReactNode {
   const [contentId, setContentId] = useState(record.contentId);
   const [byteSize, setByteSize] = useState(String(record.byteSize));
   const [mediaType, setMediaType] = useState(record.mediaType);
   const [capturedAt, setCapturedAt] = useState(capturedAtDefault);
-  const [acquisitionMethod, setAcquisitionMethod] = useState(() =>
-    defaultAcquisitionMethod(record.mediaType),
+  const [acquisitionMethod, setAcquisitionMethod] = useState(
+    initialAcquisitionMethod ?? defaultAcquisitionMethod(record.mediaType),
   );
   const [sessionId, setSessionId] = useState("");
   const [languageHint, setLanguageHint] = useState("");
