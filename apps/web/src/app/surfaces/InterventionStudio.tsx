@@ -143,6 +143,7 @@ import { InterventionToSolutionCard } from "../solution-composition";
 import { formatRoute } from "../router";
 import { plural, shortId } from "../format";
 import { defaultOrganizationId, storeOrganizationId } from "./Projects";
+import { PlanContextPanel } from "./RealityRecorder";
 
 /**
  * The session org context for panels that do not collect an org field:
@@ -362,6 +363,19 @@ export function StudioBody({
       {/* POST-004: the staged journey — the current stage + the next allowed
           action, derived from the loaded records only. */}
       <StageProgressCard data={data} />
+      {/* ANCHOR-003a: the plan-context seam's readable surface — list the
+          imported plan rasters, read the active one back from the graph,
+          and select/record a raster as the project's active plan context
+          (list/select only: importing stays the reality recorder surface's
+          lane). One component, two mounts, no fork. */}
+      <PlanContextPanel
+        projectId={data.projectId}
+        mode={demo ? "demo" : "api"}
+        principalId={environment.principalId}
+        fetchImpl={environment.fetchImpl}
+        onRecorded={onReload}
+        withImport={false}
+      />
       {data.unknownScenario === null ? null : (
         <Card title="Unknown scenario" badge={<DataBadge mode={data.mode} />}>
           <div className="state state-error" role="alert" data-unknown-scenario={data.unknownScenario}>
