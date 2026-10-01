@@ -1,0 +1,108 @@
+AISE deployed-browser verification (PROD-012)
+target: https://aise-tan.vercel.app (the default)
+chromium: /home/z/.cache/ms-playwright/chromium-1208/chrome-linux64/chrome
+chromium launched (--no-sandbox, single instance, sequential checks)
+==> availability
+==> shell-renders
+==> session-lifecycle
+==> responsive-desktop
+==> responsive-mobile
+==> accessibility
+==> console-runtime-errors
+cleanup: browser closed
+— check results —
+  PASS  availability
+    pass  GET / answered on the target origin (no off-origin redirect) — final URL /
+    pass  GET / → HTTP 200 — status 200
+    pass  GET / <title> is the product title "AISE — AI Site Engineer" — title "AISE — AI Site Engineer"
+    pass  GET / is served by the deployment host (x-vercel-id header present) — x-vercel-id hkg1::pw2z8-1790861447380-85c013a729ce
+    pass  GET /healthz → HTTP 200 — status 200
+    pass  GET /healthz body ok === true — ok = true
+    pass  GET /readyz → HTTP 200 — status 200
+    pass  GET /readyz body ok === true — ok = true
+    pass  GET /readyz cost.ledger === "redis" (the deployed Redis pair is live) — ledger = redis
+    pass  GET /readyz auth.status === "enabled" (the session-lifecycle precondition) — auth.status = enabled, mode = demo-open
+    healthz service=aise-api version=0.1.0
+    readyz artifacts backend=r2 status=available
+    readyz cost window=2026-10
+  PASS  shell-renders
+    pass  the document title is the product title — title "AISE — AI Site Engineer"
+    pass  the app root (#app) mounted non-trivial DOM — root children 1, descendants 13
+    pass  the document is not blank — body text 355 chars — "Sign in to AISE This deployment requires a session for the product surfaces. Sign in as a"
+    pass  the product shell landmark "Sign in to AISE" is present (the auth gate) — gate heading "Sign in to AISE"
+    pass  the documented demo path ("Enter demo") is offered — button "Enter demo"
+  PASS  session-lifecycle
+    pass  POST /v1/auth/demo → 2xx — status 200, body {"ok":true,"principal":{"displayName":"Demo Evaluator","roleLabel":"Founder","kind":"demo"}}
+    pass  POST /v1/auth/demo mints the demo principal — principal {"displayName":"Demo Evaluator","roleLabel":"Founder","kind":"demo"}
+    pass  the HttpOnly session cookie (aise_session) was set — value v1.sess-cf82dcacb7a20eae…[redacted] maxAge≈604800s sameSite=Strict
+    pass  the session cookie is HttpOnly and Secure — httpOnly=true secure=true
+    pass  GET /v1/auth/whoami → 200 (authenticated, same browser context) — status 200
+    pass  GET /v1/auth/whoami ok === true with the minted principal — principal {"displayName":"Demo Evaluator","roleLabel":"Founder","kind":"demo"}
+    pass  DELETE /v1/auth/sessions/current → 2xx — status 200, body {"ok":true}
+    pass  DELETE /v1/auth/sessions/current body ok === true — ok = true
+    pass  GET /v1/auth/whoami after logout → 401 (fail-closed; a 200 would be critical) — status 401
+    pass  the 401 carries the typed fail-closed error envelope — error.code = authentication_required
+    session cookie evidence: name=aise_session value-prefix=v1.sess-cf82dcacb7a20eae…[redacted] path=/ sameSite=Strict maxAge≈604800s
+    post-logout 401 code=authentication_required (the real browser applies the logout Set-Cookie, so no session is presented; PROD-011B's curl walk kept the cookie and observed session_invalid — the same fail-closed gate from its two documented sides)
+    post-logout cookie state: 0 cookie(s) remain in the jar (the server-side session record is deleted — whoami 401 is the proof)
+    cleanup: ok (logout in the check body)
+  PASS  responsive-desktop
+    pass  no horizontal overflow on the anonymous landing (gate) — scrollWidth 1440 vs innerWidth 1440 (budget +1)
+    pass  no horizontal overflow on the signed-in shell (desktop 1440x900) — scrollWidth 1440 vs innerWidth 1440 (budget +1)
+    pass  the shell landmark (header.app-header) is visible — visible=true brand="AISE"
+    pass  the primary navigation rail is visible at the desktop breakpoint — nav#primary-nav visible=true
+    pass  no horizontal overflow on #/projects/proj-demo-001/solution (the interactive solution workspace (the mount's own panes)) — scrollWidth 1440 vs innerWidth 1440 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-riverside-refit/capture (the capture/upload surface) — scrollWidth 1440 vs innerWidth 1440 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-riverside-refit/sitetwin (the SiteTwin/evidence surface) — scrollWidth 1440 vs innerWidth 1440 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-riverside-refit/boq-lens (the BOQ lens surface) — scrollWidth 1440 vs innerWidth 1440 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-riverside-refit/case (the engineering case surface) — scrollWidth 1440 vs innerWidth 1440 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-riverside-refit/intervention (the intervention studio surface) — scrollWidth 1440 vs innerWidth 1440 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-riverside-refit/outcomes (the outcomes surface) — scrollWidth 1440 vs innerWidth 1440 (budget +1)
+    cleanup: ok (Sign out control; the gate returned)
+  PASS  responsive-mobile
+    pass  no horizontal overflow on the anonymous landing (gate) — scrollWidth 390 vs innerWidth 390 (budget +1)
+    pass  no horizontal overflow on the signed-in shell (mobile 390x844) — scrollWidth 390 vs innerWidth 390 (budget +1)
+    pass  the shell landmark (header.app-header) is visible — visible=true brand="AISE"
+    pass  the navigation drawer toggle is visible at the mobile breakpoint — nav-toggle visible=true
+    pass  no horizontal overflow with the mobile navigation drawer open — scrollWidth 390 vs innerWidth 390 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-demo-001/solution (the interactive solution workspace (the mount's own panes)) — scrollWidth 390 vs innerWidth 390 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-riverside-refit/capture (the capture/upload surface) — scrollWidth 390 vs innerWidth 390 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-riverside-refit/sitetwin (the SiteTwin/evidence surface) — scrollWidth 390 vs innerWidth 390 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-riverside-refit/boq-lens (the BOQ lens surface) — scrollWidth 390 vs innerWidth 390 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-riverside-refit/case (the engineering case surface) — scrollWidth 390 vs innerWidth 390 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-riverside-refit/intervention (the intervention studio surface) — scrollWidth 390 vs innerWidth 390 (budget +1)
+    pass  no horizontal overflow on #/projects/proj-riverside-refit/outcomes (the outcomes surface) — scrollWidth 390 vs innerWidth 390 (budget +1)
+    cleanup: ok (Sign out control; the gate returned)
+  PASS  accessibility
+    pass  zero critical axe violations (desktop 1440x900) — critical=0
+    pass  zero serious axe violations (desktop 1440x900) — serious=0
+    pass  zero critical axe violations on the Interactive Solution surface (desktop 1440x900) — critical=0
+    pass  zero serious axe violations on the Interactive Solution surface (desktop 1440x900) — serious=0
+    pass  zero critical axe violations (mobile 390x844) — critical=0
+    pass  zero serious axe violations (mobile 390x844) — serious=0
+    pass  zero critical axe violations on the Interactive Solution surface (mobile 390x844) — critical=0
+    pass  zero serious axe violations on the Interactive Solution surface (mobile 390x844) — serious=0
+    axe violations by impact (desktop 1440x900): critical=0 serious=0 moderate=0 minor=0 (impact-less=0); scanned the signed-in Dashboard shell
+    axe violations by impact (desktop 1440x900, the Interactive Solution surface): critical=0 serious=0 moderate=2 minor=0 (impact-less=0)
+      reported (non-blocking): [moderate] landmark-main-is-top-level — Main landmark should not be contained in another landmark (1 node(s))
+      reported (non-blocking): [moderate] landmark-no-duplicate-main — Document should not have more than one main landmark (1 node(s))
+    cleanup: ok (Sign out control; the gate returned)
+    axe violations by impact (mobile 390x844): critical=0 serious=0 moderate=0 minor=0 (impact-less=0); scanned the signed-in Dashboard shell
+    axe violations by impact (mobile 390x844, the Interactive Solution surface): critical=0 serious=0 moderate=2 minor=0 (impact-less=0)
+      reported (non-blocking): [moderate] landmark-main-is-top-level — Main landmark should not be contained in another landmark (1 node(s))
+      reported (non-blocking): [moderate] landmark-no-duplicate-main — Document should not have more than one main landmark (1 node(s))
+    cleanup: ok (Sign out control; the gate returned)
+  PASS  console-runtime-errors
+    pass  zero uncaught page errors (pageerror) across all page interactions — 0 event(s)
+    pass  zero blocking console.error calls across all page interactions — 0 call(s)
+    pass  zero blocking failed requests (document/script/style/font + unexpected xhr/fetch) — 0 request(s)
+    expected-by-design request failures excluded (handled by the product): 25
+    expected-by-design browser resource-error console lines excluded (the browser's own log for those same handled responses): 25
+    failed requests outside the blocking classes (reported, non-blocking): 0
+      excluded (by design) [shell-renders]: GET /v1/auth/whoami -> HTTP 401
+      excluded (by design) [session-lifecycle]: GET /v1/auth/whoami -> HTTP 401
+      excluded (by design) [session-lifecycle]: GET /v1/auth/whoami -> HTTP 401
+      excluded console line (by design) [shell-renders]: Failed to load resource: the server responded with a status of 401 ()
+      excluded console line (by design) [session-lifecycle]: Failed to load resource: the server responded with a status of 401 ()
+      excluded console line (by design) [session-lifecycle]: Failed to load resource: the server responded with a status of 401 ()
+DEPLOYED: PASS
