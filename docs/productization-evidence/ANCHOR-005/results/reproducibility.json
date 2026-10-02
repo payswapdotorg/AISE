@@ -1,0 +1,11 @@
+{
+  "method": "two separate supervised provider processes over IDENTICAL canonical request bytes (same executionId — required by the contract's full-depth deterministicProjection); digests over the contract's deterministicProjection (executionId, executionTimeMs, stageTimingsMs excluded — performance observations, not semantics)",
+  "run1DeterministicDigest": "sha256:1c730b226380afcd94293a4bcc13e268b6642f73eed5a346df6278dcaee090cf",
+  "run2DeterministicDigest": "sha256:1c730b226380afcd94293a4bcc13e268b6642f73eed5a346df6278dcaee090cf",
+  "identical": true,
+  "inputDigestRun1": "sha256:cdd6a074b2810a6b7f03b61a73aade3469e6ce928465e1ddf826faa21e088c09",
+  "inputDigestRun2": "sha256:cdd6a074b2810a6b7f03b61a73aade3469e6ce928465e1ddf826faa21e088c09",
+  "echoedInputDigest": "sha256:cdd6a074b2810a6b7f03b61a73aade3469e6ce928465e1ddf826faa21e088c09",
+  "adapterSourceDigest": "sha256:74b75f9837f10fe5884aaae8df074a1180588b30907611db6d1ddcbe6cd38bfd",
+  "adapterReference": "referenced BY PATH from the frozen ANCHOR-003b evidence tree (byte-identical; the digest above must equal the 003b adapter's own digest — re-verified by the TL at the integration station)"
+}

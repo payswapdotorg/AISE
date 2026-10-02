@@ -1,0 +1,111 @@
+{
+ "instrument": "anchor005-annotation-spec/1",
+ "procedure": "worker-identified correspondences, deterministically measured. The identification was made by the worker from the federal documentation and the photographs (the drawing's own documented geometry vs the photo's detected structure, cross-checked with VLM-assisted region identification on tight coordinate-grid crops during the annotation session); each identification below records the search window in which the tool measures the position classically (sub-pixel gradient peak). The tool re-measures every position on every run; the identifications (not the positions) are the committed data. The session's full reasoning is recorded in measurements.md.",
+ "stillAnnotations": [
+  {
+   "stillId": "still-s04",
+   "status": "annotated",
+   "identification": "the four distinctive ventilator-sash close pairs and the corner double-line of the south facade, pattern-matched between the drawing's mullion grid and the photo's detected vertical structure: photo pair (740, 760) = drawing vent sash 2 (ventPair2); photo pair (1146, 1166) = sash 3 (ventPair3); photo pair (1627, 1649) = sash 4 (ventPair4); photo pair (1769, 1775) = the SE corner double mullion (corner). The monotonically increasing local scale (0.68 -> 0.81 -> 0.89 photo-px per drawing-px eastward) is the obliquity gradient of the vantage (~24 deg, consistent across the two inter-sash spans); sash 1 is occluded by the elm. Levels: the floor edge (documented MAIN FLOOR EL. 2'-4\") is the strongest horizontal edge (~y 1026, flat across the facade - the camera being near the main-floor level); the ceiling edge (documented CEILING EL. 11'-9\") is the roof assembly's underside shadow line - selected over the glass-top edge by the documented-ratio consistency test (the glass-top reading would require cos(yaw) > 1 for any real facade view; the shadow-line reading yields the consistent obliquity). The drawing-side feature positions are resolved BY NAME from the tool's own detection of the committed raster (ventPairN = the Nth detected ventilator-sash close pair; corner = the corner double-line) - scale-independent, re-measured on every run.",
+   "floorEdgeHint": 1026,
+   "mullions": [
+    {
+     "photoX": 740,
+     "drawFeature": "ventPair2a",
+     "ceiling": "omit",
+     "floor": "measure"
+    },
+    {
+     "photoX": 760,
+     "drawFeature": "ventPair2b",
+     "ceiling": "omit",
+     "floor": "measure"
+    },
+    {
+     "photoX": 1146,
+     "drawFeature": "ventPair3a",
+     "ceiling": "measure",
+     "floor": "measure"
+    },
+    {
+     "photoX": 1166,
+     "drawFeature": "ventPair3b",
+     "ceiling": "measure",
+     "floor": "measure"
+    },
+    {
+     "photoX": 1627,
+     "drawFeature": "ventPair4a",
+     "ceiling": "measure",
+     "floor": "measure"
+    },
+    {
+     "photoX": 1649,
+     "drawFeature": "ventPair4b",
+     "ceiling": "measure",
+     "floor": "measure"
+    },
+    {
+     "photoX": 1769,
+     "drawFeature": "cornerA",
+     "ceiling": "measure",
+     "floor": "measure"
+    },
+    {
+     "photoX": 1775,
+     "drawFeature": "cornerB",
+     "ceiling": "measure",
+     "floor": "measure"
+    }
+   ],
+   "ceilingWindow": [
+    770,
+    850
+   ],
+   "floorWindow": [
+    1000,
+    1052
+   ],
+   "ceilingOmitted": "the westernmost sash (photo 740, 760) ceiling points are omitted by the same-sash consistency criterion: the two mullions of one sash must read the same level line within the noise band (1-4 px at sashes 3/4 and the corner); the wide-window readings at sash 2 disagree by 23 px (812 vs 835 - the elm's branches cross the shadow line there), so both are dropped rather than tuned; the floor points at sash 2 are retained (the floor edge is flat and clean)"
+  },
+  {
+   "stillId": "still-s01",
+   "status": "not-derivable",
+   "reason": "the general view from the southwest: the facade's ventilator-sash pattern is broken by the elm (the same occlusion that removed sash 1 from still-s04) and by the oblique vantage; the pattern-match criterion (monotone distinctive sash sequence) fails on the detected vertical structure - measured, not asserted"
+  },
+  {
+   "stillId": "still-s02",
+   "status": "not-derivable",
+   "reason": "the porch detail from the southwest: the glass band's sash pattern is not in view (the terrace/stair structure dominates the frame); the porch structure is documented on the drawing but annotating it is a different feature family (terrace slab edges, stair flights) not covered by this run's committed procedure"
+  },
+  {
+   "stillId": "still-s03",
+   "status": "not-derivable",
+   "reason": "the general view from the southeast: at this vantage the facade's sash pattern compresses (strong obliquity) and the detected vertical structure does not match the drawing's sequence monotonically - measured"
+  },
+  {
+   "stillId": "still-s05",
+   "status": "not-derivable",
+   "reason": "the entrance detail: the frame is dominated by the entrance bay's close-up structure; the distinctive multi-sash sequence needed for a unique pattern match is not in view"
+  },
+  {
+   "stillId": "still-s06",
+   "status": "not-derivable",
+   "reason": "the entrance-and-eastern-bays detail seen from the east (portrait format): the vantage is strongly oblique to the facade plane; the detected vertical structure does not pattern-match the drawing's sash sequence"
+  },
+  {
+   "stillId": "still-s08",
+   "status": "not-derivable",
+   "reason": "the north and west elevations: this still depicts the NORTH facade - a different plane whose documented features are not the south elevation raster's features; structurally not co-registrable against the south-elevation ground truth (the north-facade lane is the handedness-law finding recorded in the README)"
+  },
+  {
+   "stillId": "still-s09",
+   "status": "not-derivable",
+   "reason": "the north elevation: depicts the north facade - see still-s08"
+  },
+  {
+   "stillId": "still-s10",
+   "status": "not-derivable",
+   "reason": "the north elevation from the northeast: depicts the north facade - see still-s08"
+  }
+ ]
+}

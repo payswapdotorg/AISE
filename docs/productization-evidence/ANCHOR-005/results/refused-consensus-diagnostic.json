@@ -1,0 +1,568 @@
+{
+ "instrument": "anchor005-refused-consensus-diagnostic/1",
+ "declaration": "DERIVED-DIAGNOSTIC \u2014 the reference lane's own detector/matcher/RANSAC/photometric-gate path (the anchor003b adapter's DEFAULT_CONFIG, mirrored verbatim) executed instrumented so the WOULD-BE consensus geometry is recordable; the production adapter refuses this photoset and returns zero hypotheses, so the would-be geometry is only observable through this declared diagnostic; NEVER an anchor, never counted in the real photoset",
+ "laneConfig": {
+  "detector": "SIFT",
+  "siftContrastThreshold": 0.02,
+  "siftEdgeThreshold": 15,
+  "siftNfeaturesCap": 40000,
+  "matcher": "chunked-mutual-nearest-L2",
+  "matcherChunkRows": 512,
+  "maxMatchesPerPair": 500,
+  "ransacThresholdPx": 4.0,
+  "ransacMaxIters": 20000,
+  "ransacConfidence": 0.9999,
+  "minAnchoredNcc": 0.25,
+  "nccFootprintMinPixels": 2000
+ },
+ "diagnostics": [
+  {
+   "stillId": "still-s01",
+   "keypoints": 36668,
+   "matches": 500,
+   "inliers": 8,
+   "consensus": {
+    "matrix": [
+     [
+      -0.3620163653472443,
+      -1.4526304706110096,
+      846.4342723244208
+     ],
+     [
+      0.2054085232310286,
+      -5.764166302779599,
+      2649.280599052538
+     ],
+     [
+      0.0004175287477399566,
+      -0.0031057208510885774,
+      1.0
+     ]
+    ],
+    "inliers": 8,
+    "footprintNcc": 0.0238,
+    "gateVerdict": "would-refuse",
+    "documentedVolumeFootprint": {
+     "corners": [
+      [
+       1463.9,
+       -1020.7
+      ],
+      [
+       -1374.7,
+       821.4
+      ],
+      [
+       -329.9,
+       1408.1
+      ],
+      [
+       269.0,
+       2429.7
+      ]
+     ],
+     "quadAreaPx": 3438690.3,
+     "allInsideFrame": false
+    }
+   },
+   "realizedErrorVsGroundTruth": {
+    "status": "NOT-DERIVABLE for this still",
+    "reason": "the general view from the southwest: the facade's ventilator-sash pattern is broken by the elm (the same occlusion that removed sash 1 from still-s04) and by the oblique vantage; the pattern-match criterion (monotone distinctive sash sequence) fails on the detected vertical structure - measured, not asserted"
+   }
+  },
+  {
+   "stillId": "still-s02",
+   "keypoints": 23700,
+   "matches": 441,
+   "inliers": 8,
+   "consensus": {
+    "matrix": [
+     [
+      -0.34896701722621337,
+      -3.0154351319907615,
+      1790.3523955487653
+     ],
+     [
+      -0.0947287092442282,
+      -0.747174258177694,
+      429.5418012697221
+     ],
+     [
+      -0.0001961422916565909,
+      -0.001706561460823459,
+      1.0
+     ]
+    ],
+    "inliers": 8,
+    "footprintNcc": 0.0,
+    "gateVerdict": "would-refuse",
+    "documentedVolumeFootprint": {
+     "corners": [
+      [
+       2632.0,
+       -209.4
+      ],
+      [
+       1694.9,
+       551.4
+      ],
+      [
+       1955.5,
+       140.9
+      ],
+      [
+       1824.7,
+       394.6
+      ]
+     ],
+     "quadAreaPx": 30281.7,
+     "allInsideFrame": false
+    }
+   },
+   "realizedErrorVsGroundTruth": {
+    "status": "NOT-DERIVABLE for this still",
+    "reason": "the porch detail from the southwest: the glass band's sash pattern is not in view (the terrace/stair structure dominates the frame); the porch structure is documented on the drawing but annotating it is a different feature family (terrace slab edges, stair flights) not covered by this run's committed procedure"
+   }
+  },
+  {
+   "stillId": "still-s03",
+   "keypoints": 38766,
+   "matches": 465,
+   "inliers": 8,
+   "consensus": {
+    "matrix": [
+     [
+      0.8232597046088638,
+      -3.2637571591958627,
+      541.8963382705964
+     ],
+     [
+      1.1592885082625748,
+      -4.518586189835133,
+      764.0127617281678
+     ],
+     [
+      0.001376198915719037,
+      -0.005585335649979616,
+      1.0
+     ]
+    ],
+    "inliers": 8,
+    "footprintNcc": -0.0155,
+    "gateVerdict": "would-refuse",
+    "documentedVolumeFootprint": {
+     "corners": [
+      [
+       642.7,
+       820.8
+      ],
+      [
+       584.8,
+       848.9
+      ],
+      [
+       584.6,
+       831.6
+      ],
+      [
+       546.4,
+       801.4
+      ]
+     ],
+     "quadAreaPx": 1587.4,
+     "allInsideFrame": true
+    }
+   },
+   "realizedErrorVsGroundTruth": {
+    "status": "NOT-DERIVABLE for this still",
+    "reason": "the general view from the southeast: at this vantage the facade's sash pattern compresses (strong obliquity) and the detected vertical structure does not match the drawing's sequence monotonically - measured"
+   }
+  },
+  {
+   "stillId": "still-s04",
+   "keypoints": 35381,
+   "matches": 497,
+   "inliers": 8,
+   "consensus": {
+    "matrix": [
+     [
+      -2.9941461721193647,
+      -2.164959289613503,
+      1542.949409106097
+     ],
+     [
+      -6.620255160563707,
+      0.8354027644877425,
+      1913.9929844219264
+     ],
+     [
+      -0.0061401209201067805,
+      0.0018374255499664961,
+      1.0
+     ]
+    ],
+    "inliers": 8,
+    "footprintNcc": 0.0049,
+    "gateVerdict": "would-refuse",
+    "documentedVolumeFootprint": {
+     "corners": [
+      [
+       600.5,
+       992.7
+      ],
+      [
+       520.0,
+       1053.7
+      ],
+      [
+       469.2,
+       1035.7
+      ],
+      [
+       427.7,
+       940.4
+      ]
+     ],
+     "quadAreaPx": 9423.0,
+     "allInsideFrame": true
+    }
+   },
+   "realizedErrorVsGroundTruth": {
+    "method": "at each annotated documented feature: the would-be consensus position vs the ground-truth measured position, both mapped back to drawing px via H_true^-1; error in meters at plan scale",
+    "nFeatures": 14,
+    "meanM": 14.2627,
+    "rmseM": 15.3131,
+    "p95M": 19.8773,
+    "maxM": 19.8774
+   }
+  },
+  {
+   "stillId": "still-s05",
+   "keypoints": 40000,
+   "matches": 477,
+   "inliers": 7,
+   "note": "consensus recorded by the diagnostic at 7 inliers - BELOW the production inlier floor (8): the adapter's declared gate would refuse this still here already",
+   "consensus": {
+    "matrix": [
+     [
+      -0.1045287951680811,
+      -0.7787980352083312,
+      700.1246728097091
+     ],
+     [
+      -0.13780590097682743,
+      -0.6743648700604506,
+      666.7871590541098
+     ],
+     [
+      -0.00022663332947045774,
+      -0.001078617137607591,
+      1.0
+     ]
+    ],
+    "inliers": 7,
+    "footprintNcc": -0.0273,
+    "gateVerdict": "would-refuse",
+    "documentedVolumeFootprint": {
+     "corners": [
+      [
+       821.4,
+       777.7
+      ],
+      [
+       -4367.1,
+       -1666.7
+      ],
+      [
+       1293.0,
+       882.3
+      ],
+      [
+       779.2,
+       712.9
+      ]
+     ],
+     "quadAreaPx": 291953.5,
+     "allInsideFrame": false
+    }
+   },
+   "realizedErrorVsGroundTruth": {
+    "status": "NOT-DERIVABLE for this still",
+    "reason": "the entrance detail: the frame is dominated by the entrance bay's close-up structure; the distinctive multi-sash sequence needed for a unique pattern match is not in view"
+   }
+  },
+  {
+   "stillId": "still-s06",
+   "keypoints": 40000,
+   "matches": 500,
+   "inliers": 8,
+   "consensus": {
+    "matrix": [
+     [
+      -1.0203198564387805,
+      -4.710427999759241,
+      1542.1788262510238
+     ],
+     [
+      -1.2674137492405049,
+      -8.658944794874495,
+      2463.672324847706
+     ],
+     [
+      -0.0007402165033711376,
+      -0.0034264504079049457,
+      1.0
+     ]
+    ],
+    "inliers": 8,
+    "footprintNcc": -0.0143,
+    "gateVerdict": "would-refuse",
+    "documentedVolumeFootprint": {
+     "corners": [
+      [
+       1243.5,
+       2162.4
+      ],
+      [
+       1304.4,
+       1959.3
+      ],
+      [
+       1273.9,
+       1713.7
+      ],
+      [
+       1083.1,
+       1716.5
+      ]
+     ],
+     "quadAreaPx": 53320.6,
+     "allInsideFrame": true
+    }
+   },
+   "realizedErrorVsGroundTruth": {
+    "status": "NOT-DERIVABLE for this still",
+    "reason": "the entrance-and-eastern-bays detail seen from the east (portrait format): the vantage is strongly oblique to the facade plane; the detected vertical structure does not pattern-match the drawing's sash sequence"
+   }
+  },
+  {
+   "stillId": "still-s07",
+   "keypoints": 40000,
+   "matches": 500,
+   "inliers": 8,
+   "consensus": {
+    "matrix": [
+     [
+      -0.6965871840175223,
+      0.03666471324706786,
+      218.59416902061938
+     ],
+     [
+      -0.5814448210813309,
+      0.01454775135305473,
+      189.83898345725342
+     ],
+     [
+      -0.0031819266253530713,
+      0.00025697870155157496,
+      1.0
+     ]
+    ],
+    "inliers": 8,
+    "footprintNcc": 0.0408,
+    "gateVerdict": "would-refuse",
+    "documentedVolumeFootprint": {
+     "corners": [
+      [
+       224.8,
+       187.7
+      ],
+      [
+       220.5,
+       184.1
+      ],
+      [
+       219.8,
+       183.0
+      ],
+      [
+       222.3,
+       183.7
+      ]
+     ],
+     "quadAreaPx": 5.1,
+     "allInsideFrame": true
+    }
+   },
+   "realizedErrorVsGroundTruth": {
+    "status": "NOT-DERIVABLE for this still",
+    "reason": null
+   }
+  },
+  {
+   "stillId": "still-s08",
+   "keypoints": 22935,
+   "matches": 466,
+   "inliers": 7,
+   "note": "consensus recorded by the diagnostic at 7 inliers - BELOW the production inlier floor (8): the adapter's declared gate would refuse this still here already",
+   "consensus": {
+    "matrix": [
+     [
+      -0.5685789952094171,
+      -0.0936639875931689,
+      853.4904003085464
+     ],
+     [
+      -0.7934916997872378,
+      -0.20214662995703947,
+      1198.4078367184463
+     ],
+     [
+      -0.0006788177428286131,
+      -0.00011232003169249029,
+      1.0
+     ]
+    ],
+    "inliers": 7,
+    "footprintNcc": -0.0321,
+    "gateVerdict": "would-refuse",
+    "documentedVolumeFootprint": {
+     "corners": [
+      [
+       882.4,
+       1157.9
+      ],
+      [
+       810.3,
+       1175.7
+      ],
+      [
+       809.4,
+       1150.7
+      ],
+      [
+       879.5,
+       1196.0
+      ]
+     ],
+     "quadAreaPx": 493.9,
+     "allInsideFrame": true
+    }
+   },
+   "realizedErrorVsGroundTruth": {
+    "status": "NOT-DERIVABLE for this still",
+    "reason": "the north and west elevations: this still depicts the NORTH facade - a different plane whose documented features are not the south elevation raster's features; structurally not co-registrable against the south-elevation ground truth (the north-facade lane is the handedness-law finding recorded in the README)"
+   }
+  },
+  {
+   "stillId": "still-s09",
+   "keypoints": 27343,
+   "matches": 448,
+   "inliers": 7,
+   "note": "consensus recorded by the diagnostic at 7 inliers - BELOW the production inlier floor (8): the adapter's declared gate would refuse this still here already",
+   "consensus": {
+    "matrix": [
+     [
+      0.7114387792760937,
+      -2.718084017242479,
+      579.9811721039758
+     ],
+     [
+      1.08648374290861,
+      -4.488494504126606,
+      1045.7277406834046
+     ],
+     [
+      0.0010427169785491974,
+      -0.004283759352733586,
+      1.0
+     ]
+    ],
+    "inliers": 7,
+    "footprintNcc": -0.0262,
+    "gateVerdict": "would-refuse",
+    "documentedVolumeFootprint": {
+     "corners": [
+      [
+       730.2,
+       1109.3
+      ],
+      [
+       678.0,
+       1036.0
+      ],
+      [
+       660.9,
+       1040.6
+      ],
+      [
+       619.3,
+       1038.0
+      ]
+     ],
+     "quadAreaPx": 2088.7,
+     "allInsideFrame": true
+    }
+   },
+   "realizedErrorVsGroundTruth": {
+    "status": "NOT-DERIVABLE for this still",
+    "reason": "the north elevation: depicts the north facade - see still-s08"
+   }
+  },
+  {
+   "stillId": "still-s10",
+   "keypoints": 35167,
+   "matches": 500,
+   "inliers": 7,
+   "note": "consensus recorded by the diagnostic at 7 inliers - BELOW the production inlier floor (8): the adapter's declared gate would refuse this still here already",
+   "consensus": {
+    "matrix": [
+     [
+      -0.03346638753551186,
+      -2.2833980867078156,
+      1657.0437940448614
+     ],
+     [
+      -0.10925293683903226,
+      -0.3557380918946968,
+      408.31896545526433
+     ],
+     [
+      -6.164601470137725e-05,
+      -0.0012911969773898623,
+      1.0
+     ]
+    ],
+    "inliers": 7,
+    "footprintNcc": 0.0,
+    "gateVerdict": "would-refuse",
+    "documentedVolumeFootprint": {
+     "corners": [
+      [
+       1632.1,
+       432.4
+      ],
+      [
+       2005.8,
+       -27.2
+      ],
+      [
+       1884.8,
+       127.0
+      ],
+      [
+       1691.6,
+       364.0
+      ]
+     ],
+     "quadAreaPx": 1457.7,
+     "allInsideFrame": false
+    }
+   },
+   "realizedErrorVsGroundTruth": {
+    "status": "NOT-DERIVABLE for this still",
+    "reason": "the north elevation from the northeast: depicts the north facade - see still-s08"
+   }
+  }
+ ]
+}

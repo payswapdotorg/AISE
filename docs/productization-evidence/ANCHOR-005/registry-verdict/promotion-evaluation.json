@@ -1,0 +1,28 @@
+{
+  "verdictLine": "evaluation-kept — the substitution-contract §6 promotion gate answers the typed refusal(s): license-blocked",
+  "admitted": false,
+  "refusalKinds": [
+    "license-blocked"
+  ],
+  "checks": [
+    {
+      "gate": "license-use-clearance",
+      "passed": false,
+      "detail": "license 'Apache-2.0' is evaluation-only (commercialUse: true, intendedUseCleared: false) — the dataset/model-use rule forbids production promotion"
+    },
+    {
+      "gate": "benchmark-evidence",
+      "passed": true,
+      "detail": "1 benchmark record(s) attached, all referencing this provider+version"
+    },
+    {
+      "gate": "provenance-continuity",
+      "passed": true,
+      "detail": "1 provenance manifest(s) sealed against this profile digest"
+    }
+  ],
+  "captureLaneBenchmarkRecordId": "698f7d3c46ba15570089a2605c85d18635bcf52e75eb56a85305622a23410b17",
+  "registrationStateToday": "benchmarked",
+  "workerSelfPromotion": "NONE — this delivery records evidence and derives the gates' answer; the promotion decision belongs to the Tech Lead (workers may not self-approve or self-merge governed Work Items)",
+  "honestReading": "The capture lane the 003b deferment named has now been BUILT and RUN (this evidence tree): public-domain federal documentation of one site (measured drawings + documented photography), the three named requirements satisfied (vantage, GSD, geometry-stable 'vintage'), and the reference lane STILL refused every still — with the missing fourth requirement now measured and named (the plan raster's radiometry: line art vs photograph). The lane's novel contribution is the DERIVED co-registered ground truth: the refusals are verified correct (the would-be consensus is 15.3 m RMSE wrong against the documented geometry) where the 003b refusals could only be inferred. The §6 gates answer as before — the license dimension is unchanged by evidence (license-driven, not metric-driven — HFX-000) and the metric dimension now carries this second honest negative result. Both point the same way: keep the lane at evaluation stage. Successor work is named in the deferment ledger (a photorealistic vintage-matched plan raster, or the wall-line geometric registration lane — the separate method the 003b deferment already names)."
+}

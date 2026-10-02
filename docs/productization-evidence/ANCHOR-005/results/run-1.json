@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "portVersion": "anchor002-anchoring-contract/1",
+  "contractVersion": "1.0.0",
+  "executionId": "anchor005-run-001",
+  "status": "refused",
+  "reasonCode": "registration-unreliable",
+  "refusalDetail": "no still could be registered to this plan (0/10 anchored). Per-still refusals: c9f68d7dc8d62a25…: photometric verification failed (NCC 0.024 < 0.25; 8 inliers); 74d5513d9cbfaee4…: photometric verification failed (NCC 0.000 < 0.25; 8 inliers); 8c47722105c9da50…: photometric verification failed (NCC -0.016 < 0.25; 8 inliers); 05074edab5f7ea39…: photometric verification failed (NCC 0.005 < 0.25; 8 inliers); 2fef3b483f915ce5…: 7 RANSAC inliers < floor; 3cd0145d1571bff6…: photometric verification failed (NCC -0.014 < 0.25; 8 inliers); c249abbac7fd701f…: photometric verification failed (NCC 0.041 < 0.25; 8 inliers); ddb9f3b14a62b089…: 7 RANSAC inliers < floor; 6be0e35296e6dbbe…: 7 RANSAC inliers < floor; c70c23ea341d6d04…: 7 RANSAC inliers < floor. Zero fabricated anchors.",
+  "provenance": {
+    "providerId": "sift-homography-reference",
+    "providerVersion": "anchor003b-adapter/1",
+    "platform": "Linux x86_64",
+    "inputDigest": "sha256:cdd6a074b2810a6b7f03b61a73aade3469e6ce928465e1ddf826faa21e088c09",
+    "adapterSourceDigest": "sha256:74b75f9837f10fe5884aaae8df074a1180588b30907611db6d1ddcbe6cd38bfd",
+    "components": [
+      {
+        "name": "opencv",
+        "version": "4.13.0"
+      },
+      {
+        "name": "numpy",
+        "version": "2.1.3"
+      },
+      {
+        "name": "python",
+        "version": "3.12.14"
+      }
+    ],
+    "config": {
+      "detector": "SIFT",
+      "siftContrastThreshold": 0.02,
+      "siftEdgeThreshold": 15,
+      "siftNfeaturesCap": 40000,
+      "matcher": "chunked-mutual-nearest-L2",
+      "matcherChunkRows": 512,
+      "maxMatchesPerPair": 500,
+      "ransacThresholdPx": 4,
+      "ransacMaxIters": 20000,
+      "ransacConfidence": 0.9999,
+      "minKeypointsPerImage": 80,
+      "minMatchesForEstimate": 12,
+      "minInliersPerStill": 8,
+      "minStills": 2,
+      "crossValMinInliers": 12,
+      "crossValMaxResidualPx": 20,
+      "minAnchoredNcc": 0.25,
+      "nccFootprintMinPixels": 2000,
+      "uncertaintyModel": "inlier-residual-first-order-v2.1",
+      "confidenceModel": "inliers-and-crossval-heuristic/1"
+    }
+  },
+  "hypotheses": [],
+  "executionTimeMs": 0,
+  "stageTimingsMs": {
+    "detect": 18226.869,
+    "match": 5279.365,
+    "estimate": 3240.867,
+    "crossval": 0
+  }
+}

@@ -1,0 +1,77 @@
+{
+ "instrument": "anchor005-drill-artifacts/1",
+ "declaration": "DERIVED-DRILL \u2014 generated artifacts, never counted in the real photoset",
+ "artifacts": [
+  {
+   "file": "results/negatives/still-flat-gray.jpg",
+   "kind": "textureless drill still",
+   "sha256": "b270a32f74ea8cdb189e411689a418e549923985f3055014480dba3168caad05"
+  },
+  {
+   "file": "results/negatives/still-plan-derived-1.jpg",
+   "kind": "plan-derived verification still (KNOWN homography \u2014 the drill's own ground truth)",
+   "knownHPlanPxToDrillPx": [
+    [
+     0.35,
+     0.0,
+     40.0
+    ],
+    [
+     0.0,
+     0.35,
+     30.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "sha256": "a9240e24e0e9e67a1bbd9ceadf12d1f10137342c538ad6e8e1a2e5e1d6572bc6"
+  },
+  {
+   "file": "results/negatives/still-plan-derived-2.jpg",
+   "kind": "plan-derived verification still (KNOWN homography \u2014 the drill's own ground truth)",
+   "knownHPlanPxToDrillPx": [
+    [
+     0.32,
+     0.015,
+     120.0
+    ],
+    [
+     -0.012,
+     0.33,
+     60.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "sha256": "219ad2a87eb495a5443ba41127941dd5e0dda6b61cdf0a728a743b31d44ec2a6"
+  },
+  {
+   "file": "results/negatives/still-plan-derived-3.jpg",
+   "kind": "plan-derived verification still (KNOWN homography \u2014 the drill's own ground truth)",
+   "knownHPlanPxToDrillPx": [
+    [
+     0.3,
+     -0.01,
+     200.0
+    ],
+    [
+     0.01,
+     0.31,
+     100.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "sha256": "a26ea518129def0ba94cfb6cca1698fe852719ff38fd8b488e0169bd5f62b0e1"
+  }
+ ]
+}

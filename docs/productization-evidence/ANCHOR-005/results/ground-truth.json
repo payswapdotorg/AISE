@@ -1,0 +1,215 @@
+{
+ "instrument": "anchor005-ground-truth/1",
+ "derivationChain": "the documented elevation levels (the drawing's own annotations, EL. 13'-6\"/11'-9\"/2'-4\"/0'-0\") + the mullion grid (drawn lines) => drawing px/m (the manifest's least-squares derivation, cross-checked against the graphic scale bar and the declared 1:48 scale); per-still: the committed annotation spec's worker-identified correspondences (the ventilator-sash sequence pattern match), positions measured classically (sub-pixel gradient peaks), H_true fitted by two-level DLT with leave-one-out residuals",
+ "pixelsPerMeter": 59.391207,
+ "documentedLevels": {
+  "corniceFtIn": "13'-6\"",
+  "ceilingFtIn": "11'-9\"",
+  "mainFloorFtIn": "2'-4\"",
+  "lowerTerraceFtIn": "0'-0\""
+ },
+ "drawingGeometry": {
+  "cornice": 270,
+  "ceiling": 301,
+  "mainFloor": 472,
+  "lowerTerrace": 514,
+  "westFace": 866,
+  "eastFace": 2263,
+  "mullions": [
+   964.5,
+   977.0,
+   1268.0,
+   1359.0,
+   1373.0,
+   1563.5,
+   1755.0,
+   1768.5,
+   1959.5,
+   2091.0,
+   2129.0,
+   2150.0,
+   2164.0,
+   2257.0
+  ],
+  "ventPairs": [
+   [
+    964.5,
+    977.0
+   ],
+   [
+    1359.0,
+    1373.0
+   ],
+   [
+    1755.0,
+    1768.5
+   ],
+   [
+    2150.0,
+    2164.0
+   ]
+  ],
+  "cornerPair": [
+   2255,
+   2260
+  ]
+ },
+ "annotations": [
+  {
+   "derivable": true,
+   "correspondences": [
+    {
+     "drawFeature": "ventPair2a",
+     "drawX": 1359.0,
+     "photoX": 740.5,
+     "mullionStrength": 101.8,
+     "photoFloorY": 1025.88,
+     "floorStrength": 209.2
+    },
+    {
+     "drawFeature": "ventPair2b",
+     "drawX": 1373.0,
+     "photoX": 760.31,
+     "mullionStrength": 92.9,
+     "photoFloorY": 1025.61,
+     "floorStrength": 235.8
+    },
+    {
+     "drawFeature": "ventPair3a",
+     "drawX": 1755.0,
+     "photoX": 1146.68,
+     "mullionStrength": 162.3,
+     "photoFloorY": 1025.83,
+     "floorStrength": 311.0,
+     "photoCeilingY": 800.17,
+     "ceilingStrength": 362.1
+    },
+    {
+     "drawFeature": "ventPair3b",
+     "drawX": 1768.5,
+     "photoX": 1166.1,
+     "mullionStrength": 181.0,
+     "photoFloorY": 1025.14,
+     "floorStrength": 308.9,
+     "photoCeilingY": 799.49,
+     "ceilingStrength": 397.9
+    },
+    {
+     "drawFeature": "ventPair4a",
+     "drawX": 2150.0,
+     "photoX": 1626.7,
+     "mullionStrength": 89.8,
+     "photoFloorY": 1025.08,
+     "floorStrength": 328.9,
+     "photoCeilingY": 821.96,
+     "ceilingStrength": 315.4
+    },
+    {
+     "drawFeature": "ventPair4b",
+     "drawX": 2164.0,
+     "photoX": 1648.8,
+     "mullionStrength": 102.5,
+     "photoFloorY": 1025.11,
+     "floorStrength": 168.9,
+     "photoCeilingY": 820.77,
+     "ceilingStrength": 279.4
+    },
+    {
+     "drawFeature": "cornerA",
+     "drawX": 2255.0,
+     "photoX": 1768.63,
+     "mullionStrength": 86.5,
+     "photoFloorY": 1024.77,
+     "floorStrength": 259.7,
+     "photoCeilingY": 816.92,
+     "ceilingStrength": 316.2
+    },
+    {
+     "drawFeature": "cornerB",
+     "drawX": 2260.0,
+     "photoX": 1768.63,
+     "mullionStrength": 86.5,
+     "photoFloorY": 1024.77,
+     "floorStrength": 259.7,
+     "photoCeilingY": 816.92,
+     "ceilingStrength": 316.2
+    }
+   ],
+   "hTrue": [
+    [
+     0.8674735179269445,
+     0.29761502048839866,
+     -631.0102918787259
+    ],
+    [
+     -0.10599062569197042,
+     1.2203766661620599,
+     519.7830848900621
+    ],
+    [
+     -0.0001131583550767961,
+     0.00018521058510314567,
+     1.0
+    ]
+   ],
+   "fitResidualPx": {
+    "nPoints": 14,
+    "rms": 10.862,
+    "max": 19.17,
+    "leaveOneOutRms": 16.92,
+    "leaveOneOutMax": 28.53
+   },
+   "vantageScaleDecomposition": [
+    {
+     "spanDrawPx": 381.5,
+     "spanPhotoPx": 460.6,
+     "horizontalPxPerDrawPx": 1.2073,
+     "verticalPxPerDrawPx": 1.3196,
+     "impliedYawDeg": 23.8
+    }
+   ],
+   "still": "still-s04",
+   "identification": "the four distinctive ventilator-sash close pairs and the corner double-line of the south facade, pattern-matched between the drawing's mullion grid and the photo's detected vertical structure: photo pair (740, 760) = drawing vent sash 2 (ventPair2); photo pair (1146, 1166) = sash 3 (ventPair3); photo pair (1627, 1649) = sash 4 (ventPair4); photo pair (1769, 1775) = the SE corner double mullion (corner). The monotonically increasing local scale (0.68 -> 0.81 -> 0.89 photo-px per drawing-px eastward) is the obliquity gradient of the vantage (~24 deg, consistent across the two inter-sash spans); sash 1 is occluded by the elm. Levels: the floor edge (documented MAIN FLOOR EL. 2'-4\") is the strongest horizontal edge (~y 1026, flat across the facade - the camera being near the main-floor level); the ceiling edge (documented CEILING EL. 11'-9\") is the roof assembly's underside shadow line - selected over the glass-top edge by the documented-ratio consistency test (the glass-top reading would require cos(yaw) > 1 for any real facade view; the shadow-line reading yields the consistent obliquity). The drawing-side feature positions are resolved BY NAME from the tool's own detection of the committed raster (ventPairN = the Nth detected ventilator-sash close pair; corner = the corner double-line) - scale-independent, re-measured on every run."
+  },
+  {
+   "still": "still-s01",
+   "derivable": false,
+   "reason": "the general view from the southwest: the facade's ventilator-sash pattern is broken by the elm (the same occlusion that removed sash 1 from still-s04) and by the oblique vantage; the pattern-match criterion (monotone distinctive sash sequence) fails on the detected vertical structure - measured, not asserted"
+  },
+  {
+   "still": "still-s02",
+   "derivable": false,
+   "reason": "the porch detail from the southwest: the glass band's sash pattern is not in view (the terrace/stair structure dominates the frame); the porch structure is documented on the drawing but annotating it is a different feature family (terrace slab edges, stair flights) not covered by this run's committed procedure"
+  },
+  {
+   "still": "still-s03",
+   "derivable": false,
+   "reason": "the general view from the southeast: at this vantage the facade's sash pattern compresses (strong obliquity) and the detected vertical structure does not match the drawing's sequence monotonically - measured"
+  },
+  {
+   "still": "still-s05",
+   "derivable": false,
+   "reason": "the entrance detail: the frame is dominated by the entrance bay's close-up structure; the distinctive multi-sash sequence needed for a unique pattern match is not in view"
+  },
+  {
+   "still": "still-s06",
+   "derivable": false,
+   "reason": "the entrance-and-eastern-bays detail seen from the east (portrait format): the vantage is strongly oblique to the facade plane; the detected vertical structure does not pattern-match the drawing's sash sequence"
+  },
+  {
+   "still": "still-s08",
+   "derivable": false,
+   "reason": "the north and west elevations: this still depicts the NORTH facade - a different plane whose documented features are not the south elevation raster's features; structurally not co-registrable against the south-elevation ground truth (the north-facade lane is the handedness-law finding recorded in the README)"
+  },
+  {
+   "still": "still-s09",
+   "derivable": false,
+   "reason": "the north elevation: depicts the north facade - see still-s08"
+  },
+  {
+   "still": "still-s10",
+   "derivable": false,
+   "reason": "the north elevation from the northeast: depicts the north facade - see still-s08"
+  }
+ ]
+}

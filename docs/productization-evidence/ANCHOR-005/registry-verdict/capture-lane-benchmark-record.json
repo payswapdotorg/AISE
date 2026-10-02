@@ -1,0 +1,68 @@
+{
+  "kind": "provider-benchmark-record",
+  "schemaVersion": "provider-benchmark/1",
+  "providerId": "sift-homography-spike",
+  "technologyVersion": "anchor003b-adapter/1",
+  "benchmarkId": "anchor005-capture-lane/1",
+  "capability": "spatial-anchoring",
+  "metrics": [
+    {
+      "metric": "stillsRequested",
+      "value": 10,
+      "unit": "stills",
+      "detail": "10 real web-retrieved public-domain HABS photographs of one documented site (the Edith Farnsworth House, Plano IL — Jack E. Boucher, 1971, 5x7 in. negatives, PD-USGov-NPS) — fidelity class REAL, per-photo provenance in provenance-manifest.json"
+    },
+    {
+      "metric": "anchoredStills",
+      "value": 0,
+      "unit": "stills",
+      "detail": "0/10 — the reference lane refused EVERY still of the lane; the whole request failed closed with reasonCode=registration-unreliable"
+    },
+    {
+      "metric": "groundTruthDerivability",
+      "value": 1,
+      "unit": "stills",
+      "detail": "co-registered ground truth DERIVED for 1 still (still-s04, the frontal documentation shot: 14 annotated documented features, two-level DLT fit, leave-one-out RMS 16.9 photo-px) — the 003b deferment's named gap ('realized registration error NOT DERIVABLE') closed where the lane's content permits it; the other 9 stills carry measured NOT-DERIVABLE reasons (occlusion, wrong plane, pattern not recoverable)"
+    },
+    {
+      "metric": "refusedConsensusRealizedErrorM",
+      "value": 15.3131,
+      "unit": "meters RMSE",
+      "detail": "the DECLARED refused-consensus diagnostic measured the would-be anchors' realized error against the derived ground truth: still-s04's 8-inlier consensus (footprint NCC 0.005, refused by the photometric gate) carries a realized error of 15.3131 m RMSE over 14 documented features — the refusal is VERIFIED CORRECT, not inferred (the 003b refusals could only be inferred; this lane's ground truth measures them)"
+    },
+    {
+      "metric": "deterministicRunsIdentical",
+      "value": 2,
+      "unit": "runs",
+      "detail": "two supervised runs over IDENTICAL canonical request bytes; the contract's FULL-DEPTH deterministicProjection digests byte-identical (1c730b226380afcd…)"
+    },
+    {
+      "metric": "negativesFailClosed",
+      "value": 16,
+      "unit": "cases",
+      "detail": "16/16 negative cases fail-closed through the adapter+contract seam (extended with the lane's own hazards: the wrong-plane site-map discriminator, the mirrored-raster handedness discriminator, the cross-site real-vs-real discriminator); every refusal carries zero hypotheses; plus 2 typed-outcome drills (anchored at 50-56 inliers + partial)"
+    }
+  ],
+  "failureObservations": [
+    {
+      "kind": "unsupported-data",
+      "detail": "0/10 lane stills anchored. The lane satisfied the 003b deferment's three named requirements (near-perpendicular vantage — the documentation elevation shots; GSD matched — the photo's facade GSD within ~1.5x of the drawing's; 'vintage' — the drawing documents the as-built geometry, stable across the 1971-2009 span) and STILL refused, because a FOURTH requirement was missing: the plan raster's RADIOMETRY. A measured line-art drawing and a photograph do not share texture: the drawing yields 1354-2004 SIFT keypoints vs the photos' 23-40k, the matcher's consensus sets sit at 7-8 inliers (exactly at/below the declared floor), and the photometric verification gate refuses everything at footprint NCC -0.03..+0.04 vs the 0.25 floor. The refusals are now VERIFIED against the derived ground truth (the would-be consensus is 15.3 m RMSE wrong) — the gates did their job, measurably"
+    },
+    {
+      "kind": "instrument-finding",
+      "detail": "the lane surfaced a latent defect in the frozen adapter: the photometric-verification gate's warp step swaps width/height (`plan_h_px, plan_w_px = plan_eq.shape[1], plan_eq.shape[0]` then `dsize=(plan_w_px, plan_h_px)`) — invisible on the 003b run's square 3000x3000 plan, a hard crash on any non-square plan. The lane's declared square-padding workaround keeps the frozen adapter byte-identical; the defect is recorded for the Lead (fixing it means modifying the frozen 003b tree — a Lead decision, not a worker's)"
+    }
+  ],
+  "resourceObservations": {
+    "compute": "local-cpu",
+    "memoryMiB": 2048,
+    "latencyMsP50": 26917,
+    "latencyMsP95": 27331
+  },
+  "reproduction": {
+    "inputsDigest": "cdd6a074b2810a6b7f03b61a73aade3469e6ce928465e1ddf826faa21e088c09",
+    "codeVersion": "see adapterSourceDigest (the adapter referenced BY PATH from the frozen ANCHOR-003b tree — byte-identical, digest re-verified per run; the lane's fixtures + the ground-truth instrument are committed in this evidence tree)",
+    "statement": "reproduce with `bun docs/productization-evidence/ANCHOR-005/aise-side/run_photoset.ts` and `run_negatives.ts`, and `python3 tools/derive_ground_truth.py` at this tree — REAL public-domain federal documentation (HABS), never synthetic-presented-as-real"
+  },
+  "recordId": "698f7d3c46ba15570089a2605c85d18635bcf52e75eb56a85305622a23410b17"
+}

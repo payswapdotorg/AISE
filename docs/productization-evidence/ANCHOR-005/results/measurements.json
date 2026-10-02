@@ -1,0 +1,154 @@
+{
+  "photoset": {
+    "manifestId": "anchor005-photoset/1",
+    "site": "Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL (HABS ILL,47-PLAN.V / IL-1105, LoC item il0323)",
+    "stills": 10,
+    "fidelityClass": "REAL (web-retrieved public-domain federal photographs; never upgraded)",
+    "planRaster": "the measured SOUTH ELEVATION drawing (HABS IL-1105 sheet 4, 2009) — public-domain federal documentation whose own annotations (EL. 13'-6\"/11'-9\"/2'-4\"/0'-0\", the 1/4\"=1'-0\" scale bar) derive the rasterToScene mapping",
+    "groundTruth": "co-registered ground truth DERIVED for still-s04 (the annotation spec + the DLT fit; see results/ground-truth.json); the other stills carry measured NOT-DERIVABLE reasons"
+  },
+  "outcome": {
+    "status": "refused",
+    "reasonCode": "registration-unreliable",
+    "anchoredStills": 0,
+    "refusedStills": 10,
+    "vocabulary": "anchored | partial | refused (the typed ANCHOR-002 outcome vocabulary)",
+    "perStill": [
+      {
+        "stillId": "still-s01",
+        "stillClass": "south-facade",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-s02",
+        "stillClass": "south-facade",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-s03",
+        "stillClass": "south-facade",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-s04",
+        "stillClass": "south-facade",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-s05",
+        "stillClass": "south-facade",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-s06",
+        "stillClass": "south-facade",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-s07",
+        "stillClass": "south-facade",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-s08",
+        "stillClass": "north-facade-wrong-plane",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-s09",
+        "stillClass": "north-facade-wrong-plane",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "still-s10",
+        "stillClass": "north-facade-wrong-plane",
+        "outcome": "refused",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      }
+    ]
+  },
+  "determinism": {
+    "identical": true,
+    "run1DeterministicDigest": "sha256:1c730b226380afcd94293a4bcc13e268b6642f73eed5a346df6278dcaee090cf",
+    "run2DeterministicDigest": "sha256:1c730b226380afcd94293a4bcc13e268b6642f73eed5a346df6278dcaee090cf",
+    "caveat": "asserted for this opencv/numpy/python/platform combination (recorded in provenance); cross-version or cross-platform relocation of summation orders is not claimed"
+  },
+  "runtime": {
+    "run1WallMs": 27331,
+    "run2WallMs": 26917,
+    "providerStageTimingsMs": {
+      "detect": 18226.869,
+      "match": 5279.365,
+      "estimate": 3240.867,
+      "crossval": 0
+    },
+    "note": "wall time includes the python interpreter + numpy/opencv import (cold process)"
+  },
+  "budgetRecalibration": {
+    "anchoring001Finding": "budget95 covers realized error on only 4/10 synthetic-fixture stills (ANCHOR-001 measurements.md §4, budget95Coverage 0.4 — the honest miss carried forward, never hidden)",
+    "captureLaneStatus": "NOT DERIVABLE on this run: zero stills anchored (the §4 gate — the budgetCoversActual instrument requires ≥1 anchored still WITH ground truth to measure realized error against; the ground truth instrument is committed and ready — see results/ground-truth.json and the refused-consensus diagnostic, which measures the WOULD-BE anchors' realized errors at 12.1 m RMSE against the documented geometry, proving the refusal correct); the v2.1 declared-budget model carries forward UNCHANGED, never upgraded, never presented as calibrated",
+    "measurementUncertaintyDiscipline": "confidence is a declared support score, never a probability; a budget is honest only if it covers the realized error — where realized error is not measurable, the budget stays a DECLARATION, never an implied measurement"
+  },
+  "provenance": {
+    "providerId": "sift-homography-reference",
+    "providerVersion": "anchor003b-adapter/1",
+    "platform": "Linux x86_64",
+    "inputDigest": "sha256:cdd6a074b2810a6b7f03b61a73aade3469e6ce928465e1ddf826faa21e088c09",
+    "adapterSourceDigest": "sha256:74b75f9837f10fe5884aaae8df074a1180588b30907611db6d1ddcbe6cd38bfd",
+    "components": [
+      {
+        "name": "opencv",
+        "version": "4.13.0"
+      },
+      {
+        "name": "numpy",
+        "version": "2.1.3"
+      },
+      {
+        "name": "python",
+        "version": "3.12.14"
+      }
+    ],
+    "config": {
+      "detector": "SIFT",
+      "siftContrastThreshold": 0.02,
+      "siftEdgeThreshold": 15,
+      "siftNfeaturesCap": 40000,
+      "matcher": "chunked-mutual-nearest-L2",
+      "matcherChunkRows": 512,
+      "maxMatchesPerPair": 500,
+      "ransacThresholdPx": 4,
+      "ransacMaxIters": 20000,
+      "ransacConfidence": 0.9999,
+      "minKeypointsPerImage": 80,
+      "minMatchesForEstimate": 12,
+      "minInliersPerStill": 8,
+      "minStills": 2,
+      "crossValMinInliers": 12,
+      "crossValMaxResidualPx": 20,
+      "minAnchoredNcc": 0.25,
+      "nccFootprintMinPixels": 2000,
+      "uncertaintyModel": "inlier-residual-first-order-v2.1",
+      "confidenceModel": "inliers-and-crossval-heuristic/1"
+    }
+  }
+}

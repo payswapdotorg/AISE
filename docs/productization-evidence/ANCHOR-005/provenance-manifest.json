@@ -1,0 +1,164 @@
+{
+ "manifestId": "anchor005-photoset/1",
+ "site": {
+  "name": "Edith Farnsworth House (Farnsworth House), 14520 River Road, Plano, Kendall County, Illinois, USA",
+  "locItem": "https://www.loc.gov/pictures/item/il0323/",
+  "habsSurvey": "HABS IL-1105 (the 2009 measured-drawing survey) + HABS ILL,47-PLAN.V (the 1971 photographic documentation), LoC item il0323",
+  "designedBy": "Ludwig Mies van der Rohe, 1945-46; constructed 1949-1951",
+  "documentedGeometry": "the south elevation's documented levels (the sheet's own annotations): TOP OF CORNICE EL. 13'-6\", CEILING EL. 11'-9\", MAIN FLOOR EL. 2'-4\", LOWER TERRACE EL. 0'-0\"; drawing scale 1/4\"=1'-0\" (1:48); the documented envelope 28 x 77 ft"
+ },
+ "retrieval": {
+  "date": "2026-10-02",
+  "method": "the LoC (www.loc.gov / cdn.loc.gov / tile.loc.gov) and archive.org were unreachable from the recording sandbox (Cloudflare 403/1008 region block; archive.org timeouts); the fixtures were retrieved as Wikimedia Commons thumbnail renders (thumb.wikimedia.org, declared JPEG re-encodes of the LoC master TIFFs) via the Commons API (commons.wikimedia.org), with the authoritative Commons master sha1 digests recorded per item",
+  "rightsBasis": "PD-USGov-NPS \u2014 works of the US National Park Service (HABS/HAER/HALS program), 17 U.S.C. \u00a7 105; LoC rights advisory: 'No known restrictions on images made by the U.S. Government'",
+  "fidelityNote": "the stills are real photographs (fidelity REAL, never upgraded); the committed bytes are the retrieved derivative renders (1920 px), NOT the LoC master TIFFs \u2014 declared, digested as committed, with the master sha1 recorded; the plan rasters are declared crops of the committed source-sheet renders"
+ },
+ "planRaster": {
+  "file": "plan-raster-south-elevation.jpg",
+  "contentDigestSha256": "e18980e85106e4a89031ea33c42ea15b8204071d638bc539f81a64a71a5570ed",
+  "sourceSheet": "source/sheet-4.jpg",
+  "sourceSheetDigestSha256": "f43816680c854240a6f9a7c1a19c63bd97105735dbbae2d0ea19217b855941ec",
+  "sourceTitle": "South and North Elevations - Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL HABS ILL,47-PLAN.V,1- (sheet 4 of 8).tif",
+  "source": "https://www.loc.gov/pictures/item/il0323.sheet.00004a (HABS IL-1105 sheet 4 of 8, 'South and North Elevations', drawn by Jenna Cellini, Elizabeth Milnarik, Brad Roeder, summer 2009)",
+  "rights": "public domain (US government work, NPS HABS survey; PD-USGov-NPS)",
+  "declaredCropPx": {
+   "y0": 40,
+   "y1": 1290,
+   "x0": 0,
+   "x1": 3560,
+   "sheetSizePx": [
+    3840,
+    2560
+   ]
+  },
+  "processing": "declared processing: (a) the crop of the committed sheet render [y 40:1290, x 0:3560]; (b) INTER_AREA downsample to 2400 px width (the sandbox memory discipline \u2014 12.7-MP plans OOM the SIFT stage, measured); (c) WHITE padding to the 2400x2400 square canvas below the drawing (no origin shift). The square shape is REQUIRED by the frozen anchor003b adapter: its photometric-verification gate swaps width/height in the warp step (a latent defect invisible on the 003b run's square 3000x3000 plan, surfaced by this lane's non-square elevation crop \u2014 recorded as a finding; the frozen adapter stays byte-identical, the padding is the declared workaround)",
+  "rasterToScene": {
+   "pixelsPerMeter": 59.391207,
+   "xDirection": "east-right",
+   "yDirection": "north-up",
+   "worldOriginPx": [
+    866.0,
+    514.0
+   ]
+  },
+  "rasterToSceneDerivation": {
+   "primary": "least-squares over the four documented elevation levels detected as drawn lines on the committed raster (top-of-cornice 270 px at 4.1148 m; ceiling 301 px at 3.5814 m; main-floor 472 px at 0.7112 m; lower-terrace 514 px at 0 m) => 59.391 px/m; fit residuals [0.3, -0.38, 0.16, -0.08] px",
+   "crossCheckScaleBar": "the graphic FEET scale bar (0 tick at x=484.0, 10-ft end at x=663.0) => 58.727 px/m",
+   "crossCheckDeclaredScale": "1/4\"=1'-0\" (1:48) at the render pitch 3840 px / 36 in => 58.981 px/m",
+   "agreement": "all three derivations agree within 1.12%",
+   "worldOrigin": "the west face of the main volume (x=866 px, the cornice span's left end) at the lower-terrace level (EL. 0'-0\", y=514 px); scene x = meters east of the west face, scene y = meters above the lower terrace",
+   "handedness": "x east-right TRUE as drawn (the entrance porch / west end is on the LEFT of the south elevation, verified against the site map's north-up arrow and the photographs: the porch is on the left of every south-facade view); row 0 = the top of the drawing = the MAXIMUM of the facade plane's second scene axis (zenith). The contract's closed literal 'north-up' names the ground-plane vocabulary's row-0=max-second-axis convention; the facade lane applies it to the vertical axis with the SAME substance (no mirroring; a real south-facade camera view shares handedness with this raster by construction). The north elevation (east-LEFT as drawn) CANNOT be declared under the closed vocabulary without a mirroring flip \u2014 the structural finding recorded in the README.",
+   "envelopeCheck": "the main volume's drawn envelope is 23.522 m = 77.17 ft (the documented 28 x 77 ft envelope: 23.47 m) \u2014 the third independent scale cross-check"
+  },
+  "fidelityClass": "REAL (a measured drawing \u2014 public-domain federal documentation; never synthetic)"
+ },
+ "siteMapRaster": {
+  "file": "plan-raster-site-map.jpg",
+  "contentDigestSha256": "9113394360a28eaf4c1f3b82dfbf76c65f2f9896f5e04c066c20883633b7fdfd",
+  "sourceSheet": "source/sheet-1.jpg",
+  "sourceSheetDigestSha256": "8feaaa4f57bf158b639e7fc40ad30d4108ee68458a481289c73b3c74813d31d3",
+  "sourceTitle": "Cover Sheet and Site Map - Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL HABS ILL,47-PLAN.V,1- (sheet 1 of 8).tif",
+  "source": "https://www.loc.gov/pictures/item/il0323.sheet.00001a (HABS IL-1105 sheet 1 of 8, 'Cover Sheet and Site Map')",
+  "rights": "public domain (US government work, NPS HABS survey; PD-USGov-NPS)",
+  "declaredCropPx": {
+   "y0": 1380,
+   "y1": 2520,
+   "x0": 0,
+   "x1": 3560,
+   "processing": "crop -> INTER_AREA 2400-px width -> white square pad (the frozen adapter's square-plan requirement)"
+  },
+  "declaredScale": "1\"=125'-0\" (the sheet's own scale bar)",
+  "northUp": "TRUE as drawn (the site map's north arrow points to the top of the sheet \u2014 verified)",
+  "fidelityClass": "REAL (the documentation's own site map)",
+  "role": "the wrong-plane negative's raster (neg-004): a real plan-view raster against the real facade stills"
+ },
+ "northFlippedRaster": {
+  "file": "plan-raster-north-elevation-flipped.jpg",
+  "contentDigestSha256": "2ec6fd3fc0ce52006a32435970962211204b4c271f097409f98f34e431d22b2d",
+  "sourceSheet": "source/sheet-4.jpg",
+  "declaredTransform": "the north elevation crop (sheet-4 [1290:2560, 0:3560]) mirrored horizontally so scene-east runs right (the drawn north elevation is east-LEFT), then INTER_AREA-downsampled to 2400 px width and white-padded to the square canvas; the flip is DECLARED and makes the raster MIRRORED relative to any real camera view of the north facade",
+  "fidelityClass": "DERIVED-DRILL (a declared transform of the real drawing \u2014 never counted in the real photoset)",
+  "role": "the mirrored-content negative's raster (neg-012): the handedness law's mirroring clause realized as content"
+ },
+ "stills": [
+  {
+   "stillId": "still-s01",
+   "file": "still-s01.jpg",
+   "contentDigestSha256": "c9f68d7dc8d62a253a9b13b319c24aec586143ff7983257c611140c7bfba9094",
+   "commonsFileTitle": "GENERAL VIEW FROM THE SOUTHWEST, SHOWING SOUTH ELEVATION - Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL HABS ILL,47-PLAN.V,1-1.tif",
+   "stillClass": "south-facade"
+  },
+  {
+   "stillId": "still-s02",
+   "file": "still-s02.jpg",
+   "contentDigestSha256": "74d5513d9cbfaee464233a2a3f9dcdf3e633d292d21324655167cccdc184cec3",
+   "commonsFileTitle": "SOUTH ELEVATION, DETAIL OF PORCH, SEEN FROM SOUTHWEST - Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL HABS ILL,47-PLAN.V,1-2.tif",
+   "stillClass": "south-facade"
+  },
+  {
+   "stillId": "still-s03",
+   "file": "still-s03.jpg",
+   "contentDigestSha256": "8c47722105c9da50deb60ee4d3a84ccaa1cf65a64a913d80dd9a21c316bd5c00",
+   "commonsFileTitle": "GENERAL VIEW FROM THE SOUTHEAST, SHOWING SOUTH ELEVATION - Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL HABS ILL,47-PLAN.V,1-3.tif",
+   "stillClass": "south-facade"
+  },
+  {
+   "stillId": "still-s04",
+   "file": "still-s04.jpg",
+   "contentDigestSha256": "05074edab5f7ea39e88eff68807713c4d3017e371da9e1183f8252e302f9df3f",
+   "commonsFileTitle": "SOUTH ELEVATION - Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL HABS ILL,47-PLAN.V,1-4.tif",
+   "stillClass": "south-facade"
+  },
+  {
+   "stillId": "still-s05",
+   "file": "still-s05.jpg",
+   "contentDigestSha256": "2fef3b483f915ce529365e7e1aa7f470321ab238b9bfa0819fbe2044707f35b1",
+   "commonsFileTitle": "SOUTH ELEVATION DETAIL OF ENTRANCE - Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL HABS ILL,47-PLAN.V,1-5.tif",
+   "stillClass": "south-facade"
+  },
+  {
+   "stillId": "still-s06",
+   "file": "still-s06.jpg",
+   "contentDigestSha256": "3cd0145d1571bff68b53542596a46652d29ef3536fd330a599c2225fdf07a003",
+   "commonsFileTitle": "SOUTH ELEVATION, DETAIL OF ENTRANCE AND EASTERN BAYS, SEEN FROM EAST - Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL HABS ILL,47-PLAN.V,1-6.tif",
+   "stillClass": "south-facade"
+  },
+  {
+   "stillId": "still-s07",
+   "file": "still-s07.jpg",
+   "contentDigestSha256": "c249abbac7fd701f0aaab8507978852ab59bd4421c31d22060cf5978fd9e2aa0",
+   "commonsFileTitle": "SOUTH ELEVATION, EASTERN BAYS - Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL HABS ILL,47-PLAN.V,1-7.tif",
+   "stillClass": "south-facade"
+  },
+  {
+   "stillId": "still-s08",
+   "file": "still-s08.jpg",
+   "contentDigestSha256": "ddb9f3b14a62b08969ef48d622e256674c1769876ff0a080d4db94c39b9ad7dc",
+   "commonsFileTitle": "NORTH AND WEST ELEVATIONS - Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL HABS ILL,47-PLAN.V,1-8.tif",
+   "stillClass": "north-facade-wrong-plane"
+  },
+  {
+   "stillId": "still-s09",
+   "file": "still-s09.jpg",
+   "contentDigestSha256": "6be0e35296e6dbbeb22fd750d623183468d2d13c3dac03b89d48162de2bc7334",
+   "commonsFileTitle": "NORTH ELEVATION - Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL HABS ILL,47-PLAN.V,1-9.tif",
+   "stillClass": "north-facade-wrong-plane"
+  },
+  {
+   "stillId": "still-s10",
+   "file": "still-s10.jpg",
+   "contentDigestSha256": "c70c23ea341d6d04fe654609ace32514f37cafe784a6f98acf254601f0905ec1",
+   "commonsFileTitle": "NORTH ELEVATION, SEEN FROM NORTHEAST - Edith Farnsworth House, 14520 River Road, Plano, Kendall County, IL HABS ILL,47-PLAN.V,1-10.tif",
+   "stillClass": "north-facade-wrong-plane"
+  }
+ ],
+ "stillProvenanceCommon": {
+  "photographer": "Jack E. Boucher, photographer (NPS HABS)",
+  "date": "1971",
+  "medium": "5 x 7 in. black-and-white negative (large format)",
+  "rights": "public domain (US government work; PD-USGov-NPS). LoC rights advisory: 'No known restrictions on images made by the U.S. Government'",
+  "retrievedAs": "Wikimedia Commons thumbnail render (1920 px JPEG) of the LoC master TIFF; the master sha1 (Commons) is recorded per still",
+  "locItem": "https://www.loc.gov/pictures/item/il0323/",
+  "fidelityClass": "REAL (real 1971 large-format photographs; never synthetic, never upgraded)"
+ }
+}
