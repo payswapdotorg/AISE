@@ -1,0 +1,24 @@
+{
+  "name": "@aise/world-reality-substrate",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE world program substrate-neutral Reality-layer runtime contracts (WORLD-P0-A): typed adapter ports for the five open-source substrates the 2026-10-02 product directive integrates under the canonical core — Babylon.js (interactive scene runtime), CesiumJS (geospatial context), OpenUSD (composition semantics), glTF/GLB (runtime asset delivery) and Assimp (format ingest). Contracts receive AISE scene-composition/domain types and return opaque handles; substrate types NEVER cross the port; every substrate is replaceable behind its contract (substitution doubles + property tests prove implementability WITHOUT the substrate — the technology-substitution-contract three laws). glTF parsing/validation is REAL and fully runnable headless (JSON chunk + GLB container, fail-closed); GPU-dependent behavior is declared BLOCKED with the WORLD-P1 measurement protocol. No new runtime dependencies; no substrate is imported.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./scene": "./src/scene.ts",
+    "./errors": "./src/errors.ts",
+    "./babylon": "./src/babylon/contract.ts",
+    "./cesium": "./src/cesium/contract.ts",
+    "./usd": "./src/usd/contract.ts",
+    "./gltf": "./src/gltf/contract.ts",
+    "./assimp": "./src/assimp/contract.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/anchoring-contract": "workspace:*",
+    "@aise/shared-contracts": "workspace:*"
+  }
+}
