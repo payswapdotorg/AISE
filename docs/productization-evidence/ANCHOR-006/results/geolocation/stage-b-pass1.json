@@ -1,0 +1,3307 @@
+{
+ "pinRule": {
+  "minInliers": 8,
+  "minNcc": 0.3
+ },
+ "stills": {
+  "p03-famartin-dundy-a": {
+   "seed": "EXIF GPS camera position (40.357204, -101.817504) \u2014 the photo looks southward",
+   "attempts": [
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 601448,
+     "center": [
+      41.3572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 596,
+      "ncc": -0.2134
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 601448,
+     "center": [
+      41.3572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 20346,
+      "ncc": -0.0531
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 601448,
+     "center": [
+      41.3572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 64122,
+      "ncc": -0.0305
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 527479,
+     "center": [
+      41.0572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 15473,
+      "ncc": -0.0619
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 527479,
+     "center": [
+      41.0572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 14380,
+      "ncc": 0.068
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 527479,
+     "center": [
+      41.0572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 486,
+      "ncc": 0.0256
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 622396,
+     "center": [
+      41.3572,
+      -102.07996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 189623,
+      "ncc": -0.016
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 622396,
+     "center": [
+      41.3572,
+      -102.07996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 59512,
+      "ncc": -0.0103
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 622396,
+     "center": [
+      41.3572,
+      -102.07996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 765,
+      "ncc": 0.0924
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 596899,
+     "center": [
+      41.3572,
+      -101.89624
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 1645,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 596899,
+     "center": [
+      41.3572,
+      -101.89624
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 116500,
+      "ncc": 0.0041
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 596899,
+     "center": [
+      41.3572,
+      -101.89624
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 3,
+      "footprintPx": 1778,
+      "ncc": 0.1363
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1393382,
+     "center": [
+      41.3572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 62173,
+      "ncc": 0.0224
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1393382,
+     "center": [
+      41.3572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 585839,
+      "ncc": 0.0086
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1393382,
+     "center": [
+      41.3572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 5,
+      "footprintPx": 1416,
+      "ncc": 0.1456
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1186326,
+     "center": [
+      41.0572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 5,
+      "footprintPx": 0,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1186326,
+     "center": [
+      41.0572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 7840,
+      "ncc": 0.002
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1186326,
+     "center": [
+      41.0572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 2,
+      "footprintPx": 5561,
+      "ncc": -0.0346
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1451143,
+     "center": [
+      41.3572,
+      -102.07996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 2513,
+      "ncc": 0.005
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1451143,
+     "center": [
+      41.3572,
+      -102.07996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 245776,
+      "ncc": -0.0081
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1451143,
+     "center": [
+      41.3572,
+      -102.07996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 198566,
+      "ncc": -0.0149
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1378844,
+     "center": [
+      41.3572,
+      -101.89624
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 4376,
+      "ncc": 0.0138
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1378844,
+     "center": [
+      41.3572,
+      -101.89624
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 0,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1378844,
+     "center": [
+      41.3572,
+      -101.89624
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 6212,
+      "ncc": 0.0571
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1304959,
+     "center": [
+      41.3572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 12204,
+      "ncc": 0.0304
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1304959,
+     "center": [
+      41.3572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 82236,
+      "ncc": 0.0052
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1304959,
+     "center": [
+      41.3572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 135398,
+      "ncc": 0.0013
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1170480,
+     "center": [
+      41.0572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 103446,
+      "ncc": 0.0033
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1170480,
+     "center": [
+      41.0572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 4,
+      "footprintPx": 9843,
+      "ncc": -0.012
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1170480,
+     "center": [
+      41.0572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 27872,
+      "ncc": -0.0319
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1274918,
+     "center": [
+      41.3572,
+      -102.07996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 28585,
+      "ncc": 0.0154
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1274918,
+     "center": [
+      41.3572,
+      -102.07996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 36000,
+      "ncc": 0.0038
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1274918,
+     "center": [
+      41.3572,
+      -102.07996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 141679,
+      "ncc": -0.0244
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1294587,
+     "center": [
+      41.3572,
+      -101.89624
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 41956,
+      "ncc": 0.0196
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1294587,
+     "center": [
+      41.3572,
+      -101.89624
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 71321,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1294587,
+     "center": [
+      41.3572,
+      -101.89624
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 0,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 762560,
+     "center": [
+      41.3572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 1,
+      "footprintPx": 551,
+      "ncc": 0.1021
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 762560,
+     "center": [
+      41.3572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 61592,
+      "ncc": 0.0052
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 762560,
+     "center": [
+      41.3572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 8502,
+      "ncc": -0.0144
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 686263,
+     "center": [
+      41.0572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 43020,
+      "ncc": 0.0242
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 686263,
+     "center": [
+      41.0572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 526,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 686263,
+     "center": [
+      41.0572,
+      -101.97498
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 13119,
+      "ncc": -0.0536
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 695319,
+     "center": [
+      41.3572,
+      -102.07996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 28320,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 695319,
+     "center": [
+      41.3572,
+      -102.07996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 26295,
+      "ncc": -0.0152
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 695319,
+     "center": [
+      41.3572,
+      -102.07996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 419,
+      "ncc": 0.0083
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 688309,
+     "center": [
+      41.3572,
+      -101.89624
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 5065546,
+      "ncc": 0.0722
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 688309,
+     "center": [
+      41.3572,
+      -101.89624
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 719541,
+      "ncc": 0.0002
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 688309,
+     "center": [
+      41.3572,
+      -101.89624
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 567,
+      "ncc": -0.1701
+     }
+    }
+   ],
+   "outcome": "un-localized",
+   "reason": "no seeded plan box verified: best attempt inliers=9, ncc=0.0256 (floors 8/0.3)"
+  },
+  "p04-famartin-dundy-b": {
+   "seed": "EXIF GPS camera position (40.384872, -101.411194) \u2014 southward",
+   "attempts": [
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 515316,
+     "center": [
+      41.38487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 9669,
+      "ncc": 0.0527
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 515316,
+     "center": [
+      41.38487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 21437,
+      "ncc": -0.0552
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 515316,
+     "center": [
+      41.38487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 3018,
+      "ncc": 0.0631
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 526236,
+     "center": [
+      41.08487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 7030,
+      "ncc": 0.0516
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 526236,
+     "center": [
+      41.08487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 71028,
+      "ncc": -0.0406
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 526236,
+     "center": [
+      41.08487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 888,
+      "ncc": -0.0411
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 540222,
+     "center": [
+      41.38487,
+      -101.67376
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 5525,
+      "ncc": 0.0439
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 540222,
+     "center": [
+      41.38487,
+      -101.67376
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 223006,
+      "ncc": 0.0126
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 540222,
+     "center": [
+      41.38487,
+      -101.67376
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 25823,
+      "ncc": -0.0326
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 501112,
+     "center": [
+      41.38487,
+      -101.48996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 2973988,
+      "ncc": -0.0695
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 501112,
+     "center": [
+      41.38487,
+      -101.48996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 1799,
+      "ncc": 0.0427
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 501112,
+     "center": [
+      41.38487,
+      -101.48996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 30655,
+      "ncc": -0.017
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1180027,
+     "center": [
+      41.38487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 20672,
+      "ncc": 0.0307
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1180027,
+     "center": [
+      41.38487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 9000,
+      "ncc": 0.0017
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1180027,
+     "center": [
+      41.38487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 37692,
+      "ncc": 0.0097
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1187787,
+     "center": [
+      41.08487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 107895,
+      "ncc": -0.0275
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1187787,
+     "center": [
+      41.08487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 1,
+      "footprintPx": 3937,
+      "ncc": 0.0652
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1187787,
+     "center": [
+      41.08487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 3770265,
+      "ncc": 0.012
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1230955,
+     "center": [
+      41.38487,
+      -101.67376
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 2724730,
+      "ncc": -0.012
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1230955,
+     "center": [
+      41.38487,
+      -101.67376
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 426431,
+      "ncc": 0.018
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1230955,
+     "center": [
+      41.38487,
+      -101.67376
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 30253,
+      "ncc": -0.0106
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1142183,
+     "center": [
+      41.38487,
+      -101.48996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 37964,
+      "ncc": -0.0042
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1142183,
+     "center": [
+      41.38487,
+      -101.48996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 9421,
+      "ncc": 0.0097
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1142183,
+     "center": [
+      41.38487,
+      -101.48996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 819612,
+      "ncc": -0.0209
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1112427,
+     "center": [
+      41.38487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 455796,
+      "ncc": -0.0024
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1112427,
+     "center": [
+      41.38487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 0,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1112427,
+     "center": [
+      41.38487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 553,
+      "ncc": 0.1213
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1146282,
+     "center": [
+      41.08487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 585,
+      "ncc": -0.0537
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1146282,
+     "center": [
+      41.08487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 7156,
+      "ncc": -0.0428
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1146282,
+     "center": [
+      41.08487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 502,
+      "ncc": -0.1076
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1121021,
+     "center": [
+      41.38487,
+      -101.67376
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 38688,
+      "ncc": -0.0403
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1121021,
+     "center": [
+      41.38487,
+      -101.67376
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 28127,
+      "ncc": -0.0359
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1121021,
+     "center": [
+      41.38487,
+      -101.67376
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 650174,
+      "ncc": 0.0179
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1076668,
+     "center": [
+      41.38487,
+      -101.48996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 33134,
+      "ncc": -0.0214
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1076668,
+     "center": [
+      41.38487,
+      -101.48996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 6541,
+      "ncc": 0.0926
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1076668,
+     "center": [
+      41.38487,
+      -101.48996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 4,
+      "footprintPx": 48,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 647210,
+     "center": [
+      41.38487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 4184,
+      "ncc": -0.0346
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 647210,
+     "center": [
+      41.38487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 652,
+      "ncc": 0.0966
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 647210,
+     "center": [
+      41.38487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 5,
+      "footprintPx": 80251,
+      "ncc": 0.0041
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 622414,
+     "center": [
+      41.08487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 3200,
+      "ncc": -0.0724
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 622414,
+     "center": [
+      41.08487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 16752,
+      "ncc": -0.0147
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 622414,
+     "center": [
+      41.08487,
+      -101.56873
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 523715,
+      "ncc": -0.0109
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 597959,
+     "center": [
+      41.38487,
+      -101.67376
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 42213,
+      "ncc": 0.0115
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 597959,
+     "center": [
+      41.38487,
+      -101.67376
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 1721,
+      "ncc": -0.0435
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 597959,
+     "center": [
+      41.38487,
+      -101.67376
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 4560,
+      "ncc": 0.0636
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 624130,
+     "center": [
+      41.38487,
+      -101.48996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 376408,
+      "ncc": -0.0082
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 624130,
+     "center": [
+      41.38487,
+      -101.48996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 328057,
+      "ncc": 0.0008
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 624130,
+     "center": [
+      41.38487,
+      -101.48996
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 991248,
+      "ncc": -0.0055
+     }
+    }
+   ],
+   "outcome": "un-localized",
+   "reason": "no seeded plan box verified: best attempt inliers=9, ncc=0.1213 (floors 8/0.3)"
+  },
+  "p05-famartin-hitchcock": {
+   "seed": "EXIF GPS camera position (40.427981, -101.109358) \u2014 southward over Swanson Lake area",
+   "attempts": [
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 522236,
+     "center": [
+      41.42798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 115117,
+      "ncc": -0.003
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 522236,
+     "center": [
+      41.42798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 318,
+      "ncc": 0.2805
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 522236,
+     "center": [
+      41.42798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 0,
+      "footprintPx": 42191,
+      "ncc": -0.0328
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 598303,
+     "center": [
+      41.12798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 11284,
+      "ncc": 0.0301
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 598303,
+     "center": [
+      41.12798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 11275,
+      "ncc": -0.0216
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 598303,
+     "center": [
+      41.12798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 5,
+      "footprintPx": 33062,
+      "ncc": -0.0222
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 504398,
+     "center": [
+      41.42798,
+      -101.37209
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 9602,
+      "ncc": 0.0204
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 504398,
+     "center": [
+      41.42798,
+      -101.37209
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 37574,
+      "ncc": -0.0411
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 504398,
+     "center": [
+      41.42798,
+      -101.37209
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 62709,
+      "ncc": 0.0145
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 564251,
+     "center": [
+      41.42798,
+      -101.18818
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 83,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 564251,
+     "center": [
+      41.42798,
+      -101.18818
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 10571,
+      "ncc": 0.0219
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 564251,
+     "center": [
+      41.42798,
+      -101.18818
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 55180,
+      "ncc": 0.0007
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1201415,
+     "center": [
+      41.42798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 40732,
+      "ncc": 0.0096
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1201415,
+     "center": [
+      41.42798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 37122,
+      "ncc": -0.0508
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1201415,
+     "center": [
+      41.42798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 4,
+      "footprintPx": 3969,
+      "ncc": -0.0035
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1367096,
+     "center": [
+      41.12798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 48,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1367096,
+     "center": [
+      41.12798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 3,
+      "footprintPx": 439,
+      "ncc": 0.0235
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1367096,
+     "center": [
+      41.12798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 53717,
+      "ncc": 0.0363
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1153742,
+     "center": [
+      41.42798,
+      -101.37209
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 36041,
+      "ncc": 0.0115
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1153742,
+     "center": [
+      41.42798,
+      -101.37209
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 1517,
+      "ncc": 0.004
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1153742,
+     "center": [
+      41.42798,
+      -101.37209
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 511809,
+      "ncc": -0.0107
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1301894,
+     "center": [
+      41.42798,
+      -101.18818
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 516000,
+      "ncc": -0.0014
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1301894,
+     "center": [
+      41.42798,
+      -101.18818
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 9892,
+      "ncc": -0.01
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1301894,
+     "center": [
+      41.42798,
+      -101.18818
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 4597242,
+      "ncc": -0.0106
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1090778,
+     "center": [
+      41.42798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 36493,
+      "ncc": 0.0214
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1090778,
+     "center": [
+      41.42798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 868249,
+      "ncc": -0.0097
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1090778,
+     "center": [
+      41.42798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 353949,
+      "ncc": -0.0294
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1277394,
+     "center": [
+      41.12798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 1034,
+      "ncc": -0.0892
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1277394,
+     "center": [
+      41.12798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 56622,
+      "ncc": -0.0376
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1277394,
+     "center": [
+      41.12798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 4,
+      "footprintPx": 851,
+      "ncc": 0.1879
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1046458,
+     "center": [
+      41.42798,
+      -101.37209
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 403338,
+      "ncc": 0.023
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1046458,
+     "center": [
+      41.42798,
+      -101.37209
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 18585,
+      "ncc": 0.0243
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1046458,
+     "center": [
+      41.42798,
+      -101.37209
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 214,
+      "ncc": -0.1439
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1194837,
+     "center": [
+      41.42798,
+      -101.18818
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 1434,
+      "ncc": -0.0154
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1194837,
+     "center": [
+      41.42798,
+      -101.18818
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 23038,
+      "ncc": 0.0804
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1194837,
+     "center": [
+      41.42798,
+      -101.18818
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 201589,
+      "ncc": -0.0309
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 590351,
+     "center": [
+      41.42798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 1534,
+      "ncc": 0.0578
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 590351,
+     "center": [
+      41.42798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 25,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 590351,
+     "center": [
+      41.42798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 22650,
+      "ncc": -0.0597
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 758726,
+     "center": [
+      41.12798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 72633,
+      "ncc": 0.0404
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 758726,
+     "center": [
+      41.12798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 35677,
+      "ncc": 0.0667
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 758726,
+     "center": [
+      41.12798,
+      -101.267
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 618615,
+      "ncc": 0.006
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 576428,
+     "center": [
+      41.42798,
+      -101.37209
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 143891,
+      "ncc": -0.0283
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 576428,
+     "center": [
+      41.42798,
+      -101.37209
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 19167,
+      "ncc": -0.0222
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 576428,
+     "center": [
+      41.42798,
+      -101.37209
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 0,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 674600,
+     "center": [
+      41.42798,
+      -101.18818
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 254043,
+      "ncc": 0.0005
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 674600,
+     "center": [
+      41.42798,
+      -101.18818
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 147,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 3,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 674600,
+     "center": [
+      41.42798,
+      -101.18818
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 1015522,
+      "ncc": -0.0026
+     }
+    }
+   ],
+   "outcome": "un-localized",
+   "reason": "no seeded plan box verified: best attempt inliers=8, ncc=0.2805 (floors 8/0.3)"
+  },
+  "p06-kgs-finney": {
+   "seed": "source metadata: Finney County, Kansas (KGS photo library) \u2014 Garden City pivot area",
+   "attempts": [
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 797403,
+     "center": [
+      39.07,
+      -100.83
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 10,
+      "footprintPx": 1711,
+      "ncc": -0.0984
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 797403,
+     "center": [
+      39.07,
+      -100.83
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 2419,
+      "ncc": 0.1714
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 797403,
+     "center": [
+      39.07,
+      -100.83
+     ],
+     "verify": {
+      "matches": 227,
+      "inliers": 11,
+      "footprintPx": 1146725,
+      "ncc": -0.0831
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 782834,
+     "center": [
+      39.2,
+      -100.95
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 163838,
+      "ncc": 0.0034
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 782834,
+     "center": [
+      39.2,
+      -100.95
+     ],
+     "verify": {
+      "matches": 783,
+      "inliers": 8,
+      "footprintPx": 3262,
+      "ncc": 0.0032
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 782834,
+     "center": [
+      39.2,
+      -100.95
+     ],
+     "verify": {
+      "matches": 224,
+      "inliers": 11,
+      "footprintPx": 86875,
+      "ncc": 0.0348
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 801002,
+     "center": [
+      39.0,
+      -100.7
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 13355,
+      "ncc": -0.0143
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 801002,
+     "center": [
+      39.0,
+      -100.7
+     ],
+     "verify": {
+      "matches": 782,
+      "inliers": 9,
+      "footprintPx": 5497,
+      "ncc": -0.0151
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 801002,
+     "center": [
+      39.0,
+      -100.7
+     ],
+     "verify": {
+      "matches": 233,
+      "inliers": 11,
+      "footprintPx": 21766,
+      "ncc": 0.0161
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1214908,
+     "center": [
+      39.07,
+      -100.83
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 254,
+      "ncc": -0.1115
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1214908,
+     "center": [
+      39.07,
+      -100.83
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 12,
+      "footprintPx": 123011,
+      "ncc": -0.0083
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1214908,
+     "center": [
+      39.07,
+      -100.83
+     ],
+     "verify": {
+      "matches": 233,
+      "inliers": 11,
+      "footprintPx": 140104,
+      "ncc": -0.1117
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1146765,
+     "center": [
+      39.2,
+      -100.95
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 72224,
+      "ncc": -0.0088
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1146765,
+     "center": [
+      39.2,
+      -100.95
+     ],
+     "verify": {
+      "matches": 799,
+      "inliers": 11,
+      "footprintPx": 4273,
+      "ncc": 0.0063
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1146765,
+     "center": [
+      39.2,
+      -100.95
+     ],
+     "verify": {
+      "matches": 227,
+      "inliers": 11,
+      "footprintPx": 2497,
+      "ncc": 0.132
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1183211,
+     "center": [
+      39.0,
+      -100.7
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 43527,
+      "ncc": -0.0984
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1183211,
+     "center": [
+      39.0,
+      -100.7
+     ],
+     "verify": {
+      "matches": 794,
+      "inliers": 11,
+      "footprintPx": 1582500,
+      "ncc": -0.0108
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1183211,
+     "center": [
+      39.0,
+      -100.7
+     ],
+     "verify": {
+      "matches": 216,
+      "inliers": 11,
+      "footprintPx": 222870,
+      "ncc": 0.0078
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1155835,
+     "center": [
+      39.07,
+      -100.83
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 102920,
+      "ncc": -0.032
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1155835,
+     "center": [
+      39.07,
+      -100.83
+     ],
+     "verify": {
+      "matches": 789,
+      "inliers": 10,
+      "footprintPx": 6026002,
+      "ncc": 0.0542
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1155835,
+     "center": [
+      39.07,
+      -100.83
+     ],
+     "verify": {
+      "matches": 234,
+      "inliers": 12,
+      "footprintPx": 1063322,
+      "ncc": 0.0041
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1057739,
+     "center": [
+      39.2,
+      -100.95
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 0,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1057739,
+     "center": [
+      39.2,
+      -100.95
+     ],
+     "verify": {
+      "matches": 792,
+      "inliers": 12,
+      "footprintPx": 1460,
+      "ncc": 0.0408
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1057739,
+     "center": [
+      39.2,
+      -100.95
+     ],
+     "verify": {
+      "matches": 222,
+      "inliers": 10,
+      "footprintPx": 8124,
+      "ncc": 0.025
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1195612,
+     "center": [
+      39.0,
+      -100.7
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 6440,
+      "ncc": -0.1184
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1195612,
+     "center": [
+      39.0,
+      -100.7
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 10,
+      "footprintPx": 115585,
+      "ncc": 0.0154
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1195612,
+     "center": [
+      39.0,
+      -100.7
+     ],
+     "verify": {
+      "matches": 227,
+      "inliers": 12,
+      "footprintPx": 456070,
+      "ncc": -0.074
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 699030,
+     "center": [
+      39.07,
+      -100.83
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 3,
+      "footprintPx": 987,
+      "ncc": 0.0866
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 699030,
+     "center": [
+      39.07,
+      -100.83
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 11,
+      "footprintPx": 7821,
+      "ncc": -0.0152
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 699030,
+     "center": [
+      39.07,
+      -100.83
+     ],
+     "verify": {
+      "matches": 230,
+      "inliers": 13,
+      "footprintPx": 4282,
+      "ncc": -0.1145
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 585061,
+     "center": [
+      39.2,
+      -100.95
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 5512,
+      "ncc": 0.1406
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 585061,
+     "center": [
+      39.2,
+      -100.95
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 13,
+      "footprintPx": 41938,
+      "ncc": 0.0179
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 585061,
+     "center": [
+      39.2,
+      -100.95
+     ],
+     "verify": {
+      "matches": 230,
+      "inliers": 10,
+      "footprintPx": 166725,
+      "ncc": -0.0444
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 691824,
+     "center": [
+      39.0,
+      -100.7
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 1227,
+      "ncc": -0.041
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 691824,
+     "center": [
+      39.0,
+      -100.7
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 7427,
+      "ncc": -0.0794
+     }
+    },
+    {
+     "box": 2,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 691824,
+     "center": [
+      39.0,
+      -100.7
+     ],
+     "verify": {
+      "matches": 234,
+      "inliers": 11,
+      "footprintPx": 54664,
+      "ncc": -0.0671
+     }
+    }
+   ],
+   "outcome": "un-localized",
+   "reason": "no seeded plan box verified: best attempt inliers=13, ncc=0.0179 (floors 8/0.3)"
+  },
+  "p07-deverre-winter": {
+   "seed": "EXIF GPS camera position (41.948257, -99.120712) \u2014 winter 2011 shot (cross-vintage attempt)",
+   "attempts": [
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 582483,
+     "center": [
+      42.94826,
+      -99.28206
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 23941,
+      "ncc": -0.0235
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 582483,
+     "center": [
+      42.94826,
+      -99.28206
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 1363,
+      "ncc": 0.1021
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 582483,
+     "center": [
+      42.94826,
+      -99.28206
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 3868834,
+      "ncc": 0.0204
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 1.0,
+     "planBytes": 597082,
+     "center": [
+      42.94826,
+      -99.38962
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 1229,
+      "ncc": 0.1063
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 0.5,
+     "planBytes": 597082,
+     "center": [
+      42.94826,
+      -99.38962
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 1628,
+      "ncc": -0.1363
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 12.0,
+     "photoScale": 0.25,
+     "planBytes": 597082,
+     "center": [
+      42.94826,
+      -99.38962
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 3,
+      "footprintPx": 9,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1340822,
+     "center": [
+      42.94826,
+      -99.28206
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 10,
+      "footprintPx": 836,
+      "ncc": -0.1522
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1340822,
+     "center": [
+      42.94826,
+      -99.28206
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 398357,
+      "ncc": -0.0119
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1340822,
+     "center": [
+      42.94826,
+      -99.28206
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 10,
+      "footprintPx": 124282,
+      "ncc": -0.0046
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 1.0,
+     "planBytes": 1363617,
+     "center": [
+      42.94826,
+      -99.38962
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 435,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 0.5,
+     "planBytes": 1363617,
+     "center": [
+      42.94826,
+      -99.38962
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 101,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 8.0,
+     "photoScale": 0.25,
+     "planBytes": 1363617,
+     "center": [
+      42.94826,
+      -99.38962
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 10,
+      "footprintPx": 1166,
+      "ncc": 0.0849
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1293798,
+     "center": [
+      42.94826,
+      -99.28206
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 2,
+      "footprintPx": 421,
+      "ncc": -0.1047
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1293798,
+     "center": [
+      42.94826,
+      -99.28206
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 10,
+      "footprintPx": 8844,
+      "ncc": -0.0256
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1293798,
+     "center": [
+      42.94826,
+      -99.28206
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 626,
+      "ncc": 0.0731
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 1.0,
+     "planBytes": 1297089,
+     "center": [
+      42.94826,
+      -99.38962
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 1687499,
+      "ncc": 0.0021
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 0.5,
+     "planBytes": 1297089,
+     "center": [
+      42.94826,
+      -99.38962
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 0,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 4.0,
+     "photoScale": 0.25,
+     "planBytes": 1297089,
+     "center": [
+      42.94826,
+      -99.38962
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 6,
+      "footprintPx": 277,
+      "ncc": -0.0681
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 718514,
+     "center": [
+      42.94826,
+      -99.28206
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 490,
+      "ncc": 0.0319
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 718514,
+     "center": [
+      42.94826,
+      -99.28206
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 0,
+      "ncc": 0.0
+     }
+    },
+    {
+     "box": 0,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 718514,
+     "center": [
+      42.94826,
+      -99.28206
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 8,
+      "footprintPx": 10970,
+      "ncc": -0.0335
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 1.0,
+     "planBytes": 758365,
+     "center": [
+      42.94826,
+      -99.38962
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 26558,
+      "ncc": 0.0143
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 0.5,
+     "planBytes": 758365,
+     "center": [
+      42.94826,
+      -99.38962
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 7,
+      "footprintPx": 64364,
+      "ncc": -0.0082
+     }
+    },
+    {
+     "box": 1,
+     "gsd": 2.5,
+     "photoScale": 0.25,
+     "planBytes": 758365,
+     "center": [
+      42.94826,
+      -99.38962
+     ],
+     "verify": {
+      "matches": 800,
+      "inliers": 9,
+      "footprintPx": 273541,
+      "ncc": -0.0081
+     }
+    }
+   ],
+   "outcome": "un-localized",
+   "reason": "no seeded plan box verified: best attempt inliers=10, ncc=0.0849 (floors 8/0.3)"
+  }
+ }
+}

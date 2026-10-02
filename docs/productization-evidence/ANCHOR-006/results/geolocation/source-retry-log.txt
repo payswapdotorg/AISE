@@ -1,0 +1,54 @@
+=== round 1 06:23:19 ===
+p02_3840 http=429 bytes=2152
+p03 http=429 bytes=2153
+p05 http=429 bytes=2153
+p07 http=429 bytes=2153
+p02_original http=429 bytes=2152
+=== round 2 06:30:20 ===
+p02_3840 http=429 bytes=2153
+p03 http=429 bytes=2152
+p05 http=429 bytes=2152
+p07 http=429 bytes=2153
+p02_original http=429 bytes=2153
+=== round 3 06:37:21 ===
+p02_3840 http=429 bytes=2153
+p03 http=429 bytes=2153
+p05 http=429 bytes=2153
+p07 http=429 bytes=2153
+p02_original http=429 bytes=2255
+=== round 4 06:44:21 ===
+p02_3840 http=429 bytes=2153
+p03 http=429 bytes=2153
+p05 http=429 bytes=2152
+p07 http=429 bytes=2152
+p02_original http=429 bytes=2152
+=== round 5 06:51:22 ===
+p02_3840 http=429 bytes=2153
+p03 http=429 bytes=2153
+p05 http=429 bytes=2153
+p07 http=429 bytes=2153
+p02_original http=429 bytes=2153
+=== round 6 06:58:23 ===
+p02_3840 http=429 bytes=2153
+p03 http=429 bytes=2152
+p05 http=429 bytes=2153
+p07 http=429 bytes=2153
+p02_original http=429 bytes=2153
+=== round 7 07:05:24 ===
+p02_3840 http=429 bytes=2153
+p03 http=429 bytes=2152
+p05 http=429 bytes=2153
+p07 http=429 bytes=2152
+p02_original http=429 bytes=2153
+=== round 8 07:12:25 ===
+p02_3840 http=429 bytes=2153
+p03 http=429 bytes=2152
+p05 http=429 bytes=2152
+p07 http=429 bytes=2152
+p02_original http=429 bytes=2153
+=== round 9 07:19:25 ===
+p02_3840 http=429 bytes=2152
+p03 http=429 bytes=2153
+p05 http=429 bytes=2153
+p07 http=429 bytes=2152
+p02_original http=429 bytes=2254

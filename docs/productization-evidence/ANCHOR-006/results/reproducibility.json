@@ -1,0 +1,13 @@
+{
+  "method": "per plan group: two separate supervised provider processes over IDENTICAL canonical request bytes (the same executionId — required by the contract's full-depth deterministicProjection, which compares every nested field including provenance.inputDigest); digests over the contract's deterministicProjection (executionId, executionTimeMs, stageTimingsMs excluded — performance observations, not semantics)",
+  "allGroupsIdentical": true,
+  "groups": [
+    {
+      "planId": "plan-anchor006-g00-fallback",
+      "identical": true,
+      "run1DeterministicDigest": "sha256:b1b33cecf909b0602c19f29eabaf84f44cf9e5208ee2e40b1b42bc6b5ca2ff51",
+      "run2DeterministicDigest": "sha256:b1b33cecf909b0602c19f29eabaf84f44cf9e5208ee2e40b1b42bc6b5ca2ff51",
+      "inputDigest": "sha256:2e1e857298736f46b8d0f600826c4170a60165c83203850dcdf6b3bebff0dde0"
+    }
+  ]
+}

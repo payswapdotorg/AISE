@@ -1,0 +1,7 @@
+db 2000/8661 tiles=2000 42s
+db 4000/8661 tiles=4000 86s
+db 6000/8661 tiles=6000 128s
+db 8000/8661 tiles=8000 171s
+tile db: 8661 tiles, 2165250 descriptors (1057 MB), 185s
+p01-workman-pivot: scale=1.0 bestVotes=7 candidates=[] (335s)
+p02-kelley-9364: scale=0.5 bestVotes=10 candidates=[] (620s)

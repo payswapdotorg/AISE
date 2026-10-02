@@ -1,0 +1,140 @@
+{
+ "sid": "p05-famartin-hitchcock",
+ "outcome": "no-ransac-survivor",
+ "bestScale": 1.0,
+ "scales": [
+  {
+   "scale": 1.0,
+   "keypoints": 8000,
+   "mutualPairs": 7068,
+   "topVotes": [
+    6,
+    6,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+   ]
+  },
+  {
+   "scale": 0.5,
+   "keypoints": 8000,
+   "mutualPairs": 7340,
+   "topVotes": [
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    5,
+    5,
+    5,
+    5
+   ]
+  },
+  {
+   "scale": 0.25,
+   "keypoints": 8001,
+   "mutualPairs": 7356,
+   "topVotes": [
+    6,
+    6,
+    6,
+    6,
+    6,
+    6,
+    5,
+    5,
+    5,
+    5
+   ]
+  }
+ ],
+ "topTiles": [
+  {
+   "tile": {
+    "y": 6188,
+    "x": 3606,
+    "file": "6188_3606.jpg"
+   },
+   "votes": 6,
+   "pairs": 6,
+   "ransacInliers": 4
+  },
+  {
+   "tile": {
+    "y": 6180,
+    "x": 3580,
+    "file": "6180_3580.jpg"
+   },
+   "votes": 6,
+   "pairs": 6,
+   "ransacInliers": 4
+  },
+  {
+   "tile": {
+    "y": 6176,
+    "x": 3587,
+    "file": "6176_3587.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6251,
+    "x": 3592,
+    "file": "6251_3592.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6168,
+    "x": 3575,
+    "file": "6168_3575.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6313,
+    "x": 3616,
+    "file": "6313_3616.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6229,
+    "x": 3567,
+    "file": "6229_3567.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6196,
+    "x": 3572,
+    "file": "6196_3572.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  }
+ ]
+}

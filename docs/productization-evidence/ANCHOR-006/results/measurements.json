@@ -1,0 +1,97 @@
+{
+  "photoset": {
+    "manifestId": "anchor006-photoset/1",
+    "campaign": "the center-pivot irrigation farmland geolocation campaign (ANCHOR-003b deferment #5)",
+    "stills": 6,
+    "fidelityClass": "REAL (web-retrieved photographs with per-photo provenance; never upgraded)",
+    "planRasters": 1,
+    "planRoles": [
+      {
+        "planId": "plan-anchor006-g00-fallback",
+        "role": "fallback-shared-region (no still pinned at the declared rule; the camera-azimuth geometry declared instead)",
+        "stills": 3
+      }
+    ]
+  },
+  "outcome": {
+    "groups": [
+      {
+        "planId": "plan-anchor006-g00-fallback",
+        "role": "fallback-shared-region (no still pinned at the declared rule; the camera-azimuth geometry declared instead)",
+        "deterministic": true
+      }
+    ],
+    "anchoredStills": 0,
+    "refusedStills": 3,
+    "notRunnableStills": 3,
+    "vocabulary": "anchored | partial | refused (the typed ANCHOR-002 outcome vocabulary)",
+    "perStill": [
+      {
+        "stillId": "p02-kelley-9364",
+        "outcome": "not-runnable",
+        "detail": "no plan raster group covers this still with >= 2 members (the redundancy law: a single-still request is refused by the adapter's declared gate order and is not issued by this harness); recorded, never silently dropped"
+      },
+      {
+        "stillId": "p03-famartin-dundy-a",
+        "outcome": "refused",
+        "planId": "plan-anchor006-g00-fallback",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "p04-famartin-dundy-b",
+        "outcome": "refused",
+        "planId": "plan-anchor006-g00-fallback",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "p05-famartin-hitchcock",
+        "outcome": "refused",
+        "planId": "plan-anchor006-g00-fallback",
+        "reasonCode": "registration-unreliable",
+        "detail": "refused with the whole request (status=refused, reasonCode=registration-unreliable); the per-still evidence is carried in the request-level refusalDetail naming the stills"
+      },
+      {
+        "stillId": "p06-kgs-finney",
+        "outcome": "not-runnable",
+        "detail": "no plan raster group covers this still with >= 2 members (the redundancy law: a single-still request is refused by the adapter's declared gate order and is not issued by this harness); recorded, never silently dropped"
+      },
+      {
+        "stillId": "p07-deverre-winter",
+        "outcome": "not-runnable",
+        "detail": "no plan raster group covers this still with >= 2 members (the redundancy law: a single-still request is refused by the adapter's declared gate order and is not issued by this harness); recorded, never silently dropped"
+      }
+    ]
+  },
+  "determinism": {
+    "method": "per plan group: two separate supervised provider processes over IDENTICAL canonical request bytes (the same executionId — required by the contract's full-depth deterministicProjection, which compares every nested field including provenance.inputDigest); digests over the contract's deterministicProjection (executionId, executionTimeMs, stageTimingsMs excluded — performance observations, not semantics)",
+    "allGroupsIdentical": true,
+    "groups": [
+      {
+        "planId": "plan-anchor006-g00-fallback",
+        "identical": true,
+        "run1DeterministicDigest": "sha256:b1b33cecf909b0602c19f29eabaf84f44cf9e5208ee2e40b1b42bc6b5ca2ff51",
+        "run2DeterministicDigest": "sha256:b1b33cecf909b0602c19f29eabaf84f44cf9e5208ee2e40b1b42bc6b5ca2ff51",
+        "inputDigest": "sha256:2e1e857298736f46b8d0f600826c4170a60165c83203850dcdf6b3bebff0dde0"
+      }
+    ],
+    "caveat": "asserted for this opencv/numpy/python/platform combination (recorded in provenance); cross-version or cross-platform relocation of summation orders is not claimed"
+  },
+  "runtime": {
+    "groups": [
+      {
+        "planId": "plan-anchor006-g00-fallback",
+        "run1WallMs": 69601,
+        "run2WallMs": 68123
+      }
+    ],
+    "note": "wall time includes the python interpreter + numpy/opencv import (cold process) per supervised run"
+  },
+  "budgetRecalibration": {
+    "anchoring001Finding": "budget95 covers realized error on only 4/10 synthetic-fixture stills (ANCHOR-001 measurements.md §4, budget95Coverage 0.4 — the honest miss carried forward, never hidden)",
+    "realPhotosetStatus": "NOT DERIVABLE on this photoset: zero stills anchored, and no co-registered ground truth exists for web photographs (the mission's honesty clause) — realized registration error cannot be measured; the v2.1 declared-budget model carries forward UNCHANGED, and empirical calibration remains gated on an anchorable real photoset (recorded as the standing deferment)",
+    "measuredProxies": "the geolocation record (results/geolocation/) carries the per-still pin-to-camera distances and NCC scores as MEASURED proxies where a pin exists; they are declared proxies, never presented as ground-truth registration error",
+    "measurementUncertaintyDiscipline": "confidence is a declared support score, never a probability; a budget is honest only if it covers the realized error — where realized error is not measurable, the budget stays a DECLARATION, never an implied measurement"
+  }
+}

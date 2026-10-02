@@ -1,0 +1,140 @@
+{
+ "sid": "p06-kgs-finney",
+ "outcome": "no-ransac-survivor",
+ "bestScale": 1.0,
+ "scales": [
+  {
+   "scale": 1.0,
+   "keypoints": 2824,
+   "mutualPairs": 2680,
+   "topVotes": [
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    3,
+    3,
+    3,
+    3
+   ]
+  },
+  {
+   "scale": 0.5,
+   "keypoints": 946,
+   "mutualPairs": 934,
+   "topVotes": [
+    3,
+    3,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ]
+  },
+  {
+   "scale": 0.25,
+   "keypoints": 246,
+   "mutualPairs": 243,
+   "topVotes": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1,
+    1
+   ]
+  }
+ ],
+ "topTiles": [
+  {
+   "tile": {
+    "y": 6197,
+    "x": 3574,
+    "file": "6197_3574.jpg"
+   },
+   "votes": 4,
+   "ransacInliers": 0,
+   "note": "only 4 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6178,
+    "x": 3602,
+    "file": "6178_3602.jpg"
+   },
+   "votes": 4,
+   "ransacInliers": 0,
+   "note": "only 4 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6232,
+    "x": 3600,
+    "file": "6232_3600.jpg"
+   },
+   "votes": 4,
+   "ransacInliers": 0,
+   "note": "only 4 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6219,
+    "x": 3567,
+    "file": "6219_3567.jpg"
+   },
+   "votes": 4,
+   "ransacInliers": 0,
+   "note": "only 4 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6171,
+    "x": 3591,
+    "file": "6171_3591.jpg"
+   },
+   "votes": 4,
+   "ransacInliers": 0,
+   "note": "only 4 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6261,
+    "x": 3554,
+    "file": "6261_3554.jpg"
+   },
+   "votes": 3,
+   "ransacInliers": 0,
+   "note": "only 3 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6174,
+    "x": 3600,
+    "file": "6174_3600.jpg"
+   },
+   "votes": 3,
+   "ransacInliers": 0,
+   "note": "only 3 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6244,
+    "x": 3582,
+    "file": "6244_3582.jpg"
+   },
+   "votes": 3,
+   "ransacInliers": 0,
+   "note": "only 3 pairs (< 6)"
+  }
+ ]
+}

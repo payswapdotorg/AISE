@@ -1,0 +1,532 @@
+{
+  "manifestId": "anchor006-photoset/1",
+  "campaign": {
+    "workItem": "ANCHOR-006 \u2014 geolocating the center-pivot irrigation farmland class (the ANCHOR-003b deferment-ledger #5)",
+    "belt": "SW Nebraska / NW Kansas center-pivot irrigation belt: lat 39.0-41.0 N, lon -102.10..-100.75 W (z14 tiles 39.0-41.0N + the Finney County KS extension lat 38.0-38.55, lon -101.15..-100.35)",
+    "class": "center-pivot irrigation farmland (the ANCHOR-003b deferment-ledger #5)",
+    "sourcing": {
+      "class": "center-pivot irrigation farmland (the ANCHOR-003b deferment-ledger #5)",
+      "belt": "SW Nebraska / NW Kansas center-pivot irrigation belt: lat 39.0-41.0 N, lon -102.10..-100.75 W (z14 tiles 39.0-41.0N + the Finney County KS extension lat 38.0-38.55, lon -101.15..-100.35)",
+      "probedNotCommitted": [
+        {
+          "file": "workman_pivot.jpg",
+          "note": "blind-scan probe (Stage A p01); EXCLUDED \u2014 its source could not be re-established from the campaign artifacts or the web; fidelity REAL requires a source URL, and guessed provenance is fabricated provenance"
+        },
+        {
+          "file": "deverre_1/2/3.jpg",
+          "note": "the Commons API reports these files missing (deleted upstream); only Deverre 4 survives"
+        },
+        {
+          "file": "kgs_trego_pivot.jpg",
+          "note": "KGS Trego County TR-Center-Pivot probe \u2014 probed, not scanned (the Finney aerial was taken instead)"
+        },
+        {
+          "file": "lewellen.jpg",
+          "note": "a real Famartin Commons file (Garden County NE, 2022-03-28) \u2014 probed, not scanned, not committed"
+        },
+        {
+          "file": "lewellen_center.jpg / kelley_center_crop.jpg",
+          "note": "locally derived center crops for VLM probing \u2014 DERIVED, never stills"
+        },
+        {
+          "file": "cand_usgs_1.jpg",
+          "note": "a USGS media-gallery Landsat probe \u2014 satellite imagery, not an aerial photograph; dropped"
+        },
+        {
+          "file": "tile_test.jpg",
+          "note": "the z14 tile fetch test"
+        }
+      ],
+      "searches": "Commons search/category dumps (fam1/fam2/cat_ks/cat_ne), Flickr searches (straight-down Kansas/Nebraska, nadir center pivot, pivot circles from airplane), NRCS Montana albums, Irrigation Toolbox galleries, KGS photo library, USDA/NRCS Flickr accounts (soilscience, usdagov), USGS TNM/NAIP endpoints"
+    }
+  },
+  "stills": [
+    {
+      "stillId": "p02-kelley-9364",
+      "file": "still-p02-kelley-9364.jpg",
+      "contentDigestSha256": "e4406f953d8ad045e50e825e22b0d71c6777dff9fecc795b155c5cdc62b7d4dd",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Aerial_photo_of_center_pivot_irrigations_systems_%289364%29.jpg/3840px-Aerial_photo_of_center_pivot_irrigations_systems_%289364%29.jpg",
+      "landingPage": "https://commons.wikimedia.org/wiki/File:Aerial_photo_of_center_pivot_irrigations_systems_(9364).jpg",
+      "sourceTitle": "File:Aerial photo of center pivot irrigations systems (9364).jpg \u2014 the Commons 3840px render (the campaign bytes; the Commons original is 7,018,566 B, sha1 6a04a8c891e3fd6789d7ced29d4751c0bb9b8280 \u2014 recorded via the Commons API; the file is a Commons mirror of flickr.com/photos/soilscience/5094148839)",
+      "creator": "John A. Kelley, USDA Natural Resources Conservation Service (flickr: Soil Science)",
+      "license": {
+        "identifier": "public domain (US government work)",
+        "statement": "US-government work (17 U.S.C. \u00a7 105); the Commons record declares Public domain (LicenseShortName via the Commons API); the NRCS credit statement applies as courtesy",
+        "commercialUse": true,
+        "rightsNote": "public domain as a USDA photograph; the NRCS credit statement applies as courtesy"
+      },
+      "retrievedUtc": "2026-10-02",
+      "sourceReverification": {
+        "status": "verified-byte-identical",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Aerial_photo_of_center_pivot_irrigations_systems_%289364%29.jpg/3840px-Aerial_photo_of_center_pivot_irrigations_systems_%289364%29.jpg",
+        "verificationChannel": "https://commons.wikimedia.org/w/thumb.php (render endpoint, same renderer as the declared URL)",
+        "reverifiedSha256": "e4406f953d8ad045e50e825e22b0d71c6777dff9fecc795b155c5cdc62b7d4dd",
+        "reverifiedBytes": 1381750,
+        "note": "re-downloaded during the upload.wikimedia.org 429 block through the equivalent commons.wikimedia.org/w/thumb.php render endpoint (the same renderer that serves the declared thumb URL); sha256 byte-identical with the committed bytes \u2014 the block and the channel switch are recorded in results/geolocation/source-retry-log.txt"
+      },
+      "sourceApiMetadataVerification": {
+        "status": "verified-matches-manifest",
+        "gpsLat": null,
+        "gpsLon": null,
+        "dateTimeOriginal": "18 May 2009",
+        "license": "Public domain",
+        "artist": "John A. Kelley, USDA Natural Resources Conservation Service",
+        "originalSha1": "6a04a8c891e3fd6789d7ced29d4751c0bb9b8280",
+        "originalBytes": 7018566,
+        "committedBytesAre": "the Commons 3840px render (3840x1864, 1,381,750 B) \u2014 NOT the original; the manifest declares the render URL",
+        "manifestCheck": "creator/license/date all match; no GPS in the source (matches the manifest's cameraPosition: None)"
+      },
+      "captureDate": "2009-05-18 12:16:18 (EXIF/Flickr dateTaken)",
+      "cameraPosition": null,
+      "cameraHeadingDeg": null,
+      "vantageClass": "OBLIQUE (VLM: angled toward horizon, sky visible, >100 pivots, footprint ~5-8 km)",
+      "region": "un-geolocated (no position metadata of any kind; NRCS soil-survey flight, region unrecorded at the source)",
+      "geolocationNote": "blind z14 belt scan only (Stage A: no RANSAC survivor); no camera metadata \u2014 outside every seeded pass (1/2/3)",
+      "geolocation": {
+        "stageA": "blind z14 belt scan (Stage A): no RANSAC survivor on any scale (results/geolocation/stage-a-per-photo/)",
+        "pass1": "not run (no camera position in the source metadata \u2014 nothing to seed)",
+        "pass2": {
+          "geometry": "not run (no camera position \u2014 nothing to seed)",
+          "outcome": "not-in-pass-2",
+          "reason": null,
+          "pinRetractedByAudit": false,
+          "defect": "not applicable (pass 2 did not run for this still)"
+        },
+        "pass3": {
+          "outcome": "not-rescanned",
+          "reason": "no position metadata of any kind; the Stage-A blind scan stands"
+        },
+        "final": {
+          "outcome": "un-localized (blind scan only)",
+          "pin": null,
+          "basis": "stage-B pass 2 (the pass-3 corrected rule was not re-measured for this still \u2014 see pass3.reason; the pass-2 record stands and its outcome is un-localized)"
+        }
+      },
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the center-pivot irrigation farmland class \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "p03-famartin-dundy-a",
+      "file": "still-p03-famartin-dundy-a.jpg",
+      "contentDigestSha256": "33c3945ff2b2d2a8777018630bc72c98be81929632229dd67f2ddc1a0e60fdb9",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/2022-09-11_14_43_00_Aerial_view_southward_across_southern_Dundy_County%2C_Nebraska_and_northern_Cheyenne_County%2C_Kansas.jpg/3840px-2022-09-11_14_43_00_Aerial_view_southward_across_southern_Dundy_County%2C_Nebraska_and_northern_Cheyenne_County%2C_Kansas.jpg",
+      "landingPage": "https://commons.wikimedia.org/wiki/File:2022-09-11_14_43_00_Aerial_view_southward_across_southern_Dundy_County,_Nebraska_and_northern_Cheyenne_County,_Kansas.jpg",
+      "sourceTitle": "File:2022-09-11 14 43 00 Aerial view southward across southern Dundy County, Nebraska and northern Cheyenne County, Kansas.jpg",
+      "creator": "Famartin (Commons user:Famartin)",
+      "license": {
+        "identifier": "CC BY-SA 4.0",
+        "statement": "Creative Commons Attribution-ShareAlike 4.0 International (self-published work)",
+        "commercialUse": true,
+        "rightsNote": "attribution + share-alike; evaluation use inside AISE evidence"
+      },
+      "retrievedUtc": "2026-10-02",
+      "sourceReverification": {
+        "status": "verified-byte-identical",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/2022-09-11_14_43_00_Aerial_view_southward_across_southern_Dundy_County%2C_Nebraska_and_northern_Cheyenne_County%2C_Kansas.jpg/3840px-2022-09-11_14_43_00_Aerial_view_southward_across_southern_Dundy_County%2C_Nebraska_and_northern_Cheyenne_County%2C_Kansas.jpg",
+        "verificationChannel": "https://commons.wikimedia.org/w/thumb.php (render endpoint, same renderer as the declared URL)",
+        "reverifiedSha256": "33c3945ff2b2d2a8777018630bc72c98be81929632229dd67f2ddc1a0e60fdb9",
+        "reverifiedBytes": 948143,
+        "note": "re-downloaded during the upload.wikimedia.org 429 block through the equivalent commons.wikimedia.org/w/thumb.php render endpoint (the same renderer that serves the declared thumb URL); sha256 byte-identical with the committed bytes \u2014 the block and the channel switch are recorded in results/geolocation/source-retry-log.txt"
+      },
+      "sourceApiMetadataVerification": {
+        "status": "verified-matches-manifest",
+        "gpsLat": 40.357204,
+        "gpsLon": -101.817504,
+        "dateTimeOriginal": "2022-09-11 14:43:00",
+        "license": "CC BY-SA 4.0",
+        "artist": "Famartin",
+        "originalSha1": "2065c319ada78ffbf182768ca2832d2d256f6c19",
+        "originalBytes": 1835656,
+        "committedBytesAre": "the Commons 3840px render (the manifest-declared thumb URL)",
+        "manifestCheck": "cameraPosition (40.357204, -101.817504) EXACTLY matches the API GPS record; date/license/creator match"
+      },
+      "captureDate": "2022-09-11 14:43:00 (local, Commons title/EXIF)",
+      "cameraPosition": [
+        40.357204,
+        -101.817504
+      ],
+      "cameraHeadingDeg": 188.97,
+      "vantageClass": "OBLIQUE (VLM: hazy horizon + sky visible, 20-25 pivots, footprint ~15-20 km)",
+      "region": "southern Dundy County NE / northern Cheyenne County KS (camera position declared on the Commons page)",
+      "geolocationNote": "blind z14 belt scan (Stage A) + camera-seeded pass 1 + azimuth-corrected pass 2 (its pin RETRACTED by the footprint audit) + corrected pass 3",
+      "geolocation": {
+        "stageA": "blind z14 belt scan (Stage A): no RANSAC survivor on any scale (results/geolocation/stage-a-per-photo/)",
+        "pass1": "camera-seeded boxes \u2014 measured the WRONG ground (boxes 78-111 km behind the southward cameras; preserved at results/geolocation/stage-b-pass1.json)",
+        "pass2": {
+          "geometry": "azimuth-corrected boxes (declared camera headings)",
+          "outcome": "un-localized",
+          "reason": "pin RETRACTED by the footprint-plausibility audit (results/geolocation/pin-audit.json): the warp was degenerate (whole-still quad ~126 plan-px sliver, local y-scale 42:1, recorded footprint 2747 px << the corrected 25,000-px floor); re-judged un-localized \u2014 the native-scale re-measurement is tools/stage_b4.py (stage B pass 3)",
+          "pinRetractedByAudit": true,
+          "defect": "the box generator divided kilometer-valued D/cross by 111320 (meters per degree) \u2014 every box sat within ~20 m of the camera; the D-ladder was neutralized"
+        },
+        "pass3": {
+          "geometry": "the corrected grid \u2014 boxes truly D km along the declared heading (unit bug fixed), photoScale 1.0 only, matcher top-500 (mirrors the adapter)",
+          "outcome": "un-localized",
+          "pin": null,
+          "reason": "no corrected-grid attempt met the CORRECTED conjunctive rule (inliers >= 8 AND NCC >= 0.30 AND footprint >= 25000 px AND sliver >= 0.2 AND local scales in [0.05, 20]); over 30 attempts: best inliers 8, best NCC 0.1312, best footprint 7049312 px (not necessarily the same attempt)",
+          "rule": "the CORRECTED conjunctive rule declared by tools/pin_audit.py BEFORE the pass: inliers >= 8 AND footprint NCC >= 0.30 AND footprint >= 25,000 plan-px AND sliver ratio >= 0.2 AND local warp scales within [0.05, 20] plan-px/still-px"
+        },
+        "final": {
+          "outcome": "un-localized",
+          "pin": null,
+          "basis": "stage-B pass 3 (the corrected rule)"
+        }
+      },
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the center-pivot irrigation farmland class \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "p04-famartin-dundy-b",
+      "file": "still-p04-famartin-dundy-b.jpg",
+      "contentDigestSha256": "54f509da8196d874073342f76d5e6f598af82feb1c363015da01f81dc513de22",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/2022-09-11_14_44_54_Aerial_view_southward_across_northeastern_Dundy_County%2C_Nebraska.jpg/3840px-2022-09-11_14_44_54_Aerial_view_southward_across_northeastern_Dundy_County%2C_Nebraska.jpg",
+      "landingPage": "https://commons.wikimedia.org/wiki/File:2022-09-11_14_44_54_Aerial_view_southward_across_northeastern_Dundy_County,_Nebraska.jpg",
+      "sourceTitle": "File:2022-09-11 14 44 54 Aerial view southward across northeastern Dundy County, Nebraska.jpg",
+      "creator": "Famartin (Commons user:Famartin)",
+      "license": {
+        "identifier": "CC BY-SA 4.0",
+        "statement": "Creative Commons Attribution-ShareAlike 4.0 International (self-published work)",
+        "commercialUse": true,
+        "rightsNote": "attribution + share-alike; evaluation use inside AISE evidence"
+      },
+      "retrievedUtc": "2026-10-02",
+      "sourceReverification": {
+        "status": "verified-byte-identical",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/2022-09-11_14_44_54_Aerial_view_southward_across_northeastern_Dundy_County%2C_Nebraska.jpg/3840px-2022-09-11_14_44_54_Aerial_view_southward_across_northeastern_Dundy_County%2C_Nebraska.jpg",
+        "verificationChannel": "the declared sourceUrl itself (direct re-download)",
+        "reverifiedSha256": "54f509da8196d874073342f76d5e6f598af82feb1c363015da01f81dc513de22",
+        "reverifiedBytes": 1325781,
+        "note": "re-downloaded from the declared sourceUrl; sha256 byte-identical with the committed bytes"
+      },
+      "sourceApiMetadataVerification": {
+        "status": "verified-matches-manifest",
+        "gpsLat": 40.384872,
+        "gpsLon": -101.411194,
+        "dateTimeOriginal": "2022-09-11 14:44:54",
+        "license": "CC BY-SA 4.0",
+        "artist": "Famartin",
+        "originalSha1": "ac397a5d20556a50ad0dc8df9c49c6d6bc31e6f5",
+        "originalBytes": 2357826,
+        "committedBytesAre": "the Commons 3840px render (byte-identical re-download verified 2026-10-02)",
+        "manifestCheck": "cameraPosition (40.384872, -101.411194) EXACTLY matches the API GPS record; date/license/creator match"
+      },
+      "captureDate": "2022-09-11 14:44:54 (local, Commons title/EXIF)",
+      "cameraPosition": [
+        40.384872,
+        -101.411194
+      ],
+      "cameraHeadingDeg": 189.16,
+      "vantageClass": "OBLIQUE (VLM: hazy horizon + sky visible, 15-18 pivots, footprint ~8-10 km)",
+      "region": "northeastern Dundy County NE (camera position declared on the Commons page)",
+      "geolocationNote": "blind z14 belt scan (Stage A) + camera-seeded pass 1 (partial) + azimuth-corrected pass 2 + corrected pass 3",
+      "geolocation": {
+        "stageA": "blind z14 belt scan (Stage A): no RANSAC survivor on any scale (results/geolocation/stage-a-per-photo/)",
+        "pass1": "camera-seeded boxes \u2014 measured the WRONG ground (boxes 78-111 km behind the southward cameras; preserved at results/geolocation/stage-b-pass1.json)",
+        "pass2": {
+          "geometry": "azimuth-corrected boxes (declared camera headings)",
+          "outcome": "un-localized",
+          "reason": "no plan box verified at the declared pin floors (CONJUNCTIVE per attempt: inliers >= 8 AND footprint NCC >= 0.3); over 81 attempts the best inlier count was 10 and the best footprint NCC was 0.3088 (not necessarily the same attempt); NO single attempt met both floors",
+          "pinRetractedByAudit": false,
+          "defect": "the box generator divided kilometer-valued D/cross by 111320 (meters per degree) \u2014 every box sat within ~20 m of the camera; the D-ladder was neutralized"
+        },
+        "pass3": {
+          "geometry": "the corrected grid \u2014 boxes truly D km along the declared heading (unit bug fixed), photoScale 1.0 only, matcher top-500 (mirrors the adapter)",
+          "outcome": "un-localized",
+          "pin": null,
+          "reason": "no corrected-grid attempt met the CORRECTED conjunctive rule (inliers >= 8 AND NCC >= 0.30 AND footprint >= 25000 px AND sliver >= 0.2 AND local scales in [0.05, 20]); over 30 attempts: best inliers 8, best NCC 0.2553, best footprint 4436691 px (not necessarily the same attempt)",
+          "rule": "the CORRECTED conjunctive rule declared by tools/pin_audit.py BEFORE the pass: inliers >= 8 AND footprint NCC >= 0.30 AND footprint >= 25,000 plan-px AND sliver ratio >= 0.2 AND local warp scales within [0.05, 20] plan-px/still-px"
+        },
+        "final": {
+          "outcome": "un-localized",
+          "pin": null,
+          "basis": "stage-B pass 3 (the corrected rule)"
+        }
+      },
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the center-pivot irrigation farmland class \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "p05-famartin-hitchcock",
+      "file": "still-p05-famartin-hitchcock.jpg",
+      "contentDigestSha256": "0f4e80a539ff61ad94ba826f3d45ce62e35cb5e1701a724bd32ce42d2ec54cde",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/2022-09-11_15_46_42_Aerial_view_southward_across_western_Hitchcock_County%2C_Nebraska%2C_centered_just_north_of_Swanson_Lake_within_Swanson_Reservoir_State_Recreation_Area.jpg/3840px-2022-09-11_15_46_42_Aerial_view_southward_across_western_Hitchcock_County%2C_Nebraska%2C_centered_just_north_of_Swanson_Lake_within_Swanson_Reservoir_State_Recreation_Area.jpg",
+      "landingPage": "https://commons.wikimedia.org/wiki/File:2022-09-11_15_46_42_Aerial_view_southward_across_western_Hitchcock_County,_Nebraska,_centered_just_north_of_Swanson_Lake_within_Swanson_Reservoir_State_Recreation_Area.jpg",
+      "sourceTitle": "File:2022-09-11 15 46 42 Aerial view southward across western Hitchcock County, Nebraska, centered just north of Swanson Lake within Swanson Reservoir State Recreation Area.jpg",
+      "creator": "Famartin (Commons user:Famartin)",
+      "license": {
+        "identifier": "CC BY-SA 4.0",
+        "statement": "Creative Commons Attribution-ShareAlike 4.0 International (self-published work)",
+        "commercialUse": true,
+        "rightsNote": "attribution + share-alike; evaluation use inside AISE evidence"
+      },
+      "retrievedUtc": "2026-10-02",
+      "sourceReverification": {
+        "status": "verified-byte-identical",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/2022-09-11_15_46_42_Aerial_view_southward_across_western_Hitchcock_County%2C_Nebraska%2C_centered_just_north_of_Swanson_Lake_within_Swanson_Reservoir_State_Recreation_Area.jpg/3840px-2022-09-11_15_46_42_Aerial_view_southward_across_western_Hitchcock_County%2C_Nebraska%2C_centered_just_north_of_Swanson_Lake_within_Swanson_Reservoir_State_Recreation_Area.jpg",
+        "verificationChannel": "https://commons.wikimedia.org/w/thumb.php (render endpoint, same renderer as the declared URL)",
+        "reverifiedSha256": "0f4e80a539ff61ad94ba826f3d45ce62e35cb5e1701a724bd32ce42d2ec54cde",
+        "reverifiedBytes": 1366315,
+        "note": "re-downloaded during the upload.wikimedia.org 429 block through the equivalent commons.wikimedia.org/w/thumb.php render endpoint (the same renderer that serves the declared thumb URL); sha256 byte-identical with the committed bytes \u2014 the block and the channel switch are recorded in results/geolocation/source-retry-log.txt"
+      },
+      "sourceApiMetadataVerification": {
+        "status": "verified-matches-manifest",
+        "gpsLat": 40.427981,
+        "gpsLon": -101.109358,
+        "dateTimeOriginal": "2022-09-11 15:46:42",
+        "license": "CC BY-SA 4.0",
+        "artist": "Famartin",
+        "originalSha1": "59e5d04060524425e359eed58dc2084bda2be89b",
+        "originalBytes": 2425347,
+        "committedBytesAre": "the Commons 3840px render (the manifest-declared thumb URL)",
+        "manifestCheck": "cameraPosition (40.427981, -101.109358) EXACTLY matches the API GPS record; date/license/creator match"
+      },
+      "captureDate": "2022-09-11 15:46:42 (local, Commons title/EXIF)",
+      "cameraPosition": [
+        40.427981,
+        -101.109358
+      ],
+      "cameraHeadingDeg": 94.5,
+      "vantageClass": "OBLIQUE (VLM: hazy horizon + sky visible, 8-10 pivots, footprint ~15-20 km, reservoir in view)",
+      "region": "western Hitchcock County NE (camera position declared on the Commons page; heading east per the geohack type:camera record)",
+      "geolocationNote": "blind z14 belt scan (Stage A) + camera-seeded pass 1 + azimuth-corrected pass 2 + corrected pass 3 (both candidate azimuths measured)",
+      "geolocation": {
+        "stageA": "blind z14 belt scan (Stage A): no RANSAC survivor on any scale (results/geolocation/stage-a-per-photo/)",
+        "pass1": "camera-seeded boxes \u2014 measured the WRONG ground (boxes 78-111 km behind the southward cameras; preserved at results/geolocation/stage-b-pass1.json)",
+        "pass2": {
+          "geometry": "azimuth-corrected boxes (declared camera headings)",
+          "outcome": "un-localized",
+          "reason": "no plan box verified at the declared pin floors (CONJUNCTIVE per attempt: inliers >= 8 AND footprint NCC >= 0.3); over 81 attempts the best inlier count was 8 and the best footprint NCC was 0.2569 (not necessarily the same attempt); NO single attempt met both floors",
+          "pinRetractedByAudit": false,
+          "defect": "the box generator divided kilometer-valued D/cross by 111320 (meters per degree) \u2014 every box sat within ~20 m of the camera; the D-ladder was neutralized"
+        },
+        "pass3": {
+          "geometry": "the corrected grid \u2014 boxes truly D km along the declared heading (unit bug fixed), photoScale 1.0 only, matcher top-500 (mirrors the adapter)",
+          "outcome": "un-localized",
+          "pin": null,
+          "reason": "no corrected-grid attempt met the CORRECTED conjunctive rule (inliers >= 8 AND NCC >= 0.30 AND footprint >= 25000 px AND sliver >= 0.2 AND local scales in [0.05, 20]); over 8 attempts: best inliers 8, best NCC 0.1824, best footprint 1490104 px (not necessarily the same attempt)",
+          "rule": "the CORRECTED conjunctive rule declared by tools/pin_audit.py BEFORE the pass: inliers >= 8 AND footprint NCC >= 0.30 AND footprint >= 25,000 plan-px AND sliver ratio >= 0.2 AND local warp scales within [0.05, 20] plan-px/still-px"
+        },
+        "final": {
+          "outcome": "un-localized",
+          "pin": null,
+          "basis": "stage-B pass 3 (the corrected rule)"
+        }
+      },
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the center-pivot irrigation farmland class \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "p06-kgs-finney",
+      "file": "still-p06-kgs-finney.jpg",
+      "contentDigestSha256": "e4938fc68ed8989944a078acb3551658b156953f9443bc1dfddac031234fde47",
+      "sourceUrl": "http://www.kgs.ku.edu/Publications/Photos/Finney/FI-Aerial-center-pivot.jpg",
+      "landingPage": "https://chasm.kgs.ku.edu/ords/pubcat.phd2.View_Photo?f_id=19",
+      "sourceTitle": "KGS Photo Library \u2014 FI-Aerial-center-pivot (Center Pivot Irrigation (Aerial), County: Finney)",
+      "creator": "John Charlton / Kansas Geological Survey (University of Kansas)",
+      "license": {
+        "identifier": "non-commercial/educational with attribution (KGS photo library terms)",
+        "statement": "This photo may be reproduced for non-commercial and educational purposes. When using this photo in a publication, website, or presentation, please credit Kansas Geological Survey. (KGS photo library credit page)",
+        "commercialUse": false,
+        "rightsNote": "NOT cleared for production promotion (the substitution \u00a76 license dimension); evaluation-stage use only \u2014 recorded, never silently widened"
+      },
+      "retrievedUtc": "2026-10-02",
+      "sourceReverification": {
+        "status": "verified-byte-identical",
+        "url": "http://www.kgs.ku.edu/Publications/Photos/Finney/FI-Aerial-center-pivot.jpg",
+        "verificationChannel": "the declared sourceUrl itself (direct re-download)",
+        "reverifiedSha256": "e4938fc68ed8989944a078acb3551658b156953f9443bc1dfddac031234fde47",
+        "reverifiedBytes": null,
+        "note": "re-downloaded from the declared sourceUrl; sha256 byte-identical with the committed bytes"
+      },
+      "sourceApiMetadataVerification": {
+        "status": "not-performed"
+      },
+      "captureDate": null,
+      "cameraPosition": null,
+      "cameraHeadingDeg": null,
+      "vantageClass": "OBLIQUE (VLM: horizon visible, ~50-60 pivots, footprint ~8-10 km)",
+      "region": "Finney County KS (source metadata: the KGS photo library county record \u2014 the Garden City pivot belt)",
+      "geolocationNote": "blind z14 belt scan (Stage A) + county-grid pass 1 + pass 2 (county centers absolute \u2014 unaffected by the unit bug; not re-run in pass 3)",
+      "geolocation": {
+        "stageA": "blind z14 belt scan (Stage A): no RANSAC survivor on any scale (results/geolocation/stage-a-per-photo/)",
+        "pass1": "county-grid boxes (Finney County KS absolute centers \u2014 NOT camera-seeded; unaffected by the later unit bug): un-localized over 36 attempts (results/geolocation/stage-b-pass1.json)",
+        "pass2": {
+          "geometry": "county-grid boxes (absolute Finney County centers \u2014 unaffected by the unit bug)",
+          "outcome": "un-localized",
+          "reason": "no plan box verified at the declared pin floors (CONJUNCTIVE per attempt: inliers >= 8 AND footprint NCC >= 0.3); over 36 attempts the best inlier count was 12 and the best footprint NCC was 0.2385 (not necessarily the same attempt); NO single attempt met both floors",
+          "pinRetractedByAudit": false,
+          "defect": "NOT affected: the county-grid centers were absolute (not derived from D/cross), so the unit bug never applied; the pass-2 record stands"
+        },
+        "pass3": {
+          "outcome": "not-rescanned",
+          "reason": "its county-grid centers were absolute (unaffected by the unit bug); pass-2 record stands"
+        },
+        "final": {
+          "outcome": "un-localized",
+          "pin": null,
+          "basis": "stage-B pass 2 (the pass-3 corrected rule was not re-measured for this still \u2014 see pass3.reason; the pass-2 record stands and its outcome is un-localized)"
+        }
+      },
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the center-pivot irrigation farmland class \u2014 never synthetic, never upgraded"
+    },
+    {
+      "stillId": "p07-deverre-winter",
+      "file": "still-p07-deverre-winter.jpg",
+      "contentDigestSha256": "e5809a9d18e390a2d36170dd8fd72de206f3ab9a6e37d04a0536ae85623be6c4",
+      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Aerial_view_of_center_pivot_irrigation_north_of_Deverre%2C_Nebraska_4.jpg/1920px-Aerial_view_of_center_pivot_irrigation_north_of_Deverre%2C_Nebraska_4.jpg",
+      "landingPage": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_center_pivot_irrigation_north_of_Deverre,_Nebraska_4.jpg",
+      "sourceTitle": "File:Aerial view of center pivot irrigation north of Deverre, Nebraska 4.jpg",
+      "creator": "Codrin.B (Commons user:Codrinb)",
+      "license": {
+        "identifier": "CC BY-SA 3.0/2.5/2.0/1.0 (multi) + GFDL",
+        "statement": "Creative Commons Attribution-ShareAlike (multi-version) + GNU Free Documentation License (own work)",
+        "commercialUse": true,
+        "rightsNote": "attribution + share-alike; evaluation use inside AISE evidence"
+      },
+      "retrievedUtc": "2026-10-02",
+      "sourceReverification": {
+        "status": "verified-byte-identical",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Aerial_view_of_center_pivot_irrigation_north_of_Deverre%2C_Nebraska_4.jpg/1920px-Aerial_view_of_center_pivot_irrigation_north_of_Deverre%2C_Nebraska_4.jpg",
+        "verificationChannel": "https://commons.wikimedia.org/w/thumb.php (render endpoint, same renderer as the declared URL)",
+        "reverifiedSha256": "e5809a9d18e390a2d36170dd8fd72de206f3ab9a6e37d04a0536ae85623be6c4",
+        "reverifiedBytes": 665658,
+        "note": "re-downloaded during the upload.wikimedia.org 429 block through the equivalent commons.wikimedia.org/w/thumb.php render endpoint (the same renderer that serves the declared thumb URL); sha256 byte-identical with the committed bytes \u2014 the block and the channel switch are recorded in results/geolocation/source-retry-log.txt"
+      },
+      "sourceApiMetadataVerification": {
+        "status": "verified-matches-manifest",
+        "gpsLat": 41.948257,
+        "gpsLon": -99.120712,
+        "dateTimeOriginal": "30 December 2011, 10:17:19",
+        "license": "CC BY-SA 3.0",
+        "artist": "Codrin.B",
+        "originalSha1": "cd9e398436318f6ade153fc52f3d749d7d5ada44",
+        "originalBytes": 1735058,
+        "committedBytesAre": "the Commons 1920px render (the manifest-declared thumb URL)",
+        "manifestCheck": "cameraPosition (41.948257, -99.120712) EXACTLY matches the API GPS record; date/creator match; license: the API reads CC BY-SA 3.0 (the manifest's multi-version + GFDL statement is the file page's template stack \u2014 both records carried)"
+      },
+      "captureDate": "2011-12-30 10:17:19 (Commons Date record)",
+      "cameraPosition": [
+        41.948257,
+        -99.120712
+      ],
+      "cameraHeadingDeg": null,
+      "vantageClass": "OBLIQUE (VLM: winter/dormant, snow patches, horizon + sky visible, 15-20 pivots, footprint ~15-25 km)",
+      "region": "north of Deverre, Blaine County NE (camera position declared on the Commons page; no heading declared)",
+      "geolocationNote": "the cross-vintage attempt (winter 2011 vs NAIP summer); azimuth-sweep pass 2 + corrected azimuth-sweep pass 3",
+      "geolocation": {
+        "stageA": "not blind-scanned: sourced AFTER the Stage-A scan as the cross-vintage probe (declared camera position, no heading); its first measurement was pass 1",
+        "pass1": "camera-seeded sweep (declared position, no heading): un-localized over 24 attempts (results/geolocation/stage-b-pass1.json)",
+        "pass2": {
+          "geometry": "azimuth sweep {N,E,S,W} from the declared position (no heading in the source)",
+          "outcome": "un-localized",
+          "reason": "no plan box verified at the declared pin floors (CONJUNCTIVE per attempt: inliers >= 8 AND footprint NCC >= 0.3); over 48 attempts the best inlier count was 10 and the best footprint NCC was 0.0696 (not necessarily the same attempt); NO single attempt met both floors",
+          "pinRetractedByAudit": false,
+          "defect": "the box generator divided kilometer-valued D/cross by 111320 (meters per degree) \u2014 every box sat within ~20 m of the camera; the D-ladder was neutralized"
+        },
+        "pass3": {
+          "geometry": "the corrected grid \u2014 boxes truly D km along the declared heading (unit bug fixed), photoScale 1.0 only, matcher top-500 (mirrors the adapter)",
+          "outcome": "un-localized",
+          "pin": null,
+          "reason": "no corrected-grid attempt met the CORRECTED conjunctive rule (inliers >= 8 AND NCC >= 0.30 AND footprint >= 25000 px AND sliver >= 0.2 AND local scales in [0.05, 20]); over 16 attempts: best inliers 9, best NCC 0.0724, best footprint 1012529 px (not necessarily the same attempt)",
+          "rule": "the CORRECTED conjunctive rule declared by tools/pin_audit.py BEFORE the pass: inliers >= 8 AND footprint NCC >= 0.30 AND footprint >= 25,000 plan-px AND sliver ratio >= 0.2 AND local warp scales within [0.05, 20] plan-px/still-px"
+        },
+        "final": {
+          "outcome": "un-localized",
+          "pin": null,
+          "basis": "stage-B pass 3 (the corrected rule)"
+        }
+      },
+      "fidelityClass": "REAL",
+      "fidelityNote": "real web-retrieved photograph of the center-pivot irrigation farmland class \u2014 never synthetic, never upgraded"
+    }
+  ],
+  "planRasters": [
+    {
+      "planId": "plan-anchor006-g00-fallback",
+      "file": "plan-anchor006-g00-fallback.jpg",
+      "contentDigestSha256": "d93a8a6692a0b0c71c96cf46d7ccbd5f83d1266fa1a070ee6a76ecd4d8852f66",
+      "role": "fallback-shared-region (no still pinned at the declared rule; the camera-azimuth geometry declared instead)",
+      "region": {
+        "centerLatLon": [
+          40.32853,
+          -101.419188
+        ],
+        "groundSpanM": 48000.0,
+        "coversStills": [
+          "p03-famartin-dundy-a",
+          "p04-famartin-dundy-b",
+          "p05-famartin-hitchcock"
+        ],
+        "geometryBasis": "declared camera positions + headings, D=10 km along azimuth (NOT pins \u2014 nothing qualified)"
+      },
+      "source": "USGS The National Map \u2014 NAIP orthoimagery (public domain), via the USGSNAIPImagery ImageServer exportImage endpoint",
+      "retrievedUtc": "2026-10-02",
+      "exportParameters": {
+        "service": "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage",
+        "url": "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage?bbox=-11321414.165,4882317.128,-11258450.643,4945280.650&bboxSR=3857&imageSR=3857&size=3000,3000&format=jpg&interpolation=RSP_BilinearInterpolation&f=image",
+        "bboxSR": "EPSG:3857 (Web Mercator \u2014 north-up, x-east-right by construction)",
+        "bboxCenterLonLat": [
+          -101.419188,
+          40.32853
+        ],
+        "groundSpanM": 48000.0,
+        "exportSizePx": [
+          3000,
+          3000
+        ]
+      },
+      "vintage": {
+        "naipNameAtPlanCenter": "m_4010145_ne_14_060_20220805",
+        "naipYearAtPlanCenter": 2022,
+        "naipStateAtPlanCenter": "NE",
+        "naipAcquisitionAtPlanCenter": "2022-08-05",
+        "sourceResolutionM": 0.6,
+        "note": "the NAIP mosaic vintage at the plan center (the ANCHOR-003b cross-vintage law: vintage is a first-order variable, recorded per plan)"
+      },
+      "gsd": {
+        "mercatorMetersPerPixel": 20.9878,
+        "groundMetersPerPixel": 16.0,
+        "note": "48.0 km ground square at 3000 px \u2014 single-square px so rasterToScene.pixelsPerMeter is exact; a DECLARED COARSE fallback (nothing in this group pinned, so no measured rung exists to match)"
+      },
+      "rasterToScene": {
+        "pixelsPerMeter": 0.0625,
+        "xDirection": "east-right",
+        "yDirection": "north-up",
+        "worldOriginPx": [
+          1500.0,
+          1500.0
+        ],
+        "derivation": "ground box of 48000 m centered at (40.328530, -101.419188); 48000 m over 3000 px = 16.0000 ground m/px => 0.062500 px/m; the scene origin is declared at the raster center. THE HANDEDNESS LAW: the north-up/east-right convention is TRUE for this raster by construction (EPSG:3857 axis-aligned export), never assumed."
+      },
+      "fidelityClass": "REAL",
+      "fidelityNote": "real public-domain orthoimagery of the pivot belt at the group's declared region",
+      "knownCaveat": "the NAIP mosaic is a different flight than the photographs (see vintage); the crop state may have moved between the two dates \u2014 recorded honestly, part of what the run measures",
+      "stills": [
+        "p03-famartin-dundy-a",
+        "p04-famartin-dundy-b",
+        "p05-famartin-hitchcock"
+      ]
+    }
+  ],
+  "notRunnable": [
+    {
+      "stillId": "p02-kelley-9364",
+      "reason": "no pin and no declared camera position (the source metadata carries neither) \u2014 cannot join any >=2-still group; the redundancy law: single-still requests are refused and never issued"
+    },
+    {
+      "stillId": "p06-kgs-finney",
+      "reason": "no pin and no declared camera position (the source metadata carries neither) \u2014 cannot join any >=2-still group; the redundancy law: single-still requests are refused and never issued"
+    },
+    {
+      "stillId": "p07-deverre-winter",
+      "reason": "no >=2-still group within 50 km (the redundancy law: single-still requests are refused and never issued)"
+    }
+  ],
+  "counts": {
+    "stills": 6,
+    "planRasters": 1,
+    "notRunnableStills": 3
+  },
+  "rightsSummary": "The stills are CC BY-SA (Famartin x3, Codrin.B x1), public-domain-as-USDA (Kelley), and non-commercial/educational KGS terms (Finney \u2014 NOT cleared for production promotion; the substitution \u00a76 license dimension records it). The plan rasters are public-domain USGS NAIP orthoimagery. No license blocks the EVALUATION use of this photoset inside AISE evidence; production promotion is a separate \u00a76 decision."
+}

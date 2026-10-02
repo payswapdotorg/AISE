@@ -1,0 +1,140 @@
+{
+ "sid": "p03-famartin-dundy-a",
+ "outcome": "no-ransac-survivor",
+ "bestScale": 1.0,
+ "scales": [
+  {
+   "scale": 1.0,
+   "keypoints": 8000,
+   "mutualPairs": 6701,
+   "topVotes": [
+    7,
+    6,
+    6,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+   ]
+  },
+  {
+   "scale": 0.5,
+   "keypoints": 6450,
+   "mutualPairs": 5745,
+   "topVotes": [
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    4,
+    4
+   ]
+  },
+  {
+   "scale": 0.25,
+   "keypoints": 2661,
+   "mutualPairs": 2513,
+   "topVotes": [
+    5,
+    4,
+    4,
+    4,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+   ]
+  }
+ ],
+ "topTiles": [
+  {
+   "tile": {
+    "y": 6169,
+    "x": 3547,
+    "file": "6169_3547.jpg"
+   },
+   "votes": 7,
+   "pairs": 7,
+   "ransacInliers": 5
+  },
+  {
+   "tile": {
+    "y": 6237,
+    "x": 3579,
+    "file": "6237_3579.jpg"
+   },
+   "votes": 6,
+   "pairs": 6,
+   "ransacInliers": 4
+  },
+  {
+   "tile": {
+    "y": 6255,
+    "x": 3596,
+    "file": "6255_3596.jpg"
+   },
+   "votes": 6,
+   "pairs": 6,
+   "ransacInliers": 4
+  },
+  {
+   "tile": {
+    "y": 6249,
+    "x": 3605,
+    "file": "6249_3605.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6209,
+    "x": 3574,
+    "file": "6209_3574.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6191,
+    "x": 3559,
+    "file": "6191_3559.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6168,
+    "x": 3545,
+    "file": "6168_3545.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6200,
+    "x": 3577,
+    "file": "6200_3577.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  }
+ ]
+}

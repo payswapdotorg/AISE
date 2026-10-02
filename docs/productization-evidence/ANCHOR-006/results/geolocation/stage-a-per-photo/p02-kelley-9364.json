@@ -1,0 +1,140 @@
+{
+ "sid": "p02-kelley-9364",
+ "outcome": "no-ransac-survivor",
+ "bestScale": 0.5,
+ "scales": [
+  {
+   "scale": 1.0,
+   "keypoints": 8000,
+   "mutualPairs": 6628,
+   "topVotes": [
+    7,
+    6,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+   ]
+  },
+  {
+   "scale": 0.5,
+   "keypoints": 8001,
+   "mutualPairs": 6828,
+   "topVotes": [
+    10,
+    7,
+    7,
+    7,
+    6,
+    6,
+    6,
+    6,
+    5,
+    5
+   ]
+  },
+  {
+   "scale": 0.25,
+   "keypoints": 7996,
+   "mutualPairs": 6919,
+   "topVotes": [
+    6,
+    6,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+   ]
+  }
+ ],
+ "topTiles": [
+  {
+   "tile": {
+    "y": 6222,
+    "x": 3597,
+    "file": "6222_3597.jpg"
+   },
+   "votes": 10,
+   "pairs": 10,
+   "ransacInliers": 5
+  },
+  {
+   "tile": {
+    "y": 6233,
+    "x": 3574,
+    "file": "6233_3574.jpg"
+   },
+   "votes": 7,
+   "pairs": 7,
+   "ransacInliers": 4
+  },
+  {
+   "tile": {
+    "y": 6231,
+    "x": 3565,
+    "file": "6231_3565.jpg"
+   },
+   "votes": 7,
+   "pairs": 7,
+   "ransacInliers": 4
+  },
+  {
+   "tile": {
+    "y": 6229,
+    "x": 3580,
+    "file": "6229_3580.jpg"
+   },
+   "votes": 7,
+   "pairs": 7,
+   "ransacInliers": 4
+  },
+  {
+   "tile": {
+    "y": 6212,
+    "x": 3572,
+    "file": "6212_3572.jpg"
+   },
+   "votes": 6,
+   "pairs": 6,
+   "ransacInliers": 4
+  },
+  {
+   "tile": {
+    "y": 6260,
+    "x": 3582,
+    "file": "6260_3582.jpg"
+   },
+   "votes": 6,
+   "pairs": 6,
+   "ransacInliers": 4
+  },
+  {
+   "tile": {
+    "y": 6314,
+    "x": 3611,
+    "file": "6314_3611.jpg"
+   },
+   "votes": 6,
+   "pairs": 6,
+   "ransacInliers": 4
+  },
+  {
+   "tile": {
+    "y": 6250,
+    "x": 3594,
+    "file": "6250_3594.jpg"
+   },
+   "votes": 6,
+   "pairs": 6,
+   "ransacInliers": 4
+  }
+ ]
+}

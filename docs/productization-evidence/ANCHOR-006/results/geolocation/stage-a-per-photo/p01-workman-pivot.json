@@ -1,0 +1,140 @@
+{
+ "sid": "p01-workman-pivot",
+ "outcome": "no-ransac-survivor",
+ "bestScale": 1.0,
+ "scales": [
+  {
+   "scale": 1.0,
+   "keypoints": 8000,
+   "mutualPairs": 6959,
+   "topVotes": [
+    7,
+    6,
+    6,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+   ]
+  },
+  {
+   "scale": 0.5,
+   "keypoints": 3047,
+   "mutualPairs": 2837,
+   "topVotes": [
+    5,
+    4,
+    4,
+    4,
+    4,
+    3,
+    3,
+    3,
+    3,
+    3
+   ]
+  },
+  {
+   "scale": 0.25,
+   "keypoints": 1130,
+   "mutualPairs": 1099,
+   "topVotes": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+   ]
+  }
+ ],
+ "topTiles": [
+  {
+   "tile": {
+    "y": 6165,
+    "x": 3545,
+    "file": "6165_3545.jpg"
+   },
+   "votes": 7,
+   "pairs": 7,
+   "ransacInliers": 4
+  },
+  {
+   "tile": {
+    "y": 6161,
+    "x": 3580,
+    "file": "6161_3580.jpg"
+   },
+   "votes": 6,
+   "pairs": 6,
+   "ransacInliers": 5
+  },
+  {
+   "tile": {
+    "y": 6188,
+    "x": 3592,
+    "file": "6188_3592.jpg"
+   },
+   "votes": 6,
+   "pairs": 6,
+   "ransacInliers": 4
+  },
+  {
+   "tile": {
+    "y": 6175,
+    "x": 3590,
+    "file": "6175_3590.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6195,
+    "x": 3554,
+    "file": "6195_3554.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6217,
+    "x": 3589,
+    "file": "6217_3589.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6194,
+    "x": 3565,
+    "file": "6194_3565.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  },
+  {
+   "tile": {
+    "y": 6170,
+    "x": 3547,
+    "file": "6170_3547.jpg"
+   },
+   "votes": 5,
+   "ransacInliers": 0,
+   "note": "only 5 pairs (< 6)"
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+[ WARN:0@0.080] global loadsave.cpp:278 findDecoder imread_('/home/z/candidates/famartin_duddy2.jpg'): can't open/read file: check file path/integrity
+Traceback (most recent call last):
+  File "/home/z/scratch-anchor006/scan_photo.py", line 29, in <module>
+    kp, des = SIFT_P.detectAndCompute(CLAHE.apply(sim), None)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cv2.error: OpenCV(4.13.0) /io/opencv/modules/features2d/src/sift.dispatch.cpp:512: error: (-5:Bad argument) image is empty or has incorrect depth (!=CV_8U) in function 'detectAndCompute'
+
+  p05-famartin-hitchcock scale=1.0 kp=8000 pairs=7068 bestVote=6 156s
+  p04-famartin-dundy-b scale=1.0 kp=8000 pairs=6893 bestVote=8 177s
+  p05-famartin-hitchcock scale=0.5 kp=8000 pairs=7340 bestVote=6 322s
+  p04-famartin-dundy-b scale=0.5 kp=8000 pairs=7163 bestVote=7 346s
+  p05-famartin-hitchcock scale=0.25 kp=8001 pairs=7356 bestVote=6 496s
+p05-famartin-hitchcock: no-ransac-survivor (496s)
+  p04-famartin-dundy-b scale=0.25 kp=8000 pairs=7196 bestVote=6 499s
+p04-famartin-dundy-b: no-ransac-survivor (499s)
+  p03-famartin-dundy-a scale=1.0 kp=8000 pairs=6701 bestVote=7 86s
+  p03-famartin-dundy-a scale=0.5 kp=6450 pairs=5745 bestVote=5 137s
+  p03-famartin-dundy-a scale=0.25 kp=2661 pairs=2513 bestVote=5 159s
+p03-famartin-dundy-a: no-ransac-survivor (159s)
+  p06-kgs-finney scale=1.0 kp=2824 pairs=2680 bestVote=4 29s
+  p06-kgs-finney scale=0.5 kp=946 pairs=934 bestVote=3 37s
+  p06-kgs-finney scale=0.25 kp=246 pairs=243 bestVote=2 40s
+p06-kgs-finney: no-ransac-survivor (40s)
+  p01-workman-pivot scale=1.0 kp=8000 pairs=6959 bestVote=7 73s
+  p01-workman-pivot scale=0.5 kp=3047 pairs=2837 bestVote=5 100s
+  p01-workman-pivot scale=0.25 kp=1130 pairs=1099 bestVote=3 110s
+p01-workman-pivot: no-ransac-survivor (110s)
+  p02-kelley-9364 scale=1.0 kp=8000 pairs=6628 bestVote=7 64s
+  p02-kelley-9364 scale=0.5 kp=8001 pairs=6828 bestVote=10 128s
+  p02-kelley-9364 scale=0.25 kp=7996 pairs=6919 bestVote=6 216s
+p02-kelley-9364: no-ransac-survivor (216s)
+ALL_SCAN_CHILDREN_DONE

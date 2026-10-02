@@ -1,0 +1,28 @@
+{
+  "verdictLine": "evaluation-kept — the substitution-contract §6 promotion gate answers the typed refusal(s): license-blocked",
+  "admitted": false,
+  "refusalKinds": [
+    "license-blocked"
+  ],
+  "checks": [
+    {
+      "gate": "license-use-clearance",
+      "passed": false,
+      "detail": "license 'Apache-2.0' is evaluation-only (commercialUse: true, intendedUseCleared: false) — the dataset/model-use rule forbids production promotion"
+    },
+    {
+      "gate": "benchmark-evidence",
+      "passed": true,
+      "detail": "1 benchmark record(s) attached, all referencing this provider+version"
+    },
+    {
+      "gate": "provenance-continuity",
+      "passed": true,
+      "detail": "1 provenance manifest(s) sealed against this profile digest"
+    }
+  ],
+  "beltCampaignBenchmarkRecordId": "77d40821cd2eea0061b0adb617ad3bf14a5175309426345d1fdef91b0e44fa78",
+  "registrationStateToday": "benchmarked",
+  "workerSelfPromotion": "NONE — this delivery records evidence and derives the gates' answer; the promotion decision belongs to the Tech Lead (workers may not self-approve or self-merge governed Work Items)",
+  "honestReading": "The ANCHOR-003b deferment #5 named this work: geolocate the un-geolocated class so the gap between 'real photos exist' and 'real anchors exist' closes. This campaign ran the geolocation honestly (blind z14 belt scan + camera-seeded NAIP verification under a declared pin rule) and the seam honestly (the supervised runner, the typed contract, the declared photometric gate). Whatever the measured outcome is, it is recorded as measured — the class either pins or it does not; zero fabricated pins, zero fabricated anchors, always."
+}

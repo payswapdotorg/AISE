@@ -1,0 +1,68 @@
+{
+  "kind": "provider-benchmark-record",
+  "schemaVersion": "provider-benchmark/1",
+  "providerId": "sift-homography-spike",
+  "technologyVersion": "anchor003b-adapter/1",
+  "benchmarkId": "anchor006-belt-campaign/1",
+  "capability": "spatial-anchoring",
+  "metrics": [
+    {
+      "metric": "stillsRequested",
+      "value": 6,
+      "unit": "stills",
+      "detail": "real web-retrieved photographs of the center-pivot irrigation farmland class (the ANCHOR-003b deferment-ledger #5) with per-photo provenance — fidelity class REAL"
+    },
+    {
+      "metric": "geolocationPinnedStills",
+      "value": 0,
+      "unit": "stills",
+      "detail": "0 pinned / 6 un-localized at the campaign's CORRECTED pin rule (stage-B pass 3, the corrected native-scale re-measurement: inliers >= 8 AND footprint NCC >= 0.30 AND footprint >= 25,000 plan-px AND sliver ratio >= 0.2 AND local warp scales within [0.05, 20] — declared by tools/pin_audit.py BEFORE the pass, after the pass-2 pin rule's single pin proved a degenerate 126-px sliver warp and was RETRACTED; the pin is the photogrammetric estimate, never the seed); 1 pass-2 pin(s) retracted by the audit; full record in results/geolocation/ (stage-b.json = pass 2 with the retraction, stage-b-pass3.json = pass 3, pin-audit.json = the audit)"
+    },
+    {
+      "metric": "anchoredStills",
+      "value": 0,
+      "unit": "stills",
+      "detail": "0 anchored of the run set; 3 refused with typed reasons; 3 honestly not-runnable (no >=2 still group — the redundancy law)"
+    },
+    {
+      "metric": "photometricVerificationGate",
+      "value": 0.25,
+      "unit": "NCC floor",
+      "detail": "the adapter's DECLARED gate (minAnchoredNcc, provenance.config, with nccFootprintMinPixels) — carried byte-identical from ANCHOR-003b; the campaign's independent pin rule (the corrected conjunctive rule, pass 3) is the same discipline measured outside the seam"
+    },
+    {
+      "metric": "deterministicRunsIdentical",
+      "value": 2,
+      "unit": "runs",
+      "detail": "two supervised runs per plan group over IDENTICAL canonical request bytes; the contract's FULL-DEPTH deterministicProjection digests byte-identical (b1b33cecf909b060…)"
+    },
+    {
+      "metric": "negativesFailClosed",
+      "value": 14,
+      "unit": "cases",
+      "detail": "14/14 negative cases fail-closed through the adapter+contract seam (the supervised runner's input-digest audit, guard and SIGKILL supervision between the adapter and the evidence); every refusal carries zero hypotheses; +2 typed-outcome drills (anchored + partial)"
+    }
+  ],
+  "failureObservations": [
+    {
+      "kind": "unsupported-data",
+      "detail": "the geolocation campaign's honest negative: the open web's center-pivot farmland photography is overwhelmingly oblique with visible horizon (VLM-classified per still), and the public orthoimagery vintages do not match the captures — the ANCHOR-003b cross-vintage law (same-coordinate ortho-vs-ortho NCC 0.27-0.32) compounds with obliquity; the campaign's measured footprint NCC at the declared pin floors is recorded per attempt in results/geolocation/ (stage-b.json = pass 2 + retraction; stage-b-pass3.json = the corrected pass; pin-audit.json = the footprint-plausibility audit that retracted the pass-2 pin)"
+    },
+    {
+      "kind": "perception-failure",
+      "detail": "the plausible-junk discriminator carried from ANCHOR-003b: unverified RANSAC consensus sets of 5-9 inliers form on the repetitive pivot texture (the z14 blind scan measured the vote dilution directly — top-tile votes 4-10 across the 8,661-tile belt DB, no RANSAC survivor on any still)"
+    }
+  ],
+  "resourceObservations": {
+    "compute": "local-cpu",
+    "memoryMiB": 4096,
+    "latencyMsP50": 68123,
+    "latencyMsP95": 69601
+  },
+  "reproduction": {
+    "inputsDigest": "2e1e857298736f46b8d0f600826c4170a60165c83203850dcdf6b3bebff0dde0",
+    "codeVersion": "see adapterSourceDigest (the evidence tree carries the adapter + the photoset bytes)",
+    "statement": "reproduce with `bun docs/productization-evidence/ANCHOR-006/aise-side/run_photoset.ts` and `run_negatives.ts` at this tree — REAL photoset evidence (web-retrieved center-pivot farmland photographs + USGS NAIP plan rasters), never synthetic-presented-as-real"
+  },
+  "recordId": "77d40821cd2eea0061b0adb617ad3bf14a5175309426345d1fdef91b0e44fa78"
+}
