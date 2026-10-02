@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-10-02T06:51:42Z",
+  "lastReconciledAt": "2026-10-02T12:23:31Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -26,10 +26,10 @@
     "vercelDeploymentId": "dpl_E9rtSLPkaXE7Xc3hPRVoFYyAYJXv",
     "deployedApplicationCommit": "c2bfccf1fe77473e7d2a2f6846a86f3b5bc44b91",
     "lastVerifiedCommit": "d3af33ae1a722b4abbc4f505966c858f5ece0fdc",
-    "currentMainCommit": "4c6e005fdce103edc76921c0844280913e25793d",
-    "currentMainCommitDate": "2026-10-02T06:55:00Z",
-    "currentMainResolvedAt": "2026-10-02T06:51:42Z",
-    "deploymentFreshness": "R6 2026-10-02: main advanced ade2095 -> 4c6e005fdce103edc76921c0844280913e25793d by the ANCHOR-007 landing (PR #24, fast-forward to the TL-rebased head — worker-delivered ea3b7cb rebased onto R5, docs-only, zero conflicts; evidence-only: docs/productization-evidence/ANCHOR-007/; zero application files; build-inert — the deployed runtime artifact is unchanged from the R4 deployment dpl_E9rtSLPkaXE7Xc3hPRVoFYyAYJXv at the code-bearing lineage; verify re-run at BOTH the worker-delivered and the rebased delivered tree: PASS 6502/0 across 429 files, exactly the recorded baseline). In-flight successor: ANCHOR-006 (geolocation lane) queued after a platform capacity wall (§3.9 two-state law holds).",
+    "currentMainCommit": "30baf9e637850b024d0dffb66ee0be7f6b7a583a",
+    "currentMainCommitDate": "2026-10-02T12:23:31Z",
+    "currentMainResolvedAt": "2026-10-02T12:23:31Z",
+    "deploymentFreshness": "R7 2026-10-02: main advanced 5a0e675 -> 30baf9e637850b024d0dffb66ee0be7f6b7a583a by the ANCHOR-006 landing (PR #25, fast-forward to the TL-rebased head — worker-delivered e1763dd rebased onto R6, evidence-only, zero conflicts; evidence-only: docs/productization-evidence/ANCHOR-006/; zero application files; build-inert — the deployed runtime artifact is unchanged from the R4 deployment dpl_E9rtSLPkaXE7Xc3hPRVoFYyAYJXv at the code-bearing lineage; verify re-run at BOTH the worker-delivered and the rebased delivered tree: PASS 6502/0 across 429 files, exactly the recorded baseline — one intermediate rebased-tree run recorded 2 QA-003 live-proof failures against the deployed production, live-API flake not the tree, re-run PASS). THE ANCHOR CHAIN CLOSES: all named successors (005/006/007) measured; remaining frontiers gated (hardware, product scope, future near-nadir data capture).",
     "finalGate": "docs/PRODUCTION-READINESS-GATE.md",
     "lastReconciledAt": "2026-10-02T02:19:22Z"
   },
@@ -689,7 +689,7 @@
       "defaultProviderSelection": false
     },
     "anchoringProgram": {
-      "status": "active — the ANCHOR chain (successor program of ANCHOR-003b's deferment ledger)",
+      "status": "complete — the ANCHOR chain closed 2026-10-02 (R7): all named successors of the 003b deferment ledger measured (001/002/003a/003b/005/006/007 landed); the remaining frontiers are gated: budget calibration (needs an anchored real-photo lane — none exists; named unblocks: appearance-free verification for the 007-a lane, rectification robustness for 007-b, near-nadir data capture for the 006 class), physical device validation (hardware), GBIM-004 (product scope). Per the handoff §7 Action D: no successor work is invented beyond these gates.",
       "authority": "docs/productization-evidence/ANCHOR-003b/README.md (deferment ledger) + docs/TECH-LEAD-HANDOFF.md",
       "landed": [
         {
@@ -728,11 +728,15 @@
           "status": "finalized (both §7 line-art lanes measured on one documented site — PATH-A intermediate-raster: 3/3 drills anchored 0.004-0.013 m realized, 0/16 real refused on the measured cross-vintage appearance gap; PATH-B wall-line geometric: 1/3 drills anchored 1.807 m with budget95 under-coverage RECORDED not patched, 2/3 refused-ambiguous (truth tied with false minima), 0/16 real refused on Manhattan-frame rectification; negatives 26/26 fail-closed; real-photoset ground truth NOT-DERIVABLE declared; NEITHER lane promotes today — named unblocks: appearance-free verification (a), rectification robustness + empirical budget calibration (b))",
           "evidence": "docs/productization-evidence/ANCHOR-007/",
           "landedVia": "PR #24 (worker-delivered ea3b7cb -> TL-rebased 4c6e005fdce103edc76921c0844280913e25793d onto R5)"
+        },
+        {
+          "id": "ANCHOR-006",
+          "status": "finalized (the geolocation lane closed as an honest MEASURED negative — 6 real provenance-complete stills (p01 EXCLUDED: source not re-establishable); 8,661-tile z14 belt DB (2.17M descriptors, 0 fetch errors) blind-scanned: 0 RANSAC survivors, vote dilution measured directly; pass 2's one pin RETRACTED in-record by the 3-seed footprint audit (degenerate 126-px sliver warp, 42:1 anisotropy); the corrected pin rule DECLARED BEFORE pass 3; pass 3: 84/84 attempts, 0 errors, 0/6 pinned; seam refused registration-unreliable 0/3 anchored 0 hypotheses (adapter byte-identical to 003b's, three-way digest-proven), 3 not-runnable by the redundancy law; negatives 14/14 fail-closed + 2 typed drills; determinism byte-identical x2; promotion evaluation-kept license-blocked; budget re-calibration honestly NOT-DERIVABLE; the class's open-web photography is oblique-with-horizon vs nadir orthoimagery — a measured property, not an un-run campaign; the corrected pin rule, belt-DB recipe, and footprint-audit pattern committed for the near-nadir successor)",
+          "evidence": "docs/productization-evidence/ANCHOR-006/",
+          "landedVia": "PR #25 (worker-delivered e1763dd -> TL-rebased 30baf9e637850b024d0dffb66ee0be7f6b7a583a onto R6)"
         }
       ],
-      "inFlight": [
-        "ANCHOR-006 (the geolocation lane — z14 tile-scan pinning of the pivot-belt nadir aerials)"
-      ],
+      "inFlight": [],
       "gated": [
         "budget calibration — gated on an anchored lane (005 refused honestly; the instrument and the 14-feature DLT ground truth are committed for the successor that anchors)",
         "physical Android device validation — hardware-gated (no device on station)",
