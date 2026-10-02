@@ -1,0 +1,202 @@
+{
+  "contractVersion": "1.0.0",
+  "executionId": "anchor007-drill-path-a",
+  "executionTimeMs": 48003.406,
+  "hypotheses": [
+    {
+      "confidence": 0.98,
+      "crossValidation": [],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "0c3c6137ae950f5d6730a75c6885a12a8e70c46aff00d5640fe458c4757d968a",
+      "inlierCount": 64,
+      "inlierRatio": 0.128,
+      "matchCount": 500,
+      "representation": "plan-homography",
+      "residualRmsPx": 0.8429,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            0.45350923486719363,
+            0.0439232939319914,
+            -168.48928507383204
+          ],
+          [
+            -0.1172855241493858,
+            0.446017156238695,
+            228.88481546828885
+          ],
+          [
+            -0.00007320838788017768,
+            -0.00007401888567329514,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2.1+plan-instrument-systematic (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation, plan-instrument systematic 1.5%; max of terms)",
+        "budget95M": 0.688548,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0,
+          "inlierResidualPlusTruncationM": 0.040717,
+          "planInstrumentSystematicM": 0.3513,
+          "supportSpreadExtrapolationM": 0.040717
+        },
+        "floorRmsM": 0.3513
+      }
+    },
+    {
+      "confidence": 0.98,
+      "crossValidation": [],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "d45a5060bb9dedf5529f7bf67c5964eab8a78d63ebe2d52e25d4e0dd2f0a836c",
+      "inlierCount": 113,
+      "inlierRatio": 0.226,
+      "matchCount": 500,
+      "representation": "plan-homography",
+      "residualRmsPx": 0.68,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            0.5526016206442407,
+            -0.027850067843750596,
+            43.95853224071504
+          ],
+          [
+            -0.031294909813857026,
+            0.61254974607598,
+            -48.447669816681945
+          ],
+          [
+            -0.000024587554243210626,
+            -0.000018785442855514647,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2.1+plan-instrument-systematic (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation, plan-instrument systematic 1.5%; max of terms)",
+        "budget95M": 0.688548,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0,
+          "inlierResidualPlusTruncationM": 0.037112,
+          "planInstrumentSystematicM": 0.3513,
+          "supportSpreadExtrapolationM": 0.037112
+        },
+        "floorRmsM": 0.3513
+      }
+    },
+    {
+      "confidence": 0.98,
+      "crossValidation": [],
+      "epistemicLabel": "INFERRED",
+      "evidenceContentId": "f695a5fffa13771375a507cec0573a0b0b2a5d0dbc74f6c2a3b7ae480d670de8",
+      "inlierCount": 55,
+      "inlierRatio": 0.11,
+      "matchCount": 500,
+      "representation": "plan-homography",
+      "residualRmsPx": 0.9667,
+      "transform": {
+        "frameFrom": "plan-raster-px",
+        "frameTo": "still-px",
+        "matrix": [
+          [
+            0.5943509077811401,
+            -0.04608460839436837,
+            -363.81102133894314
+          ],
+          [
+            -0.04221148421809922,
+            0.5249859815072231,
+            65.24053791327655
+          ],
+          [
+            -0.00004850403913097575,
+            -0.000053555759315528325,
+            1
+          ]
+        ]
+      },
+      "uncertainty": {
+        "basis": "inlier-residual-first-order-v2.1+plan-instrument-systematic (terms: residual+RANSAC-truncation, crossval disagreement, support-spread extrapolation, plan-instrument systematic 1.5%; max of terms)",
+        "budget95M": 0.688548,
+        "budgetTerms": {
+          "crossvalDisagreementM": 0,
+          "inlierResidualPlusTruncationM": 0.035782,
+          "planInstrumentSystematicM": 0.3513,
+          "supportSpreadExtrapolationM": 0.035782
+        },
+        "floorRmsM": 0.3513
+      }
+    }
+  ],
+  "portVersion": "anchor002-anchoring-contract/1",
+  "provenance": {
+    "adapterSourceDigest": "sha256:706446fdc18e00e10a006a956eae6c05c8727e7d3a33015dce71e5ce1e8ff1ca",
+    "components": [
+      {
+        "name": "opencv",
+        "version": "4.13.0"
+      },
+      {
+        "name": "numpy",
+        "version": "2.1.3"
+      },
+      {
+        "name": "python",
+        "version": "3.12.14"
+      }
+    ],
+    "config": {
+      "closeIterations": 2,
+      "confidenceModel": "inliers-and-ncc-heuristic/1",
+      "crossValMaxResidualPx": 20,
+      "crossValMinInliers": 12,
+      "detector": "SIFT",
+      "dilateIterations": 2,
+      "inkThreshold": 160,
+      "intermediateRasterDerivation": "wall-region-synthesis/1",
+      "intermediateRasterDerivationInfo": {
+        "method": "wall-region-synthesis/1",
+        "synthTilePx": 44,
+        "wallPixels": 676308
+      },
+      "matcher": "chunked-mutual-nearest-L2",
+      "matcherChunkRows": 512,
+      "maxMatchesPerPair": 500,
+      "method": "path-a: intermediate raster base map + reference SIFT/RANSAC lane",
+      "minAnchoredNcc": 0.25,
+      "minInliersPerStill": 8,
+      "minKeypointsPerImage": 80,
+      "minMatchesForEstimate": 12,
+      "minStills": 2,
+      "nccFootprintMinPixels": 2000,
+      "ransacConfidence": 0.9999,
+      "ransacMaxIters": 20000,
+      "ransacThresholdPx": 4,
+      "siftContrastThreshold": 0.02,
+      "siftEdgeThreshold": 15,
+      "siftNfeaturesCap": 40000,
+      "synthTileM": 0.5,
+      "synthTileShadeSpread": 55,
+      "uncertaintyModel": "inlier-residual-first-order-v2.1+plan-instrument-systematic"
+    },
+    "inputDigest": "sha256:aa932ba09963f5c825ec54ec1735020bd1814373b7850f7f08e33d2600757de6",
+    "platform": "Linux x86_64",
+    "providerId": "lineart-intermediate-raster-spike",
+    "providerVersion": "anchor007-path-a/1"
+  },
+  "reasonCode": null,
+  "schemaVersion": 1,
+  "stageTimingsMs": {
+    "crossval": 22617.782,
+    "derive": 6267.435,
+    "detect": 6715.827,
+    "estimate": 686.64,
+    "match": 11198.749
+  },
+  "status": "anchored"
+}

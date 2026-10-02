@@ -1,0 +1,166 @@
+{
+  "declaredClass": "DERIVED-DRILL (instrument-validation artifacts; never presented as real; the photoset fidelity class stays REAL and is never upgraded by these)",
+  "purpose": "prove each lane's instrument recovers a KNOWN transform on clean inputs before the lanes are measured against real photographs; the realized-error instrument (tools/measure_drill_realized_error.py) scores the anchored hypotheses against these known homographies at the ground-truth plan corners",
+  "drillsPathA": {
+    "drill-path-a1.png": {
+      "file": "drill-path-a1.png",
+      "sizePx": [
+        2000,
+        1400
+      ],
+      "derivation": "wall-region-synthesis/1 intermediate raster of plan-raster.png, warped by the recorded KNOWN homography (INTER_CUBIC, white border), degraded (Gaussian blur sigma 0.8 + Gaussian noise sigma 4.0, fixed seed 1580013426)",
+      "knownHomographyPlanToDrill": [
+        [
+          0.5913204204855573,
+          -0.04700514579258307,
+          -359.56840002692365
+        ],
+        [
+          -0.04267015684189053,
+          0.5220592955438303,
+          67.10716639464965
+        ],
+        [
+          -4.93106065940896e-05,
+          -5.488300959971489e-05,
+          1.0
+        ]
+      ]
+    },
+    "drill-path-a2.png": {
+      "file": "drill-path-a2.png",
+      "sizePx": [
+        2000,
+        1400
+      ],
+      "derivation": "wall-region-synthesis/1 intermediate raster of plan-raster.png, warped by the recorded KNOWN homography (INTER_CUBIC, white border), degraded (Gaussian blur sigma 0.8 + Gaussian noise sigma 4.0, fixed seed 140556409)",
+      "knownHomographyPlanToDrill": [
+        [
+          0.5522176777342959,
+          -0.027869115549461466,
+          44.015137781447734
+        ],
+        [
+          -0.03138439142983176,
+          0.6121362978925788,
+          -48.170058606977825
+        ],
+        [
+          -2.4769111498489226e-05,
+          -1.8882173489860295e-05,
+          1.0
+        ]
+      ]
+    },
+    "drill-path-a3.png": {
+      "file": "drill-path-a3.png",
+      "sizePx": [
+        2000,
+        1400
+      ],
+      "derivation": "wall-region-synthesis/1 intermediate raster of plan-raster.png, warped by the recorded KNOWN homography (INTER_CUBIC, white border), degraded (Gaussian blur sigma 0.8 + Gaussian noise sigma 4.0, fixed seed 2377132070)",
+      "knownHomographyPlanToDrill": [
+        [
+          0.4539529503220136,
+          0.04433361738727116,
+          -169.40443136260262
+        ],
+        [
+          -0.11708788258920094,
+          0.44620627660485046,
+          228.4946358670387
+        ],
+        [
+          -7.304904497608455e-05,
+          -7.392970848105486e-05,
+          1.0
+        ]
+      ]
+    }
+  },
+  "drillsPathB": {
+    "drill-path-b1.png": {
+      "file": "drill-path-b1.png",
+      "sizePx": [
+        2000,
+        1400
+      ],
+      "derivation": "true pinhole render of the plan raster's LSD line-work on the ground plane z=0 plus vertical members to 1.6 m at ~2.2 m spacing where the plan carries ink; camera f=1300 px (square pixels, principal point at image center), yaw +20 deg, tilt +26 deg down, position (0, -9, 1.8) m in the declared plan frame; degraded (blur sigma 0.8 + noise sigma 4.0, fixed seed 3760448011); the KNOWN plan->drill homography is the exact ground-plane projection",
+      "knownHomographyPlanToDrill": [
+        [
+          1.2850467008893591,
+          -0.3361480103035003,
+          -1472.887095574721
+        ],
+        [
+          0.01703808561372172,
+          -0.04681175549443511,
+          258.4996386729235
+        ],
+        [
+          0.0002583577962842816,
+          -0.0007098322114311211,
+          1.0
+        ]
+      ]
+    },
+    "drill-path-b2.png": {
+      "file": "drill-path-b2.png",
+      "sizePx": [
+        2000,
+        1400
+      ],
+      "derivation": "true pinhole render of the plan raster's LSD line-work on the ground plane z=0 plus vertical members to 1.6 m at ~2.2 m spacing where the plan carries ink; camera f=1500 px (square pixels, principal point at image center), yaw -35 deg, tilt +32 deg down, position (7, -11, 2.2) m in the declared plan frame; degraded (blur sigma 0.8 + noise sigma 4.0, fixed seed 419258560); the KNOWN plan->drill homography is the exact ground-plane projection",
+      "knownHomographyPlanToDrill": [
+        [
+          0.2746084317039577,
+          -0.5752715308947198,
+          622.2610224470495
+        ],
+        [
+          0.04270186266210747,
+          0.06098458004506432,
+          -110.62461164269135
+        ],
+        [
+          -0.000179945797997924,
+          -0.0002569892327323543,
+          1.0
+        ]
+      ]
+    },
+    "drill-path-b3.png": {
+      "file": "drill-path-b3.png",
+      "sizePx": [
+        2000,
+        1400
+      ],
+      "derivation": "true pinhole render of the plan raster's LSD line-work on the ground plane z=0 plus vertical members to 1.6 m at ~2.2 m spacing where the plan carries ink; camera f=1150 px (square pixels, principal point at image center), yaw +55 deg, tilt +20 deg down, position (-8, -8, 1.6) m in the declared plan frame; degraded (blur sigma 0.8 + noise sigma 4.0, fixed seed 3560017290); the KNOWN plan->drill homography is the exact ground-plane projection",
+      "knownHomographyPlanToDrill": [
+        [
+          5.063906656343133,
+          1.427875179676249,
+          -7527.853997683719
+        ],
+        [
+          0.7674853546128092,
+          -0.5373990307654412,
+          891.8946638562586
+        ],
+        [
+          0.0027270504834941475,
+          -0.0019095013056210355,
+          1.0
+        ]
+      ]
+    }
+  },
+  "digests": {
+    "drill-path-a1.png": "f695a5fffa13771375a507cec0573a0b0b2a5d0dbc74f6c2a3b7ae480d670de8",
+    "drill-path-a2.png": "d45a5060bb9dedf5529f7bf67c5964eab8a78d63ebe2d52e25d4e0dd2f0a836c",
+    "drill-path-a3.png": "0c3c6137ae950f5d6730a75c6885a12a8e70c46aff00d5640fe458c4757d968a",
+    "drill-path-b1.png": "b70950c255a19c89a1084ee12aa09330ccda830156d182665334cf60e9269115",
+    "drill-path-b2.png": "cbffc9f435b98543c9d2e869bc34ff90b590616b43e0e59776f2a5adb495cf70",
+    "drill-path-b3.png": "f6417014156edf2a670edeb6ae402de515661b2792eb3317e8327096effc7bd1"
+  }
+}

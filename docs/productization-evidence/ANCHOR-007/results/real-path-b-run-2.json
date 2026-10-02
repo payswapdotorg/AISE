@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "portVersion": "anchor002-anchoring-contract/1",
+  "contractVersion": "1.0.0",
+  "executionId": "anchor007-real-path-b",
+  "status": "refused",
+  "reasonCode": "registration-unreliable",
+  "refusalDetail": "no still could be geometrically registered to this plan (0/16 anchored; method vp-rectified-line-search/3). Per-still refusals: e23852b26e8dbb59…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [0.5, 32.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 2], \"centersDeg\": [0.5, 64.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 3], \"centers) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; def2575ad134f833…: registration ambiguous — two distinct refined hypotheses support 38 and 36 segments (margin 0.053 < 0.25); hypotheses [[1, 38, 0.0646], [0, 36, 0.066], [3, 33, 0.0722], [2, 30, 0.0718]]; manhattan frame pair 0,1 centers [0.5, 150.5] score 29.0; refusing rather than choosing arbitrarily; 7d80239460c8b35d…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [179.5, 11.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 3], \"centersDeg\": [179.5, 109.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [1, 3], \"ce) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; 57c102b6ff7f5257…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [179.5, 113.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 2], \"centersDeg\": [179.5, 134.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [1, 2], \"c) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; d97552cd736da774…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [179.5, 11.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 2], \"centersDeg\": [179.5, 167.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [1, 2], \"ce) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; 35f2bb88af627216…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [0.5, 46.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 2], \"centersDeg\": [0.5, 64.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 3], \"centers) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; bf1cfdc2d8b34431…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [0.5, 168.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 2], \"centersDeg\": [0.5, 12.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [1, 2], \"center) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; e6974810abfb8df6…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [179.5, 166.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 2], \"centersDeg\": [179.5, 110.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 3], \"c) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; e1d779564f69ba73…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 2], \"centersDeg\": [179.5, 77.5], \"inconsistency\": null, \"pairScore\": null}]) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; 32549ecb975d68fa…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [179.5, 167.5], \"inconsistency\": null, \"pairScore\": null}]) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; f01ecc08d5af8806…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [4.5, 162.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 2], \"centersDeg\": [4.5, 59.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 3], \"center) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; c43150c0109619b7…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [178.5, 36.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 2], \"centersDeg\": [178.5, 148.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 3], \"ce) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; 34f6410d51502db7…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [0.5, 67.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 2], \"centersDeg\": [0.5, 22.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 3], \"centers) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; 66ccc30205394d51…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [179.5, 148.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 2], \"centersDeg\": [179.5, 25.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 3], \"ce) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; 1873be791fd44b9a…: no Manhattan frame among the direction peaks (candidates: [{\"pair\": [0, 1], \"centersDeg\": [177.5, 142.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 2], \"centersDeg\": [177.5, 38.5], \"inconsistency\": null, \"pairScore\": null}, {\"pair\": [0, 3], \"ce) — the vanishing-point rectification is inconsistent; refusing rather than fitting an arbitrary affinity; 46453c0782be6285…: registration ambiguous — two distinct refined hypotheses support 26 and 20 segments (margin 0.231 < 0.25); hypotheses [[2, 26, 0.0509], [0, 20, 0.0709], [3, 18, 0.0764], [1, 17, 0.0674]]; manhattan frame pair 0,1 centers [11.5, 175.5] score 25.0; refusing rather than choosing arbitrarily. Zero fabricated anchors.",
+  "provenance": {
+    "providerId": "wall-line-geometric-spike",
+    "providerVersion": "anchor007-path-b/2",
+    "platform": "Linux x86_64",
+    "inputDigest": "sha256:9c2bf6d3544a62c898f20cf292c57ffbce74c667080b6a656257edb120376b5b",
+    "adapterSourceDigest": "sha256:544f6ddafb9970b49223cc5bbd62de3169785f3d578f6e0265b9ab691bf3c9ce",
+    "components": [
+      {
+        "name": "opencv",
+        "version": "4.13.0"
+      },
+      {
+        "name": "numpy",
+        "version": "2.1.3"
+      },
+      {
+        "name": "python",
+        "version": "3.12.14"
+      }
+    ],
+    "config": {
+      "method": "path-b: vp-rectified-line-search/3 (geometric wall-line registration, no texture)",
+      "lsdMinSegmentPx": 60,
+      "directionHistBins": 180,
+      "groundClusterTolDeg": 10,
+      "secondPeakFraction": 0.06,
+      "verticalClusterCenterDeg": 90,
+      "verticalClusterTolDeg": 12,
+      "familyCandidatePeaks": 4,
+      "pairSearchRotationStepDeg": 10,
+      "pairSearchScaleSteps": 3,
+      "pairSearchPeaksPerEntry": 4,
+      "vpSupportMaxAngleDeg": 2.5,
+      "vpMaxFiniteDistPx": 60000,
+      "cameraModel": "vp-orthogonality-self-calibration/1 (square pixels, pp = image center, f estimated from the orthogonal VP pairs; fallback f = image width) + camera-side law (upright camera, |roll| < 90 deg)",
+      "searchWorkingScale": 5,
+      "searchPointTrimFactor": 5,
+      "searchSwapAxes": [
+        0
+      ],
+      "searchRotationCoarseDeg": 6,
+      "searchRotationRangeDeg": 180,
+      "searchScaleOctaves": 1.75,
+      "searchScaleStepsCoarse": 5,
+      "fineScaleSteps": 7,
+      "fineScaleOctaves": 0.44,
+      "fineRotationRangeDeg": 6,
+      "fineRotationStepDeg": 2,
+      "finePeaksPerEntry": 6,
+      "fineMaxScaleAnchors": 6,
+      "searchRefineRotDeg": 0.5,
+      "searchRefineRotRangeDeg": 2.5,
+      "searchRefineScaleSteps": 7,
+      "searchScoreCapPx": 20,
+      "searchPeakMinSeparationPx": 60,
+      "seedCandidates": 3,
+      "refineScales": [
+        15,
+        5,
+        1
+      ],
+      "refineRadiiPx": [
+        [
+          50,
+          30
+        ],
+        [
+          40,
+          25,
+          15
+        ],
+        [
+          60,
+          33,
+          18,
+          10,
+          6
+        ]
+      ],
+      "refineMaxPoints": 4000,
+      "refineOutlierMad": 3,
+      "minKeypointsPerImage": 80,
+      "minMatchesForEstimate": 12,
+      "minInliersPerStill": 8,
+      "minStills": 2,
+      "supportTolerancePx": 14,
+      "supportDirectionToleranceDeg": 25,
+      "refinedDistinctPx": 30,
+      "minSupportSpreadM": 3,
+      "minPeakMargin": 0.25,
+      "maxSupportRmsM": 0.35,
+      "minSupportShare": 0.45,
+      "uncertaintyModel": "vp-rectification-first-order-v1+plan-instrument-systematic",
+      "confidenceModel": "support-margin-spread-heuristic/1",
+      "crossValidation": "NOT-IMPLEMENTED in anchor007-path-b/3 (declared limitation; the budget carries no crossval term and the confidence does not claim redundancy evidence)",
+      "versionHistory": "v1: two strongest peaks blindly + no camera-side law + circular translation unwrapped nowhere + similarity-only verification — the drill runs measured each failure (0 support on a perfect input); v2: Manhattan-frame pair selection, camera-side law, wraparound unwrap, iterative nearest-ink homography refinement, full-resolution verification gates; the /2 drills then measured the search UNABLE to reach the truth's basin (false dense-ink placements outscored the truth's translation at every grid scale — 1356 vs 1246 at the best scale — and the 1.84x scale steps left the truth 13% from the nearest grid point where its gated support collapsed to 118 vs the false basin's 142; the /2 gates PASSED a 26.9-m FALSE anchor at confidence 0.89 — all recorded); v3: multi-peak candidates, the direction-gated support as the seed/pair ranking (measured discriminating: 198 gated for the truth vs 43-108 for every false peak within 2% scale), a fine scale/rotation stage around the coarse pool (the truth recovered at 0.28-m realized on the same drill), raw gated support for pair ranking (the share-based rank measured preferring small dimension-string clouds), and a declared minSupportShare gate",
+      "crossValMaxResidualPx": 20,
+      "crossValMinInliers": 12
+    }
+  },
+  "hypotheses": [],
+  "executionTimeMs": 0,
+  "stageTimingsMs": {
+    "segments": 4004.932,
+    "rectify": 68.894,
+    "search": 33606.201,
+    "refine": 5590.277,
+    "verify": 0.016
+  }
+}

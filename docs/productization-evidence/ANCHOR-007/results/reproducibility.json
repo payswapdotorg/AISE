@@ -1,0 +1,29 @@
+{
+  "method": "two separate supervised provider processes per scenario over IDENTICAL canonical request bytes (same executionId — required by the contract's full-depth deterministicProjection); digests over deterministicProjection (executionId, executionTimeMs, stageTimingsMs excluded — performance observations, not semantics)",
+  "scenarios": [
+    {
+      "scenario": "drill-path-a",
+      "deterministic": true,
+      "deterministicDigest": "sha256:00aae19258a94d73b9ba8e9dadd68f1fe58bfc0d6a1b02ed3cd6973958f127b4",
+      "inputDigest": "sha256:aa932ba09963f5c825ec54ec1735020bd1814373b7850f7f08e33d2600757de6"
+    },
+    {
+      "scenario": "drill-path-b",
+      "deterministic": true,
+      "deterministicDigest": "sha256:2b34ddb063927ce2340606cf3f87fc69c955e06e93d8b27cdfca96b2ee3b695a",
+      "inputDigest": "sha256:cfc83a7690952d9c14a17830972cb1b02921ab016c892961e94f684f7b010710"
+    },
+    {
+      "scenario": "real-path-a",
+      "deterministic": true,
+      "deterministicDigest": "sha256:67dbee9f967ea40a91a7c2dc0f14fd0a4702bffa7e1696595cec699033ea5d83",
+      "inputDigest": "sha256:3f829d22398c1ecb164c3948f8f2745791df9b37c98cab75658b57983ea7f947"
+    },
+    {
+      "scenario": "real-path-b",
+      "deterministic": true,
+      "deterministicDigest": "sha256:34a5a0149f89f0f9ab639c0bfc2fd208a38c94583bf83bcd52ca09be94e60db0",
+      "inputDigest": "sha256:9c2bf6d3544a62c898f20cf292c57ffbce74c667080b6a656257edb120376b5b"
+    }
+  ]
+}

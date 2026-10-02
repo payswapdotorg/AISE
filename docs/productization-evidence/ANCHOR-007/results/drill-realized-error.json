@@ -1,0 +1,151 @@
+{
+  "instrument": {
+    "method": "realized error = |H_known^-1 . H_est (p) - p| / 88.00 at the measured-drawings ground-truth corners (fixture/ground-truth-plan.json, raster px), restricted to the drill's visible footprint (inside the drill image under H_known, 50 px margin); budget95 coverage measured per the ANCHOR-001 discipline",
+    "frames": "H_known: plan-raster-px -> drill-px (the recorded known transform); H_est: the hypothesis transform plan-raster-px -> still-px",
+    "honestyNote": "the real photoset has NO co-registered ground truth \u2014 realized error there is NOT-DERIVABLE and is declared so, never fabricated"
+  },
+  "drillPathA": {
+    "run": "drill-path-a-run-1.json",
+    "status": "anchored",
+    "anchored": 3,
+    "refusedStills": 0,
+    "perStill": [
+      {
+        "file": "drill-path-a3.png",
+        "contentId": "0c3c6137ae950f5d6730a75c6885a12a8e70c46aff00d5640fe458c4757d968a",
+        "visibleReferencePoints": 13,
+        "totalReferencePoints": 16,
+        "realizedErrorM": {
+          "rms": 0.005798,
+          "max": 0.011589,
+          "perPoint": {
+            "pavilionSlabOuter.nw": 0.011589,
+            "pavilionSlabOuter.se": 0.005537,
+            "pavilionSlabOuter.sw": 0.004677,
+            "pavilionGlass.nw": 0.007533,
+            "pavilionGlass.se": 0.005512,
+            "pavilionGlass.sw": 0.002559,
+            "serviceCore.nw": 0.004681,
+            "serviceCore.se": 0.00453,
+            "serviceCore.sw": 0.002765,
+            "lowerTerraceOuter.nw": 0.007542,
+            "lowerTerraceOuter.ne": 0.001554,
+            "lowerTerraceOuter.se": 0.00453,
+            "lowerTerraceOuter.sw": 0.005152
+          }
+        },
+        "imageDisagreementPxAtVisible": {
+          "rms": 0.302,
+          "max": 0.521
+        },
+        "declaredBudget95M": 0.688548,
+        "budget95CoversRealizedRms": true,
+        "inlierCount": 64,
+        "matchCount": 500,
+        "confidence": 0.98
+      },
+      {
+        "file": "drill-path-a2.png",
+        "contentId": "d45a5060bb9dedf5529f7bf67c5964eab8a78d63ebe2d52e25d4e0dd2f0a836c",
+        "visibleReferencePoints": 13,
+        "totalReferencePoints": 16,
+        "realizedErrorM": {
+          "rms": 0.003747,
+          "max": 0.004925,
+          "perPoint": {
+            "pavilionSlabOuter.nw": 0.003566,
+            "pavilionSlabOuter.se": 0.001597,
+            "pavilionSlabOuter.sw": 0.003941,
+            "pavilionGlass.nw": 0.004925,
+            "pavilionGlass.se": 0.00158,
+            "pavilionGlass.sw": 0.004322,
+            "serviceCore.nw": 0.004842,
+            "serviceCore.se": 0.002786,
+            "serviceCore.sw": 0.004347,
+            "lowerTerraceOuter.nw": 0.003039,
+            "lowerTerraceOuter.ne": 0.004035,
+            "lowerTerraceOuter.se": 0.002952,
+            "lowerTerraceOuter.sw": 0.004686
+          }
+        },
+        "imageDisagreementPxAtVisible": {
+          "rms": 0.203,
+          "max": 0.265
+        },
+        "declaredBudget95M": 0.688548,
+        "budget95CoversRealizedRms": true,
+        "inlierCount": 113,
+        "matchCount": 500,
+        "confidence": 0.98
+      },
+      {
+        "file": "drill-path-a1.png",
+        "contentId": "f695a5fffa13771375a507cec0573a0b0b2a5d0dbc74f6c2a3b7ae480d670de8",
+        "visibleReferencePoints": 12,
+        "totalReferencePoints": 16,
+        "realizedErrorM": {
+          "rms": 0.012917,
+          "max": 0.033405,
+          "perPoint": {
+            "pavilionSlabOuter.nw": 0.033405,
+            "pavilionSlabOuter.se": 0.00847,
+            "pavilionSlabOuter.sw": 0.014085,
+            "pavilionGlass.nw": 0.01628,
+            "pavilionGlass.se": 0.008294,
+            "pavilionGlass.sw": 0.005536,
+            "serviceCore.nw": 0.008055,
+            "serviceCore.ne": 0.01114,
+            "serviceCore.se": 0.005663,
+            "serviceCore.sw": 0.002162,
+            "lowerTerraceOuter.ne": 0.004748,
+            "lowerTerraceOuter.se": 0.001879
+          }
+        },
+        "imageDisagreementPxAtVisible": {
+          "rms": 0.717,
+          "max": 1.754
+        },
+        "declaredBudget95M": 0.688548,
+        "budget95CoversRealizedRms": true,
+        "inlierCount": 55,
+        "matchCount": 500,
+        "confidence": 0.98
+      }
+    ]
+  },
+  "drillPathB": {
+    "run": "drill-path-b-run-1.json",
+    "status": "partial",
+    "anchored": 1,
+    "refusedStills": 2,
+    "perStill": [
+      {
+        "file": "drill-path-b2.png",
+        "contentId": "cbffc9f435b98543c9d2e869bc34ff90b590616b43e0e59776f2a5adb495cf70",
+        "visibleReferencePoints": 2,
+        "totalReferencePoints": 16,
+        "realizedErrorM": {
+          "rms": 1.806968,
+          "max": 1.859943,
+          "perPoint": {
+            "lowerTerraceOuter.ne": 1.859943,
+            "lowerTerraceOuter.se": 1.752392
+          }
+        },
+        "imageDisagreementPxAtVisible": {
+          "rms": 298.442,
+          "max": 353.269
+        },
+        "declaredBudget95M": 0.6851,
+        "budget95CoversRealizedRms": false,
+        "inlierCount": 230,
+        "matchCount": 340,
+        "confidence": 0.9449
+      }
+    ]
+  },
+  "realPhotoset": {
+    "realizedErrorStatus": "NOT-DERIVABLE",
+    "reason": "no co-registered ground truth exists for the real photographs (their true poses relative to the HABS drawing are unknown and unmeasurable from public web renditions); the responses' declared uncertainty budgets are DECLARATIONS on this photoset, never implied measurements"
+  }
+}

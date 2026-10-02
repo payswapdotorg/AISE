@@ -1,0 +1,282 @@
+{
+  "manifestId": "anchor007-fixture/1",
+  "site": {
+    "name": "Edith Farnsworth House (Mies van der Rohe, 1945-51), 14520 River Road, Plano, Kendall County, Illinois, USA",
+    "documentation": "HABS IL-323 (measured drawings 8 sheets + 10 large-format photographs); the paired capture: the HABS documentation photographs of the SAME documented site + public-domain/CC photographs of the same house",
+    "fidelityClass": "REAL",
+    "fidelityNote": "real public-domain/CC photographs and the real HABS measured drawing of one real documented site; never upgraded, never synthetic (the DERIVED-DRILL artifacts of the negative ledger are declared separately and never presented as real)"
+  },
+  "planRaster": {
+    "file": "plan-raster.png",
+    "sizePx": [
+      3401,
+      2307
+    ],
+    "derivation": {
+      "source": "plan-source.jpg (the pinned Commons 3840x2560 rendition of HABS sheet 3 of 8)",
+      "scaleInstrument": "the METERS graphic scale bar (0-tick .. 3-m tick, re-measured by this tool)",
+      "pixelsPerMeterReMeasured": 88.0,
+      "pixelsPerMeterCrossChecks": [
+        "FEET bar 0..10 ft: 267 px / 10 ft = 87.60 px/m (-0.45%)",
+        "printed scale 1:48 of a 36x24 in sheet scanned at 200 dpi, rendition factor 8/15: 87.47 px/m (-0.6%)"
+      ],
+      "northInstrument": "the north-arrow needle medial axis (subpixel, 29 rows, residual RMS 0.09 px)",
+      "northLeanReMeasuredDeg": 10.0314,
+      "rotationDeg": 10.0314,
+      "rotationDirection": "counter-clockwise (brings the east-leaning needle to vertical; numeric check in fixture.md)",
+      "cropSourceRectPx": [
+        240,
+        470,
+        3370,
+        2250
+      ],
+      "cropContent": "BOTH level plans the sheet documents (upper: the house floor plan; lower: the lower-terrace plan) with their dimension strings; title block, sheet border, scale bars and north arrow excluded",
+      "resampling": "single warpAffine INTER_CUBIC (no double resampling); rigid rotation preserves 88.00 px/m"
+    },
+    "rasterToScene": {
+      "pixelsPerMeter": 88.0,
+      "xDirection": "east-right",
+      "yDirection": "north-up",
+      "worldOriginPx": [
+        1700.5,
+        1153.5
+      ],
+      "frame": "a DECLARED local plan frame: origin at the crop center, x east, y north; THE HANDEDNESS LAW is TRUE by construction (the crop was rotated so true north is up)"
+    },
+    "contentDigestSha256": "1d9a2fbcc32921c5ca377164510384ffe6593c0a47479332791a5c413a4bdf79"
+  },
+  "stills": [
+    {
+      "caption": "GENERAL VIEW FROM THE SOUTHWEST, SHOWING SOUTH ELEVATION (HABS ILL,47-PLAN.V,1-1)",
+      "locItem": "il0323.photos.062512p",
+      "creator": "Boucher, Jack E. (HABS chief photographer)",
+      "license": "Public domain (US government work)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-h01.jpg",
+      "sizePx": [
+        2000,
+        1427
+      ],
+      "sourcedRenditionDigestSha256": "e23852b26e8dbb59b9e25a73994ba12a7cb9bde137ae4f89f8591c8512a32b8d",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "SOUTH ELEVATION, DETAIL OF PORCH, SEEN FROM SOUTHWEST (HABS ILL,47-PLAN.V,1-2)",
+      "locItem": "il0323.photos.062513p",
+      "creator": "Boucher, Jack E.",
+      "license": "Public domain (US government work)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-h02.jpg",
+      "sizePx": [
+        2000,
+        1424
+      ],
+      "sourcedRenditionDigestSha256": "def2575ad134f8338491db35f5f5217c9da52fb10a12f85ea1423e1479d8820a",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "GENERAL VIEW FROM THE SOUTHEAST, SHOWING SOUTH ELEVATION (HABS ILL,47-PLAN.V,1-3)",
+      "locItem": "il0323.photos.062514p",
+      "creator": "Boucher, Jack E.",
+      "license": "Public domain (US government work)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-h03.jpg",
+      "sizePx": [
+        2000,
+        1433
+      ],
+      "sourcedRenditionDigestSha256": "7d80239460c8b35d179b44283a6d145525175bb5b2fcc6b8340e58e3a5a3752e",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "SOUTH ELEVATION (HABS ILL,47-PLAN.V,1-4)",
+      "locItem": "il0323.photos.062515p",
+      "creator": "Boucher, Jack E.",
+      "license": "Public domain (US government work)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-h04.jpg",
+      "sizePx": [
+        2000,
+        1435
+      ],
+      "sourcedRenditionDigestSha256": "57c102b6ff7f5257e604717129797384e36497ae73e6ec959330b65876179c7a",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "SOUTH ELEVATION DETAIL OF ENTRANCE (HABS ILL,47-PLAN.V,1-5)",
+      "locItem": "il0323.photos.062516p",
+      "creator": "Boucher, Jack E.",
+      "license": "Public domain (US government work)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-h05.jpg",
+      "sizePx": [
+        2000,
+        1430
+      ],
+      "sourcedRenditionDigestSha256": "d97552cd736da774dbb0e4af17bdab6ddb1243ffe8aecd84507ab718d93496e8",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "SOUTH ELEVATION, DETAIL OF ENTRANCE AND EASTERN BAYS, SEEN FROM EAST (HABS ILL,47-PLAN.V,1-6)",
+      "locItem": "il0323.photos.062517p",
+      "creator": "Boucher, Jack E.",
+      "license": "Public domain (US government work)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-h06.jpg",
+      "sizePx": [
+        1457,
+        2000
+      ],
+      "sourcedRenditionDigestSha256": "35f2bb88af6272169eeae15d80494dce1f4e4a892db1bfbeae5b62cb9d55248d",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "SOUTH ELEVATION, EASTERN BAYS (HABS ILL,47-PLAN.V,1-7)",
+      "locItem": "il0323.photos.062518p",
+      "creator": "Boucher, Jack E.",
+      "license": "Public domain (US government work)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-h07.jpg",
+      "sizePx": [
+        2000,
+        1433
+      ],
+      "sourcedRenditionDigestSha256": "bf1cfdc2d8b3443105bad5837db7990004d7979a8044215a43f1d9ffd01c3b97",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "NORTH AND WEST ELEVATIONS (HABS ILL,47-PLAN.V,1-8)",
+      "locItem": "il0323.photos.062519p",
+      "creator": "Boucher, Jack E.",
+      "license": "Public domain (US government work)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-h08.jpg",
+      "sizePx": [
+        2000,
+        1425
+      ],
+      "sourcedRenditionDigestSha256": "e6974810abfb8df61886559a89179967d312722a25fea654446b00e2cf2ca4fc",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "NORTH ELEVATION (HABS ILL,47-PLAN.V,1-9)",
+      "locItem": "il0323.photos.062520p",
+      "creator": "Boucher, Jack E.",
+      "license": "Public domain (US government work)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-h09.jpg",
+      "sizePx": [
+        2000,
+        1433
+      ],
+      "sourcedRenditionDigestSha256": "e1d779564f69ba739d768fa295f77734a91519a6dcd1ea6307452898aeb021ea",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "NORTH ELEVATION, SEEN FROM NORTHEAST (HABS ILL,47-PLAN.V,1-10)",
+      "locItem": "il0323.photos.062521p",
+      "creator": "Boucher, Jack E.",
+      "license": "Public domain (US government work)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-h10.jpg",
+      "sizePx": [
+        2000,
+        1437
+      ],
+      "sourcedRenditionDigestSha256": "32549ecb975d68fa8a00500fda9707e2d83cd51fefd143eed9145f205f21957c",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "Interior living room view (Highsmith)",
+      "locItem": "LCCN2010630501",
+      "creator": "Carol M. Highsmith",
+      "license": "Public domain (Highsmith donation, no known restrictions)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-i01.jpg",
+      "sizePx": [
+        2000,
+        1264
+      ],
+      "sourcedRenditionDigestSha256": "f01ecc08d5af8806ece855ff50286ee0764854d8be96cc0e1ba69e8be0f9f33c",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "Interior living room view (Highsmith)",
+      "locItem": "LCCN2010630502",
+      "creator": "Carol M. Highsmith",
+      "license": "Public domain (Highsmith donation, no known restrictions)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-i02.jpg",
+      "sizePx": [
+        2000,
+        1333
+      ],
+      "sourcedRenditionDigestSha256": "c43150c0109619b71c72dacab0a4566ea004b1f1e1ef70d543b07203a1bf51bd",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "Farnsworth House kitchen interior (the Commons file is titled 'Fall at the Farnsworth House' but the rendition served for LCCN2011631156 is the kitchen interior \u2014 a Commons data quirk, recorded honestly; the fixture treats it as an INTERIOR view)",
+      "locItem": "LCCN2011631156 (as served)",
+      "creator": "Carol M. Highsmith",
+      "license": "Public domain (Highsmith donation, no known restrictions)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-i03.jpg",
+      "sizePx": [
+        2000,
+        1575
+      ],
+      "sourcedRenditionDigestSha256": "34f6410d51502db7be0008621bb62e46bacaede93b7a2a5148df78aed98672c5",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "Interior view across the living space toward the west glass wall (colros)",
+      "locItem": "https://commons.wikimedia.org/wiki/File:FarnsworthHouse-Mies-6.jpg",
+      "creator": "colros (Wikimedia Commons)",
+      "license": "CC BY-SA 2.0",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-i04.jpg",
+      "sizePx": [
+        2000,
+        1500
+      ],
+      "sourcedRenditionDigestSha256": "66ccc30205394d5111b1ce54a53ce054aeaae52b3fef20a815aad2b2e43db2bb",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "Exterior view (Highsmith), low-angle corner view",
+      "locItem": "LCCN2011633508",
+      "creator": "Carol M. Highsmith",
+      "license": "Public domain (Highsmith donation, no known restrictions)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-e01.jpg",
+      "sizePx": [
+        1569,
+        2000
+      ],
+      "sourcedRenditionDigestSha256": "1873be791fd44b9a77ad09a1ec5880de3c6ce1bcbf267f185fd78aa348f1e3b8",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    },
+    {
+      "caption": "GARAGE at the Farnsworth House (Highsmith) \u2014 a REAL different building on the same site: the wrong-plan discriminator fixture (the garage is NOT on the house plan sheet)",
+      "locItem": "LCCN2011634368",
+      "creator": "Carol M. Highsmith",
+      "license": "Public domain (Highsmith donation, no known restrictions)",
+      "retrievedUtc": "2026-10-02",
+      "file": "still-g01.jpg",
+      "sizePx": [
+        2000,
+        1555
+      ],
+      "sourcedRenditionDigestSha256": "46453c0782be6285ca68333c35eec346c23e4c8df9a0427324e2e029b1aead10",
+      "normalization": "grayscale (cv2.IMREAD_GRAYSCALE of the retrieved rendition) -> INTER_AREA downscale to max side 2000 px -> JPEG quality 90 (baseline, no chroma \u2014 grayscale)"
+    }
+  ],
+  "counts": {
+    "planRasters": 1,
+    "anchorCandidateStills": 15,
+    "wrongSiteStills": 1,
+    "exteriorStills": 11,
+    "interiorStills": 4
+  },
+  "rightsSummary": "HABS documentation (drawings + photographs): public domain, United States government works. Highsmith photographs: public domain (donated, no known restrictions). One CC BY-SA 2.0 photograph (colros) carried under its license terms with attribution recorded per item. No third-party rights restricted items in this fixture."
+}

@@ -1,0 +1,333 @@
+{
+  "instrument": {
+    "planFile": "plan-raster.png (derived from plan-source.jpg by tools/prepare_fixture.py)",
+    "scaleInstrument": "the METERS graphic scale bar of HABS sheet 3 (88.00 px/m in the 3840x2560 rendition; rigid rotation preserves it)",
+    "fitMethod": "darkness-weighted ink-centroid per column/row over +/-5 px, median over >=200 samples (subpixel); fits in the SOURCE sheet frame where the drawing's walls are exactly axis-aligned",
+    "frameMap": "sheet px -> raster px via rotation 10.0315 deg CCW about (1920,1280) then crop offset (120,225); raster px -> scene m via rasterToScene (origin at raster center, x east, y north)",
+    "systematicTension": "the drawing's dimension strings exceed the measured line spans by ~1-2% on every cross-checked extent (recorded per feature; never reconciled). The declared plan-instrument systematic uncertainty is therefore +/-1.5% on scale-carrying quantities, propagated honestly into realized-error reporting."
+  },
+  "pixelsPerMeter": 88.0,
+  "measures": {
+    "pavilionSlabOuter": {
+      "north": {
+        "yPx": 477.0055632823366,
+        "nColumns": 1850,
+        "scatterPx": 0.7476030654823289
+      },
+      "south": {
+        "yPx": 1238.8052126200275,
+        "nColumns": 1850,
+        "scatterPx": 0.8162806236635682
+      },
+      "west": {
+        "xPx": 1057.671586715867,
+        "nRows": 369,
+        "scatterPx": 0.29709155321985553
+      },
+      "east": {
+        "xPx": 3118.342459611219,
+        "nRows": 620,
+        "scatterPx": 0.4024225661202255
+      },
+      "cornersSheetPx": {
+        "nw": [
+          1057.671586715867,
+          477.0055632823366
+        ],
+        "ne": [
+          3118.342459611219,
+          477.0055632823366
+        ],
+        "se": [
+          3118.342459611219,
+          1238.8052126200275
+        ],
+        "sw": [
+          1057.671586715867,
+          1238.8052126200275
+        ]
+      },
+      "nsM": 8.656814197019214,
+      "ewM": 23.416714464719906,
+      "crossCheck": "east-end strip strings 9'-7 1/4\" + 9'-5 1/8\" + 9'-7 1/2\" = 28'-7 7/8\" = 8.7397 m; the drawing's own measured lines are recorded with their tension, never reconciled",
+      "cornersRasterPx": {
+        "nw": [
+          810.98,
+          414.49
+        ],
+        "ne": [
+          2840.15,
+          55.54
+        ],
+        "se": [
+          2972.85,
+          805.7
+        ],
+        "sw": [
+          943.68,
+          1164.64
+        ]
+      },
+      "cornersSceneM": {
+        "nw": [
+          -10.1082,
+          -8.3978
+        ],
+        "ne": [
+          12.9506,
+          -12.4768
+        ],
+        "se": [
+          14.4585,
+          -3.9523
+        ],
+        "sw": [
+          -8.6002,
+          0.1266
+        ]
+      }
+    },
+    "pavilionGlass": {
+      "north": {
+        "yPx": 482.39630390143736,
+        "nColumns": 1706,
+        "scatterPx": 0.4372579756147988
+      },
+      "south": {
+        "yPx": 1233.472049689441,
+        "nColumns": 1850,
+        "scatterPx": 0.4403129448698936
+      },
+      "westOuter": {
+        "xPx": 1645.5238095238096,
+        "nRows": 487,
+        "scatterPx": 0.8160571559121762
+      },
+      "westInner": {
+        "xPx": 1651.5042567467867,
+        "nRows": 458,
+        "scatterPx": 0.8244237801471949
+      },
+      "east": {
+        "xPx": 3112.5785434404024,
+        "nRows": 620,
+        "scatterPx": 0.34373338208581455
+      },
+      "nsM": 8.53495165668186,
+      "ewM": 16.671076521779465,
+      "crossCheck": "upper-terrace E-W vs the read string 22'-0\" = 6.7056 m",
+      "linesSheetPx": {
+        "north": 482.39630390143736,
+        "south": 1233.472049689441,
+        "westOuter": 1645.5238095238096,
+        "westInner": 1651.5042567467867,
+        "east": 3112.5785434404024
+      },
+      "cornersRasterPx": {
+        "nw": [
+          1390.79,
+          317.4
+        ],
+        "ne": [
+          2835.41,
+          61.86
+        ],
+        "se": [
+          2966.24,
+          801.45
+        ],
+        "sw": [
+          1521.62,
+          1056.99
+        ]
+      },
+      "cornersSceneM": {
+        "nw": [
+          -6.6965,
+          -10.8432
+        ],
+        "ne": [
+          8.9628,
+          -16.5622
+        ],
+        "se": [
+          11.8908,
+          -8.5452
+        ],
+        "sw": [
+          -3.7686,
+          -2.8263
+        ]
+      }
+    },
+    "serviceCore": {
+      "north": {
+        "yPx": 593.8081896551724,
+        "nColumns": 500,
+        "scatterPx": 0.5187189263239812
+      },
+      "south": {
+        "yPx": 886.1185944363104,
+        "nColumns": 627,
+        "scatterPx": 0.43313962060837735
+      },
+      "west": {
+        "xPx": 2126.3492063492063,
+        "nRows": 211,
+        "scatterPx": 0.7371626737060624
+      },
+      "east": {
+        "xPx": 2782.9078036782807,
+        "nRows": 210,
+        "scatterPx": 0.8521030562869761
+      },
+      "cornersSheetPx": {
+        "nw": [
+          2126.3492063492063,
+          593.8081896551724
+        ],
+        "ne": [
+          2782.9078036782807,
+          593.8081896551724
+        ],
+        "se": [
+          2782.9078036782807,
+          886.1185944363104
+        ],
+        "sw": [
+          2126.3492063492063,
+          886.1185944363104
+        ]
+      },
+      "nsM": 3.3217091452402046,
+      "ewM": 7.460893151466755,
+      "cornersRasterPx": {
+        "nw": [
+          1883.67,
+          343.35
+        ],
+        "ne": [
+          2530.19,
+          228.99
+        ],
+        "se": [
+          2581.11,
+          516.83
+        ],
+        "sw": [
+          1934.58,
+          631.2
+        ]
+      },
+      "cornersSceneM": {
+        "nw": [
+          2.0815,
+          -9.2062
+        ],
+        "ne": [
+          9.4283,
+          -10.5058
+        ],
+        "se": [
+          10.0069,
+          -7.2349
+        ],
+        "sw": [
+          2.66,
+          -5.9352
+        ]
+      }
+    },
+    "lowerTerraceOuter": {
+      "north": {
+        "yPx": 1262.5342857142857,
+        "nColumns": 1112,
+        "scatterPx": 0.1769290226753093
+      },
+      "south": {
+        "yPx": 1859.5599435825106,
+        "nColumns": 1430,
+        "scatterPx": 0.2402221472332293
+      },
+      "west": {
+        "xPx": 475.8636363636364,
+        "nRows": 550,
+        "scatterPx": 0.03707807008876888
+      },
+      "east": {
+        "xPx": 1942.6351931330473,
+        "nRows": 550,
+        "scatterPx": 0.11353272253077622
+      },
+      "cornersSheetPx": {
+        "nw": [
+          475.8636363636364,
+          1262.5342857142857
+        ],
+        "ne": [
+          1942.6351931330473,
+          1262.5342857142857
+        ],
+        "se": [
+          1942.6351931330473,
+          1859.5599435825106
+        ],
+        "sw": [
+          475.8636363636364,
+          1859.5599435825106
+        ]
+      },
+      "nsM": 6.784382475775283,
+      "ewM": 16.667858599652394,
+      "crossCheck": "read strings 55'-5\" (16.84 m) E-W and 22'-7 1/4\" (6.888 m) N-S",
+      "cornersRasterPx": {
+        "nw": [
+          374.9,
+          1289.35
+        ],
+        "ne": [
+          1819.25,
+          1033.86
+        ],
+        "se": [
+          1923.24,
+          1621.76
+        ],
+        "sw": [
+          478.89,
+          1877.25
+        ]
+      },
+      "cornersSceneM": {
+        "nw": [
+          -15.0636,
+          1.5437
+        ],
+        "ne": [
+          1.3494,
+          -1.3595
+        ],
+        "se": [
+          2.5311,
+          5.3211
+        ],
+        "sw": [
+          -13.8819,
+          8.2244
+        ]
+      }
+    }
+  },
+  "derivedFacts": {
+    "pavilionSlabOuterFt": {
+      "ns": 28.4,
+      "ew": 76.83
+    },
+    "upperTerraceEwM": 6.68,
+    "glassPavilionEwM": 16.737,
+    "lowerTerraceFt": {
+      "ns": 22.26,
+      "ew": 54.68
+    }
+  }
+}

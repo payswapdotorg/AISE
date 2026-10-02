@@ -1,0 +1,266 @@
+{
+  "harness": "aise-side/run_paths.ts — every scenario through runSupervisedAnchoring (packages/anchoring-contract): input-digest audit, SIGKILL supervision, closed-vocabulary output guard, identity-echo laws; each request run TWICE over identical canonical bytes (same executionId; the contract's full-depth deterministicProjection discipline)",
+  "fixture": {
+    "manifestId": "anchor007-fixture/1",
+    "site": "Edith Farnsworth House (Mies van der Rohe, 1945-51), Plano, IL — HABS IL-323",
+    "fidelityClass": "REAL (public-domain/CC photographs + the real HABS measured drawing; never upgraded)",
+    "stills": 16,
+    "planRaster": "HABS IL-323 sheet 3 of 8 (line-art measured drawing), 88.00 px/m, north-up crop"
+  },
+  "scenarios": [
+    {
+      "scenario": "drill-path-a",
+      "adapter": "anchor007-path-a/1",
+      "runnerOk": true,
+      "status": "anchored",
+      "reasonCode": null,
+      "anchored": 3,
+      "refused": 0,
+      "deterministic": true,
+      "inputDigest": "sha256:aa932ba09963f5c825ec54ec1735020bd1814373b7850f7f08e33d2600757de6",
+      "deterministicDigest": "sha256:00aae19258a94d73b9ba8e9dadd68f1fe58bfc0d6a1b02ed3cd6973958f127b4",
+      "run1WallMs": 48275,
+      "run2WallMs": 49094,
+      "perStill": [
+        {
+          "file": "drill-path-a1.png",
+          "outcome": "anchored"
+        },
+        {
+          "file": "drill-path-a2.png",
+          "outcome": "anchored"
+        },
+        {
+          "file": "drill-path-a3.png",
+          "outcome": "anchored"
+        }
+      ]
+    },
+    {
+      "scenario": "drill-path-b",
+      "adapter": "anchor007-path-b/1",
+      "runnerOk": true,
+      "status": "partial",
+      "reasonCode": null,
+      "anchored": 1,
+      "refused": 2,
+      "deterministic": true,
+      "inputDigest": "sha256:cfc83a7690952d9c14a17830972cb1b02921ab016c892961e94f684f7b010710",
+      "deterministicDigest": "sha256:2b34ddb063927ce2340606cf3f87fc69c955e06e93d8b27cdfca96b2ee3b695a",
+      "run1WallMs": 146331,
+      "run2WallMs": 135345,
+      "perStill": [
+        {
+          "file": "drill-path-b1.png",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "drill-path-b2.png",
+          "outcome": "anchored"
+        },
+        {
+          "file": "drill-path-b3.png",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        }
+      ]
+    },
+    {
+      "scenario": "real-path-a",
+      "adapter": "anchor007-path-a/1",
+      "runnerOk": true,
+      "status": "refused",
+      "reasonCode": "registration-unreliable",
+      "anchored": 0,
+      "refused": 16,
+      "deterministic": true,
+      "inputDigest": "sha256:3f829d22398c1ecb164c3948f8f2745791df9b37c98cab75658b57983ea7f947",
+      "deterministicDigest": "sha256:67dbee9f967ea40a91a7c2dc0f14fd0a4702bffa7e1696595cec699033ea5d83",
+      "run1WallMs": 101830,
+      "run2WallMs": 94247,
+      "perStill": [
+        {
+          "file": "still-h01.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h02.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h03.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h04.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h05.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h06.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h07.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h08.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h09.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h10.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-i01.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-i02.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-i03.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-i04.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-e01.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-g01.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        }
+      ]
+    },
+    {
+      "scenario": "real-path-b",
+      "adapter": "anchor007-path-b/1",
+      "runnerOk": true,
+      "status": "refused",
+      "reasonCode": "registration-unreliable",
+      "anchored": 0,
+      "refused": 16,
+      "deterministic": true,
+      "inputDigest": "sha256:9c2bf6d3544a62c898f20cf292c57ffbce74c667080b6a656257edb120376b5b",
+      "deterministicDigest": "sha256:34a5a0149f89f0f9ab639c0bfc2fd208a38c94583bf83bcd52ca09be94e60db0",
+      "run1WallMs": 52010,
+      "run2WallMs": 56611,
+      "perStill": [
+        {
+          "file": "still-h01.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h02.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h03.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h04.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h05.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h06.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h07.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h08.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h09.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-h10.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-i01.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-i02.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-i03.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-i04.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-e01.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        },
+        {
+          "file": "still-g01.jpg",
+          "outcome": "refused",
+          "reasonCode": "registration-unreliable"
+        }
+      ]
+    }
+  ],
+  "honestNotes": {
+    "realizedError": "realized registration error is DERIVED for the drill runs (known homographies; results/drill-realized-error.json) and is NOT-DERIVABLE for the real photoset (no co-registered ground truth exists for the photographs — measured honestly, never fabricated)",
+    "determinismCaveat": "asserted for this opencv/numpy/python/platform combination (recorded in provenance); cross-version or cross-platform relocation of summation orders is not claimed"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "portVersion": "anchor002-anchoring-contract/1",
+  "contractVersion": "1.0.0",
+  "executionId": "anchor007-real-path-a",
+  "status": "refused",
+  "reasonCode": "registration-unreliable",
+  "refusalDetail": "no still could be registered to the plan through the intermediate raster (0/16 anchored; derivation wall-region-synthesis/1). Per-still refusals: e23852b26e8dbb59…: photometric verification failed (NCC -0.003 < 0.25; 8 inliers); def2575ad134f833…: 5 RANSAC inliers < floor; 7d80239460c8b35d…: photometric verification failed (NCC 0.017 < 0.25; 8 inliers); 57c102b6ff7f5257…: photometric verification failed (NCC -0.039 < 0.25; 8 inliers); d97552cd736da774…: photometric verification failed (NCC 0.015 < 0.25; 9 inliers); 35f2bb88af627216…: 7 RANSAC inliers < floor; bf1cfdc2d8b34431…: 7 RANSAC inliers < floor; e6974810abfb8df6…: photometric verification failed (NCC -0.001 < 0.25; 9 inliers); e1d779564f69ba73…: 4 RANSAC inliers < floor; 32549ecb975d68fa…: photometric verification failed (NCC 0.015 < 0.25; 8 inliers); f01ecc08d5af8806…: 7 RANSAC inliers < floor; c43150c0109619b7…: photometric verification failed (NCC -0.030 < 0.25; 9 inliers); 34f6410d51502db7…: 7 RANSAC inliers < floor; 66ccc30205394d51…: photometric verification failed (NCC -0.004 < 0.25; 10 inliers); 1873be791fd44b9a…: photometric verification failed (NCC -0.005 < 0.25; 8 inliers); 46453c0782be6285…: photometric verification failed (NCC -0.029 < 0.25; 9 inliers). Zero fabricated anchors.",
+  "provenance": {
+    "providerId": "lineart-intermediate-raster-spike",
+    "providerVersion": "anchor007-path-a/1",
+    "platform": "Linux x86_64",
+    "inputDigest": "sha256:3f829d22398c1ecb164c3948f8f2745791df9b37c98cab75658b57983ea7f947",
+    "adapterSourceDigest": "sha256:706446fdc18e00e10a006a956eae6c05c8727e7d3a33015dce71e5ce1e8ff1ca",
+    "components": [
+      {
+        "name": "opencv",
+        "version": "4.13.0"
+      },
+      {
+        "name": "numpy",
+        "version": "2.1.3"
+      },
+      {
+        "name": "python",
+        "version": "3.12.14"
+      }
+    ],
+    "config": {
+      "method": "path-a: intermediate raster base map + reference SIFT/RANSAC lane",
+      "intermediateRasterDerivation": "wall-region-synthesis/1",
+      "inkThreshold": 160,
+      "closeIterations": 2,
+      "dilateIterations": 2,
+      "synthTileM": 0.5,
+      "synthTileShadeSpread": 55,
+      "detector": "SIFT",
+      "siftContrastThreshold": 0.02,
+      "siftEdgeThreshold": 15,
+      "siftNfeaturesCap": 40000,
+      "matcher": "chunked-mutual-nearest-L2",
+      "matcherChunkRows": 512,
+      "maxMatchesPerPair": 500,
+      "ransacThresholdPx": 4,
+      "ransacMaxIters": 20000,
+      "ransacConfidence": 0.9999,
+      "minKeypointsPerImage": 80,
+      "minMatchesForEstimate": 12,
+      "minInliersPerStill": 8,
+      "minStills": 2,
+      "crossValMinInliers": 12,
+      "crossValMaxResidualPx": 20,
+      "minAnchoredNcc": 0.25,
+      "nccFootprintMinPixels": 2000,
+      "uncertaintyModel": "inlier-residual-first-order-v2.1+plan-instrument-systematic",
+      "confidenceModel": "inliers-and-ncc-heuristic/1"
+    }
+  },
+  "hypotheses": [],
+  "executionTimeMs": 0,
+  "stageTimingsMs": {
+    "derive": 6200.434,
+    "detect": 26503.337,
+    "match": 63162.433,
+    "estimate": 5054.573,
+    "crossval": 0
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "declaredClass": "DERIVED-DRILL (negative-ledger artifacts; never presented as real)",
+  "artifacts": {
+    "still-flat-gray.jpg": {
+      "derivation": "flat 128-gray frame with a 15% radial vignette + N(0,1.2) noise (seed 20261002), 2000x1400, JPEG q90 \u2014 NO feature structure by construction (the insufficient-features discriminator)",
+      "contentDigestSha256": "10d23b12eeeb9832df1b3decec1c7693daa287a5bd6554c099e2bd8d2d9b052a"
+    },
+    "plan-mirrored.png": {
+      "derivation": "the REAL plan-raster.png mirrored horizontally (cv2.flip code 1); the declaration stays honest east-right/north-up, but the bytes depict a mirrored site \u2014 the wrong-orientation physics discriminator",
+      "contentDigestSha256": "83623a14140a8487e3a5b9ed0356db7e62376be8cfb68363006c9828de8d7fbc"
+    }
+  }
+}
