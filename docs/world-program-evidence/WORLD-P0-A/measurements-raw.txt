@@ -1,0 +1,33 @@
+# WORLD-P0-A measured performance (this sandbox, real runs)
+# runtime: bun 1.3.14; 2026-10-02T20:49:15.569Z
+
+## glTF parse throughput (REAL parser, generated GLB fixtures)
+| fixture | JSON bytes | runs | median ms | MB/s | verdict |
+|---|---|---|---|---|---|
+| m10 v100 i240 | 2476 | 25 | 0.131 | 18.3 | ok |
+| m50 v400 i1200 | 11648 | 25 | 0.207 | 53.9 | ok |
+| m200 v1000 i3000 | 46804 | 25 | 0.450 | 99.1 | ok |
+| m800 v1000 i3000 | 188404 | 25 | 1.829 | 98.2 | ok |
+
+## fail-closed refusal cost (malformed GLB, first-issue fast path)
+- bad-magic refusal median over 25 runs: 0.0004 ms
+
+## contract round-trip costs (doubles, 1000 ops unless noted)
+- scene-runtime setCamera+getCamera (100-node scene): 0.0013 ms/op pair
+- scene-runtime pick (100-node scene): 0.0387 ms/op
+- geospatial site->geodetic->site round-trip: 0.0024 ms/op pair
+- usd compose (100 nodes, 8 layers x 25 overrides): 0.4633 ms/compose
+
+## JSON-path vs GLB-path overhead (same document)
+- validateGltfJson median: 0.666 ms; parseGlb (container + same JSON): 1.290 ms; container overhead: 0.624 ms
+
+## GPU-dependent observations
+- ALL GPU-dependent measurements (rendering throughput, frame time, draw-call
+  cost, pick latency under a real render loop, sectioning cost on GPU, ghost
+  overlay cost) are declared:
+  BLOCKED: no GPU measurement protocol in P0 — recorded for WORLD-P1:
+  WORLD-P1 protocol: run the Babylon adapter on the WebGL/WebGPU reference
+  scene set (10/100/1000-node fixtures above) headless via Babylon NullEngine
+  for CPU-side scene-graph costs, then on a real GPU (headless-GL or a desktop
+  agent) for frame-time/draw-call measurements; report median/p95 over 25 runs
+  per fixture, same table shape as above, ZERO fabricated numbers.
