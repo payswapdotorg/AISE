@@ -1,3 +1,546 @@
+# AISE — FINAL PRODUCT PARITY / EXPERIENCE / MULTIPLATFORM DIRECTIVE
+
+**Directive date:** 2026-10-02  
+**Repository:** `payswapdotorg/AISE`  
+**Audience:** successor Tech Lead / Architect / Orchestrator  
+**Status:** AUTHORITATIVE PRODUCT-DIRECTION OVERRIDE
+
+This section is the latest product-direction instruction and supersedes any older statement that implies AISE should continue primarily as a dashboard/control-room application or rebuild a 3D/CAD/BIM stack from scratch.
+
+The goal is not to rewrite AISE's engineering core. The goal is to make the existing engineering core feel and behave like a **world-based engineering application** while using mature open-source 3D/CAD/BIM/geospatial technology as replaceable implementation substrate.
+
+The product must achieve **feature-parity of the relevant user experience with the strongest incumbent for each layer**, while AISE's differentiation is the continuous connection:
+
+```text
+REALITY → UNDERSTANDING → INTERACTIVE SOLUTION → VALIDATION → BOQ → EXECUTION → OUTCOME
+```
+
+## 1. The three incumbent parity targets
+
+### Layer 1 — REALITY
+
+**Primary incumbent parity target: OpenSpace.**
+
+OpenSpace currently combines smartphone/360°/drone capture, visual intelligence, BIM+ workflows, model-vs-capture comparison, measurements, layer toggling and field-oriented navigation. AISE Layer 1 should therefore feel at least as useful for answering "what is actually here?" and "what changed?" while preserving AISE's stronger evidence/provenance model.
+
+**AISE Layer-1 target:**
+
+```text
+CAPTURE
+→ SPATIALIZE
+→ REGISTER
+→ RECONSTRUCT
+→ NAVIGATE
+→ COMPARE
+→ MEASURE
+→ TRACE TO EVIDENCE
+```
+
+The primary experience must be a navigable spatial world, not a table of records.
+
+### Layer 2 — UNDERSTANDING
+
+**Primary incumbent parity target: Procore Project Management + Procore Assist.**
+
+Procore's current workflow breadth includes drawings, documents, RFIs, submittals, observations, inspections, daily logs, photos, tasks and issue/action workflows, with AI able to retrieve and act on project data within bounded product tools. AISE should match that information-to-action continuity, but preserve AISE's Evidence Envelope, epistemic states, deterministic verification and refusal rules.
+
+**AISE Layer-2 target:**
+
+```text
+QUESTION / ISSUE
+→ CONTEXT
+→ EVIDENCE
+→ MISSING-EVIDENCE DETECTION
+→ BOUNDED REASONING
+→ DETERMINISTIC CHECKS
+→ ACTION / NEXT STEP
+→ AUDIT TRAIL
+```
+
+The engineer must be able to move from a problem in the spatial world to its supporting evidence and then to an actionable engineering decision without leaving the context of the problem.
+
+### Layer 3 — SOLUTION
+
+**Primary incumbent parity target: Bentley SYNCHRO 4D, with Autodesk Revit/Navisworks as the design-authoring and coordination reference.**
+
+SYNCHRO provides visual 4D planning, model-linked scheduling, construction-sequence simulation and what-if planning. Autodesk Revit/Navisworks provide strong reference points for parametric model authoring, model review, quantification, coordination and clash workflows.
+
+AISE must combine the useful interaction patterns of these products with something they do not provide as one continuous experience: **the engineer solves the problem inside the reconstructed world like playing a game, while every action remains a governed AISE EngineeringOperation connected to evidence, validation and BOQ.**
+
+**AISE Layer-3 target:**
+
+```text
+PROBLEM
+→ ENTER WORLD
+→ INSPECT
+→ GRAB / MOVE / REPLACE / ADD / REMOVE
+→ PREVIEW PROPOSED STATE
+→ RUN ENGINEERING VALIDATION
+→ SEE CONSEQUENCES
+→ ACCEPT / REVISE
+→ GENERATE SOLUTION BOQ
+→ SIMULATE EXECUTION
+→ CAPTURE OUTCOME
+```
+
+The word "game" describes the interaction model, not a relaxation of engineering rigor.
+
+---
+
+## 2. Open-source implementation strategy — integrate, do not rebuild
+
+The following technologies are the preferred substrate for the corresponding capabilities. They are **implementation components, never AISE authorities**.
+
+### Layer 1 preferred substrate
+
+**1. Babylon.js** — primary real-time interactive scene engine for web; scene graph, picking, cameras, animation, physics, WebGPU/WebGL, XR and large-world capabilities.
+
+**2. CesiumJS** — geospatial/world context, WGS84 coordinates, large geospatial datasets and 3D Tiles where site/campus/corridor context matters.
+
+**3. OpenUSD** — scene composition/interchange layer for assembling reality, BIM-derived assets, temporal variants, proposed states and external 3D assets without making USD the AISE engineering authority.
+
+**4. glTF / GLB** — runtime delivery format for interactive assets and efficient web/native transfer.
+
+**5. Assimp** — broad file-format ingestion at the integration boundary; never use imported provider/object IDs as canonical identity.
+
+**6. ParaView / VTK-derived processing** — large point-cloud/scientific/field-data processing and inspection where appropriate; keep heavy processing off the browser when required.
+
+**7. Blender** — asset inspection/conversion/authoring automation and optional headless geometry preparation; never canonical reality state.
+
+**8. IfcOpenShell** — IFC ingestion/extraction, BIM semantics, relationships, quantities and 2D/3D BIM interoperability.
+
+**9. OCCT** — exact solid/surface geometry operations where Layer 1 reconstruction or downstream deterministic geometry requires them.
+
+**10. FreeCAD** — parametric/CAD interoperability and desktop engineering workflows where an end-user CAD workbench is useful.
+
+The existing provider-neutral capture and spatial-registration ports remain in force. Vision/reconstruction/anchoring providers may be substituted behind those ports; a provider demo is never permission to make that provider canonical.
+
+### Layer 2 preferred substrate
+
+Layer 2 should reuse the same scene and reality infrastructure rather than creating another model stack.
+
+Primary components:
+
+- **IfcOpenShell** for BIM semantics, property/relationship extraction and IFC round-tripping;
+- **OCCT** for deterministic geometry measurements, topology and geometric predicates;
+- **ParaView/VTK** for heavy field/scientific data inspection and derived visualization;
+- **Blender** only as an integration/authoring/inspection environment;
+- **OpenUSD** for composable scene/context representations when a richer multi-asset/time representation is required;
+- **Babylon.js/CesiumJS** for presenting evidence and engineering consequences directly inside the spatial experience.
+
+LLMs/agents remain replaceable reasoning substrates. They never become engineering authorities.
+
+### Layer 3 preferred substrate
+
+Layer 3 must reuse the reality world and deterministic solution engine already implemented in AISE.
+
+Primary components:
+
+- **Babylon.js** for the interactive engineering/game world;
+- **OCCT** for exact geometric construction and validation;
+- **FreeCAD** for parametric CAD interoperability and optional desktop workbench integration;
+- **IfcOpenShell** for IFC/BIM model semantics and exchange;
+- **OpenUSD** for scene composition, variants and temporal/proposed-state presentation;
+- **glTF** for runtime scene delivery;
+- **Blender** for optional authoring/conversion/headless preparation;
+- **ParaView** for engineering/scientific visualization where appropriate;
+- **CesiumJS** when solutions depend on geographic/site/corridor context;
+- **Assimp** for model import/export integration.
+
+Do not create a proprietary in-house 3D engine, CAD kernel, BIM kernel or general-purpose asset pipeline when an adequate open-source substrate already exists.
+
+---
+
+## 3. Architectural rule: replace the presentation substrate, not the engineering core
+
+The existing AISE canonical authorities stay exactly where they are:
+
+```text
+Reality Graph     → observed/derived engineering reality
+Evidence Graph    → provenance/evidence
+Assurance Engine  → readiness
+Verification      → deterministic checks
+BOQ Graph         → BOQ domain representation
+Solution Graph    → proposed solution operation/state history
+```
+
+The open-source stack sits underneath these authorities:
+
+```text
+                   AISE CANONICAL CORE
+                           │
+        ┌──────────────────┼──────────────────┐
+        ↓                  ↓                  ↓
+     REALITY          UNDERSTANDING        SOLUTION
+        │                  │                  │
+  Babylon/Cesium     IFC/OCCT/ParaView   Babylon/OCCT/FreeCAD
+  USD/glTF/Assimp     USD/Blender         IFC/USD/glTF/Blender
+        │                  │                  │
+        └──────────── SAME DOMAIN CONTRACTS ──┘
+```
+
+The integration contract must preserve AISE semantics including epistemic state, provenance, uncertainty, assurance thresholds, verification, identity, historical interpretability and explicit refusal.
+
+---
+
+## 4. The product MUST feel like an engineering game
+
+The current dashboard/control-room feeling is not the intended final product experience.
+
+The primary interaction should open directly into a **3D engineering world** whenever the task has a spatial context.
+
+### Landing / project entry
+
+Instead of primarily presenting navigation, tables and administrative cards:
+
+```text
+OPEN PROJECT
+     ↓
+ENTER SITE / BUILDING
+     ↓
+SEE CURRENT REALITY
+     ↓
+SEE ACTIVE ENGINEERING OBJECTIVES
+```
+
+The engineer should immediately understand:
+
+- where they are;
+- what has been observed;
+- what is uncertain;
+- what problem needs solving;
+- what evidence is missing;
+- what proposed work is currently under consideration.
+
+### In-world HUD
+
+The spatial view should support a restrained game-style HUD:
+
+**Objective:** current engineering problem  
+**Evidence:** evidence/readiness state  
+**Constraints:** cost, dimensions, materials, client requirements and other governed constraints  
+**Agent:** currently active specialist / bounded action  
+**Validation:** current solution status  
+**Cost / BOQ:** live consequence of the selected proposed operation  
+**Timeline:** optional execution sequence / 4D view
+
+The HUD must explain engineering state without replacing the scene.
+
+### Engineer interaction
+
+The engineer must be able to:
+
+- walk/orbit/fly through the model;
+- select an element by clicking it in the world;
+- isolate or hide layers;
+- slice/section through assemblies;
+- inspect properties and evidence in place;
+- measure using governed measurement tools;
+- compare observed reality against plan/BIM/proposed state;
+- drag, move, rotate, replace, add and remove supported components;
+- preview changes as ghost/proposed geometry;
+- ask the agent to make a bounded change using natural language;
+- see the corresponding EngineeringOperation;
+- validate the proposal;
+- inspect exactly why it passes, fails or is blocked;
+- accept or revise the proposal;
+- see the exact BOQ lines affected by the operation;
+- click a BOQ line and jump to the affected geometry/operation;
+- replay/revise the solution history.
+
+### Agent interaction
+
+The agent should behave like a specialist operating a body inside the environment rather than like a chat box detached from the world.
+
+Example:
+
+```text
+Engineer:
+"The lintel is cracked. Replace it with a steel solution,
+keep the opening, and stay below the project cost limit."
+
+AISE:
+→ identifies the affected element
+→ opens the relevant evidence
+→ checks whether the evidence budget is sufficient
+→ asks for missing evidence when necessary
+→ creates a typed proposal
+→ renders the proposed element in the world
+→ runs deterministic checks
+→ shows cost / BOQ consequences
+→ shows failures or trade-offs
+→ waits for engineer acceptance/revision
+```
+
+The agent may not bypass the existing engineering safety/authority boundaries.
+
+### Watch agents solve
+
+AISE should support a replayable mode in which an engineer can watch an agent perform a bounded engineering task in the environment:
+
+```text
+OBSERVE AGENT
+→ inspect target
+→ gather evidence
+→ propose
+→ manipulate world
+→ validate
+→ revise
+→ finalize proposal
+```
+
+Every visible action must map back to a typed governed action or deterministic tool call. There must be no fake animation that is disconnected from the actual solution graph.
+
+---
+
+## 5. Required end-to-end experience
+
+The successor TL must make this journey work without developer tools:
+
+```text
+1. CAPTURE / IMPORT REALITY
+          ↓
+2. ENTER 3D WORLD
+          ↓
+3. SELECT PROBLEMATIC ELEMENT
+          ↓
+4. INSPECT EVIDENCE
+          ↓
+5. DEFINE / CONFIRM ENGINEERING INTENT
+          ↓
+6. ENTER INTERACTIVE SOLUTION MODE
+          ↓
+7. DIRECT MANIPULATION OR NATURAL-LANGUAGE COMMAND
+          ↓
+8. TYPED EngineeringOperation
+          ↓
+9. GHOST / PROPOSED STATE IN WORLD
+          ↓
+10. DETERMINISTIC VALIDATION
+          ↓
+11. LIVE ENGINEERING CONSEQUENCES
+          ↓
+12. BOQ LINE ↔ OPERATION ↔ GEOMETRY
+          ↓
+13. ACCEPT / REVISE
+          ↓
+14. OPTIONAL 4D / EXECUTION SIMULATION
+          ↓
+15. POST-WORK EVIDENCE
+          ↓
+16. OUTCOME
+```
+
+This is the product story the UI must communicate.
+
+---
+
+## 6. Multiplatform requirement
+
+AISE is not a browser-only product.
+
+### Web
+
+Primary shared application:
+
+- React/TypeScript application;
+- Babylon.js WebGPU first, WebGL fallback;
+- CesiumJS for geospatial/site context;
+- shared AISE domain contracts and solution engine;
+- glTF/3D Tiles runtime delivery;
+- WebXR where useful.
+
+### Desktop
+
+Provide a first-class Windows/macOS/Linux application using the same product UI and domain contracts.
+
+Preferred direction:
+
+- shared React/Babylon front end;
+- Tauri desktop shell or equivalent open-source native shell;
+- local sidecar/native services for OCCT, IfcOpenShell, FreeCAD or Blender workflows when browser execution is inappropriate;
+- offline-capable project cache where product requirements justify it;
+- no second desktop-only engineering authority.
+
+The desktop app must not be a separate fork of the product.
+
+### Mobile
+
+Preserve the existing Android field adapter and evidence contract.
+
+Use the same project/domain/scene contracts for mobile viewing and solution navigation. Native mobile capture remains appropriate for camera, microphone, sensor and offline capabilities.
+
+The architecture must leave room for iOS without changing the canonical engineering model.
+
+### Cross-platform identity
+
+A project opened on web, desktop or mobile must resolve to the same:
+
+- project identity;
+- evidence identities;
+- Reality Graph version;
+- Engineering Case;
+- Solution Graph;
+- BOQ revision;
+- operation IDs;
+- provenance chain.
+
+Platform-specific rendering or storage must never create platform-specific engineering truth.
+
+---
+
+## 7. New parity workstream
+
+The successor TL is authorized to create a new governed work program for this direction. Do not mutate existing completed work items into vague "UI overhaul" tasks.
+
+### P0 — architecture/substrate integration
+
+Define the exact adapter boundaries and scene/runtime contracts for Babylon.js, CesiumJS, OpenUSD, glTF, Assimp, OCCT, IfcOpenShell, Blender, FreeCAD and ParaView.
+
+Produce an explicit license/use matrix and verify that each dependency is acceptable for the AISE distribution model before shipping it.
+
+### P1 — Layer 1 OpenSpace parity
+
+Target capture-to-world flow, navigable reconstruction, model/capture comparison, layer toggling, in-world measurement, evidence provenance, plan/field context, mobile-to-web continuity and large-model performance.
+
+Success means an engineer can inspect and understand site reality spatially rather than through a records dashboard.
+
+### P2 — Layer 2 Procore parity
+
+Target issue/case context, evidence-linked observations, documents/drawings/RFI/submittal-like information continuity, action ownership/status, audit history, mobile/office continuity, bounded AI retrieval/action and explicit readiness/missing-evidence tasks.
+
+Do not copy Procore's domain model. Translate useful workflow behavior into the AISE evidence/case architecture.
+
+### P3 — Layer 3 SYNCHRO/Revit/Navisworks parity
+
+Target interactive spatial authoring, parametric/precise geometry, model coordination, clash/conflict visualization, live quantity consequences, BOQ traceability, what-if alternatives, execution sequencing, solution replay and direct-manipulation ↔ NL equivalence.
+
+### P4 — game-like UX transformation
+
+The primary UI must become a spatial environment with a task/objective HUD rather than a navigation-heavy dashboard.
+
+### P5 — multiplatform convergence
+
+Produce feature-equivalent web, desktop and field-mobile journeys with a shared backend/domain contract and no duplicated engineering authority.
+
+---
+
+## 8. Suggested three-worker orchestration
+
+When the TL can protect surfaces, dispatch three concurrent workers:
+
+**Worker A — Layer 1 / spatial substrate**
+
+Babylon.js + CesiumJS + OpenUSD/glTF/Assimp + existing capture/reality seams.
+
+Deliver a real navigable project world, evidence-linked scene elements, comparison layers and performance measurements.
+
+Protected surfaces: web scene/runtime and Layer-1 adapters.
+
+**Worker B — Layer 2 / context and engineering understanding**
+
+IfcOpenShell + OCCT + ParaView/Blender integration behind current evidence/reasoning ports.
+
+Deliver problem-in-context navigation, evidence continuity, missing-evidence tasks, bounded assistant interactions and deterministic consequence views.
+
+Protected surfaces: Layer-2 reasoning/context adapters.
+
+**Worker C — Layer 3 / solution game loop + desktop shell**
+
+Babylon.js + OCCT + FreeCAD/IfcOpenShell + OpenUSD/glTF with the existing deterministic solution engine.
+
+Deliver direct manipulation, agent-controlled bounded operations, ghost proposed state, validation feedback, BOQ coupling, solution replay and first-class desktop packaging.
+
+Protected surfaces: Interactive Solution/runtime and desktop adapter.
+
+The TL must verify each worker independently, then compose them only after protected-surface checks pass.
+
+---
+
+## 9. Acceptance scenarios
+
+### Scenario A — Layer 1
+
+A user captures a building area on mobile, uploads/synchronizes it, opens the project on web/desktop, enters the spatial world, navigates to the captured area, compares field reality with the relevant plan/model and inspects the evidence behind a selected object.
+
+### Scenario B — Layer 2
+
+The user selects a problematic element. AISE presents the relevant evidence, identifies missing information, creates a case-specific capture/verification task where needed, reasons over the evidence envelope, runs deterministic checks and produces a bounded next action with a complete audit trail.
+
+### Scenario C — Layer 3
+
+The user selects the problem and enters solution mode. They can physically manipulate the proposed object or issue a natural-language command. The same typed EngineeringOperation is produced. Proposed geometry appears immediately as a ghost. Validation identifies any violating constraint. BOQ quantities/cost update from governed operation semantics. The user can revise, accept, or compare alternatives.
+
+### Scenario D — watch the agent
+
+A user presses "Watch agent solve". The agent visibly navigates/inspects/proposes/revises in the same world. Every visible action is tied to actual governed state changes and can be replayed.
+
+### Scenario E — cross-platform
+
+Stop the desktop session, open the same project on web and mobile, and verify that project identity, evidence, case, solution, BOQ and provenance remain identical even though rendering/input mechanics differ.
+
+---
+
+## 10. Hard prohibitions
+
+Do not:
+
+- build another proprietary CAD kernel;
+- build another proprietary BIM engine;
+- build another generic 3D engine;
+- create separate engineering truth for web/desktop/mobile;
+- replace AISE's Reality Graph with USD, IFC, FreeCAD, Blender or any other external representation;
+- turn glTF/USD/IFC object IDs into canonical AISE identity;
+- let an LLM directly mutate authoritative geometry;
+- fake "game" animation disconnected from actual EngineeringOperations;
+- make a dashboard the primary spatial problem-solving surface for spatial tasks;
+- copy an incumbent's branding or visual identity;
+- claim parity based on screenshots alone;
+- promote automatic spatial anchoring on the basis of the synthetic benchmark while the real-photoset evidence remains evaluation-kept.
+
+---
+
+## 11. Definition of product completion for this direction
+
+The initiative is not complete when the new libraries have been installed.
+
+It is complete when a real engineer can:
+
+```text
+SEE THE WORLD
+   ↓
+FIND THE PROBLEM
+   ↓
+UNDERSTAND THE EVIDENCE
+   ↓
+CHANGE THE WORLD SAFELY
+   ↓
+SEE WHAT THE CHANGE DOES
+   ↓
+VALIDATE IT
+   ↓
+SEE THE BOQ CONSEQUENCES
+   ↓
+COMPARE / REVISE
+   ↓
+SIMULATE EXECUTION
+   ↓
+CAPTURE THE OUTCOME
+```
+
+and the same governed engineering state can be opened on **web, desktop and field mobile**.
+
+The final user experience should make the engineer feel that they are **inside the engineering problem**, not operating a construction database.
+
+---
+
+## 12. External benchmark references used for this directive
+
+The benchmark framing is grounded in current documentation for OpenSpace Capture/BIM+, Procore Project Management/Assist, Bentley SYNCHRO 4D, Autodesk Revit/Navisworks/Construction Cloud, and the named open-source projects.
+
+**Final instruction to the successor TL:** stop optimizing AISE primarily as a dashboard. Preserve the engineering core, replace the spatial/presentation substrate with mature open-source technology, and make the product's primary interaction a persistent, evidence-grounded, game-like engineering world across web, desktop and field mobile.
+
+---
 # AISE — FINAL SUCCESSOR TECH LEAD HANDOFF
 
 **Reconciliation date:** 2026-10-01
