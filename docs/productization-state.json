@@ -9,7 +9,7 @@
     "spec/governance/architecture-change-record-006.md"
   ],
   "technologySubstitutionContract": "spec/technology-substitution-contract.md",
-  "lastReconciledAt": "2026-10-01T13:31:43Z",
+  "lastReconciledAt": "2026-10-02T02:19:22Z",
   "implementationCampaign": {
     "status": "complete",
     "workItemsFinalized": 41,
@@ -25,13 +25,13 @@
     "publicUrl": "https://aise-tan.vercel.app",
     "vercelDeploymentId": "dpl_E9rtSLPkaXE7Xc3hPRVoFYyAYJXv",
     "deployedApplicationCommit": "c2bfccf1fe77473e7d2a2f6846a86f3b5bc44b91",
-    "lastVerifiedCommit": "c2bfccf",
-    "currentMainCommit": "c2bfccf1fe77473e7d2a2f6846a86f3b5bc44b91",
-    "currentMainCommitDate": "2026-10-01T13:20:26Z",
-    "currentMainResolvedAt": "2026-10-01T13:31:43Z",
-    "deploymentFreshness": "R4 complete 2026-10-01: deployed SHA == current main tip (c2bfccf, docs-only over the code-bearing application tip 0d56dc1). Full replay at that exact deployment (deployed-check 7/7, W 25/25, M 22/1 honest BLOCKED_NO_KVM, X 15/15; evidence docs/productization-evidence/R4-2026-10-01/). The R4 reconciliation commit itself (this file + the R4 evidence tree) is docs/evidence-only and build-inert. Remaining environmental limitation: the physical Android device validation lane (no physical device on station; E2B/emulator evidence is never converted to physical-device evidence).",
+    "lastVerifiedCommit": "d3af33ae1a722b4abbc4f505966c858f5ece0fdc",
+    "currentMainCommit": "d3af33ae1a722b4abbc4f505966c858f5ece0fdc",
+    "currentMainCommitDate": "2026-10-02T02:12:00Z",
+    "currentMainResolvedAt": "2026-10-02T02:19:22Z",
+    "deploymentFreshness": "R5 2026-10-02: main advanced 0194307 -> d3af33ae1a722b4abbc4f505966c858f5ece0fdc by the ANCHOR-005 landing (PR #23, fast-forward, evidence-only: docs/productization-evidence/ANCHOR-005/ + WORKER-PROGRESS-ANCHOR-005.md; zero application files; build-inert \u2014 the deployed runtime artifact is unchanged from the R4 deployment dpl_E9rtSLPkaXE7Xc3hPRVoFYyAYJXv at the code-bearing lineage; verify re-run at the delivered tree: PASS 6502/0 across 429 files, exactly the recorded baseline). In-flight successors: ANCHOR-006 (geolocation lane) and ANCHOR-007 (line-art registration spike) generating under the 3-lane orchestration.",
     "finalGate": "docs/PRODUCTION-READINESS-GATE.md",
-    "lastReconciledAt": "2026-10-01T13:31:43Z"
+    "lastReconciledAt": "2026-10-02T02:19:22Z"
   },
   "execution": {
     "maxConcurrentWorkers": 3,
@@ -687,6 +687,52 @@
       ],
       "forkAuthorization": false,
       "defaultProviderSelection": false
+    },
+    "anchoringProgram": {
+      "status": "active \u2014 the ANCHOR chain (successor program of ANCHOR-003b's deferment ledger)",
+      "authority": "docs/productization-evidence/ANCHOR-003b/README.md (deferment ledger) + docs/TECH-LEAD-HANDOFF.md",
+      "landed": [
+        {
+          "id": "ANCHOR-001",
+          "status": "finalized (evaluation-kept)",
+          "evidence": "docs/productization-evidence/ANCHOR-001/"
+        },
+        {
+          "id": "ANCHOR-002",
+          "status": "finalized",
+          "evidence": "docs/productization-evidence/ANCHOR-002/"
+        },
+        {
+          "id": "ANCHOR-003a",
+          "status": "finalized",
+          "evidence": "docs/productization-evidence/ANCHOR-003a/"
+        },
+        {
+          "id": "ANCHOR-003b",
+          "status": "finalized (0/28 honest refusal; deferment ledger named the successors)",
+          "evidence": "docs/productization-evidence/ANCHOR-003b/"
+        },
+        {
+          "id": "ANCHOR-005",
+          "status": "finalized (0/10 anchored, refusal VERIFIED against derived ground truth; the FOURTH lane requirement measured and named: plan-raster radiometry; latent 003b-adapter width/height-swap defect surfaced and recorded \u2014 fix is a Lead-gated future item over the frozen tree)",
+          "mergedSha": "d3af33ae1a722b4abbc4f505966c858f5ece0fdc",
+          "mergedAt": "2026-10-02T02:19:22Z",
+          "pr": 23,
+          "workerChat": "c2ffa4f7-daa0-43f9-8b13-ae1632a4a9fe",
+          "workerCommit": "d3af33ae1a722b4abbc4f505966c858f5ece0fdc",
+          "verify": "6502 pass / 0 fail across 429 files (== baseline; additive evidence-only)",
+          "evidence": "docs/productization-evidence/ANCHOR-005/"
+        }
+      ],
+      "inFlight": [
+        "ANCHOR-006 (the geolocation lane \u2014 z14 tile-scan pinning of the pivot-belt nadir aerials)",
+        "ANCHOR-007 (the line-art plan registration spike \u2014 PORT.md \u00a77 second open question)"
+      ],
+      "gated": [
+        "budget calibration \u2014 gated on an anchored lane (005 refused honestly; the instrument and the 14-feature DLT ground truth are committed for the successor that anchors)",
+        "physical Android device validation \u2014 hardware-gated (no device on station)",
+        "GBIM-004 \u2014 product-gated deferred per the handoff"
+      ]
     }
   }
 }
