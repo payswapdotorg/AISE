@@ -1,0 +1,92 @@
+{
+ "$schema": "./program-state.schema.json",
+ "schemaVersion": 2,
+ "artifact": "world-program-state",
+ "governingArchitecture": "2.2",
+ "architectureState": "frozen (architecture-lock 2.2) + the 2026-10-02 product-parity/game-world/multiplatform directive recorded in docs/TECH-LEAD-HANDOFF.md \u2014 the directive governs product direction and substrate strategy; the frozen core contracts are unchanged and remain the only authorities",
+ "asOf": "2026-10-02T19:45:00Z",
+ "execution": {
+  "program": "world-program",
+  "definition": "spec/world-program.md",
+  "baseline": {
+   "main": "bc08e99",
+   "battery": "6502/6502 (R7 baseline)"
+  },
+  "deliveryProtocol": "worker sandbox bundle + narrative harvest; TL-only push; TL verifies each worker independently before composition",
+  "concurrency": "max 3 workers; serialize session creates; P1/P2 parallel-safe (disjoint surfaces), P3 after P0-C, P4 after P1+P2+P3, P5 after P4"
+ },
+ "workItems": [
+  {
+   "id": "WORLD-P0-A",
+   "owner": "worker-a",
+   "status": "activated",
+   "dependencies": [],
+   "notes": "reality substrate contracts (Babylon/Cesium/USD/glTF/Assimp) \u2014 dispatched 2026-10-02 evening"
+  },
+  {
+   "id": "WORLD-P0-B",
+   "owner": "worker-b",
+   "status": "activated",
+   "dependencies": [],
+   "notes": "understanding substrate contracts (IfcOpenShell/OCCT/ParaView) \u2014 dispatched 2026-10-02 evening"
+  },
+  {
+   "id": "WORLD-P0-C",
+   "owner": "worker-c",
+   "status": "draft",
+   "dependencies": [
+    "WORLD-P0-A",
+    "WORLD-P0-B"
+   ],
+   "notes": "solution+desktop substrate contracts (FreeCAD, Tauri-vs-Electron decision, solution-side usage contracts)"
+  },
+  {
+   "id": "WORLD-P1",
+   "owner": "worker-a",
+   "status": "draft",
+   "dependencies": [
+    "WORLD-P0-A"
+   ],
+   "notes": "Layer 1 OpenSpace parity"
+  },
+  {
+   "id": "WORLD-P2",
+   "owner": "worker-b",
+   "status": "draft",
+   "dependencies": [
+    "WORLD-P0-B"
+   ],
+   "notes": "Layer 2 Procore parity"
+  },
+  {
+   "id": "WORLD-P3",
+   "owner": "worker-c",
+   "status": "draft",
+   "dependencies": [
+    "WORLD-P0-C"
+   ],
+   "notes": "Layer 3 SYNCHRO/Revit/Navisworks parity"
+  },
+  {
+   "id": "WORLD-P4",
+   "owner": "worker-a",
+   "status": "draft",
+   "dependencies": [
+    "WORLD-P1",
+    "WORLD-P2",
+    "WORLD-P3"
+   ],
+   "notes": "game-world UX transformation"
+  },
+  {
+   "id": "WORLD-P5",
+   "owner": "worker-c",
+   "status": "draft",
+   "dependencies": [
+    "WORLD-P4"
+   ],
+   "notes": "multiplatform convergence (web/desktop/mobile identical state)"
+  }
+ ],
+ "notes": "All prior programs (AISE-001..041, PROD, HFX, POST, VOICE, GBIM, ANCHOR) remain CLOSED as recorded; this program creates fresh items per the directive ('do not mutate existing completed work items'). Hard prohibitions: directive \u00a710."
+}
