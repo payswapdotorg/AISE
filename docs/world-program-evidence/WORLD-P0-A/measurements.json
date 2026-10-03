@@ -1,0 +1,127 @@
+{
+  "schema": "world-p0-a-measurements/1",
+  "measuredAt": "2026-10-03T17:19:37.663Z",
+  "host": {
+    "runtime": "bun 1.3.14",
+    "platform": "linux x64",
+    "note": "single sandbox host; timings are observations recorded once, not gates"
+  },
+  "glbParseAndExtract": [
+    {
+      "kind": "glb-parse+extract",
+      "input": "synthetic GLB, 100 triangles (4724 bytes)",
+      "runs": 20,
+      "totalMs": 3.507,
+      "perRunMs": 0.175,
+      "throughputNote": "20 runs after one declared warm-up; single-host observation (bun 1.3.14, 2026-10-03T17:19:37.426Z), not a gate"
+    },
+    {
+      "kind": "glb-parse+extract",
+      "input": "synthetic GLB, 1000 triangles (42528 bytes)",
+      "runs": 20,
+      "totalMs": 6.123,
+      "perRunMs": 0.306,
+      "throughputNote": "20 runs after one declared warm-up; single-host observation (bun 1.3.14, 2026-10-03T17:19:37.434Z), not a gate"
+    },
+    {
+      "kind": "glb-parse+extract",
+      "input": "synthetic GLB, 10000 triangles (420536 bytes)",
+      "runs": 20,
+      "totalMs": 30.727,
+      "perRunMs": 1.536,
+      "throughputNote": "20 runs after one declared warm-up; single-host observation (bun 1.3.14, 2026-10-03T17:19:37.468Z), not a gate"
+    },
+    {
+      "kind": "glb-parse+extract",
+      "input": "synthetic GLB, 100000 triangles (4200540 bytes)",
+      "runs": 5,
+      "totalMs": 83.747,
+      "perRunMs": 16.749,
+      "throughputNote": "5 runs after one declared warm-up; single-host observation (bun 1.3.14, 2026-10-03T17:19:37.574Z), not a gate"
+    }
+  ],
+  "composition": [
+    {
+      "kind": "usd-compose",
+      "input": "layer stack of 2 layers x 2 opinions",
+      "runs": 50,
+      "totalMs": 1.406,
+      "perRunMs": 0.028,
+      "throughputNote": "50 runs after one declared warm-up; single-host observation (bun 1.3.14, 2026-10-03T17:19:37.580Z), not a gate"
+    },
+    {
+      "kind": "usd-compose",
+      "input": "layer stack of 8 layers x 2 opinions",
+      "runs": 50,
+      "totalMs": 1.286,
+      "perRunMs": 0.026,
+      "throughputNote": "50 runs after one declared warm-up; single-host observation (bun 1.3.14, 2026-10-03T17:19:37.582Z), not a gate"
+    },
+    {
+      "kind": "usd-compose",
+      "input": "layer stack of 32 layers x 2 opinions",
+      "runs": 50,
+      "totalMs": 5.78,
+      "perRunMs": 0.116,
+      "throughputNote": "50 runs after one declared warm-up; single-host observation (bun 1.3.14, 2026-10-03T17:19:37.588Z), not a gate"
+    }
+  ],
+  "ingest": [
+    {
+      "kind": "stl-ascii-parse",
+      "input": "canonical tetrahedron (513 bytes)",
+      "runs": 200,
+      "totalMs": 2.702,
+      "perRunMs": 0.014,
+      "throughputNote": "200 runs after one declared warm-up; single-host observation (bun 1.3.14, 2026-10-03T17:19:37.591Z), not a gate"
+    },
+    {
+      "kind": "ply-ascii-parse",
+      "input": "deterministic grid (4000 vertices / 2000 faces, 94163 bytes)",
+      "runs": 20,
+      "totalMs": 61.086,
+      "perRunMs": 3.054,
+      "throughputNote": "20 runs after one declared warm-up; single-host observation (bun 1.3.14, 2026-10-03T17:19:37.661Z), not a gate"
+    },
+    {
+      "kind": "vincenty-inverse",
+      "input": "canonical short line (55 km class)",
+      "runs": 2000,
+      "totalMs": 1.798,
+      "perRunMs": 0.001,
+      "throughputNote": "2000 runs after one declared warm-up; single-host observation (bun 1.3.14, 2026-10-03T17:19:37.663Z), not a gate"
+    }
+  ],
+  "geodesy": {
+    "flinders-buninyong-m": 54972.27113865916,
+    "quarter-equator-m": 10018754.171390377,
+    "1deg-equator-exact-m": 111319.49079327358
+  },
+  "determinism": {
+    "glb-100": {
+      "byteIdentical": true,
+      "digestStable": true,
+      "digest": "758d8b8800cd6fbc59ed38adc8fd520e9668be2082928ab26b3a2f5df218b4bd"
+    },
+    "glb-10000": {
+      "byteIdentical": true,
+      "digestStable": true,
+      "digest": "6e8d53568f3d3ec6970c137e4ce616bc207f49fd7e3b578cb9fad2fff53457b6"
+    }
+  },
+  "notMeasured": {
+    "babylon-runtime": "BLOCKED — no substrate adoption at P0 (contract-only wave)",
+    "cesium-tile-streaming": "BLOCKED — no substrate adoption at P0",
+    "usd-native-composition": "BLOCKED — no substrate adoption at P0",
+    "assimp-native-import": "BLOCKED — no substrate adoption at P0"
+  },
+  "digests": {
+    "glb-100-triangles": "758d8b8800cd6fbc59ed38adc8fd520e9668be2082928ab26b3a2f5df218b4bd",
+    "glb-1000-triangles": "13a797cdcc6523f5bd94dc9ff6b3692a2ddafda1698c8e849397b83c4a2006e7",
+    "glb-10000-triangles": "6e8d53568f3d3ec6970c137e4ce616bc207f49fd7e3b578cb9fad2fff53457b6",
+    "glb-100000-triangles": "f60b350479e14d0547d769729710a1e42c732d2901b79bf825132f5d7629f443",
+    "composition-2-layers": "eec71de4370a89b95726c85afbcf67a38802bba34d58e1ce914ed0f7a324f6b0",
+    "composition-8-layers": "0dd89d747c114fc872d1ab928c352d51319e883a5bd87afcbb5b9baaac560b08",
+    "composition-32-layers": "ec40dd22fec1e38fab4d072571cd9a13316fba377678f81847aeda5a540dafd7"
+  }
+}

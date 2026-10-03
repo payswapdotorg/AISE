@@ -134,6 +134,10 @@
         "@aise/solution-engine": "workspace:*",
       },
     },
+    "packages/world-reality-substrate": {
+      "name": "@aise/world-reality-substrate",
+      "version": "1.0.0",
+    },
   },
   "packages": {
     "@aise/adapter-contract": ["@aise/adapter-contract@workspace:packages/adapter-contract"],
@@ -157,6 +161,8 @@
     "@aise/visual-render": ["@aise/visual-render@workspace:packages/visual-render"],
 
     "@aise/web": ["@aise/web@workspace:apps/web"],
+
+    "@aise/world-reality-substrate": ["@aise/world-reality-substrate@workspace:packages/world-reality-substrate"],
 
     "@axe-core/playwright": ["@axe-core/playwright@4.10.2", "", { "dependencies": { "axe-core": "~4.10.3" }, "peerDependencies": { "playwright-core": ">= 1.0.0" } }, "sha512-6/b5BJjG6hDaRNtgzLIfKr5DfwyiLHO4+ByTLB0cJgWSM8Ll7KqtdblIS6bEkwSF642/Ex91vNqIl3GLXGlceg=="],
 

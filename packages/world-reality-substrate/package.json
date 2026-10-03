@@ -1,0 +1,14 @@
+{
+  "name": "@aise/world-reality-substrate",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE WORLD-P0-A reality substrate contracts: the provider-neutral adapter lane for the Layer-1 reality substrates (Babylon.js scene runtime, CesiumJS geospatial context, OpenUSD composition semantics, glTF/GLB runtime delivery, Assimp-format ingest). Deliverables: typed substrate-neutral adapter contracts + in-memory substitution doubles proving the interfaces; the REAL fail-closed glTF 2.0 validator and GLB v2 container codec (runnable headless, not simulated); the closed five-kind substrate failure vocabulary; opaque substrate handles with provider-id quarantine (provider IDs never become canonical AISE identity); USD-style scene composition (layer stack / variant sets / payloads / references) as AISE scene-composition types with winning-opinion provenance; real WGS84 ellipsoid mathematics; and the shared lane-conformance harness. External substrates are implementation components, never AISE authorities (spec/technology-substitution-contract.md). Deterministic: no network, no clock reads, no randomness in the doubles.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "measure": "bun scripts/measure.ts"
+  }
+}
