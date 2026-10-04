@@ -1,0 +1,53 @@
+{
+  "item": "WORLD-P0-C",
+  "substrate": "FreeCAD 1.0.0 (conda AppImage, Linux x86_64, extracted, headless FreeCADCmd)",
+  "method": "FreeCADCmd (AppImage-extracted, no FUSE, no GUI, no display) executing the parametric probe script: App.newDocument + Sketcher rectangle (4 segments, 2 constraints) + PartDesign::Pad(Length) + doc.recompute(), then Length 3->4 and recompute again; volume/bound-box/topology read back from pad.Shape.",
+  "probe_script": "cad_probe.py",
+  "observedAt": "2026-10-04 (sandbox wall clock \u2014 metadata only, not a contract input)",
+  "console_banner": [
+    "FreeCAD 1.0.0, Libs: 1.0.0R39109 (Git)",
+    "(C) 2001-2024 FreeCAD contributors",
+    "FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.",
+    "Recompute......"
+  ],
+  "payload": {
+    "freecad_version": [
+      "1",
+      "0",
+      "0",
+      "39109 (Git)",
+      "https://github.com/FreeCAD/FreeCAD",
+      "2024/11/18 16:48:00",
+      "(HEAD detached at 1.0.0)",
+      "2fcc5317fe3aee96ca73475986a577719fc78e20"
+    ],
+    "python_version": "3.11.9",
+    "timings_ms": {
+      "import_freecad": 0.0,
+      "build_sketch": 138.7,
+      "define_pad": 3.1,
+      "recompute_1": 3.4,
+      "recompute_2": 2.0
+    },
+    "volume_at_length_3": 15.0,
+    "volume_at_length_4": 20.0,
+    "length_value": 4.0,
+    "length_unit": "Unit: mm (1,0,0,0,0,0,0,0) [Length]",
+    "document_name": "AISEProbe",
+    "object_names": [
+      "Sketch_lintel_profile",
+      "Pad_feature_001"
+    ],
+    "bound_box": {
+      "xmin": 0.0,
+      "xmax": 5.0,
+      "ymin": 0.0,
+      "ymax": 1.0,
+      "zmin": 0.0,
+      "zmax": 4.0
+    },
+    "vertex_count": 8,
+    "edge_count": 12,
+    "face_count": 6
+  }
+}
