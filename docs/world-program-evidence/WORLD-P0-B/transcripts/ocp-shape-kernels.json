@@ -1,0 +1,33 @@
+{
+  "tool": "OCCT via OCP (cadquery-ocp wheel)",
+  "cadquery_ocp_version": "8.0.1.0.0",
+  "python_version": "3.12.14",
+  "fixture": {
+    "path": "/home/z/my-project/scripts/fixtures/geometry-fixture.json",
+    "sha256": "468946518758900fa4c7cbc3e9e524d63f309a5d555e483dac7a5780cc4af816"
+  },
+  "measurements": [
+    {
+      "operation": "box-volume",
+      "fixture_shape": "solid-0 (0,0,0)-(2,3,5)",
+      "occt_kernel": "BRepGProp::VolumeProperties (GProp_GProps::Mass)",
+      "value": 30.0
+    },
+    {
+      "operation": "polygon-area",
+      "fixture_shape": "face-0 4x4 square",
+      "occt_kernel": "BRepGProp::SurfaceProperties (GProp_GProps::Mass)",
+      "value": 16.0
+    },
+    {
+      "operation": "segment-length",
+      "fixture_shape": "edge-1 (0,0,0)-(3,4,12)",
+      "occt_kernel": "GCPnts_AbscissaPoint::Length (BRepAdaptor_Curve)",
+      "value": 13.0
+    }
+  ],
+  "declared_units": {
+    "linear": "m",
+    "angular": "rad"
+  }
+}

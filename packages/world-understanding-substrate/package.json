@@ -1,0 +1,21 @@
+{
+  "name": "@aise/world-understanding-substrate",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE Understanding-layer substrate contracts (WORLD-P0-B): the provider-neutral typed adapter contracts for the three Layer-2 substrate families — IFC interpretation (IfcOpenShell semantics + the web-ifc browser-runtime alternative, the GBIM-FT-001 recorded direction), exact geometry (OCCT via OCP/CadQuery reference; engine-neutral contract) and field/scientific data processing (ParaView/VTK). Each family contract is proven implementable WITHOUT its substrate by in-memory deterministic substitution doubles (a real minimal STEP parser for IFC, closed-form analytic math for geometry, in-memory typed transforms for field data). Substrate GUIDs/ids are namespaced external labels and NEVER canonical AISE identity (proven by validators + drills); tolerances are DECLARED in requests and carried verbatim in results (never implicit); every result maps INTO real AISE contract types (Derivation / RealityObject / PropertyAssertion / Measurement of @aise/shared-contracts, proven by decoding the seeds with the shared wire codecs); failures come from the HFX-000 closed vocabulary (imported, never modified). No external substrate is integrated in P0 — real engines are future occupants of the ports this package proves.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./seam": "./src/seam.ts",
+    "./ifc": "./src/ifc/index.ts",
+    "./geometry": "./src/geometry/index.ts",
+    "./field": "./src/field/index.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/provider-registry": "workspace:*",
+    "@aise/shared-contracts": "workspace:*"
+  }
+}
