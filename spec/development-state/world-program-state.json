@@ -57,12 +57,24 @@
   {
    "id": "WORLD-P0-C",
    "owner": "worker-c",
-   "status": "draft",
+   "status": "complete",
    "dependencies": [
     "WORLD-P0-A",
     "WORLD-P0-B"
    ],
-   "notes": "solution+desktop substrate contracts (FreeCAD, Tauri-vs-Electron decision, solution-side usage contracts)"
+   "notes": "solution + desktop substrate contracts — dispatched 2026-10-04, landed same day (worker-executed, single turn)",
+   "record": {
+    "landedAt": "38debe8",
+    "pr": 28,
+    "executedBy": "worker-c (chat lane 2f8a1c10) — single focused turn (487 blocks); TL verified at two trees before merge",
+    "tests": "6824/6824 (baseline 6705 + 119 new); independently re-run at the base-clone and at a fresh clone of the pushed branch",
+    "verify": "typecheck PASS | lint PASS | boundaries PASS (1170 files)",
+    "desktopDecision": "KEEP the existing Electron thin shell as desktop.shell/1 occupant; Tauri migration DEFERRED to WORLD-P5 with recorded trigger (per-platform OS-webview WebGPU fidelity + low-spec field-device footprint requirement)",
+    "freecadFindings": "LGPL-2.0-or-later verified from the executed AppImage; sidecar-isolation conditions; Import.export *.ifc silent no-op in headless 1.0.0 (WORLD-P3); no core glTF exporter; mm native units",
+    "seamNotes": [
+     "bun.lock carries the mechanical workspace addition (+13 lines, the P0-A precedent)"
+    ]
+   }
   },
   {
    "id": "WORLD-P1",
