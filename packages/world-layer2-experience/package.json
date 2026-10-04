@@ -1,0 +1,25 @@
+{
+  "name": "@aise/world-layer2-experience",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE Layer-2 experience lane (WORLD-P2): the typed contracts for the Procore-parity workflow behavior translated into the AISE evidence/case architecture — PROBLEM → CONTEXT → EVIDENCE → MISSING-EVIDENCE DETECTION → BOUNDED REASONING → DETERMINISTIC CHECKS → ACTION → AUDIT TRAIL. Problem statements bind to spatial world context through the P0-A scene-composition types; the context view composes the P0-B understanding-substrate extracted candidates as INFERRED inputs; evidence binding follows the Evidence Envelope laws (immutable content-addressed evidence, provenance roles, evidence-required observations); the missing-evidence detector answers typed gaps with readiness verdicts and FAILS CLOSED; bounded reasoning is a REPLACEABLE LLM substrate behind a provider port (retrieval scoped to the case context, every output INFERRED with prompt/context provenance recorded, refusal on insufficient evidence — an LLM is never an engineering authority); the deterministic-check gate classifies which checks the deterministic solution engine + verification seams OWN versus which are advisory and refuses fabricated authority; actions carry ownership/status lifecycle with governed transitions; and the audit trail is append-only with chained digests — every lane transition an auditable who/what/when/why/evidence-bound record. Each family is proven implementable WITHOUT any substrate by two independent in-memory substitution doubles with byte-identical outputs on committed fixtures; the lane runner composes them end-to-end. No substrate is integrated in P2 — the app wires the real occupants in WORLD-P4.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./seam": "./src/seam.ts",
+    "./problem": "./src/problem/index.ts",
+    "./evidence": "./src/evidence/index.ts",
+    "./reasoning": "./src/reasoning/index.ts",
+    "./action": "./src/action/index.ts",
+    "./lane": "./src/lane.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/provider-registry": "workspace:*",
+    "@aise/shared-contracts": "workspace:*",
+    "@aise/world-reality-substrate": "workspace:*",
+    "@aise/world-understanding-substrate": "workspace:*"
+  }
+}
