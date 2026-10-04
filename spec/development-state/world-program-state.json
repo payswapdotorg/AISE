@@ -4,7 +4,7 @@
   "artifact": "world-program-state",
   "governingArchitecture": "2.2",
   "architectureState": "frozen (architecture-lock 2.2) + the 2026-10-02 product-parity/game-world/multiplatform directive recorded in docs/TECH-LEAD-HANDOFF.md \u2014 the directive governs product direction and substrate strategy; the frozen core contracts are unchanged and remain the only authorities",
-  "asOf": "2026-10-04T21:50:00Z",
+  "asOf": "2026-10-05T00:00:00Z",
   "execution": {
     "program": "world-program",
     "definition": "spec/world-program.md",
@@ -139,13 +139,19 @@
     {
       "id": "WORLD-P4",
       "owner": "worker-a",
-      "status": "draft",
+      "status": "complete",
       "dependencies": [
         "WORLD-P1",
         "WORLD-P2",
         "WORLD-P3"
       ],
-      "notes": "game-world UX transformation \u2014 GATE OPEN (P1 \u2713 P2 \u2713 P3 \u2713); consumes the P3 wiring notes + the BLOCKED-until-P4 declarations from P0-C/P1/P2/P3"
+      "notes": "game-world UX transformation \u2014 GATE OPEN (P1 \u2713 P2 \u2713 P3 \u2713); consumes the P3 wiring notes + the BLOCKED-until-P4 declarations from P0-C/P1/P2/P3",
+      "completedAt": "2026-10-05",
+      "record": {
+        "landing": "e07d38d (squash-merge, TL-verified 7325/7325 at the fresh-clone tree; worker branch work/WORLD-P4 @ 87498a7, bundle sha256 3261ef88)",
+        "battery": "7325/7325 == 7199 baseline + 126 new (108 package + 18 route), 92,036 expects",
+        "delivered": "the game-world UX: the seven-panel HUD + the spatial surface + wiring doubles + the world route (one-record discipline, real-Chromium smoke journey)"
+      }
     },
     {
       "id": "WORLD-P5",
