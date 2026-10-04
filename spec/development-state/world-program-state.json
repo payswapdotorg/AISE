@@ -79,20 +79,36 @@
   {
    "id": "WORLD-P1",
    "owner": "worker-a",
-   "status": "draft",
+   "status": "complete",
    "dependencies": [
     "WORLD-P0-A"
    ],
-   "notes": "Layer 1 OpenSpace parity"
+   "notes": "Layer 1 OpenSpace parity — dispatched + landed 2026-10-04 (worker-executed, single turn)",
+   "record": {
+    "landedAt": "5354cb8",
+    "pr": 29,
+    "executedBy": "worker-a (chat lane c0660458) — single focused turn; TL verified at two trees",
+    "tests": "6962/6962 (baseline 6824 + 138 new); fresh-clone re-run of the pushed branch PASS",
+    "verify": "typecheck PASS (one transient tsc race re-run) | lint PASS | boundaries PASS (1196 files)",
+    "p4Shapes": "centroid-distance deviation proxy; declared alignment pairs; ghost-law enforcement; large-model/mobile/GPU BLOCKED until P4"
+   }
   },
   {
    "id": "WORLD-P2",
    "owner": "worker-b",
-   "status": "draft",
+   "status": "complete",
    "dependencies": [
     "WORLD-P0-B"
    ],
-   "notes": "Layer 2 Procore parity"
+   "notes": "Layer 2 Procore parity — dispatched + landed 2026-10-04 (worker-executed, single turn; do-not-copy-Procore law honored)",
+   "record": {
+    "landedAt": "b9f8824",
+    "pr": 30,
+    "executedBy": "worker-b (chat lane 855a6e5e) — single focused turn; TL verified at three trees",
+    "tests": "base-clone 6942/6942 (6824 + 118); composed tree + pushed-branch fresh clone 7080/7080 (6962 + 118)",
+    "verify": "typecheck PASS | lint PASS | boundaries PASS (1223 files)",
+    "llmLaw": "the LLM lane is a replaceable substrate behind a port with a substitution double; every output INFERRED with provenance; consequential actions require literal pass (review-needed blocks automation)"
+   }
   },
   {
    "id": "WORLD-P3",
