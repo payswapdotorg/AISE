@@ -1,0 +1,31 @@
+{
+  "name": "@aise/world-layer3-experience",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE Layer-3 experience lane (WORLD-P3): the SYNCHRO/Revit/Navisworks-parity lane AUTHOR → COORDINATE → CLASH-DETECT → QUANTIFY → WHAT-IF → SEQUENCE → REPLAY as substrate-neutral typed contracts COMPOSING the five landed world packages with the existing solution/BOQ engine seams. Interactive spatial authoring resolves BOTH input modalities (direct-manipulation gesture stream and natural-language utterance) to the SAME typed EngineeringOperationIntent — the NL parser is a replaceable substrate behind a port with substitution doubles (exactly the P2 LLM law); proposed/ghost states present through the P0-C scene-usage contract under the ghost-distinctness law; multi-model coordination aggregates through the P0-A scene-composition types with cross-model identity quarantine; clash verdicts are tolerance-DECLARED (clear / within-tolerance / clash — never a silent boolean) delegating to the P0-B exact-geometry vocabulary; conflict records bind to the P2 problem lane; live quantity consequences are typed VIEWS and PROJECTIONS over the BOQ Graph seams (the BOQ Graph stays the only quantity authority); what-if alternatives are typed variant sets composed through the P0-A USD composition port and compared through the P1 deviation vocabulary; execution sequencing compiles declared activity orderings into the P0-C simulation contract (the simulation substrate computes trajectories; the Solution Graph stays the only authority); and solution replay is a chained, content-addressed, deterministic replay log — the audit trail of the interactive world. Each family is proven implementable WITHOUT any substrate by in-memory substitution doubles with byte-identical outputs on the committed fixtures. No network, no clock reads, no randomness, no I/O in the contract core; no substrate object id ever becomes canonical AISE identity.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./seam": "./src/seam.ts",
+    "./authoring": "./src/authoring/contract.ts",
+    "./coordination": "./src/coordination/contract.ts",
+    "./quantify": "./src/quantify/contract.ts",
+    "./sequencing": "./src/sequencing/contract.ts",
+    "./lane": "./src/lane.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/provider-registry": "workspace:*",
+    "@aise/shared-contracts": "workspace:*",
+    "@aise/solution-boq": "workspace:*",
+    "@aise/solution-contract": "workspace:*",
+    "@aise/solution-engine": "workspace:*",
+    "@aise/world-layer1-experience": "workspace:*",
+    "@aise/world-layer2-experience": "workspace:*",
+    "@aise/world-reality-substrate": "workspace:*",
+    "@aise/world-solution-substrate": "workspace:*",
+    "@aise/world-understanding-substrate": "workspace:*"
+  }
+}
