@@ -134,6 +134,17 @@
         "@aise/solution-engine": "workspace:*",
       },
     },
+    "packages/world-layer1-experience": {
+      "name": "@aise/world-layer1-experience",
+      "version": "1.0.0",
+      "dependencies": {
+        "@aise/anchoring-contract": "workspace:*",
+        "@aise/provider-registry": "workspace:*",
+        "@aise/shared-contracts": "workspace:*",
+        "@aise/world-reality-substrate": "workspace:*",
+        "@aise/world-understanding-substrate": "workspace:*",
+      },
+    },
     "packages/world-reality-substrate": {
       "name": "@aise/world-reality-substrate",
       "version": "1.0.0",
@@ -184,6 +195,8 @@
     "@aise/visual-render": ["@aise/visual-render@workspace:packages/visual-render"],
 
     "@aise/web": ["@aise/web@workspace:apps/web"],
+
+    "@aise/world-layer1-experience": ["@aise/world-layer1-experience@workspace:packages/world-layer1-experience"],
 
     "@aise/world-reality-substrate": ["@aise/world-reality-substrate@workspace:packages/world-reality-substrate"],
 
