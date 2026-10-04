@@ -1,0 +1,385 @@
+{
+  "recordKind": "aise.world-station-record/1",
+  "stationId": "794d5f8ca8e59d66",
+  "scopeLabel": "proj-demo-001",
+  "composedAt": "2026-09-16T12:00:00.000Z",
+  "initialCamera": {
+    "position": [
+      8,
+      -8,
+      6
+    ],
+    "target": [
+      0,
+      0,
+      1
+    ],
+    "up": [
+      0,
+      0,
+      1
+    ],
+    "fovRadians": 0.9,
+    "mode": "orbit"
+  },
+  "layers": [
+    {
+      "layerId": "capture-reality",
+      "name": "Captured reality",
+      "visibleByDefault": true
+    },
+    {
+      "layerId": "plan-model",
+      "name": "Plan / BIM model",
+      "visibleByDefault": true
+    },
+    {
+      "layerId": "coverage",
+      "name": "Capture coverage",
+      "visibleByDefault": false
+    },
+    {
+      "layerId": "annotations",
+      "name": "Annotations",
+      "visibleByDefault": true
+    }
+  ],
+  "elements": [
+    {
+      "elementId": "0af02abdb2c3636c11ab288b457758f023e0735d0ba31881d27fc7a5c4ce0997",
+      "status": "capture-asset",
+      "isGhost": false,
+      "label": "capture d4852107",
+      "layerIds": [
+        "capture-reality"
+      ],
+      "evidenceContentIds": [
+        "d48521077edc2a7f00a1647af78efeb86679a50671bbf5c16afee241ebfcef3a"
+      ],
+      "concernsPanels": [
+        "evidence"
+      ]
+    },
+    {
+      "elementId": "c41f9f7bd3cb22e24aaf2107db57516f48d32dec593f78336765a2fa3e2c97dc",
+      "status": "capture-asset",
+      "isGhost": false,
+      "label": "capture 1116c45f",
+      "layerIds": [
+        "capture-reality"
+      ],
+      "evidenceContentIds": [
+        "1116c45f67d0febe0e92655023ec3ad07d776b48416996708e6db4672b52c4da"
+      ],
+      "concernsPanels": [
+        "evidence"
+      ]
+    },
+    {
+      "elementId": "c9ba007f8c609115f21f8567363736f78e978bacb55eefd1713397b32d65feb5",
+      "status": "annotation",
+      "isGhost": false,
+      "label": "Capture coverage (declared)",
+      "layerIds": [
+        "coverage"
+      ],
+      "evidenceContentIds": [],
+      "concernsPanels": []
+    },
+    {
+      "elementId": "f3f76bea3c6eaa6af089df351807469cccb716a79d6451fa8aff03491f26fdb8",
+      "status": "capture-asset",
+      "isGhost": false,
+      "label": "capture e6e16dab",
+      "layerIds": [
+        "capture-reality"
+      ],
+      "evidenceContentIds": [
+        "e6e16dab4c93fea510a44032dbee6b081e1756e120f7015e9200f51870b92613"
+      ],
+      "concernsPanels": [
+        "evidence"
+      ]
+    },
+    {
+      "elementId": "ghost-reparameterize-2814f7cd97b18960",
+      "status": "proposed-ghost",
+      "isGhost": true,
+      "label": "PROPOSED — 30 mm plaster pass",
+      "layerIds": [
+        "solution"
+      ],
+      "evidenceContentIds": [],
+      "concernsPanels": [
+        "validation",
+        "cost-boq"
+      ]
+    },
+    {
+      "elementId": "plan-slab-001",
+      "status": "plan",
+      "isGhost": false,
+      "label": "Plan slab S-1",
+      "layerIds": [
+        "plan-model"
+      ],
+      "evidenceContentIds": [
+        "fa82c0f89d4e388960116fcf07c43b55f738a926483e31f483d75d98107b7abe"
+      ],
+      "concernsPanels": [
+        "evidence"
+      ]
+    },
+    {
+      "elementId": "plan-wall-001",
+      "status": "proposed-removed",
+      "isGhost": false,
+      "label": "Plan wall W-1",
+      "layerIds": [
+        "plan-model"
+      ],
+      "evidenceContentIds": [
+        "fa82c0f89d4e388960116fcf07c43b55f738a926483e31f483d75d98107b7abe"
+      ],
+      "concernsPanels": [
+        "evidence",
+        "objective"
+      ]
+    }
+  ],
+  "hud": {
+    "panels": [
+      {
+        "panelId": "objective",
+        "title": "Objective",
+        "contentState": "POPULATED",
+        "note": null,
+        "data": {
+          "primaryProblem": {
+            "problemId": "005c63c1a4199a515e82b9846ab9a1c9b131f4f5bec0d6ef8a1b90a13e7fe97d",
+            "title": "Diagonal crack at lintel bearing above Opening-001",
+            "statement": "The ground-floor masonry wall of Building A shows a diagonal crack originating at the lintel bearing above Opening-001. Determine whether the lintel bearing is distressed, what the as-built condition is, and which governed intervention applies. The answer must be grounded in field evidence and the BIM-derived context, never in an unverified guess.",
+            "questionKind": "condition_assessment",
+            "status": "open",
+            "openedAt": "2026-10-02T08:00:00.000Z",
+            "boundElementIds": [
+              "f1793d1319274cd3a84b2a3ce752081e5df949721271eb45b1f7996ad6c351af",
+              "54d79f0dd531056b2b87591c9a4f0cca413e4c2cf16dedf7d7ef7a0a350a10e4"
+            ],
+            "captureEvidenceContentIds": [
+              "e338d3454698c8809d0837901cef9d9015024a5caae9ed1a7982f02afc13bc22",
+              "f38180128868dab216d6b22dc061e164c4f0d77fb27bb833003a4129225af822"
+            ]
+          },
+          "clashProblems": [
+            {
+              "conflictId": "beb3b27ed6571f6dfb1bb478e23c9e650bccd07aefc520befe3b9b360fe9f8d2",
+              "reportId": "15b84ac5f65adfc23c66727eac9789900b831922e2d13aa79366b722fad4f9b3",
+              "pairId": "station-pair-lintel-bearing-001",
+              "verdict": "clash",
+              "separationMetres": -0.09999999999999998,
+              "problemId": "005c63c1a4199a515e82b9846ab9a1c9b131f4f5bec0d6ef8a1b90a13e7fe97d",
+              "problemStatus": "open",
+              "problemTitle": "Diagonal crack at lintel bearing above Opening-001"
+            }
+          ]
+        }
+      },
+      {
+        "panelId": "evidence",
+        "title": "Evidence",
+        "contentState": "POPULATED",
+        "note": null,
+        "data": {
+          "reportId": "cafcc9efea852b636a2317511f51d0e4dbf29d3f59b6af26d6654d852369a5c4",
+          "problemId": "005c63c1a4199a515e82b9846ab9a1c9b131f4f5bec0d6ef8a1b90a13e7fe97d",
+          "readinessVerdict": "READY",
+          "gapCount": 0,
+          "requirementCount": 3,
+          "openRemediationTaskCount": 0,
+          "gaps": []
+        }
+      },
+      {
+        "panelId": "constraints",
+        "title": "Constraints",
+        "contentState": "POPULATED",
+        "note": null,
+        "data": {
+          "constraints": [
+            {
+              "constraintId": "layer1-declared-tolerance-001",
+              "kind": "dimension",
+              "statement": "Deviations are classified against the declared linear tolerance of 0.05 m",
+              "sourceLane": "layer1-declared",
+              "sourceRef": "fixture-compare-tolerance"
+            },
+            {
+              "constraintId": "layer2-requirement-134d159370fd2c4255b791b62600b9c5f82cf2f8e9e8ba9f50074d4c49f683d6",
+              "kind": "evidence-requirement",
+              "statement": "The case's evidence requirement must be satisfied before the solution is ready",
+              "sourceLane": "layer2-context",
+              "sourceRef": "134d159370fd2c4255b791b62600b9c5f82cf2f8e9e8ba9f50074d4c49f683d6"
+            },
+            {
+              "constraintId": "layer2-requirement-ed74513d1933bfc27414e6349da12914ae7683b600845b7abad2ca5dff075581",
+              "kind": "evidence-requirement",
+              "statement": "The case's evidence requirement must be satisfied before the solution is ready",
+              "sourceLane": "layer2-context",
+              "sourceRef": "ed74513d1933bfc27414e6349da12914ae7683b600845b7abad2ca5dff075581"
+            },
+            {
+              "constraintId": "layer2-requirement-f000572419aed23df163bb691acf8ab4397ce117bf8538de355c90df5d638d2d",
+              "kind": "evidence-requirement",
+              "statement": "The case's evidence requirement must be satisfied before the solution is ready",
+              "sourceLane": "layer2-context",
+              "sourceRef": "f000572419aed23df163bb691acf8ab4397ce117bf8538de355c90df5d638d2d"
+            }
+          ],
+          "constraintCount": 4
+        }
+      },
+      {
+        "panelId": "agent",
+        "title": "Agent",
+        "contentState": "POPULATED",
+        "note": null,
+        "data": {
+          "activeOperator": {
+            "operatorId": "c5a7327f5f01f892f4e3647c9b75cf34107d98c9933099bba469dbf3be4aa33f",
+            "role": "engineer"
+          },
+          "agentProposesNeverDecides": true,
+          "openActionCount": 3,
+          "openActions": [
+            {
+              "actionId": "1413adeeb245df648a099dbf22d331b9ae0457b5ac6b569cf996311fd8bd0bca",
+              "actionKind": "propose_solution_operation",
+              "status": "open",
+              "ownerActorId": "c5a7327f5f01f892f4e3647c9b75cf34107d98c9933099bba469dbf3be4aa33f"
+            },
+            {
+              "actionId": "b8119633285b7364b80cd33d2356f93867f8315f1811eec5ee8e9dc8dd7ce792",
+              "actionKind": "request_review",
+              "status": "open",
+              "ownerActorId": "96bc0f97f82f81d31675e465f47d4ef967e5060018bbae81e87df2b41e73272c"
+            },
+            {
+              "actionId": "1c24e8cc864db6f5e49cad4e023a45a5bc60a6c973f78726325fc84e398870ef",
+              "actionKind": "resolve_case",
+              "status": "open",
+              "ownerActorId": "96bc0f97f82f81d31675e465f47d4ef967e5060018bbae81e87df2b41e73272c"
+            }
+          ]
+        }
+      },
+      {
+        "panelId": "validation",
+        "title": "Validation",
+        "contentState": "POPULATED",
+        "note": null,
+        "data": {
+          "checkGateId": "76da6bf261052ff4740f868d798fba3cfc4678ff71107eb04b400d398bdf26b5",
+          "problemId": "005c63c1a4199a515e82b9846ab9a1c9b131f4f5bec0d6ef8a1b90a13e7fe97d",
+          "gateVerdict": "pass",
+          "engineOwnedCheckCount": 2,
+          "advisoryCheckCount": 1,
+          "failureCount": 0,
+          "gatedAt": "2026-10-02T08:00:00.000Z",
+          "replayVerified": true
+        }
+      },
+      {
+        "panelId": "cost-boq",
+        "title": "Cost / BOQ",
+        "contentState": "POPULATED",
+        "note": null,
+        "data": {
+          "projectionId": "8d6c05b66811ac2fedd82a29a267afb076f7fa2cca15e0e3ad6099e1ae9d9d48",
+          "solutionId": "solution-demo-001",
+          "versionNumber": 1,
+          "epistemicClass": "PROPOSED",
+          "baselineBoqId": "e645978adc5eadbe182632200eedcf8c305dde1294d6323c251e4945df5cdf3c",
+          "lineCount": 2,
+          "lines": [
+            {
+              "sectionId": "enclosure",
+              "sectionTitle": "Enclosure",
+              "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by area [m2]",
+              "direction": "added",
+              "value": 12.5,
+              "unit": "m2",
+              "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+              "contributingOperationIds": [
+                "2f632ae3376fb94a2f330403d955fa60f4ba7dec9737188db69b5aebc2079313"
+              ]
+            },
+            {
+              "sectionId": "enclosure",
+              "sectionTitle": "Enclosure",
+              "itemDescription": "Plaster application to affected surfaces — cement-plaster, measured by volume [m3]",
+              "direction": "added",
+              "value": 0.375,
+              "unit": "m3",
+              "calculationRef": "aise-solution-engine/quantity/plaster-application/v1",
+              "contributingOperationIds": [
+                "2f632ae3376fb94a2f330403d955fa60f4ba7dec9737188db69b5aebc2079313"
+              ]
+            }
+          ],
+          "operationsWithoutQuantityEffects": []
+        }
+      },
+      {
+        "panelId": "timeline",
+        "title": "Timeline",
+        "contentState": "POPULATED",
+        "note": null,
+        "data": {
+          "trajectoryId": "599924efd820d2469bc5a5607b08b0516453eb681338bdcbf858f4d8d71fd832",
+          "solutionId": "solution-demo-001",
+          "versionNumber": 1,
+          "makespanHours": 48,
+          "activityCount": 3,
+          "phaseCount": 4,
+          "phases": [
+            {
+              "phase": "site-preparation",
+              "activeOperationIds": [
+                "78d06a19cfe51993f479d1ce0056841512153c5f8ce58d846d42c79be4e37e58"
+              ],
+              "stateIndices": [
+                0
+              ]
+            },
+            {
+              "phase": "structure",
+              "activeOperationIds": [
+                "7da069351e5a4ea36848aa782cb1640aa0a1d676e5d7a732a3c321c6adc1d6ba"
+              ],
+              "stateIndices": [
+                1
+              ]
+            },
+            {
+              "phase": "enclosure",
+              "activeOperationIds": [
+                "2f632ae3376fb94a2f330403d955fa60f4ba7dec9737188db69b5aebc2079313"
+              ],
+              "stateIndices": [
+                2
+              ]
+            },
+            {
+              "phase": null,
+              "activeOperationIds": [],
+              "stateIndices": [
+                3
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -35,6 +35,9 @@
       "version": "0.1.0",
       "dependencies": {
         "@aise/adapter-contract": "workspace:*",
+        "@aise/world-layer1-experience": "workspace:*",
+        "@aise/world-reality-substrate": "workspace:*",
+        "@aise/world-ux": "workspace:*",
         "react": "^19.3.0",
         "react-dom": "^19.3.0",
       },
@@ -198,6 +201,21 @@
         "@aise/shared-contracts": "workspace:*",
       },
     },
+    "packages/world-ux": {
+      "name": "@aise/world-ux",
+      "version": "1.0.0",
+      "dependencies": {
+        "@aise/provider-registry": "workspace:*",
+        "@aise/solution-boq": "workspace:*",
+        "@aise/solution-contract": "workspace:*",
+        "@aise/solution-engine": "workspace:*",
+        "@aise/world-layer1-experience": "workspace:*",
+        "@aise/world-layer2-experience": "workspace:*",
+        "@aise/world-layer3-experience": "workspace:*",
+        "@aise/world-reality-substrate": "workspace:*",
+        "@aise/world-solution-substrate": "workspace:*",
+      },
+    },
   },
   "packages": {
     "@aise/adapter-contract": ["@aise/adapter-contract@workspace:packages/adapter-contract"],
@@ -233,6 +251,8 @@
     "@aise/world-solution-substrate": ["@aise/world-solution-substrate@workspace:packages/world-solution-substrate"],
 
     "@aise/world-understanding-substrate": ["@aise/world-understanding-substrate@workspace:packages/world-understanding-substrate"],
+
+    "@aise/world-ux": ["@aise/world-ux@workspace:packages/world-ux"],
 
     "@axe-core/playwright": ["@axe-core/playwright@4.10.2", "", { "dependencies": { "axe-core": "~4.10.3" }, "peerDependencies": { "playwright-core": ">= 1.0.0" } }, "sha512-6/b5BJjG6hDaRNtgzLIfKr5DfwyiLHO4+ByTLB0cJgWSM8Ll7KqtdblIS6bEkwSF642/Ex91vNqIl3GLXGlceg=="],
 

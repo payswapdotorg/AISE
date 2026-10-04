@@ -17,6 +17,9 @@
   "dependencies": {
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "@aise/adapter-contract": "workspace:*"
+    "@aise/adapter-contract": "workspace:*",
+    "@aise/world-ux": "workspace:*",
+    "@aise/world-layer1-experience": "workspace:*",
+    "@aise/world-reality-substrate": "workspace:*"
   }
 }

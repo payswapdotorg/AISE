@@ -1,0 +1,29 @@
+{
+  "name": "@aise/world-ux",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE world UX package (WORLD-P4): the game-world UX transformation contracts — the restrained seven-panel in-world HUD (objective/evidence/constraints/agent/validation/cost-boq/timeline) and the spatial surface station contract as READ-ONLY typed projections COMPOSING the six landed world packages (P0-A reality substrate scene composition, P0-B understanding substrate, P0-C solution substrate scene-usage/4D, P1 Layer-1 world/evidence lane, P2 Layer-2 problem/evidence/action lane, P3 Layer-3 interactive solution lane). The HUD explains engineering state without replacing the scene; the surface carries the composed scene with ghost-distinctness, identity quarantine and resolvable ghost-removed elements; the wiring binds the route to the lane state through typed ports whose in-memory substitution doubles compose the REAL lane fixtures end-to-end (P1 fixture world + P2 lane run + P3 lane run) with zero substrate installed. LaneFailure presentation is UNIFIED to the P2/P3 family shape (kind from the CLOSED HFX-000 vocabulary carried verbatim, detail carried verbatim — the recorded P4 seam decision). Ghost-deleted element ids stay RESOLVABLE in the composed station scene; authored intents fail closed on missing_operation_provenance; the Objective panel wires LIVE clash→problem bindings from the P3 coordination family. No panel and no surface is ever an engineering authority; the BOQ Graph stays the only quantity authority; no substrate object id ever becomes canonical AISE identity. No network, no clock reads, no randomness, no I/O in the contract core.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./seam": "./src/seam.ts",
+    "./hud": "./src/hud/contract.ts",
+    "./surface": "./src/surface/contract.ts",
+    "./wiring": "./src/wiring/contract.ts",
+    "./station": "./src/station/model.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/provider-registry": "workspace:*",
+    "@aise/solution-contract": "workspace:*",
+    "@aise/world-layer1-experience": "workspace:*",
+    "@aise/world-layer2-experience": "workspace:*",
+    "@aise/world-layer3-experience": "workspace:*",
+    "@aise/world-reality-substrate": "workspace:*",
+    "@aise/world-solution-substrate": "workspace:*",
+    "@aise/solution-engine": "workspace:*",
+    "@aise/solution-boq": "workspace:*"
+  }
+}
