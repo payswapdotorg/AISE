@@ -1,0 +1,45 @@
+WORLD-P1 contract-level performance measurements (REAL run)
+recorded: 2026-10-04T08:18:07.951Z
+sandbox: AISE station (bun 1.3.14, Linux x64, no GPU, no substrate)
+
+== 1. SPATIALIZE (generated capture sessions, N assets) ==
+spatialize N=10 | runs=25 | median=0.0898 ms
+spatialize N=100 | runs=25 | median=0.4229 ms
+spatialize N=1000 | runs=25 | median=2.9453 ms
+
+== 2. REGISTER (fixture hypotheses, 2 admitted) ==
+register | runs=25 | median=0.0020 ms
+
+== 3. RECONSTRUCT (world composition; placed assets + 100 plan elements) ==
+compose assets=10 plan=100 nodes=104 | runs=25 | median=0.2871 ms
+compose assets=100 plan=100 nodes=134 | runs=25 | median=0.8258 ms
+compose assets=1000 plan=100 nodes=434 | runs=25 | median=4.2787 ms
+
+== 4. NAVIGATE (layer toggles + bookmark round-trip) ==
+layer-toggles nodes=104 | runs=100 | median=0.0085 ms
+layer-toggles nodes=134 | runs=100 | median=0.0059 ms
+layer-toggles nodes=434 | runs=100 | median=0.0144 ms
+bookmark capture+resolve (1000-node world) | runs=100 | median=0.0838 ms
+
+== 5. COMPARE (tolerance-declared comparison, N pairs) ==
+compare pairs=10 | runs=25 | median=0.1007 ms
+compare pairs=100 | runs=25 | median=0.2814 ms
+compare pairs=1000 | runs=25 | median=2.3605 ms
+
+== 6. MEASURE (the five query kinds over the composed worlds) ==
+measure 5 queries nodes=104 | runs=100 | median=0.0074 ms
+measure 5 queries nodes=134 | runs=100 | median=0.0053 ms
+measure 5 queries nodes=434 | runs=100 | median=0.0053 ms
+
+== 7. EVIDENCE (what-is-here + what-changed + world binding) ==
+what-is-here nodes=104 | runs=100 | median=0.0024 ms
+what-is-here nodes=134 | runs=100 | median=0.0030 ms
+what-is-here nodes=434 | runs=100 | median=0.0130 ms
+what-changed (1000→1001 nodes) | runs=25 | median=0.3462 ms
+bind-world (1000-node world) | runs=25 | median=0.0480 ms
+
+== 8. FAIL-CLOSED cost (refusal vs happy path) ==
+spatialize refusal (bad instant, fast path) | runs=100 | median=0.0004 ms
+compare refusal (tolerance-less, 100 pairs scanned first) | runs=25 | median=0.0106 ms
+
+END

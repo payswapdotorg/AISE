@@ -1,0 +1,26 @@
+{
+  "name": "@aise/world-layer1-experience",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE world program Layer-1 experience lane (WORLD-P1): the OpenSpace-parity lane CAPTURE → SPATIALIZE → REGISTER → RECONSTRUCT → NAVIGATE → COMPARE → MEASURE → EVIDENCE as substrate-neutral typed contracts COMPOSING the P0 substrate ports (world-reality-substrate scene-composition/geospatial vocabulary, world-understanding-substrate exact-geometry/IFC vocabulary) with the existing capture/evidence seams (shared-contracts CaptureSessionEnvelope / Evidence / Derivation / ProvenanceLink, anchoring-contract hypothesis vocabulary). Every stage is an explicit typed transform with PURE validators (HFX-000 closed failure vocabulary imported from @aise/provider-registry, never modified), controlled entry points, and in-memory substitution doubles (reference + alternate, byte-identical on the committed fixtures) proving the lane WITHOUT any substrate — no Babylon, no Cesium, no OCCT, no reconstruction engine, no network, no clock, no randomness. No substrate object id ever becomes canonical AISE identity; capture-derived facts enter as INFERRED; unsupported is recorded, never computed.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./lane": "./src/lane.ts",
+    "./failures": "./src/failures.ts",
+    "./capture": "./src/capture/contract.ts",
+    "./world": "./src/world/contract.ts",
+    "./compare": "./src/compare/contract.ts",
+    "./evidence": "./src/evidence/contract.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/anchoring-contract": "workspace:*",
+    "@aise/provider-registry": "workspace:*",
+    "@aise/shared-contracts": "workspace:*",
+    "@aise/world-reality-substrate": "workspace:*",
+    "@aise/world-understanding-substrate": "workspace:*"
+  }
+}
