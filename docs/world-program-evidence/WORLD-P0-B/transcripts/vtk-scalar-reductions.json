@@ -1,0 +1,61 @@
+{
+  "tool": "VTK (vtkmodules wheels)",
+  "vtk_wheel_version": "9.6.2",
+  "python_version": "3.12.14",
+  "fixture": {
+    "path": "/home/z/my-project/scripts/fixtures/field-fixture.json",
+    "sha256": "3e13495bd2434eaedfeef563ed3909fb3147c967a60cf2544e3b3a04e5f208fe"
+  },
+  "data_model": {
+    "fixture_grid": {
+      "name": "vtk-structured-grid-0",
+      "nx": 3,
+      "ny": 3,
+      "origin": {
+        "x": 0,
+        "y": 0
+      },
+      "spacing": {
+        "x": 1,
+        "y": 1
+      }
+    },
+    "vtk_form": "vtkImageData (3x3, spacing (1,1)) + vtkStructuredGrid with identical 9 points",
+    "point_count": 9,
+    "scalar_array": "vtk-point-data-scalars-0",
+    "vector_array": "vtk-point-data-vectors-0"
+  },
+  "measurements": [
+    {
+      "operation": "field-extent",
+      "vtk_kernel": "vtkDataArray::GetRange",
+      "range": [
+        0.0,
+        14.0
+      ],
+      "value": 14.0
+    },
+    {
+      "operation": "field-mean",
+      "vtk_kernel": "vtkImageAccumulate::GetMean",
+      "value": 7.0
+    },
+    {
+      "operation": "field-norm-l1",
+      "method": "Python-side reduction over vtkDataArray::GetTuple values (VTK ships no L1-norm filter; the data comes from the VTK array)",
+      "value": 63.0
+    },
+    {
+      "operation": "field-integral",
+      "method": "vtkIntegrateAttributes (vtkFiltersParallel; point data averaged to cells and integrated over cell areas)",
+      "value": 28.0
+    }
+  ],
+  "declared_units": {
+    "value": "K",
+    "coordinate": "m"
+  },
+  "declared_tolerance": {
+    "value": 0.01
+  }
+}

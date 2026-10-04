@@ -1,0 +1,241 @@
+{
+  "tool": "ifcopenshell",
+  "ifcopenshell_version": "0.9.0",
+  "python_version": "3.12.14",
+  "fixture": {
+    "path": "/home/z/my-project/scripts/fixtures/minimal-semantic-model.ifc",
+    "sha256": "d5be93d5d8ae79b4c30f40c6f3d46607e4b76eac717ac075a27a6b1c2526ecb8"
+  },
+  "schema_identifier": "IFC4",
+  "file_name": "minimal-semantic-model.ifc",
+  "file_description": [
+    "AISE WORLD-P0-B minimal semantic IFC4 fixture"
+  ],
+  "entity_total": 37,
+  "entity_ids_in_iteration_order": [
+    42,
+    41,
+    40,
+    39,
+    38,
+    37,
+    36,
+    35,
+    13,
+    12,
+    11,
+    10,
+    8,
+    7,
+    6,
+    9,
+    5,
+    34,
+    4,
+    33,
+    3,
+    32,
+    2,
+    31,
+    1,
+    30,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "entity_counts_by_class": {
+    "IfcAxis2Placement3D": 1,
+    "IfcBuilding": 1,
+    "IfcBuildingStorey": 1,
+    "IfcCartesianPoint": 1,
+    "IfcClassification": 1,
+    "IfcClassificationReference": 1,
+    "IfcDoor": 1,
+    "IfcElementQuantity": 1,
+    "IfcGeometricRepresentationContext": 1,
+    "IfcLocalPlacement": 1,
+    "IfcOpeningElement": 1,
+    "IfcOwnerHistory": 1,
+    "IfcProductDefinitionShape": 1,
+    "IfcProject": 1,
+    "IfcPropertySet": 1,
+    "IfcPropertySingleValue": 3,
+    "IfcQuantityArea": 1,
+    "IfcQuantityLength": 1,
+    "IfcQuantityVolume": 1,
+    "IfcRelAggregates": 3,
+    "IfcRelAssociatesClassification": 1,
+    "IfcRelContainedInSpatialStructure": 1,
+    "IfcRelDefinesByProperties": 2,
+    "IfcRelVoidsElement": 1,
+    "IfcSIUnit": 3,
+    "IfcShapeRepresentation": 1,
+    "IfcSite": 1,
+    "IfcSlab": 1,
+    "IfcUnitAssignment": 1,
+    "IfcWall": 1
+  },
+  "classes_in_iteration_order": [
+    "IfcRelAssociatesClassification",
+    "IfcClassificationReference",
+    "IfcClassification",
+    "IfcRelDefinesByProperties",
+    "IfcQuantityVolume",
+    "IfcQuantityArea",
+    "IfcQuantityLength",
+    "IfcElementQuantity",
+    "IfcWall",
+    "IfcBuildingStorey",
+    "IfcBuilding",
+    "IfcSite",
+    "IfcSIUnit",
+    "IfcSIUnit",
+    "IfcSIUnit",
+    "IfcCartesianPoint",
+    "IfcAxis2Placement3D",
+    "IfcRelDefinesByProperties",
+    "IfcUnitAssignment",
+    "IfcPropertySingleValue",
+    "IfcGeometricRepresentationContext",
+    "IfcPropertySingleValue",
+    "IfcOwnerHistory",
+    "IfcPropertySingleValue",
+    "IfcProject",
+    "IfcPropertySet",
+    "IfcLocalPlacement",
+    "IfcSlab",
+    "IfcOpeningElement",
+    "IfcDoor",
+    "IfcProductDefinitionShape",
+    "IfcShapeRepresentation",
+    "IfcRelAggregates",
+    "IfcRelAggregates",
+    "IfcRelAggregates",
+    "IfcRelContainedInSpatialStructure",
+    "IfcRelVoidsElement"
+  ],
+  "spatial_tree": [
+    {
+      "stepRef": "#1",
+      "class": "IfcProject",
+      "guid": "0xScRe4drECQ4DMSqUjd6d",
+      "name": "Minimal Project"
+    },
+    {
+      "stepRef": "#10",
+      "class": "IfcSite",
+      "guid": "2YBbeV$z5DZAMc0nC4rd6d",
+      "name": "Site Alpha"
+    },
+    {
+      "stepRef": "#11",
+      "class": "IfcBuilding",
+      "guid": "2FC50d1t5EQBcVMletRjdx",
+      "name": "Building A"
+    },
+    {
+      "stepRef": "#12",
+      "class": "IfcBuildingStorey",
+      "guid": "0vSTM8sWbCCwxCMX1XCK2l",
+      "name": "Ground Floor"
+    }
+  ],
+  "elements": [
+    {
+      "stepRef": "#13",
+      "class": "IfcWall",
+      "guid": "2FC50d1t5EQBcVMletRj35",
+      "name": "Wall-001"
+    },
+    {
+      "stepRef": "#15",
+      "class": "IfcSlab",
+      "guid": "0YvSMV0000000000000080",
+      "name": "Slab-001"
+    },
+    {
+      "stepRef": "#16",
+      "class": "IfcOpeningElement",
+      "guid": "3xScRe4drECQ4DMSqUjd6c",
+      "name": "Opening-001"
+    },
+    {
+      "stepRef": "#17",
+      "class": "IfcDoor",
+      "guid": "3xScRe4drECQ4DMSqUjd6e",
+      "name": "Door-001"
+    }
+  ],
+  "wall_containment": {
+    "rel": "#23",
+    "relating_storey": "0vSTM8sWbCCwxCMX1XCK2l",
+    "related_guids": [
+      "2FC50d1t5EQBcVMletRj35",
+      "0YvSMV0000000000000080",
+      "3xScRe4drECQ4DMSqUjd6c",
+      "3xScRe4drECQ4DMSqUjd6e"
+    ]
+  },
+  "property_set": {
+    "rel": "#34",
+    "name": "Pset_WallCommon",
+    "relates": "2FC50d1t5EQBcVMletRj35",
+    "properties": [
+      {
+        "name": "IsExternal",
+        "nominal": true
+      },
+      {
+        "name": "LoadBearing",
+        "nominal": false
+      },
+      {
+        "name": "ThermalTransmittance",
+        "nominal": 0.35
+      }
+    ]
+  },
+  "quantity_set": {
+    "rel": "#39",
+    "name": "Qto_WallBaseQuantities",
+    "relates": "2FC50d1t5EQBcVMletRj35",
+    "typed_quantities_reading": null,
+    "fixture_order_finding": {
+      "typed_api_quantities": "None (the IFC4 typed reader takes slot 5, which the fixture fills with $ Units)",
+      "raw_slot_5": "None",
+      "raw_slot_6": "ENGINE REFUSED: An unknown error occurred"
+    }
+  },
+  "relationship_counts": {
+    "IfcRelAggregates": 3,
+    "IfcRelContainedInSpatialStructure": 1,
+    "IfcRelVoidsElement": 1,
+    "IfcRelDefinesByProperties": 2,
+    "IfcRelAssociatesClassification": 1
+  },
+  "classification_chain": {
+    "classification": {
+      "step_ref": "#40",
+      "source_name": "OmniClass"
+    },
+    "reference": {
+      "step_ref": "#41",
+      "identification": "Walls",
+      "name": null
+    },
+    "association": {
+      "step_ref": "#42",
+      "related_guids": [
+        "2FC50d1t5EQBcVMletRj35"
+      ]
+    }
+  }
+}

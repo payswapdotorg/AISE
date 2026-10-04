@@ -1,0 +1,63 @@
+{
+  "tool": "ifcopenshell",
+  "ifcopenshell_version": "0.9.0",
+  "python_version": "3.12.14",
+  "fixture": {
+    "path": "/home/z/my-project/scripts/fixtures/minimal-semantic-model.ifc",
+    "sha256": "d5be93d5d8ae79b4c30f40c6f3d46607e4b76eac717ac075a27a6b1c2526ecb8"
+  },
+  "statement_order_in_file": [
+    "#42=IfcRelAssociatesClassification",
+    "#41=IfcClassificationReference",
+    "#40=IfcClassification"
+  ],
+  "by_type_enumeration_order": [
+    "#41"
+  ],
+  "reference_count": 1,
+  "references": [
+    {
+      "step_ref": "#41",
+      "class": "IfcClassificationReference",
+      "get_info_dump": {
+        "id": "41",
+        "type": "IfcClassificationReference",
+        "Location": "23.27.10.11.11.24.11",
+        "Identification": "Walls",
+        "Name": "None",
+        "ReferencedSource": "#40=IfcClassification($,$,$,'OmniClass','AISE fixture classification table','https://www.csiresources.org/standards/omniclass',$)",
+        "Description": "None",
+        "Sort": "None"
+      },
+      "named_access": {
+        "Identification": "Walls",
+        "Name": "None",
+        "Location": "23.27.10.11.11.24.11",
+        "ReferencedSource": "#40=IfcClassification",
+        "Description": "None"
+      },
+      "attribute_values_in_schema_order": [
+        "41",
+        "IfcClassificationReference",
+        "Walls",
+        "None",
+        "23.27.10.11.11.24.11",
+        "#40",
+        "None"
+      ],
+      "fixture_slot_0_note": "the fixture writes the OmniClass code at attribute slot 0; the in-repo doubles document slot 0 as Identification; ifcopenshell 0.9.0 under IFC4 names slot 0 Location \u2014 see the fixture-order finding in MEASUREMENTS.md"
+    }
+  ],
+  "association_traversal": {
+    "rel_step_ref": "#42",
+    "rel_class": "IfcRelAssociatesClassification",
+    "related": "#13=IfcWall",
+    "relating_classification": "#41=IfcClassificationReference",
+    "wall_guid": "2FC50d1t5EQBcVMletRj35",
+    "wall_name": "Wall-001"
+  },
+  "util_element_get_psets_keys": [
+    "Pset_WallCommon",
+    "Qto_WallBaseQuantities"
+  ]
+}
