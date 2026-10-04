@@ -1,0 +1,25 @@
+{
+  "name": "@aise/world-solution-substrate",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE Solution-layer + desktop substrate contracts (WORLD-P0-C): substrate-neutral typed adapter contracts for the Layer-3 solution world — the scene-usage contract composing the P0-A reality ports (Babylon scene runtime with the ghost-distinctness law honored end-to-end, USD what-if variants with paths never canonical identity, glTF solution-asset delivery), the parametric CAD contract (FreeCAD the reference implementation; engine-neutral; document/object names are namespaced external labels, never AISE identity; exact-geometry predicates delegate to the P0-B exact-geometry port vocabulary with tolerance-DECLARED comparisons; glTF/IFC export through the sibling delivery/interpretation vocabularies), the execution-simulation contract (deterministic 4D typed transforms over the canonical Solution Graph + EngineeringOperation vocabulary — the substrate computes trajectories, the Solution Graph stays the only authority), and the desktop shell integration contract (shell lifecycle, typed sidecar spawn/query/teardown for the heavy substrates, window/view state — implementable by EITHER shell candidate). Every contract is proven implementable WITHOUT its substrate by in-memory substitution doubles; no substrate is imported; failures use the HFX-000 closed vocabulary; determinism throughout (no network, no clock reads, no randomness).",
+  "exports": {
+    ".": "./src/index.ts",
+    "./seam": "./src/seam.ts",
+    "./scene": "./src/scene/contract.ts",
+    "./cad": "./src/cad/contract.ts",
+    "./simulation": "./src/simulation/contract.ts",
+    "./desktop": "./src/desktop/contract.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/provider-registry": "workspace:*",
+    "@aise/shared-contracts": "workspace:*",
+    "@aise/solution-contract": "workspace:*",
+    "@aise/world-reality-substrate": "workspace:*",
+    "@aise/world-understanding-substrate": "workspace:*"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "item": "WORLD-P0-C",
+  "substrate": "FreeCAD 1.0.0 (conda AppImage, Linux x86_64, extracted, headless FreeCADCmd)",
+  "method": "FreeCADCmd (same build) executing the export probe: Import.export([pad], '*.ifc') (bare PartDesign object), Mesh.export([pad], '*.stl'), glTF exporter presence probe, ifcopenshell importability check.",
+  "probe_script": "cad_export_probe.py",
+  "observedAt": "2026-10-04 (sandbox wall clock \u2014 metadata only, not a contract input)",
+  "console_banner": [
+    "FreeCAD 1.0.0, Libs: 1.0.0R39109 (Git)",
+    "(C) 2001-2024 FreeCAD contributors",
+    "FreeCAD is free and open-source software licensed under the terms of LGPL2+ license.",
+    "Recompute......"
+  ],
+  "payload": {
+    "pad_volume_mm3": 20000000000.0,
+    "ifc_export_ms": 4.2,
+    "ifc_export_error": "FileNotFoundError: [Errno 2] No such file or directory: 'aise_export.ifc'",
+    "stl_export_ms": 4.3,
+    "stl_bytes": 684,
+    "gltf_exporter_present": false,
+    "gltf_note": "no core glTF exporter in FreeCAD 1.0.0 headless (the adapter lane is Mesh/STL or OBJ tessellation + external conversion; the AISE glTF delivery port stays the delivery vocabulary either way)"
+  }
+}
