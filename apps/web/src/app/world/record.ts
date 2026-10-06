@@ -29,6 +29,10 @@ import {
   type StationElementStatus,
 } from "@aise/world-ux";
 import type { CameraState } from "@aise/world-reality-substrate";
+import {
+  buildStationViewportProjection,
+  type StationViewportProjection,
+} from "./scene-projection";
 
 /* ------------------------------------------------------------------ */
 /* The record shape (the browser mount's whole world)                   */
@@ -59,6 +63,13 @@ export interface StationRecord {
     readonly visibleByDefault: boolean;
   }[];
   readonly elements: readonly StationRecordElement[];
+  /**
+   * WORLD-P5 Mount 1: the declared-geometry viewport projection (the
+   * real Babylon mount's scene + box table). Additive — the element
+   * status index, the panels and the station identity are unchanged
+   * by it (presentation geometry is not station identity).
+   */
+  readonly viewport: StationViewportProjection;
   readonly hud: {
     readonly panels: readonly {
       readonly panelId: string;
@@ -139,6 +150,7 @@ export function buildStationRecord(): StationRecord {
       visibleByDefault: layer.visibleByDefault,
     })),
     elements,
+    viewport: buildStationViewportProjection(model),
     hud: { panels },
   };
 }

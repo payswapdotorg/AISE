@@ -43,6 +43,24 @@ export interface SolutionQuery {
   readonly step?: number;
 }
 
+/**
+ * WORLD-P5 (additive) — the world route's query: the LIVE station's
+ * project scope (served by the backend's world-station route), the
+ * deep-linked engineering case, and the in-world deep link (the
+ * prepared `parseWorldHashQuery` seam of the world route — the
+ * element/panel the journey opens at).
+ */
+export interface WorldQuery {
+  /** The LIVE project scope — absent renders the committed station. */
+  readonly project?: string;
+  /** The deep-linked engineering case of the live station. */
+  readonly case?: string;
+  /** The in-world element deep link (percent-encoded verbatim). */
+  readonly element?: string;
+  /** The in-world HUD panel deep link. */
+  readonly panel?: string;
+}
+
 /** Every route the product shell can address (the surfaces + meta). */
 export type Route =
   | { readonly name: "dashboard" }
@@ -69,6 +87,11 @@ export type Route =
       readonly query: SolutionQuery;
     }
   | { readonly name: "outcomes"; readonly projectId: string }
+  | {
+      /** WORLD-P5: the world station — the spatial engineering world. */
+      readonly name: "world";
+      readonly query: WorldQuery;
+    }
   | { readonly name: "settings" }
   | { readonly name: "not-found"; readonly hash: string };
 
@@ -83,6 +106,7 @@ export type SurfaceName =
   | "intervention"
   | "solution"
   | "outcomes"
+  | "world"
   | "settings";
 
 /** The per-project surfaces (everything under `#/projects/:id/…`). */
@@ -149,6 +173,8 @@ export function routeSurface(route: Route): SurfaceName | "projects-overview" | 
       return "capture";
     case "sitetwin":
       return "sitetwin";
+    case "world":
+      return "world";
     case "boq-lens":
       return "boq-lens";
     case "case":
@@ -210,6 +236,12 @@ export function parseHash(hash: string): Route {
     }
     if (head === "settings") {
       return rejectQuery(query, hash, { name: "settings" });
+    }
+    /* WORLD-P5: `#/world[?project=…&case=…&element=…&panel=…]` — the
+     * world station (the committed station by default; the LIVE
+     * station when a project scope is queried). */
+    if (head === "world") {
+      return parseWorldRouteQuery(query, hash);
     }
     return { name: "not-found", hash };
   }
@@ -325,6 +357,54 @@ function parseInterventionQuery(
  * parse order. The canonical formatting order is `case` first, then
  * `boq-line`, then `step`.
  */
+
+/* WORLD-P5 — parse the world route's query (the closed parameter set:
+ * project / case / element / panel; anything else is a typed
+ * not-found rejection, mirroring the codec's address discipline). */
+function parseWorldRouteQuery(query: string | null, hash: string): Route {
+  if (query === null) {
+    return { name: "world", query: {} };
+  }
+  let project: string | undefined;
+  let caseId: string | undefined;
+  let element: string | undefined;
+  let panel: string | undefined;
+  if (query !== "") {
+    for (const pair of query.split("&")) {
+      const equals = pair.indexOf("=");
+      if (equals <= 0) {
+        return { name: "not-found", hash };
+      }
+      const key = pair.slice(0, equals);
+      const value = pair.slice(equals + 1);
+      const decoded = decodeSegment(value);
+      if (decoded === null || decoded.trim().length === 0) {
+        return { name: "not-found", hash };
+      }
+      if (key === "project") {
+        project = decoded;
+      } else if (key === "case") {
+        caseId = decoded;
+      } else if (key === "element") {
+        element = decoded;
+      } else if (key === "panel") {
+        panel = decoded;
+      } else {
+        return { name: "not-found", hash };
+      }
+    }
+  }
+  return {
+    name: "world",
+    query: {
+      ...(project !== undefined ? { project } : {}),
+      ...(caseId !== undefined ? { case: caseId } : {}),
+      ...(element !== undefined ? { element } : {}),
+      ...(panel !== undefined ? { panel } : {}),
+    },
+  };
+}
+
 function parseSolutionQuery(
   query: string | null,
   projectId: string,
@@ -428,6 +508,22 @@ export function formatRoute(route: Route): string {
         params.push(`step=${String(route.query.step)}`);
       }
       return params.length === 0 ? base : `${base}?${params.join("&")}`;
+    }
+    case "world": {
+      const params: string[] = [];
+      if (route.query.project !== undefined) {
+        params.push(`project=${encodeURIComponent(route.query.project)}`);
+      }
+      if (route.query.case !== undefined) {
+        params.push(`case=${encodeURIComponent(route.query.case)}`);
+      }
+      if (route.query.element !== undefined) {
+        params.push(`element=${encodeURIComponent(route.query.element)}`);
+      }
+      if (route.query.panel !== undefined) {
+        params.push(`panel=${encodeURIComponent(route.query.panel)}`);
+      }
+      return params.length === 0 ? "#/world" : `#/world?${params.join("&")}`;
     }
     case "settings":
       return "#/settings";

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "AISE desktop adapter (PROD-020) — an Electron thin installed shell over the existing web application (ACR-004 desktop specialization), exposing desktop-appropriate capabilities (high-density review, keyboard shortcuts, optional local integration affordances) over the shared @aise/adapter-contract semantic objects. Desktop actions resolve to the same shared server/domain actions as the browser adapter; no domain fork, no local-filesystem authority.",
+  "description": "AISE desktop adapter (PROD-020) \u2014 an Electron thin installed shell over the existing web application (ACR-004 desktop specialization), exposing desktop-appropriate capabilities (high-density review, keyboard shortcuts, optional local integration affordances) over the shared @aise/adapter-contract semantic objects. Desktop actions resolve to the same shared server/domain actions as the browser adapter; no domain fork, no local-filesystem authority.",
   "main": "dist/shell/main.js",
   "exports": {
     ".": "./src/adapter/index.ts"
@@ -15,7 +15,9 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@aise/adapter-contract": "workspace:*"
+    "@aise/adapter-contract": "workspace:*",
+    "@aise/world-reality-substrate": "workspace:*",
+    "@aise/world-scene-runtime": "workspace:*"
   },
   "devDependencies": {
     "electron": "^44.4.3",

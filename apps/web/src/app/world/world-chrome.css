@@ -1,0 +1,668 @@
+/**
+ * WORLD-P5 Mount 3 — the PRODUCTION HUD CHROME over the P4 station
+ * surface.
+ *
+ * THE COMPOSITION LAW (held by this stylesheet): the panels are DATA,
+ * the chrome is PRESENTATION. This file styles ONLY the station's
+ * EXISTING BEM classnames (the station surface file is untouched) plus
+ * the chrome mount's own `world-chrome-frame` wrapper — no new station
+ * classes exist to style, and nothing here alters rendered MARKUP:
+ * every animation, glow, bracket and texture is presentation-only CSS
+ * (the static-markup render of the station stays byte-identical).
+ *
+ * THE AESTHETIC — a restrained engineering dark theme (a diegetic
+ * field-ops console, not a consumer dashboard):
+ *   - deep charcoal-green surfaces (#101613 family) with a faint
+ *     scanline texture built from CSS gradients ONLY (zero assets);
+ *   - the ghost green #2dd96a family carries every "proposed/solution"
+ *     signal; amber #d9a441 carries every honest limitation;
+ *   - status chips keep their governed hues: captured #9a9486,
+ *     plan slate #7c8a99, ghost #2dd96a translucent, removed #c25e5e;
+ *   - the viewport is framed as a diegetic sensor feed (corner
+ *     brackets + vignette); the camera readout is monospace;
+ *   - every interactive element keeps a 44px-min touch target and a
+ *     :focus-visible ring (keyboard accessibility is presentation
+ *     discipline too);
+ *   - prefers-reduced-motion disables every animation.
+ */
+
+/* ------------------------------------------------------------------ */
+/* The chrome frame (the mount's wrapper — fills the viewport)          */
+/* ------------------------------------------------------------------ */
+
+.world-chrome-frame {
+  /* The chrome's design tokens (scoped to the frame — nothing leaks). */
+  --wc-bg: #101613;
+  --wc-bg-raised: #141d17;
+  --wc-bg-inset: #0c110e;
+  --wc-bg-panel: rgba(17, 25, 20, 0.86);
+  --wc-line: #26332c;
+  --wc-line-strong: #35463c;
+  --wc-text: #d8e4dc;
+  --wc-text-dim: #8fa396;
+  --wc-text-faint: #66786d;
+  --wc-accent: #2dd96a;
+  --wc-accent-line: rgba(45, 217, 106, 0.65);
+  --wc-accent-soft: rgba(45, 217, 106, 0.12);
+  --wc-amber: #d9a441;
+  --wc-amber-soft: rgba(217, 164, 65, 0.12);
+  --wc-captured: #9a9486;
+  --wc-plan: #7c8a99;
+  --wc-ghost: #2dd96a;
+  --wc-removed: #c25e5e;
+  --wc-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  box-sizing: border-box;
+
+  color: var(--wc-text);
+  background-color: var(--wc-bg);
+  /* The scanline texture + a faint top glow — CSS gradients only. */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(216, 228, 220, 0.016) 0 1px,
+      transparent 1px 3px
+    ),
+    radial-gradient(130% 80% at 50% 0%, rgba(45, 217, 106, 0.045), transparent 62%);
+
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--wc-line-strong) transparent;
+}
+
+.world-chrome-frame *,
+.world-chrome-frame *::before,
+.world-chrome-frame *::after {
+  box-sizing: border-box;
+}
+
+/* ------------------------------------------------------------------ */
+/* The station shell (the sticky-footer discipline inside the frame)    */
+/* ------------------------------------------------------------------ */
+
+.world-station {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+}
+
+/* The mission bar (the station header). */
+.world-station__header {
+  flex: 0 0 auto;
+  padding: 14px 22px 12px;
+  border-bottom: 1px solid var(--wc-line);
+  background:
+    linear-gradient(180deg, rgba(45, 217, 106, 0.05), transparent 80%),
+    var(--wc-bg-raised);
+}
+
+.world-station__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wc-text);
+}
+
+/* The mission-bar status lamp (a diegetic "feed live" marker). */
+.world-station__title::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  background: var(--wc-accent);
+  box-shadow: 0 0 9px rgba(45, 217, 106, 0.55);
+}
+
+.world-station__meta {
+  margin: 5px 0 0;
+  font-family: var(--wc-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--wc-text-faint);
+  /* Long canonical ids wrap anywhere — never bleed the mission bar. */
+  overflow-wrap: anywhere;
+}
+
+/* The working body: the scene owns the wide column, the HUD the rail. */
+.world-station__body {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 384px);
+  gap: 16px;
+  align-items: start;
+  padding: 16px;
+}
+
+/* ------------------------------------------------------------------ */
+/* The scene column (the deterministic presentation layer)              */
+/* ------------------------------------------------------------------ */
+
+.world-scene {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  animation: world-chrome-scene-enter 0.3s ease-out backwards;
+}
+
+/* The diegetic sensor feed: corner brackets + vignette + scanlines. */
+.world-scene__viewport {
+  position: relative;
+  min-height: 340px;
+  overflow: hidden;
+  border: 1px solid var(--wc-line-strong);
+  background-color: var(--wc-bg-inset);
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(216, 228, 220, 0.022) 0 1px,
+      transparent 1px 4px
+    ),
+    radial-gradient(120% 100% at 50% 0%, #131c16 0%, #0c110e 55%, #090d0b 100%);
+  box-shadow: inset 0 0 64px rgba(4, 8, 6, 0.8);
+}
+
+/* The honest fallback: if the real GPU engine could not come up, the
+ * sensor feed declares it (amber dashed frame — a limitation, never a
+ * fabrication). */
+.world-scene__viewport[data-gpu^="unavailable"] {
+  border-color: var(--wc-amber);
+  border-style: dashed;
+}
+
+/* The corner brackets (purely decorative — pointer-transparent). */
+.world-scene__viewport::before,
+.world-scene__viewport::after {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.world-scene__viewport::before {
+  top: 10px;
+  left: 10px;
+  border-top: 2px solid var(--wc-accent-line);
+  border-left: 2px solid var(--wc-accent-line);
+}
+
+.world-scene__viewport::after {
+  right: 10px;
+  bottom: 10px;
+  border-bottom: 2px solid var(--wc-accent-line);
+  border-right: 2px solid var(--wc-accent-line);
+}
+
+/* The camera readout overlays the feed — monospace, always readable. */
+.world-scene__camera,
+.world-scene__hint {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 10px 14px;
+  font-family: var(--wc-mono);
+  text-shadow: 0 1px 3px rgba(4, 8, 6, 0.9);
+  overflow-wrap: anywhere;
+}
+
+.world-scene__camera {
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--wc-accent);
+}
+
+.world-scene__hint {
+  font-size: 11px;
+  color: var(--wc-text-dim);
+}
+
+/* The real GPU canvas hosted inside the viewport (the P5 mount). */
+.world-scene__gpu-canvas {
+  display: block;
+}
+
+/* The layer table — toggle chips with governed AND-semantics. */
+.world-scene__layers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.world-layer-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--wc-line);
+  border-radius: 3px;
+  background: var(--wc-bg-raised);
+  color: var(--wc-text-dim);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.world-layer-toggle:hover {
+  border-color: var(--wc-line-strong);
+  color: var(--wc-text);
+}
+
+.world-layer-toggle input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--wc-accent);
+  cursor: pointer;
+}
+
+.world-layer-toggle input:focus-visible {
+  outline: 2px solid var(--wc-accent);
+  outline-offset: 2px;
+}
+
+/* The element roster — the governed list with the ghost-distinct rows. */
+.world-roster {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 26rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--wc-line-strong) transparent;
+}
+
+.world-roster::-webkit-scrollbar {
+  width: 8px;
+}
+
+.world-roster::-webkit-scrollbar-thumb {
+  background: var(--wc-line-strong);
+  border-radius: 4px;
+}
+
+.world-roster::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.world-roster__row {
+  margin: 0;
+}
+
+.world-roster__select {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-left: 3px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--wc-text-dim);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.14s ease, border-color 0.14s ease,
+    color 0.14s ease;
+}
+
+.world-roster__select:hover {
+  background: rgba(216, 228, 220, 0.045);
+  border-color: var(--wc-line);
+  color: var(--wc-text);
+}
+
+/* The selected element: the governed accent edge (typed state, styled). */
+.world-roster__select[data-selected="true"] {
+  border-left-color: var(--wc-accent);
+  background: var(--wc-accent-soft);
+  color: var(--wc-text);
+}
+
+/* A row hidden by layer semantics stays honest (dimmed, still listed). */
+.world-roster__select[data-visible="false"] {
+  opacity: 0.45;
+}
+
+.world-roster__select:focus-visible {
+  outline: 2px solid var(--wc-accent);
+  outline-offset: 2px;
+}
+
+.world-roster__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The ghost mark pulses — a live proposal marker, presentation-only. */
+.world-roster__ghost-mark {
+  color: var(--wc-ghost);
+  font-size: 15px;
+  animation: world-chrome-ghost-pulse 2.4s ease-in-out infinite;
+}
+
+/* The typed selection readout. */
+.world-scene__selection {
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px dashed rgba(45, 217, 106, 0.45);
+  border-radius: 3px;
+  background: var(--wc-accent-soft);
+  font-family: var(--wc-mono);
+  font-size: 12px;
+  color: var(--wc-accent);
+  /* Selected ids can be long hashes — wrap, never bleed. */
+  overflow-wrap: anywhere;
+}
+
+/* The camera operations — the scene's control strip. */
+.world-scene__camera-ops {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.world-camera-op {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--wc-line);
+  border-radius: 3px;
+  background: var(--wc-bg-raised);
+  color: var(--wc-text-dim);
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: border-color 0.14s ease, color 0.14s ease, background-color 0.14s ease;
+}
+
+.world-camera-op:hover {
+  border-color: var(--wc-accent-line);
+  background: #18211a;
+  color: var(--wc-text);
+}
+
+.world-camera-op:active {
+  transform: translateY(1px);
+}
+
+.world-camera-op:focus-visible {
+  outline: 2px solid var(--wc-accent);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ */
+/* The status chips (the governed element statuses as game-feel badges) */
+/* ------------------------------------------------------------------ */
+
+.world-chip {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border: 1px solid;
+  border-radius: 3px;
+  font-family: var(--wc-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.world-chip--capture-asset {
+  color: var(--wc-captured);
+  border-color: rgba(154, 148, 134, 0.55);
+  background: rgba(154, 148, 134, 0.1);
+}
+
+.world-chip--annotation {
+  color: var(--wc-amber);
+  border-color: rgba(217, 164, 65, 0.5);
+  background: var(--wc-amber-soft);
+}
+
+.world-chip--plan {
+  color: var(--wc-plan);
+  border-color: rgba(124, 138, 153, 0.55);
+  background: rgba(124, 138, 153, 0.12);
+}
+
+/* The proposed ghost glows — the solution signal, restrained but live. */
+.world-chip--proposed-ghost {
+  color: var(--wc-ghost);
+  border-color: var(--wc-accent-line);
+  background: var(--wc-accent-soft);
+  animation: world-chrome-chip-glow 2.8s ease-in-out infinite;
+}
+
+/* The proposed removal is struck through — removed yet resolvable. */
+.world-chip--proposed-removed {
+  color: var(--wc-removed);
+  border-color: rgba(194, 94, 94, 0.55);
+  background: rgba(194, 94, 94, 0.1);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(194, 94, 94, 0.85);
+}
+
+/* ------------------------------------------------------------------ */
+/* The HUD (the restrained seven-panel rail of glass panels)            */
+/* ------------------------------------------------------------------ */
+
+.world-hud {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.world-hud-panel {
+  position: relative;
+  padding: 12px 14px;
+  border: 1px solid var(--wc-line);
+  border-left-width: 3px;
+  border-left-style: solid;
+  border-radius: 3px;
+  background: var(--wc-bg-panel);
+  backdrop-filter: blur(5px);
+  animation: world-chrome-panel-enter 0.32s ease-out backwards;
+  transition: transform 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* Hover elevation — the panel answers the pointer (presentation only). */
+.world-hud-panel:hover {
+  transform: translateY(-2px);
+  border-color: var(--wc-line-strong);
+  box-shadow: 0 8px 22px rgba(3, 7, 5, 0.45);
+}
+
+/* The honest content states tint the panel's left edge. */
+.world-hud-panel--populated {
+  border-left-color: var(--wc-accent);
+}
+
+.world-hud-panel--empty {
+  border-left-color: var(--wc-line-strong);
+}
+
+.world-hud-panel--unavailable {
+  border-left-color: var(--wc-amber);
+}
+
+/* The staggered entrance (backwards fill: natural styles after, so the
+ * hover transform keeps working once the panels have landed). */
+.world-hud-panel:nth-child(1) { animation-delay: 0.03s; }
+.world-hud-panel:nth-child(2) { animation-delay: 0.08s; }
+.world-hud-panel:nth-child(3) { animation-delay: 0.13s; }
+.world-hud-panel:nth-child(4) { animation-delay: 0.18s; }
+.world-hud-panel:nth-child(5) { animation-delay: 0.23s; }
+.world-hud-panel:nth-child(6) { animation-delay: 0.28s; }
+.world-hud-panel:nth-child(7) { animation-delay: 0.33s; }
+
+.world-hud-panel__title {
+  margin: 0 0 7px;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wc-text-dim);
+}
+
+.world-hud-panel__note,
+.world-hud-panel__summary,
+.world-hud-panel__link {
+  /* Panel data carries long canonical ids (operators, evidence) —
+   * they wrap within the panel, never past its edge. */
+  overflow-wrap: anywhere;
+}
+
+.world-hud-panel__note {
+  margin: 0 0 7px;
+  font-size: 12px;
+  color: var(--wc-amber);
+}
+
+.world-hud-panel__summary {
+  margin: 0;
+  font-size: 13px;
+  color: var(--wc-text);
+}
+
+/* The concern link (the selected element's panel linkage). */
+.world-hud-panel__link {
+  margin: 8px 0 0;
+  padding-top: 7px;
+  border-top: 1px dashed var(--wc-line);
+  font-family: var(--wc-mono);
+  font-size: 11.5px;
+  color: var(--wc-accent);
+}
+
+/* ------------------------------------------------------------------ */
+/* The chrome's motion vocabulary (all presentation-only)               */
+/* ------------------------------------------------------------------ */
+
+@keyframes world-chrome-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes world-chrome-scene-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes world-chrome-ghost-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes world-chrome-chip-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 6px rgba(45, 217, 106, 0.22);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(45, 217, 106, 0.5);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsive discipline                                                */
+/* ------------------------------------------------------------------ */
+
+/* Below 900px the body collapses to ONE column — the scene first (the
+ * DOM order), the HUD rail after it. */
+@media (max-width: 900px) {
+  .world-station__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Below 600px the chrome compacts (touch targets stay at the 44px floor). */
+@media (max-width: 600px) {
+  .world-station__header {
+    padding: 10px 12px 9px;
+  }
+
+  .world-station__meta {
+    font-size: 10px;
+  }
+
+  .world-station__body {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .world-scene__viewport {
+    min-height: 260px;
+  }
+
+  .world-hud {
+    gap: 8px;
+  }
+
+  .world-hud-panel {
+    padding: 10px 11px;
+  }
+
+  .world-camera-op {
+    flex: 1 1 auto;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* prefers-reduced-motion: every animation and transition is disabled   */
+/* ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .world-chrome-frame,
+  .world-chrome-frame *,
+  .world-chrome-frame *::before,
+  .world-chrome-frame *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

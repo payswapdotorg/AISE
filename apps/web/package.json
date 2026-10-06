@@ -15,11 +15,14 @@
     "vite": "^8.3.0"
   },
   "dependencies": {
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
     "@aise/adapter-contract": "workspace:*",
-    "@aise/world-ux": "workspace:*",
+    "@aise/solution-contract": "workspace:*",
     "@aise/world-layer1-experience": "workspace:*",
-    "@aise/world-reality-substrate": "workspace:*"
+    "@aise/world-layer3-experience": "workspace:*",
+    "@aise/world-reality-substrate": "workspace:*",
+    "@aise/world-scene-runtime": "workspace:*",
+    "@aise/world-ux": "workspace:*",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   }
 }
