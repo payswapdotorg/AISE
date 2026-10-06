@@ -48,6 +48,7 @@ import { SiteTwin } from "./surfaces/SiteTwin";
 import { CaptureMission } from "./surfaces/CaptureMission";
 import { BoqLensSurface } from "./surfaces/BoqLens";
 import { EngineeringCase } from "./surfaces/EngineeringCase";
+import { WorldScreen } from "./world-screen";
 import { InterventionStudio } from "./surfaces/InterventionStudio";
 import { SolutionSurface } from "./surfaces/Solution";
 import { Outcomes } from "./surfaces/Outcomes";
@@ -413,6 +414,8 @@ function RoutedSurface({
           <Outcomes projectId={route.projectId} />
         </TaskFlowSurface>
       );
+    case "world":
+      return <WorldScreen key={routeKey(route)} query={route.query} />;
     case "settings":
       return (
         <Settings

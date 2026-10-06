@@ -1,0 +1,104 @@
+WORLD-P5 real-substrate performance measurements (REAL run — the P1 protocol executed verbatim)
+recorded: 2026-10-06T07:29:21.593Z
+sandbox: bun 1.3.14, Linux x64, 2 cores, NO GPU DEVICE (/dev/dri absent — software legs only where a GPU is required)
+adapters: @babylonjs/core 8.56.2 (the real occupant of the P0-A babylon.scene-runtime/1 port)
+
+== 1. THE REAL BABYLON ADAPTER — NullEngine CPU-side costs (ingest / layer toggling / camera / pick / render) ==
+engine: Babylon.js NullEngine (real scene graph, real CPU ray picking; NO GPU — the gpu legs are declared below)
+
+engine create+shutdown (fresh runtime) | runs=25 | median=0.0290 ms | p95=0.0623 ms
+
+fixture N=10:
+  ingest (loadScene + dispose) [N=10] | runs=25 | median=2.6612 ms | p95=28.5245 ms
+  layer toggling (setLayerVisible ×2) [N=10] | runs=25 | median=0.0188 ms | p95=0.0449 ms
+  camera application (setCamera) [N=10] | runs=25 | median=0.0028 ms | p95=0.0968 ms
+  pick at screen center (real CPU ray) [N=10] | runs=25 | median=0.0820 ms | p95=0.1510 ms
+  headless render pass (renderOnce + frameStats) [N=10] | runs=25 | median=0.1922 ms | p95=0.6703 ms
+  census after render: drawCalls=0 activeMeshes=10 (NullEngine draw calls may honestly be 0 — no GL pipeline executes headless)
+
+fixture N=100:
+  ingest (loadScene + dispose) [N=100] | runs=25 | median=9.3001 ms | p95=35.9627 ms
+  layer toggling (setLayerVisible ×2) [N=100] | runs=25 | median=0.3137 ms | p95=0.3784 ms
+  camera application (setCamera) [N=100] | runs=25 | median=0.0022 ms | p95=0.0056 ms
+  pick at screen center (real CPU ray) [N=100] | runs=25 | median=0.1607 ms | p95=0.2516 ms
+  headless render pass (renderOnce + frameStats) [N=100] | runs=25 | median=1.0598 ms | p95=1.6026 ms
+  census after render: drawCalls=0 activeMeshes=100 (NullEngine draw calls may honestly be 0 — no GL pipeline executes headless)
+
+fixture N=1000:
+  ingest (loadScene + dispose) [N=1000] | runs=25 | median=66.9911 ms | p95=266.1898 ms
+  layer toggling (setLayerVisible ×2) [N=1000] | runs=25 | median=12.3212 ms | p95=12.7399 ms
+  camera application (setCamera) [N=1000] | runs=25 | median=0.0013 ms | p95=0.0210 ms
+  pick at screen center (real CPU ray) [N=1000] | runs=25 | median=1.6872 ms | p95=2.0485 ms
+  headless render pass (renderOnce + frameStats) [N=1000] | runs=25 | median=6.8665 ms | p95=28.3751 ms
+  census after render: drawCalls=0 activeMeshes=1000 (NullEngine draw calls may honestly be 0 — no GL pipeline executes headless)
+
+== 2. THE P1 CONTRACT FLOORS re-measured (the same fixture discipline, this tree — the no-regression check) ==
+  compose world (P1 lane, assets=10 plan=100) | runs=25 | median=0.4970 ms | p95=1.9323 ms
+  compose world (P1 lane, assets=100 plan=100) | runs=25 | median=1.0665 ms | p95=7.7101 ms
+  compose world (P1 lane, assets=1000 plan=100) | runs=25 | median=7.1341 ms | p95=45.4550 ms
+  what-is-here (P1 lane, 1000-asset world) | runs=100 | median=0.0358 ms | p95=0.0498 ms
+  what-changed (P1 lane, 1000-asset world rev1→rev2) | runs=25 | median=0.7666 ms | p95=0.9906 ms
+  measurement queries ×5 (P1 lane, 1000-asset world) | runs=100 | median=0.0131 ms | p95=0.0215 ms
+
+== 3. THE P4 UI QUERY COSTS at the fixture scales (the browser-safe reducer — the route's own query functions) ==
+  resolveRecordElement [N=10] | runs=100 | median=0.0004 ms | p95=0.0061 ms
+  reduce select + toggle-layer [N=10] | runs=100 | median=0.0031 ms | p95=0.0124 ms
+  resolveRecordElement [N=100] | runs=100 | median=0.0006 ms | p95=0.0014 ms
+  reduce select + toggle-layer [N=100] | runs=100 | median=0.0010 ms | p95=0.0029 ms
+  resolveRecordElement [N=1000] | runs=100 | median=0.0042 ms | p95=0.0144 ms
+  reduce select + toggle-layer [N=1000] | runs=100 | median=0.0010 ms | p95=0.0028 ms
+
+== 4. THE BROWSER RENDER LEGS — SOFTWARE-RENDERED (SwiftShader) SUPPLEMENTARY OBSERVATIONS ==
+THIS SANDBOX HAS NO GPU DEVICE — these are NOT real-GPU numbers (the real-GPU legs are declared BLOCKED below).
+Every row carries the renderer string (the protocol's hardware-declaration law).
+
+fixture N=10 (SOFTWARE-RENDERED — SwiftShader):
+  renderer: ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)
+  vendor: Google Inc. (Google) | version: WebGL 2.0 (OpenGL ES 3.0 Chromium)
+  warmup: ticks=1 → drawCalls=10 activeMeshes=10
+  frame time (renderOnce, 25 runs): median=0.300 ms | p95=1.000 ms
+  steady-state census: drawCalls=10 activeMeshes=10
+
+fixture N=100 (SOFTWARE-RENDERED — SwiftShader):
+  renderer: ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)
+  vendor: Google Inc. (Google) | version: WebGL 2.0 (OpenGL ES 3.0 Chromium)
+  warmup: ticks=1 → drawCalls=100 activeMeshes=100
+  frame time (renderOnce, 25 runs): median=1.700 ms | p95=3.600 ms
+  steady-state census: drawCalls=100 activeMeshes=100
+
+fixture N=1000 (SOFTWARE-RENDERED — SwiftShader):
+  renderer: ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)
+  vendor: Google Inc. (Google) | version: WebGL 2.0 (OpenGL ES 3.0 Chromium)
+  warmup: ticks=1 → drawCalls=1000 activeMeshes=1000
+  frame time (renderOnce, 25 runs): median=6.600 ms | p95=33.600 ms
+  steady-state census: drawCalls=1000 activeMeshes=1000
+
+pageerror events across the browser legs: 0
+
+== 5. DECLARED BLOCKED (the honesty law — zero fabricated numbers) ==
+
+BLOCKED: real-GPU frame time / draw-call counts at the fixtures.
+  blocker: this sandbox has NO GPU DEVICE — /dev/dri is absent and no VGA/DRM
+  device exists (the WORLD-P0-A recorded blocker, unchanged at P5). The browser
+  legs above render through SwiftShader SOFTWARE GL and are recorded as
+  supplementary software-render observations, never as GPU numbers.
+  unblocking protocol: run legs 1+4 on a machine with a real GPU device;
+  record GPU vendor/driver alongside every number (never average across
+  vendors); the SwiftShader rows above then remain as the software baseline.
+
+BLOCKED: Cesium 3D Tiles streaming/register costs on a real photogrammetry corpus.
+  blockers: (a) no campus-scale photogrammetry 3D Tiles corpus is available or
+  licensable in this sandbox (the Cesium ion sample corpora are commercial
+  cloud services — the P0-A license matrix records AISE consumes the
+  open-source engine only, no ion dependency); (b) no GPU device (as above);
+  (c) no real Cesium adapter is mounted in this delivery — the WORLD-P5 mounts
+  are the Babylon scene viewport per the work order; the P0-A cesium port
+  remains contract + in-memory double with its georeference round-trip measured
+  at contract level (WORLD-P0-A PERFORMANCE-OBSERVATIONS §3).
+  unblocking protocol: mount a real Cesium occupant of the P0-A cesium port,
+  source an open-licensed campus-scale 3D Tiles corpus, and measure streaming/
+  register costs + the georeference tolerance round-trip against the P0-A
+  declared tolerance on GPU-bearing hardware.
+
+== END (zero fabricated numbers — every row above was measured in this run; every
+   measurement that could not run is declared BLOCKED with its exact blocker) ==

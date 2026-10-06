@@ -314,6 +314,9 @@ import { FsRealityStore } from "./reality/store";
 import { handleCasesRequest, type CasesRouteOptions } from "./cases/router";
 import { CaseService } from "./cases/service";
 import { FsCaseStore } from "./cases/store";
+// WORLD-P5 Mount 5: the world-station live route (the live occupant of
+// the WorldStationSources ports over the backend's own governed state).
+import { handleWorldRequest, type WorldRouteOptions } from "./world/router";
 // AISE-026 routing: Intervention Studio surface — proposed scenario/step/
 // state layers materialized deterministically from a PINNED reality
 // baseline version (intervention/router.ts over intervention/service.ts,
@@ -474,6 +477,12 @@ export interface HandlerOptions {
   // directory (AISE_DATA_DIR, default ./data) plus a UTC wall clock is
   // constructed lazily on the FIRST case request (see casesRoutesOrDefault).
   cases?: CasesRouteOptions;
+  // WORLD-P5 Mount 5: injected world-station surface. When omitted, a
+  // default wiring over the FsRealityStore + FsCaseStore rooted at the
+  // configured data directory plus a UTC wall clock is constructed lazily
+  // on the FIRST world-station request (same discipline as the reality and
+  // case wirings — deployments without world traffic never pay the cost).
+  world?: WorldRouteOptions;
   // AISE-026 routing: injected Intervention Studio surface. When omitted, a
   // default InterventionService over the FsInterventionStore rooted at the
   // configured data directory (AISE_DATA_DIR, default ./data), a UTC wall
@@ -767,6 +776,28 @@ function boqRoutesOrDefault(options: HandlerOptions): BoqRouteOptions {
 // each createRequestHandler call owns one), never module-global: two handlers
 // over different data dirs can never leak each other's authorities.
 const defaultCasesRoutesByOptions = new WeakMap<HandlerOptions, CasesRouteOptions>();
+
+// WORLD-P5 Mount 5: memoized default world-station routing (see
+// HandlerOptions.world) — resolved only inside the /v1/world path guard.
+const defaultWorldRoutesByOptions = new WeakMap<HandlerOptions, WorldRouteOptions>();
+
+function worldRoutesOrDefault(options: HandlerOptions): WorldRouteOptions {
+  if (options.world !== undefined) {
+    return options.world;
+  }
+  let routes = defaultWorldRoutesByOptions.get(options);
+  if (routes === undefined) {
+    const result = validateEnv(options.envSource());
+    const dataDir = result.ok ? result.config.dataDir : "./data";
+    routes = {
+      realityStore: new FsRealityStore(dataDir),
+      caseStore: new FsCaseStore(dataDir),
+      clock: (): string => new Date().toISOString(),
+    };
+    defaultWorldRoutesByOptions.set(options, routes);
+  }
+  return routes;
+}
 
 function casesRoutesOrDefault(options: HandlerOptions): CasesRouteOptions {
   if (options.cases !== undefined) {
@@ -1176,6 +1207,23 @@ async function route(
     );
     if (realityResponse !== null) {
       return realityResponse;
+    }
+  }
+
+  // WORLD-P5 Mount 5 — delegates to the world-station surface (the LIVE
+  // world station over the backend's governed state: the same
+  // bindWorldStation through the live sources, served as the station
+  // record). The path guard keeps the lazily-constructed default stores
+  // entirely off non-world requests.
+  if (url.pathname === "/v1/world" || url.pathname.startsWith("/v1/world/")) {
+    const worldResponse = await handleWorldRequest(
+      request,
+      url,
+      requestId,
+      worldRoutesOrDefault(options),
+    );
+    if (worldResponse !== null) {
+      return worldResponse;
     }
   }
 

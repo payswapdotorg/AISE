@@ -303,6 +303,7 @@ export function AppShell({
 function routeSurfaceGroup(route: Route): NavGroupId {
   switch (route.name) {
     case "dashboard":
+    case "world":
       return "dashboard";
     case "capture":
     case "sitetwin":

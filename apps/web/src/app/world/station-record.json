@@ -147,6 +147,417 @@
       ]
     }
   ],
+  "viewport": {
+    "projectionKind": "aise.world-station-viewport/1",
+    "scene": {
+      "revision": 2,
+      "nodes": [
+        {
+          "elementId": "c41f9f7bd3cb22e24aaf2107db57516f48d32dec593f78336765a2fa3e2c97dc",
+          "kind": "capture_cloud",
+          "parentId": null,
+          "transform": {
+            "matrix": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              2,
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "geometry": {
+            "assetId": "station-box:c41f9f7bd3cb22e24aaf2107db57516f48d32dec593f78336765a2fa3e2c97dc",
+            "partId": "part-001",
+            "format": "ingested-mesh"
+          },
+          "material": null,
+          "layerIds": [
+            "capture-reality"
+          ],
+          "isGhost": false,
+          "evidenceContentIds": [
+            "1116c45f67d0febe0e92655023ec3ad07d776b48416996708e6db4672b52c4da"
+          ],
+          "label": "capture 1116c45f"
+        },
+        {
+          "elementId": "0af02abdb2c3636c11ab288b457758f023e0735d0ba31881d27fc7a5c4ce0997",
+          "kind": "capture_cloud",
+          "parentId": null,
+          "transform": {
+            "matrix": [
+              1,
+              0,
+              0,
+              10,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              2,
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "geometry": {
+            "assetId": "station-box:0af02abdb2c3636c11ab288b457758f023e0735d0ba31881d27fc7a5c4ce0997",
+            "partId": "part-001",
+            "format": "ingested-mesh"
+          },
+          "material": null,
+          "layerIds": [
+            "capture-reality"
+          ],
+          "isGhost": false,
+          "evidenceContentIds": [
+            "d48521077edc2a7f00a1647af78efeb86679a50671bbf5c16afee241ebfcef3a"
+          ],
+          "label": "capture d4852107"
+        },
+        {
+          "elementId": "f3f76bea3c6eaa6af089df351807469cccb716a79d6451fa8aff03491f26fdb8",
+          "kind": "capture_cloud",
+          "parentId": null,
+          "transform": {
+            "matrix": [
+              1,
+              0,
+              0,
+              5,
+              0,
+              1,
+              0,
+              8,
+              0,
+              0,
+              1,
+              2,
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "geometry": {
+            "assetId": "station-box:f3f76bea3c6eaa6af089df351807469cccb716a79d6451fa8aff03491f26fdb8",
+            "partId": "part-001",
+            "format": "ingested-mesh"
+          },
+          "material": null,
+          "layerIds": [
+            "capture-reality"
+          ],
+          "isGhost": false,
+          "evidenceContentIds": [
+            "e6e16dab4c93fea510a44032dbee6b081e1756e120f7015e9200f51870b92613"
+          ],
+          "label": "capture e6e16dab"
+        },
+        {
+          "elementId": "plan-wall-001",
+          "kind": "plan_model",
+          "parentId": null,
+          "transform": {
+            "matrix": [
+              1,
+              0,
+              0,
+              2,
+              0,
+              1,
+              0,
+              -2,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "geometry": {
+            "assetId": "station-box:plan-wall-001",
+            "partId": "part-001",
+            "format": "ingested-mesh"
+          },
+          "material": null,
+          "layerIds": [
+            "plan-model"
+          ],
+          "isGhost": false,
+          "evidenceContentIds": [
+            "fa82c0f89d4e388960116fcf07c43b55f738a926483e31f483d75d98107b7abe"
+          ],
+          "label": "Plan wall W-1"
+        },
+        {
+          "elementId": "plan-slab-001",
+          "kind": "plan_model",
+          "parentId": null,
+          "transform": {
+            "matrix": [
+              1,
+              0,
+              0,
+              7,
+              0,
+              1,
+              0,
+              7,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "geometry": {
+            "assetId": "station-box:plan-slab-001",
+            "partId": "part-001",
+            "format": "ingested-mesh"
+          },
+          "material": null,
+          "layerIds": [
+            "plan-model"
+          ],
+          "isGhost": false,
+          "evidenceContentIds": [
+            "fa82c0f89d4e388960116fcf07c43b55f738a926483e31f483d75d98107b7abe"
+          ],
+          "label": "Plan slab S-1"
+        },
+        {
+          "elementId": "c9ba007f8c609115f21f8567363736f78e978bacb55eefd1713397b32d65feb5",
+          "kind": "annotation",
+          "parentId": null,
+          "transform": {
+            "matrix": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "geometry": {
+            "assetId": "station-box:c9ba007f8c609115f21f8567363736f78e978bacb55eefd1713397b32d65feb5",
+            "partId": "part-001",
+            "format": "ingested-mesh"
+          },
+          "material": null,
+          "layerIds": [
+            "coverage"
+          ],
+          "isGhost": false,
+          "evidenceContentIds": [],
+          "label": "Capture coverage (declared)"
+        },
+        {
+          "elementId": "ghost-reparameterize-2814f7cd97b18960",
+          "kind": "ghost",
+          "parentId": null,
+          "transform": {
+            "matrix": [
+              1,
+              0,
+              0,
+              0.02,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "geometry": {
+            "assetId": "station-box:ghost-reparameterize-2814f7cd97b18960",
+            "partId": "part-001",
+            "format": "ingested-mesh"
+          },
+          "material": null,
+          "layerIds": [
+            "solution"
+          ],
+          "isGhost": true,
+          "evidenceContentIds": [],
+          "label": "PROPOSED — 30 mm plaster pass"
+        }
+      ],
+      "layers": [
+        {
+          "layerId": "capture-reality",
+          "name": "Captured reality",
+          "visibleByDefault": true
+        },
+        {
+          "layerId": "plan-model",
+          "name": "Plan / BIM model",
+          "visibleByDefault": true
+        },
+        {
+          "layerId": "coverage",
+          "name": "Capture coverage",
+          "visibleByDefault": false
+        },
+        {
+          "layerId": "annotations",
+          "name": "Annotations",
+          "visibleByDefault": true
+        }
+      ],
+      "siteFrame": {
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "northHeading": 0,
+        "units": "metre"
+      },
+      "ghostSummary": {
+        "operationId": "ec097a4bfa7ef76bb0777985a79ba5f835bed9a254513c7c452985197f2522d2",
+        "proposedElementIds": [
+          "ghost-reparameterize-2814f7cd97b18960"
+        ],
+        "removedElementIds": [
+          "plan-wall-001"
+        ]
+      }
+    },
+    "boxes": [
+      {
+        "assetId": "station-box:0af02abdb2c3636c11ab288b457758f023e0735d0ba31881d27fc7a5c4ce0997",
+        "min": [
+          6,
+          -4,
+          0
+        ],
+        "max": [
+          14,
+          4,
+          6
+        ]
+      },
+      {
+        "assetId": "station-box:c41f9f7bd3cb22e24aaf2107db57516f48d32dec593f78336765a2fa3e2c97dc",
+        "min": [
+          -4,
+          -4,
+          0
+        ],
+        "max": [
+          4,
+          4,
+          6
+        ]
+      },
+      {
+        "assetId": "station-box:c9ba007f8c609115f21f8567363736f78e978bacb55eefd1713397b32d65feb5",
+        "min": [
+          -4,
+          -4,
+          0
+        ],
+        "max": [
+          14,
+          12,
+          6
+        ]
+      },
+      {
+        "assetId": "station-box:f3f76bea3c6eaa6af089df351807469cccb716a79d6451fa8aff03491f26fdb8",
+        "min": [
+          1,
+          4,
+          0
+        ],
+        "max": [
+          9,
+          12,
+          6
+        ]
+      },
+      {
+        "assetId": "station-box:ghost-reparameterize-2814f7cd97b18960",
+        "min": [
+          1.02,
+          -4,
+          0
+        ],
+        "max": [
+          3.02,
+          0,
+          3
+        ]
+      },
+      {
+        "assetId": "station-box:plan-slab-001",
+        "min": [
+          5,
+          5,
+          0
+        ],
+        "max": [
+          9,
+          9,
+          0.3
+        ]
+      },
+      {
+        "assetId": "station-box:plan-wall-001",
+        "min": [
+          1,
+          -4,
+          0
+        ],
+        "max": [
+          3,
+          0,
+          3
+        ]
+      }
+    ],
+    "derivationNote": "declared plan shapes + device-declared capture volumes + the coverage union + the ghost's removed-target box translated by the declared ghost transform — no invented geometry; elements without a declared box render no mesh"
+  },
   "hud": {
     "panels": [
       {

@@ -1,0 +1,19 @@
+{
+  "name": "@aise/world-scene-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AISE world scene runtime package (WORLD-P5 Mount 1): the REAL Babylon.js occupant of the WORLD-P0-A `babylon.scene-runtime/1` port. Implements the substrate-neutral `BabylonSceneRuntimeAdapter` contract over the real Babylon scene graph — scene-graph ingest from AISE scene-composition types (typed ingested-mesh geometry resolution through AISE-declared geometry, never invented), typed camera state (walk/orbit/fly) with set/get round-trip, real ray picking that returns the CANONICAL AISE elementId (never a substrate mesh id), layer visibility with the AND-semantics and unknown-layer-defaults-visible law, section planes, the ghost (proposed-state) overlay rendered DISTINCT from captured reality, and honest capability declarations (NullEngine headless mode for CPU-side measurement; WebGL browser mode; WebGPU declared BLOCKED-with-protocol in this delivery — async engine init). Fail-closed before any substrate call (`scene_invalid`); the in-memory P0-A double remains the reference semantics — the colocated substitution tests prove equivalent canonical outputs (picks, visibility, camera round-trips) between the real adapter and the double on the same scenes. No Babylon type appears in the public API; no substrate id ever becomes canonical AISE identity.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./geometry": "./src/geometry.ts",
+    "./adapter": "./src/adapter.ts"
+  },
+  "scripts": {
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@aise/world-reality-substrate": "workspace:*",
+    "@babylonjs/core": "^8.0.0"
+  }
+}
